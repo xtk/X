@@ -17,7 +17,13 @@ X.base = function() {
   //
   // class attributes
   
-  // The className of this class.
+  /**
+   * The className of this class.
+   * 
+   * @const
+   * @type {string}
+   * @private
+   */
   this._className = 'base';
   
 };
