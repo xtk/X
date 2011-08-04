@@ -1,0 +1,11 @@
+#SVN
+*.svn
+
+#Python
+*.pyc
+
+# project from Aptana IDE
+*.project
+
+#OSX specifics
+.DS_Store
