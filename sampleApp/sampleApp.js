@@ -3,6 +3,7 @@ goog.provide('sampleApp.init');
 
 goog.require('X.renderer2D');
 goog.require('X.renderer3D');
+goog.require('X.exception');
 
 sampleApp.init = function() {
 

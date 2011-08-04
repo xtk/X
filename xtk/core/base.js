@@ -6,6 +6,7 @@
 goog.provide('X.base');
 
 // requires
+goog.require('X')
 
 /**
  * The superclass class for all X.base-objects.
