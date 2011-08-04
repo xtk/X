@@ -27,7 +27,7 @@ projectRootDir = os.path.normpath( xtkUtilsDir + os.sep + '..' + os.sep )
 # closure-library dir
 closureLibraryDir = os.path.normpath( projectRootDir + os.sep + 'closure-library' )
 
-# closurebuilder.py
+# depswriter.py
 closureDepsrFilePath = os.path.normpath( closureLibraryDir + os.sep + 'closure' + os.sep + 'bin' + os.sep + 'build' + os.sep + 'depswriter.py' )
 
 # xtk dir
