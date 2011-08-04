@@ -28,7 +28,7 @@ projectRootDir = os.path.normpath( xtkUtilsDir + os.sep + '..' + os.sep )
 closureLibraryDir = os.path.normpath( projectRootDir + os.sep + 'closure-library' )
 
 # depswriter.py
-closureDepsrFilePath = os.path.normpath( closureLibraryDir + os.sep + 'closure' + os.sep + 'bin' + os.sep + 'build' + os.sep + 'depswriter.py' )
+closureDepsFilePath = os.path.normpath( closureLibraryDir + os.sep + 'closure' + os.sep + 'bin' + os.sep + 'build' + os.sep + 'depswriter.py' )
 
 # xtk dir
 xtkDir = os.path.normpath( projectRootDir + os.sep + 'xtk' )
@@ -39,7 +39,7 @@ outputFilePath = os.path.normpath( xtkDir + os.sep + 'xtk-deps.js' )
 #
 # generate build command
 #
-command = closureDepsrFilePath
+command = closureDepsFilePath
 command += ' --root_with_prefix="' + xtkDir
 command += ' ../../../xtk"'
 command += ' > ' + outputFilePath
