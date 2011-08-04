@@ -4,8 +4,10 @@
 #Python
 *.pyc
 
-# project from Aptana IDE
+# project from Eclipse/Aptana IDE
 *.project
+*.pydevproject
+*.settings
 
 #OSX specifics
 .DS_Store
