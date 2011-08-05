@@ -6,9 +6,11 @@
 goog.provide('X.renderer');
 
 // requires
-goog.require('goog.dom');
 goog.require('X.base');
 goog.require('X.exception');
+goog.require('goog.dom');
+
+
 
 /**
  * Create a renderer with the given width and height.
@@ -19,21 +21,24 @@ goog.require('X.exception');
  * @extends {X.base}
  */
 X.renderer = function(width, height) {
-  
+
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
   
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   * @const
+   */
   this._className = 'renderer';
   
   /**
    * The dimension of this renderer.
    * 
    * @type {!number}
-   * @private
+   * @protected
    */
   this._dimension = -1;
   
@@ -41,7 +46,7 @@ X.renderer = function(width, height) {
    * The width of this renderer.
    * 
    * @type {!number}
-   * @private
+   * @protected
    */
   this._width = width;
   
@@ -49,7 +54,7 @@ X.renderer = function(width, height) {
    * The height of this renderer.
    * 
    * @type {!number}
-   * @private
+   * @protected
    */
   this._height = height;
   
@@ -57,7 +62,7 @@ X.renderer = function(width, height) {
    * The background color of this renderer.
    * 
    * @type {!string}
-   * @private
+   * @protected
    */
   this._backgroundColor = '#000000';
   
@@ -65,7 +70,7 @@ X.renderer = function(width, height) {
    * The HTML container of this renderer, E.g a name of a <div>.
    * 
    * @type {?Element}
-   * @private
+   * @protected
    */
   this._container = null;
   
@@ -73,7 +78,7 @@ X.renderer = function(width, height) {
    * The Canvas of this renderer.
    * 
    * @type {?Element}
-   * @private
+   * @protected
    */
   this._canvas = null;
   
@@ -81,7 +86,7 @@ X.renderer = function(width, height) {
    * The WebGL context of this renderer.
    * 
    * @type {?Object}
-   * @private
+   * @protected
    */
   this._gl = null;
   
@@ -89,28 +94,31 @@ X.renderer = function(width, height) {
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
 
+
 /**
  * Get the dimension of this renderer. E.g. 2 for two-dimensional, 3 for
  * three-dimensional.
  * 
- * @returns {!number} The dimension of this renderer.
+ * @return {!number} The dimension of this renderer.
  */
 X.renderer.prototype.getDimension = function() {
-  
+
   return this._dimension;
   
 };
 
+
 /**
  * Get the width of this renderer.
  * 
- * @returns {!number} The width of this renderer.
+ * @return {!number} The width of this renderer.
  */
 X.renderer.prototype.getWidth = function() {
-  
+
   return this._width;
   
 };
+
 
 /**
  * Set the width for this renderer.
@@ -118,7 +126,7 @@ X.renderer.prototype.getWidth = function() {
  * @param {!number} width The width for this renderer.
  */
 X.renderer.prototype.setWidth = function(width) {
-  
+
   if (this._canvas) {
     
     // the canvas was already created, let's update it
@@ -130,16 +138,18 @@ X.renderer.prototype.setWidth = function(width) {
   
 };
 
+
 /**
  * Get the height of this renderer.
  * 
- * @returns {!number} The height of this renderer.
+ * @return {!number} The height of this renderer.
  */
 X.renderer.prototype.getHeight = function() {
-  
+
   return this._height;
   
 };
+
 
 /**
  * Set the height for this renderer.
@@ -147,7 +157,7 @@ X.renderer.prototype.getHeight = function() {
  * @param {!number} height The height for this renderer.
  */
 X.renderer.prototype.setHeight = function(height) {
-  
+
   if (this._canvas) {
     
     // the canvas was already created, let's update it
@@ -159,16 +169,18 @@ X.renderer.prototype.setHeight = function(height) {
   
 };
 
+
 /**
  * Get the background color of this renderer.
  * 
- * @returns {!string} The background color of this renderer.
+ * @return {!string} The background color of this renderer.
  */
 X.renderer.prototype.getBackgroundColor = function() {
-  
+
   return this._backgroundColor;
   
 };
+
 
 /**
  * Set the background color for this renderer.
@@ -176,11 +188,12 @@ X.renderer.prototype.getBackgroundColor = function() {
  * @param {!string} backgroundColor The background color for this renderer.
  */
 X.renderer.prototype.setBackgroundColor = function(backgroundColor) {
-  
+
   if (this._canvas) {
     
     // the canvas was already created, let's update it
-    this._canvas.style.setProperty('background-color', backgroundColor.toString());
+    this._canvas.style.setProperty('background-color', backgroundColor
+        .toString());
     
   }
   
@@ -188,14 +201,15 @@ X.renderer.prototype.setBackgroundColor = function(backgroundColor) {
   
 };
 
+
 /**
  * Get the container of this renderer.
  * 
- * @returns {!Element} The container of this renderer as a DOM object.
+ * @return {!Element} The container of this renderer as a DOM object.
  * @throws {X.exception} An exception if the <body> could not be found.
  */
 X.renderer.prototype.getContainer = function() {
-  
+
   // if no _container is associated, use the document.body
   if (!this._container) {
     
@@ -218,6 +232,7 @@ X.renderer.prototype.getContainer = function() {
   
 };
 
+
 /**
  * Set the container (DOM object) for this renderer.
  * 
@@ -225,7 +240,7 @@ X.renderer.prototype.getContainer = function() {
  * @throws {X.exception} An exception if the container could not be found.
  */
 X.renderer.prototype.setContainer = function(container) {
-  
+
   if (!container) {
     
     // throw exception if the container is invalid
@@ -237,13 +252,14 @@ X.renderer.prototype.setContainer = function(container) {
   
 };
 
+
 /**
  * Set the container for this renderer using an id of a DOM object.
  * 
  * @param {!string} containerId An id of a DOM object.
  */
 X.renderer.prototype.setContainerById = function(containerId) {
-  
+
   // retrieve the DOM object with the given id
   var container = goog.dom.getElement(containerId);
   
@@ -252,19 +268,18 @@ X.renderer.prototype.setContainerById = function(containerId) {
   
 };
 
+
 /**
  * Create the canvas of this renderer inside the configured container and using
- * attributes like width, height, backgroundColor etc.
- * 
- * Then, initialize the WebGL context.
- * 
- * All this will only happen once, no matter how often this method is called.
+ * attributes like width, height, backgroundColor etc. Then, initialize the
+ * WebGL context. All this will only happen once, no matter how often this
+ * method is called.
  * 
  * @throws {X.exception} An exception if there were problems during WebGL
  *           initialization.
  */
 X.renderer.prototype.init = function() {
-  
+
   // if the canvas already exists, exit now
   if (this._canvas) {
     return;
@@ -274,7 +289,8 @@ X.renderer.prototype.init = function() {
   var canvas = goog.dom.createDom('canvas');
   canvas.style.setProperty('width', this.getWidth().toString());
   canvas.style.setProperty('height', this.getHeight().toString());
-  canvas.style.setProperty('background-color', this.getBackgroundColor().toString());
+  canvas.style.setProperty('background-color', this.getBackgroundColor()
+      .toString());
   
   // append it to the container
   goog.dom.appendChild(this.getContainer(), canvas);
@@ -285,7 +301,7 @@ X.renderer.prototype.init = function() {
   // Step1: Get Context of canvas
   //
   try {
-   
+    
     var gl = canvas.getContext('experimental-webgl');
     // TODO do we need 2d canvas in a 2d case??
     // gl = canvas.getContext('2d');

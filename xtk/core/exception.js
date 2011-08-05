@@ -8,6 +8,8 @@ goog.provide('X.exception');
 // requires
 goog.require('X.base');
 
+
+
 /**
  * The general xtk exception.
  * 
@@ -16,15 +18,15 @@ goog.require('X.base');
  * @extends {X.base}
  */
 X.exception = function(message) {
-  
+
   goog.base(this);
   
   //
   // class attributes
   
-  /** 
-   * @inheritDoc 
-   * @const 
+  /**
+   * @inheritDoc
+   * @const
    */
   this._className = 'exception';
   
@@ -35,7 +37,6 @@ X.exception = function(message) {
     this._message = 'Unknown error!';
   }
   
-  
   // we will use a new error object to get the stacktrace
   var _err = new Error();
   
@@ -43,8 +44,9 @@ X.exception = function(message) {
    * The stack trace of this exception.
    * 
    * @type {!string}
+   * @private
    */
-  this._stackTrace = _err.stack;
+  this._stackTrace_ = _err.stack;
   
 };
 goog.inherits(X.exception, X.base);

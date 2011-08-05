@@ -6,28 +6,30 @@
 goog.provide('X.console');
 
 // requires
-goog.require('goog.dom');
 goog.require('X.base');
 goog.require('X.exception');
+goog.require('goog.dom');
+
+
 
 /**
- * Create a wrapper around a javascript console with convenience methods
- * for outputting information.
+ * Create a wrapper around a javascript console with convenience methods for
+ * outputting information.
  * 
  * @constructor
  * @extends {X.base}
  */
 X.console = function() {
-  
+
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
   
-  /** 
+  /**
    * @inheritDoc
-   * @const 
+   * @const
    */
   this._className = 'console';
   
@@ -37,24 +39,24 @@ X.console = function() {
    * @type {?Element}
    * @private
    */
-  this._console = null;
+  this._console_ = null;
   
 };
-//inherit from X.base
+// inherit from X.base
 goog.inherits(X.console, X.base);
 
+
 /**
- * Returns the wrapped console of the browser. If it does not exist, 
- * set up the wrapping first.
+ * Returns the wrapped console of the browser. If it does not exist, set up the
+ * wrapping first.
  * 
- * @returns {!Element} The wrapped console of the browser.
+ * @return {!Element} The wrapped console of the browser.
  * @throws {X.exception} An exception if the wrapping failed.
  * @private
- * 
  */
-X.console.prototype.getConsole = function() {
-  
-  if (!this._console) {
+X.console.prototype.getConsole_ = function() {
+
+  if (!this._console_) {
     
     // grab the console if available
     var _window = goog.dom.getWindow(goog.dom.getDocument());
@@ -75,13 +77,14 @@ X.console.prototype.getConsole = function() {
       
     }
     
-    this._console = _console;
+    this._console_ = _console;
     
   }
   
-  return this._console;
+  return this._console_;
   
 };
+
 
 /**
  * Prints a message to the console.
@@ -89,8 +92,8 @@ X.console.prototype.getConsole = function() {
  * @param {?string} message The message to print.
  */
 X.console.prototype.out = function(message) {
-  
-  var _console = this.getConsole();
+
+  var _console = this.getConsole_();
   
   if (_console) {
     
@@ -100,14 +103,15 @@ X.console.prototype.out = function(message) {
   
 };
 
+
 /**
  * Prints an error message to the console.
  * 
  * @param {?string} errorMessage The message to print.
  */
 X.console.prototype.err = function(errorMessage) {
-  
-  var _console = this.getConsole();
+
+  var _console = this.getConsole_();
   
   if (_console) {
     

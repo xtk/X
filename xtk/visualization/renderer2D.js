@@ -8,6 +8,8 @@ goog.provide('X.renderer2D');
 // requires
 goog.require('X.renderer');
 
+
+
 /**
  * Create a 2D renderer with the given width and height.
  * 
@@ -17,21 +19,22 @@ goog.require('X.renderer');
  * @extends {X.renderer}
  */
 X.renderer2D = function(width, height) {
-  
+
   // call the standard constructor of X.base
   goog.base(this, width, height);
   
   //
   // class attributes
   
-  /** 
-   * @inheritDoc 
-   * @const 
+  /**
+   * @inheritDoc
+   * @const
    */
   this._className = 'renderer2D';
   
-  /** @inheritDoc 
-   *  @const 
+  /**
+   * @inheritDoc
+   * @const
    */
   this._dimension = 2;
   
