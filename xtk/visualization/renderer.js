@@ -32,7 +32,6 @@ X.renderer = function(width, height) {
   /**
    * The dimension of this renderer.
    * 
-   * @const
    * @type {!number}
    * @private
    */
@@ -57,7 +56,7 @@ X.renderer = function(width, height) {
   /**
    * The background color of this renderer.
    * 
-   * @type {?string}
+   * @type {!string}
    * @private
    */
   this._backgroundColor = '#000000';
@@ -123,7 +122,7 @@ X.renderer.prototype.setWidth = function(width) {
   if (this._canvas) {
     
     // the canvas was already created, let's update it
-    this._canvas.style.setProperty('width', width);
+    this._canvas.style.setProperty('width', width.toString());
     
   }
   
@@ -147,12 +146,12 @@ X.renderer.prototype.getHeight = function() {
  * 
  * @param {!number} height The height for this renderer.
  */
-X.renderer.prototype.setWidth = function(height) {
+X.renderer.prototype.setHeight = function(height) {
   
   if (this._canvas) {
     
     // the canvas was already created, let's update it
-    this._canvas.style.setProperty('height', height);
+    this._canvas.style.setProperty('height', height.toString());
     
   }
   
@@ -163,7 +162,7 @@ X.renderer.prototype.setWidth = function(height) {
 /**
  * Get the background color of this renderer.
  * 
- * @returns {string} The background color of this renderer.
+ * @returns {!string} The background color of this renderer.
  */
 X.renderer.prototype.getBackgroundColor = function() {
   
@@ -174,14 +173,14 @@ X.renderer.prototype.getBackgroundColor = function() {
 /**
  * Set the background color for this renderer.
  * 
- * @param {?string} backgroundColor The background color for this renderer.
+ * @param {!string} backgroundColor The background color for this renderer.
  */
 X.renderer.prototype.setBackgroundColor = function(backgroundColor) {
   
   if (this._canvas) {
     
     // the canvas was already created, let's update it
-    this._canvas.style.setProperty('background-color', backgroundColor);
+    this._canvas.style.setProperty('background-color', backgroundColor.toString());
     
   }
   
@@ -200,8 +199,8 @@ X.renderer.prototype.getContainer = function() {
   // if no _container is associated, use the document.body
   if (!this._container) {
     
-    document = goog.dom.getDocument();
-    body = document.body;
+    var _document = goog.dom.getDocument();
+    var body = _document.body;
     
     if (!body) {
       
@@ -222,7 +221,7 @@ X.renderer.prototype.getContainer = function() {
 /**
  * Set the container (DOM object) for this renderer.
  * 
- * @param {!Element} container A container (DOM object).
+ * @param {Element} container A container (DOM object).
  * @throws {X.exception} An exception if the container could not be found.
  */
 X.renderer.prototype.setContainer = function(container) {
@@ -246,7 +245,7 @@ X.renderer.prototype.setContainer = function(container) {
 X.renderer.prototype.setContainerById = function(containerId) {
   
   // retrieve the DOM object with the given id
-  container = goog.dom.getElement(containerId);
+  var container = goog.dom.getElement(containerId);
   
   // try to set it as a container
   this.setContainer(container);
@@ -272,10 +271,10 @@ X.renderer.prototype.init = function() {
   }
   
   // create a canvas object with certain properties
-  canvas = goog.dom.createDom('canvas');
-  canvas.style.setProperty('width', this.getWidth());
-  canvas.style.setProperty('height', this.getHeight());
-  canvas.style.setProperty('background-color', this.getBackgroundColor());
+  var canvas = goog.dom.createDom('canvas');
+  canvas.style.setProperty('width', this.getWidth().toString());
+  canvas.style.setProperty('height', this.getHeight().toString());
+  canvas.style.setProperty('background-color', this.getBackgroundColor().toString());
   
   // append it to the container
   goog.dom.appendChild(this.getContainer(), canvas);
@@ -287,7 +286,7 @@ X.renderer.prototype.init = function() {
   //
   try {
    
-    gl = canvas.getContext('experimental-webgl');
+    var gl = canvas.getContext('experimental-webgl');
     // TODO do we need 2d canvas in a 2d case??
     // gl = canvas.getContext('2d');
     

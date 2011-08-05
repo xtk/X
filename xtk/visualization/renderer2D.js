@@ -24,10 +24,15 @@ X.renderer2D = function(width, height) {
   //
   // class attributes
   
-  /** @inheritDoc */
+  /** 
+   * @inheritDoc 
+   * @const 
+   */
   this._className = 'renderer2D';
   
-  /** @inheritDoc */
+  /** @inheritDoc 
+   *  @const 
+   */
   this._dimension = 2;
   
 };

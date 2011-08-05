@@ -24,10 +24,16 @@ X.renderer3D = function(width, height) {
   //
   // class attributes
   
-  /** @inheritDoc */
+  /** 
+   * @inheritDoc 
+   * @const
+   */
   this._className = 'renderer3D';
   
-  /** @inheritDoc */
+  /** 
+   * @inheritDoc
+   * @const 
+   */
   this._dimension = 3;
   
 };

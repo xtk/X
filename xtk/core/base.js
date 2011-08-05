@@ -6,7 +6,7 @@
 goog.provide('X.base');
 
 // requires
-goog.require('X')
+goog.require('X');
 
 /**
  * The superclass class for all X.base-objects.
@@ -21,7 +21,6 @@ X.base = function() {
   /**
    * The className of this class.
    * 
-   * @const
    * @type {string}
    * @private
    */
@@ -47,15 +46,15 @@ X.base.prototype.getClassName = function() {
  */
 X.base.prototype.print = function() {
   
-  attributes = Object.keys(this);
-  attributesStringList = '';
-  className = '<unknown>';
+  var attributes = Object.keys(this);
+  var attributesStringList = '';
+  var className = '<unknown>';
   
   // loop through the attributes of a class
   for ( var a in attributes) {
     
-    aName = 'this.' + attributes[a];
-    aValue = eval(aName);
+    var aName = 'this.' + attributes[a];
+    var aValue = eval(aName);
     
     // catch the className, since we want to display it differently
     if (aName == 'this._className') {
@@ -67,7 +66,7 @@ X.base.prototype.print = function() {
   }
   
   // build string output
-  output = '== X.' + className + ' ==\n';
+  var output = '== X.' + className + ' ==\n';
   output += attributesStringList;
   
   return output;
