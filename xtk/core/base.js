@@ -55,7 +55,7 @@ X.base.prototype.print = function() {
   var className = '<unknown>';
 
   // loop through the attributes of a class
-  for (a in attributes) {
+  for (var a in attributes) {
 
     var aName = 'this.' + attributes[a];
     var aValue = eval(aName);
