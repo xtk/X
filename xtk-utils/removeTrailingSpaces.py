@@ -82,7 +82,10 @@ for file in files:
 
   if foundTrailingSpaces:
 
-    f = open ( file, w )
+    # append new empty line
+    newLines.append( '' )
+
+    f = open ( file, 'w' )
     f.write( "\n".join( newLines ) )
     f.close()
 

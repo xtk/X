@@ -8,9 +8,9 @@ goog.require('goog.testing.jsunit');
 function testXbaseGetClassName() {
 
   b = new X.base();
-  
+
   assertEquals(b.getClassName(), 'base');
-  
+
 }
 
 
@@ -20,7 +20,7 @@ function testXbaseGetClassName() {
 function testXbasePrint() {
 
   b = new X.base();
-  
+
   assertEquals(b.print(), '== X.base ==\n');
-  
+
 }

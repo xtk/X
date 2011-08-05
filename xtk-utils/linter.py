@@ -48,9 +48,6 @@ command += ' -r ' + xtkDir
 command += ' -e ' + closureLibraryRelativeDir + os.sep + '*'
 command += ' -x ' + 'xtk/xtk-deps.js --strict'
 
-print command
-exit()
-
 #
 # run, forest, run
 #
