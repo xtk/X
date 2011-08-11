@@ -41,3 +41,6 @@ X.renderer2D = function(width, height) {
 };
 // inherit from X.renderer
 goog.inherits(X.renderer2D, X.renderer);
+
+// export symbols (requiered for advanced compilation)
+window['X.renderer2D'] = X.renderer2D;

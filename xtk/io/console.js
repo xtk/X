@@ -54,6 +54,7 @@ goog.inherits(X.console, X.base);
  * @throws {X.exception} An exception if the wrapping failed.
  * @private
  */
+// why "_" ?
 X.console.prototype.getConsole_ = function() {
 
   if (!this._console_) {
@@ -120,3 +121,9 @@ X.console.prototype.err = function(errorMessage) {
   }
 
 };
+
+// export symbols (requiered for advanced compilation)
+window['X.console'] = X.console;
+X.console.prototype['getConsole_'] = X.console.prototype.getConsole_;
+X.console.prototype['out'] = X.console.prototype.out;
+X.console.prototype['err'] = X.console.prototype.err;

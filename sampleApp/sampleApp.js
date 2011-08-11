@@ -1,11 +1,11 @@
 goog.provide('sampleApp');
-goog.provide('sampleApp.init');
+//goog.provide('sampleApp.init');
 
 goog.require('X.console');
 goog.require('X.renderer2D');
 goog.require('X.renderer3D');
 
-sampleApp.init = function() {
+sampleApp = window['sampleApp']  = function() {
 
   var c = new X.console();
   
@@ -44,3 +44,9 @@ sampleApp.init = function() {
   }  
   
 };
+
+
+
+// export symbols (requiered for advanced compilation)
+// goog.exportSymbol('sth', sth);
+//window['sampleApp.init'] = sampleApp.init();

@@ -340,3 +340,16 @@ X.renderer.prototype.init = function() {
   this._canvas = canvas;
 
 };
+
+
+// export symbols (requiered for advanced compilation)
+window['X.renderer'] = X.renderer;
+X.renderer.prototype['getDimension'] = X.renderer.prototype.getDimension;
+X.renderer.prototype['getWidth'] = X.renderer.prototype.getWidth;
+X.renderer.prototype['setWidth'] = X.renderer.prototype.setWidth;
+X.renderer.prototype['getHeight'] = X.renderer.prototype.getHeight;
+X.renderer.prototype['setHeight'] = X.renderer.prototype.setHeight;
+X.renderer.prototype['getBackgroundColor'] = X.renderer.prototype.getBackgroundColor;
+X.renderer.prototype['setBackgroundColor'] = X.renderer.prototype.setBackgroundColor;
+X.renderer.prototype['getContainer'] = X.renderer.prototype.getContainer;
+X.renderer.prototype['setContainer'] = X.renderer.prototype.setContainer;

@@ -52,6 +52,7 @@ command += ' --namespace=' + projectName
 command += ' --output_mode=compiled'
 command += ' --compiler_jar=' + compilerFilePath
 command += ' -f "--warning_level=VERBOSE"'
+command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
 command += ' > ' + outputFilePath
 
 #
