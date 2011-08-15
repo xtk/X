@@ -1,7 +1,8 @@
+# build the application using the closure compiler and xtk
+# compiled application is located at:
+# sampleApp-build
+# add sinpute and a --help
 #
-#
-#
-
 #
 # configuration
 #

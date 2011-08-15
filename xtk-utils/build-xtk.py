@@ -5,7 +5,7 @@
 #
 # configuration
 #
-projectName = 'sampleApp'
+projectName = 'X.renderer3D'
 
 ##############################################################################
 
@@ -40,7 +40,7 @@ compilerFilePath = os.path.normpath( closureLibraryDir + os.sep + 'compiler-late
 appDir = os.path.normpath( projectRootDir + os.sep + projectName )
 
 # output filePath
-outputFilePath = os.path.normpath( xtkDir + os.sep + 'xtk-build.js' )
+outputFilePath = os.path.normpath( xtkDir + os.sep + 'visualization' + os.sep +  projectName + '-build.js' )
 
 #
 # generate build command
