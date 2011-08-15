@@ -15,7 +15,7 @@ projectName = 'sampleApp'
 #
 import os, sys
 
-#
+#Copy of removeTrailingSpaces.py
 # find folders
 #
 
