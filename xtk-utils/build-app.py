@@ -53,6 +53,7 @@ command += ' --output_mode=compiled'
 command += ' --compiler_jar=' + compilerFilePath
 command += ' -f "--warning_level=VERBOSE"'
 command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
+#command += ' -f "--externs=' + appDir + os.sep + projectName + '-externs.js"'
 command += ' > ' + outputFilePath
 
 #
