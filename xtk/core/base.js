@@ -45,6 +45,9 @@ X.base.prototype.getClassName = function() {
 
 /**
  * Print the className and all attributes of the current X.base-object.
+ * We should use getAttributeName rather than accessing the attribute directly
+ * After compilation, we can not access to the variables like that....!
+ * since the variables are renamed (_className -> a )
  *
  * @return {string} A string representation of the current X.base-object.
  */

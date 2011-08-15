@@ -1,0 +1,2 @@
+// main constructor
+sampleApp = function() {};
