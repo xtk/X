@@ -46,8 +46,5 @@ sampleApp = window['sampleApp']  = function() {
   
 };
 
-
-
 // export symbols (requiered for advanced compilation)
-// goog.exportSymbol('sth', sth);
-//window['sampleApp.init'] = sampleApp.init();
+goog.exportSymbol('sampleApp', sampleApp);

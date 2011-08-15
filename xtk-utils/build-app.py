@@ -40,7 +40,7 @@ compilerFilePath = os.path.normpath( closureLibraryDir + os.sep + 'compiler-late
 appDir = os.path.normpath( projectRootDir + os.sep + projectName )
 
 # output filePath
-outputFilePath = os.path.normpath( projectRootDir + os.sep + projectName + '-build.js' )
+outputFilePath = os.path.normpath( appDir + os.sep + projectName + '-build.js' )
 
 #
 # generate build command
