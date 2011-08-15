@@ -343,13 +343,13 @@ X.renderer.prototype.init = function() {
 
 
 // export symbols (requiered for advanced compilation)
-window['X.renderer'] = X.renderer;
-X.renderer.prototype['getDimension'] = X.renderer.prototype.getDimension;
-X.renderer.prototype['getWidth'] = X.renderer.prototype.getWidth;
-X.renderer.prototype['setWidth'] = X.renderer.prototype.setWidth;
-X.renderer.prototype['getHeight'] = X.renderer.prototype.getHeight;
-X.renderer.prototype['setHeight'] = X.renderer.prototype.setHeight;
-X.renderer.prototype['getBackgroundColor'] = X.renderer.prototype.getBackgroundColor;
-X.renderer.prototype['setBackgroundColor'] = X.renderer.prototype.setBackgroundColor;
-X.renderer.prototype['getContainer'] = X.renderer.prototype.getContainer;
-X.renderer.prototype['setContainer'] = X.renderer.prototype.setContainer;
+goog.exportSymbol('X.renderer',X.renderer);
+goog.exportSymbol('X.renderer.prototype.getDimension',X.renderer.prototype.getDimension);
+goog.exportSymbol('X.renderer.prototype.getWidth',X.renderer.prototype.getWidth);
+goog.exportSymbol('X.renderer.prototype.setWidth', X.renderer.prototype.setWidth);
+goog.exportSymbol('X.renderer.prototype.getHeight', X.renderer.prototype.getHeight);
+goog.exportSymbol('X.renderer.prototype.setHeight', X.renderer.prototype.setHeight);
+goog.exportSymbol('X.renderer.prototype.getBackgroundColor', X.renderer.prototype.getBackgroundColor);
+goog.exportSymbol('X.renderer.prototype.setBackgroundColor', X.renderer.prototype.setBackgroundColor);
+goog.exportSymbol('X.renderer.prototype.getContainer', X.renderer.prototype.getContainer);
+goog.exportSymbol('X.renderer.prototype.setContainer', X.renderer.prototype.setContainer);

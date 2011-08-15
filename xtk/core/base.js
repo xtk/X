@@ -78,6 +78,6 @@ X.base.prototype.print = function() {
 };
 
 // export symbols (requiered for advanced compilation)
-window['X.base'] = X.base;
-X.base.prototype['getClassName'] = X.base.prototype.getClassName;
-X.base.prototype['print'] = X.base.prototype.print;
+goog.exportSymbol('X.base', X.base);
+goog.exportSymbol('X.base.prototype.getClassName', X.base.prototype.getClassName);
+goog.exportSymbol('X.base.prototype.print', X.base.prototype.print);

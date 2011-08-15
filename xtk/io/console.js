@@ -123,7 +123,7 @@ X.console.prototype.err = function(errorMessage) {
 };
 
 // export symbols (requiered for advanced compilation)
-window['X.console'] = X.console;
-X.console.prototype['getConsole_'] = X.console.prototype.getConsole_;
-X.console.prototype['out'] = X.console.prototype.out;
-X.console.prototype['err'] = X.console.prototype.err;
+goog.exportSymbol('X.console',X.console);
+goog.exportSymbol('X.console.prototype.getConsole_', X.console.prototype.getConsole_);
+goog.exportSymbol('X.console.prototype.out',X.console.prototype.out);
+goog.exportSymbol('X.console.prototype.err', X.console.prototype.err);

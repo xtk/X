@@ -5,6 +5,7 @@ goog.require('X.console');
 goog.require('X.renderer2D');
 goog.require('X.renderer3D');
 
+// provides extern
 sampleApp = window['sampleApp']  = function() {
 
   var c = new X.console();

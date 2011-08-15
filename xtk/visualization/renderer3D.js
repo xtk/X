@@ -42,4 +42,4 @@ X.renderer3D = function(width, height) {
 // inherit from X.renderer
 goog.inherits(X.renderer3D, X.renderer);
 
-window['X.renderer3D'] = X.renderer3D;
+goog.exportSymbol('X.renderer3D', X.renderer3D);
