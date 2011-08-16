@@ -6,4 +6,7 @@ goog.addDependency('../../../../../xtk/io/console.js', ['X.console'], ['X.base',
 goog.addDependency('../../../../../xtk/visualization/renderer.js', ['X.renderer'], ['X.base', 'X.exception', 'goog.dom']);
 goog.addDependency('../../../../../xtk/visualization/renderer2D.js', ['X.renderer2D'], ['X.renderer']);
 goog.addDependency('../../../../../xtk/visualization/renderer3D.js', ['X.renderer3D'], ['X.renderer']);
+goog.addDependency('../../../../../xtk/visualization/shader.js', ['X.shader'], ['X.base', 'X.exception']);
+goog.addDependency('../../../../../xtk/visualization/shaderFragment.js', ['X.shaderFragment'], ['X.shader']);
+goog.addDependency('../../../../../xtk/visualization/shaderVertex.js', ['X.shaderVertex'], ['X.shader']);
 goog.addDependency('../../../../../xtk/xtk.js', ['X'], []);
