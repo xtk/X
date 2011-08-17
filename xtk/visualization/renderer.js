@@ -289,8 +289,6 @@ X.renderer.prototype.init = function() {
   
   // create a canvas object with certain properties
   var canvas = goog.dom.createDom('canvas');
-  // canvas.style.setProperty('width', this.getWidth().toString());
-  // canvas.style.setProperty('height', this.getHeight().toString());
   canvas.style.setProperty('background-color', this.getBackgroundColor()
       .toString());
   canvas.width = this.getWidth();
@@ -331,9 +329,6 @@ X.renderer.prototype.init = function() {
   try {
     
     gl.viewport(0, 0, this.getWidth(), this.getHeight());
-    console.log(this.getWidth());
-    console.log(this.getHeight());
-    console.log(gl.getContextAttributes());
     
     // gl.viewport(0, 0, 200, 200);
     // configure color
@@ -459,7 +454,7 @@ X.renderer.prototype.render = function() {
   
   perspectiveMatrix = makePerspective(45, this._width / this._height, 0.1,
       100.0);
-  console.log(perspectiveMatrix);
+  
   // Set the drawing position to the "identity" point, which is
   // the center of the scene.
   
@@ -471,7 +466,7 @@ X.renderer.prototype.render = function() {
   
   // mvTranslate([ -0.0, 0.0, -6.0 ]);
   posMatrix = identity.translate(new goog.math.Vec3(-0.0, 0.0, -4.0));
-  console.log(posMatrix);
+  
   // Draw the square by binding the array buffer to the square's vertices
   // array, setting attributes, and pushing it to GL.
   
