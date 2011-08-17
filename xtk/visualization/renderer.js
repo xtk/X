@@ -8,6 +8,7 @@ goog.provide('X.renderer');
 // requires
 goog.require('X.base');
 goog.require('X.exception');
+goog.require('X.matrixHelper');
 goog.require('goog.dom');
 goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec3');
@@ -469,7 +470,7 @@ X.renderer.prototype.render = function() {
   // drawing the square.
   
   // mvTranslate([ -0.0, 0.0, -6.0 ]);
-  posMatrix = translate(identity, new goog.math.Vec3(-0.0, 0.0, -4.0));
+  posMatrix = identity.translate(new goog.math.Vec3(-0.0, 0.0, -4.0));
   console.log(posMatrix);
   // Draw the square by binding the array buffer to the square's vertices
   // array, setting attributes, and pushing it to GL.
@@ -482,23 +483,15 @@ X.renderer.prototype.render = function() {
   
   var pUniform = this._gl.getUniformLocation(this._shaderProgram, "uPMatrix");
   
-  this._gl.uniformMatrix4fv(pUniform, false, new Float32Array(
-      flattenM(perspectiveMatrix)));
-  
-  console.log(flattenM(perspectiveMatrix));
+  this._gl.uniformMatrix4fv(pUniform, false, new Float32Array(perspectiveMatrix
+      .flatten()));
   
   var mvUniform = this._gl.getUniformLocation(this._shaderProgram, "uMVMatrix");
   
-  this._gl.uniformMatrix4fv(mvUniform, false, new Float32Array(
-      flattenM(posMatrix)));
+  this._gl.uniformMatrix4fv(mvUniform, false, new Float32Array(posMatrix
+      .flatten()));
   
-  console.log(flattenM(posMatrix));
-  
-
-
   this._gl.drawArrays(this._gl.TRIANGLE_STRIP, 0, 4);
-  
-  console.log(this._gl);
   
 };
 
@@ -534,31 +527,3 @@ function makeFrustum(left, right, bottom, top, znear, zfar) {
   return m;
 };
 
-function flattenM(m) {
-
-  var result = [];
-  
-  var dim = m.getSize();
-  
-  if (dim.height == 0 || dim.width == 0) {
-    return [];
-  }
-  
-
-  for ( var j = 0; j < dim.height; j++) {
-    for ( var i = 0; i < dim.width; i++) {
-      result.push(m.getValueAt(i, j));
-    }
-  }
-  return result;
-};
-
-function translate(m, v) {
-
-  m.setValueAt(0, 3, v.x);
-  m.setValueAt(1, 3, v.y);
-  m.setValueAt(2, 3, v.z);
-  
-  return m;
-  
-}

@@ -3,8 +3,8 @@
 goog.addDependency('../../../../../xtk/core/base.js', ['X.base'], ['X']);
 goog.addDependency('../../../../../xtk/core/exception.js', ['X.exception'], ['X.base']);
 goog.addDependency('../../../../../xtk/io/console.js', ['X.console'], ['X.base', 'X.exception', 'goog.dom']);
-goog.addDependency('../../../../../xtk/math/matrix.js', ['X.matrix'], ['X.base', 'goog.math.Matrix']);
-goog.addDependency('../../../../../xtk/visualization/renderer.js', ['X.renderer'], ['X.base', 'X.exception', 'goog.dom', 'goog.math.Matrix', 'goog.math.Vec3']);
+goog.addDependency('../../../../../xtk/math/matrixHelper.js', ['X.matrixHelper'], ['X.exception', 'goog.math.Matrix', 'goog.math.Vec2', 'goog.math.Vec3']);
+goog.addDependency('../../../../../xtk/visualization/renderer.js', ['X.renderer'], ['X.base', 'X.exception', 'X.matrixHelper', 'goog.dom', 'goog.math.Matrix', 'goog.math.Vec3']);
 goog.addDependency('../../../../../xtk/visualization/renderer2D.js', ['X.renderer2D'], ['X.renderer']);
 goog.addDependency('../../../../../xtk/visualization/renderer3D.js', ['X.renderer3D'], ['X.renderer']);
 goog.addDependency('../../../../../xtk/visualization/shader.js', ['X.shader'], ['X.base', 'X.exception']);
