@@ -405,6 +405,11 @@ X.renderer.prototype.addShaders = function(fragmentShader, vertexShader) {
       "bVertexPosition");
   this._gl.enableVertexAttribArray(this._vertexPositionAttribute);
   
+  this._vertexColorAttribute = this._gl.getAttribLocation(shaderProgram,
+      "aVertexColor");
+  this._gl.enableVertexAttribArray(this._vertexColorAttribute);
+  
+
   this._shaderProgram = shaderProgram;
   
 };
@@ -433,6 +438,27 @@ X.renderer.prototype.addObject = function(vertices) {
   this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(vertices),
       this._gl.STATIC_DRAW);
   
+  var colors = [
+
+  1.0, 1.0, 1.0, 1.0, // white
+  
+  1.0, 0.0, 0.0, 1.0, // red
+  
+  0.0, 1.0, 0.0, 1.0, // green
+  
+  0.0, 0.0, 1.0, 1.0 // blue
+  
+  ];
+  
+  this._squareVerticesColorBuffer = this._gl.createBuffer();
+  
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._squareVerticesColorBuffer);
+  
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(colors),
+      this._gl.STATIC_DRAW);
+  
+
+
 };
 
 X.renderer.prototype.render = function() {
@@ -485,6 +511,11 @@ X.renderer.prototype.render = function() {
   
   this._gl.uniformMatrix4fv(mvUniform, false, new Float32Array(posMatrix
       .flatten()));
+  
+
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._squareVerticesColorBuffer);
+  this._gl.vertexAttribPointer(this._vertexColorAttribute, 4, this._gl.FLOAT,
+      false, 0, 0);
   
   this._gl.drawArrays(this._gl.TRIANGLE_STRIP, 0, 4);
   

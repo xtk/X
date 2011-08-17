@@ -43,20 +43,26 @@ sampleApp.init = function() {
     // shader experiments
     var fragmentShader = new X.shaderFragment();
     fragmentShader
-        .setSource("void main(void) {                   \n\
-        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);        \n\
-      }                                                 \n\
+        .setSource("varying lowp vec4 vColor;           \n\
+                                                        \n\
+        		void main(void) {                           \n\
+              gl_FragColor = vColor;                    \n\
+            }                                           \n\
     ");
     
     var vertexShader = new X.shaderVertex();
     vertexShader
         .setSource("attribute vec3 bVertexPosition;                                         \n\
+        		attribute vec4 aVertexColor;                                                    \n\
                                                                                             \n\
         uniform mat4 uMVMatrix;                                                             \n\
         uniform mat4 uPMatrix;                                                              \n\
                                                                                             \n\
+        varying lowp vec4 vColor;                                                           \n\
+                                                                                            \n\
         void main(void) {                                                                   \n\
           gl_Position = uPMatrix * uMVMatrix * vec4(bVertexPosition, 1.0);                  \n\
+          vColor = aVertexColor;                                                            \n\
         }                                                                                   \n\
         ");
     
@@ -64,9 +70,87 @@ sampleApp.init = function() {
 
     var vertices = [ 1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -1.0,
         0.0 ];
+    //    
+    //
+    // var vertices = [
+    //
+    // // Front face
+    //    
+    // -1.0, -1.0, 1.0,
+    //
+    // 1.0, -1.0, 1.0,
+    //
+    // 1.0, 1.0, 1.0,
+    //
+    // -1.0, 1.0, 1.0,
+    //
+    //
+    //
+    // // Back face
+    //    
+    // -1.0, -1.0, -1.0,
+    //
+    // -1.0, 1.0, -1.0,
+    //
+    // 1.0, 1.0, -1.0,
+    //
+    // 1.0, -1.0, -1.0,
+    //
+    //
+    //
+    // // Top face
+    //    
+    // -1.0, 1.0, -1.0,
+    //
+    // -1.0, 1.0, 1.0,
+    //
+    // 1.0, 1.0, 1.0,
+    //
+    // 1.0, 1.0, -1.0,
+    //
+    //
+    //
+    // // Bottom face
+    //    
+    // -1.0, -1.0, -1.0,
+    //
+    // 1.0, -1.0, -1.0,
+    //
+    // 1.0, -1.0, 1.0,
+    //
+    // -1.0, -1.0, 1.0,
+    //
+    //
+    //
+    // // Right face
+    //    
+    // 1.0, -1.0, -1.0,
+    //
+    // 1.0, 1.0, -1.0,
+    //
+    // 1.0, 1.0, 1.0,
+    //
+    // 1.0, -1.0, 1.0,
+    //
+    //
+    //
+    // // Left face
+    //    
+    // -1.0, -1.0, -1.0,
+    //
+    // -1.0, -1.0, 1.0,
+    //
+    // -1.0, 1.0, 1.0,
+    //
+    // -1.0, 1.0, -1.0
+    //
+    // ];
     
+
     sliceView1.addShaders(fragmentShader, vertexShader);
+    console.log(1);
     sliceView1.addObject(vertices);
+    console.log(2);
     sliceView2.addShaders(fragmentShader, vertexShader);
     sliceView2.addObject(vertices);
     sliceView3.addShaders(fragmentShader, vertexShader);
