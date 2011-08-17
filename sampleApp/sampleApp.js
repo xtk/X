@@ -15,18 +15,30 @@ sampleApp.init = function() {
   
   try {
     
-    // create a red 2D renderer in the div with id '2d' (see ../index.html)
-    var r2d = new X.renderer2D(100, 100);
-    r2d.setContainerById('2d');
-    r2d.setBackgroundColor('#ff0000');
-    r2d.init();
-    c.out(r2d.print());
+    //
+    // create three 2D renderers in the div with id '2d' (see ../index.html)
+    // default color is black
+    // also, we set the container here. If the container is ommited, the <body>
+    // container is used
+    var sliceView1 = new X.renderer2D(300, 300);
+    sliceView1.setContainerById('2d');
+    sliceView1.init();
+    
+    var sliceView2 = new X.renderer2D(300, 300);
+    sliceView2.setContainerById('2d');
+    sliceView2.init();
+    
+    var sliceView3 = new X.renderer2D(300, 300);
+    sliceView3.setContainerById('2d');
+    sliceView3.init();
+    
     //    
-    // create a green 3D renderer in the div with id '3d' (see ../index.html)
-    var r3d = new X.renderer3D(640, 480);
-    r3d.setContainerById('3d');
-    r3d.setBackgroundColor('green');
-    r3d.init();
+    // create a 'lightblue' 3D renderer in the div with id '3d' (see
+    // ../index.html)
+    var threeDView = new X.renderer3D(900, 400);
+    threeDView.setContainerById('3d');
+    threeDView.setBackgroundColor('#b3b3e7');
+    threeDView.init();
     
     // shader experiments
     var fragmentShader = new X.shaderFragment();
@@ -48,34 +60,33 @@ sampleApp.init = function() {
         }                                                                                   \n\
         ");
     
-    r3d.addShaders(fragmentShader, vertexShader);
-    r2d.addShaders(fragmentShader, vertexShader);
-    
+
 
     var vertices = [ 1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -1.0,
         0.0 ];
     
-    r3d.addObject(vertices);
-    r2d.addObject(vertices);
+    sliceView1.addShaders(fragmentShader, vertexShader);
+    sliceView1.addObject(vertices);
+    sliceView2.addShaders(fragmentShader, vertexShader);
+    sliceView2.addObject(vertices);
+    sliceView3.addShaders(fragmentShader, vertexShader);
+    sliceView3.addObject(vertices);
+    threeDView.addShaders(fragmentShader, vertexShader);
+    threeDView.addObject(vertices);
     
     // setInterval(function() {
     
-    r3d.render();
-    r2d.render();
+    sliceView1.render();
+    sliceView2.render();
+    sliceView3.render();
+    threeDView.render();
+    
     // }, 15);
     // r3d.render();
     
-
-    // create a default colored (black) 2D renderer without container
-    // specification which should
-    // create it directly in <body></body>
-    var r2dWithoutHome = new X.renderer2D(10, 10);
-    r2dWithoutHome.init();
-    r2dWithoutHome.addShaders(fragmentShader, vertexShader);
-    r2dWithoutHome.addObject(vertices);
-    r2dWithoutHome.render();
-    c.out(r2dWithoutHome.print());
-    
+    c.out(sliceView1.print());
+    c.out(sliceView2.print());
+    c.out(sliceView3.print());
     c.out(r3d.print());
     
   } catch (e) {
