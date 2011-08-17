@@ -16,27 +16,27 @@ sampleApp.init = function() {
   try {
     
     //
-    // create three 2D renderers in the div with id '2d' (see ../index.html)
+    // create three 2D renderers in the 2D divs (see ../index.html)
     // default color is black
     // also, we set the container here. If the container is ommited, the <body>
     // container is used
     var sliceView1 = new X.renderer2D(300, 300);
-    sliceView1.setContainerById('2d');
+    sliceView1.setContainerById('sliceView1');
     sliceView1.init();
     
     var sliceView2 = new X.renderer2D(300, 300);
-    sliceView2.setContainerById('2d');
+    sliceView2.setContainerById('sliceView2');
     sliceView2.init();
     
     var sliceView3 = new X.renderer2D(300, 300);
-    sliceView3.setContainerById('2d');
+    sliceView3.setContainerById('sliceView3');
     sliceView3.init();
     
     //    
     // create a 'lightblue' 3D renderer in the div with id '3d' (see
     // ../index.html)
-    var threeDView = new X.renderer3D(900, 400);
-    threeDView.setContainerById('3d');
+    var threeDView = new X.renderer3D(912, 400);
+    threeDView.setContainerById('threeDView');
     threeDView.setBackgroundColor('#b3b3e7');
     threeDView.init();
     
@@ -87,7 +87,7 @@ sampleApp.init = function() {
     c.out(sliceView1.print());
     c.out(sliceView2.print());
     c.out(sliceView3.print());
-    c.out(r3d.print());
+    c.out(threeDView.print());
     
   } catch (e) {
     
