@@ -7,6 +7,7 @@ goog.provide('X.renderer');
 
 // requires
 goog.require('X.base');
+goog.require('X.camera');
 goog.require('X.exception');
 goog.require('X.matrixHelper');
 goog.require('goog.dom');
@@ -91,6 +92,14 @@ X.renderer = function(width, height) {
    * @protected
    */
   this._gl = null;
+  
+  /**
+   * The camera of this renderer.
+   * 
+   * @type {?X.camera}
+   * @protected
+   */
+  this._camera = null;
   
 };
 // inherit from X.base
@@ -274,10 +283,10 @@ X.renderer.prototype.setContainerById = function(containerId) {
 /**
  * Create the canvas of this renderer inside the configured container and using
  * attributes like width, height, backgroundColor etc. Then, initialize the
- * WebGL context. All this will only happen once, no matter how often this
- * method is called.
+ * WebGL context and attach all necessary objects (e.g. camera, shaders..). All
+ * this will only happen once, no matter how often this method is called.
  * 
- * @throws {X.exception} An exception if there were problems during WebGL
+ * @throws {X.exception} An exception if there were problems during
  *           initialization.
  */
 X.renderer.prototype.init = function() {
@@ -297,7 +306,10 @@ X.renderer.prototype.init = function() {
   // append it to the container
   goog.dom.appendChild(this.getContainer(), canvas);
   
-  // WebGL initialization
+  // --------------------------------------------------------------------------
+  //
+  // WebGL Viewport initialization
+  //
   
   //
   // Step1: Get Context of canvas
@@ -330,8 +342,8 @@ X.renderer.prototype.init = function() {
     
     gl.viewport(0, 0, this.getWidth(), this.getHeight());
     
-    // gl.viewport(0, 0, 200, 200);
-    // configure color
+    // configure opacity to 0.0 to overwrite the viewport background-color by
+    // the canvas color
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     
     // enable depth testing
@@ -349,13 +361,29 @@ X.renderer.prototype.init = function() {
     
   }
   
-  // WebGL initialization done
+  //
+  // WebGL Viewport initialization done
+  // --------------------------------------------------------------------------
   
-  this._gl = gl;
+
+  //
+  // create a new camera
+  camera = new X.camera(this);
+  
+  // add shaders to this renderer
+  
+
+  //
+  // attach all created objects as class attributes
+  // should be the last thing to do here since we use these attributes to check
+  // if the initialization was completed successfully
   this._canvas = canvas;
+  this._gl = gl;
+  this._camera = camera;
   
 };
 
+// should happen after init directly
 X.renderer.prototype.addShaders = function(fragmentShader, vertexShader) {
 
   if (!this._canvas || !this._gl) {
@@ -401,10 +429,12 @@ X.renderer.prototype.addShaders = function(fragmentShader, vertexShader) {
   
   this._gl.useProgram(shaderProgram);
   
+  // TODO Shader
   this._vertexPositionAttribute = this._gl.getAttribLocation(shaderProgram,
       "bVertexPosition");
   this._gl.enableVertexAttribArray(this._vertexPositionAttribute);
   
+  // TODO Shader
   this._vertexColorAttribute = this._gl.getAttribLocation(shaderProgram,
       "aVertexColor");
   this._gl.enableVertexAttribArray(this._vertexColorAttribute);
@@ -432,9 +462,7 @@ X.renderer.prototype.addObject = function(vertices) {
   
   this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._verticesBuffer);
   
-  var vertices = [ 1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -1.0,
-      0.0 ];
-  
+  // TODO Object vertices
   this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(vertices),
       this._gl.STATIC_DRAW);
   
@@ -454,6 +482,7 @@ X.renderer.prototype.addObject = function(vertices) {
   
   this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._squareVerticesColorBuffer);
   
+  // TODO Object colors
   this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(colors),
       this._gl.STATIC_DRAW);
   
@@ -463,23 +492,16 @@ X.renderer.prototype.addObject = function(vertices) {
 
 X.renderer.prototype.render = function() {
 
-  if (!this._canvas || !this._gl) {
+  if (!this._canvas || !this._gl || !this._camera) {
     
-    throw new X.exception('Fatal: Renderer was not initialized properly!');
+    throw new X.exception('Fatal: The renderer was not initialized properly!');
     
   }
   
 
   this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
   
-
-  // Establish the perspective with which we want to view the
-  // scene. Our field of view is 45 degrees, with a width/height
-  // ratio of 640:480, and we only want to see objects between 0.1 units
-  // and 100 units away from the camera.
-  
-  perspectiveMatrix = makePerspective(45, this._width / this._height, 0.1,
-      100.0);
+  perspectiveMatrix = this._camera.getPerspective();
   
   // Set the drawing position to the "identity" point, which is
   // the center of the scene.
@@ -500,13 +522,14 @@ X.renderer.prototype.render = function() {
   
   this._gl.vertexAttribPointer(this._vertexPositionAttribute, 3,
       this._gl.FLOAT, false, 0, 0);
-  // setMatrixUniforms();
   
+  // TODO shader
   var pUniform = this._gl.getUniformLocation(this._shaderProgram, "uPMatrix");
   
   this._gl.uniformMatrix4fv(pUniform, false, new Float32Array(perspectiveMatrix
       .flatten()));
   
+  // TODO shader
   var mvUniform = this._gl.getUniformLocation(this._shaderProgram, "uMVMatrix");
   
   this._gl.uniformMatrix4fv(mvUniform, false, new Float32Array(posMatrix
@@ -517,39 +540,7 @@ X.renderer.prototype.render = function() {
   this._gl.vertexAttribPointer(this._vertexColorAttribute, 4, this._gl.FLOAT,
       false, 0, 0);
   
+  // TODO
   this._gl.drawArrays(this._gl.TRIANGLE_STRIP, 0, 4);
   
 };
-
-
-//
-// gluPerspective
-//
-function makePerspective(fovy, aspect, znear, zfar) {
-
-  var ymax = znear * Math.tan(fovy * Math.PI / 360.0);
-  var ymin = -ymax;
-  var xmin = ymin * aspect;
-  var xmax = ymax * aspect;
-  
-  return makeFrustum(xmin, xmax, ymin, ymax, znear, zfar);
-};
-
-//
-// glFrustum
-//
-function makeFrustum(left, right, bottom, top, znear, zfar) {
-
-  var X = 2 * znear / (right - left);
-  var Y = 2 * znear / (top - bottom);
-  var A = (right + left) / (right - left);
-  var B = (top + bottom) / (top - bottom);
-  var C = -(zfar + znear) / (zfar - znear);
-  var D = -2 * zfar * znear / (zfar - znear);
-  
-  var m = new goog.math.Matrix([ [ X, 0, A, 0 ], [ 0, Y, B, 0 ],
-      [ 0, 0, C, D ], [ 0, 0, -1, 0 ] ]);
-  
-  return m;
-};
-
