@@ -161,13 +161,13 @@ if( options.deps or options.deps_only ):
     
     if(options.xtk_only):
         # inputs: namespace, project dir, build tool
-        deps.calculate('X', paths.xtkDir, paths.closureDepsFilePath)
+        deps.calculate('xtk', paths.xtkDir, paths.closureDepsFilePath)
     elif(options.app_only):
         # inputs: namespace, project dir, build tool
         deps.calculate(paths.projectName, paths.appDir, paths.closureDepsFilePath)
     else:
         # inputs: namespace, project dir, build tool
-        deps.calculate('X', paths.xtkDir, paths.closureDepsFilePath)
+        deps.calculate('xtk', paths.xtkDir, paths.closureDepsFilePath)
         deps.calculate(paths.projectName, paths.appDir, paths.closureDepsFilePath)
 
     print ' Dependencies generated'
