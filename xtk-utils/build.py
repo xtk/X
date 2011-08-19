@@ -16,9 +16,6 @@ parser = argparse.ArgumentParser(description='This the XTK build tool')
 # i.e. cannot call xtk_only and app_only at the same time
 target_group = parser.add_mutually_exclusive_group()
 option_group = parser.add_mutually_exclusive_group()
-style_group = parser.add_mutually_exclusive_group()
-deps_group = parser.add_mutually_exclusive_group()
-jsdoc_group = parser.add_mutually_exclusive_group()
 
 # verbose
 parser.add_argument('-v', '--verbose',
@@ -75,17 +72,38 @@ option_group.add_argument('-do', '--deps_only',
 # documentation
 parser.add_argument('-j', '--jsdoc',
                     action='store_true',
-                    dest='doc',
+                    dest='jsdoc',
                     default=False,
                     help='Generate documentation of the target projects.')
 
 option_group.add_argument('-jo', '--jsdoc_only',
                     action='store_true',
-                    dest='doc_only',
+                    dest='jsdoc_only',
                     default=False,
                     help='Only generate documentation of the target projects.')
 
 options = parser.parse_args()
+
+# sanity check, in case we turn on deps and style_only at the same time
+value_list = [options.style_only, options.deps_only, options.jsdoc_only]
+name_list = ['style_only', 'deps_only', 'jsdoc_only']
+
+if( True in value_list ):
+    index = value_list.index(True)
+    
+    print '!!!!!!!!!!!!!!!!!!!!!!!'
+    
+    if(options.style):
+        options.style = False
+        print '!!! warning: using \'--' + str(name_list[index]) + '\': --style will have no effect'
+    if(options.deps):
+        options.deps = False
+        print '!!! warning: using \'--' + str(name_list[index]) + '\': --deps will have no effect'
+    if(options.jsdoc):
+        options.jsdoc = False
+        print '!!! warning: using \'--' + str(name_list[index]) + '\': --jsdoc will have no effect'
+
+    print '!!!!!!!!!!!!!!!!!!!!!!!'
 
 if (options.verbose):
     print '___________>T<___________'
@@ -110,11 +128,29 @@ if (options.verbose):
     print '* deps_only.........: ' + str(options.deps_only)
     print '* deps file path....: ' + paths.closureDepsFilePath
     print '*'
-    print '* doc...............: ' + str(options.doc)
-    print '* doc_only..........: ' + str(options.doc_only)
-    print '* jdoc file path....: '
+    print '* jsdoc.............: ' + str(options.jsdoc)
+    print '* jsdoc_only........: ' + str(options.jsdoc_only)
+    print '* jsdoc file path...: '
     print '*'
     print '*-----------------------*'
+
+#
+# generate the deps files
+#
+if( options.style or options.style_only ):
+    if (options.verbose):
+        print '*-----------------------*'
+        print ' Checking style dependencies '
+    
+    
+    
+    if (options.style_only):
+        print 'Enjoy XTK'
+        sys.exit()
+#
+# run, forest, run
+#
+#os.system( command )
 
 #
 # generate the deps files
@@ -137,12 +173,12 @@ if( options.deps or options.deps_only ):
 #
 # generate the documentation
 #
-if( options.doc or options.doc_only ):
+if( options.jsdoc or options.jsdoc_only ):
     if (options.verbose):
         print '*-----------------------*'
         print ' Generating Documentation '
 
-    if( options.doc_only ):
+    if( options.jsdoc_only ):
         print 'Enjoy XTK'
         sys.exit()
 #
