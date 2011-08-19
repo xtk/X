@@ -1,3 +1,6 @@
+# imports
+import os, sys
+
 
 # xtk-utils dir
 xtkUtilsDir = os.path.abspath( os.path.dirname( sys.argv[0] ) )
