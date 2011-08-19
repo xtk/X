@@ -8,6 +8,7 @@ import os, sys, argparse
 # xtk imports
 # to be renamed...?
 import paths
+import deps
 
     
 parser = argparse.ArgumentParser(description='This the XTK build tool')
@@ -144,15 +145,9 @@ if( options.style or options.style_only ):
         print '*-----------------------*'
         print ' Checking style dependencies '
     
-    
-    
     if (options.style_only):
         print 'Enjoy XTK'
         sys.exit()
-#
-# run, forest, run
-#
-#os.system( command )
 
 #
 # generate the deps files
@@ -161,19 +156,26 @@ if( options.style or options.style_only ):
 # deps are useful if you want to use the non compiled target with goog
 #
 if( options.deps or options.deps_only ):
-    if (options.verbose):
-        print '*-----------------------*'
-        print ' Generating dependencies '
+    print '*-----------------------*'
+    print ' Generating dependencies '
     
-    
+    if(options.xtk_only):
+        # inputs: namespace, project dir, build tool
+        deps.calculate('X', paths.xtkDir, paths.closureDepsFilePath)
+    elif(options.app_only):
+        # inputs: namespace, project dir, build tool
+        deps.calculate(paths.projectName, paths.appDir, paths.closureDepsFilePath)
+    else:
+        # inputs: namespace, project dir, build tool
+        deps.calculate('X', paths.xtkDir, paths.closureDepsFilePath)
+        deps.calculate(paths.projectName, paths.appDir, paths.closureDepsFilePath)
+
+    print ' Dependencies generated'
+    print '*-----------------------*'
 
     if (options.deps_only):
         print 'Enjoy XTK'
         sys.exit()
-#
-# run, forest, run
-#
-#os.system( command )
 
 #
 # generate the documentation
@@ -187,10 +189,6 @@ if( options.jsdoc or options.jsdoc_only ):
     if( options.jsdoc_only ):
         print 'Enjoy XTK'
         sys.exit()
-#
-# run, forest, run
-#
-#os.system( command )
 
 #
 # generate build command
