@@ -34,6 +34,9 @@ compilerFilePath = os.path.normpath( closureLibraryDir + os.sep + 'compiler-late
 # depswriter.py
 closureDepsFilePath = os.path.normpath( closureLibraryDir + os.sep + 'closure' + os.sep + 'bin' + os.sep + 'build' + os.sep + 'depswriter.py' )
 
+# closurebuilder.py
+closureLinterFilePath = os.path.normpath( closureLibraryDir + os.sep + 'linter-latest' + os.sep + 'gjslint.py' )
+
 # jdoc
 
 # output filePath

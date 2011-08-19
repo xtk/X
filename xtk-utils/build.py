@@ -9,6 +9,7 @@ import os, sys, argparse
 # to be renamed...?
 import paths
 import deps
+import style
 
     
 parser = argparse.ArgumentParser(description='This the XTK build tool')
@@ -119,7 +120,7 @@ if (options.verbose):
     print '*'
     print '* style.............: ' + str(options.style)
     print '* style_only........: ' + str(options.style_only)
-    print '* style file path...: '
+    print '* style file path...: ' + paths.closureLinterFilePath
     print '*'
     print '* deps..............: ' + str(options.deps)
     print '* deps_only.........: ' + str(options.deps_only)
@@ -137,14 +138,26 @@ if (options.verbose):
 # a good documentation and a better compilation
 #
 if( options.style or options.style_only ):
-    if (options.verbose):
-        print '*-----------------------*'
-        print ' Checking style dependencies '
+    print '*-----------------------*'
+    print 'Checking style '
     
+    if(options.xtk_only):
+        # inputs: namespace, project dir, build tool
+        style.calculate('xtk', paths.xtkDir, paths.closureLinterFilePath)
+    elif(options.app_only):
+        # inputs: namespace, project dir, build tool
+        style.calculate(paths.projectName, paths.appDir, paths.closureLinterFilePath)
+    else:
+        # inputs: namespace, project dir, build tool
+        style.calculate('xtk', paths.xtkDir, paths.closureLinterFilePath)
+        style.calculate(paths.projectName, paths.appDir, paths.closureLinterFilePath)
+
+    print 'Style checked'
+    print '*-----------------------*'
+
     if (options.style_only):
         print 'Enjoy XTK'
         sys.exit()
-
 #
 # generate the deps files
 # target-deps.js will be generated wrote in the target's
@@ -178,9 +191,12 @@ if( options.deps or options.deps_only ):
 # the documentation will be generated in the target-build/doc folder
 #
 if( options.jsdoc or options.jsdoc_only ):
-    if (options.verbose):
-        print '*-----------------------*'
-        print ' Generating Documentation '
+    print '*-----------------------*'
+    print 'Generating Documentation '
+    
+    
+    print 'Documentation generated'
+    print '*-----------------------*'
 
     if( options.jsdoc_only ):
         print 'Enjoy XTK'

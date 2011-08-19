@@ -4,7 +4,7 @@
 import os, sys
 
 def calculate( namespace, dir, buildtool):
-    print 'Calculating dependencies'
+    print '+++++++++++++++++++++++++++++++'
     print 'Namespace: ' + namespace
     print 'Directory: ' + dir
     output = dir + os.sep + namespace + '-deps.js'
