@@ -34,5 +34,7 @@ compilerFilePath = os.path.normpath( closureLibraryDir + os.sep + 'compiler-late
 # depswriter.py
 closureDepsFilePath = os.path.normpath( closureLibraryDir + os.sep + 'closure' + os.sep + 'bin' + os.sep + 'build' + os.sep + 'depswriter.py' )
 
+# jdoc
+
 # output filePath
 outputFilePath = os.path.normpath( appDir + os.sep + projectName + '-build.js' )
