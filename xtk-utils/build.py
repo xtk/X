@@ -135,7 +135,9 @@ if (options.verbose):
     print '*-----------------------*'
 
 #
-# generate the deps files
+# check the style
+# passing this step is important for a good style consistency,
+# a good documentation and a better compilation
 #
 if( options.style or options.style_only ):
     if (options.verbose):
@@ -154,6 +156,9 @@ if( options.style or options.style_only ):
 
 #
 # generate the deps files
+# target-deps.js will be generated wrote in the target's
+# source directory
+# deps are useful if you want to use the non compiled target with goog
 #
 if( options.deps or options.deps_only ):
     if (options.verbose):
@@ -172,6 +177,7 @@ if( options.deps or options.deps_only ):
 
 #
 # generate the documentation
+# the documentation will be generated in the target-build/doc folder
 #
 if( options.jsdoc or options.jsdoc_only ):
     if (options.verbose):
@@ -188,6 +194,9 @@ if( options.jsdoc or options.jsdoc_only ):
 
 #
 # generate build command
+# build only xtk to use xtk in a non goog project
+# build your goog based project
+# targets will be built in target-build/
 #
 command = paths.closureBuilderFilePath
 command += ' --root=' + paths.xtkDir
