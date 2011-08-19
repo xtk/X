@@ -92,8 +92,6 @@ name_list = ['style_only', 'deps_only', 'jsdoc_only']
 if( True in value_list ):
     index = value_list.index(True)
     
-    print '!!!!!!!!!!!!!!!!!!!!!!!'
-    
     if(options.style):
         options.style = False
         print '!!! warning: using \'--' + str(name_list[index]) + '\': --style will have no effect'
@@ -103,8 +101,6 @@ if( True in value_list ):
     if(options.jsdoc):
         options.jsdoc = False
         print '!!! warning: using \'--' + str(name_list[index]) + '\': --jsdoc will have no effect'
-
-    print '!!!!!!!!!!!!!!!!!!!!!!!'
 
 if (options.verbose):
     print '___________>T<___________'
@@ -157,7 +153,7 @@ if( options.style or options.style_only ):
 #
 if( options.deps or options.deps_only ):
     print '*-----------------------*'
-    print ' Generating dependencies '
+    print 'Generating dependencies '
     
     if(options.xtk_only):
         # inputs: namespace, project dir, build tool
@@ -170,7 +166,7 @@ if( options.deps or options.deps_only ):
         deps.calculate('xtk', paths.xtkDir, paths.closureDepsFilePath)
         deps.calculate(paths.projectName, paths.appDir, paths.closureDepsFilePath)
 
-    print ' Dependencies generated'
+    print 'Dependencies generated'
     print '*-----------------------*'
 
     if (options.deps_only):
