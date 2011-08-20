@@ -503,6 +503,12 @@ X.renderer.prototype.render = function() {
   
   perspectiveMatrix = this._camera.getPerspective();
   
+  // TODO shader
+  var pUniform = this._gl.getUniformLocation(this._shaderProgram, "uPMatrix");
+  
+  this._gl.uniformMatrix4fv(pUniform, false, new Float32Array(perspectiveMatrix
+      .flatten()));
+  
   // Set the drawing position to the "identity" point, which is
   // the center of the scene.
   
@@ -513,10 +519,7 @@ X.renderer.prototype.render = function() {
   // drawing the square.
   
   // mvTranslate([ -0.0, 0.0, -6.0 ]);
-  posMatrix = identity.translate(new goog.math.Vec3(-0.0, 0.0, -4.0));
-  
-  // Draw the square by binding the array buffer to the square's vertices
-  // array, setting attributes, and pushing it to GL.
+  posMatrix = identity.translate(new goog.math.Vec3(-0.3, 0.0, -7.0));
   
   this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._verticesBuffer);
   
@@ -524,10 +527,29 @@ X.renderer.prototype.render = function() {
       this._gl.FLOAT, false, 0, 0);
   
   // TODO shader
-  var pUniform = this._gl.getUniformLocation(this._shaderProgram, "uPMatrix");
+  var mvUniform = this._gl.getUniformLocation(this._shaderProgram, "uMVMatrix");
   
-  this._gl.uniformMatrix4fv(pUniform, false, new Float32Array(perspectiveMatrix
+  this._gl.uniformMatrix4fv(mvUniform, false, new Float32Array(posMatrix
       .flatten()));
+  
+
+
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._squareVerticesColorBuffer);
+  this._gl.vertexAttribPointer(this._vertexColorAttribute, 4, this._gl.FLOAT,
+      false, 0, 0);
+  
+  // TODO
+  this._gl.drawArrays(this._gl.TRIANGLE_STRIP, 0, 4);
+  // this._gl.drawElements(this._gl.TRIANGLES, 4, this._gl.UNSIGNED_SHORT, 0);
+  
+
+
+  posMatrix = identity.translate(new goog.math.Vec3(0.8, 0.0, -5.0));
+  
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._verticesBuffer);
+  
+  this._gl.vertexAttribPointer(this._vertexPositionAttribute, 3,
+      this._gl.FLOAT, false, 0, 0);
   
   // TODO shader
   var mvUniform = this._gl.getUniformLocation(this._shaderProgram, "uMVMatrix");
@@ -535,6 +557,7 @@ X.renderer.prototype.render = function() {
   this._gl.uniformMatrix4fv(mvUniform, false, new Float32Array(posMatrix
       .flatten()));
   
+
 
   this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._squareVerticesColorBuffer);
   this._gl.vertexAttribPointer(this._vertexColorAttribute, 4, this._gl.FLOAT,
