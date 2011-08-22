@@ -8,9 +8,10 @@ goog.require('goog.testing.jsunit');
 function testXexceptionWithoutMessage() {
 
   b = new X.exception();
-
-  assertEquals(b.print(), '== X.exception ==\nthis._message: Unknown error!\n');
-
+  
+  assertContains('== X.exception ==\nthis._message: Unknown error!\n', b
+      .print());
+  
 }
 
 
@@ -20,8 +21,9 @@ function testXexceptionWithoutMessage() {
 function testXexceptionWithMessage() {
 
   b = new X.exception('Uh-oh, this did not work!');
-
-  assertEquals(b.print(),
-      '== X.exception ==\nthis._message: Uh-oh, this did not work!\n');
-
+  
+  assertContains(
+      '== X.exception ==\nthis._message: Uh-oh, this did not work!\n', b
+          .print());
+  
 }
