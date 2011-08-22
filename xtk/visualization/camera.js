@@ -43,8 +43,8 @@ X.camera = function(renderer) {
   this._perspective = this.calculatePerspective_(45,
       (this._renderer.getWidth() / this._renderer.getHeight()), 1, 10000);
   
-  this._view = this.lookAt_(new goog.math.Vec3(0, 0, 7), new goog.math.Vec3(0,
-      0, 0), new goog.math.Vec3(0, 1, 0));
+  this._view = this.lookAt_(new goog.math.Vec3(0, 0, 100), new goog.math.Vec3(
+      0, 0, 0), new goog.math.Vec3(0, 1, 0));
   
 };
 // inherit from X.base
@@ -56,6 +56,12 @@ goog.inherits(X.camera, X.base);
 X.camera.prototype.getPerspective = function() {
 
   return this._perspective;
+  
+};
+
+X.camera.prototype.getView = function() {
+
+  return this._view;
   
 };
 

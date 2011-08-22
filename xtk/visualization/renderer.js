@@ -7,12 +7,14 @@ goog.provide('X.renderer');
 
 // requires
 goog.require('X.base');
+goog.require('X.buffer');
 goog.require('X.camera');
 goog.require('X.exception');
 goog.require('X.matrixHelper');
 goog.require('goog.dom');
 goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec3');
+goog.require('goog.structs.Map');
 
 
 /**
@@ -101,6 +103,32 @@ X.renderer = function(width, height) {
    */
   this._camera = null;
   
+  /**
+   * A hash map of displayable objects of this renderer. Each object is stored
+   * with a unique id which is used as the key.
+   * 
+   * @type {!goog.structs.Map}
+   */
+  this._objects = new goog.structs.Map();
+  
+  /**
+   * A hash map of vertex buffers of this renderer. Each buffer is associated
+   * with a displayable object using its unique id.
+   * 
+   * @type {!goog.structs.Map}
+   */
+  this._vertexBuffers = new goog.structs.Map();
+  
+  /**
+   * A hash map of color buffers of this renderer. Each buffer is associated
+   * with a displayable object using its unique id.
+   * 
+   * @type {!goog.structs.Map}
+   */
+  this._colorBuffers = new goog.structs.Map();
+  
+
+
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
@@ -317,8 +345,7 @@ X.renderer.prototype.init = function() {
   try {
     
     var gl = canvas.getContext('experimental-webgl');
-    // TODO do we need 2d canvas in a 2d case??
-    // gl = canvas.getContext('2d');
+    // TODO contexts have different names in different browsers
     
   } catch (e) {
     
@@ -431,12 +458,12 @@ X.renderer.prototype.addShaders = function(fragmentShader, vertexShader) {
   
   // TODO Shader
   this._vertexPositionAttribute = this._gl.getAttribLocation(shaderProgram,
-      "bVertexPosition");
+      "vertexPosition");
   this._gl.enableVertexAttribArray(this._vertexPositionAttribute);
   
   // TODO Shader
   this._vertexColorAttribute = this._gl.getAttribLocation(shaderProgram,
-      "aVertexColor");
+      "vertexColor");
   this._gl.enableVertexAttribArray(this._vertexColorAttribute);
   
 
@@ -444,50 +471,55 @@ X.renderer.prototype.addShaders = function(fragmentShader, vertexShader) {
   
 };
 
-X.renderer.prototype.addObject = function(vertices) {
+X.renderer.prototype.addObject = function(object) {
 
-  if (!this._canvas || !this._gl) {
+  if (!this._canvas || !this._gl || !this._camera) {
     
     throw new X.exception('Fatal: Renderer was not initialized properly!');
     
   }
   
-  if (!vertices) {
+  if (!object || !(object instanceof X.object)) {
     
-    throw new X.exception('Fatal: Could not add object with empty vertices!');
+    throw new X.exception('Fatal: Illegal object!');
     
   }
   
-  this._verticesBuffer = this._gl.createBuffer();
+  // create vertex buffer
+  var glVertexBuffer = this._gl.createBuffer();
   
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._verticesBuffer);
+  // bind and fill with vertices of current object
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
   
-  // TODO Object vertices
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(vertices),
-      this._gl.STATIC_DRAW);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object
+      .getPointsAsFlattenedArray()), this._gl.STATIC_DRAW);
   
-  var colors = [
-
-  1.0, 1.0, 1.0, 1.0, // white
+  // create an X.buffer to store the vertices
+  // every vertex consists of 3 items (x,y,z)
+  var vertexBuffer = new X.buffer(glVertexBuffer, object.points().getCount(), 3);
   
-  1.0, 0.0, 0.0, 1.0, // red
+  // create color buffer
+  var glColorBuffer = this._gl.createBuffer();
   
-  0.0, 1.0, 0.0, 1.0, // green
+  // bind and fill with colors of current object
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glColorBuffer);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object
+      .getColorsAsFlattenedArray()), this._gl.STATIC_DRAW);
   
-  0.0, 0.0, 1.0, 1.0 // blue
+  // create an X.buffer to store the colors
+  // every color consists of 4 items (r,g,b,alpha)
+  var colorBuffer = new X.buffer(glColorBuffer, object.colors().getCount(), 4);
   
-  ];
+  // TODO buffers for lightning etc..
   
-  this._squareVerticesColorBuffer = this._gl.createBuffer();
+  // create unique id for this object
+  var uniqueId = this._objects.getCount();
   
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._squareVerticesColorBuffer);
+  // now store the object and the buffers in the hash maps
+  this._objects.set(uniqueId, object);
+  this._vertexBuffers.set(uniqueId, vertexBuffer);
+  this._colorBuffers.set(uniqueId, colorBuffer);
   
-  // TODO Object colors
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(colors),
-      this._gl.STATIC_DRAW);
-  
-
-
 };
 
 X.renderer.prototype.render = function() {
@@ -498,72 +530,78 @@ X.renderer.prototype.render = function() {
     
   }
   
-
+  // clear the canvas
   this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
   
+  // grab the current perspective from the camera
   perspectiveMatrix = this._camera.getPerspective();
   
-  // TODO shader
-  var pUniform = this._gl.getUniformLocation(this._shaderProgram, "uPMatrix");
-  
-  this._gl.uniformMatrix4fv(pUniform, false, new Float32Array(perspectiveMatrix
-      .flatten()));
-  
-  // Set the drawing position to the "identity" point, which is
-  // the center of the scene.
-  
-  // loadIdentity();
-  identity = goog.math.Matrix.createIdentityMatrix(4);
-  
-  // Now move the drawing position a bit to where we want to start
-  // drawing the square.
-  
-  // mvTranslate([ -0.0, 0.0, -6.0 ]);
-  posMatrix = identity.translate(new goog.math.Vec3(-0.3, 0.0, -7.0));
-  
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._verticesBuffer);
-  
-  this._gl.vertexAttribPointer(this._vertexPositionAttribute, 3,
-      this._gl.FLOAT, false, 0, 0);
+  // grab the current view from the camera
+  viewMatrix = this._camera.getView();
   
   // TODO shader
-  var mvUniform = this._gl.getUniformLocation(this._shaderProgram, "uMVMatrix");
+  var perspectiveUniformLocation = this._gl.getUniformLocation(
+      this._shaderProgram, "perspective");
   
-  this._gl.uniformMatrix4fv(mvUniform, false, new Float32Array(posMatrix
+  this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
+      new Float32Array(perspectiveMatrix.flatten()));
+  
+  var viewUniform = this._gl.getUniformLocation(this._shaderProgram, "view");
+  
+  this._gl.uniformMatrix4fv(viewUniform, false, new Float32Array(viewMatrix
       .flatten()));
   
+  // loop through all objects and (re-)draw them
+  var i;
+  for (i = 0; i < this._objects.getCount(); i++) {
+    
+    var id = i;
+    
+    // grab the object, the vertexBuffer and the colorBuffer all with the id
+    var object = this._objects.get(id);
+    var vertexBuffer = this._vertexBuffers.get(id);
+    var colorBuffer = this._colorBuffers.get(id);
+    
+    // ..bind the glBuffers
+    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
+    
+    this._gl.vertexAttribPointer(this._vertexPositionAttribute, vertexBuffer
+        .itemSize(), this._gl.FLOAT, false, 0, 0);
+    
+    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());
+    
+    this._gl.vertexAttribPointer(this._vertexColorAttribute, colorBuffer
+        .itemSize(), this._gl.FLOAT, false, 0, 0);
+    
+    // .. and draw
+    this._gl.drawArrays(this._gl.TRIANGLE_STRIP, 0, vertexBuffer.itemCount());
+    
+  }
+  
+};
 
+/**
+ * @param vector
+ * @returns {goog.math.Vec2}
+ */
+X.renderer.prototype.convertWorldToDisplayCoordinates = function(vector) {
 
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._squareVerticesColorBuffer);
-  this._gl.vertexAttribPointer(this._vertexColorAttribute, 4, this._gl.FLOAT,
-      false, 0, 0);
+  var view = this._camera.getView();
+  var perspective = this._camera.getPerspective();
   
-  // TODO
-  this._gl.drawArrays(this._gl.TRIANGLE_STRIP, 0, 4);
-  // this._gl.drawElements(this._gl.TRIANGLES, 4, this._gl.UNSIGNED_SHORT, 0);
+  var viewPerspective = goog.math.Matrix.createIdentityMatrix(4);
+  viewPerspective.multiply(view);
+  viewPerspective.multiply(perspective);
   
-
-
-  posMatrix = identity.translate(new goog.math.Vec3(0.8, 0.0, -5.0));
+  var twoDVectorAsMatrix;
+  twoDVectorAsMatrix = viewPerspective.multiplyByVector(vector);
   
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._verticesBuffer);
+  var x = (twoDVectorAsMatrix.getValueAt(0, 0) + 1) / 2.0;
+  x = x * this.getWidth();
   
-  this._gl.vertexAttribPointer(this._vertexPositionAttribute, 3,
-      this._gl.FLOAT, false, 0, 0);
+  var y = (1 - twoDVectorAsMatrix.getValueAt(0, 1)) / 2.0;
+  y = y * this.getHeight();
   
-  // TODO shader
-  var mvUniform = this._gl.getUniformLocation(this._shaderProgram, "uMVMatrix");
-  
-  this._gl.uniformMatrix4fv(mvUniform, false, new Float32Array(posMatrix
-      .flatten()));
-  
-
-
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._squareVerticesColorBuffer);
-  this._gl.vertexAttribPointer(this._vertexColorAttribute, 4, this._gl.FLOAT,
-      false, 0, 0);
-  
-  // TODO
-  this._gl.drawArrays(this._gl.TRIANGLE_STRIP, 0, 4);
+  return new goog.math.Vec2(Math.round(x), Math.round(y));
   
 };

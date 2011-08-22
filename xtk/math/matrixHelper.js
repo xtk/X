@@ -130,7 +130,7 @@ X.matrixHelper.multiplyByVector = function(vector) {
   
   // now convert the vectorAsArray to a matrix and multiply
   var vectorAsMatrix = new goog.math.Matrix(vectorAsArray);
-  console.log(vectorAsMatrix.toString());
+  
   // ...and multiply and return it
   return this.multiply(vectorAsMatrix);
   

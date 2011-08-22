@@ -1,7 +1,9 @@
 goog.provide('sampleApp');
 goog.provide('sampleApp.init');
 
+goog.require('X.color');
 goog.require('X.console');
+goog.require('X.object');
 goog.require('X.renderer2D');
 goog.require('X.renderer3D');
 goog.require('X.shaderFragment');
@@ -43,46 +45,61 @@ sampleApp.init = function() {
     // shader experiments
     var fragmentShader = new X.shaderFragment();
     fragmentShader
-        .setSource("varying lowp vec4 vColor;           \n\
+        .setSource("varying lowp vec4 fragmentColor;    \n\
                                                         \n\
         		void main(void) {                           \n\
-              gl_FragColor = vColor;                    \n\
+              gl_FragColor = fragmentColor;             \n\
             }                                           \n\
     ");
     
     var vertexShader = new X.shaderVertex();
     vertexShader
-        .setSource("attribute vec3 bVertexPosition;                                         \n\
-        		attribute vec4 aVertexColor;                                                    \n\
+        .setSource("attribute vec3 vertexPosition;                                          \n\
+        		attribute vec4 vertexColor;                                                     \n\
                                                                                             \n\
-        uniform mat4 uMVMatrix;                                                             \n\
-        uniform mat4 uPMatrix;                                                              \n\
+        uniform mat4 view;                                                                  \n\
+        uniform mat4 perspective;                                                           \n\
                                                                                             \n\
-        varying lowp vec4 vColor;                                                           \n\
+        varying lowp vec4 fragmentColor;                                                    \n\
                                                                                             \n\
         void main(void) {                                                                   \n\
-          gl_Position = uPMatrix * uMVMatrix * vec4(bVertexPosition, 1.0);                  \n\
-          vColor = aVertexColor;                                                            \n\
+          gl_Position = perspective * view * vec4(vertexPosition, 1.0);                     \n\
+          fragmentColor = vertexColor;                                                      \n\
         }                                                                                   \n\
         ");
     
-
-
-    // var vertices = [ 1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0,
-    // -1.0,
-    // 0.0 ];
-    var vertices = [ 0.205811, 0.423383, 0.403992, 0.432068, 0.603759,
-        0.630250, 1.032178, 1.203868, 1.230359, 1.3124, 2.5432, 1.0000 ];
+    var object1 = new X.object();
+    // we can add points as goog.math.Coordinate3 or just as 1-D arrays with 3
+    // items
+    object1.addPoint([ 2, 2, 0 ]);
+    object1.addPoint([ 3, 3, 0 ]);
+    object1.addPoint([ 1, 1, 0 ]);
+    object1.addPoint([ 1, 2.5, 0 ]);
+    object1.addColor(new X.color(1, 1, 1));
+    object1.addColor(new X.color(1, 1, 1));
+    object1.addColor(new X.color(1, 1, 1));
+    object1.addColor(new X.color(1, 1, 1));
+    
+    var object2 = new X.object();
+    object2.addPoint([ 20, 20, 0 ]);
+    object2.addPoint([ 30, 30, 0 ]);
+    object2.addPoint([ 10, 10, 0 ]);
+    object2.addPoint([ 10, 20.5, 0 ]);
+    object2.addColor(new X.color(1, 1, 1));
+    object2.addColor(new X.color(1, 0, 0));
+    object2.addColor(new X.color(0, 1, 0));
+    object2.addColor(new X.color(0, 0, 1));
     
 
     sliceView1.addShaders(fragmentShader, vertexShader);
-    sliceView1.addObject(vertices);
+    sliceView1.addObject(object1);
     sliceView2.addShaders(fragmentShader, vertexShader);
-    sliceView2.addObject(vertices);
+    sliceView2.addObject(object1);
     sliceView3.addShaders(fragmentShader, vertexShader);
-    sliceView3.addObject(vertices);
+    sliceView3.addObject(object1);
     threeDView.addShaders(fragmentShader, vertexShader);
-    threeDView.addObject(vertices);
+    threeDView.addObject(object1);
+    threeDView.addObject(object2);
     
     // setInterval(function() {
     
@@ -92,13 +109,14 @@ sampleApp.init = function() {
     threeDView.render();
     
     // }, 15);
-    // r3d.render();
     
     c.out(sliceView1.print());
     c.out(sliceView2.print());
     c.out(sliceView3.print());
     c.out(threeDView.print());
     
+
+
   } catch (e) {
     
     // catch any X.exception and print the error to the error log

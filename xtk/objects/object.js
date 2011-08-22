@@ -66,7 +66,7 @@ X.object.prototype.getPointsAsFlattenedArray = function() {
   var pointsArray = new Array(this._points.getCount() * 3);
   
   var pointSetAsArray = this._points.getValues();
-  console.log(pointSetAsArray);
+  
   // loop through the array of goog.math.Coordinate3s and attach the x, y, z
   // values to the output array
   var pointsArrayPointer = 0;
@@ -82,7 +82,6 @@ X.object.prototype.getPointsAsFlattenedArray = function() {
     
   }
   
-  console.log(pointsArray);
   return pointsArray;
   
 };
