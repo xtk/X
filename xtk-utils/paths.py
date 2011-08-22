@@ -38,6 +38,7 @@ closureDepsFilePath = os.path.normpath( closureLibraryDir + os.sep + 'closure' +
 closureLinterFilePath = os.path.normpath( closureLibraryDir + os.sep + 'linter-latest' + os.sep + 'gjslint.py' )
 
 # jdoc
+jsdocDir = os.path.normpath( xtkDir + os.sep + 'lib' + os.sep + 'jsdoc-toolkit')
 
 # output filePath
 outputFilePath = os.path.normpath( appDir + os.sep + projectName + '-build.js' )

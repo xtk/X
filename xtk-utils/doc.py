@@ -1,3 +1,38 @@
-http://code.google.com/p/jsdoc-toolkit/wiki/CommandlineOptions
+# imports
+#
+import os, sys
 
-jsrun.sh -d=/Users/nr52/projectX/xtk-build/doc/ -E=lib -r=10 -v -t=templates/jsdoc -p -a /Users/nr52/projectX/xtk
+def calculate( namespace, dir, buildtool):
+    print '+++++++++++++++++++++++++++++++'
+    print 'Namespace: ' + namespace
+    print 'Directory: ' + dir
+    print 'Build Tool Dir: ' + buildtool
+    output = dir + os.sep + 'doc' + os.sep
+    print 'Output: ' + output
+    
+    #
+    # generate build command
+    #
+    command = 'java -jar'
+    command += ' ' + buildtool + os.sep + 'jsrun.jar'
+    command += ' ' + buildtool + os.sep + 'app' + os.sep + 'run.js'
+    command += ' -d=' + output
+    # exlude
+    command += ' -E=lib'
+    # recursive level
+    command += ' -r=10'
+    # template
+    command += ' -t=' + buildtool + os.sep + 'templates' + os.sep + 'jsdoc'
+    # private variables visible?
+    #command += ' -p'
+    # source dir
+    command += ' -a ' + dir
+    
+    print command
+    
+    #
+    # run, forest, run
+    #
+    os.system( command )
+
+    print '>> OUTPUT: ' + output

@@ -10,6 +10,7 @@ import os, sys, argparse
 import paths
 import deps
 import style
+import doc
 
     
 parser = argparse.ArgumentParser(description='This the XTK build tool')
@@ -95,13 +96,13 @@ if( True in value_list ):
     
     if(options.style):
         options.style = False
-        print '!!! warning: using \'--' + str(name_list[index]) + '\': --style will have no effect'
+        print '>> WARNING: using \'--' + str(name_list[index]) + '\': --style will have no effect'
     if(options.deps):
         options.deps = False
-        print '!!! warning: using \'--' + str(name_list[index]) + '\': --deps will have no effect'
+        print '>> WARNING: using \'--' + str(name_list[index]) + '\': --deps will have no effect'
     if(options.jsdoc):
         options.jsdoc = False
-        print '!!! warning: using \'--' + str(name_list[index]) + '\': --jsdoc will have no effect'
+        print '>> WARNING: using \'--' + str(name_list[index]) + '\': --jsdoc will have no effect'
 
 if (options.verbose):
     print '___________>T<___________'
@@ -128,7 +129,7 @@ if (options.verbose):
     print '*'
     print '* jsdoc.............: ' + str(options.jsdoc)
     print '* jsdoc_only........: ' + str(options.jsdoc_only)
-    print '* jsdoc file path...: '
+    print '* jsdoc dir.........: ' + paths.jsdocDir
     print '*'
     print '*-----------------------*'
 
@@ -194,6 +195,16 @@ if( options.jsdoc or options.jsdoc_only ):
     print '*-----------------------*'
     print 'Generating Documentation '
     
+    if(options.xtk_only):
+        # inputs: namespace, project dir, build tool
+        doc.calculate('xtk', paths.xtkDir, paths.jsdocDir)
+    elif(options.app_only):
+        # inputs: namespace, project dir, build tool
+        doc.calculate(paths.projectName, paths.appDir, paths.jsdocDir)
+    else:
+        # inputs: namespace, project dir, build tool
+        doc.calculate('xtk', paths.xtkDir, paths.jsdocDir)
+        doc.calculate(paths.projectName, paths.appDir, paths.jsdocDir)
     
     print 'Documentation generated'
     print '*-----------------------*'

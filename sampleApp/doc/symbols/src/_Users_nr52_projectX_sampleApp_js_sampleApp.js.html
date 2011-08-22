@@ -1,0 +1,57 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="NAME">goog.provide</span><span class="PUNC">(</span><span class="STRN">'sampleApp'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  2</span> </span><span class="COMM">//goog.provide('sampleApp.init');</span><span class="WHIT">
+<span class='line'>  3</span> 
+<span class='line'>  4</span> </span><span class="NAME">goog.require</span><span class="PUNC">(</span><span class="STRN">'X.console'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  5</span> </span><span class="NAME">goog.require</span><span class="PUNC">(</span><span class="STRN">'X.renderer2D'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  6</span> </span><span class="NAME">goog.require</span><span class="PUNC">(</span><span class="STRN">'X.renderer3D'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  7</span> 
+<span class='line'>  8</span> </span><span class="COMM">// provides extern</span><span class="WHIT">
+<span class='line'>  9</span> </span><span class="NAME">sampleApp</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 10</span> 
+<span class='line'> 11</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">c</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">X.console</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 12</span> </span><span class="WHIT">  
+<span class='line'> 13</span>   </span><span class="NAME">c.out</span><span class="PUNC">(</span><span class="STRN">'Starting sampleApp.init..'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 14</span> </span><span class="WHIT">  
+<span class='line'> 15</span>   </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 16</span> </span><span class="WHIT">    
+<span class='line'> 17</span>     </span><span class="COMM">// create a red 2D renderer in the div with id '2d' (see ../index.html)</span><span class="WHIT">
+<span class='line'> 18</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">r2d</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">X.renderer2D</span><span class="PUNC">(</span><span class="NUMB">100</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">100</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 19</span> </span><span class="WHIT">    </span><span class="NAME">r2d.setContainerById</span><span class="PUNC">(</span><span class="STRN">'2d'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 20</span> </span><span class="WHIT">    </span><span class="NAME">r2d.setBackgroundColor</span><span class="PUNC">(</span><span class="STRN">'#ff0000'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 21</span> </span><span class="WHIT">    </span><span class="NAME">r2d.init</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 22</span> </span><span class="WHIT">    </span><span class="NAME">c.out</span><span class="PUNC">(</span><span class="NAME">r2d.print</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 23</span> 
+<span class='line'> 24</span> </span><span class="WHIT">    </span><span class="COMM">// create a green 3D renderer in the div with id '3d' (see ../index.html)</span><span class="WHIT">
+<span class='line'> 25</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">r3d</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">X.renderer3D</span><span class="PUNC">(</span><span class="NUMB">200</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">200</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 26</span> </span><span class="WHIT">    </span><span class="NAME">r3d.setContainerById</span><span class="PUNC">(</span><span class="STRN">'3d'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 27</span> </span><span class="WHIT">    </span><span class="NAME">r3d.setBackgroundColor</span><span class="PUNC">(</span><span class="STRN">'green'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 28</span> </span><span class="WHIT">    </span><span class="NAME">r3d.init</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">    
+<span class='line'> 29</span>     </span><span class="NAME">c.out</span><span class="PUNC">(</span><span class="NAME">r3d.print</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 30</span> </span><span class="WHIT">    
+<span class='line'> 31</span>     </span><span class="COMM">// create a default colored (black) 2D renderer without container specification which should</span><span class="WHIT">
+<span class='line'> 32</span> </span><span class="WHIT">    </span><span class="COMM">// create it directly in &lt;body>&lt;/body></span><span class="WHIT">
+<span class='line'> 33</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">r2dWithoutHome</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">X.renderer2D</span><span class="PUNC">(</span><span class="NUMB">10</span><span class="PUNC">,</span><span class="NUMB">10</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 34</span> </span><span class="WHIT">    </span><span class="NAME">r2dWithoutHome.init</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 35</span> </span><span class="WHIT">    </span><span class="NAME">c.out</span><span class="PUNC">(</span><span class="NAME">r2dWithoutHome.print</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 36</span> </span><span class="WHIT">    
+<span class='line'> 37</span>   </span><span class="PUNC">}</span><span class="WHIT"> </span><span class="KEYW">catch</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">e</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 38</span> </span><span class="WHIT">    
+<span class='line'> 39</span>     </span><span class="COMM">// catch any X.exception and print the error to the error log</span><span class="WHIT">
+<span class='line'> 40</span> </span><span class="WHIT">    
+<span class='line'> 41</span>     </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">e</span><span class="WHIT"> </span><span class="KEYW">instanceof</span><span class="WHIT"> </span><span class="NAME">X.exception</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 42</span> </span><span class="WHIT">      </span><span class="NAME">c.err</span><span class="PUNC">(</span><span class="NAME">e.print</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 43</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 44</span> </span><span class="WHIT">    
+<span class='line'> 45</span>   </span><span class="PUNC">}</span><span class="WHIT">  
+<span class='line'> 46</span>   
+<span class='line'> 47</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 48</span> 
+<span class='line'> 49</span> </span><span class="COMM">// export symbols (requiered for advanced compilation)</span><span class="WHIT">
+<span class='line'> 50</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'sampleApp'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sampleApp</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>

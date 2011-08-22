@@ -45,3 +45,5 @@ def calculate( namespace, dir, buildtool):
     # run, forest, run
     #
     os.system( command )
+
+    print '>> OUTPUT: ' + output

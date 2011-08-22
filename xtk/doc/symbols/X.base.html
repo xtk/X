@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - X.exception</title>
+		<title>JsDoc Reference - X.base</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -212,26 +212,24 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class X.exception
+				Class X.base
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
 			<p class="description">
 				
-				<br />Extends
-					.<br />
 				
 			
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_Users_nr52_projectX_xtk_core_exception.js.html">exception.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_Users_nr52_projectX_xtk_core_base.js.html">base.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class X.exception.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class X.base.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -244,9 +242,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/X.exception.html#constructor">X.exception</a></b>(message)
+								<b><a href="../symbols/X.base.html#constructor">X.base</a></b>()
 							</div>
-							<div class="description">The general xtk exception.</div>
+							<div class="description">The superclass class for all X.base-objects.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -257,6 +255,42 @@ ul.inheritsList
 			
 
 <!-- ============================== methods summary ======================== -->
+			
+				
+				
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class X.base.">
+					<caption>Method Summary</caption>
+					<thead>
+						<tr>
+							<th scope="col">Method Attributes</th>
+							<th scope="col">Method Name and Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/X.base.html#getClassName">getClassName</a></b>()
+								</div>
+								<div class="description">Print the className of the current X.base-object.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/X.base.html#print">print</a></b>()
+								</div>
+								<div class="description">Print the className and all attributes of the current X.base-object.</div>
+							</td>
+						</tr>
+					
+					</tbody>
+				</table>
+				
+				
+				
 			
 <!-- ============================== events summary ======================== -->
 			
@@ -269,28 +303,17 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>X.exception</b>(message)
+						<b>X.base</b>()
 				</div>
 				
 				<div class="description">
-					The general xtk exception.
+					The superclass class for all X.base-objects.
 					
 				</div>
 				
 				
 				
 				
-					
-						<dl class="detailList">
-						<dt class="heading">Parameters:</dt>
-						
-							<dt>
-								<span class="light fixedFont">{?string}</span>  <b>message</b>
-								
-							</dt>
-								<dd>An error message.</dd>
-						
-						</dl>
 					
 					
 					
@@ -307,6 +330,78 @@ ul.inheritsList
 
 <!-- ============================== method details ========================= -->		
 			
+				<div class="sectionTitle">
+					Method Detail
+				</div>
+				
+					<a name="getClassName"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{string}</span>
+					<b>getClassName</b>()
+					
+					</div>
+					<div class="description">
+						Print the className of the current X.base-object.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{string}</span> The className of the current X.object.</dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="print"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{string}</span>
+					<b>print</b>()
+					
+					</div>
+					<div class="description">
+						Print the className and all attributes of the current X.base-object.
+We should use getAttributeName rather than accessing the attribute directly
+After compilation, we can not access to the variables like that....!
+since the variables are renamed (_className -> a )
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{string}</span> A string representation of the current X.base-object.</dd>
+							
+							</dl>
+						
+						
+						
+
+					
+				
+			
 			
 <!-- ============================== event details ========================= -->		
 			
@@ -318,7 +413,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Aug 22 2011 14:58:01 GMT-0400 (EDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Aug 22 2011 15:02:28 GMT-0400 (EDT)
 		</div>
 	</body>
 </html>
