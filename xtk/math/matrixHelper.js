@@ -84,3 +84,56 @@ X.matrixHelper.translate = function translate(vector) {
 };
 // register the function to the goog.math.Matrix API
 goog.math.Matrix.prototype.translate = X.matrixHelper.translate;
+
+/**
+ * Multiply 3x3 or 4x4 goog.math.Matrix by a vector. In the 3x3 case, the vector
+ * has to be at least 2 dimensional. In the 4x4 case, the vector has to be at
+ * least 3 dimensional.
+ * 
+ * @param {!goog.math.Vec2|!goog.math.Vec3} vector The multiplication vector.
+ * @returns {goog.math.Matrix} The result of this multiplication.
+ * @throws {X.exception} An exception if the multiplication fails.
+ */
+X.matrixHelper.multiplyByVector = function(vector) {
+
+  var dimensions = this.getSize();
+  
+  // we need to convert the vector to a matrix
+  // 
+  var vectorAsArray = new Array(dimensions.width);
+  
+  // set all values to one TODO: is zero better?
+  var i;
+  for (i = 0; i < vectorAsArray.length; i++) {
+    
+    vectorAsArray[i] = new Array(1);
+    vectorAsArray[i][0] = 1;
+    
+  }
+  
+  if (vector instanceof goog.math.Vec2 && dimensions.width >= 2) {
+    
+    vectorAsArray[0][0] = vector.x;
+    vectorAsArray[1][0] = vector.y;
+    
+  } else if (vector instanceof goog.math.Vec3 && dimensions.width >= 3) {
+    
+    vectorAsArray[0][0] = vector.x;
+    vectorAsArray[1][0] = vector.y;
+    vectorAsArray[2][0] = vector.z;
+    
+  } else {
+    
+    throw new X.exception('Fatal: Multiplication by vector failed!');
+    
+  }
+  
+  // now convert the vectorAsArray to a matrix and multiply
+  var vectorAsMatrix = new goog.math.Matrix(vectorAsArray);
+  console.log(vectorAsMatrix.toString());
+  // ...and multiply and return it
+  return this.multiply(vectorAsMatrix);
+  
+};
+// register the function to the goog.math.Matrix API
+goog.math.Matrix.prototype.multiplyByVector = X.matrixHelper.multiplyByVector;
