@@ -7,7 +7,7 @@ def calculate( namespace, dir, buildtool):
     print '+++++++++++++++++++++++++++++++'
     print 'Namespace: ' + namespace
     print 'Directory: ' + dir
-    output = dir + os.sep + namespace + '.deps'
+    output = dir + os.sep + namespace + '-deps.js'
     print 'Output: ' + output
     excludeDirs = ['lib', 'css', 'doc']
     print 'Exclude Dirs: '
@@ -26,17 +26,9 @@ def calculate( namespace, dir, buildtool):
             dirs.remove(i)
         
         for name in dirs:
-            print os.path.join(root, name)
             commandArgs += ' --root_with_prefix="' + os.path.join(root, name)
             real_path = os.path.relpath(root, buildtool);
             commandArgs += ' ' + real_path + '"'
-    
-        #for name in files:
-            #    if not os.path.splitext(name)[1] in excludeFiles:
-                #    print os.path.join(root, name)
-                #commandArgs += ' --path_with_depspath="' + os.path.join(root, name)
-                #real_path = os.path.relpath(root, buildtool);
-                #commandArgs += ' ' + real_path + '"'
 
     #
     # generate build command

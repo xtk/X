@@ -1,16 +1,16 @@
 goog.provide('sampleApp');
-//goog.provide('sampleApp.init');
+goog.provide('sampleApp.run');
 
 goog.require('X.console');
 goog.require('X.renderer2D');
 goog.require('X.renderer3D');
 
 // provides extern
-sampleApp = function() {
+sampleApp.run = function() {
 
   var c = new X.console();
   
-  c.out('Starting sampleApp.init..');
+  c.out('Starting sampleApp..');
   
   try {
     
@@ -48,3 +48,4 @@ sampleApp = function() {
 
 // export symbols (requiered for advanced compilation)
 goog.exportSymbol('sampleApp', sampleApp);
+goog.exportSymbol('sampleApp.run', sampleApp.run);

@@ -8,10 +8,15 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
     print 'Directory: ' + dir
     print 'Build Tool: ' + buildtool
     excludeDirs = ['lib']
-    print 'Exclude: '
+    print 'Exclude Dirs: '
     print excludeDirs
+    excludeFiles = ['.html', '.txt']
+    print 'Exclude Files: '
+    print excludeFiles
     output = dir + '-build'
     print 'Output: ' + output
+    # create ouput folder if it doesn't exist
+    if not os.path.exists(output): os.makedirs(output)
 
     #compile all files
     if(namespace == 'X'):
@@ -21,26 +26,34 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
             for i in removeDirs:
                 dirs.remove(i)
             
-            for name in dirs:
-                print os.path.join(root, name)
-                commandArgs += ' --root_with_prefix="' + os.path.join(root, name)
-                real_path = os.path.relpath(root, buildtool);
-                commandArgs += ' ' + real_path + '"'
-
-                os.system( command )
+            for name in files:
+                if not os.path.splitext(name)[1] in excludeFiles:
+                    command = buildtool
+                    command += ' --input ' + os.path.join(root, name)
+                    command += ' --root=' + xtkdir
+                    command += ' --output_mode=compiled'
+                    command += ' --compiler_jar=' + compiler
+                    command += ' -f "--warning_level=VERBOSE"'
+                    command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
+                    command += ' > ' + output + os.sep + name
+                    
+                    #
+                    # run, forest, run
+                    #
+                    os.system( command )
 
     
     # compile project
     else:
         command = buildtool
-        #command += ' --root=' + xtkdir
-        #command += ' --root=' + dir
-        #command += ' --namespace=' + namespace
-        #command += ' --output_mode=compiled'
-        #command += ' --compiler_jar=' + compiler
-        #command += ' -f "--warning_level=VERBOSE"'
-        #command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
-        #command += ' > ' + output + os.sep + namespace + '.js'
+        command += ' --root=' + xtkdir
+        command += ' --root=' + dir
+        command += ' --namespace=' + namespace
+        command += ' --output_mode=compiled'
+        command += ' --compiler_jar=' + compiler
+        command += ' -f "--warning_level=VERBOSE"'
+        command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
+        command += ' > ' + output + os.sep + namespace + '.js'
 
         #
         # run, forest, run
