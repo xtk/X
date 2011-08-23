@@ -1,5 +1,6 @@
 #
 # imports
+# all option, routine to go through dirs not good enough
 #
 
 # system imports
@@ -11,7 +12,7 @@ import paths
 import deps
 import style
 import doc
-
+import compile
     
 parser = argparse.ArgumentParser(description='This the XTK build tool')
 
@@ -112,9 +113,9 @@ if (options.verbose):
     print '* xtk_only..........: ' + str(options.xtk_only)
     print '* app_only..........: ' + str(options.app_only)
     print '*'
-    print '* compiler file path: ' + paths.compilerFilePath
+    print '* build tool........: ' + paths.compilerFilePath
+    print '* compiler file path: ' + paths.closureBuilderFilePath
     print '* xtkDir............: ' + paths.xtkDir
-    print '* compilation level.: '
     print '*'
     print '* projectName.......: ' + paths.projectName
     print '* appDir............: ' + paths.appDir
@@ -214,23 +215,22 @@ if( options.jsdoc or options.jsdoc_only ):
         sys.exit()
 
 #
-# generate build command
-# build only xtk to use xtk in a non goog project
-# build your goog based project
-# targets will be built in target-build/
+# Compile the project
 #
-command = paths.closureBuilderFilePath
-command += ' --root=' + paths.xtkDir
-command += ' --root=' + paths.appDir
-command += ' --namespace=' + paths.projectName
-command += ' --output_mode=compiled'
-command += ' --compiler_jar=' + paths.compilerFilePath
-command += ' -f "--warning_level=VERBOSE"'
-command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
-#command += ' -f "--externs=' + appDir + os.sep + projectName + '-externs.js"'
-command += ' > ' + paths.outputFilePath
 
-#
-# run, forest, run
-#
-os.system( command )
+print '*-----------------------*'
+print 'Compiling Code'
+
+if(options.xtk_only):
+    # inputs: namespace, project dir, build tool
+    compile.calculate('X', paths.xtkDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath)
+elif(options.app_only):
+    # inputs: namespace, project dir, build tool
+    compile.calculate(paths.projectName, paths.appDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath)
+else:
+    # inputs: namespace, project dir, build tool
+    compile.calculate('X', paths.xtkDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath)
+    compile.calculate(paths.projectName, paths.appDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath)
+
+print 'Code Compiled'
+print '*-----------------------*'

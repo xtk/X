@@ -16,7 +16,7 @@ def calculate( namespace, dir, buildtool):
     real_path = os.path.relpath(dir, buildtool);
     print 'Relative path: ' + real_path
 
-    commandArgs = ""
+    commandArgs = ''
 
     #
     # routine to automatically parse the xtk directory for all sources without the excludes

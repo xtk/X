@@ -1,63 +1,56 @@
-# build the application using the closure compiler and xtk
-# compiled application is located at:
-# sampleApp-build
-# add sinpute and a --help
-#
-#
-# configuration
-#
-projectName = 'sampleApp'
-
-##############################################################################
-
-#
 # imports
 #
 import os, sys
 
-#Copy of removeTrailingSpaces.py
-# find folders
-#
+def calculate( namespace, dir, xtkdir, buildtool, compiler):
+    print '+++++++++++++++++++++++++++++++'
+    print 'Namespace: ' + namespace
+    print 'Directory: ' + dir
+    print 'Build Tool: ' + buildtool
+    excludeDirs = ['lib']
+    print 'Exclude: '
+    print excludeDirs
+    output = dir + '-build'
+    print 'Output: ' + output
 
-# xtk-utils dir
-xtkUtilsDir = os.path.abspath( os.path.dirname( sys.argv[0] ) )
+    #compile all files
+    if(namespace == 'X'):
+        #
+        # routine to automatically parse the xtk directory for all sources without the excludes
+        for f in os.listdir( xtkdir ):
+        
+            if not any( e == f for e in excludeDirs ):
+            
+                for files in xtkdir:
+                    if os.path.isfile( dir + os.sep + f ):
+                        command = buildtool
+                        command += ' --root="' + xtkdir + os.sep + f
+                        command += ' --namespace=' + namespace
+                        command += ' --output_mode=compiled'
+                        command += ' --compiler_jar=' + compiler
+                        command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
+                        command += ' > ' + output + os.sep + f
+                            
+                        os.system( command )
+                            
+                        print '>> OUTPUT: ' + output + os.sep + f
 
-# project root dir
-projectRootDir = os.path.normpath( xtkUtilsDir + os.sep + '..' + os.sep )
+    
+    # compile project
+    else:
+        command = buildtool
+        command += ' --root=' + xtkdir
+        command += ' --root=' + dir
+        command += ' --namespace=' + namespace
+        command += ' --output_mode=compiled'
+        command += ' --compiler_jar=' + compiler
+        command += ' -f "--warning_level=VERBOSE"'
+        command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
+        command += ' > ' + output + os.sep + namespace + '.js'
 
-# xtk dir
-xtkDir = os.path.normpath( projectRootDir + os.sep + 'xtk' )
+        #
+        # run, forest, run
+        #
+        os.system( command )
 
-# closure-library dir
-closureLibraryDir = os.path.normpath( xtkDir + os.sep + 'lib' + os.sep + 'closure-library' )
-
-# closurebuilder.py
-closureBuilderFilePath = os.path.normpath( closureLibraryDir + os.sep + 'closure' + os.sep + 'bin' + os.sep + 'build' + os.sep + 'closurebuilder.py' )
-
-# compiler.jar
-compilerFilePath = os.path.normpath( closureLibraryDir + os.sep + 'compiler-latest' + os.sep + 'compiler.jar' )
-
-# application dir
-appDir = os.path.normpath( projectRootDir + os.sep + projectName )
-
-# output filePath
-outputFilePath = os.path.normpath( appDir + os.sep + projectName + '-build.js' )
-
-#
-# generate build command
-#
-command = closureBuilderFilePath
-command += ' --root=' + xtkDir
-command += ' --root=' + appDir
-command += ' --namespace=' + projectName
-command += ' --output_mode=compiled'
-command += ' --compiler_jar=' + compilerFilePath
-command += ' -f "--warning_level=VERBOSE"'
-command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
-#command += ' -f "--externs=' + appDir + os.sep + projectName + '-externs.js"'
-command += ' > ' + outputFilePath
-
-#
-# run, forest, run
-#
-os.system( command )
+        print '>> OUTPUT: ' + output + os.sep + namespace + '.js'

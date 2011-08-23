@@ -8,15 +8,15 @@
 	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/*
 <span class='line'>  2</span>  * ${HEADER}
 <span class='line'>  3</span>  */</span><span class="WHIT">
-<span class='line'>  4</span> 
+<span class='line'>  4</span>
 <span class='line'>  5</span> </span><span class="COMM">// provides</span><span class="WHIT">
 <span class='line'>  6</span> </span><span class="NAME">goog.provide</span><span class="PUNC">(</span><span class="STRN">'X.renderer2D'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>  7</span> 
+<span class='line'>  7</span>
 <span class='line'>  8</span> </span><span class="COMM">// requires</span><span class="WHIT">
 <span class='line'>  9</span> </span><span class="NAME">goog.require</span><span class="PUNC">(</span><span class="STRN">'X.renderer'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 10</span> 
-<span class='line'> 11</span> 
-<span class='line'> 12</span> 
+<span class='line'> 10</span>
+<span class='line'> 11</span>
+<span class='line'> 12</span>
 <span class='line'> 13</span> </span><span class="COMM">/**
 <span class='line'> 14</span>  * Create a 2D renderer with the given width and height.
 <span class='line'> 15</span>  *
@@ -26,29 +26,29 @@
 <span class='line'> 19</span>  * @extends {X.renderer}
 <span class='line'> 20</span>  */</span><span class="WHIT">
 <span class='line'> 21</span> </span><span class="NAME">X.renderer2D</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">width</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">height</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 22</span> 
+<span class='line'> 22</span>
 <span class='line'> 23</span> </span><span class="WHIT">  </span><span class="COMM">// call the standard constructor of X.base</span><span class="WHIT">
 <span class='line'> 24</span> </span><span class="WHIT">  </span><span class="NAME">goog.base</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">width</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">height</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 25</span> 
+<span class='line'> 25</span>
 <span class='line'> 26</span> </span><span class="WHIT">  </span><span class="COMM">//</span><span class="WHIT">
 <span class='line'> 27</span> </span><span class="WHIT">  </span><span class="COMM">// class attributes</span><span class="WHIT">
-<span class='line'> 28</span> 
+<span class='line'> 28</span>
 <span class='line'> 29</span> </span><span class="WHIT">  </span><span class="COMM">/**
 <span class='line'> 30</span>    * @inheritDoc
 <span class='line'> 31</span>    * @const
 <span class='line'> 32</span>    */</span><span class="WHIT">
 <span class='line'> 33</span> </span><span class="WHIT">  </span><span class="NAME">this._className</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'renderer2D'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 34</span> 
+<span class='line'> 34</span>
 <span class='line'> 35</span> </span><span class="WHIT">  </span><span class="COMM">/**
 <span class='line'> 36</span>    * @inheritDoc
 <span class='line'> 37</span>    * @const
 <span class='line'> 38</span>    */</span><span class="WHIT">
 <span class='line'> 39</span> </span><span class="WHIT">  </span><span class="NAME">this._dimension</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">2</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 40</span> 
+<span class='line'> 40</span>
 <span class='line'> 41</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 42</span> </span><span class="COMM">// inherit from X.renderer</span><span class="WHIT">
 <span class='line'> 43</span> </span><span class="NAME">goog.inherits</span><span class="PUNC">(</span><span class="NAME">X.renderer2D</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.renderer</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 44</span> 
+<span class='line'> 44</span>
 <span class='line'> 45</span> </span><span class="COMM">// export symbols (requiered for advanced compilation)</span><span class="WHIT">
 <span class='line'> 46</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.renderer2D'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.renderer2D</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 47</span> </span></pre></body></html>
