@@ -40,7 +40,7 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
     else:
         command = buildtool
         command += ' --root=' + xtkdir
-        command += ' --root=' + dir
+        command += ' --root=' + dir + os.sep + 'js'
         command += ' --namespace=' + namespace
         command += ' --output_mode=compiled'
         command += ' --compiler_jar=' + compiler
