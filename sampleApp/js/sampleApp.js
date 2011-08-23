@@ -43,7 +43,6 @@ sampleApp.run = function() {
     }
     
   }  
-  
 };
 
 // export symbols (requiered for advanced compilation)

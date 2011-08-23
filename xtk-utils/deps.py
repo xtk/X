@@ -12,11 +12,11 @@ def calculate( namespace, dir, buildtool):
     excludeDirs = ['lib', 'css', 'doc']
     print 'Exclude Dirs: '
     print excludeDirs
-    #excludeFiles = ['.html', '.txt', '.deps']
-    #print 'Exclude Files: '
-    #print excludeFiles
+    excludeFiles = ['.html', '.txt']
+    print 'Exclude Files: '
+    print excludeFiles
     print 'Build Tool: ' + buildtool
-
+    
     commandArgs = ''
     
     for root, dirs, files in os.walk(dir):
@@ -25,10 +25,19 @@ def calculate( namespace, dir, buildtool):
         for i in removeDirs:
             dirs.remove(i)
         
-        for name in dirs:
-            commandArgs += ' --root_with_prefix="' + os.path.join(root, name)
-            real_path = os.path.relpath(root, buildtool);
-            commandArgs += ' ' + real_path + '"'
+        for name in files:
+            if not os.path.splitext(name)[1] in excludeFiles:
+                print os.path.join(root, name)
+                commandArgs += ' --path_with_depspath="' + os.path.join(root, name)
+                # relative path to goog.base
+                # /bin/tool
+                # /goog.base
+                # so we have to do as follow:
+                googbase = os.path.dirname(os.path.dirname(buildtool))
+                print buildtool
+                print googbase
+                real_path = os.path.relpath(os.path.join(root, name), googbase);
+                commandArgs += ' ' + real_path + '"'
 
     #
     # generate build command
