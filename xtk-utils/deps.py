@@ -7,32 +7,36 @@ def calculate( namespace, dir, buildtool):
     print '+++++++++++++++++++++++++++++++'
     print 'Namespace: ' + namespace
     print 'Directory: ' + dir
-    output = dir + os.sep + namespace + '-deps.js'
+    output = dir + os.sep + namespace + '.deps'
     print 'Output: ' + output
-    excludeDirs = ['lib']
-    print 'Exclude: '
+    excludeDirs = ['lib', 'css', 'doc']
+    print 'Exclude Dirs: '
     print excludeDirs
+    #excludeFiles = ['.html', '.txt', '.deps']
+    #print 'Exclude Files: '
+    #print excludeFiles
     print 'Build Tool: ' + buildtool
-    real_path = os.path.relpath(dir, buildtool);
-    print 'Relative path: ' + real_path
 
     commandArgs = ''
-
-    #
-    # routine to automatically parse the xtk directory for all sources without the excludes
-    for f in os.listdir( dir ):
-
-        if not any( e == f for e in excludeDirs ):
-
-            for files in dir:
-                if os.path.isfile( dir + os.sep + f ):
-                    commandArgs += ' --path_with_depspath="' + dir + os.sep + f
-
-                # for sub-dirs of xtkDir
-                elif os.path.isdir( dir + os.sep + f ):
-                    commandArgs += ' --root_with_prefix="' + dir + os.sep + f
     
-                commandArgs += ' ' + real_path + f + '"'
+    for root, dirs, files in os.walk(dir):
+        
+        removeDirs = list(set(excludeDirs) & set(dirs))
+        for i in removeDirs:
+            dirs.remove(i)
+        
+        for name in dirs:
+            print os.path.join(root, name)
+            commandArgs += ' --root_with_prefix="' + os.path.join(root, name)
+            real_path = os.path.relpath(root, buildtool);
+            commandArgs += ' ' + real_path + '"'
+    
+        #for name in files:
+            #    if not os.path.splitext(name)[1] in excludeFiles:
+                #    print os.path.join(root, name)
+                #commandArgs += ' --path_with_depspath="' + os.path.join(root, name)
+                #real_path = os.path.relpath(root, buildtool);
+                #commandArgs += ' ' + real_path + '"'
 
     #
     # generate build command
