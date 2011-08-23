@@ -7,9 +7,14 @@ goog.provide('X.renderer');
 
 // requires
 goog.require('X.base');
+goog.require('X.buffer');
+goog.require('X.camera');
 goog.require('X.exception');
+goog.require('X.matrixHelper');
 goog.require('goog.dom');
-
+goog.require('goog.math.Matrix');
+goog.require('goog.math.Vec3');
+goog.require('goog.structs.Map');
 
 
 /**
@@ -89,6 +94,40 @@ X.renderer = function(width, height) {
    * @protected
    */
   this._gl = null;
+
+  /**
+   * The camera of this renderer.
+   *
+   * @type {?X.camera}
+   * @protected
+   */
+  this._camera = null;
+
+  /**
+   * A hash map of displayable objects of this renderer. Each object is stored
+   * with a unique id which is used as the key.
+   *
+   * @type {!goog.structs.Map}
+   */
+  this._objects = new goog.structs.Map();
+
+  /**
+   * A hash map of vertex buffers of this renderer. Each buffer is associated
+   * with a displayable object using its unique id.
+   *
+   * @type {!goog.structs.Map}
+   */
+  this._vertexBuffers = new goog.structs.Map();
+
+  /**
+   * A hash map of color buffers of this renderer. Each buffer is associated
+   * with a displayable object using its unique id.
+   *
+   * @type {!goog.structs.Map}
+   */
+  this._colorBuffers = new goog.structs.Map();
+
+
 
 };
 // inherit from X.base
@@ -272,10 +311,10 @@ X.renderer.prototype.setContainerById = function(containerId) {
 /**
  * Create the canvas of this renderer inside the configured container and using
  * attributes like width, height, backgroundColor etc. Then, initialize the
- * WebGL context. All this will only happen once, no matter how often this
- * method is called.
+ * WebGL context and attach all necessary objects (e.g. camera, shaders..). All
+ * this will only happen once, no matter how often this method is called.
  *
- * @throws {X.exception} An exception if there were problems during WebGL
+ * @throws {X.exception} An exception if there were problems during
  *           initialization.
  */
 X.renderer.prototype.init = function() {
@@ -287,15 +326,18 @@ X.renderer.prototype.init = function() {
 
   // create a canvas object with certain properties
   var canvas = goog.dom.createDom('canvas');
-  canvas.style.setProperty('width', this.getWidth().toString());
-  canvas.style.setProperty('height', this.getHeight().toString());
   canvas.style.setProperty('background-color', this.getBackgroundColor()
       .toString());
+  canvas.width = this.getWidth();
+  canvas.height = this.getHeight();
 
   // append it to the container
   goog.dom.appendChild(this.getContainer(), canvas);
 
-  // WebGL initialization
+  // --------------------------------------------------------------------------
+  //
+  // WebGL Viewport initialization
+  //
 
   //
   // Step1: Get Context of canvas
@@ -303,8 +345,7 @@ X.renderer.prototype.init = function() {
   try {
 
     var gl = canvas.getContext('experimental-webgl');
-    // TODO do we need 2d canvas in a 2d case??
-    // gl = canvas.getContext('2d');
+    // TODO contexts have different names in different browsers
 
   } catch (e) {
 
@@ -328,15 +369,239 @@ X.renderer.prototype.init = function() {
 
     gl.viewport(0, 0, this.getWidth(), this.getHeight());
 
+    // configure opacity to 0.0 to overwrite the viewport background-color by
+    // the canvas color
+    gl.clearColor(0.0, 0.0, 0.0, 0.0);
+
+    // enable depth testing
+    gl.enable(gl.DEPTH_TEST);
+
+    // perspective rendering
+    gl.depthFunc(gl.LEQUAL);
+
+    // clear color and depth buffer
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
   } catch (e) {
 
     throw new X.exception('Fatal: Exception while accessing GL Context!\n' + e);
 
   }
 
-  // WebGL initialization done
+  //
+  // WebGL Viewport initialization done
+  // --------------------------------------------------------------------------
 
-  this._gl = gl;
+
+  //
+  // create a new camera
+  var camera = new X.camera(this);
+
+  // add shaders to this renderer
+
+
+  //
+  // attach all created objects as class attributes
+  // should be the last thing to do here since we use these attributes to check
+  // if the initialization was completed successfully
   this._canvas = canvas;
+  this._gl = gl;
+  this._camera = camera;
+
+};
+
+// should happen after init directly
+X.renderer.prototype.addShaders = function(fragmentShader, vertexShader) {
+
+  if (!this._canvas || !this._gl) {
+
+    throw new X.exception('Fatal: Renderer was not initialized properly!');
+
+  }
+
+  if (!fragmentShader || !vertexShader) {
+
+    throw new X.exception('Fatal: Could not add shaders!');
+
+  }
+
+  // compile the fragment and vertex shaders
+  var glFragmentShader = this._gl.createShader(this._gl.FRAGMENT_SHADER);
+  var glVertexShader = this._gl.createShader(this._gl.VERTEX_SHADER);
+
+  this._gl.shaderSource(glFragmentShader, fragmentShader.getSource());
+  this._gl.shaderSource(glVertexShader, vertexShader.getSource());
+
+  this._gl.compileShader(glFragmentShader);
+  this._gl.compileShader(glVertexShader);
+
+  if (!this._gl.getShaderParameter(glFragmentShader, this._gl.COMPILE_STATUS)
+      || !this._gl.getShaderParameter(glVertexShader, this._gl.COMPILE_STATUS)) {
+
+    throw new X.exception('Fatal: Shader compilation failed!');
+
+  }
+
+  // initialize the shaders
+  var shaderProgram = this._gl.createProgram();
+  this._gl.attachShader(shaderProgram, glVertexShader);
+  this._gl.attachShader(shaderProgram, glFragmentShader);
+  this._gl.linkProgram(shaderProgram);
+
+  if (!this._gl.getProgramParameter(shaderProgram, this._gl.LINK_STATUS)) {
+
+    throw new X.exception('Fatal: Could not create shader program!');
+
+  }
+
+  this._gl.useProgram(shaderProgram);
+
+  // TODO Shader
+  this._vertexPositionAttribute = this._gl.getAttribLocation(shaderProgram,
+      "vertexPosition");
+  this._gl.enableVertexAttribArray(this._vertexPositionAttribute);
+
+  // TODO Shader
+  this._vertexColorAttribute = this._gl.getAttribLocation(shaderProgram,
+      "vertexColor");
+  this._gl.enableVertexAttribArray(this._vertexColorAttribute);
+
+
+  this._shaderProgram = shaderProgram;
+
+};
+
+X.renderer.prototype.addObject = function(object) {
+
+  if (!this._canvas || !this._gl || !this._camera) {
+
+    throw new X.exception('Fatal: Renderer was not initialized properly!');
+
+  }
+
+  if (!object || !(object instanceof X.object)) {
+
+    throw new X.exception('Fatal: Illegal object!');
+
+  }
+
+  // create vertex buffer
+  var glVertexBuffer = this._gl.createBuffer();
+
+  // bind and fill with vertices of current object
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
+
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object
+      .getPointsAsFlattenedArray()), this._gl.STATIC_DRAW);
+
+  // create an X.buffer to store the vertices
+  // every vertex consists of 3 items (x,y,z)
+  var vertexBuffer = new X.buffer(glVertexBuffer, object.points().getCount(), 3);
+
+  // create color buffer
+  var glColorBuffer = this._gl.createBuffer();
+
+  // bind and fill with colors of current object
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glColorBuffer);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object
+      .getColorsAsFlattenedArray()), this._gl.STATIC_DRAW);
+
+  // create an X.buffer to store the colors
+  // every color consists of 4 items (r,g,b,alpha)
+  var colorBuffer = new X.buffer(glColorBuffer, object.colors().getCount(), 4);
+
+  // TODO buffers for lightning etc..
+
+  // create unique id for this object
+  var uniqueId = this._objects.getCount();
+
+  // now store the object and the buffers in the hash maps
+  this._objects.set(uniqueId, object);
+  this._vertexBuffers.set(uniqueId, vertexBuffer);
+  this._colorBuffers.set(uniqueId, colorBuffer);
+
+};
+
+X.renderer.prototype.render = function() {
+
+  if (!this._canvas || !this._gl || !this._camera) {
+
+    throw new X.exception('Fatal: The renderer was not initialized properly!');
+
+  }
+
+  // clear the canvas
+  this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
+
+  // grab the current perspective from the camera
+  var perspectiveMatrix = this._camera.getPerspective();
+
+  // grab the current view from the camera
+  var viewMatrix = this._camera.getView();
+
+  // TODO shader
+  var perspectiveUniformLocation = this._gl.getUniformLocation(
+      this._shaderProgram, "perspective");
+
+  this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
+      new Float32Array(perspectiveMatrix.flatten()));
+
+  var viewUniform = this._gl.getUniformLocation(this._shaderProgram, "view");
+
+  this._gl.uniformMatrix4fv(viewUniform, false, new Float32Array(viewMatrix
+      .flatten()));
+
+  // loop through all objects and (re-)draw them
+  var i;
+  for (i = 0; i < this._objects.getCount(); i++) {
+
+    var id = i;
+
+    // grab the object, the vertexBuffer and the colorBuffer all with the id
+    var object = this._objects.get(id);
+    var vertexBuffer = this._vertexBuffers.get(id);
+    var colorBuffer = this._colorBuffers.get(id);
+
+    // ..bind the glBuffers
+    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
+
+    this._gl.vertexAttribPointer(this._vertexPositionAttribute, vertexBuffer
+        .itemSize(), this._gl.FLOAT, false, 0, 0);
+
+    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());
+
+    this._gl.vertexAttribPointer(this._vertexColorAttribute, colorBuffer
+        .itemSize(), this._gl.FLOAT, false, 0, 0);
+
+    // .. and draw
+    this._gl.drawArrays(this._gl.TRIANGLE_STRIP, 0, vertexBuffer.itemCount());
+
+  }
+
+};
+
+/**
+ * @param vector
+ * @returns {goog.math.Vec2}
+ */
+X.renderer.prototype.convertWorldToDisplayCoordinates = function(vector) {
+
+  var view = this._camera.getView();
+  var perspective = this._camera.getPerspective();
+
+  var viewPerspective = goog.math.Matrix.createIdentityMatrix(4);
+  viewPerspective.multiply(view);
+  viewPerspective.multiply(perspective);
+
+  var twoDVectorAsMatrix;
+  twoDVectorAsMatrix = viewPerspective.multiplyByVector(vector);
+
+  var x = (twoDVectorAsMatrix.getValueAt(0, 0) + 1) / 2.0;
+  x = x * this.getWidth();
+
+  var y = (1 - twoDVectorAsMatrix.getValueAt(0, 1)) / 2.0;
+  y = y * this.getHeight();
+
+  return new goog.math.Vec2(Math.round(x), Math.round(y));
 
 };
