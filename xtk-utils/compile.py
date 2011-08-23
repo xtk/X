@@ -14,33 +14,25 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
     print 'Output: ' + output
 
     #compile all files
-    #if(namespace == 'X'):
-        #
-        # routine to automatically parse the xtk directory for all sources without the excludes
-        # for f in os.parse( xtkdir ):
-    #    print f
-        
-                #if not any( e == f for e in excludeDirs ):
+    if(namespace == 'X'):
+        for root, dirs, files in os.walk(dir):
             
-                #    for files in os.listdir(f):
-    #   print files
-                    #if os.path.isfile( dir + os.sep + f ):
-                    #    command = buildtool
-                    #    command += ' --root="' + xtkdir + os.sep + f
-                    #    command += ' --namespace=' + namespace
-                    #    command += ' --output_mode=compiled'
-                    #    command += ' --compiler_jar=' + compiler
-                    #    command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
-                    #    command += ' > ' + output + os.sep + f
-                            
-                    #    os.system( command )
-                            
-    #    print '>> OUTPUT: ' + output + os.sep + f
+            removeDirs = list(set(excludeDirs) & set(dirs))
+            for i in removeDirs:
+                dirs.remove(i)
+            
+            for name in dirs:
+                print os.path.join(root, name)
+                commandArgs += ' --root_with_prefix="' + os.path.join(root, name)
+                real_path = os.path.relpath(root, buildtool);
+                commandArgs += ' ' + real_path + '"'
+
+                os.system( command )
 
     
     # compile project
-        #else:
-        #command = buildtool
+    else:
+        command = buildtool
         #command += ' --root=' + xtkdir
         #command += ' --root=' + dir
         #command += ' --namespace=' + namespace
@@ -53,6 +45,5 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
         #
         # run, forest, run
         #
-        #os.system( command )
-
-#print '>> OUTPUT: ' + output + os.sep + namespace + '.js'
+        os.system( command )
+    print '>> OUTPUT: ' + output + os.sep + namespace + '.js'
