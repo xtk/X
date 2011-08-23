@@ -6,18 +6,18 @@
 	.REGX {color: #339;}
 	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
 	</style></head><body><pre><span class='line'>  1</span> <span class="NAME">goog.provide</span><span class="PUNC">(</span><span class="STRN">'sampleApp'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>  2</span> </span><span class="COMM">//goog.provide('sampleApp.init');</span><span class="WHIT">
+<span class='line'>  2</span> </span><span class="NAME">goog.provide</span><span class="PUNC">(</span><span class="STRN">'sampleApp.run'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>  3</span> 
 <span class='line'>  4</span> </span><span class="NAME">goog.require</span><span class="PUNC">(</span><span class="STRN">'X.console'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>  5</span> </span><span class="NAME">goog.require</span><span class="PUNC">(</span><span class="STRN">'X.renderer2D'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>  6</span> </span><span class="NAME">goog.require</span><span class="PUNC">(</span><span class="STRN">'X.renderer3D'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>  7</span> 
 <span class='line'>  8</span> </span><span class="COMM">// provides extern</span><span class="WHIT">
-<span class='line'>  9</span> </span><span class="NAME">sampleApp</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>  9</span> </span><span class="NAME">sampleApp.run</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 10</span> 
 <span class='line'> 11</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">c</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">X.console</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 12</span> </span><span class="WHIT">  
-<span class='line'> 13</span>   </span><span class="NAME">c.out</span><span class="PUNC">(</span><span class="STRN">'Starting sampleApp.init..'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 13</span>   </span><span class="NAME">c.out</span><span class="PUNC">(</span><span class="STRN">'Starting sampleApp..'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 14</span> </span><span class="WHIT">  
 <span class='line'> 15</span>   </span><span class="KEYW">try</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 16</span> </span><span class="WHIT">    
@@ -54,4 +54,5 @@
 <span class='line'> 47</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 48</span> 
 <span class='line'> 49</span> </span><span class="COMM">// export symbols (requiered for advanced compilation)</span><span class="WHIT">
-<span class='line'> 50</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'sampleApp'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sampleApp</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>
+<span class='line'> 50</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'sampleApp'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sampleApp</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 51</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'sampleApp.run'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sampleApp.run</span><span class="PUNC">)</span><span class="PUNC">;</span></pre></body></html>

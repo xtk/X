@@ -41,7 +41,13 @@ target_group.add_argument('-ao', '--app_only',
                     default=False,
                     help='Build only the application. A new folder \'application-build\'will be created.')
 
-parser.add_argument('-a', '--appDir',
+target_group.add_argument('-a', '--all',
+                          action='store_true',
+                          dest='all',
+                          default=False,
+                          help='Check style, build doc, build deps and compile code')
+
+parser.add_argument('-ad', '--appDir',
                     action='store',
                     dest=paths.appDir,
                     default=paths.appDir,
@@ -95,15 +101,25 @@ name_list = ['style_only', 'deps_only', 'jsdoc_only']
 if( True in value_list ):
     index = value_list.index(True)
     
-    if(options.style):
-        options.style = False
-        print '>> WARNING: using \'--' + str(name_list[index]) + '\': --style will have no effect'
-    if(options.deps):
-        options.deps = False
-        print '>> WARNING: using \'--' + str(name_list[index]) + '\': --deps will have no effect'
-    if(options.jsdoc):
-        options.jsdoc = False
-        print '>> WARNING: using \'--' + str(name_list[index]) + '\': --jsdoc will have no effect'
+    if(options.all):
+        print '>> WARNING: using \'--all\', \'--' + str(name_list[index]) + '\' will have no effect'
+        options.style = True
+        options.deps = True
+        options.jsdoc = True
+        options.style_only = False
+        options.deps_only = False
+        options.jsdoc_only = False
+    
+    else:
+        if(options.style):
+            options.style = False
+            print '>> WARNING: using \'--' + str(name_list[index]) + '\': --style will have no effect'
+        if(options.deps):
+            options.deps = False
+            print '>> WARNING: using \'--' + str(name_list[index]) + '\': --deps will have no effect'
+        if(options.jsdoc):
+            options.jsdoc = False
+            print '>> WARNING: using \'--' + str(name_list[index]) + '\': --jsdoc will have no effect'
 
 if (options.verbose):
     print '___________>T<___________'
