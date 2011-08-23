@@ -26,7 +26,7 @@ def calculate( namespace, dir, buildtool):
     # template
     command += ' -t=' + buildtool + os.sep + 'templates' + os.sep + 'jsdoc'
     # private variables visible?
-    #command += ' -p'
+    command += ' -p'
     # source dir
     command += ' -a ' + dir
     
