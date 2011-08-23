@@ -9,6 +9,8 @@ def calculate( namespace, dir, buildtool):
     print 'Build Tool Dir: ' + buildtool
     output = dir + os.sep + 'doc' + os.sep
     print 'Output: ' + output
+    # create ouput folder if it doesn't exist
+    if not os.path.exists(output): os.makedirs(output)
     
     #
     # generate build command
