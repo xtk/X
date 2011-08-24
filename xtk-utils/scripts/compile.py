@@ -10,7 +10,7 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
     excludeDirs = ['lib', 'testing', 'doc',  'css']
     print 'Exclude Dirs: '
     print excludeDirs
-    excludeFiles = ['.html', '.txt']
+    excludeFiles = ['.html', '.txt', '-deps.js']
     print 'Exclude Files: '
     print excludeFiles
     output = dir + '-build'
@@ -31,8 +31,13 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
             if not os.path.exists(real_output): os.makedirs(real_output)
             
             for name in files:
-                # test -deps too
-                if not os.path.splitext(name)[1] in excludeFiles:
+                # check sanity of file
+                compile = True
+                for eName in excludeFiles:
+                    if eName in name:
+                        compile = False
+                        
+                if compile:
                     command = buildtool
                     command += ' --input ' + os.path.join(root, name)
                     command += ' --root=' + xtkdir
