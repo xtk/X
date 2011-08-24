@@ -9,10 +9,10 @@ import os, sys, argparse
 # xtk imports
 # to be renamed...?
 import paths
-import deps
-import style
-import doc
-import compile
+import scripts.deps
+import scripts.style
+import scripts.doc
+import scripts.compile
     
 parser = argparse.ArgumentParser(description='This the XTK build tool')
 
@@ -161,14 +161,14 @@ if( options.style or options.style_only ):
     
     if(options.xtk_only):
         # inputs: namespace, project dir, build tool
-        style.calculate('xtk', paths.xtkDir, paths.closureLinterFilePath)
+        scripts.style.calculate('xtk', paths.xtkDir, paths.closureLinterFilePath)
     elif(options.app_only):
         # inputs: namespace, project dir, build tool
-        style.calculate(paths.projectName, paths.appDir, paths.closureLinterFilePath)
+        scripts.style.calculate(paths.projectName, paths.appDir, paths.closureLinterFilePath)
     else:
         # inputs: namespace, project dir, build tool
-        style.calculate('xtk', paths.xtkDir, paths.closureLinterFilePath)
-        style.calculate(paths.projectName, paths.appDir, paths.closureLinterFilePath)
+        scripts.style.calculate('xtk', paths.xtkDir, paths.closureLinterFilePath)
+        scripts.style.calculate(paths.projectName, paths.appDir, paths.closureLinterFilePath)
 
     print 'Style checked'
     print '*-----------------------*'
@@ -188,14 +188,14 @@ if( options.deps or options.deps_only ):
     
     if(options.xtk_only):
         # inputs: namespace, project dir, build tool
-        deps.calculate('xtk', paths.xtkDir, paths.closureDepsFilePath)
+        scripts.deps.calculate('xtk', paths.xtkDir, paths.closureDepsFilePath)
     elif(options.app_only):
         # inputs: namespace, project dir, build tool
-        deps.calculate(paths.projectName, paths.appDir, paths.closureDepsFilePath)
+        scripts.deps.calculate(paths.projectName, paths.appDir, paths.closureDepsFilePath)
     else:
         # inputs: namespace, project dir, build tool
-        deps.calculate('xtk', paths.xtkDir, paths.closureDepsFilePath)
-        deps.calculate(paths.projectName, paths.appDir, paths.closureDepsFilePath)
+        scripts.deps.calculate('xtk', paths.xtkDir, paths.closureDepsFilePath)
+        scripts.deps.calculate(paths.projectName, paths.appDir, paths.closureDepsFilePath)
 
     print 'Dependencies generated'
     print '*-----------------------*'
@@ -214,14 +214,14 @@ if( options.jsdoc or options.jsdoc_only ):
     
     if(options.xtk_only):
         # inputs: namespace, project dir, build tool
-        doc.calculate('xtk', paths.xtkDir, paths.jsdocDir)
+        scripts.doc.calculate('xtk', paths.xtkDir, paths.jsdocDir)
     elif(options.app_only):
         # inputs: namespace, project dir, build tool
-        doc.calculate(paths.projectName, paths.appDir, paths.jsdocDir)
+        scripts.doc.calculate(paths.projectName, paths.appDir, paths.jsdocDir)
     else:
         # inputs: namespace, project dir, build tool
-        doc.calculate('xtk', paths.xtkDir, paths.jsdocDir)
-        doc.calculate(paths.projectName, paths.appDir, paths.jsdocDir)
+        scripts.doc.calculate('xtk', paths.xtkDir, paths.jsdocDir)
+        scripts.doc.calculate(paths.projectName, paths.appDir, paths.jsdocDir)
     
     print 'Documentation generated'
     print '*-----------------------*'
@@ -239,14 +239,14 @@ print 'Compiling Code'
 
 if(options.xtk_only):
     # inputs: namespace, project dir, build tool
-    compile.calculate('X', paths.xtkDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath)
+    scripts.compile.calculate('X', paths.xtkDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath)
 elif(options.app_only):
     # inputs: namespace, project dir, build tool
-    compile.calculate(paths.projectName, paths.appDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath)
+    scripts.compile.calculate(paths.projectName, paths.appDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath)
 else:
     # inputs: namespace, project dir, build tool
-    compile.calculate('X', paths.xtkDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath)
-    compile.calculate(paths.projectName, paths.appDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath)
+    scripts.compile.calculate('X', paths.xtkDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath)
+    scripts.compile.calculate(paths.projectName, paths.appDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath)
 
 print 'Code Compiled'
 print '*-----------------------*'
