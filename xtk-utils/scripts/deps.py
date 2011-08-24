@@ -9,7 +9,7 @@ def calculate( namespace, dir, buildtool):
     print 'Directory: ' + dir
     output = dir + os.sep + namespace + '-deps.js'
     print 'Output: ' + output
-    excludeDirs = ['lib', 'css', 'doc']
+    excludeDirs = ['lib', 'css', 'doc', 'testing']
     print 'Exclude Dirs: '
     print excludeDirs
     excludeFiles = ['.html', '.txt']

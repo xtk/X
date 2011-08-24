@@ -7,7 +7,7 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
     print 'Namespace: ' + namespace
     print 'Directory: ' + dir
     print 'Build Tool: ' + buildtool
-    excludeDirs = ['lib']
+    excludeDirs = ['lib', 'testing', 'doc',  'css']
     print 'Exclude Dirs: '
     print excludeDirs
     excludeFiles = ['.html', '.txt']
@@ -26,7 +26,12 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
             for i in removeDirs:
                 dirs.remove(i)
             
+            relative_path = os.path.relpath(root, dir)
+            real_output = output + os.sep + relative_path
+            if not os.path.exists(real_output): os.makedirs(real_output)
+            
             for name in files:
+                # test -deps too
                 if not os.path.splitext(name)[1] in excludeFiles:
                     command = buildtool
                     command += ' --input ' + os.path.join(root, name)
@@ -35,7 +40,7 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
                     command += ' --compiler_jar=' + compiler
                     command += ' -f "--warning_level=VERBOSE"'
                     command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
-                    command += ' > ' + output + os.sep + name
+                    command += ' > ' + real_output + os.sep + name
                     
                     #
                     # run, forest, run

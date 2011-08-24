@@ -11,6 +11,7 @@ def calculate( namespace, dir, buildtool):
     #
     # generate build command
     #
+    
     command = buildtool
     command += ' -r ' + dir
     command += ' -e ' + dir + os.sep + 'lib'
