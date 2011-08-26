@@ -195,7 +195,7 @@ X.colors.prototype.count = function() {
 };
 
 /**
- * Create an orderered and flattened 1-D array of all colors in this container.
+ * Create an ordered and flattened 1-D array of all colors in this container.
  * 
  * @returns {Array} A one-dimensional array containing all colors.
  */
