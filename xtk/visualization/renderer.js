@@ -12,7 +12,9 @@ goog.require('X.camera');
 goog.require('X.colors');
 goog.require('X.exception');
 goog.require('X.matrixHelper');
+goog.require('X.points');
 goog.require('goog.dom');
+goog.require('goog.iter.Iterator');
 goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec3');
 goog.require('goog.structs.Map');
@@ -109,6 +111,7 @@ X.renderer = function(width, height) {
    * with a unique id which is used as the key.
    * 
    * @type {!goog.structs.Map}
+   * @protected
    */
   this._objects = new goog.structs.Map();
   
@@ -117,6 +120,7 @@ X.renderer = function(width, height) {
    * with a displayable object using its unique id.
    * 
    * @type {!goog.structs.Map}
+   * @protected
    */
   this._vertexBuffers = new goog.structs.Map();
   
@@ -125,10 +129,18 @@ X.renderer = function(width, height) {
    * with a displayable object using its unique id.
    * 
    * @type {!goog.structs.Map}
+   * @protected
    */
   this._colorBuffers = new goog.structs.Map();
   
-
+  /**
+   * The id of the last added displayable object -1 if this container is empty.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._id = -1;
+  
 
 };
 // inherit from X.base
@@ -512,13 +524,20 @@ X.renderer.prototype.addObject = function(object) {
   
   // TODO buffers for lightning etc..
   
-  // create unique id for this object
-  var uniqueId = this._objects.getCount();
+  if (this._objects.containsKey(++this._id)) {
+    
+    throw new X.exception('Fatal: Could not get unique id.');
+    
+  }
+  
+  uniqueId = this._id;
   
   // now store the object and the buffers in the hash maps
   this._objects.set(uniqueId, object);
   this._vertexBuffers.set(uniqueId, vertexBuffer);
   this._colorBuffers.set(uniqueId, colorBuffer);
+  
+  return uniqueId;
   
 };
 
@@ -552,29 +571,49 @@ X.renderer.prototype.render = function() {
       .flatten()));
   
   // loop through all objects and (re-)draw them
-  var i;
-  for (i = 0; i < this._objects.getCount(); i++) {
+  var keyIterator = this._objects.getKeyIterator();
+  
+  try {
     
-    var id = i;
+    while (true) {
+      
+      var key = keyIterator.next();
+      
+      var object = this._objects.get(key);
+      
+      if (object) {
+        
+        // we have a valid object
+        var vertexBuffer = this._vertexBuffers.get(key);
+        var colorBuffer = this._colorBuffers.get(key);
+        
+        // ..bind the glBuffers
+        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
+        
+        this._gl.vertexAttribPointer(this._vertexPositionAttribute,
+            vertexBuffer.itemSize(), this._gl.FLOAT, false, 0, 0);
+        
+        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());
+        
+        this._gl.vertexAttribPointer(this._vertexColorAttribute, colorBuffer
+            .itemSize(), this._gl.FLOAT, false, 0, 0);
+        
+        // .. and draw
+        this._gl.drawArrays(this._gl.TRIANGLE_STRIP, 0, vertexBuffer
+            .itemCount());
+        
+      }
+      
+    } // while
     
-    // grab the object, the vertexBuffer and the colorBuffer all with the id
-    var object = this._objects.get(id);
-    var vertexBuffer = this._vertexBuffers.get(id);
-    var colorBuffer = this._colorBuffers.get(id);
+  } catch (e) {
     
-    // ..bind the glBuffers
-    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
-    
-    this._gl.vertexAttribPointer(this._vertexPositionAttribute, vertexBuffer
-        .itemSize(), this._gl.FLOAT, false, 0, 0);
-    
-    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());
-    
-    this._gl.vertexAttribPointer(this._vertexColorAttribute, colorBuffer
-        .itemSize(), this._gl.FLOAT, false, 0, 0);
-    
-    // .. and draw
-    this._gl.drawArrays(this._gl.TRIANGLE_STRIP, 0, vertexBuffer.itemCount());
+    if (e != goog.iter.StopIteration) {
+      
+      // there was an error
+      throw e;
+      
+    }
     
   }
   
