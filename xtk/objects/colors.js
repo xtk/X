@@ -77,7 +77,7 @@ X.colors.prototype.add = function(color) {
   
   this._colors_.set(this._id_, color);
   
-  return uniqueId;
+  return this._id_;
   
 };
 
@@ -128,17 +128,21 @@ X.colors.prototype.remove = function(color) {
   
   try {
     
-    var key = keyIterator.next();
-    
-    var object = this._colors_.get(key);
-    
-    if (object == color) {
+    while (true) {
       
-      // we found the color
-      // ..delete it
-      return this._colors_.remove(key);
+      var key = keyIterator.next();
       
-    }
+      var object = this._colors_.get(key);
+      
+      if (object == color) {
+        
+        // we found the color
+        // ..delete it
+        return this._colors_.remove(key);
+        
+      }
+      
+    } // while
     
   } catch (e) {
     
@@ -180,29 +184,42 @@ X.colors.prototype.removeById = function(id) {
 };
 
 /**
- * Return an orderered and flattened 1-D array of all colors in this container.
+ * Get the number of colors in this container.
  * 
- * @returns {Array} A 1-D array containing all colors.
+ * @returns {!number} The number of colors in this container.
+ */
+X.colors.prototype.count = function() {
+
+  return this._colors_.getCount();
+  
+};
+
+/**
+ * Create an orderered and flattened 1-D array of all colors in this container.
+ * 
+ * @returns {Array} A one-dimensional array containing all colors.
  */
 X.colors.prototype.flatten = function() {
 
-  // the array will be four times as big as the actual number of colors since
-  // each color has four channels
-  var array = new Array(this._colors_.getCount() * 4);
+  var array = new Array();
   
   // now we need to loop through the map
   var keyIterator = this._colors_.getKeyIterator();
   
   try {
     
-    var key = keyIterator.next();
-    
-    var color = this._colors_.get(key);
-    
-    var colorAsArray = color.flatten();
-    
-    // append individual color to the return array
-    array.concat(colorAsArray);
+    while (true) {
+      
+      var key = keyIterator.next();
+      
+      var color = this._colors_.get(key);
+      
+      var colorAsArray = color.flatten();
+      
+      // append individual color to the return array
+      array = array.concat(colorAsArray);
+      
+    } // while
     
   } catch (e) {
     
@@ -215,6 +232,7 @@ X.colors.prototype.flatten = function() {
     
   }
   
+  // return the 1-D array
   return array;
   
 };

@@ -2,6 +2,7 @@ goog.provide('sampleApp');
 goog.provide('sampleApp.init');
 
 goog.require('X.color');
+goog.require('X.colors');
 goog.require('X.console');
 goog.require('X.object');
 goog.require('X.renderer2D');
@@ -75,20 +76,20 @@ sampleApp.init = function() {
     object1.addPoint([ 3, 3, 0 ]);
     object1.addPoint([ 1, 1, 0 ]);
     object1.addPoint([ 1, 2.5, 0 ]);
-    object1.addColor(new X.color(1, 1, 1));
-    object1.addColor(new X.color(1, 1, 1));
-    object1.addColor(new X.color(1, 1, 1));
-    object1.addColor(new X.color(1, 1, 1));
+    object1.colors().add(new X.color(1, 1, 1));
+    object1.colors().add(new X.color(1, 1, 1));
+    object1.colors().add(new X.color(1, 1, 1));
+    object1.colors().add(new X.color(1, 1, 1));
     
     var object2 = new X.object();
     object2.addPoint([ 20, 20, 0 ]);
     object2.addPoint([ 30, 30, 0 ]);
     object2.addPoint([ 10, 10, 0 ]);
     object2.addPoint([ 10, 20.5, 0 ]);
-    object2.addColor(new X.color(1, 1, 1));
-    object2.addColor(new X.color(1, 0, 0));
-    object2.addColor(new X.color(0, 1, 0));
-    object2.addColor(new X.color(0, 0, 1));
+    object2.colors().add(new X.color(1, 1, 1));
+    object2.colors().add(new X.color(1, 0, 0));
+    object2.colors().add(new X.color(0, 1, 0));
+    object2.colors().add(new X.color(0, 0, 1));
     
 
     sliceView1.addShaders(fragmentShader, vertexShader);
