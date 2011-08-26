@@ -491,13 +491,12 @@ X.renderer.prototype.addObject = function(object) {
   
   // bind and fill with vertices of current object
   this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
-  
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object
-      .getPointsAsFlattenedArray()), this._gl.STATIC_DRAW);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.points()
+      .flatten()), this._gl.STATIC_DRAW);
   
   // create an X.buffer to store the vertices
   // every vertex consists of 3 items (x,y,z)
-  var vertexBuffer = new X.buffer(glVertexBuffer, object.points().getCount(), 3);
+  var vertexBuffer = new X.buffer(glVertexBuffer, object.points().count(), 3);
   
   // create color buffer
   var glColorBuffer = this._gl.createBuffer();

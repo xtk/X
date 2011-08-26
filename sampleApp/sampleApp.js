@@ -72,20 +72,20 @@ sampleApp.init = function() {
     var object1 = new X.object();
     // we can add points as goog.math.Coordinate3 or just as 1-D arrays with 3
     // items
-    object1.addPoint([ 2, 2, 0 ]);
-    object1.addPoint([ 3, 3, 0 ]);
-    object1.addPoint([ 1, 1, 0 ]);
-    object1.addPoint([ 1, 2.5, 0 ]);
+    object1.points().add([ 2, 2, 0 ]);
+    object1.points().add([ 3, 3, 0 ]);
+    object1.points().add([ 1, 1, 0 ]);
+    object1.points().add([ 1, 2.5, 0 ]);
     object1.colors().add(new X.color(1, 1, 1));
     object1.colors().add(new X.color(1, 1, 1));
     object1.colors().add(new X.color(1, 1, 1));
     object1.colors().add(new X.color(1, 1, 1));
     
     var object2 = new X.object();
-    object2.addPoint([ 20, 20, 0 ]);
-    object2.addPoint([ 30, 30, 0 ]);
-    object2.addPoint([ 10, 10, 0 ]);
-    object2.addPoint([ 10, 20.5, 0 ]);
+    object2.points().add([ 20, 20, 0 ]);
+    object2.points().add([ 30, 30, 0 ]);
+    object2.points().add([ 10, 10, 0 ]);
+    object2.points().add([ 10, 20.5, 0 ]);
     object2.colors().add(new X.color(1, 1, 1));
     object2.colors().add(new X.color(1, 0, 0));
     object2.colors().add(new X.color(0, 1, 0));
