@@ -43,25 +43,25 @@ X.color = function(red, green, blue) {
 // inherit from X.base
 goog.inherits(X.color, X.base);
 
-X.color.prototype.getRed = function() {
+X.color.prototype.red = function() {
 
   return this._red;
   
 };
 
-X.color.prototype.getGreen = function() {
+X.color.prototype.green = function() {
 
   return this._green;
   
 };
 
-X.color.prototype.getBlue = function() {
+X.color.prototype.blue = function() {
 
   return this._blue;
   
 };
 
-X.color.prototype.getAlpha = function() {
+X.color.prototype.alpha = function() {
 
   return this._alpha;
   

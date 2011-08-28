@@ -498,6 +498,54 @@ X.renderer.prototype.addObject = function(object) {
     
   }
   
+  // first, we check if the object is properly defined
+  //
+  // case 1:
+  // object has an object color defined
+  // we create point colors matching this object color
+  // case 2:
+  // object has not an object color defined and does have the same number of
+  // points and point-colors defined
+  // case 3:
+  // object has not an object color defined and also not the same number of
+  // points and point-colors, then we set the object color to 1
+  //
+  // in all cases, we do not want to correct the passed in object but just
+  // correct to good value internally
+  
+  var colorsValid = false;
+  var objectColor = new X.color(1, 1, 1); // initialize to default color (white)
+  var colors = null;
+  
+  // if no object color was set up, check for valid point colors
+  if (goog.isNull(object.color())) {
+    
+    // no object color, check if valid point-colors are defined
+    colorsValid = (object.points().count() == object.colors().count());
+    colors = object.colors();
+    
+  } else {
+    
+    // valid object color
+    objectColor = object.color();
+    
+  }
+  
+  // if we don't have valid colors at this point, create some based on the
+  // objectColor
+  if (!colorsValid) {
+    
+    colors = new X.colors();
+    
+    var i;
+    for (i = 0; i < object.points().count(); i++) {
+      
+      colors.add(objectColor);
+      
+    }
+    
+  }
+  
   // create vertex buffer
   var glVertexBuffer = this._gl.createBuffer();
   
@@ -513,14 +561,14 @@ X.renderer.prototype.addObject = function(object) {
   // create color buffer
   var glColorBuffer = this._gl.createBuffer();
   
-  // bind and fill with colors of current object
+  // bind and fill with colors defined above
   this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glColorBuffer);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.colors()
-      .flatten()), this._gl.STATIC_DRAW);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER,
+      new Float32Array(colors.flatten()), this._gl.STATIC_DRAW);
   
   // create an X.buffer to store the colors
   // every color consists of 4 items (r,g,b,alpha)
-  var colorBuffer = new X.buffer(glColorBuffer, object.colors().count(), 4);
+  var colorBuffer = new X.buffer(glColorBuffer, colors.count(), 4);
   
   // TODO buffers for lightning etc..
   

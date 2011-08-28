@@ -7,6 +7,7 @@ goog.provide('X.object');
 
 // requires
 goog.require('X.base');
+goog.require('X.color');
 goog.require('X.colors');
 goog.require('X.exception');
 goog.require('X.points');
@@ -33,9 +34,11 @@ X.object = function() {
    */
   this._className = 'object';
   
-  this._points_ = new X.points;
+  this._color = null;
   
-  this._colors_ = new X.colors();
+  this._points = new X.points();
+  
+  this._colors = new X.colors();
   
   this._texture = null;
   
@@ -49,13 +52,32 @@ goog.inherits(X.object, X.base);
 
 X.object.prototype.points = function() {
 
-  return this._points_;
+  return this._points;
   
 };
 
 X.object.prototype.colors = function() {
 
-  return this._colors_;
+  return this._colors;
+  
+};
+
+X.object.prototype.color = function() {
+
+  return this._color;
+  
+};
+
+X.object.prototype.setColor = function(color) {
+
+  // we accept either null or a X.color as argument
+  if (!goog.isDefAndNotNull(color) && !(color instanceof X.color)) {
+    
+    throw new X.exception('Fatal: Invalid color.');
+    
+  }
+  
+  this._color = color;
   
 };
 

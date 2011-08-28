@@ -76,6 +76,8 @@ sampleApp.init = function() {
     object1.points().add([ 3, 3, 0 ]);
     object1.points().add([ 1, 1, 0 ]);
     object1.points().add([ 1, 2.5, 0 ]);
+    // since we set an object color, individual point colors are overwritten
+    object1.setColor(new X.color(1, 0, 0));
     object1.colors().add(new X.color(1, 1, 1));
     object1.colors().add(new X.color(1, 1, 1));
     object1.colors().add(new X.color(1, 1, 1));
@@ -86,12 +88,27 @@ sampleApp.init = function() {
     object2.points().add([ 30, 30, 0 ]);
     object2.points().add([ 10, 10, 0 ]);
     object2.points().add([ 10, 20.5, 0 ]);
+    // here, we configure point colors properly
     object2.colors().add(new X.color(1, 1, 1));
     object2.colors().add(new X.color(1, 0, 0));
     object2.colors().add(new X.color(0, 1, 0));
     object2.colors().add(new X.color(0, 0, 1));
     
-
+    var object3 = new X.object();
+    object3.points().add([ -40, -40, 0 ]);
+    object3.points().add([ -50, -50, 0 ]);
+    object3.points().add([ -30, -30, 0 ]);
+    object3.points().add([ 10, 20.5, 0 ]);
+    // here, we do not configure any colors which should reset to default
+    // (white)
+    
+    var object4 = new X.object();
+    object4.points().add([ -40, 40, 0 ]);
+    object4.points().add([ -50, 50, 0 ]);
+    object4.points().add([ -30, 30, 0 ]);
+    object4.points().add([ -10, 20, 0 ]);
+    object4.setColor(new X.color(0, 1, 0));
+    
     sliceView1.addShaders(fragmentShader, vertexShader);
     sliceView1.addObject(object1);
     sliceView2.addShaders(fragmentShader, vertexShader);
@@ -101,6 +118,8 @@ sampleApp.init = function() {
     threeDView.addShaders(fragmentShader, vertexShader);
     threeDView.addObject(object1);
     threeDView.addObject(object2);
+    threeDView.addObject(object3);
+    threeDView.addObject(object4);
     
     // setInterval(function() {
     
