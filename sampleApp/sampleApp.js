@@ -2,6 +2,7 @@ goog.provide('sampleApp');
 goog.provide('sampleApp.init');
 
 goog.require('X.color');
+goog.require('X.colors');
 goog.require('X.console');
 goog.require('X.object');
 goog.require('X.renderer2D');
@@ -71,26 +72,43 @@ sampleApp.init = function() {
     var object1 = new X.object();
     // we can add points as goog.math.Coordinate3 or just as 1-D arrays with 3
     // items
-    object1.addPoint([ 2, 2, 0 ]);
-    object1.addPoint([ 3, 3, 0 ]);
-    object1.addPoint([ 1, 1, 0 ]);
-    object1.addPoint([ 1, 2.5, 0 ]);
-    object1.addColor(new X.color(1, 1, 1));
-    object1.addColor(new X.color(1, 1, 1));
-    object1.addColor(new X.color(1, 1, 1));
-    object1.addColor(new X.color(1, 1, 1));
+    object1.points().add([ 2, 2, 0 ]);
+    object1.points().add([ 3, 3, 0 ]);
+    object1.points().add([ 1, 1, 0 ]);
+    object1.points().add([ 1, 2.5, 0 ]);
+    // since we set an object color, individual point colors are overwritten
+    object1.setColor(new X.color(1, 0, 0));
+    object1.colors().add(new X.color(1, 1, 1));
+    object1.colors().add(new X.color(1, 1, 1));
+    object1.colors().add(new X.color(1, 1, 1));
+    object1.colors().add(new X.color(1, 1, 1));
     
     var object2 = new X.object();
-    object2.addPoint([ 20, 20, 0 ]);
-    object2.addPoint([ 30, 30, 0 ]);
-    object2.addPoint([ 10, 10, 0 ]);
-    object2.addPoint([ 10, 20.5, 0 ]);
-    object2.addColor(new X.color(1, 1, 1));
-    object2.addColor(new X.color(1, 0, 0));
-    object2.addColor(new X.color(0, 1, 0));
-    object2.addColor(new X.color(0, 0, 1));
+    object2.points().add([ 20, 20, 0 ]);
+    object2.points().add([ 30, 30, 0 ]);
+    object2.points().add([ 10, 10, 0 ]);
+    object2.points().add([ 10, 20.5, 0 ]);
+    // here, we configure point colors properly
+    object2.colors().add(new X.color(1, 1, 1));
+    object2.colors().add(new X.color(1, 0, 0));
+    object2.colors().add(new X.color(0, 1, 0));
+    object2.colors().add(new X.color(0, 0, 1));
     
-
+    var object3 = new X.object();
+    object3.points().add([ -40, -40, 0 ]);
+    object3.points().add([ -50, -50, 0 ]);
+    object3.points().add([ -30, -30, 0 ]);
+    object3.points().add([ 10, 20.5, 0 ]);
+    // here, we do not configure any colors which should reset to default
+    // (white)
+    
+    var object4 = new X.object();
+    object4.points().add([ -40, 40, 0 ]);
+    object4.points().add([ -50, 50, 0 ]);
+    object4.points().add([ -30, 30, 0 ]);
+    object4.points().add([ -10, 20, 0 ]);
+    object4.setColor(new X.color(0, 1, 0));
+    
     sliceView1.addShaders(fragmentShader, vertexShader);
     sliceView1.addObject(object1);
     sliceView2.addShaders(fragmentShader, vertexShader);
@@ -100,6 +118,8 @@ sampleApp.init = function() {
     threeDView.addShaders(fragmentShader, vertexShader);
     threeDView.addObject(object1);
     threeDView.addObject(object2);
+    threeDView.addObject(object3);
+    threeDView.addObject(object4);
     
     // setInterval(function() {
     
