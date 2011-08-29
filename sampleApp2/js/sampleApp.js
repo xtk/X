@@ -1,12 +1,7 @@
-goog.provide('sampleApp');
-//goog.provide('sampleApp.init');
+// define namespace
+var sampleApp = sampleApp || {};
 
-goog.require('X.console');
-goog.require('X.renderer2D');
-goog.require('X.renderer3D');
-
-// provides extern
-sampleApp = function() {
+sampleApp.run = function() {
 
   var c = new X.console();
   
@@ -45,6 +40,3 @@ sampleApp = function() {
   }  
   
 };
-
-// export symbols (requiered for advanced compilation)
-goog.exportSymbol('sampleApp', sampleApp);

@@ -18,6 +18,7 @@ goog.require('goog.dom');
  * @param {number} width The width of the renderer.
  * @param {number} height The height of the renderer.
  * @constructor
+ * @name X.renderer
  * @extends {X.base}
  */
 X.renderer = function(width, height) {
@@ -353,3 +354,5 @@ goog.exportSymbol('X.renderer.prototype.getBackgroundColor', X.renderer.prototyp
 goog.exportSymbol('X.renderer.prototype.setBackgroundColor', X.renderer.prototype.setBackgroundColor);
 goog.exportSymbol('X.renderer.prototype.getContainer', X.renderer.prototype.getContainer);
 goog.exportSymbol('X.renderer.prototype.setContainer', X.renderer.prototype.setContainer);
+goog.exportSymbol('X.renderer.prototype.init', X.renderer.prototype.init);
+goog.exportSymbol('X.renderer.prototype.setContainerById', X.renderer.prototype.setContainerById);

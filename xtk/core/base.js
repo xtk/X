@@ -14,6 +14,7 @@ goog.require('X');
  * The superclass class for all X.base-objects.
  *
  * @constructor
+ * @name X.base
  */
 X.base = function() {
 
