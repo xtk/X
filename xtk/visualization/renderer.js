@@ -647,8 +647,7 @@ X.renderer.prototype.render = function() {
             .itemSize(), this._gl.FLOAT, false, 0, 0);
         
         // .. and draw
-        this._gl.drawArrays(this._gl.TRIANGLE_STRIP, 0, vertexBuffer
-            .itemCount());
+        this._gl.drawArrays(this._gl.TRIANGLES, 0, vertexBuffer.itemCount());
         
       }
       

@@ -74,11 +74,9 @@ sampleApp.init = function() {
     // items
     object1.points().add([ 2, 2, 0 ]);
     object1.points().add([ 3, 3, 0 ]);
-    object1.points().add([ 1, 1, 0 ]);
     object1.points().add([ 1, 2.5, 0 ]);
     // since we set an object color, individual point colors are overwritten
     object1.setColor(new X.color(1, 0, 0));
-    object1.colors().add(new X.color(1, 1, 1));
     object1.colors().add(new X.color(1, 1, 1));
     object1.colors().add(new X.color(1, 1, 1));
     object1.colors().add(new X.color(1, 1, 1));
@@ -86,12 +84,10 @@ sampleApp.init = function() {
     var object2 = new X.object();
     object2.points().add([ 20, 20, 0 ]);
     object2.points().add([ 30, 30, 0 ]);
-    object2.points().add([ 10, 10, 0 ]);
     object2.points().add([ 10, 20.5, 0 ]);
     // here, we configure point colors properly
     object2.colors().add(new X.color(1, 1, 1));
     object2.colors().add(new X.color(1, 0, 0));
-    object2.colors().add(new X.color(0, 1, 0));
     object2.colors().add(new X.color(0, 0, 1));
     
     var object3 = new X.object();
@@ -103,8 +99,8 @@ sampleApp.init = function() {
     // (white)
     
     var object4 = new X.object();
-    object4.points().add([ -40, 40, 0 ]);
-    object4.points().add([ -50, 50, 0 ]);
+    object4.points().add([ -30, 40, 0 ]);
+    object4.points().add([ -50, 30, 0 ]);
     object4.points().add([ -30, 30, 0 ]);
     object4.points().add([ -10, 20, 0 ]);
     object4.setColor(new X.color(0, 1, 0));
@@ -134,6 +130,65 @@ sampleApp.init = function() {
     c.out(sliceView2.print());
     c.out(sliceView3.print());
     c.out(threeDView.print());
+    
+    function handleFileSelect(evt) {
+
+      evt.stopPropagation();
+      evt.preventDefault();
+      
+      var files = evt.dataTransfer.files; // FileList object.
+      
+      // files is a FileList of File objects. List some properties.
+      
+      for ( var i = 0, f; f = files[i]; i++) {
+        
+        var reader = new FileReader();
+        
+        reader.onloadend = testcallback;
+        
+        reader.readAsText(f);
+        
+      }
+      
+    }
+    
+    function testcallback(evt) {
+
+      result = evt.target.result;
+      readAsArray = result.split('\n');
+      objectN = new X.object();
+      
+      for ( var i = 0; i < readAsArray.length; i++) {
+        
+        tmp = readAsArray[i];
+        tmpstr = tmp.split(' ');
+        
+        if (tmpstr[3] == 'vertex') {
+          
+          x = tmpstr[4];
+          y = tmpstr[5];
+          z = tmpstr[6];
+          objectN.points().add([ x, y, z ]);
+          
+        }
+        
+      }
+      
+      threeDView.addObject(objectN);
+      threeDView.render();
+      
+    }
+    
+    function handleDragOver(evt) {
+
+      evt.stopPropagation();
+      evt.preventDefault();
+    }
+    
+    // Setup the dnd listeners.
+    var dropZone = document.getElementById('threeDView');
+    dropZone.addEventListener('dragover', handleDragOver, false);
+    dropZone.addEventListener('drop', handleFileSelect, false);
     
 
 
