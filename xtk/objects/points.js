@@ -98,7 +98,7 @@ X.points.prototype.add = function(point) {
  * Get the point with the given id. This is a O(1) operation.
  * 
  * @param {!number} id The internal id of the requested point.
- * @returns {!goog.math.Coordinate3} The point with the given id.
+ * @returns {!*} The point with the given id.
  * @throws {X.exception} An exception if the passed id is invalid or does not
  *           exist.
  */

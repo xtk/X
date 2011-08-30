@@ -578,7 +578,7 @@ X.renderer.prototype.addObject = function(object) {
     
   }
   
-  uniqueId = this._id;
+  var uniqueId = this._id;
   
   // now store the object and the buffers in the hash maps
   this._objects.set(uniqueId, object);

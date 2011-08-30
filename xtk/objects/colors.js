@@ -85,7 +85,7 @@ X.colors.prototype.add = function(color) {
  * Get the color with the given id. This is a O(1) operation.
  * 
  * @param {!number} id The internal id of the requested color.
- * @returns {!X.color} The color with the given id.
+ * @returns {!*} The color with the given id.
  * @throws {X.exception} An exception if the passed id is invalid or does not
  *           exist.
  */
