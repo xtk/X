@@ -236,3 +236,12 @@ X.colors.prototype.flatten = function() {
   return array;
   
 };
+
+// export symbols (requiered for advanced compilation)
+goog.exportSymbol('X.colors',X.colors);
+goog.exportSymbol('X.colors.prototype.add', X.colors.prototype.add);
+goog.exportSymbol('X.colors.prototype.get',X.colors.prototype.get);
+goog.exportSymbol('X.colors.prototype.remove', X.colors.prototype.remove);
+goog.exportSymbol('X.colors.prototype.removeById', X.colors.prototype.removeById);
+goog.exportSymbol('X.colors.prototype.count',X.colors.prototype.count);
+goog.exportSymbol('X.colors.prototype.flatten', X.colors.prototype.flatten);

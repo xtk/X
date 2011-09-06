@@ -249,3 +249,12 @@ X.points.prototype.flatten = function() {
   return array;
   
 };
+
+// export symbols (requiered for advanced compilation)
+goog.exportSymbol('X.points',X.points);
+goog.exportSymbol('X.points.prototype.add', X.points.prototype.add);
+goog.exportSymbol('X.points.prototype.get',X.points.prototype.get);
+goog.exportSymbol('X.points.prototype.remove', X.points.prototype.remove);
+goog.exportSymbol('X.points.prototype.removeById', X.points.prototype.removeById);
+goog.exportSymbol('X.points.prototype.count',X.points.prototype.count);
+goog.exportSymbol('X.points.prototype.flatten', X.points.prototype.flatten);

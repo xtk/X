@@ -82,3 +82,10 @@ X.object.prototype.setColor = function(color) {
 };
 
 // TODO a lot :)
+
+// export symbols (requiered for advanced compilation)
+goog.exportSymbol('X.object',X.object);
+goog.exportSymbol('X.object.prototype.points', X.object.prototype.points);
+goog.exportSymbol('X.object.prototype.colors',X.object.prototype.colors);
+goog.exportSymbol('X.object.prototype.color', X.object.prototype.color);
+goog.exportSymbol('X.object.prototype.setColor', X.object.prototype.setColor);

@@ -170,3 +170,11 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint, up) {
   return matrix.translate(cameraPosition.invert());
   
 };
+
+// export symbols (requiered for advanced compilation)
+goog.exportSymbol('X.camera',X.camera);
+goog.exportSymbol('X.camera.prototype.perspective', X.camera.prototype.perspective);
+goog.exportSymbol('X.camera.prototype.view',X.camera.prototype.view);
+goog.exportSymbol('X.camera.prototype.calculatePerspective_',X.camera.prototype.calculatePerspective_);
+goog.exportSymbol('X.camera.prototype.calculateViewingFrustum_',X.camera.prototype.calculateViewingFrustum_);
+goog.exportSymbol('X.camera.prototype.lookAt_',X.camera.prototype.lookAt_);

@@ -89,3 +89,12 @@ X.color.prototype.setAlpha = function(alpha) {
 // TODO getters/setters
 // TODO presets by string (e.g. green, blue etc.)
 // TODO fromHex (e.g. #ffffff ..)
+
+// export symbols (requiered for advanced compilation)
+goog.exportSymbol('X.color', X.color);
+goog.exportSymbol('X.color.prototype.red', X.color.prototype.red);
+goog.exportSymbol('X.color.prototype.green', X.color.prototype.green);
+goog.exportSymbol('X.color.prototype.blue', X.color.prototype.blue);
+goog.exportSymbol('X.color.prototype.alpha', X.color.prototype.alpha);
+goog.exportSymbol('X.color.prototype.flatten', X.color.prototype.flatten);
+goog.exportSymbol('X.color.prototype.setAlpha', X.color.prototype.setAlpha);

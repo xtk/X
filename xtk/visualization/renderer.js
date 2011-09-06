@@ -734,14 +734,18 @@ X.renderer.prototype.convertWorldToDisplayCoordinates = function(vector) {
 
 // export symbols (requiered for advanced compilation)
 goog.exportSymbol('X.renderer',X.renderer);
-goog.exportSymbol('X.renderer.prototype.getDimension',X.renderer.prototype.getDimension);
-goog.exportSymbol('X.renderer.prototype.getWidth',X.renderer.prototype.getWidth);
+goog.exportSymbol('X.renderer.prototype.dimension',X.renderer.prototype.dimension);
+goog.exportSymbol('X.renderer.prototype.width',X.renderer.prototype.width);
 goog.exportSymbol('X.renderer.prototype.setWidth', X.renderer.prototype.setWidth);
-goog.exportSymbol('X.renderer.prototype.getHeight', X.renderer.prototype.getHeight);
+goog.exportSymbol('X.renderer.prototype.height', X.renderer.prototype.height);
 goog.exportSymbol('X.renderer.prototype.setHeight', X.renderer.prototype.setHeight);
-goog.exportSymbol('X.renderer.prototype.getBackgroundColor', X.renderer.prototype.getBackgroundColor);
+goog.exportSymbol('X.renderer.prototype.backgroundColor', X.renderer.prototype.backgroundColor);
 goog.exportSymbol('X.renderer.prototype.setBackgroundColor', X.renderer.prototype.setBackgroundColor);
-goog.exportSymbol('X.renderer.prototype.getContainer', X.renderer.prototype.getContainer);
+goog.exportSymbol('X.renderer.prototype.container', X.renderer.prototype.container);
 goog.exportSymbol('X.renderer.prototype.setContainer', X.renderer.prototype.setContainer);
 goog.exportSymbol('X.renderer.prototype.init', X.renderer.prototype.init);
 goog.exportSymbol('X.renderer.prototype.setContainerById', X.renderer.prototype.setContainerById);
+goog.exportSymbol('X.renderer.prototype.addShaders', X.renderer.prototype.addShaders);
+goog.exportSymbol('X.renderer.prototype.addObject', X.renderer.prototype.addObject);
+goog.exportSymbol('X.renderer.prototype.render', X.renderer.prototype.render);
+goog.exportSymbol('X.renderer.prototype.convertWorldToDisplayCoordinates', X.renderer.prototype.convertWorldToDisplayCoordinates);
