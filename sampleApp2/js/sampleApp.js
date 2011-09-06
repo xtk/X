@@ -1,19 +1,8 @@
 // define namespace
 var sampleApp = sampleApp || {};
 
-<<<<<<< HEAD:sampleApp2/js/sampleApp.js
 sampleApp.run = function() {
-=======
-goog.require('X.color');
-goog.require('X.colors');
-goog.require('X.console');
-goog.require('X.object');
-goog.require('X.renderer2D');
-goog.require('X.renderer3D');
-
-sampleApp.init = function() {
->>>>>>> master:sampleApp/sampleApp.js
-
+  
   var c = new X.console();
   
   c.out('Starting sampleApp.init..');
