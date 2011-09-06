@@ -98,7 +98,11 @@ X.points.prototype.add = function(point) {
  * Get the point with the given id. This is a O(1) operation.
  * 
  * @param {!number} id The internal id of the requested point.
+<<<<<<< .merge_file_FgqZOn
  * @returns {!*} The point with the given id.
+=======
+ * @returns {*} The point with the given id.
+>>>>>>> .merge_file_K35uQj
  * @throws {X.exception} An exception if the passed id is invalid or does not
  *           exist.
  */
