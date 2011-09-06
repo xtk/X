@@ -7,6 +7,7 @@ goog.provide('X.renderer');
 
 // requires
 goog.require('X.base');
+goog.require('X.object');
 goog.require('X.buffer');
 goog.require('X.camera');
 goog.require('X.colors');
