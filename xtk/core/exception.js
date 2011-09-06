@@ -50,3 +50,6 @@ X.exception = function(message) {
 
 };
 goog.inherits(X.exception, X.base);
+
+// export symbols (requiered for advanced compilation)
+goog.exportSymbol('X.exception', X.exception);

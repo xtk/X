@@ -11,3 +11,6 @@
 
 #OSX specifics
 .DS_Store
+
+# temp files
+.temp_*

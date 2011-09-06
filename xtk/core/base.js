@@ -14,6 +14,7 @@ goog.require('X');
  * The superclass class for all X.base-objects.
  * 
  * @constructor
+ * @name X.base
  */
 X.base = function() {
 
@@ -76,3 +77,8 @@ X.base.prototype.print = function() {
   return output;
   
 };
+
+// export symbols (requiered for advanced compilation)
+goog.exportSymbol('X.base', X.base);
+goog.exportSymbol('X.base.prototype.getClassName', X.base.prototype.getClassName);
+goog.exportSymbol('X.base.prototype.print', X.base.prototype.print);

@@ -1,0 +1,17 @@
+ _
+)|(
+
+// XTK
+xtk: source code of the xtk library
+xtk-utils: python scripts to: -check style of xtk/your project
+                              -generate goog dependencies of xtk/your project
+                              -build xtk/your project
+                              -generate documentation of xtk/your project
+                              -update external libs and tools
+                              (closure lib, closure compiler, js-doc, etc.)
+xtk-build:compiled version of the xtk library, if you want your project to be google closure free.
+(see example of usage: sampleApp2)
+
+// Demo
+sampleApp: demo application based on google closure and using xtk
+sampleApp2: demo application using xtk with google closure

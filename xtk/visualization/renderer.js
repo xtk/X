@@ -27,6 +27,7 @@ goog.require('goog.structs.Map');
  * @param {number} width The width of the renderer.
  * @param {number} height The height of the renderer.
  * @constructor
+ * @name X.renderer
  * @extends {X.base}
  */
 X.renderer = function(width, height) {
@@ -729,3 +730,18 @@ X.renderer.prototype.convertWorldToDisplayCoordinates = function(vector) {
   return new goog.math.Vec2(Math.round(x), Math.round(y));
   
 };
+
+
+// export symbols (requiered for advanced compilation)
+goog.exportSymbol('X.renderer',X.renderer);
+goog.exportSymbol('X.renderer.prototype.getDimension',X.renderer.prototype.getDimension);
+goog.exportSymbol('X.renderer.prototype.getWidth',X.renderer.prototype.getWidth);
+goog.exportSymbol('X.renderer.prototype.setWidth', X.renderer.prototype.setWidth);
+goog.exportSymbol('X.renderer.prototype.getHeight', X.renderer.prototype.getHeight);
+goog.exportSymbol('X.renderer.prototype.setHeight', X.renderer.prototype.setHeight);
+goog.exportSymbol('X.renderer.prototype.getBackgroundColor', X.renderer.prototype.getBackgroundColor);
+goog.exportSymbol('X.renderer.prototype.setBackgroundColor', X.renderer.prototype.setBackgroundColor);
+goog.exportSymbol('X.renderer.prototype.getContainer', X.renderer.prototype.getContainer);
+goog.exportSymbol('X.renderer.prototype.setContainer', X.renderer.prototype.setContainer);
+goog.exportSymbol('X.renderer.prototype.init', X.renderer.prototype.init);
+goog.exportSymbol('X.renderer.prototype.setContainerById', X.renderer.prototype.setContainerById);
