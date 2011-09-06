@@ -170,7 +170,7 @@ goog.inherits(X.renderer, X.base);
  * 
  * @return {!number} The dimension of this renderer.
  */
-X.renderer.prototype.getDimension = function() {
+X.renderer.prototype.dimension = function() {
 
   return this._dimension;
   
@@ -182,7 +182,7 @@ X.renderer.prototype.getDimension = function() {
  * 
  * @return {!number} The width of this renderer.
  */
-X.renderer.prototype.getWidth = function() {
+X.renderer.prototype.width = function() {
 
   return this._width;
   
@@ -213,7 +213,7 @@ X.renderer.prototype.setWidth = function(width) {
  * 
  * @return {!number} The height of this renderer.
  */
-X.renderer.prototype.getHeight = function() {
+X.renderer.prototype.height = function() {
 
   return this._height;
   
@@ -244,7 +244,7 @@ X.renderer.prototype.setHeight = function(height) {
  * 
  * @return {!string} The background color of this renderer.
  */
-X.renderer.prototype.getBackgroundColor = function() {
+X.renderer.prototype.backgroundColor = function() {
 
   return this._backgroundColor;
   
@@ -277,7 +277,7 @@ X.renderer.prototype.setBackgroundColor = function(backgroundColor) {
  * @return {!Element} The container of this renderer as a DOM object.
  * @throws {X.exception} An exception if the <body> could not be found.
  */
-X.renderer.prototype.getContainer = function() {
+X.renderer.prototype.container = function() {
 
   // if no _container is associated, use the document.body
   if (!this._container) {
@@ -357,14 +357,14 @@ X.renderer.prototype.init = function() {
   // create a canvas object with certain properties
   var canvas = goog.dom.createDom('canvas');
   // css properties
-  canvas.style.setProperty('background-color', this.getBackgroundColor()
+  canvas.style.setProperty('background-color', this.backgroundColor()
       .toString());
   // width and height can not be set using CSS but via object properties
-  canvas.width = this.getWidth();
-  canvas.height = this.getHeight();
+  canvas.width = this.width();
+  canvas.height = this.height();
   
   // append it to the container
-  goog.dom.appendChild(this.getContainer(), canvas);
+  goog.dom.appendChild(this.container(), canvas);
   
   // --------------------------------------------------------------------------
   //
@@ -399,7 +399,7 @@ X.renderer.prototype.init = function() {
   //
   try {
     
-    gl.viewport(0, 0, this.getWidth(), this.getHeight());
+    gl.viewport(0, 0, this.width(), this.height());
     
     // configure opacity to 0.0 to overwrite the viewport background-color by
     // the canvas color
@@ -638,10 +638,10 @@ X.renderer.prototype.render = function() {
   this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
   
   // grab the current perspective from the camera
-  var perspectiveMatrix = this._camera.getPerspective();
+  var perspectiveMatrix = this._camera.perspective();
   
   // grab the current view from the camera
-  var viewMatrix = this._camera.getView();
+  var viewMatrix = this._camera.view();
   
   // propagate perspective and view to the uniform matrices of the shader
   var perspectiveUniformLocation = this._gl.getUniformLocation(
@@ -710,8 +710,8 @@ X.renderer.prototype.render = function() {
  */
 X.renderer.prototype.convertWorldToDisplayCoordinates = function(vector) {
 
-  var view = this._camera.getView();
-  var perspective = this._camera.getPerspective();
+  var view = this._camera.view();
+  var perspective = this._camera.perspective();
   
   var viewPerspective = goog.math.Matrix.createIdentityMatrix(4);
   viewPerspective.multiply(view);
@@ -721,10 +721,10 @@ X.renderer.prototype.convertWorldToDisplayCoordinates = function(vector) {
   twoDVectorAsMatrix = viewPerspective.multiplyByVector(vector);
   
   var x = (twoDVectorAsMatrix.getValueAt(0, 0) + 1) / 2.0;
-  x = x * this.getWidth();
+  x = x * this.width();
   
   var y = (1 - twoDVectorAsMatrix.getValueAt(0, 1)) / 2.0;
-  y = y * this.getHeight();
+  y = y * this.height();
   
   return new goog.math.Vec2(Math.round(x), Math.round(y));
   
