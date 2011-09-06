@@ -13,6 +13,7 @@ goog.require('X.colors');
 goog.require('X.exception');
 goog.require('X.matrixHelper');
 goog.require('X.points');
+goog.require('X.shaders');
 goog.require('goog.dom');
 goog.require('goog.iter.Iterator');
 goog.require('goog.math.Matrix');
@@ -97,6 +98,22 @@ X.renderer = function(width, height) {
    * @protected
    */
   this._gl = null;
+  
+  /**
+   * The shader pair for this renderer.
+   * 
+   * @type {?X.shaders}
+   * @protected
+   */
+  this._shaders = null;
+  
+  /**
+   * The compiled shader program of this renderer.
+   * 
+   * @type {?Object}
+   * @protected
+   */
+  this._shaderProgram = null;
   
   /**
    * The camera of this renderer.
@@ -333,14 +350,16 @@ X.renderer.prototype.setContainerById = function(containerId) {
 X.renderer.prototype.init = function() {
 
   // if the canvas already exists, exit now
-  if (this._canvas) {
+  if (goog.isDefAndNotNull(this._canvas)) {
     return;
   }
   
   // create a canvas object with certain properties
   var canvas = goog.dom.createDom('canvas');
+  // css properties
   canvas.style.setProperty('background-color', this.getBackgroundColor()
       .toString());
+  // width and height can not be set using CSS but via object properties
   canvas.width = this.getWidth();
   canvas.height = this.getHeight();
   
@@ -410,41 +429,55 @@ X.renderer.prototype.init = function() {
   // create a new camera
   var camera = new X.camera(this);
   
-  // add shaders to this renderer
-  
-
   //
   // attach all created objects as class attributes
-  // should be the last thing to do here since we use these attributes to check
-  // if the initialization was completed successfully
+  // should be one of the last things to do here since we use these attributes
+  // to check if the initialization was completed successfully
   this._canvas = canvas;
   this._gl = gl;
   this._camera = camera;
   
+  //
+  // add default shaders to this renderer
+  // it is possible to attach other custom shaders after this init call
+  // also, this has to happen after this._canvas, this._gl and this._camera were
+  // attached to this renderer since we check for these
+  var defaultShaders = new X.shaders();
+  this.addShaders(defaultShaders);
+  
 };
 
-// should happen after init directly
-X.renderer.prototype.addShaders = function(fragmentShader, vertexShader) {
 
-  if (!this._canvas || !this._gl) {
+X.renderer.prototype.addShaders = function(shaders) {
+
+  // check if the renderer is initialized properly
+  if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl)
+      || !goog.isDefAndNotNull(this._camera)) {
     
     throw new X.exception('Fatal: Renderer was not initialized properly!');
     
   }
   
-  if (!fragmentShader || !vertexShader) {
+  // check if the given shaders are valid
+  if (!goog.isDefAndNotNull(shaders) || !(shaders instanceof X.shaders)) {
     
     throw new X.exception('Fatal: Could not add shaders!');
     
   }
   
+  // call the validate() method of the shader pair
+  // this will cause exceptions if the validation fails..
+  shaders.validate();
+  
   // compile the fragment and vertex shaders
   var glFragmentShader = this._gl.createShader(this._gl.FRAGMENT_SHADER);
   var glVertexShader = this._gl.createShader(this._gl.VERTEX_SHADER);
   
-  this._gl.shaderSource(glFragmentShader, fragmentShader.getSource());
-  this._gl.shaderSource(glVertexShader, vertexShader.getSource());
+  // attach the sources, defined in the shaders pair
+  this._gl.shaderSource(glFragmentShader, shaders.fragment());
+  this._gl.shaderSource(glVertexShader, shaders.vertex());
   
+  // start compilation
   this._gl.compileShader(glFragmentShader);
   this._gl.compileShader(glVertexShader);
   
@@ -455,7 +488,7 @@ X.renderer.prototype.addShaders = function(fragmentShader, vertexShader) {
     
   }
   
-  // initialize the shaders
+  // create a shaderProgram, attach the shaders and link'em all together
   var shaderProgram = this._gl.createProgram();
   this._gl.attachShader(shaderProgram, glVertexShader);
   this._gl.attachShader(shaderProgram, glFragmentShader);
@@ -467,20 +500,23 @@ X.renderer.prototype.addShaders = function(fragmentShader, vertexShader) {
     
   }
   
+  // activate the new shaderProgram
   this._gl.useProgram(shaderProgram);
   
-  // TODO Shader
+  // store the index of the position and color attributes
   this._vertexPositionAttribute = this._gl.getAttribLocation(shaderProgram,
-      "vertexPosition");
+      shaders.position());
   this._gl.enableVertexAttribArray(this._vertexPositionAttribute);
   
-  // TODO Shader
   this._vertexColorAttribute = this._gl.getAttribLocation(shaderProgram,
-      "vertexColor");
+      shaders.color());
   this._gl.enableVertexAttribArray(this._vertexColorAttribute);
   
-
+  // attach the shaderProgram to this renderer
   this._shaderProgram = shaderProgram;
+  
+  // attach the shaders to this renderer
+  this._shaders = shaders;
   
 };
 
@@ -572,13 +608,14 @@ X.renderer.prototype.addObject = function(object) {
   
   // TODO buffers for lightning etc..
   
+  // check if we can get a unique id
   if (this._objects.containsKey(++this._id)) {
     
     throw new X.exception('Fatal: Could not get unique id.');
     
   }
   
-  uniqueId = this._id;
+  var uniqueId = this._id;
   
   // now store the object and the buffers in the hash maps
   this._objects.set(uniqueId, object);
@@ -606,17 +643,18 @@ X.renderer.prototype.render = function() {
   // grab the current view from the camera
   var viewMatrix = this._camera.getView();
   
-  // TODO shader
+  // propagate perspective and view to the uniform matrices of the shader
   var perspectiveUniformLocation = this._gl.getUniformLocation(
-      this._shaderProgram, "perspective");
+      this._shaderProgram, this._shaders.perspective());
   
   this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
       new Float32Array(perspectiveMatrix.flatten()));
   
-  var viewUniform = this._gl.getUniformLocation(this._shaderProgram, "view");
+  var viewUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
+      this._shaders.view());
   
-  this._gl.uniformMatrix4fv(viewUniform, false, new Float32Array(viewMatrix
-      .flatten()));
+  this._gl.uniformMatrix4fv(viewUniformLocation, false, new Float32Array(
+      viewMatrix.flatten()));
   
   // loop through all objects and (re-)draw them
   var keyIterator = this._objects.getKeyIterator();

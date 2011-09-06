@@ -7,8 +7,6 @@ goog.require('X.console');
 goog.require('X.object');
 goog.require('X.renderer2D');
 goog.require('X.renderer3D');
-goog.require('X.shaderFragment');
-goog.require('X.shaderVertex');
 
 sampleApp.init = function() {
 
@@ -43,32 +41,7 @@ sampleApp.init = function() {
     threeDView.setBackgroundColor('#b3b3e7');
     threeDView.init();
     
-    // shader experiments
-    var fragmentShader = new X.shaderFragment();
-    fragmentShader
-        .setSource("varying lowp vec4 fragmentColor;    \n\
-                                                        \n\
-        		void main(void) {                           \n\
-              gl_FragColor = fragmentColor;             \n\
-            }                                           \n\
-    ");
-    
-    var vertexShader = new X.shaderVertex();
-    vertexShader
-        .setSource("attribute vec3 vertexPosition;                                          \n\
-        		attribute vec4 vertexColor;                                                     \n\
-                                                                                            \n\
-        uniform mat4 view;                                                                  \n\
-        uniform mat4 perspective;                                                           \n\
-                                                                                            \n\
-        varying lowp vec4 fragmentColor;                                                    \n\
-                                                                                            \n\
-        void main(void) {                                                                   \n\
-          gl_Position = perspective * view * vec4(vertexPosition, 1.0);                     \n\
-          fragmentColor = vertexColor;                                                      \n\
-        }                                                                                   \n\
-        ");
-    
+
     var object1 = new X.object();
     // we can add points as goog.math.Coordinate3 or just as 1-D arrays with 3
     // items
@@ -98,25 +71,37 @@ sampleApp.init = function() {
     // here, we do not configure any colors which should reset to default
     // (white)
     
+
+    var color = new X.color(0, 1, 0);
+    color.setAlpha(1.0);
     var object4 = new X.object();
     object4.points().add([ -30, 40, 0 ]);
     object4.points().add([ -50, 30, 0 ]);
     object4.points().add([ -30, 30, 0 ]);
     object4.points().add([ -10, 20, 0 ]);
-    object4.setColor(new X.color(0, 1, 0));
+    object4.setColor(color);
     
-    sliceView1.addShaders(fragmentShader, vertexShader);
+    var color2 = new X.color(0, 1, 0);
+    color2.setAlpha(0.1);
+    var object5 = new X.object();
+    object5.points().add([ -30, 40, 0 ]);
+    object5.points().add([ -50, 30, 0 ]);
+    object5.points().add([ -20, 10, 0 ]);
+    object5.points().add([ -10, 10, 0 ]);
+    object5.setColor(color2);
+    
+
     sliceView1.addObject(object1);
-    sliceView2.addShaders(fragmentShader, vertexShader);
     sliceView2.addObject(object1);
-    sliceView3.addShaders(fragmentShader, vertexShader);
     sliceView3.addObject(object1);
-    threeDView.addShaders(fragmentShader, vertexShader);
     threeDView.addObject(object1);
     threeDView.addObject(object2);
     threeDView.addObject(object3);
     threeDView.addObject(object4);
+    threeDView.addObject(object5);
     
+    // we probably do not need to time this because of an appropriate event
+    // mechanism?
     // setInterval(function() {
     
     sliceView1.render();
@@ -131,6 +116,8 @@ sampleApp.init = function() {
     c.out(sliceView3.print());
     c.out(threeDView.print());
     
+
+    // THE FOLLOWING IS A HACK UNTIL THE INTERACTOR IS READY
     function handleFileSelect(evt) {
 
       evt.stopPropagation();
@@ -154,20 +141,20 @@ sampleApp.init = function() {
     
     function testcallback(evt) {
 
-      result = evt.target.result;
-      readAsArray = result.split('\n');
-      objectN = new X.object();
+      var result = evt.target.result;
+      var readAsArray = result.split('\n');
+      var objectN = new X.object();
       
       for ( var i = 0; i < readAsArray.length; i++) {
         
-        tmp = readAsArray[i];
-        tmpstr = tmp.split(' ');
+        var tmp = readAsArray[i];
+        var tmpstr = tmp.split(' ');
         
         if (tmpstr[3] == 'vertex') {
           
-          x = tmpstr[4];
-          y = tmpstr[5];
-          z = tmpstr[6];
+          var x = tmpstr[4];
+          var y = tmpstr[5];
+          var z = tmpstr[6];
           objectN.points().add([ x, y, z ]);
           
         }

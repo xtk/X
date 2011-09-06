@@ -6,14 +6,12 @@ goog.addDependency('../../../../../xtk/core/exception.js', ['X.exception'], ['X.
 goog.addDependency('../../../../../xtk/io/console.js', ['X.console'], ['X.base', 'X.exception', 'goog.dom']);
 goog.addDependency('../../../../../xtk/math/matrixHelper.js', ['X.matrixHelper'], ['X.exception', 'goog.math.Matrix', 'goog.math.Vec2', 'goog.math.Vec3']);
 goog.addDependency('../../../../../xtk/objects/colors.js', ['X.colors'], ['X.base', 'X.color', 'X.exception', 'goog.structs.Map']);
-goog.addDependency('../../../../../xtk/objects/object.js', ['X.object'], ['X.base', 'X.colors', 'X.exception', 'X.points', 'goog.structs.Set']);
+goog.addDependency('../../../../../xtk/objects/object.js', ['X.object'], ['X.base', 'X.color', 'X.colors', 'X.exception', 'X.points', 'goog.structs.Set']);
 goog.addDependency('../../../../../xtk/objects/points.js', ['X.points'], ['X.base', 'X.exception', 'goog.math.Coordinate3', 'goog.structs.Map']);
 goog.addDependency('../../../../../xtk/visualization/buffer.js', ['X.buffer'], ['X.base', 'X.exception']);
 goog.addDependency('../../../../../xtk/visualization/camera.js', ['X.camera'], ['X.base', 'X.exception', 'goog.math.Matrix', 'goog.math.Vec3']);
-goog.addDependency('../../../../../xtk/visualization/renderer.js', ['X.renderer'], ['X.base', 'X.buffer', 'X.camera', 'X.colors', 'X.exception', 'X.matrixHelper', 'goog.dom', 'goog.math.Matrix', 'goog.math.Vec3', 'goog.structs.Map']);
+goog.addDependency('../../../../../xtk/visualization/renderer.js', ['X.renderer'], ['X.base', 'X.buffer', 'X.camera', 'X.colors', 'X.exception', 'X.matrixHelper', 'X.points', 'X.shaders', 'goog.dom', 'goog.iter.Iterator', 'goog.math.Matrix', 'goog.math.Vec3', 'goog.structs.Map']);
 goog.addDependency('../../../../../xtk/visualization/renderer2D.js', ['X.renderer2D'], ['X.renderer']);
 goog.addDependency('../../../../../xtk/visualization/renderer3D.js', ['X.renderer3D'], ['X.renderer']);
-goog.addDependency('../../../../../xtk/visualization/shader.js', ['X.shader'], ['X.base', 'X.exception']);
-goog.addDependency('../../../../../xtk/visualization/shaderFragment.js', ['X.shaderFragment'], ['X.shader']);
-goog.addDependency('../../../../../xtk/visualization/shaderVertex.js', ['X.shaderVertex'], ['X.shader']);
+goog.addDependency('../../../../../xtk/visualization/shaders.js', ['X.shaders'], ['X.base', 'X.exception']);
 goog.addDependency('../../../../../xtk/xtk.js', ['X'], []);
