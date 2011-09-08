@@ -53,7 +53,11 @@ X.interactor = function(renderer) {
   
   this._camera = renderer.camera();
   
-  this._mouseDown = false;
+  this._leftButtonDown = false;
+  
+  this._rightButtonDown = false;
+  
+  this._lastMovementY = 0;
   
 };
 // inherit from X.base
@@ -71,12 +75,23 @@ X.interactor.prototype.observeMouseDown = function() {
   this._renderer.container().addEventListener('mousedown',
       this.onMouseDown.bind(this), false);
   
+  // deactivate right-click context menu
+  this._renderer.container().oncontextmenu = this.onContextMenu;
+  
+};
+
+X.interactor.prototype.onContextMenu = function() {
+
+  return false;
+  
 };
 
 X.interactor.prototype.observeMouseMove = function() {
 
   this._renderer.container().addEventListener('mousemove',
       this.onMouseMove.bind(this), false);
+  this._renderer.container().addEventListener('mouseout',
+      this.onMouseOut.bind(this), false);
   
 };
 
@@ -87,23 +102,57 @@ X.interactor.prototype.observeMouseUp = function() {
   
 };
 
+X.interactor.prototype.onMouseOut = function(event) {
+
+  // reset the click flags
+  this._leftButtonDown = false;
+  this._rightButtonDown = false;
+  this._lastMovementY = 0;
+  
+};
+
 X.interactor.prototype.onMouseDown = function(event) {
 
-  this._mouseDown = true;
+  // reset the lastMovement
+  this._lastMovementY = 0;
+  
+  if (event.button == 0) {
+    
+    // left button click
+    this._leftButtonDown = true;
+    
+  } else if (event.button == 2) {
+    
+    // right button click
+    this._rightButtonDown = true;
+    
+  }
+  
+  event.preventDefault();
   
 };
 
 X.interactor.prototype.onMouseUp = function(event) {
 
-  this._mouseDown = false;
+  if (event.button == 0) {
+    
+    // left button click
+    this._leftButtonDown = false;
+    
+  } else if (event.button == 2) {
+    
+    // right button click
+    this._rightButtonDown = false;
+    
+  }
+  
+  event.preventDefault();
   
 };
 
 X.interactor.prototype.onMouseMove = function(event) {
 
-  
-
-  if (this._mouseDown) {
+  if (this._leftButtonDown) {
     var v = new goog.math.Vec2(event.layerX, event.layerY);
     
     var vec3d = this._renderer.viewportToNormalizedViewport(v);
@@ -112,32 +161,49 @@ X.interactor.prototype.onMouseMove = function(event) {
     
   }
   
+  if (this._rightButtonDown) {
+    
+    var currentY = event.layerY;
+    
+    var delta = this._lastMovementY - currentY;
+    
+    if (delta < 0) {
+      
+      // zoom in fine mode
+      this._camera.zoomIn(true);
+      
+    } else {
+      
+      // zoom out in fine mode
+      this._camera.zoomOut(true);
+      
+    }
+    
+    this._lastMovementY = currentY;
+    
+  }
+  
+  event.preventDefault();
+  
 };
 
 X.interactor.prototype.onMouseWheel = function(event) {
 
-  // var fov = this._camera.fieldOfView();
+  // TODO event handling is browser dependent.. need to add some more calls
   
   var delta = event.wheelDeltaY;
   
   if (delta < 0) {
     
     // zoom in
-    this._camera._position.z = this._camera._position.z - 30;
-    this._camera._focus.z = this._camera._focus.z - 30;
+    this._camera.zoomIn();
     
   } else {
     
     // zoom out
-    this._camera._position.z = this._camera._position.z + 30;
-    this._camera._focus.z = this._camera._focus.z + 30;
+    this._camera.zoomOut();
     
   }
-  
-  this._camera._view = this._camera.lookAt_(this._camera._position,
-      this._camera._focus);
-  
-  this._renderer.render();
   
   event.preventDefault();
   

@@ -125,6 +125,44 @@ X.camera.prototype.calculateViewingFrustum_ = function(left, right, bottom,
   
 };
 
+X.camera.prototype.zoomIn = function(fine) {
+
+  var zoomStep = 30;
+  
+  if (goog.isDefAndNotNull(fine)) {
+    
+    zoomStep = 1;
+    
+  }
+  
+  this._position.z = this._position.z - zoomStep;
+  this._focus.z = this._focus.z - zoomStep;
+  
+  this._view = this.lookAt_(this._position, this._focus);
+  
+  this._renderer.render();
+  
+};
+
+X.camera.prototype.zoomOut = function(fine) {
+
+  var zoomStep = 30;
+  
+  if (goog.isDefAndNotNull(fine)) {
+    
+    zoomStep = 1;
+    
+  }
+  
+  this._position.z = this._position.z + zoomStep;
+  this._focus.z = this._focus.z + zoomStep;
+  
+  this._view = this.lookAt_(this._position, this._focus);
+  
+  this._renderer.render();
+  
+};
+
 X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
 
   if (!(cameraPosition instanceof goog.math.Vec3)
