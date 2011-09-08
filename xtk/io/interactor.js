@@ -106,7 +106,7 @@ X.interactor.prototype.onMouseMove = function(event) {
   if (this._mouseDown) {
     var v = new goog.math.Vec2(event.layerX, event.layerY);
     
-    var vec3d = this._renderer.convertDisplayToWorldCoordinates(v);
+    var vec3d = this._renderer.viewportToNormalizedViewport(v);
     
     console.log(vec3d.x, vec3d.y, vec3d.z);
     
@@ -122,11 +122,15 @@ X.interactor.prototype.onMouseWheel = function(event) {
   
   if (delta < 0) {
     
+    // zoom in
     this._camera._position.z = this._camera._position.z - 30;
+    this._camera._focus.z = this._camera._focus.z - 30;
     
   } else {
     
+    // zoom out
     this._camera._position.z = this._camera._position.z + 30;
+    this._camera._focus.z = this._camera._focus.z + 30;
     
   }
   

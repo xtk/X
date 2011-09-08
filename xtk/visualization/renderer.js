@@ -763,7 +763,7 @@ X.renderer.prototype.convertWorldToDisplayCoordinates = function(vector) {
 };
 // source
 // http://webglfactory.blogspot.com/2011/05/how-to-convert-world-to-screen.html
-X.renderer.prototype.displayToNormalizedDisplay = function(vector) {
+X.renderer.prototype.viewportToNormalizedViewport = function(vector) {
 
   var view = this._camera.view();
   var perspective = this._camera.perspective();
@@ -777,7 +777,7 @@ X.renderer.prototype.displayToNormalizedDisplay = function(vector) {
   var x = 2.0 * vector.x / this.width() - 1;
   var y = -2.0 * vector.y / this.height() + 1;
   
-  threeDVector = new goog.math.Vec3(x, y, 0);
+  threeDVector = new goog.math.Vec3(x, y, 10);
   threeDVectorAsMatrix = viewPerspectiveInverse.multiplyByVector(threeDVector);
   
   threeDVector.x = threeDVectorAsMatrix.getValueAt(0, 0);
