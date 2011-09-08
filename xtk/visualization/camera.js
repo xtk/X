@@ -40,11 +40,18 @@ X.camera = function(renderer) {
   
   this._renderer = renderer;
   
-  this._perspective = this.calculatePerspective_(45,
+  this._fieldOfView = 45;
+  
+  this._position = new goog.math.Vec3(0, 0, 100);
+  
+  this._focus = new goog.math.Vec3(0, 0, 0);
+  
+  this._up = new goog.math.Vec3(0, 1, 0);
+  
+  this._perspective = this.calculatePerspective_(this._fieldOfView,
       (this._renderer.width() / this._renderer.height()), 1, 10000);
   
-  this._view = this.lookAt_(new goog.math.Vec3(0, 0, 100), new goog.math.Vec3(
-      0, 0, 0), new goog.math.Vec3(0, 1, 0));
+  this._view = this.lookAt_(this._position, this._focus);
   
 };
 // inherit from X.base
@@ -62,6 +69,12 @@ X.camera.prototype.perspective = function() {
 X.camera.prototype.view = function() {
 
   return this._view;
+  
+};
+
+X.camera.prototype.position = function() {
+
+  return this._position;
   
 };
 
@@ -112,11 +125,10 @@ X.camera.prototype.calculateViewingFrustum_ = function(left, right, bottom,
   
 };
 
-X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint, up) {
+X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
 
   if (!(cameraPosition instanceof goog.math.Vec3)
-      || !(targetPoint instanceof goog.math.Vec3)
-      || !(up instanceof goog.math.Vec3)) {
+      || !(targetPoint instanceof goog.math.Vec3)) {
     
     throw new X.exception(
         'Fatal: 3D vectors required for calculating the view.');
@@ -134,7 +146,7 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint, up) {
   zVector.normalize();
   
   // Y vector = up
-  var yVector = up.clone();
+  var yVector = this._up.clone();
   
   // X vector = Y x Z
   var xVector = goog.math.Vec3.cross(yVector, zVector);
@@ -167,6 +179,8 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint, up) {
   matrix.setValueAt(3, 2, 0);
   matrix.setValueAt(3, 3, 1);
   
-  return matrix.translate(cameraPosition.invert());
+  var invertedCameraPosition = cameraPosition.clone();
+  
+  return matrix.translate(invertedCameraPosition.invert());
   
 };
