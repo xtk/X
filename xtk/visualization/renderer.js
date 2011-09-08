@@ -11,6 +11,7 @@ goog.require('X.buffer');
 goog.require('X.camera');
 goog.require('X.colors');
 goog.require('X.exception');
+goog.require('X.interactor');
 goog.require('X.matrixHelper');
 goog.require('X.points');
 goog.require('X.shaders');
@@ -123,6 +124,14 @@ X.renderer = function(width, height) {
    * @protected
    */
   this._camera = null;
+  
+  /**
+   * The interactor of this renderer.
+   * 
+   * @type {?X.interactor}
+   * @protected
+   */
+  this._interactor = null;
   
   /**
    * A hash map of displayable objects of this renderer. Each object is stored
@@ -338,6 +347,16 @@ X.renderer.prototype.setContainerById = function(containerId) {
   
 };
 
+/**
+ * Get the camera of this renderer.
+ * 
+ * @returns {X.camera}
+ */
+X.renderer.prototype.camera = function() {
+
+  return this._camera;
+  
+};
 
 /**
  * Create the canvas of this renderer inside the configured container and using
@@ -437,6 +456,18 @@ X.renderer.prototype.init = function() {
   this._canvas = canvas;
   this._gl = gl;
   this._camera = camera;
+  
+  //
+  // create a new interactor
+  // at this point a valid camera has to exist
+  var interactor = new X.interactor(this);
+  interactor.observeMouseWheel();
+  interactor.observeMouseDown();
+  interactor.observeMouseUp();
+  interactor.observeMouseMove();
+  
+  // attach the interactor to this renderer
+  this._interactor = interactor;
   
   //
   // add default shaders to this renderer
@@ -730,18 +761,54 @@ X.renderer.prototype.convertWorldToDisplayCoordinates = function(vector) {
   return new goog.math.Vec2(Math.round(x), Math.round(y));
   
 };
+// source
+// http://webglfactory.blogspot.com/2011/05/how-to-convert-world-to-screen.html
+X.renderer.prototype.displayToNormalizedDisplay = function(vector) {
+
+  var view = this._camera.view();
+  var perspective = this._camera.perspective();
+  
+  var viewPerspective = goog.math.Matrix.createIdentityMatrix(4);
+  viewPerspective.multiply(view);
+  viewPerspective.multiply(perspective);
+  
+  var viewPerspectiveInverse = viewPerspective.getInverse();
+  
+  var x = 2.0 * vector.x / this.width() - 1;
+  var y = -2.0 * vector.y / this.height() + 1;
+  
+  threeDVector = new goog.math.Vec3(x, y, 0);
+  threeDVectorAsMatrix = viewPerspectiveInverse.multiplyByVector(threeDVector);
+  
+  threeDVector.x = threeDVectorAsMatrix.getValueAt(0, 0);
+  threeDVector.y = threeDVectorAsMatrix.getValueAt(1, 0);
+  threeDVector.z = threeDVectorAsMatrix.getValueAt(2, 0);
+  
+  return threeDVector;
+  
+};
 
 
 // export symbols (requiered for advanced compilation)
-goog.exportSymbol('X.renderer',X.renderer);
-goog.exportSymbol('X.renderer.prototype.getDimension',X.renderer.prototype.getDimension);
-goog.exportSymbol('X.renderer.prototype.getWidth',X.renderer.prototype.getWidth);
-goog.exportSymbol('X.renderer.prototype.setWidth', X.renderer.prototype.setWidth);
-goog.exportSymbol('X.renderer.prototype.getHeight', X.renderer.prototype.getHeight);
-goog.exportSymbol('X.renderer.prototype.setHeight', X.renderer.prototype.setHeight);
-goog.exportSymbol('X.renderer.prototype.getBackgroundColor', X.renderer.prototype.getBackgroundColor);
-goog.exportSymbol('X.renderer.prototype.setBackgroundColor', X.renderer.prototype.setBackgroundColor);
-goog.exportSymbol('X.renderer.prototype.getContainer', X.renderer.prototype.getContainer);
-goog.exportSymbol('X.renderer.prototype.setContainer', X.renderer.prototype.setContainer);
+goog.exportSymbol('X.renderer', X.renderer);
+goog.exportSymbol('X.renderer.prototype.getDimension',
+    X.renderer.prototype.getDimension);
+goog.exportSymbol('X.renderer.prototype.getWidth',
+    X.renderer.prototype.getWidth);
+goog.exportSymbol('X.renderer.prototype.setWidth',
+    X.renderer.prototype.setWidth);
+goog.exportSymbol('X.renderer.prototype.getHeight',
+    X.renderer.prototype.getHeight);
+goog.exportSymbol('X.renderer.prototype.setHeight',
+    X.renderer.prototype.setHeight);
+goog.exportSymbol('X.renderer.prototype.getBackgroundColor',
+    X.renderer.prototype.getBackgroundColor);
+goog.exportSymbol('X.renderer.prototype.setBackgroundColor',
+    X.renderer.prototype.setBackgroundColor);
+goog.exportSymbol('X.renderer.prototype.getContainer',
+    X.renderer.prototype.getContainer);
+goog.exportSymbol('X.renderer.prototype.setContainer',
+    X.renderer.prototype.setContainer);
 goog.exportSymbol('X.renderer.prototype.init', X.renderer.prototype.init);
-goog.exportSymbol('X.renderer.prototype.setContainerById', X.renderer.prototype.setContainerById);
+goog.exportSymbol('X.renderer.prototype.setContainerById',
+    X.renderer.prototype.setContainerById);
