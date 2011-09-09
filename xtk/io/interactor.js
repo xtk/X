@@ -55,9 +55,11 @@ X.interactor = function(renderer) {
   
   this._leftButtonDown = false;
   
+  this._middleButtonDown = false;
+  
   this._rightButtonDown = false;
   
-  this._lastMovementY = 0;
+  this._lastMousePosition = new goog.math.Vec2(0, 0);
   
 };
 // inherit from X.base
@@ -106,8 +108,10 @@ X.interactor.prototype.onMouseOut = function(event) {
 
   // reset the click flags
   this._leftButtonDown = false;
+  this._middleButtonDown = false;
   this._rightButtonDown = false;
-  this._lastMovementY = 0;
+  this._lastMousePosition.x = 0;
+  this._lastMousePosition.y = 0;
   
 };
 
@@ -120,6 +124,11 @@ X.interactor.prototype.onMouseDown = function(event) {
     
     // left button click
     this._leftButtonDown = true;
+    
+  } else if (event.button == 1) {
+    
+    // middle button click
+    this._middleButtonDown = true;
     
   } else if (event.button == 2) {
     
@@ -139,6 +148,11 @@ X.interactor.prototype.onMouseUp = function(event) {
     // left button click
     this._leftButtonDown = false;
     
+  } else if (event.button == 1) {
+    
+    // middle button click
+    this._middleButtonDown = false;
+    
   } else if (event.button == 2) {
     
     // right button click
@@ -152,20 +166,65 @@ X.interactor.prototype.onMouseUp = function(event) {
 
 X.interactor.prototype.onMouseMove = function(event) {
 
+  var currentMousePosition = new goog.math.Vec2(event.layerX, event.layerY);
+  
   if (this._leftButtonDown) {
-    var v = new goog.math.Vec2(event.layerX, event.layerY);
     
-    var vec3d = this._renderer.viewportToNormalizedViewport(v);
+    var distance = this._lastMousePosition.subtract(currentMousePosition);
     
-    console.log(vec3d.x, vec3d.y, vec3d.z);
+    if (Math.abs(distance.x) < 2) {
+      
+      distance.x = 0;
+      
+    }
+    if (Math.abs(distance.y) < 2) {
+      
+      distance.y = 0;
+      
+    }
+    
+    this._camera._position.x = this._camera._position.x + distance.x;
+    this._camera._position.y = this._camera._position.y - distance.y;
+    // this._camera._focus.x = this._camera._focus.x + distance.x;
+    // this._camera._focus.y = this._camera._focus.y - distance.y;
+    
+    this._camera._view = this._camera.lookAt_(this._camera._position,
+        this._camera._focus);
+    
+    this._renderer.render();
+    
+  }
+  
+  if (this._middleButtonDown) {
+    
+    var distance = this._lastMousePosition.subtract(currentMousePosition);
+    
+    if (Math.abs(distance.x) < 2) {
+      
+      distance.x = 0;
+      
+    }
+    if (Math.abs(distance.y) < 2) {
+      
+      distance.y = 0;
+      
+    }
+    
+    this._camera._position.x = this._camera._position.x + distance.x;
+    this._camera._position.y = this._camera._position.y - distance.y;
+    this._camera._focus.x = this._camera._focus.x + distance.x;
+    this._camera._focus.y = this._camera._focus.y - distance.y;
+    
+    this._camera._view = this._camera.lookAt_(this._camera._position,
+        this._camera._focus);
+    
+    this._renderer.render();
     
   }
   
   if (this._rightButtonDown) {
     
-    var currentY = event.layerY;
-    
-    var delta = this._lastMovementY - currentY;
+    var delta = this._lastMousePosition.y - currentMousePosition.y;
     
     if (delta < 0) {
       
@@ -179,9 +238,9 @@ X.interactor.prototype.onMouseMove = function(event) {
       
     }
     
-    this._lastMovementY = currentY;
-    
   }
+  
+  this._lastMousePosition = currentMousePosition.clone();
   
   event.preventDefault();
   
