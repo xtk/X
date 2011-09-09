@@ -746,8 +746,8 @@ X.renderer.prototype.convertWorldToDisplayCoordinates = function(vector) {
   var perspective = this._camera.perspective();
   
   var viewPerspective = goog.math.Matrix.createIdentityMatrix(4);
-  viewPerspective.multiply(view);
-  viewPerspective.multiply(perspective);
+  viewPerspective = viewPerspective.multiply(perspective);
+  viewPerspective = viewPerspective.multiply(view);
   
   var twoDVectorAsMatrix;
   twoDVectorAsMatrix = viewPerspective.multiplyByVector(vector);
@@ -769,15 +769,16 @@ X.renderer.prototype.viewportToNormalizedViewport = function(vector) {
   var perspective = this._camera.perspective();
   
   var viewPerspective = goog.math.Matrix.createIdentityMatrix(4);
-  viewPerspective.multiply(view);
-  viewPerspective.multiply(perspective);
+  viewPerspective = viewPerspective.multiply(perspective);
+  viewPerspective = viewPerspective.multiply(view);
   
   var viewPerspectiveInverse = viewPerspective.getInverse();
   
+
   var x = 2.0 * vector.x / this.width() - 1;
   var y = -2.0 * vector.y / this.height() + 1;
   
-  threeDVector = new goog.math.Vec3(x, y, 10);
+  threeDVector = new goog.math.Vec3(x, y, 0);
   threeDVectorAsMatrix = viewPerspectiveInverse.multiplyByVector(threeDVector);
   
   threeDVector.x = threeDVectorAsMatrix.getValueAt(0, 0);
