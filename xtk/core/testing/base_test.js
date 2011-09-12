@@ -5,12 +5,12 @@ goog.require('goog.testing.jsunit');
 /**
  * Test for X.base.getClassName
  */
-function testXbaseGetClassName() {
+function testXbaseClassName() {
 
   b = new X.base();
-
-  assertEquals(b.getClassName(), 'base');
-
+  
+  assertEquals(b.className(), 'base');
+  
 }
 
 
@@ -20,7 +20,7 @@ function testXbaseGetClassName() {
 function testXbasePrint() {
 
   b = new X.base();
-
+  
   assertEquals(b.print(), '== X.base ==\n');
-
+  
 }
