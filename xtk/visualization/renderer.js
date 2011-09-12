@@ -16,6 +16,8 @@ goog.require('X.matrixHelper');
 goog.require('X.points');
 goog.require('X.shaders');
 goog.require('goog.dom');
+goog.require('goog.events');
+goog.require('goog.events.EventHandler');
 goog.require('goog.iter.Iterator');
 goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec3');
@@ -173,6 +175,15 @@ X.renderer = function(width, height) {
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
 
+/**
+ * The events of this class.
+ * 
+ * @enum {string}
+ */
+X.renderer.events = {
+  // the render event
+  RENDER : goog.events.getUniqueId('render')
+};
 
 /**
  * Get the dimension of this renderer. E.g. 2 for two-dimensional, 3 for
@@ -361,8 +372,9 @@ X.renderer.prototype.camera = function() {
 /**
  * Create the canvas of this renderer inside the configured container and using
  * attributes like width, height, backgroundColor etc. Then, initialize the
- * WebGL context and attach all necessary objects (e.g. camera, shaders..). All
- * this will only happen once, no matter how often this method is called.
+ * WebGL context and attach all necessary objects (e.g. camera, shaders..).
+ * Finally, initialize the event listeners. All this will only happen once, no
+ * matter how often this method is called.
  * 
  * @throws {X.exception} An exception if there were problems during
  *           initialization.
@@ -476,6 +488,10 @@ X.renderer.prototype.init = function() {
   // attached to this renderer since we check for these
   var defaultShaders = new X.shaders();
   this.addShaders(defaultShaders);
+  
+  //
+  // finally, listen to events..
+  this.addEventListener(X.renderer.events.RENDER, this.render);
   
 };
 

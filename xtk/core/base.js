@@ -7,6 +7,8 @@ goog.provide('X.base');
 
 // requires
 goog.require('X');
+goog.require('goog.events');
+goog.require('goog.events.EventTarget');
 
 
 
@@ -19,6 +21,10 @@ goog.require('X');
 X.base = function() {
 
   //
+  // register this class within the event system
+  goog.events.EventTarget.call(this);
+  
+  //
   // class attributes
   
   /**
@@ -30,6 +36,8 @@ X.base = function() {
   this._className = 'base';
   
 };
+// enable events
+goog.inherits(X.base, goog.events.EventTarget);
 
 
 /**
@@ -80,5 +88,6 @@ X.base.prototype.print = function() {
 
 // export symbols (requiered for advanced compilation)
 goog.exportSymbol('X.base', X.base);
-goog.exportSymbol('X.base.prototype.getClassName', X.base.prototype.getClassName);
+goog.exportSymbol('X.base.prototype.getClassName',
+    X.base.prototype.getClassName);
 goog.exportSymbol('X.base.prototype.print', X.base.prototype.print);
