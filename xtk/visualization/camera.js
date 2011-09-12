@@ -185,7 +185,7 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
   var zVector = goog.math.Vec3.difference(cameraPosition, targetPoint);
   
   // normalize Z
-  zVector.normalize();
+  zVector = zVector.normalize();
   
   // Y vector = up
   var yVector = this._up.clone();
@@ -197,8 +197,8 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
   yVector = goog.math.Vec3.cross(zVector, xVector);
   
   // normalize X and Y
-  xVector.normalize();
-  yVector.normalize();
+  xVector = xVector.normalize();
+  yVector = yVector.normalize();
   
   // create view matrix
   matrix.setValueAt(0, 0, xVector.x);
