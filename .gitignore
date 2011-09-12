@@ -14,3 +14,10 @@
 
 # temp files
 .temp_*
+
+# all doc files
+*/doc/*
+
+# all build files
+*-build/*
+
