@@ -168,7 +168,7 @@ X.interactor.prototype.onMouseMove = function(event) {
 
   var currentMousePosition = new goog.math.Vec2(event.layerX, event.layerY);
   
-  if (this._leftButtonDown) {
+  if (this._leftButtonDown && !event.shiftKey) {
     
     var distance = this._lastMousePosition.subtract(currentMousePosition);
     
@@ -195,7 +195,7 @@ X.interactor.prototype.onMouseMove = function(event) {
     
   }
   
-  if (this._middleButtonDown) {
+  if (this._middleButtonDown || (this._leftButtonDown && event.shiftKey)) {
     
     var distance = this._lastMousePosition.subtract(currentMousePosition);
     
