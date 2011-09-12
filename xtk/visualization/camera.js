@@ -29,6 +29,9 @@ X.camera = function(renderer) {
     
   }
   
+  // we want to communicate with the given renderer via events
+  this.setParentEventTarget(renderer);
+  
   //
   // class attributes
   
@@ -38,6 +41,7 @@ X.camera = function(renderer) {
    */
   this._className = 'camera';
   
+  // TODO let's remove this..
   this._renderer = renderer;
   
   this._fieldOfView = 45;
@@ -140,7 +144,7 @@ X.camera.prototype.zoomIn = function(fine) {
   
   this._view = this.lookAt_(this._position, this._focus);
   
-  this._renderer.render();
+  this.dispatchEvent(X.renderer.events.RENDER);
   
 };
 
@@ -159,7 +163,7 @@ X.camera.prototype.zoomOut = function(fine) {
   
   this._view = this.lookAt_(this._position, this._focus);
   
-  this._renderer.render();
+  this.dispatchEvent(X.renderer.events.RENDER);
   
 };
 
