@@ -21,3 +21,6 @@
 # all build files
 *-build/*
 
+# all .log files
+*.log
+
