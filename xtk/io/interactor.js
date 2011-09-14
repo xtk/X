@@ -89,7 +89,10 @@ X.interactor.prototype.observeMouseDown = function() {
       this.onMouseDown.bind(this));
   
   // deactivate right-click context menu
-  this._renderer.container().oncontextmenu = function() {
+  // found no way to use goog.events for that? tried everything..
+  // according to http://help.dottoro.com/ljhwjsss.php, this method is
+  // compatible with all browsers but opera
+  this._renderer.canvas().oncontextmenu = function() {
 
     return false;
     
