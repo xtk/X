@@ -11,6 +11,9 @@ goog.require('X.camera');
 goog.require('X.exception');
 goog.require('X.renderer');
 goog.require('goog.dom');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
+goog.require('goog.events.MouseWheelHandler');
 
 
 
@@ -49,6 +52,8 @@ X.interactor = function(renderer) {
    */
   this._className = 'interactor';
   
+  this._mouseWheelHandler = null;
+  
   this._renderer = renderer;
   
   this._camera = renderer.camera();
@@ -67,40 +72,44 @@ goog.inherits(X.interactor, X.base);
 
 X.interactor.prototype.observeMouseWheel = function() {
 
-  this._renderer.canvas().addEventListener('mousewheel',
-      this.onMouseWheel.bind(this), false);
+  // we use the goog.events.MouseWheelHandler for a browser-independent
+  // implementation
+  this._mouseWheelHandler = new goog.events.MouseWheelHandler(this._renderer
+      .canvas());
+  
+  goog.events.listen(this._mouseWheelHandler,
+      goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.onMouseWheel
+          .bind(this));
   
 };
 
 X.interactor.prototype.observeMouseDown = function() {
 
-  this._renderer.canvas().addEventListener('mousedown',
-      this.onMouseDown.bind(this), false);
+  goog.events.listen(this._renderer.canvas(), goog.events.EventType.MOUSEDOWN,
+      this.onMouseDown.bind(this));
   
   // deactivate right-click context menu
-  this._renderer.container().oncontextmenu = this.onContextMenu;
-  
-};
+  this._renderer.container().oncontextmenu = function() {
 
-X.interactor.prototype.onContextMenu = function() {
-
-  return false;
+    return false;
+    
+  };
   
 };
 
 X.interactor.prototype.observeMouseMove = function() {
 
-  this._renderer.canvas().addEventListener('mousemove',
-      this.onMouseMove.bind(this), false);
-  this._renderer.canvas().addEventListener('mouseout',
-      this.onMouseOut.bind(this), false);
+  goog.events.listen(this._renderer.canvas(), goog.events.EventType.MOUSEMOVE,
+      this.onMouseMove.bind(this));
+  goog.events.listen(this._renderer.canvas(), goog.events.EventType.MOUSEOUT,
+      this.onMouseOut.bind(this));
   
 };
 
 X.interactor.prototype.observeMouseUp = function() {
 
-  this._renderer.canvas().addEventListener('mouseup',
-      this.onMouseUp.bind(this), false);
+  goog.events.listen(this._renderer.canvas(), goog.events.EventType.MOUSEUP,
+      this.onMouseUp.bind(this));
   
 };
 
@@ -117,6 +126,8 @@ X.interactor.prototype.onMouseOut = function(event) {
 
 X.interactor.prototype.onMouseDown = function(event) {
 
+  console.log(this);
+  
   // reset the lastMovement
   this._lastMovementY = 0;
   
@@ -166,7 +177,7 @@ X.interactor.prototype.onMouseUp = function(event) {
 
 X.interactor.prototype.onMouseMove = function(event) {
 
-  var currentMousePosition = new goog.math.Vec2(event.layerX, event.layerY);
+  var currentMousePosition = new goog.math.Vec2(event.clientX, event.clientY);
   
   if (this._leftButtonDown && !event.shiftKey) {
     
@@ -248,11 +259,9 @@ X.interactor.prototype.onMouseMove = function(event) {
 
 X.interactor.prototype.onMouseWheel = function(event) {
 
-  // TODO event handling is browser dependent.. need to add some more calls
+  var delta = event.deltaY;
   
-  var delta = event.wheelDeltaY;
-  
-  if (delta < 0) {
+  if (delta > 0) {
     
     // zoom in
     this._camera.zoomIn();

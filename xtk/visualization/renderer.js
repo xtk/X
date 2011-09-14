@@ -510,7 +510,7 @@ X.renderer.prototype.init = function() {
   
   //
   // finally, listen to events..
-  this.addEventListener(X.renderer.events.RENDER, this.render);
+  goog.events.listen(this, X.renderer.events.RENDER, this.render);
   
 };
 

@@ -4,7 +4,7 @@ goog.addDependency('../../../../core/base.js', ['X.base'], ['X', 'goog.events', 
 goog.addDependency('../../../../core/color.js', ['X.color'], ['X.base', 'X.exception']);
 goog.addDependency('../../../../core/exception.js', ['X.exception'], ['X.base']);
 goog.addDependency('../../../../io/console.js', ['X.console'], ['X.base', 'X.exception', 'goog.dom']);
-goog.addDependency('../../../../io/interactor.js', ['X.interactor'], ['X.base', 'X.camera', 'X.exception', 'X.renderer', 'goog.dom']);
+goog.addDependency('../../../../io/interactor.js', ['X.interactor'], ['X.base', 'X.camera', 'X.exception', 'X.renderer', 'goog.dom', 'goog.events', 'goog.events.EventType']);
 goog.addDependency('../../../../math/matrixHelper.js', ['X.matrixHelper'], ['X.exception', 'goog.math.Matrix', 'goog.math.Vec2', 'goog.math.Vec3']);
 goog.addDependency('../../../../objects/colors.js', ['X.colors'], ['X.base', 'X.color', 'X.exception', 'goog.structs.Map']);
 goog.addDependency('../../../../objects/object.js', ['X.object'], ['X.base', 'X.color', 'X.colors', 'X.exception', 'X.points', 'goog.structs.Set']);
