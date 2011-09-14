@@ -293,6 +293,25 @@ X.renderer.prototype.setBackgroundColor = function(backgroundColor) {
 
 
 /**
+ * Get the canvas of this renderer.
+ * 
+ * @returns {!Element} The canvas of this renderer.
+ * @throws {X.exception} An exception if this renderer does not have a canvas.
+ */
+X.renderer.prototype.canvas = function() {
+
+  if (!goog.isDefAndNotNull(this._canvas)) {
+    
+    throw new X.exception('Fatal: No valid canvas for this renderer!');
+    
+  }
+  
+  return this._canvas;
+  
+};
+
+
+/**
  * Get the container of this renderer.
  * 
  * @return {!Element} The container of this renderer as a DOM object.

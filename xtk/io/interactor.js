@@ -67,14 +67,14 @@ goog.inherits(X.interactor, X.base);
 
 X.interactor.prototype.observeMouseWheel = function() {
 
-  this._renderer.container().addEventListener('mousewheel',
+  this._renderer.canvas().addEventListener('mousewheel',
       this.onMouseWheel.bind(this), false);
   
 };
 
 X.interactor.prototype.observeMouseDown = function() {
 
-  this._renderer.container().addEventListener('mousedown',
+  this._renderer.canvas().addEventListener('mousedown',
       this.onMouseDown.bind(this), false);
   
   // deactivate right-click context menu
@@ -90,16 +90,16 @@ X.interactor.prototype.onContextMenu = function() {
 
 X.interactor.prototype.observeMouseMove = function() {
 
-  this._renderer.container().addEventListener('mousemove',
+  this._renderer.canvas().addEventListener('mousemove',
       this.onMouseMove.bind(this), false);
-  this._renderer.container().addEventListener('mouseout',
+  this._renderer.canvas().addEventListener('mouseout',
       this.onMouseOut.bind(this), false);
   
 };
 
 X.interactor.prototype.observeMouseUp = function() {
 
-  this._renderer.container().addEventListener('mouseup',
+  this._renderer.canvas().addEventListener('mouseup',
       this.onMouseUp.bind(this), false);
   
 };
