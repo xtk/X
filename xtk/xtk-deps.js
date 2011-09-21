@@ -2,15 +2,16 @@
 // Please do not edit.
 goog.addDependency('../../../../core/base.js', ['X.base'], ['X', 'goog.events', 'goog.events.EventTarget']);
 goog.addDependency('../../../../core/color.js', ['X.color'], ['X.base', 'X.exception']);
+goog.addDependency('../../../../core/event.js', ['X.event'], ['X', 'goog.events.Event']);
 goog.addDependency('../../../../core/exception.js', ['X.exception'], ['X.base']);
 goog.addDependency('../../../../io/console.js', ['X.console'], ['X.base', 'X.exception', 'goog.dom']);
-goog.addDependency('../../../../io/interactor.js', ['X.interactor'], ['X.base', 'X.camera', 'X.exception', 'X.renderer', 'goog.dom', 'goog.events', 'goog.events.EventType']);
+goog.addDependency('../../../../io/interactor.js', ['X.interactor'], ['X.base', 'X.camera', 'X.exception', 'X.renderer', 'goog.dom', 'goog.events', 'goog.events.EventType', 'goog.events.MouseWheelHandler']);
 goog.addDependency('../../../../math/matrixHelper.js', ['X.matrixHelper'], ['X.exception', 'goog.math.Matrix', 'goog.math.Vec2', 'goog.math.Vec3']);
 goog.addDependency('../../../../objects/colors.js', ['X.colors'], ['X.base', 'X.color', 'X.exception', 'goog.structs.Map']);
 goog.addDependency('../../../../objects/object.js', ['X.object'], ['X.base', 'X.color', 'X.colors', 'X.exception', 'X.points', 'goog.structs.Set']);
 goog.addDependency('../../../../objects/points.js', ['X.points'], ['X.base', 'X.exception', 'goog.math.Coordinate3', 'goog.structs.Map']);
 goog.addDependency('../../../../visualization/buffer.js', ['X.buffer'], ['X.base', 'X.exception']);
-goog.addDependency('../../../../visualization/camera.js', ['X.camera'], ['X.base', 'X.exception', 'goog.math.Matrix', 'goog.math.Vec3']);
+goog.addDependency('../../../../visualization/camera.js', ['X.camera', 'X.cameraZoomEvent'], ['X.base', 'X.event', 'X.exception', 'goog.math.Matrix', 'goog.math.Vec3']);
 goog.addDependency('../../../../visualization/renderer.js', ['X.renderer'], ['X.base', 'X.buffer', 'X.camera', 'X.colors', 'X.exception', 'X.interactor', 'X.matrixHelper', 'X.points', 'X.shaders', 'goog.dom', 'goog.events', 'goog.events.EventHandler', 'goog.iter.Iterator', 'goog.math.Matrix', 'goog.math.Vec3', 'goog.structs.Map']);
 goog.addDependency('../../../../visualization/renderer2D.js', ['X.renderer2D'], ['X.renderer']);
 goog.addDependency('../../../../visualization/renderer3D.js', ['X.renderer3D'], ['X.renderer']);

@@ -8,6 +8,7 @@ goog.provide('X.interactor');
 // requires
 goog.require('X.base');
 goog.require('X.camera');
+goog.require('X.camera.ZoomEvent');
 goog.require('X.exception');
 goog.require('X.renderer');
 goog.require('goog.dom');
@@ -42,6 +43,9 @@ X.interactor = function(renderer) {
     throw new X.exception('Fatal: Could not find a valid camera.');
     
   }
+  
+  // we want to communicate with the given renderer via events
+  this.setParentEventTarget(renderer.camera());
   
   //
   // class attributes
@@ -240,17 +244,18 @@ X.interactor.prototype.onMouseMove = function(event) {
     
     var delta = this._lastMousePosition.y - currentMousePosition.y;
     
-    if (delta < 0) {
-      
-      // zoom in fine mode
-      this._camera.zoomIn(true);
-      
-    } else {
-      
-      // zoom out in fine mode
-      this._camera.zoomOut(true);
-      
-    }
+    var e = new X.camera.ZoomEvent();
+    
+    // set the zoom direction
+    // true if zooming in, false if zooming out
+    e._in = (delta < 0);
+    
+    // with the right click, the zoom will happen rather
+    // fine than fast
+    e._fast = false;
+    
+    // .. fire the event
+    this.dispatchEvent(e);
     
   }
   
@@ -262,20 +267,20 @@ X.interactor.prototype.onMouseMove = function(event) {
 
 X.interactor.prototype.onMouseWheel = function(event) {
 
-  var delta = event.deltaY;
+  var e = new X.camera.ZoomEvent();
   
-  if (delta > 0) {
-    
-    // zoom in
-    this._camera.zoomIn();
-    
-  } else {
-    
-    // zoom out
-    this._camera.zoomOut();
-    
-  }
+  // set the zoom direction
+  // true if zooming in, false if zooming out
+  e._in = (event.deltaY > 0);
   
+  // with the mouseWheel, the zoom will happen rather
+  // fast than fine
+  e._fast = true;
+  
+  // .. fire the event
+  this.dispatchEvent(e);
+  
+  // prevent any other action (like scrolling..)
   event.preventDefault();
   
 };

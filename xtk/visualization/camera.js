@@ -4,10 +4,12 @@
 
 // provides
 goog.provide('X.camera');
+goog.provide('X.camera.ZoomEvent');
 
 // requires
 goog.require('X.base');
 goog.require('X.exception');
+goog.require('X.event');
 goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec3');
 
@@ -15,6 +17,7 @@ goog.require('goog.math.Vec3');
  * Create a camera.
  * 
  * @constructor
+ * @name X.camera
  * @extends {X.base}
  */
 X.camera = function(renderer) {
@@ -57,9 +60,35 @@ X.camera = function(renderer) {
   
   this._view = this.lookAt_(this._position, this._focus);
   
+  goog.events.listen(this, X.camera.events.ZOOM, this.onZoom);
 };
 // inherit from X.base
 goog.inherits(X.camera, X.base);
+
+
+/**
+ * @param event
+ */
+X.camera.prototype.onZoom = function(event) {
+
+  if (!(event instanceof X.camera.ZoomEvent)) {
+    
+    throw new X.exception('Fatal: Received no valid zoom event!');
+    
+  }
+  
+  if (event._in) {
+    
+    this.zoomIn(event._fast);
+    
+  } else {
+    
+    this.zoomOut(event._fast);
+    
+  }
+  
+};
+
 
 /**
  *
@@ -129,11 +158,11 @@ X.camera.prototype.calculateViewingFrustum_ = function(left, right, bottom,
   
 };
 
-X.camera.prototype.zoomIn = function(fine) {
+X.camera.prototype.zoomIn = function(fast) {
 
   var zoomStep = 30;
   
-  if (goog.isDefAndNotNull(fine)) {
+  if (goog.isDefAndNotNull(fast) && !fast) {
     
     zoomStep = 1;
     
@@ -148,11 +177,11 @@ X.camera.prototype.zoomIn = function(fine) {
   
 };
 
-X.camera.prototype.zoomOut = function(fine) {
+X.camera.prototype.zoomOut = function(fast) {
 
   var zoomStep = 30;
   
-  if (goog.isDefAndNotNull(fine)) {
+  if (goog.isDefAndNotNull(fast) && !fast) {
     
     zoomStep = 1;
     
@@ -226,3 +255,55 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
   return matrix.translate(invertedCameraPosition.invert());
   
 };
+
+
+/**
+ * The events of this class.
+ * 
+ * @enum {string}
+ */
+X.camera.events = {
+  // the pan event, where the camera and focus get moved accordingly
+  PAN : X.event.uniqueId('pan'),
+  
+  // the rotate event, where only the camera gets moved
+  ROTATE : X.event.uniqueId('rotate'),
+  
+  // the zoom event, where the camera Z coordinate changes
+  ZOOM : X.event.uniqueId('zoom')
+};
+
+
+/**
+ * The zoom event to initiate zoom in or zoom out.
+ * 
+ * @constructor
+ * @name X.camera.ZoomEvent
+ * @extends {X.event}
+ */
+X.camera.ZoomEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.camera.events.ZOOM);
+  
+  /**
+   * The flag for the zooming direction. If TRUE, the zoom operation will move
+   * the objects closer to the camera. If FALSE, further away from the camera.
+   * 
+   * @type {!boolean}
+   * @protected
+   */
+  this._in = false;
+  
+  /**
+   * The flag for the zooming speed. If TRUE, the zoom operation will happen
+   * fast. If FALSE, there will be a fine zoom operation.
+   * 
+   * @type {!boolean}
+   * @protected
+   */
+  this._fast = false;
+  
+};
+// inherit from X.event
+goog.inherits(X.camera.ZoomEvent, X.event);

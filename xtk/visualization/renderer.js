@@ -458,6 +458,9 @@ X.renderer.prototype.init = function() {
     
     // enable depth testing
     gl.enable(gl.DEPTH_TEST);
+    // TODO transparency
+    // gl.enable(gl.BLEND);
+    // gl.disable(gl.DEPTH_TEST);
     
     // perspective rendering
     gl.depthFunc(gl.LEQUAL);

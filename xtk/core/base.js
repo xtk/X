@@ -13,10 +13,12 @@ goog.require('goog.events.EventTarget');
 
 
 /**
- * The superclass class for all X.base-objects.
+ * The superclass class for all X.base-objects. All derived objects will be
+ * registered for event handling.
  * 
  * @constructor
  * @name X.base
+ * @extends {goog.events.EventTarget}
  */
 X.base = function() {
 
