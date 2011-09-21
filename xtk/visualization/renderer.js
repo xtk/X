@@ -4,6 +4,7 @@
 
 // provides
 goog.provide('X.renderer');
+goog.provide('X.renderer.RenderEvent');
 
 // requires
 goog.require('X.base');

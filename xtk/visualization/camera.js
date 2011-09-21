@@ -4,6 +4,8 @@
 
 // provides
 goog.provide('X.camera');
+goog.provide('X.camera.PanEvent');
+goog.provide('X.camera.RotateEvent');
 goog.provide('X.camera.ZoomEvent');
 
 // requires
@@ -60,7 +62,10 @@ X.camera = function(renderer) {
   
   this._view = this.lookAt_(this._position, this._focus);
   
+  goog.events.listen(this, X.camera.events.PAN, this.onPan);
+  goog.events.listen(this, X.camera.events.ROTATE, this.onRotate);
   goog.events.listen(this, X.camera.events.ZOOM, this.onZoom);
+  
 };
 // inherit from X.base
 goog.inherits(X.camera, X.base);
@@ -103,6 +108,38 @@ X.camera.prototype.onZoom = function(event) {
     this.zoomOut(event._fast);
     
   }
+  
+};
+
+
+/**
+ * @param event
+ */
+X.camera.prototype.onPan = function(event) {
+
+  if (!(event instanceof X.camera.PanEvent)) {
+    
+    throw new X.exception('Fatal: Received no valid pan event!');
+    
+  }
+  
+  this.pan(event._distance);
+  
+};
+
+
+/**
+ * @param event
+ */
+X.camera.prototype.onRotate = function(event) {
+
+  if (!(event instanceof X.camera.RotateEvent)) {
+    
+    throw new X.exception('Fatal: Received no valid rotate event!');
+    
+  }
+  
+  this.rotate(event._distance);
   
 };
 
@@ -175,6 +212,55 @@ X.camera.prototype.calculateViewingFrustum_ = function(left, right, bottom,
   
 };
 
+X.camera.prototype.pan = function(distance) {
+
+  if (!goog.isDefAndNotNull(distance) || !(distance instanceof goog.math.Vec2)) {
+    
+    throw new X.exception('Fatal: Invalid distance vector for pan operation.');
+    
+  }
+  
+  // calculate new position and focus based on the distance vector
+  this._position.x = this._position.x + distance.x;
+  this._position.y = this._position.y - distance.y;
+  this._focus.x = this._focus.x + distance.x;
+  this._focus.y = this._focus.y - distance.y;
+  
+  // re-generate the view
+  this._view = this.lookAt_(this._position, this._focus);
+  
+  // fire a render event
+  this.dispatchEvent(new X.renderer.RenderEvent());
+  
+};
+
+X.camera.prototype.rotate = function(distance) {
+
+  if (!goog.isDefAndNotNull(distance) || !(distance instanceof goog.math.Vec2)) {
+    
+    throw new X.exception(
+        'Fatal: Invalid distance vector for rotate operation.');
+    
+  }
+  
+  // TODO this is def. a wrong calculation! must ensure the new position is on
+  // the viewing sphere around the focus with the same radius (distance between
+  // position and focus)
+  
+  // calculate new position and focus based on the distance vector
+  this._position.x = this._position.x + distance.x;
+  this._position.y = this._position.y - distance.y;
+  // this._focus.x = this._focus.x + distance.x;
+  // this._focus.y = this._focus.y - distance.y;
+  
+  // re-generate the view
+  this._view = this.lookAt_(this._position, this._focus);
+  
+  // fire a render event
+  this.dispatchEvent(new X.renderer.RenderEvent());
+  
+};
+
 X.camera.prototype.zoomIn = function(fast) {
 
   var zoomStep = 30;
@@ -185,11 +271,14 @@ X.camera.prototype.zoomIn = function(fast) {
     
   }
   
+  // calculate new position and focus
   this._position.z = this._position.z - zoomStep;
   this._focus.z = this._focus.z - zoomStep;
   
+  // re-generate the view
   this._view = this.lookAt_(this._position, this._focus);
   
+  // fire a render event
   this.dispatchEvent(new X.renderer.RenderEvent());
   
 };
@@ -204,11 +293,14 @@ X.camera.prototype.zoomOut = function(fast) {
     
   }
   
+  // calculate new position and focus
   this._position.z = this._position.z + zoomStep;
   this._focus.z = this._focus.z + zoomStep;
   
+  // re-generate the view
   this._view = this.lookAt_(this._position, this._focus);
   
+  // fire a render event
   this.dispatchEvent(new X.renderer.RenderEvent());
   
 };
@@ -272,6 +364,64 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
   return matrix.translate(invertedCameraPosition.invert());
   
 };
+
+
+/**
+ * The pan event to initiate moving the camera and the focus.
+ * 
+ * @constructor
+ * @name X.camera.PanEvent
+ * @extends {X.event}
+ */
+X.camera.PanEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.camera.events.PAN);
+  
+  /**
+   * The distance to pan in screen space.
+   * 
+   * @type {?goog.math.Vec2}
+   * @protected
+   */
+  this._distance = null;
+  
+};
+// inherit from X.event
+goog.inherits(X.camera.PanEvent, X.event);
+
+
+/**
+ * The rotate event to initiate moving the camera around the focus.
+ * 
+ * @constructor
+ * @name X.camera.RotateEvent
+ * @extends {X.event}
+ */
+X.camera.RotateEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.camera.events.ROTATE);
+  
+  /**
+   * The distance to pan in screen space.
+   * 
+   * @type {?goog.math.Vec2}
+   * @protected
+   */
+  this._distance = null;
+  
+  /**
+   * The angle in degrees to pan around the last mouse position in screen space.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._angle = 0;
+  
+};
+// inherit from X.event
+goog.inherits(X.camera.RotateEvent, X.event);
 
 
 /**

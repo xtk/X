@@ -44,7 +44,7 @@ X.interactor = function(renderer) {
     
   }
   
-  // we want to communicate with the given renderer via events
+  // we want to communicate with the given camera via events
   this.setParentEventTarget(renderer.camera());
   
   //
@@ -182,71 +182,85 @@ X.interactor.prototype.onMouseUp = function(event) {
 
 X.interactor.prototype.onMouseMove = function(event) {
 
+  // prevent any other actions by the browser (f.e. scrolling, selection..)
+  event.preventDefault();
+  
+  // grab the current mouse position
   var currentMousePosition = new goog.math.Vec2(event.clientX, event.clientY);
   
+  // get the distance in terms of the last mouse move event
+  var distance = this._lastMousePosition.subtract(currentMousePosition);
+  
+  // save the current mouse position as the last one
+  this._lastMousePosition = currentMousePosition.clone();
+  
+  // threshold the distance to avoid 'irregular' movement
+  if (Math.abs(distance.x) < 2) {
+    
+    distance.x = 0;
+    
+  }
+  if (Math.abs(distance.y) < 2) {
+    
+    distance.y = 0;
+    
+  }
+  
+  // jump out if the distance is 0 to avoid unnecessary events
+  if (distance.magnitude() == 0) {
+    
+    return;
+    
+  }
+  
+
+  //
+  // check which mouse buttons or keys are pressed
+  //
   if (this._leftButtonDown && !event.shiftKey) {
+    //
+    // LEFT MOUSE BUTTON DOWN AND NOT SHIFT DOWN
+    //
     
-    var distance = this._lastMousePosition.subtract(currentMousePosition);
+    // create a new pan event
+    var e = new X.camera.RotateEvent();
     
-    if (Math.abs(distance.x) < 2) {
-      
-      distance.x = 0;
-      
-    }
-    if (Math.abs(distance.y) < 2) {
-      
-      distance.y = 0;
-      
-    }
+    // attach the distance vector
+    e._distance = distance;
     
-    this._camera._position.x = this._camera._position.x + distance.x;
-    this._camera._position.y = this._camera._position.y - distance.y;
-    // this._camera._focus.x = this._camera._focus.x + distance.x;
-    // this._camera._focus.y = this._camera._focus.y - distance.y;
+    // attach the angle in degrees
+    e._angle = 0;
     
-    this._camera._view = this._camera.lookAt_(this._camera._position,
-        this._camera._focus);
+    // .. fire the event
+    this.dispatchEvent(e);
     
-    this._renderer.render();
+
+  } else if (this._middleButtonDown || (this._leftButtonDown && event.shiftKey)) {
+    //
+    // MIDDLE MOUSE BUTTON DOWN or LEFT MOUSE BUTTON AND SHIFT DOWN
+    //
     
-  }
-  
-  if (this._middleButtonDown || (this._leftButtonDown && event.shiftKey)) {
+    // create a new pan event
+    var e = new X.camera.PanEvent();
     
-    var distance = this._lastMousePosition.subtract(currentMousePosition);
+    // attach the distance vector
+    e._distance = distance;
     
-    if (Math.abs(distance.x) < 2) {
-      
-      distance.x = 0;
-      
-    }
-    if (Math.abs(distance.y) < 2) {
-      
-      distance.y = 0;
-      
-    }
+    // .. fire the event
+    this.dispatchEvent(e);
     
-    this._camera._position.x = this._camera._position.x + distance.x;
-    this._camera._position.y = this._camera._position.y - distance.y;
-    this._camera._focus.x = this._camera._focus.x + distance.x;
-    this._camera._focus.y = this._camera._focus.y - distance.y;
+
+  } else if (this._rightButtonDown) {
+    //
+    // RIGHT MOUSE BUTTON DOWN
+    //
     
-    this._camera._view = this._camera.lookAt_(this._camera._position,
-        this._camera._focus);
-    
-    this._renderer.render();
-    
-  }
-  
-  if (this._rightButtonDown) {
-    
-    var delta = this._lastMousePosition.y - currentMousePosition.y;
-    
+    // create a new zoom event
     var e = new X.camera.ZoomEvent();
     
     // set the zoom direction
     // true if zooming in, false if zooming out
-    e._in = (delta < 0);
+    e._in = (distance.y < 0);
     
     // with the right click, the zoom will happen rather
     // fine than fast
@@ -255,20 +269,26 @@ X.interactor.prototype.onMouseMove = function(event) {
     // .. fire the event
     this.dispatchEvent(e);
     
+
   }
-  
-  this._lastMousePosition = currentMousePosition.clone();
-  
-  event.preventDefault();
   
 };
 
+
+/**
+ * 
+ */
 X.interactor.prototype.onMouseWheel = function(event) {
 
+  // prevent any other action (like scrolling..)
+  event.preventDefault();
+  
+  // create a new zoom event
   var e = new X.camera.ZoomEvent();
   
   // set the zoom direction
   // true if zooming in, false if zooming out
+  // delta is here given by the event
   e._in = (event.deltaY > 0);
   
   // with the mouseWheel, the zoom will happen rather
@@ -277,8 +297,5 @@ X.interactor.prototype.onMouseWheel = function(event) {
   
   // .. fire the event
   this.dispatchEvent(e);
-  
-  // prevent any other action (like scrolling..)
-  event.preventDefault();
   
 };
