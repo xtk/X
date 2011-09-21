@@ -133,8 +133,6 @@ X.interactor.prototype.onMouseOut = function(event) {
 
 X.interactor.prototype.onMouseDown = function(event) {
 
-  console.log(this);
-  
   // reset the lastMovement
   this._lastMovementY = 0;
   

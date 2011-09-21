@@ -11,13 +11,13 @@ goog.require('X.buffer');
 goog.require('X.camera');
 goog.require('X.colors');
 goog.require('X.exception');
+goog.require('X.event');
 goog.require('X.interactor');
 goog.require('X.matrixHelper');
 goog.require('X.points');
 goog.require('X.shaders');
 goog.require('goog.dom');
 goog.require('goog.events');
-goog.require('goog.events.EventHandler');
 goog.require('goog.iter.Iterator');
 goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec3');
@@ -175,6 +175,7 @@ X.renderer = function(width, height) {
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
 
+
 /**
  * The events of this class.
  * 
@@ -182,8 +183,33 @@ goog.inherits(X.renderer, X.base);
  */
 X.renderer.events = {
   // the render event
-  RENDER : goog.events.getUniqueId('render')
+  RENDER : X.event.uniqueId('render')
 };
+
+
+/**
+ * The render event to initiate a re-rendering of all objects.
+ * 
+ * @constructor
+ * @name X.renderer.RenderEvent
+ * @extends {X.event}
+ */
+X.renderer.RenderEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.renderer.events.RENDER);
+  
+  /**
+   * The timestamp of this render event.
+   * 
+   * @type {!number}
+   */
+  this._timestamp = Date.now();
+  
+};
+// inherit from X.event
+goog.inherits(X.renderer.RenderEvent, X.event);
+
 
 /**
  * Get the dimension of this renderer. E.g. 2 for two-dimensional, 3 for

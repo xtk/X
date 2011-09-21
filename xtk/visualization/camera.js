@@ -67,6 +67,23 @@ goog.inherits(X.camera, X.base);
 
 
 /**
+ * The events of this class.
+ * 
+ * @enum {string}
+ */
+X.camera.events = {
+  // the pan event, where the camera and focus get moved accordingly
+  PAN : X.event.uniqueId('pan'),
+  
+  // the rotate event, where only the camera gets moved
+  ROTATE : X.event.uniqueId('rotate'),
+  
+  // the zoom event, where the camera Z coordinate changes
+  ZOOM : X.event.uniqueId('zoom')
+};
+
+
+/**
  * @param event
  */
 X.camera.prototype.onZoom = function(event) {
@@ -173,7 +190,7 @@ X.camera.prototype.zoomIn = function(fast) {
   
   this._view = this.lookAt_(this._position, this._focus);
   
-  this.dispatchEvent(X.renderer.events.RENDER);
+  this.dispatchEvent(new X.renderer.RenderEvent());
   
 };
 
@@ -192,7 +209,7 @@ X.camera.prototype.zoomOut = function(fast) {
   
   this._view = this.lookAt_(this._position, this._focus);
   
-  this.dispatchEvent(X.renderer.events.RENDER);
+  this.dispatchEvent(new X.renderer.RenderEvent());
   
 };
 
@@ -254,23 +271,6 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
   
   return matrix.translate(invertedCameraPosition.invert());
   
-};
-
-
-/**
- * The events of this class.
- * 
- * @enum {string}
- */
-X.camera.events = {
-  // the pan event, where the camera and focus get moved accordingly
-  PAN : X.event.uniqueId('pan'),
-  
-  // the rotate event, where only the camera gets moved
-  ROTATE : X.event.uniqueId('rotate'),
-  
-  // the zoom event, where the camera Z coordinate changes
-  ZOOM : X.event.uniqueId('zoom')
 };
 
 
