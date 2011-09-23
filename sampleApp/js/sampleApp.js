@@ -116,6 +116,14 @@ sampleApp.run = function() {
     c.out(sliceView3.print());
     c.out(threeDView.print());
     
+    goog.events.listen(threeDView.interactor(), 'mouseup', testCB);
+    
+    function testCB(e) {
+
+      console.log(e);
+      
+    }
+    
 
     // THE FOLLOWING IS A HACK UNTIL THE INTERACTOR IS READY
     function handleFileSelect(evt) {

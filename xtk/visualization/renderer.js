@@ -36,6 +36,8 @@ goog.require('goog.structs.Map');
  */
 X.renderer = function(width, height) {
 
+  console.log(this instanceof X.renderer);
+  
   // call the standard constructor of X.base
   goog.base(this);
   
@@ -404,6 +406,7 @@ X.renderer.prototype.setContainerById = function(containerId) {
   
 };
 
+
 /**
  * Get the camera of this renderer.
  * 
@@ -414,6 +417,19 @@ X.renderer.prototype.camera = function() {
   return this._camera;
   
 };
+
+
+/**
+ * Get the interactor of this renderer.
+ * 
+ * @returns {X.interactor}
+ */
+X.renderer.prototype.interactor = function() {
+
+  return this._interactor;
+  
+};
+
 
 /**
  * Create the canvas of this renderer inside the configured container and using
@@ -505,11 +521,30 @@ X.renderer.prototype.init = function() {
   // WebGL Viewport initialization done
   // --------------------------------------------------------------------------
   
+  // now since we have a valid gl viewport, we want to configure the interactor
+  // and camera
+  
+  //
+  // create a new interactor
+  var interactor = new X.interactor(canvas);
+  interactor.observeMouseWheel();
+  interactor.observeMouseDown();
+  interactor.observeMouseUp();
+  interactor.observeMouseMove();
+  
 
   //
   // create a new camera
-  var camera = new X.camera(this);
+  // width and height are required to calculate the perspective
+  var camera = new X.camera(this.width(), this.height());
+  // observe the interactor for user interactions (mouse-movements etc.)
+  camera.observe(interactor);
+  // listen to render requests from the camera
+  // these get fired after user-interaction and camera re-positioning to re-draw
+  // all objects
+  goog.events.listen(camera, X.renderer.events.RENDER, this.render.bind(this));
   
+
   //
   // attach all created objects as class attributes
   // should be one of the last things to do here since we use these attributes
@@ -517,17 +552,6 @@ X.renderer.prototype.init = function() {
   this._canvas = canvas;
   this._gl = gl;
   this._camera = camera;
-  
-  //
-  // create a new interactor
-  // at this point a valid camera has to exist
-  var interactor = new X.interactor(this);
-  interactor.observeMouseWheel();
-  interactor.observeMouseDown();
-  interactor.observeMouseUp();
-  interactor.observeMouseMove();
-  
-  // attach the interactor to this renderer
   this._interactor = interactor;
   
   //
@@ -537,10 +561,6 @@ X.renderer.prototype.init = function() {
   // attached to this renderer since we check for these
   var defaultShaders = new X.shaders();
   this.addShaders(defaultShaders);
-  
-  //
-  // finally, listen to events..
-  goog.events.listen(this, X.renderer.events.RENDER, this.render);
   
 };
 

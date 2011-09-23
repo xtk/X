@@ -22,20 +22,18 @@ goog.require('goog.math.Vec3');
  * @name X.camera
  * @extends {X.base}
  */
-X.camera = function(renderer) {
+X.camera = function(width, height) {
 
   // call the standard constructor of X.base
   goog.base(this);
   
-  if (!renderer) {
+  // validate width and height
+  if (!goog.isNumber(width) || !goog.isNumber(height)) {
     
     throw new X.exception(
-        'Fatal: A valid renderer is required to create a camera.');
+        'Fatal: A camera needs valid width and height values.');
     
   }
-  
-  // we want to communicate with the given renderer via events
-  this.setParentEventTarget(renderer);
   
   //
   // class attributes
@@ -46,9 +44,6 @@ X.camera = function(renderer) {
    */
   this._className = 'camera';
   
-  // TODO let's remove this..
-  this._renderer = renderer;
-  
   this._fieldOfView = 45;
   
   this._position = new goog.math.Vec3(0, 0, 100);
@@ -58,13 +53,9 @@ X.camera = function(renderer) {
   this._up = new goog.math.Vec3(0, 1, 0);
   
   this._perspective = this.calculatePerspective_(this._fieldOfView,
-      (this._renderer.width() / this._renderer.height()), 1, 10000);
+      (width / height), 1, 10000);
   
   this._view = this.lookAt_(this._position, this._focus);
-  
-  goog.events.listen(this, X.camera.events.PAN, this.onPan);
-  goog.events.listen(this, X.camera.events.ROTATE, this.onRotate);
-  goog.events.listen(this, X.camera.events.ZOOM, this.onZoom);
   
 };
 // inherit from X.base
@@ -85,6 +76,23 @@ X.camera.events = {
   
   // the zoom event, where the camera Z coordinate changes
   ZOOM : X.event.uniqueId('zoom')
+};
+
+
+X.camera.prototype.observe = function(interactor) {
+
+  if (!goog.isDefAndNotNull(interactor)
+      || !(interactor instanceof X.interactor)) {
+    
+    throw new X.exception('Fatal: Could not observe the interactor.');
+    
+  }
+  
+  goog.events.listen(interactor, X.camera.events.PAN, this.onPan.bind(this));
+  goog.events.listen(interactor, X.camera.events.ROTATE, this.onRotate
+      .bind(this));
+  goog.events.listen(interactor, X.camera.events.ZOOM, this.onZoom.bind(this));
+  
 };
 
 

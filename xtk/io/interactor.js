@@ -19,33 +19,23 @@ goog.require('goog.events.MouseWheelHandler');
 
 
 /**
- * Create an interactor.
+ * Create an interactor for a given element in the DOM tree.
  * 
  * @constructor
  * @extends {X.base}
  */
-X.interactor = function(renderer) {
+X.interactor = function(element) {
 
   // call the standard constructor of X.base
   goog.base(this);
   
-  // check if we have a valid renderer
-  if (!goog.isDefAndNotNull(renderer) || !(renderer instanceof X.renderer)) {
+  // check if we have a valid element
+  if (!goog.isDefAndNotNull(element) || !(element instanceof Element)) {
     
-    throw new X.exception('Fatal: Could not add interactor to renderer.');
-    
-  }
-  
-  // check if the renderer has a valid camera
-  if (!goog.isDefAndNotNull(renderer.camera())
-      || !(renderer.camera() instanceof X.camera)) {
-    
-    throw new X.exception('Fatal: Could not find a valid camera.');
+    throw new X.exception(
+        'Fatal: Could not add interactor to the given element.');
     
   }
-  
-  // we want to communicate with the given camera via events
-  this.setParentEventTarget(renderer.camera());
   
   //
   // class attributes
@@ -56,11 +46,9 @@ X.interactor = function(renderer) {
    */
   this._className = 'interactor';
   
+  this._element = element;
+  
   this._mouseWheelHandler = null;
-  
-  this._renderer = renderer;
-  
-  this._camera = renderer.camera();
   
   this._leftButtonDown = false;
   
@@ -78,8 +66,7 @@ X.interactor.prototype.observeMouseWheel = function() {
 
   // we use the goog.events.MouseWheelHandler for a browser-independent
   // implementation
-  this._mouseWheelHandler = new goog.events.MouseWheelHandler(this._renderer
-      .canvas());
+  this._mouseWheelHandler = new goog.events.MouseWheelHandler(this._element);
   
   goog.events.listen(this._mouseWheelHandler,
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.onMouseWheel
@@ -89,14 +76,14 @@ X.interactor.prototype.observeMouseWheel = function() {
 
 X.interactor.prototype.observeMouseDown = function() {
 
-  goog.events.listen(this._renderer.canvas(), goog.events.EventType.MOUSEDOWN,
+  goog.events.listen(this._element, goog.events.EventType.MOUSEDOWN,
       this.onMouseDown.bind(this));
   
   // deactivate right-click context menu
   // found no way to use goog.events for that? tried everything..
   // according to http://help.dottoro.com/ljhwjsss.php, this method is
   // compatible with all browsers but opera
-  this._renderer.canvas().oncontextmenu = function() {
+  this._element.oncontextmenu = function() {
 
     return false;
     
@@ -106,16 +93,16 @@ X.interactor.prototype.observeMouseDown = function() {
 
 X.interactor.prototype.observeMouseMove = function() {
 
-  goog.events.listen(this._renderer.canvas(), goog.events.EventType.MOUSEMOVE,
+  goog.events.listen(this._element, goog.events.EventType.MOUSEMOVE,
       this.onMouseMove.bind(this));
-  goog.events.listen(this._renderer.canvas(), goog.events.EventType.MOUSEOUT,
+  goog.events.listen(this._element, goog.events.EventType.MOUSEOUT,
       this.onMouseOut.bind(this));
   
 };
 
 X.interactor.prototype.observeMouseUp = function() {
 
-  goog.events.listen(this._renderer.canvas(), goog.events.EventType.MOUSEUP,
+  goog.events.listen(this._element, goog.events.EventType.MOUSEUP,
       this.onMouseUp.bind(this));
   
 };
@@ -182,6 +169,8 @@ X.interactor.prototype.onMouseUp = function(event) {
 
 X.interactor.prototype.onMouseMove = function(event) {
 
+  this.dispatchEvent('mouseup');
+  
   // prevent any other actions by the browser (f.e. scrolling, selection..)
   event.preventDefault();
   
