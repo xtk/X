@@ -36,7 +36,20 @@ goog.require('goog.structs.Map');
  */
 X.renderer = function(width, height) {
 
-  console.log(this instanceof X.renderer);
+  // check if this instance is a valid subclass of X.renderer
+  if (!(this instanceof X.renderer2D) && !(this instanceof X.renderer3D)) {
+    
+    throw new X.exception(
+        'Fatal: X.renderer should not be instantiated directly. Use X.renderer2D or X.renderer3D.');
+    
+  }
+  
+  // validate width and height
+  if (!goog.isNumber(width) || !goog.isNumber(height)) {
+    
+    throw new X.exception('Fatal: Invalid width or height for the renderer.');
+    
+  }
   
   // call the standard constructor of X.base
   goog.base(this);
