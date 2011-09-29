@@ -41,6 +41,7 @@ X.shaders = function() {
   this._vertexShaderSource = ''
       + 'attribute vec3 vertexPosition;                                          \n'
       + 'attribute vec4 vertexColor;                                             \n'
+      + 'attribute vec4 opacity;                                                 \n'
       + '                                                                        \n'
       + 'uniform mat4 view;                                                      \n'
       + 'uniform mat4 perspective;                                               \n'
@@ -49,7 +50,7 @@ X.shaders = function() {
       + '                                                                        \n'
       + 'void main(void) {                                                       \n'
       + '  gl_Position = perspective * view * vec4(vertexPosition, 1.0);         \n'
-      + '  fragmentColor = vertexColor;                                          \n'
+      + '  fragmentColor = vertexColor * 0.6;                                \n'
       + '}                                                                       \n';
   
   /**

@@ -513,10 +513,11 @@ X.renderer.prototype.init = function() {
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     
     // enable depth testing
-    gl.enable(gl.DEPTH_TEST);
+    // gl.enable(gl.DEPTH_TEST);
     // TODO transparency
-    // gl.enable(gl.BLEND);
-    // gl.disable(gl.DEPTH_TEST);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.disable(gl.DEPTH_TEST);
     
     // perspective rendering
     gl.depthFunc(gl.LEQUAL);
@@ -815,7 +816,18 @@ X.renderer.prototype.render = function() {
             .itemSize(), this._gl.FLOAT, false, 0, 0);
         
         // .. and draw
-        this._gl.drawArrays(this._gl.TRIANGLES, 0, vertexBuffer.itemCount());
+        var drawMode;
+        if (object.type() == X.object.types.TRIANGLES) {
+          
+          drawMode = this._gl.TRIANGLES;
+          
+        } else if (object.type() == X.object.types.LINES) {
+          
+          drawMode = this._gl.LINES;
+          
+        }
+        
+        this._gl.drawArrays(drawMode, 0, vertexBuffer.itemCount());
         
       }
       

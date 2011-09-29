@@ -20,8 +20,20 @@ goog.require('goog.structs.Set');
  * @constructor
  * @extends {X.base}
  */
-X.object = function() {
+X.object = function(type) {
 
+  // by default, this object is described by triangles.
+  var validType = X.object.types.TRIANGLES;
+  
+  if (goog.isDefAndNotNull(type)
+      && (type == X.object.types.LINES || type == X.object.types.TRIANGLES)) {
+    
+    // if a valid type was provided, we use it instead..
+    // at this point, the provided type is always valid
+    validType = type;
+    
+  }
+  
   // call the standard constructor of X.base
   goog.base(this);
   
@@ -33,6 +45,8 @@ X.object = function() {
    * @const
    */
   this._className = 'object';
+  
+  this._type = validType;
   
   this._color = null;
   
@@ -49,6 +63,23 @@ X.object = function() {
 };
 // inherit from X.base
 goog.inherits(X.object, X.base);
+
+/**
+ * Different render types for an X.object.
+ * 
+ * @enum {string}
+ */
+X.object.types = {
+  // the render event
+  TRIANGLES : 'TRIANGLES',
+  LINES : 'LINES'
+};
+
+X.object.prototype.type = function() {
+
+  return this._type;
+  
+};
 
 X.object.prototype.points = function() {
 
