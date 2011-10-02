@@ -37,6 +37,9 @@ X.base = function() {
    */
   this._className = 'base';
   
+  // TODO don't use the X.event.uniqueId system, use a general one
+  this._id_ = X.event.uniqueId('X');
+  
 };
 // enable events
 goog.inherits(X.base, goog.events.EventTarget);
@@ -50,6 +53,18 @@ goog.inherits(X.base, goog.events.EventTarget);
 X.base.prototype.className = function() {
 
   return this._className;
+  
+};
+
+
+/**
+ * Return the unique id of the current X.base-object.
+ * 
+ * @returns {string} The unique id of the current X.object.
+ */
+X.base.prototype.id = function() {
+
+  return this._id_;
   
 };
 

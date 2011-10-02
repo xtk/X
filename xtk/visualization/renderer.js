@@ -22,6 +22,7 @@ goog.require('goog.events');
 goog.require('goog.iter.Iterator');
 goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec3');
+goog.require('goog.structs.AvlTree');
 goog.require('goog.structs.Map');
 
 
@@ -152,13 +153,13 @@ X.renderer = function(width, height) {
   this._interactor = null;
   
   /**
-   * A hash map of displayable objects of this renderer. Each object is stored
-   * with a unique id which is used as the key.
+   * An AVL tree containing the displayable objects of this renderer. The tree
+   * reflects the rendering order for the associated objects.
    * 
-   * @type {!goog.structs.Map}
+   * @type {!goog.structs.AvlTree}
    * @protected
    */
-  this._objects = new goog.structs.Map();
+  this._objects = new goog.structs.AvlTree(X.object.OPACITY_COMPARATOR);
   
   /**
    * A hash map of vertex buffers of this renderer. Each buffer is associated
@@ -178,15 +179,6 @@ X.renderer = function(width, height) {
    */
   this._colorBuffers = new goog.structs.Map();
   
-  /**
-   * The id of the last added displayable object -1 if this container is empty.
-   * 
-   * @type {!number}
-   * @protected
-   */
-  this._id = -1;
-  
-
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
@@ -739,21 +731,16 @@ X.renderer.prototype.addObject = function(object) {
   
   // TODO buffers for lightning etc..
   
-  // check if we can get a unique id
-  if (this._objects.containsKey(++this._id)) {
+  // add the object to the internal tree which reflects the rendering order
+  // (based on opacity)
+  if (!this._objects.add(object)) {
     
-    throw new X.exception('Fatal: Could not get unique id.');
+    throw new X.exception('Fatal: Could not add object to this renderer.');
     
   }
-  
-  var uniqueId = this._id;
-  
-  // now store the object and the buffers in the hash maps
-  this._objects.set(uniqueId, object);
-  this._vertexBuffers.set(uniqueId, vertexBuffer);
-  this._colorBuffers.set(uniqueId, colorBuffer);
-  
-  return uniqueId;
+  // add the buffers for the new object to the internal hash maps
+  this._vertexBuffers.set(object.id(), vertexBuffer);
+  this._colorBuffers.set(object.id(), colorBuffer);
   
 };
 
@@ -787,62 +774,61 @@ X.renderer.prototype.render = function() {
   this._gl.uniformMatrix4fv(viewUniformLocation, false, new Float32Array(
       viewMatrix.flatten()));
   
+  //
   // loop through all objects and (re-)draw them
-  var keyIterator = this._objects.getKeyIterator();
+  // 
+  // the rendering order is important in terms of opacity/transparency of
+  // objects
+  // thus, the most opaque objects are rendered first, the least opaque (== the
+  // most transparent) objects are rendered last
+  var objects = this._objects.getValues();
+  var numberOfObjects = objects.length;
   
-  try {
+  var i;
+  for (i = 0; i < numberOfObjects; ++i) {
     
-    while (true) {
+    var object = objects[i];
+    
+    if (object) {
       
-      var key = keyIterator.next();
+      // we have a valid object
+      var id = object.id();
       
-      var object = this._objects.get(key);
+      var vertexBuffer = this._vertexBuffers.get(id);
+      var colorBuffer = this._colorBuffers.get(id);
       
-      if (object) {
+      // ..bind the glBuffers
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
+      
+      this._gl.vertexAttribPointer(this._vertexPositionAttribute, vertexBuffer
+          .itemSize(), this._gl.FLOAT, false, 0, 0);
+      
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());
+      
+      this._gl.vertexAttribPointer(this._vertexColorAttribute, colorBuffer
+          .itemSize(), this._gl.FLOAT, false, 0, 0);
+      
+      // .. and draw with the object's draw mode
+      var drawMode = -1;
+      if (object.type() == X.object.types.TRIANGLES) {
         
-        // we have a valid object
-        var vertexBuffer = this._vertexBuffers.get(key);
-        var colorBuffer = this._colorBuffers.get(key);
+        drawMode = this._gl.TRIANGLES;
         
-        // ..bind the glBuffers
-        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
+      } else if (object.type() == X.object.types.LINES) {
         
-        this._gl.vertexAttribPointer(this._vertexPositionAttribute,
-            vertexBuffer.itemSize(), this._gl.FLOAT, false, 0, 0);
-        
-        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());
-        
-        this._gl.vertexAttribPointer(this._vertexColorAttribute, colorBuffer
-            .itemSize(), this._gl.FLOAT, false, 0, 0);
-        
-        // .. and draw
-        var drawMode;
-        if (object.type() == X.object.types.TRIANGLES) {
-          
-          drawMode = this._gl.TRIANGLES;
-          
-        } else if (object.type() == X.object.types.LINES) {
-          
-          drawMode = this._gl.LINES;
-          
-        }
-        
-        this._gl.drawArrays(drawMode, 0, vertexBuffer.itemCount());
+        drawMode = this._gl.LINES;
         
       }
       
-    } // while
-    
-  } catch (e) {
-    
-    if (e != goog.iter.StopIteration) {
+      this._gl.drawArrays(drawMode, 0, vertexBuffer.itemCount());
       
-      // there was an error
-      throw e;
+    } else {
+      
+      throw new X.exception('Fatal: Could not retrieve object for (re-)drawing');
       
     }
     
-  }
+  } // loop through objects
   
 };
 

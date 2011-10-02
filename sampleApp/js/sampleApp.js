@@ -53,6 +53,7 @@ sampleApp.run = function() {
     object1.colors().add(new X.color(1, 1, 1));
     object1.colors().add(new X.color(1, 1, 1));
     object1.colors().add(new X.color(1, 1, 1));
+    object1.setOpacity(0.5);
     
     var object2 = new X.object(X.object.types.LINES);
     object2.points().add([ 20, 20, 0 ]);
@@ -64,6 +65,7 @@ sampleApp.run = function() {
     object2.colors().add(new X.color(1, 0, 0));
     object2.colors().add(new X.color(0, 0, 1));
     object2.colors().add(new X.color(0, 0, 1));
+    object2.setOpacity(0.6);
     
     var object3 = new X.object();
     object3.points().add([ -40, -40, 0 ]);
