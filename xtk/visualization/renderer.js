@@ -179,6 +179,15 @@ X.renderer = function(width, height) {
    */
   this._colorBuffers = new goog.structs.Map();
   
+  /**
+   * A hash map of opacity buffers of this renderer. Each buffer is associated
+   * with a displayable object using its unique id.
+   * 
+   * @type {!goog.structs.Map}
+   * @protected
+   */
+  this._opacityBuffers = new goog.structs.Map();
+  
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
@@ -626,7 +635,7 @@ X.renderer.prototype.addShaders = function(shaders) {
   // activate the new shaderProgram
   this._gl.useProgram(shaderProgram);
   
-  // store the index of the position and color attributes
+  // store the index of the position, color and opacity attributes
   this._vertexPositionAttribute = this._gl.getAttribLocation(shaderProgram,
       shaders.position());
   this._gl.enableVertexAttribArray(this._vertexPositionAttribute);
@@ -634,6 +643,10 @@ X.renderer.prototype.addShaders = function(shaders) {
   this._vertexColorAttribute = this._gl.getAttribLocation(shaderProgram,
       shaders.color());
   this._gl.enableVertexAttribArray(this._vertexColorAttribute);
+  
+  this._vertexOpacityAttribute = this._gl.getAttribLocation(shaderProgram,
+      shaders.opacity());
+  this._gl.enableVertexAttribArray(this._vertexOpacityAttribute);
   
   // attach the shaderProgram to this renderer
   this._shaderProgram = shaderProgram;
@@ -727,7 +740,30 @@ X.renderer.prototype.addObject = function(object) {
   
   // create an X.buffer to store the colors
   // every color consists of 4 items (r,g,b,alpha)
-  var colorBuffer = new X.buffer(glColorBuffer, colors.count(), 4);
+  var colorBuffer = new X.buffer(glColorBuffer, colors.count(), 3);
+  
+  // create opacity buffer
+  var glOpacityBuffer = this._gl.createBuffer();
+  
+  // TODO figure out if we can pass data without converting it to an array
+  var tmpArray = new Array(object.points().flatten().length);
+  var j;
+  for (j = 0; j < tmpArray.length; ++j) {
+    
+    tmpArray[j] = object.opacity();
+    
+  }
+  
+  console.log(tmpArray);
+  console.log(new Float32Array(tmpArray));
+  
+  // bind and fill with opacity value
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glOpacityBuffer);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
+      this._gl.STATIC_DRAW);
+  
+  // create an X.buffer to store the opacity
+  var opacityBuffer = new X.buffer(glOpacityBuffer, 1, 1);
   
   // TODO buffers for lightning etc..
   
@@ -741,6 +777,7 @@ X.renderer.prototype.addObject = function(object) {
   // add the buffers for the new object to the internal hash maps
   this._vertexBuffers.set(object.id(), vertexBuffer);
   this._colorBuffers.set(object.id(), colorBuffer);
+  this._opacityBuffers.set(object.id(), opacityBuffer);
   
 };
 
@@ -774,6 +811,7 @@ X.renderer.prototype.render = function() {
   this._gl.uniformMatrix4fv(viewUniformLocation, false, new Float32Array(
       viewMatrix.flatten()));
   
+
   //
   // loop through all objects and (re-)draw them
   // 
@@ -796,6 +834,7 @@ X.renderer.prototype.render = function() {
       
       var vertexBuffer = this._vertexBuffers.get(id);
       var colorBuffer = this._colorBuffers.get(id);
+      var opacityBuffer = this._opacityBuffers.get(id);
       
       // ..bind the glBuffers
       this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
@@ -806,6 +845,11 @@ X.renderer.prototype.render = function() {
       this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());
       
       this._gl.vertexAttribPointer(this._vertexColorAttribute, colorBuffer
+          .itemSize(), this._gl.FLOAT, false, 0, 0);
+      
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, opacityBuffer.glBuffer());
+      
+      this._gl.vertexAttribPointer(this._vertexOpacityAttribute, opacityBuffer
           .itemSize(), this._gl.FLOAT, false, 0, 0);
       
       // .. and draw with the object's draw mode

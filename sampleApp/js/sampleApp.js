@@ -53,7 +53,6 @@ sampleApp.run = function() {
     object1.colors().add(new X.color(1, 1, 1));
     object1.colors().add(new X.color(1, 1, 1));
     object1.colors().add(new X.color(1, 1, 1));
-    object1.setOpacity(0.5);
     
     var object2 = new X.object(X.object.types.LINES);
     object2.points().add([ 20, 20, 0 ]);
@@ -65,7 +64,7 @@ sampleApp.run = function() {
     object2.colors().add(new X.color(1, 0, 0));
     object2.colors().add(new X.color(0, 0, 1));
     object2.colors().add(new X.color(0, 0, 1));
-    object2.setOpacity(0.6);
+    object2.setOpacity(0.5);
     
     var object3 = new X.object();
     object3.points().add([ -40, -40, 0 ]);
@@ -77,22 +76,22 @@ sampleApp.run = function() {
     
 
     var color = new X.color(0, 1, 0);
-    color.setAlpha(0.5);
     var object4 = new X.object();
     object4.points().add([ -30, 40, 0 ]);
     object4.points().add([ -50, 30, 0 ]);
     object4.points().add([ -30, 30, 0 ]);
     object4.points().add([ -10, 20, 0 ]);
     object4.setColor(color);
+    object4.setOpacity(0.5);
     
     var color2 = new X.color(0, 1, 0);
-    color2.setAlpha(0.8);
     var object5 = new X.object();
     object5.points().add([ -30, 40, -10 ]);
     object5.points().add([ -50, 30, -10 ]);
     object5.points().add([ -20, 10, -10 ]);
     object5.points().add([ -10, 10, -10 ]);
     object5.setColor(color2);
+    object5.setOpacity(0.1);
     
 
     sliceView1.addObject(object1);

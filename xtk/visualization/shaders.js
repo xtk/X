@@ -40,8 +40,8 @@ X.shaders = function() {
    */
   this._vertexShaderSource = ''
       + 'attribute vec3 vertexPosition;                                          \n'
-      + 'attribute vec4 vertexColor;                                             \n'
-      + 'attribute vec4 opacity;                                                 \n'
+      + 'attribute vec3 vertexColor;                                             \n'
+      + 'attribute float vertexOpacity;                                          \n'
       + '                                                                        \n'
       + 'uniform mat4 view;                                                      \n'
       + 'uniform mat4 perspective;                                               \n'
@@ -50,7 +50,7 @@ X.shaders = function() {
       + '                                                                        \n'
       + 'void main(void) {                                                       \n'
       + '  gl_Position = perspective * view * vec4(vertexPosition, 1.0);         \n'
-      + '  fragmentColor = vertexColor * 0.6;                                \n'
+      + '  fragmentColor = vec4(vertexColor,vertexOpacity);                      \n'
       + '}                                                                       \n';
   
   /**
@@ -82,6 +82,14 @@ X.shaders = function() {
    * @protected
    */
   this._colorAttribute = 'vertexColor';
+  
+  /**
+   * The string to access the opacity value inside the vertex shader source.
+   * 
+   * @type {!string}
+   * @protected
+   */
+  this._opacityAttribute = 'vertexOpacity';
   
   /**
    * The string to access the view matrix inside the vertex shader source.
@@ -171,6 +179,17 @@ X.shaders.prototype.perspective = function() {
 };
 
 /**
+ * Get the opacity uniform locator.
+ * 
+ * @returns {!string} The opacity uniform locator.
+ */
+X.shaders.prototype.opacity = function() {
+
+  return this._opacityAttribute;
+  
+};
+
+/**
  * Checks if the configured shaders object is valid.
  * 
  * @returns {boolean} TRUE or FALSE depending on success.
@@ -197,6 +216,15 @@ X.shaders.prototype.validate = function() {
     
     throw new X.exception(
         'Fatal: Could not validate shader! The colorAttribute was bogus.');
+    
+  }
+  
+  t = this._vertexShaderSource.search(this._opacityAttribute);
+  
+  if (t == -1) {
+    
+    throw new X.exception(
+        'Fatal: Could not validate shader! The opacityAttribute was bogus.');
     
   }
   

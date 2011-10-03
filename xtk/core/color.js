@@ -69,12 +69,12 @@ X.color.prototype.alpha = function() {
 
 X.color.prototype.flatten = function() {
 
-  var colorArray = new Array(4);
+  var colorArray = new Array(3);
   
   colorArray[0] = this._red;
   colorArray[1] = this._green;
   colorArray[2] = this._blue;
-  colorArray[3] = this._alpha;
+  // colorArray[3] = this._alpha;
   
   return colorArray;
   
