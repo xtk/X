@@ -8,9 +8,10 @@ goog.provide('X.interactor');
 // requires
 goog.require('X.base');
 goog.require('X.camera');
+goog.require('X.camera.PanEvent');
+goog.require('X.camera.RotateEvent');
 goog.require('X.camera.ZoomEvent');
 goog.require('X.exception');
-goog.require('X.renderer');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
