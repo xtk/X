@@ -16,7 +16,7 @@ goog.require('goog.events.Event');
  * The superclass class for all events in XTK.
  *
  * @constructor
- * @name X.event
+ * @param {string} type A type identifier for this event.
  * @extends {goog.events.Event}
  */
 X.event = function(type) {
