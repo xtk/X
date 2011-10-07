@@ -8,14 +8,14 @@ goog.provide('X.renderer.RenderEvent');
 
 // requires
 goog.require('X.base');
-goog.require('X.object');
 goog.require('X.buffer');
 goog.require('X.camera');
 goog.require('X.colors');
-goog.require('X.exception');
 goog.require('X.event');
+goog.require('X.exception');
 goog.require('X.interactor');
 goog.require('X.matrixHelper');
+goog.require('X.object');
 goog.require('X.points');
 goog.require('X.shaders');
 goog.require('goog.dom');
@@ -27,13 +27,13 @@ goog.require('goog.structs.AvlTree');
 goog.require('goog.structs.Map');
 
 
+
 /**
  * Create a renderer with the given width and height.
  *
  * @param {number} width The width of the renderer.
  * @param {number} height The height of the renderer.
  * @constructor
- * @name X.renderer
  * @extends {X.base}
  */
 X.renderer = function(width, height) {
@@ -41,8 +41,10 @@ X.renderer = function(width, height) {
   // check if this instance is a valid subclass of X.renderer
   if (!(this instanceof X.renderer2D) && !(this instanceof X.renderer3D)) {
 
-    throw new X.exception(
-        'Fatal: X.renderer should not be instantiated directly. Use X.renderer2D or X.renderer3D.');
+    var message = '';
+    message += 'Fatal: X.renderer should not be instantiated directly.';
+    message += 'Use X.renderer2D or X.renderer3D instead.';
+    throw new X.exception(message);
 
   }
 
@@ -199,15 +201,15 @@ goog.inherits(X.renderer, X.base);
  */
 X.renderer.events = {
   // the render event
-  RENDER : X.event.uniqueId('render')
+  RENDER: X.event.uniqueId('render')
 };
+
 
 
 /**
  * The render event to initiate a re-rendering of all objects.
  *
  * @constructor
- * @name X.renderer.RenderEvent
  * @extends {X.event}
  */
 X.renderer.RenderEvent = function() {
@@ -337,7 +339,7 @@ X.renderer.prototype.setBackgroundColor = function(backgroundColor) {
 /**
  * Get the canvas of this renderer.
  *
- * @returns {!Element} The canvas of this renderer.
+ * @return {!Element} The canvas of this renderer.
  * @throws {X.exception} An exception if this renderer does not have a canvas.
  */
 X.renderer.prototype.canvas = function() {
@@ -423,7 +425,7 @@ X.renderer.prototype.setContainerById = function(containerId) {
 /**
  * Get the camera of this renderer.
  *
- * @returns {X.camera}
+ * @return {X.camera} The associated camera.
  */
 X.renderer.prototype.camera = function() {
 
@@ -435,7 +437,7 @@ X.renderer.prototype.camera = function() {
 /**
  * Get the interactor of this renderer.
  *
- * @returns {X.interactor}
+ * @return {X.interactor} The associated renderer.
  */
 X.renderer.prototype.interactor = function() {
 
@@ -577,11 +579,17 @@ X.renderer.prototype.init = function() {
 };
 
 
+/**
+ * Add a pair of shaders to this renderer. The renderer has to be initialized
+ * before adding the shaders.
+ *
+ * @param {!X.shaders} shaders The X.shaders pair to add to this renderer.
+ */
 X.renderer.prototype.addShaders = function(shaders) {
 
   // check if the renderer is initialized properly
-  if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl)
-      || !goog.isDefAndNotNull(this._camera)) {
+  if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
+      !goog.isDefAndNotNull(this._camera)) {
 
     throw new X.exception('Fatal: Renderer was not initialized properly!');
 
@@ -610,8 +618,8 @@ X.renderer.prototype.addShaders = function(shaders) {
   this._gl.compileShader(glFragmentShader);
   this._gl.compileShader(glVertexShader);
 
-  if (!this._gl.getShaderParameter(glFragmentShader, this._gl.COMPILE_STATUS)
-      || !this._gl.getShaderParameter(glVertexShader, this._gl.COMPILE_STATUS)) {
+  if (!this._gl.getShaderParameter(glFragmentShader, this._gl.COMPILE_STATUS) ||
+      !this._gl.getShaderParameter(glVertexShader, this._gl.COMPILE_STATUS)) {
 
     throw new X.exception('Fatal: Shader compilation failed!');
 
@@ -653,15 +661,24 @@ X.renderer.prototype.addShaders = function(shaders) {
 
 };
 
+
+/**
+ * Add a new displayable object to this renderer. The renderer has to be
+ * initialized before doing so. A X.renderer.render() call has to be initiated
+ * to display added objects.
+ *
+ * @param {!X.object} object The displayable object to add to this renderer.
+ */
 X.renderer.prototype.addObject = function(object) {
 
-  if (!this._canvas || !this._gl || !this._camera) {
+  if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
+      !goog.isDefAndNotNull(this._camera)) {
 
     throw new X.exception('Fatal: Renderer was not initialized properly!');
 
   }
 
-  if (!object || !(object instanceof X.object)) {
+  if (!goog.isDefAndNotNull(object) || !(object instanceof X.object)) {
 
     throw new X.exception('Fatal: Illegal object!');
 
@@ -742,7 +759,8 @@ X.renderer.prototype.addObject = function(object) {
   // create opacity buffer
   var glOpacityBuffer = this._gl.createBuffer();
 
-  // TODO figure out if we can pass data without converting it to an array
+  // we need to convert the single opacity value to an array to set it for all
+  // vertices
   var tmpArray = new Array(object.points().flatten().length);
   var j;
   for (j = 0; j < tmpArray.length; ++j) {
@@ -750,9 +768,6 @@ X.renderer.prototype.addObject = function(object) {
     tmpArray[j] = object.opacity();
 
   }
-
-  console.log(tmpArray);
-  console.log(new Float32Array(tmpArray));
 
   // bind and fill with opacity value
   this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glOpacityBuffer);
@@ -778,6 +793,13 @@ X.renderer.prototype.addObject = function(object) {
 
 };
 
+
+/**
+ * (Re-)render all associated displayable objects of this renderer. This method
+ * clears the viewport and re-draws everything by looping through the tree of
+ * objects. The current perspective and view matrices of the associated camera
+ * are used to setup the three-dimensional space.
+ */
 X.renderer.prototype.render = function() {
 
   if (!this._canvas || !this._gl || !this._camera) {
@@ -864,7 +886,8 @@ X.renderer.prototype.render = function() {
 
     } else {
 
-      throw new X.exception('Fatal: Could not retrieve object for (re-)drawing');
+      var message = 'Fatal: Could not retrieve object for (re-)drawing!';
+      throw new X.exception(message);
 
     }
 
@@ -872,81 +895,81 @@ X.renderer.prototype.render = function() {
 
 };
 
-/**
- * @param vector
- * @returns {goog.math.Vec2}
+/*
+ * THE FOLLOWING IS OBSOLETE AND NOT WORKING FOR NOW
+ *
+ * X.renderer.prototype.convertWorldToDisplayCoordinates = function(vector) {
+ *
+ * var view = this._camera.view(); var perspective = this._camera.perspective();
+ *
+ * var viewPerspective = goog.math.Matrix.createIdentityMatrix(4);
+ *
+ * viewPerspective = viewPerspective.multiply(perspective); viewPerspective =
+ * viewPerspective.multiply(view);
+ *
+ * var twoDVectorAsMatrix; twoDVectorAsMatrix =
+ * viewPerspective.multiplyByVector(vector);
+ *
+ * var x = (twoDVectorAsMatrix.getValueAt(0, 0) + 1) / 2.0; x = x *
+ * this.width();
+ *
+ * var y = (1 - twoDVectorAsMatrix.getValueAt(0, 1)) / 2.0; y = y *
+ * this.height();
+ *
+ * return new goog.math.Vec2(Math.round(x), Math.round(y)); }; // source //
+ * http://webglfactory.blogspot.com/2011/05/how-to-convert-world-to-screen.html
+ * X.renderer.prototype.viewportToNormalizedViewport = function(vector) {
+ *
+ * var view = this._camera.view(); var perspective = this._camera.perspective();
+ *
+ * var viewPerspective = goog.math.Matrix.createIdentityMatrix(4);
+ * viewPerspective = viewPerspective.multiply(perspective); viewPerspective =
+ * viewPerspective.multiply(view);
+ *
+ * var viewPerspectiveInverse = viewPerspective.getInverse();
+ *
+ *
+ * var x = 2.0 * vector.x / this.width() - 1; var y = -2.0 * vector.y /
+ * this.height() + 1;
+ *
+ * threeDVector = new goog.math.Vec3(x, y, 0); threeDVectorAsMatrix =
+ * viewPerspectiveInverse.multiplyByVector(threeDVector);
+ *
+ * threeDVector.x = threeDVectorAsMatrix.getValueAt(0, 0); threeDVector.y =
+ * threeDVectorAsMatrix.getValueAt(1, 0); threeDVector.z =
+ * threeDVectorAsMatrix.getValueAt(2, 0);
+ *
+ * return threeDVector; };
  */
-X.renderer.prototype.convertWorldToDisplayCoordinates = function(vector) {
 
-  var view = this._camera.view();
-  var perspective = this._camera.perspective();
-
-  var viewPerspective = goog.math.Matrix.createIdentityMatrix(4);
-
-  viewPerspective = viewPerspective.multiply(perspective);
-  viewPerspective = viewPerspective.multiply(view);
-
-  var twoDVectorAsMatrix;
-  twoDVectorAsMatrix = viewPerspective.multiplyByVector(vector);
-
-  var x = (twoDVectorAsMatrix.getValueAt(0, 0) + 1) / 2.0;
-  x = x * this.width();
-
-  var y = (1 - twoDVectorAsMatrix.getValueAt(0, 1)) / 2.0;
-  y = y * this.height();
-
-  return new goog.math.Vec2(Math.round(x), Math.round(y));
-
-};
-// source
-// http://webglfactory.blogspot.com/2011/05/how-to-convert-world-to-screen.html
-X.renderer.prototype.viewportToNormalizedViewport = function(vector) {
-
-  var view = this._camera.view();
-  var perspective = this._camera.perspective();
-
-  var viewPerspective = goog.math.Matrix.createIdentityMatrix(4);
-  viewPerspective = viewPerspective.multiply(perspective);
-  viewPerspective = viewPerspective.multiply(view);
-
-  var viewPerspectiveInverse = viewPerspective.getInverse();
-
-
-  var x = 2.0 * vector.x / this.width() - 1;
-  var y = -2.0 * vector.y / this.height() + 1;
-
-  threeDVector = new goog.math.Vec3(x, y, 0);
-  threeDVectorAsMatrix = viewPerspectiveInverse.multiplyByVector(threeDVector);
-
-  threeDVector.x = threeDVectorAsMatrix.getValueAt(0, 0);
-  threeDVector.y = threeDVectorAsMatrix.getValueAt(1, 0);
-  threeDVector.z = threeDVectorAsMatrix.getValueAt(2, 0);
-
-  return threeDVector;
-
-};
-
-
-// export symbols (requiered for advanced compilation)
+// export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer', X.renderer);
-goog.exportSymbol('X.renderer.prototype.getDimension',
-    X.renderer.prototype.getDimension);
-goog.exportSymbol('X.renderer.prototype.getWidth',
-    X.renderer.prototype.getWidth);
+goog.exportSymbol('X.renderer.prototype.dimension',
+    X.renderer.prototype.dimension);
+goog.exportSymbol('X.renderer.prototype.width', X.renderer.prototype.width);
 goog.exportSymbol('X.renderer.prototype.setWidth',
     X.renderer.prototype.setWidth);
-goog.exportSymbol('X.renderer.prototype.getHeight',
-    X.renderer.prototype.getHeight);
+goog.exportSymbol('X.renderer.prototype.height', X.renderer.prototype.height);
 goog.exportSymbol('X.renderer.prototype.setHeight',
     X.renderer.prototype.setHeight);
-goog.exportSymbol('X.renderer.prototype.getBackgroundColor',
-    X.renderer.prototype.getBackgroundColor);
+goog.exportSymbol('X.renderer.prototype.backgroundColor',
+    X.renderer.prototype.backgroundColor);
 goog.exportSymbol('X.renderer.prototype.setBackgroundColor',
     X.renderer.prototype.setBackgroundColor);
-goog.exportSymbol('X.renderer.prototype.getContainer',
-    X.renderer.prototype.getContainer);
+goog.exportSymbol('X.renderer.prototype.canvas', X.renderer.prototype.canvas);
+goog.exportSymbol('X.renderer.prototype.container',
+    X.renderer.prototype.container);
 goog.exportSymbol('X.renderer.prototype.setContainer',
     X.renderer.prototype.setContainer);
-goog.exportSymbol('X.renderer.prototype.init', X.renderer.prototype.init);
 goog.exportSymbol('X.renderer.prototype.setContainerById',
     X.renderer.prototype.setContainerById);
+goog.exportSymbol('X.renderer.prototype.camera', X.renderer.prototype.camera);
+goog.exportSymbol('X.renderer.prototype.interactor',
+    X.renderer.prototype.interactor);
+goog.exportSymbol('X.renderer.prototype.init', X.renderer.prototype.init);
+goog.exportSymbol('X.renderer.prototype.addShaders',
+    X.renderer.prototype.addShaders);
+goog.exportSymbol('X.renderer.prototype.addObject',
+    X.renderer.prototype.addObject);
+goog.exportSymbol('X.renderer.prototype.render', X.renderer.prototype.render);
+goog.exportSymbol('X.renderer.RenderEvent', X.renderer.RenderEvent);
