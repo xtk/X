@@ -16,7 +16,7 @@ function testXmatrixHelperflatten() {
   // [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
   var flattened = matrix.flatten();
 
-  var baseline = [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ];
+  var baseline = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
   var i;
   for (i = 0; i < baseline.length; i++) {
@@ -90,7 +90,7 @@ function testXmatrixHelperMultiplyByVector() {
   // create a 1x3 vector
   var vector = new goog.math.Vec3(7, 8, 9);
 
-  var baseline = new goog.math.Matrix([ [ 7 ], [ 8 ], [ 9 ], [ 1 ] ]);
+  var baseline = new goog.math.Matrix([[7], [8], [9], [1]]);
 
   // multiplying the matrix by the vector should result in the vector since the
   // matrix is the identity

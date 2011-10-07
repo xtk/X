@@ -21,6 +21,7 @@ goog.require('goog.dom');
  */
 X.console = function() {
 
+  //
   // call the standard constructor of X.base
   goog.base(this);
 
@@ -121,8 +122,8 @@ X.console.prototype.err = function(errorMessage) {
 
 };
 
-// export symbols (requiered for advanced compilation)
-goog.exportSymbol('X.console',X.console);
+// export symbols (required for advanced compilation)
+goog.exportSymbol('X.console', X.console);
 goog.exportSymbol('X.console.prototype.console_', X.console.prototype.console_);
-goog.exportSymbol('X.console.prototype.out',X.console.prototype.out);
+goog.exportSymbol('X.console.prototype.out', X.console.prototype.out);
 goog.exportSymbol('X.console.prototype.err', X.console.prototype.err);

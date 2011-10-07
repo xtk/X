@@ -16,7 +16,7 @@ goog.require('goog.math.Vec3');
  * Create a flattened, one-dimensional representation of a goog.math.Matrix.
  *
  * @this {goog.math.Matrix}
- * @returns {Array} A one-dimensional representation of this goog.math.Matrix.
+ * @return {Array} A one-dimensional representation of this goog.math.Matrix.
  */
 X.matrixHelper.flatten = function() {
 
@@ -28,16 +28,22 @@ X.matrixHelper.flatten = function() {
     return [];
   }
 
-  for ( var j = 0; j < dimensions.height; j++) {
-    for ( var i = 0; i < dimensions.width; i++) {
+  var i, j;
+  for (j = 0; j < dimensions.height; j++) {
+    for (i = 0; i < dimensions.width; i++) {
       result.push(this.getValueAt(i, j));
     }
   }
   return result;
 
 };
-// register the function to the goog.math.Matrix API
+
+
+/**
+ * register the function to the goog.math.Matrix API
+ */
 goog.math.Matrix.prototype.flatten = X.matrixHelper.flatten;
+
 
 /**
  * Translate a 3x3 or 4x4 goog.math.Matrix by a vector. In the 3x3 case, the
@@ -46,7 +52,7 @@ goog.math.Matrix.prototype.flatten = X.matrixHelper.flatten;
  *
  * @this {goog.math.Matrix}
  * @param {!goog.math.Vec2|!goog.math.Vec3} vector The translation vector.
- * @returns {goog.math.Matrix} The result of this translation.
+ * @return {goog.math.Matrix} The result of this translation.
  * @throws {X.exception} An exception if the translation fails.
  */
 X.matrixHelper.translate = function translate(vector) {
@@ -83,8 +89,13 @@ X.matrixHelper.translate = function translate(vector) {
   return this.multiply(transformationMatrix);
 
 };
-// register the function to the goog.math.Matrix API
+
+
+/**
+ * Register the function to the goog.math.Matrix API
+ */
 goog.math.Matrix.prototype.translate = X.matrixHelper.translate;
+
 
 /**
  * Multiply 3x3 or 4x4 goog.math.Matrix by a vector. In the 3x3 case, the vector
@@ -93,7 +104,7 @@ goog.math.Matrix.prototype.translate = X.matrixHelper.translate;
  *
  * @this {goog.math.Matrix}
  * @param {!goog.math.Vec2|!goog.math.Vec3} vector The multiplication vector.
- * @returns {goog.math.Matrix} The result of this multiplication.
+ * @return {goog.math.Matrix} The result of this multiplication.
  * @throws {X.exception} An exception if the multiplication fails.
  */
 X.matrixHelper.multiplyByVector = function(vector) {
@@ -137,5 +148,9 @@ X.matrixHelper.multiplyByVector = function(vector) {
   return this.multiply(vectorAsMatrix);
 
 };
-// register the function to the goog.math.Matrix API
+
+
+/**
+ * Register the function to the goog.math.Matrix API
+ */
 goog.math.Matrix.prototype.multiplyByVector = X.matrixHelper.multiplyByVector;

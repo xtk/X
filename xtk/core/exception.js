@@ -11,7 +11,7 @@ goog.require('X.base');
 
 
 /**
- * The general xtk exception.
+ * The general XTK exception.
  *
  * @param {?string} message An error message.
  * @constructor
@@ -19,6 +19,17 @@ goog.require('X.base');
  */
 X.exception = function(message) {
 
+  var validMessage = 'Unknown error!';
+
+  if (goog.isDefAndNotNull(message)) {
+
+    // use the given message
+    validMessage = message;
+
+  }
+
+  //
+  // call the standard constructor of X.base
   goog.base(this);
 
   //
@@ -30,14 +41,20 @@ X.exception = function(message) {
    */
   this._className = 'exception';
 
-  // The message associated to this exception.
-  if (message) {
-    this._message = message;
-  } else {
-    this._message = 'Unknown error!';
-  }
+  /**
+   * The message of this exception.
+   *
+   * @type {!string}
+   * @protected
+   */
+  this._message = validMessage;
 
-  // we will use a new error object to get the stacktrace
+  /**
+   * The associated error object of this exception.
+   *
+   * @type {Error}
+   * @private
+   */
   var _err = new Error();
 
   /**
@@ -51,5 +68,5 @@ X.exception = function(message) {
 };
 goog.inherits(X.exception, X.base);
 
-// export symbols (requiered for advanced compilation)
+// export symbols (required for advanced compilation)
 goog.exportSymbol('X.exception', X.exception);
