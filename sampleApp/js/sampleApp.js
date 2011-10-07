@@ -127,7 +127,7 @@ sampleApp.run = function() {
 
     function testCB(e) {
 
-      console.log(e);
+      c.out(e);
 
     }
 
@@ -142,8 +142,8 @@ sampleApp.run = function() {
 
       // files is a FileList of File objects. List some properties.
 
-      var i;
-      for (i = 0, f; f = files[i]; i++) {
+      var i, f = 0;
+      for (i = 0; f = files[i]; i++) {
 
         var reader = new FileReader();
 
