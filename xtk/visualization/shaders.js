@@ -19,6 +19,7 @@ goog.require('X.exception');
  */
 X.shaders = function() {
 
+  //
   // call the standard constructor of X.base
   goog.base(this);
 
@@ -38,20 +39,21 @@ X.shaders = function() {
    * @type {!string}
    * @protected
    */
-  this._vertexShaderSource = ''
-      + 'attribute vec3 vertexPosition;                                          \n'
-      + 'attribute vec3 vertexColor;                                             \n'
-      + 'attribute float vertexOpacity;                                          \n'
-      + '                                                                        \n'
-      + 'uniform mat4 view;                                                      \n'
-      + 'uniform mat4 perspective;                                               \n'
-      + '                                                                        \n'
-      + 'varying lowp vec4 fragmentColor;                                        \n'
-      + '                                                                        \n'
-      + 'void main(void) {                                                       \n'
-      + '  gl_Position = perspective * view * vec4(vertexPosition, 1.0);         \n'
-      + '  fragmentColor = vec4(vertexColor,vertexOpacity);                      \n'
-      + '}                                                                       \n';
+  this._vertexShaderSource = '';
+  var t = '';
+  t += 'attribute vec3 vertexPosition;\n';
+  t += 'attribute vec3 vertexColor;\n';
+  t += 'attribute float vertexOpacity;\n';
+  t += '\n';
+  t += 'uniform mat4 view;\n';
+  t += 'uniform mat4 perspective;\n';
+  t += 'varying lowp vec4 fragmentColor;\n';
+  t += '\n';
+  t += 'void main(void) {\n';
+  t += '  gl_Position = perspective * view * vec4(vertexPosition, 1.0);\n';
+  t += '  fragmentColor = vec4(vertexColor,vertexOpacity);\n';
+  t += '}\n';
+  this._vertexShaderSource = t;
 
   /**
    * The fragment shader source of this shader pair. By default, a basic shader
@@ -60,12 +62,14 @@ X.shaders = function() {
    * @type {!string}
    * @protected
    */
-  this._fragmentShaderSource = ''
-      + 'varying lowp vec4 fragmentColor;                   \n'
-      + '                                                   \n'
-      + 'void main(void) {                                  \n'
-      + '  gl_FragColor = fragmentColor;                    \n'
-      + '}                                                  \n';
+  this._fragmentShaderSource = '';
+  var t = '';
+  t += 'varying lowp vec4 fragmentColor;\n';
+  t += '\n';
+  t += 'void main(void) {\n';
+  t += '  gl_FragColor = fragmentColor;\n';
+  t += '}\n';
+  this._fragmentShaderSource = t;
 
   /**
    * The string to access the position inside the vertex shader source.
@@ -112,10 +116,11 @@ X.shaders = function() {
 // inherit from X.base
 goog.inherits(X.shaders, X.base);
 
+
 /**
  * Get the vertex shader source of this shader pair.
  *
- * @returns {!string} The vertex shader source.
+ * @return {!string} The vertex shader source.
  */
 X.shaders.prototype.vertex = function() {
 
@@ -123,10 +128,11 @@ X.shaders.prototype.vertex = function() {
 
 };
 
+
 /**
  * Get the fragment shader source of this shader pair.
  *
- * @returns {!string} The fragment shader source.
+ * @return {!string} The fragment shader source.
  */
 X.shaders.prototype.fragment = function() {
 
@@ -134,10 +140,11 @@ X.shaders.prototype.fragment = function() {
 
 };
 
+
 /**
  * Get the vertex position attribute locator.
  *
- * @returns {!string} The vertex position attribute locator.
+ * @return {!string} The vertex position attribute locator.
  */
 X.shaders.prototype.position = function() {
 
@@ -145,10 +152,11 @@ X.shaders.prototype.position = function() {
 
 };
 
+
 /**
  * Get the vertex color attribute locator.
  *
- * @returns {!string} The vertex color attribute locator.
+ * @return {!string} The vertex color attribute locator.
  */
 X.shaders.prototype.color = function() {
 
@@ -156,10 +164,11 @@ X.shaders.prototype.color = function() {
 
 };
 
+
 /**
  * Get the view uniform locator.
  *
- * @returns {!string} The view uniform locator.
+ * @return {!string} The view uniform locator.
  */
 X.shaders.prototype.view = function() {
 
@@ -167,10 +176,11 @@ X.shaders.prototype.view = function() {
 
 };
 
+
 /**
  * Get the perspective uniform locator.
  *
- * @returns {!string} The perspective uniform locator.
+ * @return {!string} The perspective uniform locator.
  */
 X.shaders.prototype.perspective = function() {
 
@@ -178,10 +188,11 @@ X.shaders.prototype.perspective = function() {
 
 };
 
+
 /**
  * Get the opacity uniform locator.
  *
- * @returns {!string} The opacity uniform locator.
+ * @return {!string} The opacity uniform locator.
  */
 X.shaders.prototype.opacity = function() {
 
@@ -189,10 +200,11 @@ X.shaders.prototype.opacity = function() {
 
 };
 
+
 /**
  * Checks if the configured shaders object is valid.
  *
- * @returns {boolean} TRUE or FALSE depending on success.
+ * @return {boolean} TRUE or FALSE depending on success.
  * @throws {X.exception} An exception if the shader is invalid.
  */
 X.shaders.prototype.validate = function() {
@@ -261,4 +273,5 @@ goog.exportSymbol('X.shaders.prototype.color', X.shaders.prototype.color);
 goog.exportSymbol('X.shaders.prototype.view', X.shaders.prototype.view);
 goog.exportSymbol('X.shaders.prototype.perspective',
     X.shaders.prototype.perspective);
+goog.exportSymbol('X.shaders.prototype.opacity', X.shaders.prototype.opacity);
 goog.exportSymbol('X.shaders.prototype.validate', X.shaders.prototype.validate);
