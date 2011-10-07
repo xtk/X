@@ -2,7 +2,7 @@
 #
 import os, sys
 
-def calculate( namespace, dir, buildtool):
+def calculate( namespace, dir, buildtool ):
     print '+++++++++++++++++++++++++++++++'
     print 'Namespace: ' + namespace
     print 'Directory: ' + dir
@@ -11,11 +11,11 @@ def calculate( namespace, dir, buildtool):
     #
     # generate build command
     #
-    
+
     command = buildtool
     command += ' -r ' + dir
     command += ' -e ' + dir + os.sep + 'lib'
-    command += ' -x ' + dir + os.sep + namespace + os.sep + namespace + '-deps.js'
+    command += ' -x ' + dir + os.sep + namespace + '-deps.js'
     command += ' --strict'
 
     #
