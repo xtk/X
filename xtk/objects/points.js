@@ -21,6 +21,7 @@ goog.require('goog.structs.Map');
  */
 X.points = function() {
 
+  //
   // call the standard constructor of X.base
   goog.base(this);
 
@@ -53,11 +54,12 @@ X.points = function() {
 // inherit from X.base
 goog.inherits(X.points, X.base);
 
+
 /**
  * Add a point to this container.
  *
  * @param {!(Array|goog.math.Coordinate3)} point A three-dimensional coordinate.
- * @returns {!number} The internal id of the added point.
+ * @return {!number} The internal id of the added point.
  * @throws {X.exception} An exception if the passed point is invalid or a unique
  *           id could not be generated.
  */
@@ -94,11 +96,12 @@ X.points.prototype.add = function(point) {
 
 };
 
+
 /**
  * Get the point with the given id. This is a O(1) operation.
  *
  * @param {!number} id The internal id of the requested point.
- * @returns {!*} The point with the given id.
+ * @return {!*} The point with the given id.
  * @throws {X.exception} An exception if the passed id is invalid or does not
  *           exist.
  */
@@ -114,17 +117,18 @@ X.points.prototype.get = function(id) {
 
 };
 
+
 /**
  * Remove a given point from this container. This is a O(N) operation.
  *
  * @param {!goog.math.Coordinate3} point The point to be removed.
- * @returns {boolean} TRUE/FALSE depending on success.
+ * @return {boolean} TRUE/FALSE depending on success.
  * @throws {X.exception} An exception if the given point is invalid or if
  *           accessing the internal hash map led to problems.
  */
 X.points.prototype.remove = function(point) {
 
-  if (!goog.isDefAndNotNull(point) || !(point instanceof goog.math.Coordinate3)) {
+  if (!(point instanceof goog.math.Coordinate3)) {
 
     throw new X.exception('Fatal: Invalid point.');
 
@@ -170,12 +174,13 @@ X.points.prototype.remove = function(point) {
 
 };
 
+
 /**
  * Remove the point with the given id from this container. This is a O(1)
  * operation.
  *
  * @param {!number} id The id of the point to be removed.
- * @returns {boolean} TRUE/FALSE depending on success.
+ * @return {boolean} TRUE/FALSE depending on success.
  * @throws {X.exception} An exception if the given id is invalid.
  */
 X.points.prototype.removeById = function(id) {
@@ -196,10 +201,11 @@ X.points.prototype.removeById = function(id) {
 
 };
 
+
 /**
  * Get the number of points in this container.
  *
- * @returns {!number} The number of points in this container.
+ * @return {!number} The number of points in this container.
  */
 X.points.prototype.count = function() {
 
@@ -207,10 +213,11 @@ X.points.prototype.count = function() {
 
 };
 
+
 /**
  * Create an ordered and flattened 1-D array of all points in this container.
  *
- * @returns {Array} A one-dimensional array containing all points.
+ * @return {Array} A one-dimensional array containing all points.
  */
 X.points.prototype.flatten = function() {
 
@@ -251,10 +258,11 @@ X.points.prototype.flatten = function() {
 };
 
 // export symbols (requiered for advanced compilation)
-goog.exportSymbol('X.points',X.points);
+goog.exportSymbol('X.points', X.points);
 goog.exportSymbol('X.points.prototype.add', X.points.prototype.add);
-goog.exportSymbol('X.points.prototype.get',X.points.prototype.get);
+goog.exportSymbol('X.points.prototype.get', X.points.prototype.get);
 goog.exportSymbol('X.points.prototype.remove', X.points.prototype.remove);
-goog.exportSymbol('X.points.prototype.removeById', X.points.prototype.removeById);
-goog.exportSymbol('X.points.prototype.count',X.points.prototype.count);
+goog.exportSymbol('X.points.prototype.removeById',
+    X.points.prototype.removeById);
+goog.exportSymbol('X.points.prototype.count', X.points.prototype.count);
 goog.exportSymbol('X.points.prototype.flatten', X.points.prototype.flatten);
