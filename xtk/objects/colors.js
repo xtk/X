@@ -21,6 +21,7 @@ goog.require('goog.structs.Map');
  */
 X.colors = function() {
 
+  //
   // call the standard constructor of X.base
   goog.base(this);
 
@@ -53,11 +54,12 @@ X.colors = function() {
 // inherit from X.base
 goog.inherits(X.colors, X.base);
 
+
 /**
  * Add a color to this container.
  *
  * @param {!X.color} color A color.
- * @returns {!number} The internal id of the added color.
+ * @return {!number} The internal id of the added color.
  * @throws {X.exception} An exception if the passed color is invalid or a unique
  *           id could not be generated.
  */
@@ -81,11 +83,12 @@ X.colors.prototype.add = function(color) {
 
 };
 
+
 /**
  * Get the color with the given id. This is a O(1) operation.
  *
  * @param {!number} id The internal id of the requested color.
- * @returns {!*} The color with the given id.
+ * @return {!*} The color with the given id.
  * @throws {X.exception} An exception if the passed id is invalid or does not
  *           exist.
  */
@@ -101,11 +104,12 @@ X.colors.prototype.get = function(id) {
 
 };
 
+
 /**
  * Remove a given color from this container. This is a O(N) operation.
  *
  * @param {!X.color} color The X.color to be removed.
- * @returns {boolean} TRUE/FALSE depending on success.
+ * @return {boolean} TRUE/FALSE depending on success.
  * @throws {X.exception} An exception if the given color is invalid or if
  *           accessing the internal hash map led to problems.
  */
@@ -157,12 +161,13 @@ X.colors.prototype.remove = function(color) {
 
 };
 
+
 /**
  * Remove the color with the given id from this container. This is a O(1)
  * operation.
  *
  * @param {!number} id The id of the color to be removed.
- * @returns {boolean} TRUE/FALSE depending on success.
+ * @return {boolean} TRUE/FALSE depending on success.
  * @throws {X.exception} An exception if the given id is invalid.
  */
 X.colors.prototype.removeById = function(id) {
@@ -183,10 +188,11 @@ X.colors.prototype.removeById = function(id) {
 
 };
 
+
 /**
  * Get the number of colors in this container.
  *
- * @returns {!number} The number of colors in this container.
+ * @return {!number} The number of colors in this container.
  */
 X.colors.prototype.count = function() {
 
@@ -194,10 +200,11 @@ X.colors.prototype.count = function() {
 
 };
 
+
 /**
  * Create an ordered and flattened 1-D array of all colors in this container.
  *
- * @returns {Array} A one-dimensional array containing all colors.
+ * @return {Array} A one-dimensional array containing all colors.
  */
 X.colors.prototype.flatten = function() {
 
@@ -237,11 +244,12 @@ X.colors.prototype.flatten = function() {
 
 };
 
-// export symbols (requiered for advanced compilation)
-goog.exportSymbol('X.colors',X.colors);
+// export symbols (required for advanced compilation)
+goog.exportSymbol('X.colors', X.colors);
 goog.exportSymbol('X.colors.prototype.add', X.colors.prototype.add);
-goog.exportSymbol('X.colors.prototype.get',X.colors.prototype.get);
+goog.exportSymbol('X.colors.prototype.get', X.colors.prototype.get);
 goog.exportSymbol('X.colors.prototype.remove', X.colors.prototype.remove);
-goog.exportSymbol('X.colors.prototype.removeById', X.colors.prototype.removeById);
-goog.exportSymbol('X.colors.prototype.count',X.colors.prototype.count);
+goog.exportSymbol('X.colors.prototype.removeById',
+    X.colors.prototype.removeById);
+goog.exportSymbol('X.colors.prototype.count', X.colors.prototype.count);
 goog.exportSymbol('X.colors.prototype.flatten', X.colors.prototype.flatten);
