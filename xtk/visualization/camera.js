@@ -10,23 +10,23 @@ goog.provide('X.camera.ZoomEvent');
 
 // requires
 goog.require('X.base');
-goog.require('X.exception');
 goog.require('X.event');
+goog.require('X.exception');
 goog.require('X.matrixHelper');
 goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec3');
+
+
 
 /**
  * Create a camera.
  *
  * @constructor
- * @name X.camera
+ * @param {number} width The width of the camera's viewport.
+ * @param {number} height The height of the camera's viewport.
  * @extends {X.base}
  */
 X.camera = function(width, height) {
-
-  // call the standard constructor of X.base
-  goog.base(this);
 
   // validate width and height
   if (!goog.isNumber(width) || !goog.isNumber(height)) {
@@ -37,6 +37,10 @@ X.camera = function(width, height) {
   }
 
   //
+  // call the standard constructor of X.base
+  goog.base(this);
+
+  //
   // class attributes
 
   /**
@@ -45,17 +49,53 @@ X.camera = function(width, height) {
    */
   this._className = 'camera';
 
+  /**
+   * The field of view in degrees.
+   *
+   * @type {number}
+   * @const
+   */
   this._fieldOfView = 45;
 
+  /**
+   * The position of this camera.
+   *
+   * @type {goog.math.Vec3}
+   * @protected
+   */
   this._position = new goog.math.Vec3(0, 0, 100);
 
+  /**
+   * The focus point of this camera.
+   *
+   * @type {goog.math.Vec3}
+   * @protected
+   */
   this._focus = new goog.math.Vec3(0, 0, 0);
 
+  /**
+   * The unit vector pointing to the top of the three-dimensional space.
+   *
+   * @type {goog.math.Vec3}
+   * @protected
+   */
   this._up = new goog.math.Vec3(0, 1, 0);
 
+  /**
+   * The perspective matrix.
+   *
+   * @type {goog.math.Matrix}
+   * @protected
+   */
   this._perspective = this.calculatePerspective_(this._fieldOfView,
       (width / height), 1, 10000);
 
+  /**
+   * The view matrix.
+   *
+   * @type {goog.math.Matrix}
+   * @protected
+   */
   this._view = this.lookAt_(this._position, this._focus);
 
 };
@@ -70,20 +110,26 @@ goog.inherits(X.camera, X.base);
  */
 X.camera.events = {
   // the pan event, where the camera and focus get moved accordingly
-  PAN : X.event.uniqueId('pan'),
+  PAN: X.event.uniqueId('pan'),
 
   // the rotate event, where only the camera gets moved
-  ROTATE : X.event.uniqueId('rotate'),
+  ROTATE: X.event.uniqueId('rotate'),
 
   // the zoom event, where the camera Z coordinate changes
-  ZOOM : X.event.uniqueId('zoom')
+  ZOOM: X.event.uniqueId('zoom')
 };
 
 
+/**
+ * Configures observes for a given interactor. The method sets up listeners for
+ * PAN, ROTATE and ZOOM events.
+ *
+ * @param {!X.interactor} interactor The interactor which should be observed.
+ */
 X.camera.prototype.observe = function(interactor) {
 
-  if (!goog.isDefAndNotNull(interactor)
-      || !(interactor instanceof X.interactor)) {
+  if (!goog.isDefAndNotNull(interactor) ||
+      !(interactor instanceof X.interactor)) {
 
     throw new X.exception('Fatal: Could not observe the interactor.');
 
@@ -98,7 +144,10 @@ X.camera.prototype.observe = function(interactor) {
 
 
 /**
- * @param event
+ * The callback for a ZOOM event.
+ *
+ * @param {!X.camera.ZoomEvent} event The event.
+ * @throws {X.exception} An exception if the event is invalid.
  */
 X.camera.prototype.onZoom = function(event) {
 
@@ -122,7 +171,10 @@ X.camera.prototype.onZoom = function(event) {
 
 
 /**
- * @param event
+ * The callback for a PAN event.
+ *
+ * @param {!X.camera.PanEvent} event The event.
+ * @throws {X.exception} An exception if the event is invalid.
  */
 X.camera.prototype.onPan = function(event) {
 
@@ -138,7 +190,10 @@ X.camera.prototype.onPan = function(event) {
 
 
 /**
- * @param event
+ * The callback for a ROTATE event.
+ *
+ * @param {!X.camera.RotateEvent} event The event.
+ * @throws {X.exception} An exception if the event is invalid.
  */
 X.camera.prototype.onRotate = function(event) {
 
@@ -154,7 +209,9 @@ X.camera.prototype.onRotate = function(event) {
 
 
 /**
+ * Get the perspective matrix of the three-dimensional space.
  *
+ * @return {!goog.math.Matrix} The perspective matrix.
  */
 X.camera.prototype.perspective = function() {
 
@@ -162,27 +219,44 @@ X.camera.prototype.perspective = function() {
 
 };
 
+
+/**
+ * Get the view matrix of the three-dimensional space.
+ *
+ * @return {!goog.math.Matrix} The view matrix.
+ */
 X.camera.prototype.view = function() {
 
   return this._view;
 
 };
 
+
+/**
+ * Get the position of this camera.
+ *
+ * @return {!goog.math.Vec3} The position.
+ */
 X.camera.prototype.position = function() {
 
   return this._position;
 
 };
 
-//
-// gluPerspective
-//
-// fovy: Field of view in degrees
-// aspect: aspect ratio width/height
-// znear: near clipping plane
-// zfar: far clipping plane
+
 /**
+ * Calculate a perspective matrix based on the given values. This calculation is
+ * based on known principles of Computer Vision (Source: TODO?).
  *
+ * @param {number} fieldOfViewY The field of view in degrees in Y direction.
+ * @param {number} aspectRatio The aspect ratio between width and height of the
+ *          viewport.
+ * @param {number} zNearClippingPlane The Z coordinate of the near clipping
+ *          plane (close to the eye).
+ * @param {number} zFarClippingPlane The Z coordinate of the far clipping plane
+ *          (far from the eye).
+ * @return {goog.math.Matrix} The perspective matrix.
+ * @private
  */
 X.camera.prototype.calculatePerspective_ = function(fieldOfViewY, aspectRatio,
     zNearClippingPlane, zFarClippingPlane) {
@@ -197,14 +271,21 @@ X.camera.prototype.calculatePerspective_ = function(fieldOfViewY, aspectRatio,
 
 };
 
-//
-// glFrustum
-//
-// creates the 3d view area which is visible to the viewer, to check if objects
-// are visible
-// see http://en.wikipedia.org/wiki/Viewing_frustum
+
 /**
+ * Calculate the view frustum which is the three-dimensional area which is
+ * visible to the eye by 'trimming' the world space. This calculation is based
+ * on known principles of Computer Vision (Source:
+ * http://en.wikipedia.org/wiki/Viewing_frustum).
  *
+ * @param {number} left The Y coordinate of the left border.
+ * @param {number} right The Y coordinate of the right border.
+ * @param {number} bottom The X coordinate of the bottom border.
+ * @param {number} top The X coordinate of the top border.
+ * @param {number} znear The Z coordinate of the near the eye border.
+ * @param {number} zfar The Z coordinate of the far of the eye border.
+ * @return {goog.math.Matrix} The frustum matrix.
+ * @private
  */
 X.camera.prototype.calculateViewingFrustum_ = function(left, right, bottom,
     top, znear, zfar) {
@@ -216,14 +297,22 @@ X.camera.prototype.calculateViewingFrustum_ = function(left, right, bottom,
   var C = -(zfar + znear) / (zfar - znear);
   var D = -2 * zfar * znear / (zfar - znear);
 
-  return new goog.math.Matrix([ [ X, 0, A, 0 ], [ 0, Y, B, 0 ], [ 0, 0, C, D ],
-      [ 0, 0, -1, 0 ] ]);
+  return new goog.math.Matrix([[X, 0, A, 0], [0, Y, B, 0], [0, 0, C, D],
+                               [0, 0, -1, 0]]);
 
 };
 
+
+/**
+ * Perform a pan operation. This method fires a X.renderer.RenderEvent() after
+ * the calculation is done.
+ *
+ * @param {!goog.math.Vec2} distance The distance of the panning in respect of
+ *          the last camera position.
+ */
 X.camera.prototype.pan = function(distance) {
 
-  if (!goog.isDefAndNotNull(distance) || !(distance instanceof goog.math.Vec2)) {
+  if (!(distance instanceof goog.math.Vec2)) {
 
     throw new X.exception('Fatal: Invalid distance vector for pan operation.');
 
@@ -243,9 +332,17 @@ X.camera.prototype.pan = function(distance) {
 
 };
 
+
+/**
+ * Perform a rotate operation. This method fires a X.renderer.RenderEvent()
+ * after the calculation is done.
+ *
+ * @param {!goog.math.Vec2} distance The distance of the rotation in respect of
+ *          the last camera position.
+ */
 X.camera.prototype.rotate = function(distance) {
 
-  if (!goog.isDefAndNotNull(distance) || !(distance instanceof goog.math.Vec2)) {
+  if (!(distance instanceof goog.math.Vec2)) {
 
     throw new X.exception(
         'Fatal: Invalid distance vector for rotate operation.');
@@ -270,6 +367,14 @@ X.camera.prototype.rotate = function(distance) {
 
 };
 
+
+/**
+ * Perform a zoom in operation. This method fires a X.renderer.RenderEvent()
+ * after the calculation is done.
+ *
+ * @param {boolean} fast Enables/disables the fast mode which zooms much
+ *          quicker.
+ */
 X.camera.prototype.zoomIn = function(fast) {
 
   var zoomStep = 30;
@@ -292,6 +397,14 @@ X.camera.prototype.zoomIn = function(fast) {
 
 };
 
+
+/**
+ * Perform a zoom out operation. This method fires a X.renderer.RenderEvent()
+ * after the calculation is done.
+ *
+ * @param {boolean} fast Enables/disables the fast mode which zooms much
+ *          quicker.
+ */
 X.camera.prototype.zoomOut = function(fast) {
 
   var zoomStep = 30;
@@ -314,10 +427,19 @@ X.camera.prototype.zoomOut = function(fast) {
 
 };
 
+
+/**
+ * Calculate a view matrix by using the camera position and a focus point.
+ *
+ * @param {!goog.math.Vec3} cameraPosition The camera position.
+ * @param {!goog.math.Vec3} targetPoint The focus (target) point.
+ * @return {!goog.math.Matrix} The view matrix.
+ * @private
+ */
 X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
 
-  if (!(cameraPosition instanceof goog.math.Vec3)
-      || !(targetPoint instanceof goog.math.Vec3)) {
+  if (!(cameraPosition instanceof goog.math.Vec3) ||
+      !(targetPoint instanceof goog.math.Vec3)) {
 
     throw new X.exception(
         'Fatal: 3D vectors required for calculating the view.');
@@ -375,11 +497,11 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
 };
 
 
+
 /**
  * The pan event to initiate moving the camera and the focus.
  *
  * @constructor
- * @name X.camera.PanEvent
  * @extends {X.event}
  */
 X.camera.PanEvent = function() {
@@ -400,11 +522,11 @@ X.camera.PanEvent = function() {
 goog.inherits(X.camera.PanEvent, X.event);
 
 
+
 /**
  * The rotate event to initiate moving the camera around the focus.
  *
  * @constructor
- * @name X.camera.RotateEvent
  * @extends {X.event}
  */
 X.camera.RotateEvent = function() {
@@ -433,11 +555,11 @@ X.camera.RotateEvent = function() {
 goog.inherits(X.camera.RotateEvent, X.event);
 
 
+
 /**
  * The zoom event to initiate zoom in or zoom out.
  *
  * @constructor
- * @name X.camera.ZoomEvent
  * @extends {X.event}
  */
 X.camera.ZoomEvent = function() {
@@ -466,3 +588,22 @@ X.camera.ZoomEvent = function() {
 };
 // inherit from X.event
 goog.inherits(X.camera.ZoomEvent, X.event);
+
+// export symbols (required for advanced compilation)
+goog.exportSymbol('X.camera', X.camera);
+goog.exportSymbol('X.camera.prototype.observe', X.camera.prototype.observe);
+goog.exportSymbol('X.camera.prototype.onZoom', X.camera.prototype.onZoom);
+goog.exportSymbol('X.camera.prototype.onPan', X.camera.prototype.onPan);
+goog.exportSymbol('X.camera.prototype.onRotate', X.camera.prototype.onRotate);
+goog.exportSymbol('X.camera.prototype.perspective',
+    X.camera.prototype.perspective);
+goog.exportSymbol('X.camera.prototype.view', X.camera.prototype.view);
+goog.exportSymbol('X.camera.prototype.position', X.camera.prototype.position);
+goog.exportSymbol('X.camera.prototype.pan', X.camera.prototype.pan);
+goog.exportSymbol('X.camera.prototype.rotate', X.camera.prototype.rotate);
+goog.exportSymbol('X.camera.prototype.zoomIn', X.camera.prototype.zoomIn);
+goog.exportSymbol('X.camera.prototype.zoomOut', X.camera.prototype.zoomOut);
+goog.exportSymbol('X.camera.prototype.observe', X.camera.prototype.observe);
+goog.exportSymbol('X.camera.PanEvent', X.camera.PanEvent);
+goog.exportSymbol('X.camera.RotateEvent', X.camera.RotateEvent);
+goog.exportSymbol('X.camera.ZoomEvent', X.camera.ZoomEvent);
