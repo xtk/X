@@ -23,6 +23,9 @@ xtkUtilsDir = os.path.abspath( os.path.dirname( sys.argv[0] ) )
 # project root dir
 projectRootDir = os.path.normpath( xtkUtilsDir + os.sep + '..' + os.sep )
 
+# sampleApp js file
+sampleAppJsFile = os.path.normpath(projectRootDir + os.sep + projectName + os.sep + 'js' + os.sep + projectName + '.js')
+
 # xtk dir
 xtkDir = os.path.normpath( projectRootDir + os.sep + 'xtk' )
 
@@ -51,6 +54,9 @@ def listFiles( dir ):
 
 # now walk through xtkDir and collect the files
 listFiles( xtkDir )
+
+# append the sampleApp.js file
+files.append( sampleAppJsFile )
 
 for file in files:
 
