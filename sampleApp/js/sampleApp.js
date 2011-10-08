@@ -98,6 +98,8 @@ sampleApp.run = function() {
     object5.setOpacity(0.1);
     
     var cube = new X.object(X.object.types.LINES);
+    
+    // front
     cube.points().add([-50, -50, 10]);
     cube.points().add([-20, -50, 10]);
     
@@ -109,6 +111,33 @@ sampleApp.run = function() {
     
     cube.points().add([-20, -50, 10]);
     cube.points().add([-20, -20, 10]);
+    
+    // bottom
+    cube.points().add([-50, -50, 10]);
+    cube.points().add([-50, -50, -30]);
+    
+    cube.points().add([-20, -50, 10]);
+    cube.points().add([-20, -50, -30]);
+    
+    // top
+    cube.points().add([-20, -20, 10]);
+    cube.points().add([-20, -20, -30]);
+    
+    cube.points().add([-50, -20, 10]);
+    cube.points().add([-50, -20, -30]);
+    
+    // back
+    cube.points().add([-50, -50, -30]);
+    cube.points().add([-20, -50, -30]);
+    
+    cube.points().add([-50, -20, -30]);
+    cube.points().add([-20, -20, -30]);
+    
+    cube.points().add([-50, -20, -30]);
+    cube.points().add([-50, -50, -30]);
+    
+    cube.points().add([-20, -50, -30]);
+    cube.points().add([-20, -20, -30]);
     
 
     sliceView1.addObject(object1);
