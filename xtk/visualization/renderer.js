@@ -883,6 +883,8 @@ X.renderer.prototype.render = function() {
       }
 
       this._gl.drawArrays(drawMode, 0, vertexBuffer.itemCount());
+      // this._gl.drawElements(drawMode, vertexBuffer.itemCount(),
+      // this._gl.UNSIGNED_SHORT, 0);
 
     } else {
 
