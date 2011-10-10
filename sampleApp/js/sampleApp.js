@@ -4,6 +4,8 @@ goog.provide('sampleApp.run');
 goog.require('X.color');
 goog.require('X.colors');
 goog.require('X.console');
+goog.require('X.cube');
+goog.require('X.cuboid');
 goog.require('X.object');
 goog.require('X.renderer2D');
 goog.require('X.renderer3D');
@@ -97,6 +99,25 @@ sampleApp.run = function() {
     object5.setColor(color2);
     object5.setOpacity(0.1);
 
+    // create a cuboid with different colored sides and decimated vertices
+    var cuboid = new X.cuboid(new goog.math.Vec3(10, 10, 10), 5, 10, 20);
+    cuboid
+        .setColors(new X.color(1, 0, 0), new X.color(0, 1, 0), new X.color(0,
+            0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
+            1, 1));
+    cuboid.setSpacing(2.0);
+
+    // create a cube with a solid color
+    var cube = new X.cube(new goog.math.Vec3(-10, -10, -10), 5);
+    cube.setColor(new X.color(0, 0, 1));
+
+    // create a cube with different colored sides
+    var cube2 = new X.cube(new goog.math.Vec3(0, 0, 0), 3);
+    cube2
+        .setColors(new X.color(1, 0, 0), new X.color(0, 1, 0), new X.color(0,
+            0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
+            1, 1));
+
 
     sliceView1.addObject(object1);
     sliceView2.addObject(object1);
@@ -106,6 +127,9 @@ sampleApp.run = function() {
     threeDView.addObject(object3);
     threeDView.addObject(object4);
     threeDView.addObject(object5);
+    threeDView.addObject(cuboid);
+    threeDView.addObject(cube);
+    threeDView.addObject(cube2);
 
     // we probably do not need to time this because of an appropriate event
     // mechanism?

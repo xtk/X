@@ -58,12 +58,18 @@ goog.inherits(X.colors, X.base);
 /**
  * Add a color to this container.
  *
- * @param {!X.color} color A color.
+ * @param {!X.color|!Array} color A color.
  * @return {!number} The internal id of the added color.
  * @throws {X.exception} An exception if the passed color is invalid or a unique
  *           id could not be generated.
  */
 X.colors.prototype.add = function(color) {
+
+  if (color instanceof Array && color.length == 3) {
+
+    color = new X.color(color[0], color[1], color[2]);
+
+  }
 
   if (!goog.isDefAndNotNull(color) || !(color instanceof X.color)) {
 
@@ -185,6 +191,17 @@ X.colors.prototype.removeById = function(id) {
   }
 
   return this._colors_.remove(id);
+
+};
+
+
+/**
+ * Delete all colors in this container.
+ */
+X.colors.prototype.clear = function() {
+
+  // delete all points by creating a new hash map
+  this._colors_ = new goog.structs.Map();
 
 };
 

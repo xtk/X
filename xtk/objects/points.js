@@ -203,6 +203,17 @@ X.points.prototype.removeById = function(id) {
 
 
 /**
+ * Delete all points in this container.
+ */
+X.points.prototype.clear = function() {
+
+  // delete all points by creating a new hash map
+  this._points_ = new goog.structs.Map();
+
+};
+
+
+/**
  * Get the number of points in this container.
  *
  * @return {!number} The number of points in this container.
