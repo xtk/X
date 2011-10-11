@@ -54,7 +54,7 @@ sampleApp.run = function() {
     threeDView.setBackgroundColor('#b3b3e7');
     threeDView.init();
     threeDView.setLighting(lighting);
-    
+    /*
     var object1 = new X.object();
     // we can add points as goog.math.Coordinate3 or just as 1-D arrays with 3
     // items
@@ -136,7 +136,7 @@ sampleApp.run = function() {
     threeDView.addObject(object5);
     threeDView.addObject(cuboid);
     threeDView.addObject(cube);
-    threeDView.addObject(cube2);
+    threeDView.addObject(cube2);*/
 
     // we probably do not need to time this because of an appropriate event
     // mechanism?
@@ -210,6 +210,15 @@ sampleApp.run = function() {
           objectN.points().add([x, y, z]);
 
         }
+        
+        else if (tmpstr[1] == 'facet') {
+            var x = tmpstr[3];
+            var y = tmpstr[4];
+            var z = tmpstr[5];
+            objectN.normals().add([x, y, z]);
+            objectN.normals().add([x, y, z]);
+            objectN.normals().add([x, y, z]);
+          }
 
       }
 
