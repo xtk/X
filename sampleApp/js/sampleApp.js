@@ -46,7 +46,9 @@ sampleApp.run = function() {
     threeDView.setContainerById('threeDView');
     threeDView.setBackgroundColor('#b3b3e7');
     threeDView.init();
-
+    
+    // is lighting enabled?
+    var lighting = document.getElementById("lighting").checked;
 
     var object1 = new X.object();
     // we can add points as goog.math.Coordinate3 or just as 1-D arrays with 3

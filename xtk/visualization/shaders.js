@@ -42,11 +42,13 @@ X.shaders = function() {
   this._vertexShaderSource = '';
   var t = '';
   t += 'attribute vec3 vertexPosition;\n';
+  t += 'attribute vec3 vertexNormal;\n';
   t += 'attribute vec3 vertexColor;\n';
   t += 'attribute float vertexOpacity;\n';
   t += '\n';
   t += 'uniform mat4 view;\n';
   t += 'uniform mat4 perspective;\n';
+  t += 'uniform bool lighting;\n';
   t += 'varying lowp vec4 fragmentColor;\n';
   t += '\n';
   t += 'void main(void) {\n';
@@ -78,6 +80,14 @@ X.shaders = function() {
    * @protected
    */
   this._positionAttribute = 'vertexPosition';
+  
+  /**
+   * The string to access the position inside the vertex shader source.
+   *
+   * @type {!string}
+   * @protected
+   */
+  this._normalAttribute = 'vertexNormal';
 
   /**
    * The string to access the color inside the vertex shader source.
@@ -94,6 +104,14 @@ X.shaders = function() {
    * @protected
    */
   this._opacityAttribute = 'vertexOpacity';
+  
+  /**
+   * The string to access the opacity value inside the vertex shader source.
+   *
+   * @type {!string}
+   * @protected
+   */
+  this._lighting = 'lighting';
 
   /**
    * The string to access the view matrix inside the vertex shader source.
@@ -152,6 +170,17 @@ X.shaders.prototype.position = function() {
 
 };
 
+/**
+ * Get the vertex position attribute locator.
+ *
+ * @return {!string} The vertex position attribute locator.
+ */
+X.shaders.prototype.normal = function() {
+
+  return this._normalAttribute;
+
+};
+
 
 /**
  * Get the vertex color attribute locator.
@@ -200,6 +229,16 @@ X.shaders.prototype.opacity = function() {
 
 };
 
+/**
+ * Get the opacity uniform locator.
+ *
+ * @return {!string} The opacity uniform locator.
+ */
+X.shaders.prototype.ligthing = function() {
+
+  return this._lighting;
+
+};
 
 /**
  * Checks if the configured shaders object is valid.
@@ -211,6 +250,7 @@ X.shaders.prototype.validate = function() {
 
   // check if the sources are compatible to the attributes and uniforms
 
+  // why 31337?
   var t = 31337;
 
   t = this._vertexShaderSource.search(this._positionAttribute);
@@ -219,6 +259,15 @@ X.shaders.prototype.validate = function() {
 
     throw new X.exception(
         'Fatal: Could not validate shader! The positionAttribute was bogus.');
+
+  }
+  
+  t = this._vertexShaderSource.search(this._normalAttribute);
+
+  if (t == -1) {
+
+    throw new X.exception(
+        'Fatal: Could not validate shader! The normalAttribute was bogus.');
 
   }
 
@@ -255,6 +304,15 @@ X.shaders.prototype.validate = function() {
 
     throw new X.exception(
         'Fatal: Could not validate shader! The viewUniform was bogus.');
+
+  }
+  
+  t = this._vertexShaderSource.search(this._lighting);
+
+  if (t == -1) {
+
+    throw new X.exception(
+        'Fatal: Could not validate shader! The lighting was bogus.');
 
   }
 
