@@ -48,18 +48,20 @@ X.shaders = function() {
   t += '\n';
   t += 'uniform mat4 view;\n';
   t += 'uniform mat4 perspective;\n';
+  t += '\n';
   t += 'uniform bool lighting;\n';
   t += 'varying lowp vec4 fragmentColor;\n';
+  t += 'varying lowp vec3 lightingWeighting;\n';
   t += '\n';
   t += 'void main(void) {\n';
   t += '  if(lighting){';
-  t += '  gl_Position = perspective * view * vec4(vertexPosition, 1.0);\n';
-  t += '  fragmentColor = vec4(vertexColor,vertexOpacity);\n';
+  t += '  lightingWeighting = vec3(1.0, 1.0, 1.0);\n';
   t += '  }';
   t += '  else{';
-  t += '  gl_Position = perspective * view * vec4(vertexPosition, 1.0);\n';
-  t += '  fragmentColor = vec4(0.0, 0.0, 0.0, 0.0);\n';
+  t += '  lightingWeighting = vec3(0.0, 0.0, 0.0);\n';
   t += '  }';
+  t += '  gl_Position = perspective * view * vec4(vertexPosition, 1.0);\n';
+  t += '  fragmentColor = vec4(vertexColor*lightingWeighting,vertexOpacity);\n';
   t += '}\n';
   this._vertexShaderSource = t;
 
