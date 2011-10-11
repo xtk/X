@@ -55,10 +55,10 @@ X.shaders = function() {
   t += '\n';
   t += 'void main(void) {\n';
   t += '  if(lighting){';
-  t += '  lightingWeighting = vec3(1.0, 1.0, 1.0);\n';
+  t += '  lightingWeighting = vec3(1.0, 0.5, 0.5);\n';
   t += '  }';
   t += '  else{';
-  t += '  lightingWeighting = vec3(0.0, 0.0, 0.0);\n';
+  t += '  lightingWeighting = vec3(1.0, 1.0, 1.0);\n';
   t += '  }';
   t += '  gl_Position = perspective * view * vec4(vertexPosition, 1.0);\n';
   t += '  fragmentColor = vec4(vertexColor*lightingWeighting,vertexOpacity);\n';
