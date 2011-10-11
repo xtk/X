@@ -27,17 +27,24 @@ sampleApp.run = function() {
     // default color is black
     // also, we set the container here. If the container is ommited, the <body>
     // container is used
+  
+    // is lighting enabled?
+    var lighting = document.getElementById("lighting").checked;
+    
     var sliceView1 = new X.renderer2D(300, 300);
     sliceView1.setContainerById('sliceView1');
     sliceView1.init();
+    sliceView1.setLighting(lighting);
 
     var sliceView2 = new X.renderer2D(300, 300);
     sliceView2.setContainerById('sliceView2');
     sliceView2.init();
+    sliceView2.setLighting(lighting);
 
     var sliceView3 = new X.renderer2D(300, 300);
     sliceView3.setContainerById('sliceView3');
     sliceView3.init();
+    sliceView3.setLighting(lighting);
 
     //
     // create a 'lightblue' 3D renderer in the div with id '3d' (see
@@ -46,10 +53,8 @@ sampleApp.run = function() {
     threeDView.setContainerById('threeDView');
     threeDView.setBackgroundColor('#b3b3e7');
     threeDView.init();
+    threeDView.setLighting(lighting);
     
-    // is lighting enabled?
-    var lighting = document.getElementById("lighting").checked;
-
     var object1 = new X.object();
     // we can add points as goog.math.Coordinate3 or just as 1-D arrays with 3
     // items
@@ -135,14 +140,17 @@ sampleApp.run = function() {
 
     // we probably do not need to time this because of an appropriate event
     // mechanism?
-    // setInterval(function() {
-
-    sliceView1.render();
-    sliceView2.render();
-    sliceView3.render();
-    threeDView.render();
-
-    // }, 15);
+     setInterval(function() {
+     lighting = document.getElementById("lighting").checked;
+     sliceView1.setLighting(lighting);
+     sliceView1.render();
+     sliceView2.setLighting(lighting);
+     sliceView2.render();
+     sliceView3.setLighting(lighting);
+     sliceView3.render();
+     threeDView.setLighting(lighting);
+     threeDView.render();
+     }, 15);
 
     c.out(sliceView1.print());
     c.out(sliceView2.print());
