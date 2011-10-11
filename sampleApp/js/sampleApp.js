@@ -140,6 +140,7 @@ sampleApp.run = function() {
 
     // we probably do not need to time this because of an appropriate event
     // mechanism?
+    // temp, should update lighting like that, should use events!
      setInterval(function() {
      lighting = document.getElementById("lighting").checked;
      sliceView1.setLighting(lighting);
