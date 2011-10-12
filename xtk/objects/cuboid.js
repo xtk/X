@@ -270,6 +270,12 @@ X.cuboid.prototype.create_ = function() {
 
       } // check if side colors are defined
 
+
+        var count;
+        for (count = 0; count < 6; ++count) {
+          this.normals().add([0, 0, -1]);
+        } // for loop of normals
+
     } // for j
 
   } // for i
@@ -308,6 +314,11 @@ X.cuboid.prototype.create_ = function() {
         } // for loop of colors
 
       } // check if side colors are defined
+      
+      var count;
+      for (count = 0; count < 6; ++count) {
+        this.normals().add([0, 1, 0]);
+      } // for loop of normals
 
     } // for j
 
@@ -347,6 +358,11 @@ X.cuboid.prototype.create_ = function() {
         } // for loop of colors
 
       } // check if side colors are defined
+      
+      var count;
+      for (count = 0; count < 6; ++count) {
+        this.normals().add([1, 0, 0]);
+      } // for loop of normals
 
     } // for j
 
@@ -386,6 +402,11 @@ X.cuboid.prototype.create_ = function() {
         } // for loop of colors
 
       } // check if side colors are defined
+      
+      var count;
+      for (count = 0; count < 6; ++count) {
+        this.normals().add([-1, 0, 0]);
+      } // for loop of normals
 
     } // for j
 
@@ -425,6 +446,11 @@ X.cuboid.prototype.create_ = function() {
         } // for loop of colors
 
       } // check if side colors are defined
+      
+      var count;
+      for (count = 0; count < 6; ++count) {
+        this.normals().add([0, -1, 0]);
+      } // for loop of normals
 
     } // for j
 
@@ -464,6 +490,11 @@ X.cuboid.prototype.create_ = function() {
         } // for loop of colors
 
       } // check if side colors are defined
+      
+      var count;
+      for (count = 0; count < 6; ++count) {
+        this.normals().add([0, 0, 1]);
+      } // for loop of normals
 
     } // for j
 

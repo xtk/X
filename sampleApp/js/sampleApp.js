@@ -103,10 +103,10 @@ sampleApp.run = function() {
     object5.points().add([-20, 10, -10]);
     object5.points().add([-10, 10, -10]);
     object5.setColor(color2);
-    object5.setOpacity(0.1);
+    object5.setOpacity(0.1);*/
     
     // create a cuboid with different colored sides and decimated vertices
-    var cuboid = new X.cuboid(new goog.math.Vec3(10, 10, 10), 5, 10, 20,
+   /* var cuboid = new X.cuboid(new goog.math.Vec3(10, 10, 10), 5, 10, 20,
         X.object.types.LINES);
     cuboid
         .setColors(new X.color(1, 0, 0), new X.color(0, 1, 0), new X.color(0,
@@ -116,7 +116,7 @@ sampleApp.run = function() {
     
     // create a cube with a solid color
     var cube = new X.cube(new goog.math.Vec3(-10, -10, -10), 5);
-    cube.setColor(new X.color(0, 0, 1));
+    cube.setColor(new X.color(0, 0, 1));*/
     
     // create a cube with different colored sides
     var cube2 = new X.cube(new goog.math.Vec3(0, 0, 0), 3);
@@ -125,7 +125,7 @@ sampleApp.run = function() {
             0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
             1, 1));
     
-
+/*
     var trackfiber = new X.object(X.object.types.LINES);
     
     trackfiber.points().add([-50, -50, 30]);
@@ -140,11 +140,11 @@ sampleApp.run = function() {
     threeDView.addObject(object2);
     threeDView.addObject(object3);
     threeDView.addObject(object4);
-    threeDView.addObject(object5);
-    threeDView.addObject(cuboid);
-    threeDView.addObject(cube);
+    threeDView.addObject(object5);*/
+   //threeDView.addObject(cuboid);
+   // threeDView.addObject(cube);
 
-    threeDView.addObject(cube2);*/
+    threeDView.addObject(cube2);
 
     // we probably do not need to time this because of an appropriate event
     // mechanism?
