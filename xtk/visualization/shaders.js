@@ -48,20 +48,24 @@ X.shaders = function() {
   t += '\n';
   t += 'uniform mat4 view;\n';
   t += 'uniform mat4 perspective;\n';
+  t += 'uniform mat3 normal;\n';
   t += '\n';
   t += 'uniform bool lighting;\n';
   t += 'varying lowp vec4 fragmentColor;\n';
   t += 'varying lowp vec3 lightingWeighting;\n';
   t += '\n';
   t += 'void main(void) {\n';
-  t += '  if(lighting){';
+ // t += '  if(lighting){';
   t += '  lightingWeighting = vec3(1.0, 1.0, 1.0);\n';
-  t += '  }';
-  t += '  else{';
-  t += '  lightingWeighting = vec3(1.0, 0.5, 0.5);\n';
-  t += '  }';
+ // t += '  gl_Position = perspective * view * vec4(vertexPosition, 1.0);\n';
+ // t += '  fragmentColor = vec4(vertexColor*lightingWeighting,vertexOpacity);\n';
+ // t += '  }';
+ // t += '  else{';
+  t += '  vec3 transformedNormal = normal * vertexNormal;\n';
+  t += '  float dLW = max(dot(transformedNormal, lightingWeighting ), 0.0);\n';
   t += '  gl_Position = perspective * view * vec4(vertexPosition, 1.0);\n';
-  t += '  fragmentColor = vec4(vertexColor*lightingWeighting*vertexNormal,vertexOpacity);\n';
+  t += '  fragmentColor = vec4(vertexColor*dLW,vertexOpacity);\n';
+ // t += '  }';
   t += '}\n';
   this._vertexShaderSource = t;
 
@@ -137,6 +141,8 @@ X.shaders = function() {
    * @protected
    */
   this._perspectiveUniform = 'perspective';
+  
+  this._normalUniform = 'normal';
 
 };
 // inherit from X.base
@@ -225,6 +231,12 @@ X.shaders.prototype.perspective = function() {
 
 };
 
+X.shaders.prototype.normalUni = function() {
+
+	  return this._normalUniform;
+
+	};
+	
 
 /**
  * Get the opacity uniform locator.
@@ -312,6 +324,15 @@ X.shaders.prototype.validate = function() {
 
     throw new X.exception(
         'Fatal: Could not validate shader! The viewUniform was bogus.');
+
+  }
+  
+  t = this._vertexShaderSource.search(this._normalUniform);
+
+  if (t == -1) {
+
+    throw new X.exception(
+        'Fatal: Could not validate shader! The normalUniform was bogus.');
 
   }
   

@@ -877,6 +877,25 @@ X.renderer.prototype.render = function() {
   this._gl.uniformMatrix4fv(viewUniformLocation, false, new Float32Array(
       viewMatrix.flatten()));
   
+  var normalUniformLocation = this._gl.getUniformLocation(
+      this._shaderProgram, this._shaders.normalUni());
+  
+  var matrix = goog.math.Matrix.createIdentityMatrix(3);
+  matrix.setValueAt(0, 0, viewMatrix.getValueAt(0, 0));
+  matrix.setValueAt(0, 1, viewMatrix.getValueAt(0, 1));
+  matrix.setValueAt(0, 2, viewMatrix.getValueAt(0, 2));
+  
+  matrix.setValueAt(1, 0, viewMatrix.getValueAt(1, 0));
+  matrix.setValueAt(1, 1, viewMatrix.getValueAt(1, 1));
+  matrix.setValueAt(1, 2, viewMatrix.getValueAt(1, 2));
+  
+  matrix.setValueAt(2, 0, viewMatrix.getValueAt(2, 0));
+  matrix.setValueAt(2, 1, viewMatrix.getValueAt(2, 1));
+  matrix.setValueAt(2, 2, viewMatrix.getValueAt(2, 2));
+  
+  this._gl.uniformMatrix3fv(normalUniformLocation, false, new Float32Array(
+      matrix.getInverse().getTranspose().flatten()));
+  
   var lightingUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
       this._shaders.lighting());
 
