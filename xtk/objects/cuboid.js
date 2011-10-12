@@ -325,7 +325,7 @@ X.cuboid.prototype.create_ = function() {
   } // for i
 
 
-  /*
+  
   // right facing surface
 
   // loop starts at B moves towards D, then column-wise towards F and H
@@ -500,8 +500,6 @@ X.cuboid.prototype.create_ = function() {
 
   } // for i
 
-
-*/
 };
 
 // export symbols (required for advanced compilation)

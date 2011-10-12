@@ -596,6 +596,7 @@ X.renderer.prototype.init = function() {
   // to check if the initialization was completed successfully
   this._canvas = canvas;
   this._gl = gl;
+  this._gl.enable(gl.DEPTH_TEST);
   this._camera = camera;
   this._interactor = interactor;
 
