@@ -113,10 +113,12 @@ sampleApp.run = function() {
             0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
             1, 1));
     cuboid.setSpacing(1.0);
+    cuboid.setOpacity(0.5);
     
     // create a cube with a solid color
     var cube = new X.cube(new goog.math.Vec3(-10, -10, -10), 5);
     cube.setColor(new X.color(0, 0, 1));
+    cube.setOpacity(0.6);
     
     // create a cube with different colored sides
     var cube2 = new X.cube(new goog.math.Vec3(0, 0, 0), 3);
@@ -124,6 +126,7 @@ sampleApp.run = function() {
         .setColors(new X.color(1, 0, 0), new X.color(0, 1, 0), new X.color(0,
             0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
             1, 1));
+    cube2.setOpacity(0.7);
     
 /*
     var trackfiber = new X.object(X.object.types.LINES);
