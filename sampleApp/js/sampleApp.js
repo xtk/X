@@ -27,18 +27,24 @@ sampleApp.run = function() {
     // default color is black
     // also, we set the container here. If the container is ommited, the <body>
     // container is used
+  
+    // is lighting enabled?
+    var lighting = document.getElementById("lighting").checked;
+    
     var sliceView1 = new X.renderer2D(300, 300);
     sliceView1.setContainerById('sliceView1');
     sliceView1.init();
-    
+    sliceView1.setLighting(lighting);
+
     var sliceView2 = new X.renderer2D(300, 300);
     sliceView2.setContainerById('sliceView2');
     sliceView2.init();
-    
+    sliceView2.setLighting(lighting);
+
     var sliceView3 = new X.renderer2D(300, 300);
     sliceView3.setContainerById('sliceView3');
     sliceView3.init();
-    
+    sliceView3.setLighting(lighting);
     //
     // create a 'lightblue' 3D renderer in the div with id '3d' (see
     // ../index.html)
@@ -46,8 +52,8 @@ sampleApp.run = function() {
     threeDView.setContainerById('threeDView');
     threeDView.setBackgroundColor('#b3b3e7');
     threeDView.init();
-    
-
+    threeDView.setLighting(lighting);
+    /*
     var object1 = new X.object();
     // we can add points as goog.math.Coordinate3 or just as 1-D arrays with 3
     // items
@@ -97,7 +103,7 @@ sampleApp.run = function() {
     object5.points().add([-20, 10, -10]);
     object5.points().add([-10, 10, -10]);
     object5.setColor(color2);
-    object5.setOpacity(0.1);
+    object5.setOpacity(0.1);*/
     
     // create a cuboid with different colored sides and decimated vertices
     var cuboid = new X.cuboid(new goog.math.Vec3(10, 10, 10), 5, 10, 20,
@@ -107,10 +113,12 @@ sampleApp.run = function() {
             0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
             1, 1));
     cuboid.setSpacing(1.0);
+    cuboid.setOpacity(0.5);
     
     // create a cube with a solid color
     var cube = new X.cube(new goog.math.Vec3(-10, -10, -10), 5);
     cube.setColor(new X.color(0, 0, 1));
+    cube.setOpacity(0.6);
     
     // create a cube with different colored sides
     var cube2 = new X.cube(new goog.math.Vec3(0, 0, 0), 3);
@@ -118,8 +126,9 @@ sampleApp.run = function() {
         .setColors(new X.color(1, 0, 0), new X.color(0, 1, 0), new X.color(0,
             0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
             1, 1));
+    cube2.setOpacity(0.7);
     
-
+/*
     var trackfiber = new X.object(X.object.types.LINES);
     
     trackfiber.points().add([-50, -50, 30]);
@@ -134,23 +143,27 @@ sampleApp.run = function() {
     threeDView.addObject(object2);
     threeDView.addObject(object3);
     threeDView.addObject(object4);
-    threeDView.addObject(object5);
-    threeDView.addObject(cuboid);
+    threeDView.addObject(object5);*/
+   threeDView.addObject(cuboid);
     threeDView.addObject(cube);
+
     threeDView.addObject(cube2);
-    threeDView.addObject(trackfiber);
-    
+
     // we probably do not need to time this because of an appropriate event
     // mechanism?
-    // setInterval(function() {
-    
-    sliceView1.render();
-    sliceView2.render();
-    sliceView3.render();
-    threeDView.render();
-    
-    // }, 15);
-    
+    // temp, should update lighting like that, should use events!
+     setInterval(function() {
+     lighting = document.getElementById("lighting").checked;
+     sliceView1.setLighting(lighting);
+     sliceView1.render();
+     sliceView2.setLighting(lighting);
+     sliceView2.render();
+     sliceView3.setLighting(lighting);
+     sliceView3.render();
+     threeDView.setLighting(lighting);
+     threeDView.render();
+     }, 15);
+
     c.out(sliceView1.print());
     c.out(sliceView2.print());
     c.out(sliceView3.print());
@@ -208,7 +221,14 @@ sampleApp.run = function() {
           objectN.points().add([x, y, z]);
           
         }
-        
+        else if (tmpstr[1] == 'facet') {
+            var x = tmpstr[3];
+            var y = tmpstr[4];
+            var z = tmpstr[5];
+            objectN.normals().add([x, y, z]);
+            objectN.normals().add([x, y, z]);
+            objectN.normals().add([x, y, z]);
+          }
       }
       
       threeDView.addObject(objectN);

@@ -171,6 +171,15 @@ X.renderer = function(width, height) {
    * @protected
    */
   this._vertexBuffers = new goog.structs.Map();
+  
+  /**
+   * A hash map of normal buffers of this renderer. Each buffer is associated
+   * with a displayable object using its unique id.
+   *
+   * @type {!goog.structs.Map}
+   * @protected
+   */
+  this._normalBuffers = new goog.structs.Map();
 
   /**
    * A hash map of color buffers of this renderer. Each buffer is associated
@@ -188,6 +197,8 @@ X.renderer = function(width, height) {
    * @type {!goog.structs.Map} @protected
    */
   this._opacityBuffers = new goog.structs.Map();
+  
+  this._lighting = true;
 
 };
 // inherit from X.base
@@ -447,6 +458,26 @@ X.renderer.prototype.interactor = function() {
 
 
 /**
+ * Get the lighting of this renderer.
+ *
+ * @return {!boolean} The lighting of this renderer.
+ */
+X.renderer.prototype.lighting = function() {
+
+  return this._lighting;
+
+};
+
+/**
+ * Get the lighting of this renderer.
+ *
+ * @return {!boolean} The lighting of this renderer.
+ */
+X.renderer.prototype.setLighting = function(lighting) {
+  this._lighting = lighting;
+};
+
+/**
  * Create the canvas of this renderer inside the configured container and using
  * attributes like width, height, backgroundColor etc. Then, initialize the
  * WebGL context and attach all necessary objects (e.g. camera, shaders..).
@@ -565,6 +596,7 @@ X.renderer.prototype.init = function() {
   // to check if the initialization was completed successfully
   this._canvas = canvas;
   this._gl = gl;
+  this._gl.enable(gl.DEPTH_TEST);
   this._camera = camera;
   this._interactor = interactor;
 
@@ -644,6 +676,10 @@ X.renderer.prototype.addShaders = function(shaders) {
   this._vertexPositionAttribute = this._gl.getAttribLocation(shaderProgram,
       shaders.position());
   this._gl.enableVertexAttribArray(this._vertexPositionAttribute);
+  
+  this._normalPositionAttribute = this._gl.getAttribLocation(shaderProgram,
+      shaders.normal());
+  this._gl.enableVertexAttribArray(this._normalPositionAttribute);
 
   this._vertexColorAttribute = this._gl.getAttribLocation(shaderProgram,
       shaders.color());
@@ -743,6 +779,18 @@ X.renderer.prototype.addObject = function(object) {
   // create an X.buffer to store the vertices
   // every vertex consists of 3 items (x,y,z)
   var vertexBuffer = new X.buffer(glVertexBuffer, object.points().count(), 3);
+  
+  // create normal buffer
+  var glNormalBuffer = this._gl.createBuffer();
+
+  // bind and fill with normals of current object
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glNormalBuffer);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.normals()
+      .flatten()), this._gl.STATIC_DRAW);
+
+  // create an X.buffer to store the normals
+  // every normal consists of 3 items (x,y,z)
+  var normalBuffer = new X.buffer(glNormalBuffer, object.normals().count(), 3);
 
   // create color buffer
   var glColorBuffer = this._gl.createBuffer();
@@ -788,9 +836,9 @@ X.renderer.prototype.addObject = function(object) {
   }
   // add the buffers for the new object to the internal hash maps
   this._vertexBuffers.set(object.id(), vertexBuffer);
+  this._normalBuffers.set(object.id(), normalBuffer);
   this._colorBuffers.set(object.id(), colorBuffer);
   this._opacityBuffers.set(object.id(), opacityBuffer);
-
 };
 
 
@@ -829,6 +877,30 @@ X.renderer.prototype.render = function() {
 
   this._gl.uniformMatrix4fv(viewUniformLocation, false, new Float32Array(
       viewMatrix.flatten()));
+  
+  var normalUniformLocation = this._gl.getUniformLocation(
+      this._shaderProgram, this._shaders.normalUni());
+  
+  var matrix = goog.math.Matrix.createIdentityMatrix(3);
+  matrix.setValueAt(0, 0, viewMatrix.getValueAt(0, 0));
+  matrix.setValueAt(0, 1, viewMatrix.getValueAt(0, 1));
+  matrix.setValueAt(0, 2, viewMatrix.getValueAt(0, 2));
+  
+  matrix.setValueAt(1, 0, viewMatrix.getValueAt(1, 0));
+  matrix.setValueAt(1, 1, viewMatrix.getValueAt(1, 1));
+  matrix.setValueAt(1, 2, viewMatrix.getValueAt(1, 2));
+  
+  matrix.setValueAt(2, 0, viewMatrix.getValueAt(2, 0));
+  matrix.setValueAt(2, 1, viewMatrix.getValueAt(2, 1));
+  matrix.setValueAt(2, 2, viewMatrix.getValueAt(2, 2));
+  
+  this._gl.uniformMatrix3fv(normalUniformLocation, false, new Float32Array(
+      matrix.getInverse().getTranspose().flatten()));
+  
+  var lightingUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
+      this._shaders.lighting());
+
+  this._gl.uniform1i(lightingUniformLocation, this._lighting);
 
   //
   // loop through all objects and (re-)draw them
@@ -846,11 +918,11 @@ X.renderer.prototype.render = function() {
     var object = objects[i];
 
     if (object) {
-
       // we have a valid object
       var id = object.id();
 
       var vertexBuffer = this._vertexBuffers.get(id);
+      var normalBuffer = this._normalBuffers.get(id);
       var colorBuffer = this._colorBuffers.get(id);
       var opacityBuffer = this._opacityBuffers.get(id);
 
@@ -858,6 +930,11 @@ X.renderer.prototype.render = function() {
       this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
 
       this._gl.vertexAttribPointer(this._vertexPositionAttribute, vertexBuffer
+          .itemSize(), this._gl.FLOAT, false, 0, 0);
+      
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, normalBuffer.glBuffer());
+
+      this._gl.vertexAttribPointer(this._normalPositionAttribute, normalBuffer
           .itemSize(), this._gl.FLOAT, false, 0, 0);
 
       this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());

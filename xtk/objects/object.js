@@ -73,6 +73,14 @@ X.object = function(type) {
    * @protected
    */
   this._points = new X.points();
+  
+  /**
+   * The normals of this object.
+   *
+   * @type {X.points}
+   * @protected
+   */
+  this._normals = new X.points();
 
   /**
    * The point colors of this object.
@@ -81,7 +89,7 @@ X.object = function(type) {
    * @protected
    */
   this._colors = new X.colors();
-
+  
   /**
    * The texture of this object. TODO
    *
@@ -149,6 +157,17 @@ X.object.prototype.type = function() {
 X.object.prototype.points = function() {
 
   return this._points;
+
+};
+
+/**
+ * Get the normals of this object.
+ *
+ * @return {X.points} The normals.
+ */
+X.object.prototype.normals = function() {
+
+  return this._normals;
 
 };
 
@@ -268,6 +287,7 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
 goog.exportSymbol('X.object', X.object);
 goog.exportSymbol('X.object.prototype.type', X.object.prototype.type);
 goog.exportSymbol('X.object.prototype.points', X.object.prototype.points);
+goog.exportSymbol('X.object.prototype.normals', X.object.prototype.normals);
 goog.exportSymbol('X.object.prototype.colors', X.object.prototype.colors);
 goog.exportSymbol('X.object.prototype.color', X.object.prototype.color);
 goog.exportSymbol('X.object.prototype.setColor', X.object.prototype.setColor);
