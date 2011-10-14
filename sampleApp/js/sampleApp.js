@@ -1,11 +1,10 @@
 goog.provide('sampleApp');
 goog.provide('sampleApp.run');
 
+goog.require('X.box');
 goog.require('X.color');
 goog.require('X.colors');
 goog.require('X.console');
-goog.require('X.cube');
-goog.require('X.cuboid');
 goog.require('X.object');
 goog.require('X.renderer2D');
 goog.require('X.renderer3D');
@@ -88,26 +87,26 @@ sampleApp.run = function() {
      * 10, -10]); object5.setColor(color2); object5.setOpacity(0.1);
      */
 
-    // create a cuboid with different colored sides and decimated vertices
-    var cuboid = new X.cuboid(new goog.math.Vec3(10, 10, 10), 2, 10, 20);
-    cuboid
+    // create a box with different colored sides
+    var box1 = new X.box(new goog.math.Vec3(10, 10, 10), 5, 10, 20);
+    box1
         .setColors(new X.color(1, 0, 0), new X.color(0, 1, 0), new X.color(0,
             0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
             1, 1));
-    cuboid.setOpacity(0.5);
+    box1.setOpacity(0.5);
     
-    // create a cube with a solid color
-    var cube = new X.cube(new goog.math.Vec3(-10, -10, -10), 5);
-    cube.setColor(new X.color(0, 0, 1));
-    cube.setOpacity(0.6);
+    // create a box with a solid color
+    var box2 = new X.box(new goog.math.Vec3(-10, -10, -10), 5, 5, 5);
+    box2.setColor(new X.color(0, 0, 1));
+    box2.setOpacity(0.6);
     
-    // create a cube with different colored sides
-    var cube2 = new X.cube(new goog.math.Vec3(0, 0, 0), 3);
-    cube2
+    // create a box with different colored sides
+    var box3 = new X.box(new goog.math.Vec3(0, 0, 0), 3, 3, 3);
+    box3
         .setColors(new X.color(1, 0, 0), new X.color(0, 1, 0), new X.color(0,
             0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
             1, 1));
-    cube2.setOpacity(0.7);
+    box3.setOpacity(0.7);
     
     /*
      * var trackfiber = new X.object(X.object.types.LINES);
@@ -121,10 +120,9 @@ sampleApp.run = function() {
      * threeDView.addObject(object2); threeDView.addObject(object3);
      * threeDView.addObject(object4); threeDView.addObject(object5);
      */
-    threeDView.addObject(cuboid);
-    threeDView.addObject(cube);
-    
-    threeDView.addObject(cube2);
+    threeDView.addObject(box1);
+    threeDView.addObject(box2);
+    threeDView.addObject(box3);
     
     // we probably do not need to time this because of an appropriate event
     // mechanism?

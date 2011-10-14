@@ -3,7 +3,7 @@
  */
 
 // provides
-goog.provide('X.cuboid');
+goog.provide('X.box');
 
 // requires
 goog.require('X.base');
@@ -15,28 +15,28 @@ goog.require('goog.math.Vec3');
 
 
 /**
- * Create a displayable cuboid.
+ * Create a displayable box.
  * 
  * @constructor
  * @inheritDoc
  * @param {!goog.math.Vec3} center The center position in 3D space.
- * @param {!number} radiusX The radius of the cuboid in X-direction.
- * @param {!number} radiusY The radius of the cuboid in Y-direction.
- * @param {!number} radiusZ The radius of the cuboid in Z-direction.
+ * @param {!number} radiusX The radius of the box in X-direction.
+ * @param {!number} radiusY The radius of the box in Y-direction.
+ * @param {!number} radiusZ The radius of the box in Z-direction.
  * @extends {X.object}
  */
-X.cuboid = function(center, radiusX, radiusY, radiusZ, type) {
+X.box = function(center, radiusX, radiusY, radiusZ, type) {
 
   if (!goog.isDefAndNotNull(center) || !(center instanceof goog.math.Vec3)) {
     
-    throw new X.exception('Fatal: Invalid center for the cuboid!');
+    throw new X.exception('Fatal: Invalid center for the box!');
     
   }
   
   if (!goog.isNumber(radiusX) || !goog.isNumber(radiusY) ||
       !goog.isNumber(radiusZ)) {
     
-    throw new X.exception('Fatal: Wrong edge lengths for the cuboid!');
+    throw new X.exception('Fatal: Wrong edge lengths for the box!');
     
   }
   
@@ -51,7 +51,7 @@ X.cuboid = function(center, radiusX, radiusY, radiusZ, type) {
    * @inheritDoc
    * @const
    */
-  this._className = 'cuboid';
+  this._className = 'box';
   
   this._center = center;
   
@@ -83,12 +83,12 @@ X.cuboid = function(center, radiusX, radiusY, radiusZ, type) {
   
 };
 // inherit from X.base
-goog.inherits(X.cuboid, X.object);
+goog.inherits(X.box, X.object);
 
 
 /**
- * Set side colors for this X.cuboid. This triggers the re-creation of all
- * vertices of this object after the colors are set.
+ * Set side colors for this X.box. This triggers the re-creation of all vertices
+ * of this object after the colors are set.
  * 
  * @param {!X.color} A The X.color for the front (in positive Z direction)
  *          facing side.
@@ -104,7 +104,7 @@ goog.inherits(X.cuboid, X.object);
  *          side.
  * @throws {X.exception} If the given colors are invalid.
  */
-X.cuboid.prototype.setColors = function(A, B, C, D, E, F) {
+X.box.prototype.setColors = function(A, B, C, D, E, F) {
 
   if (!goog.isDefAndNotNull(A) || !(A instanceof X.color)) {
     
@@ -156,13 +156,12 @@ X.cuboid.prototype.setColors = function(A, B, C, D, E, F) {
 
 
 /**
- * Set the spacing for this cuboid. By default, the spacing is 1.0. This
- * triggers the re-creation of all vertices of this object after the spacing is
- * set.
+ * Set the spacing for this box. By default, the spacing is 1.0. This triggers
+ * the re-creation of all vertices of this object after the spacing is set.
  * 
  * @param {number} spacing The new spacing.
  */
-X.cuboid.prototype.setSpacing = function(spacing) {
+X.box.prototype.setSpacing = function(spacing) {
 
   if (!goog.isNumber(spacing)) {
     
@@ -178,11 +177,11 @@ X.cuboid.prototype.setSpacing = function(spacing) {
 
 
 /**
- * Create the points and colors for this cuboid.
+ * Create the points and colors for this box.
  * 
  * @private
  */
-X.cuboid.prototype.create_ = function() {
+X.box.prototype.create_ = function() {
 
   // TODO line rendering does not behave correctly right now
   // TODO spacing does not behave correctly right now
@@ -537,6 +536,5 @@ X.cuboid.prototype.create_ = function() {
 };
 
 // export symbols (required for advanced compilation)
-goog.exportSymbol('X.cuboid', X.cuboid);
-goog.exportSymbol('X.cuboid.prototype.setSpacing',
-    X.cuboid.prototype.setSpacing);
+goog.exportSymbol('X.box', X.box);
+goog.exportSymbol('X.box.prototype.setSpacing', X.box.prototype.setSpacing);
