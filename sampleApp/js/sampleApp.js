@@ -27,7 +27,7 @@ sampleApp.run = function() {
     // default color is black
     // also, we set the container here. If the container is ommited, the <body>
     // container is used
-  
+    
     // is lighting enabled?
     var lighting = document.getElementById("lighting").checked;
     
@@ -35,12 +35,12 @@ sampleApp.run = function() {
     sliceView1.setContainerById('sliceView1');
     sliceView1.init();
     sliceView1.setLighting(lighting);
-
+    
     var sliceView2 = new X.renderer2D(300, 300);
     sliceView2.setContainerById('sliceView2');
     sliceView2.init();
     sliceView2.setLighting(lighting);
-
+    
     var sliceView3 = new X.renderer2D(300, 300);
     sliceView3.setContainerById('sliceView3');
     sliceView3.init();
@@ -54,65 +54,46 @@ sampleApp.run = function() {
     threeDView.init();
     threeDView.setLighting(lighting);
     /*
-    var object1 = new X.object();
-    // we can add points as goog.math.Coordinate3 or just as 1-D arrays with 3
-    // items
-    object1.points().add([2, 2, 0]);
-    object1.points().add([3, 3, 0]);
-    object1.points().add([1, 2.5, 0]);
-    // since we set an object color, individual point colors are overwritten
-    object1.setColor(new X.color(1, 0, 0));
-    object1.colors().add(new X.color(1, 1, 1));
-    object1.colors().add(new X.color(1, 1, 1));
-    object1.colors().add(new X.color(1, 1, 1));
-    
-    var object2 = new X.object(X.object.types.LINES);
-    object2.points().add([20, 20, 0]);
-    object2.points().add([30, 30, 0]);
-    object2.points().add([10, 20.5, 0]);
-    object2.points().add([10, 40.5, 0]);
-    // here, we configure point colors properly
-    object2.colors().add(new X.color(1, 1, 1));
-    object2.colors().add(new X.color(1, 0, 0));
-    object2.colors().add(new X.color(0, 0, 1));
-    object2.colors().add(new X.color(0, 0, 1));
-    object2.setOpacity(0.5);
-    
-    var object3 = new X.object();
-    object3.points().add([-40, -40, 0]);
-    object3.points().add([-50, -50, 0]);
-    object3.points().add([-30, -30, 0]);
-    object3.points().add([10, 20.5, 0]);
-    // here, we do not configure any colors which should reset to default
-    // (white)
-    
+     * var object1 = new X.object(); // we can add points as
+     * goog.math.Coordinate3 or just as 1-D arrays with 3 // items
+     * object1.points().add([2, 2, 0]); object1.points().add([3, 3, 0]);
+     * object1.points().add([1, 2.5, 0]); // since we set an object color,
+     * individual point colors are overwritten object1.setColor(new X.color(1,
+     * 0, 0)); object1.colors().add(new X.color(1, 1, 1));
+     * object1.colors().add(new X.color(1, 1, 1)); object1.colors().add(new
+     * X.color(1, 1, 1));
+     * 
+     * var object2 = new X.object(X.object.types.LINES);
+     * object2.points().add([20, 20, 0]); object2.points().add([30, 30, 0]);
+     * object2.points().add([10, 20.5, 0]); object2.points().add([10, 40.5, 0]); //
+     * here, we configure point colors properly object2.colors().add(new
+     * X.color(1, 1, 1)); object2.colors().add(new X.color(1, 0, 0));
+     * object2.colors().add(new X.color(0, 0, 1)); object2.colors().add(new
+     * X.color(0, 0, 1)); object2.setOpacity(0.5);
+     * 
+     * var object3 = new X.object(); object3.points().add([-40, -40, 0]);
+     * object3.points().add([-50, -50, 0]); object3.points().add([-30, -30, 0]);
+     * object3.points().add([10, 20.5, 0]); // here, we do not configure any
+     * colors which should reset to default // (white)
+     * 
+     * 
+     * var color = new X.color(0, 1, 0); var object4 = new X.object();
+     * object4.points().add([-30, 40, 0]); object4.points().add([-50, 30, 0]);
+     * object4.points().add([-30, 30, 0]); object4.points().add([-10, 20, 0]);
+     * object4.setColor(color); object4.setOpacity(0.5);
+     * 
+     * var color2 = new X.color(0, 1, 0); var object5 = new X.object();
+     * object5.points().add([-30, 40, -10]); object5.points().add([-50, 30,
+     * -10]); object5.points().add([-20, 10, -10]); object5.points().add([-10,
+     * 10, -10]); object5.setColor(color2); object5.setOpacity(0.1);
+     */
 
-    var color = new X.color(0, 1, 0);
-    var object4 = new X.object();
-    object4.points().add([-30, 40, 0]);
-    object4.points().add([-50, 30, 0]);
-    object4.points().add([-30, 30, 0]);
-    object4.points().add([-10, 20, 0]);
-    object4.setColor(color);
-    object4.setOpacity(0.5);
-    
-    var color2 = new X.color(0, 1, 0);
-    var object5 = new X.object();
-    object5.points().add([-30, 40, -10]);
-    object5.points().add([-50, 30, -10]);
-    object5.points().add([-20, 10, -10]);
-    object5.points().add([-10, 10, -10]);
-    object5.setColor(color2);
-    object5.setOpacity(0.1);*/
-    
     // create a cuboid with different colored sides and decimated vertices
-    var cuboid = new X.cuboid(new goog.math.Vec3(10, 10, 10), 5, 10, 20,
-        X.object.types.LINES);
+    var cuboid = new X.cuboid(new goog.math.Vec3(10, 10, 10), 2, 10, 20);
     cuboid
         .setColors(new X.color(1, 0, 0), new X.color(0, 1, 0), new X.color(0,
             0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
             1, 1));
-    cuboid.setSpacing(1.0);
     cuboid.setOpacity(0.5);
     
     // create a cube with a solid color
@@ -128,41 +109,37 @@ sampleApp.run = function() {
             1, 1));
     cube2.setOpacity(0.7);
     
-/*
-    var trackfiber = new X.object(X.object.types.LINES);
-    
-    trackfiber.points().add([-50, -50, 30]);
-    trackfiber.points().add([-40, -40, 30]);
-    trackfiber.points().add([-40, -40, 30]);
-    trackfiber.points().add([-20, -20, 00]);
-    
-    sliceView1.addObject(object1);
-    sliceView2.addObject(object1);
-    sliceView3.addObject(object1);
-    threeDView.addObject(object1);
-    threeDView.addObject(object2);
-    threeDView.addObject(object3);
-    threeDView.addObject(object4);
-    threeDView.addObject(object5);*/
-   threeDView.addObject(cuboid);
+    /*
+     * var trackfiber = new X.object(X.object.types.LINES);
+     * 
+     * trackfiber.points().add([-50, -50, 30]); trackfiber.points().add([-40,
+     * -40, 30]); trackfiber.points().add([-40, -40, 30]);
+     * trackfiber.points().add([-20, -20, 00]);
+     * 
+     * sliceView1.addObject(object1); sliceView2.addObject(object1);
+     * sliceView3.addObject(object1); threeDView.addObject(object1);
+     * threeDView.addObject(object2); threeDView.addObject(object3);
+     * threeDView.addObject(object4); threeDView.addObject(object5);
+     */
+    threeDView.addObject(cuboid);
     threeDView.addObject(cube);
-
+    
     threeDView.addObject(cube2);
-
+    
     // we probably do not need to time this because of an appropriate event
     // mechanism?
     // temp, should update lighting like that, should use events!
-     setInterval(function() {
-     lighting = document.getElementById("lighting").checked;
-     sliceView1.setLighting(lighting);
-     sliceView1.render();
-     sliceView2.setLighting(lighting);
-     sliceView2.render();
-     sliceView3.setLighting(lighting);
-     sliceView3.render();
-     threeDView.setLighting(lighting);
-     threeDView.render();
-     }, 15);
+    
+    lighting = document.getElementById("lighting").checked;
+    sliceView1.setLighting(lighting);
+    sliceView1.render();
+    sliceView2.setLighting(lighting);
+    sliceView2.render();
+    sliceView3.setLighting(lighting);
+    sliceView3.render();
+    threeDView.setLighting(lighting);
+    threeDView.render();
+    
 
     c.out(sliceView1.print());
     c.out(sliceView2.print());
@@ -220,15 +197,14 @@ sampleApp.run = function() {
           var z = tmpstr[6];
           objectN.points().add([x, y, z]);
           
+        } else if (tmpstr[1] == 'facet') {
+          var x = tmpstr[3];
+          var y = tmpstr[4];
+          var z = tmpstr[5];
+          objectN.normals().add([x, y, z]);
+          objectN.normals().add([x, y, z]);
+          objectN.normals().add([x, y, z]);
         }
-        else if (tmpstr[1] == 'facet') {
-            var x = tmpstr[3];
-            var y = tmpstr[4];
-            var z = tmpstr[5];
-            objectN.normals().add([x, y, z]);
-            objectN.normals().add([x, y, z]);
-            objectN.normals().add([x, y, z]);
-          }
       }
       
       threeDView.addObject(objectN);
