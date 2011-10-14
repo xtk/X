@@ -67,17 +67,17 @@ X.box = function(center, radiusX, radiusY, radiusZ, type) {
   
   this._spacingZ = 2 * radiusZ;
   
-  this._colorA = null;
+  this._frontColor = null;
   
-  this._colorB = null;
+  this._topColor = null;
   
-  this._colorC = null;
+  this._rightColor = null;
   
-  this._colorD = null;
+  this._bottomColor = null;
   
-  this._colorE = null;
+  this._leftColor = null;
   
-  this._colorF = null;
+  this._backColor = null;
   
   this.create_();
   
@@ -90,64 +90,64 @@ goog.inherits(X.box, X.object);
  * Set side colors for this X.box. This triggers the re-creation of all vertices
  * of this object after the colors are set.
  * 
- * @param {!X.color} A The X.color for the front (in positive Z direction)
+ * @param {!X.color} front The X.color for the front (in positive Z direction)
  *          facing side.
- * @param {!X.color} B The X.color for the top (in positive Y direction) facing
- *          side.
- * @param {!X.color} C The X.color for the right (in positive X direction)
+ * @param {!X.color} top The X.color for the top (in positive Y direction)
  *          facing side.
- * @param {!X.color} D The X.color for the bottom (in negative Y direction)
+ * @param {!X.color} right The X.color for the right (in positive X direction)
  *          facing side.
- * @param {!X.color} E The X.color for the left (in negative X direction) facing
- *          side.
- * @param {!X.color} F The X.color for the back (in negative Z direction) facing
- *          side.
+ * @param {!X.color} bottom The X.color for the bottom (in negative Y direction)
+ *          facing side.
+ * @param {!X.color} left The X.color for the left (in negative X direction)
+ *          facing side.
+ * @param {!X.color} back The X.color for the back (in negative Z direction)
+ *          facing side.
  * @throws {X.exception} If the given colors are invalid.
  */
-X.box.prototype.setColors = function(A, B, C, D, E, F) {
+X.box.prototype.setColors = function(front, top, right, bottom, left, back) {
 
-  if (!goog.isDefAndNotNull(A) || !(A instanceof X.color)) {
+  if (!goog.isDefAndNotNull(front) || !(front instanceof X.color)) {
     
-    throw new X.exception('Fatal: Wrong color for side A!');
-    
-  }
-  
-  if (!goog.isDefAndNotNull(B) || !(B instanceof X.color)) {
-    
-    throw new X.exception('Fatal: Wrong color for side B!');
+    throw new X.exception('Fatal: Wrong color for front side!');
     
   }
   
-  if (!goog.isDefAndNotNull(C) || !(C instanceof X.color)) {
+  if (!goog.isDefAndNotNull(top) || !(top instanceof X.color)) {
     
-    throw new X.exception('Fatal: Wrong color for side C!');
-    
-  }
-  
-  if (!goog.isDefAndNotNull(D) || !(D instanceof X.color)) {
-    
-    throw new X.exception('Fatal: Wrong color for side D!');
+    throw new X.exception('Fatal: Wrong color for top side!');
     
   }
   
-  if (!goog.isDefAndNotNull(E) || !(E instanceof X.color)) {
+  if (!goog.isDefAndNotNull(right) || !(right instanceof X.color)) {
     
-    throw new X.exception('Fatal: Wrong color for side E!');
-    
-  }
-  
-  if (!goog.isDefAndNotNull(F) || !(F instanceof X.color)) {
-    
-    throw new X.exception('Fatal: Wrong color for side F!');
+    throw new X.exception('Fatal: Wrong color for right side!');
     
   }
   
-  this._colorA = A;
-  this._colorB = B;
-  this._colorC = C;
-  this._colorD = D;
-  this._colorE = E;
-  this._colorF = F;
+  if (!goog.isDefAndNotNull(bottom) || !(bottom instanceof X.color)) {
+    
+    throw new X.exception('Fatal: Wrong color for bottom side!');
+    
+  }
+  
+  if (!goog.isDefAndNotNull(left) || !(left instanceof X.color)) {
+    
+    throw new X.exception('Fatal: Wrong color for left side!');
+    
+  }
+  
+  if (!goog.isDefAndNotNull(back) || !(back instanceof X.color)) {
+    
+    throw new X.exception('Fatal: Wrong color for right side!');
+    
+  }
+  
+  this._frontColor = front;
+  this._topColor = top;
+  this._rightColor = right;
+  this._bottomColor = bottom;
+  this._leftColor = left;
+  this._backColor = back;
   
   // re-setup the object
   this.create_();
@@ -267,12 +267,12 @@ X.box.prototype.create_ = function() {
            E.y - (j * this._spacingY) - this._spacingY, E.z]);
       
       // if side colors are configured, set them
-      if (this._colorF) {
+      if (this._backColor) {
         
         var cF;
         for (cF = 0; cF < 6; ++cF) {
           
-          this.colors().add(this._colorF);
+          this.colors().add(this._backColor);
           
         } // for loop of colors
         
@@ -317,12 +317,12 @@ X.box.prototype.create_ = function() {
            A.z - (j * this._spacingZ) - this._spacingZ]);
       
       // if side colors are configured, set them
-      if (this._colorB) {
+      if (this._topColor) {
         
         var cB;
         for (cB = 0; cB < 6; ++cB) {
           
-          this.colors().add(this._colorB);
+          this.colors().add(this._topColor);
           
         } // for loop of colors
         
@@ -366,12 +366,12 @@ X.box.prototype.create_ = function() {
            B.z - (j * this._spacingZ) - this._spacingZ]);
       
       // if side colors are configured, set them
-      if (this._colorC) {
+      if (this._rightColor) {
         
         var cC;
         for (cC = 0; cC < 6; ++cC) {
           
-          this.colors().add(this._colorC);
+          this.colors().add(this._rightColor);
           
         } // for loop of colors
         
@@ -415,12 +415,12 @@ X.box.prototype.create_ = function() {
            C.z - (j * this._spacingZ) - this._spacingZ]);
       
       // if side colors are configured, set them
-      if (this._colorD) {
+      if (this._bottomColor) {
         
         var cD;
         for (cD = 0; cD < 6; ++cD) {
           
-          this.colors().add(this._colorD);
+          this.colors().add(this._bottomColor);
           
         } // for loop of colors
         
@@ -464,12 +464,12 @@ X.box.prototype.create_ = function() {
            A.z - (j * this._spacingZ) - this._spacingZ]);
       
       // if side colors are configured, set them
-      if (this._colorE) {
+      if (this._leftColor) {
         
         var cE;
         for (cE = 0; cE < 6; ++cE) {
           
-          this.colors().add(this._colorE);
+          this.colors().add(this._leftColor);
           
         } // for loop of colors
         
@@ -513,12 +513,12 @@ X.box.prototype.create_ = function() {
            A.y - (j * this._spacingY) - this._spacingY, A.z]);
       
       // if side colors are configured, set them
-      if (this._colorA) {
+      if (this._frontColor) {
         
         var cA;
         for (cA = 0; cA < 6; ++cA) {
           
-          this.colors().add(this._colorA);
+          this.colors().add(this._frontColor);
           
         } // for loop of colors
         
