@@ -7,9 +7,8 @@ goog.addDependency('../../../../core/exception.js', ['X.exception'], ['X.base'])
 goog.addDependency('../../../../io/console.js', ['X.console'], ['X.base', 'X.exception', 'goog.dom']);
 goog.addDependency('../../../../io/interactor.js', ['X.interactor'], ['X.base', 'X.camera', 'X.camera.PanEvent', 'X.camera.RotateEvent', 'X.camera.ZoomEvent', 'X.exception', 'goog.dom', 'goog.events', 'goog.events.BrowserEvent.MouseButton', 'goog.events.EventType', 'goog.events.MouseWheelHandler', 'goog.math.Vec2']);
 goog.addDependency('../../../../math/matrixHelper.js', ['X.matrixHelper'], ['X.exception', 'goog.math.Matrix', 'goog.math.Vec2', 'goog.math.Vec3']);
+goog.addDependency('../../../../objects/box.js', ['X.box'], ['X.base', 'X.exception', 'X.object', 'X.points', 'goog.math.Vec3']);
 goog.addDependency('../../../../objects/colors.js', ['X.colors'], ['X.base', 'X.color', 'X.exception', 'goog.structs.Map']);
-goog.addDependency('../../../../objects/cube.js', ['X.cube'], ['X.base', 'X.cuboid', 'X.exception', 'X.object']);
-goog.addDependency('../../../../objects/cuboid.js', ['X.cuboid'], ['X.base', 'X.exception', 'X.object', 'X.points', 'goog.math.Vec3']);
 goog.addDependency('../../../../objects/object.js', ['X.object'], ['X.base', 'X.color', 'X.colors', 'X.exception', 'X.points', 'goog.structs.Set']);
 goog.addDependency('../../../../objects/points.js', ['X.points'], ['X.base', 'X.exception', 'goog.math.Coordinate3', 'goog.structs.Map']);
 goog.addDependency('../../../../visualization/buffer.js', ['X.buffer'], ['X.base', 'X.exception']);
