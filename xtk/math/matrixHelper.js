@@ -171,7 +171,7 @@ goog.math.Matrix.prototype.rotate = X.matrixHelper.rotate;
  * 
  * @this {goog.math.Matrix}
  * @param {!goog.math.Vec2|!goog.math.Vec3} vector The multiplication vector.
- * @return {goog.math.Matrix} The result of this multiplication.
+ * @return {!goog.math.Vec2|!goog.math.Vec3} The result of this multiplication.
  * @throws {X.exception} An exception if the multiplication fails.
  */
 X.matrixHelper.multiplyByVector = function(vector) {
@@ -211,8 +211,28 @@ X.matrixHelper.multiplyByVector = function(vector) {
   // now convert the vectorAsArray to a matrix and multiply
   var vectorAsMatrix = new goog.math.Matrix(vectorAsArray);
   
-  // ...and multiply and return it
-  return this.multiply(vectorAsMatrix);
+  // ...and multiply it
+  var resultMatrix = this.multiply(vectorAsMatrix);
+  var resultDimensions = resultMatrix.getSize();
+  
+  var resultVector;
+  
+  // .. convert to vector and return it
+  if (resultDimensions.height >= 3) {
+    
+    // 3d vector
+    resultVector = new goog.math.Vec3(resultMatrix.getValueAt(0, 0),
+        resultMatrix.getValueAt(1, 0), resultMatrix.getValueAt(2, 0));
+    
+  } else {
+    
+    // 2d vector
+    resultVector = new goog.math.Vec2(resultMatrix.getValueAt(0, 0),
+        resultMatrix.getValueAt(1, 0));
+    
+  }
+  
+  return resultVector;
   
 };
 

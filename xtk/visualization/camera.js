@@ -361,8 +361,24 @@ X.camera.prototype.rotate = function(distance) {
   var angleX = -distance.x / 5 * Math.PI / 180;
   var angleY = -distance.y / 5 * Math.PI / 180;
   
-  this._view = this._view.rotate(angleX, new goog.math.Vec3(0, 1, 0));
-  this._view = this._view.rotate(angleY, new goog.math.Vec3(1, 0, 0));
+  var identity = goog.math.Matrix.createIdentityMatrix(4);
+  var xAxisVector = new goog.math.Vec3(1, 0, 0);
+  var yAxisVector = new goog.math.Vec3(0, 1, 0);
+  
+  // we rotate around the Y Axis when the mouse moves along the screen in X
+  // direction
+  var rotateX = identity.rotate(angleX, yAxisVector);
+  
+  // we rotate around the X axis when the mouse moves along the screen in Y
+  // direction
+  var rotateY = identity.rotate(angleY, xAxisVector);
+  
+  // var rotateY = rotateX.rotate(angleY, new goog.math.Vec3(1, 0, 0));
+  
+  // this._view = this._view.rotate(angleX, new goog.math.Vec3(0, 1, 0));
+  // this._view = this._view.rotate(angleY, new goog.math.Vec3(1, 0, 0));
+  
+  this._view = this._view.multiply(rotateY.multiply(rotateX));
   
   // fire a render event
   this.dispatchEvent(new X.renderer.RenderEvent());
