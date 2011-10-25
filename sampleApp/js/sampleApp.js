@@ -99,6 +99,10 @@ sampleApp.run = function() {
     var box2 = new X.box(new goog.math.Vec3(-10, -10, -10), 5, 5, 5);
     box2.setColor(new X.color(0, 0, 1));
     box2.setOpacity(0.6);
+    box2.transform().translateX(-50);
+    box2.transform().translateY(30);
+    box2.transform().translateZ(-30);
+    box2.transform().rotateX(45);
     
     // create a box with different colored sides
     var box3 = new X.box(new goog.math.Vec3(0, 0, 0), 3, 3, 3);
@@ -106,6 +110,9 @@ sampleApp.run = function() {
         .setColors(new X.color(1, 0, 0), new X.color(0, 1, 0), new X.color(0,
             0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
             1, 1));
+    box3.transform().rotateX(30);
+    box3.transform().rotateY(30);
+    box3.transform().rotateZ(30);
     box3.setOpacity(0.7);
     
     /*
@@ -127,6 +134,7 @@ sampleApp.run = function() {
     // we probably do not need to time this because of an appropriate event
     // mechanism?
     // temp, should update lighting like that, should use events!
+    // setInterval(function() {
     
     lighting = document.getElementById("lighting").checked;
     sliceView1.setLighting(lighting);
@@ -137,8 +145,8 @@ sampleApp.run = function() {
     sliceView3.render();
     threeDView.setLighting(lighting);
     threeDView.render();
+    // }, 15);
     
-
     c.out(sliceView1.print());
     c.out(sliceView2.print());
     c.out(sliceView3.print());

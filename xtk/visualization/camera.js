@@ -318,15 +318,6 @@ X.camera.prototype.pan = function(distance) {
     
   }
   
-  // calculate new position and focus based on the distance vector
-  // this._position.x = this._position.x + distance.x;
-  // this._position.y = this._position.y - distance.y;
-  // this._focus.x = this._focus.x + distance.x;
-  // this._focus.y = this._focus.y - distance.y;
-  
-  // re-generate the view
-  // this._view = this.lookAt_(this._position, this._focus);
-  
   var distance3d = new goog.math.Vec3(-distance.x, distance.y, 0);
   
   var identity = goog.math.Matrix.createIdentityMatrix(4);

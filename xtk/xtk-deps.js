@@ -4,12 +4,13 @@ goog.addDependency('../../../../core/base.js', ['X.base'], ['X', 'goog.events', 
 goog.addDependency('../../../../core/color.js', ['X.color'], ['X.base', 'X.exception']);
 goog.addDependency('../../../../core/event.js', ['X.event'], ['X', 'goog.events', 'goog.events.Event']);
 goog.addDependency('../../../../core/exception.js', ['X.exception'], ['X.base']);
+goog.addDependency('../../../../core/transform.js', ['X.transform'], ['X.base', 'X.exception', 'goog.math.Matrix', 'goog.math.Vec3']);
 goog.addDependency('../../../../io/console.js', ['X.console'], ['X.base', 'X.exception', 'goog.dom']);
 goog.addDependency('../../../../io/interactor.js', ['X.interactor'], ['X.base', 'X.camera', 'X.camera.PanEvent', 'X.camera.RotateEvent', 'X.camera.ZoomEvent', 'X.exception', 'goog.dom', 'goog.events', 'goog.events.BrowserEvent.MouseButton', 'goog.events.EventType', 'goog.events.MouseWheelHandler', 'goog.math.Vec2']);
 goog.addDependency('../../../../math/matrixHelper.js', ['X.matrixHelper'], ['X.exception', 'goog.math.Matrix', 'goog.math.Vec2', 'goog.math.Vec3']);
 goog.addDependency('../../../../objects/box.js', ['X.box'], ['X.base', 'X.exception', 'X.object', 'X.points', 'goog.math.Vec3']);
 goog.addDependency('../../../../objects/colors.js', ['X.colors'], ['X.base', 'X.color', 'X.exception', 'goog.structs.Map']);
-goog.addDependency('../../../../objects/object.js', ['X.object'], ['X.base', 'X.color', 'X.colors', 'X.exception', 'X.points', 'goog.structs.Set']);
+goog.addDependency('../../../../objects/object.js', ['X.object'], ['X.base', 'X.color', 'X.colors', 'X.exception', 'X.points', 'X.transform', 'goog.structs.Set']);
 goog.addDependency('../../../../objects/points.js', ['X.points'], ['X.base', 'X.exception', 'goog.math.Coordinate3', 'goog.structs.Map']);
 goog.addDependency('../../../../visualization/buffer.js', ['X.buffer'], ['X.base', 'X.exception']);
 goog.addDependency('../../../../visualization/camera.js', ['X.camera', 'X.camera.PanEvent', 'X.camera.RotateEvent', 'X.camera.ZoomEvent'], ['X.base', 'X.event', 'X.exception', 'X.matrixHelper', 'goog.math.Matrix', 'goog.math.Vec3']);
