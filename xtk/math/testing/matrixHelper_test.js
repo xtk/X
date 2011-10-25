@@ -90,15 +90,14 @@ function testXmatrixHelperMultiplyByVector() {
   // create a 1x3 vector
   var vector = new goog.math.Vec3(7, 8, 9);
 
-  var baseline = new goog.math.Matrix([[7], [8], [9], [1]]);
+  var baseline = new goog.math.Vec3(7, 8, 9);
 
   // multiplying the matrix by the vector should result in the vector since the
   // matrix is the identity
-  matrix = matrix.multiplyByVector(vector);
+  vector = matrix.multiplyByVector(vector);
 
-  assertEquals(matrix.getValueAt(0, 0), baseline.getValueAt(0, 0));
-  assertEquals(matrix.getValueAt(1, 0), baseline.getValueAt(1, 0));
-  assertEquals(matrix.getValueAt(2, 0), baseline.getValueAt(2, 0));
-  assertEquals(matrix.getValueAt(3, 0), baseline.getValueAt(3, 0));
+  assertEquals(vector.x, baseline.x);
+  assertEquals(vector.y, baseline.y);
+  assertEquals(vector.z, baseline.z);
 
 }

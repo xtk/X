@@ -11,6 +11,7 @@ goog.require('X.color');
 goog.require('X.colors');
 goog.require('X.exception');
 goog.require('X.points');
+goog.require('X.transform');
 goog.require('goog.structs.Set');
 
 
@@ -59,6 +60,14 @@ X.object = function(type) {
   this._type = validType;
 
   /**
+   * The transform of this object.
+   *
+   * @type {X.transform}
+   * @protected
+   */
+  this._transform = new X.transform();
+
+  /**
    * The object color.
    *
    * @type {X.color}
@@ -73,6 +82,14 @@ X.object = function(type) {
    * @protected
    */
   this._points = new X.points();
+
+  /**
+   * The normals of this object.
+   *
+   * @type {X.points}
+   * @protected
+   */
+  this._normals = new X.points();
 
   /**
    * The point colors of this object.
@@ -142,6 +159,18 @@ X.object.prototype.type = function() {
 
 
 /**
+ * Get the transform of this object.
+ *
+ * @return {!X.transform} The transform.
+ */
+X.object.prototype.transform = function() {
+
+  return this._transform;
+
+};
+
+
+/**
  * Get the points of this object.
  *
  * @return {X.points} The points.
@@ -149,6 +178,18 @@ X.object.prototype.type = function() {
 X.object.prototype.points = function() {
 
   return this._points;
+
+};
+
+
+/**
+ * Get the normals of this object.
+ *
+ * @return {X.points} The normals.
+ */
+X.object.prototype.normals = function() {
+
+  return this._normals;
 
 };
 
@@ -267,7 +308,9 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.object', X.object);
 goog.exportSymbol('X.object.prototype.type', X.object.prototype.type);
+goog.exportSymbol('X.object.prototype.transform', X.object.prototype.transform);
 goog.exportSymbol('X.object.prototype.points', X.object.prototype.points);
+goog.exportSymbol('X.object.prototype.normals', X.object.prototype.normals);
 goog.exportSymbol('X.object.prototype.colors', X.object.prototype.colors);
 goog.exportSymbol('X.object.prototype.color', X.object.prototype.color);
 goog.exportSymbol('X.object.prototype.setColor', X.object.prototype.setColor);

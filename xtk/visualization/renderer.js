@@ -173,6 +173,15 @@ X.renderer = function(width, height) {
   this._vertexBuffers = new goog.structs.Map();
 
   /**
+   * A hash map of normal buffers of this renderer. Each buffer is associated
+   * with a displayable object using its unique id.
+   *
+   * @type {!goog.structs.Map}
+   * @protected
+   */
+  this._normalBuffers = new goog.structs.Map();
+
+  /**
    * A hash map of color buffers of this renderer. Each buffer is associated
    * with a displayable object using its unique id.
    *
@@ -181,6 +190,43 @@ X.renderer = function(width, height) {
    */
   this._colorBuffers = new goog.structs.Map();
 
+  /**
+   * A hash map of color buffers of this renderer. Each buffer is associated
+   * with a displayable object using its unique id.
+   *
+   * @type {!goog.structs.Map}
+   * @protected
+   */
+  this._transformBuffers0 = new goog.structs.Map();
+
+  /**
+   * A hash map of color buffers of this renderer. Each buffer is associated
+   * with a displayable object using its unique id.
+   *
+   * @type {!goog.structs.Map}
+   * @protected
+   */
+  this._transformBuffers1 = new goog.structs.Map();
+
+  /**
+   * A hash map of color buffers of this renderer. Each buffer is associated
+   * with a displayable object using its unique id.
+   *
+   * @type {!goog.structs.Map}
+   * @protected
+   */
+  this._transformBuffers2 = new goog.structs.Map();
+
+  /**
+   * A hash map of color buffers of this renderer. Each buffer is associated
+   * with a displayable object using its unique id.
+   *
+   * @type {!goog.structs.Map}
+   * @protected
+   */
+  this._transformBuffers3 = new goog.structs.Map();
+
+
   /*
    * A hash map of opacity buffers of this renderer. Each buffer is associated
    * with a displayable object using its unique id.
@@ -188,6 +234,8 @@ X.renderer = function(width, height) {
    * @type {!goog.structs.Map} @protected
    */
   this._opacityBuffers = new goog.structs.Map();
+
+  this._lighting = true;
 
 };
 // inherit from X.base
@@ -447,6 +495,30 @@ X.renderer.prototype.interactor = function() {
 
 
 /**
+ * Get the lighting of this renderer.
+ *
+ * @return {!boolean} TRUE if lightning is active, FALSE if inactive.
+ */
+X.renderer.prototype.lighting = function() {
+
+  return this._lighting;
+
+};
+
+
+/**
+ * Set the lighting of this renderer.
+ *
+ * @param {!boolean} lighting TRUE or FALSE to activate/deactivate the
+ *          lightning.
+ */
+X.renderer.prototype.setLighting = function(lighting) {
+
+  this._lighting = lighting;
+};
+
+
+/**
  * Create the canvas of this renderer inside the configured container and using
  * attributes like width, height, backgroundColor etc. Then, initialize the
  * WebGL context and attach all necessary objects (e.g. camera, shaders..).
@@ -565,6 +637,7 @@ X.renderer.prototype.init = function() {
   // to check if the initialization was completed successfully
   this._canvas = canvas;
   this._gl = gl;
+  this._gl.enable(gl.DEPTH_TEST);
   this._camera = camera;
   this._interactor = interactor;
 
@@ -618,10 +691,17 @@ X.renderer.prototype.addShaders = function(shaders) {
   this._gl.compileShader(glFragmentShader);
   this._gl.compileShader(glVertexShader);
 
-  if (!this._gl.getShaderParameter(glFragmentShader, this._gl.COMPILE_STATUS) ||
-      !this._gl.getShaderParameter(glVertexShader, this._gl.COMPILE_STATUS)) {
+  if (!this._gl.getShaderParameter(glFragmentShader, this._gl.COMPILE_STATUS)) {
 
-    throw new X.exception('Fatal: Shader compilation failed!');
+    throw new X.exception('Fatal: Fragement Shader compilation failed!\n' +
+        this._gl.getShaderInfoLog(glFragmentShader));
+
+  }
+
+  if (!this._gl.getShaderParameter(glVertexShader, this._gl.COMPILE_STATUS)) {
+
+    throw new X.exception('Fatal: Vertex Shader compilation failed!\n' +
+        this._gl.getShaderInfoLog(glVertexShader));
 
   }
 
@@ -645,6 +725,10 @@ X.renderer.prototype.addShaders = function(shaders) {
       shaders.position());
   this._gl.enableVertexAttribArray(this._vertexPositionAttribute);
 
+  this._normalPositionAttribute = this._gl.getAttribLocation(shaderProgram,
+      shaders.normal());
+  this._gl.enableVertexAttribArray(this._normalPositionAttribute);
+
   this._vertexColorAttribute = this._gl.getAttribLocation(shaderProgram,
       shaders.color());
   this._gl.enableVertexAttribArray(this._vertexColorAttribute);
@@ -652,6 +736,22 @@ X.renderer.prototype.addShaders = function(shaders) {
   this._vertexOpacityAttribute = this._gl.getAttribLocation(shaderProgram,
       shaders.opacity());
   this._gl.enableVertexAttribArray(this._vertexOpacityAttribute);
+
+  this._vertexTransform0Attribute = this._gl.getAttribLocation(shaderProgram,
+      shaders.transform0());
+  this._gl.enableVertexAttribArray(this._vertexTransform0Attribute);
+
+  this._vertexTransform1Attribute = this._gl.getAttribLocation(shaderProgram,
+      shaders.transform1());
+  this._gl.enableVertexAttribArray(this._vertexTransform1Attribute);
+
+  this._vertexTransform2Attribute = this._gl.getAttribLocation(shaderProgram,
+      shaders.transform2());
+  this._gl.enableVertexAttribArray(this._vertexTransform2Attribute);
+
+  this._vertexTransform3Attribute = this._gl.getAttribLocation(shaderProgram,
+      shaders.transform3());
+  this._gl.enableVertexAttribArray(this._vertexTransform3Attribute);
 
   // attach the shaderProgram to this renderer
   this._shaderProgram = shaderProgram;
@@ -744,6 +844,18 @@ X.renderer.prototype.addObject = function(object) {
   // every vertex consists of 3 items (x,y,z)
   var vertexBuffer = new X.buffer(glVertexBuffer, object.points().count(), 3);
 
+  // create normal buffer
+  var glNormalBuffer = this._gl.createBuffer();
+
+  // bind and fill with normals of current object
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glNormalBuffer);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.normals()
+      .flatten()), this._gl.STATIC_DRAW);
+
+  // create an X.buffer to store the normals
+  // every normal consists of 3 items (x,y,z)
+  var normalBuffer = new X.buffer(glNormalBuffer, object.normals().count(), 3);
+
   // create color buffer
   var glColorBuffer = this._gl.createBuffer();
 
@@ -753,7 +865,7 @@ X.renderer.prototype.addObject = function(object) {
       new Float32Array(colors.flatten()), this._gl.STATIC_DRAW);
 
   // create an X.buffer to store the colors
-  // every color consists of 4 items (r,g,b,alpha)
+  // every color consists of 3 items (r,g,b)
   var colorBuffer = new X.buffer(glColorBuffer, colors.count(), 3);
 
   // create opacity buffer
@@ -777,6 +889,105 @@ X.renderer.prototype.addObject = function(object) {
   // create an X.buffer to store the opacity
   var opacityBuffer = new X.buffer(glOpacityBuffer, 1, 1);
 
+  //
+  // transform buffers
+  //
+  // since we want each vertex to be able to sit under a transform,
+  // and we can not define a mat4 attribute on the shaders, we pass the
+  // transform matrix as 4x size4-vectors.
+
+  // get the transform matrix of this object
+  var transform = object.transform().matrix();
+
+  var glTransformBuffer0 = this._gl.createBuffer();
+
+  // we need to convert the transform row0 to an array to set it for all
+  // vertices
+  tmpArray = new Array(object.points().flatten().length * 4);
+  for (j = 0; j < tmpArray.length; j = j + 4) {
+
+    tmpArray[j] = transform.getValueAt(0, 0);
+    tmpArray[j + 1] = transform.getValueAt(0, 1);
+    tmpArray[j + 2] = transform.getValueAt(0, 2);
+    tmpArray[j + 3] = transform.getValueAt(0, 3);
+
+  }
+
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer0);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
+      this._gl.STATIC_DRAW);
+
+  // create an X.buffer to store the transform
+  var transformBuffer0 = new X.buffer(glTransformBuffer0, colors.count(), 4);
+
+
+  var glTransformBuffer1 = this._gl.createBuffer();
+
+  // we need to convert the transform row1 to an array to set it for all
+  // vertices
+  tmpArray = new Array(object.points().flatten().length * 4);
+  for (j = 0; j < tmpArray.length; j = j + 4) {
+
+    tmpArray[j] = transform.getValueAt(1, 0);
+    tmpArray[j + 1] = transform.getValueAt(1, 1);
+    tmpArray[j + 2] = transform.getValueAt(1, 2);
+    tmpArray[j + 3] = transform.getValueAt(1, 3);
+
+  }
+
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer1);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
+      this._gl.STATIC_DRAW);
+
+  // create an X.buffer to store the transform
+  var transformBuffer1 = new X.buffer(glTransformBuffer1, colors.count(), 4);
+
+
+  var glTransformBuffer2 = this._gl.createBuffer();
+
+  // we need to convert the transform row2 to an array to set it for all
+  // vertices
+  tmpArray = new Array(object.points().flatten().length * 4);
+  for (j = 0; j < tmpArray.length; j = j + 4) {
+
+    tmpArray[j] = transform.getValueAt(2, 0);
+    tmpArray[j + 1] = transform.getValueAt(2, 1);
+    tmpArray[j + 2] = transform.getValueAt(2, 2);
+    tmpArray[j + 3] = transform.getValueAt(2, 3);
+
+  }
+
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer2);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
+      this._gl.STATIC_DRAW);
+
+  // create an X.buffer to store the transform
+  var transformBuffer2 = new X.buffer(glTransformBuffer2, colors.count(), 4);
+
+
+  var glTransformBuffer3 = this._gl.createBuffer();
+
+  // we need to convert the transform row3 to an array to set it for all
+  // vertices
+  tmpArray = new Array(object.points().flatten().length * 4);
+  for (j = 0; j < tmpArray.length; j = j + 4) {
+
+    tmpArray[j] = transform.getValueAt(3, 0);
+    tmpArray[j + 1] = transform.getValueAt(3, 1);
+    tmpArray[j + 2] = transform.getValueAt(3, 2);
+    tmpArray[j + 3] = transform.getValueAt(3, 3);
+
+  }
+
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer3);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
+      this._gl.STATIC_DRAW);
+
+  // create an X.buffer to store the transform
+  var transformBuffer3 = new X.buffer(glTransformBuffer3, colors.count(), 4);
+
+
+
   // TODO buffers for lightning etc..
 
   // add the object to the internal tree which reflects the rendering order
@@ -788,9 +999,13 @@ X.renderer.prototype.addObject = function(object) {
   }
   // add the buffers for the new object to the internal hash maps
   this._vertexBuffers.set(object.id(), vertexBuffer);
+  this._normalBuffers.set(object.id(), normalBuffer);
   this._colorBuffers.set(object.id(), colorBuffer);
   this._opacityBuffers.set(object.id(), opacityBuffer);
-
+  this._transformBuffers0.set(object.id(), transformBuffer0);
+  this._transformBuffers1.set(object.id(), transformBuffer1);
+  this._transformBuffers2.set(object.id(), transformBuffer2);
+  this._transformBuffers3.set(object.id(), transformBuffer3);
 };
 
 
@@ -830,6 +1045,30 @@ X.renderer.prototype.render = function() {
   this._gl.uniformMatrix4fv(viewUniformLocation, false, new Float32Array(
       viewMatrix.flatten()));
 
+  var normalUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
+      this._shaders.normalUniform());
+
+  var matrix = goog.math.Matrix.createIdentityMatrix(3);
+  matrix.setValueAt(0, 0, viewMatrix.getValueAt(0, 0));
+  matrix.setValueAt(0, 1, viewMatrix.getValueAt(0, 1));
+  matrix.setValueAt(0, 2, viewMatrix.getValueAt(0, 2));
+
+  matrix.setValueAt(1, 0, viewMatrix.getValueAt(1, 0));
+  matrix.setValueAt(1, 1, viewMatrix.getValueAt(1, 1));
+  matrix.setValueAt(1, 2, viewMatrix.getValueAt(1, 2));
+
+  matrix.setValueAt(2, 0, viewMatrix.getValueAt(2, 0));
+  matrix.setValueAt(2, 1, viewMatrix.getValueAt(2, 1));
+  matrix.setValueAt(2, 2, viewMatrix.getValueAt(2, 2));
+
+  this._gl.uniformMatrix3fv(normalUniformLocation, false, new Float32Array(
+      matrix.getInverse().getTranspose().flatten()));
+
+  var lightingUniformLocation = this._gl.getUniformLocation(
+      this._shaderProgram, this._shaders.lighting());
+
+  this._gl.uniform1i(lightingUniformLocation, this._lighting);
+
   //
   // loop through all objects and (re-)draw them
   //
@@ -846,18 +1085,27 @@ X.renderer.prototype.render = function() {
     var object = objects[i];
 
     if (object) {
-
       // we have a valid object
       var id = object.id();
 
       var vertexBuffer = this._vertexBuffers.get(id);
+      var normalBuffer = this._normalBuffers.get(id);
       var colorBuffer = this._colorBuffers.get(id);
       var opacityBuffer = this._opacityBuffers.get(id);
+      var transformBuffer0 = this._transformBuffers0.get(id);
+      var transformBuffer1 = this._transformBuffers1.get(id);
+      var transformBuffer2 = this._transformBuffers2.get(id);
+      var transformBuffer3 = this._transformBuffers3.get(id);
 
       // ..bind the glBuffers
       this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
 
       this._gl.vertexAttribPointer(this._vertexPositionAttribute, vertexBuffer
+          .itemSize(), this._gl.FLOAT, false, 0, 0);
+
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, normalBuffer.glBuffer());
+
+      this._gl.vertexAttribPointer(this._normalPositionAttribute, normalBuffer
           .itemSize(), this._gl.FLOAT, false, 0, 0);
 
       this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());
@@ -869,6 +1117,27 @@ X.renderer.prototype.render = function() {
 
       this._gl.vertexAttribPointer(this._vertexOpacityAttribute, opacityBuffer
           .itemSize(), this._gl.FLOAT, false, 0, 0);
+
+
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, transformBuffer0.glBuffer());
+
+      this._gl.vertexAttribPointer(this._vertexTransform0Attribute,
+          transformBuffer0.itemSize(), this._gl.FLOAT, false, 0, 0);
+
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, transformBuffer1.glBuffer());
+
+      this._gl.vertexAttribPointer(this._vertexTransform1Attribute,
+          transformBuffer1.itemSize(), this._gl.FLOAT, false, 0, 0);
+
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, transformBuffer2.glBuffer());
+
+      this._gl.vertexAttribPointer(this._vertexTransform2Attribute,
+          transformBuffer2.itemSize(), this._gl.FLOAT, false, 0, 0);
+
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, transformBuffer3.glBuffer());
+
+      this._gl.vertexAttribPointer(this._vertexTransform3Attribute,
+          transformBuffer3.itemSize(), this._gl.FLOAT, false, 0, 0);
 
       // .. and draw with the object's draw mode
       var drawMode = -1;
