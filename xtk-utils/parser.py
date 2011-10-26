@@ -107,18 +107,18 @@ def parsefile(f, count, numberoflines, buildElement, xml):
   if (success < 0) :
     print "ERRORS"
 
-    #name = 'Error' + str(count)
     errorElement = xml.createElement('Error')
     buildElement.appendChild(errorElement)
-    #error = ""
+    error = " "
 
     while (successline.find("error(s)") < 0) :
       print successline
-      #error += successline + " "
+      error += successline + " "
       successline = f.readline()
       count += 1
-    
-    #errorElement.appendChild(error)
+   
+    errorNode = xml.createTextNode(error)
+    errorElement.appendChild(errorNode)
     
     print "SUMMARY"
     print successline
