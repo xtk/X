@@ -4,7 +4,7 @@ import os, sys
 from xml.dom import minidom
 # GET DATE
 import datetime
-from time import time
+from time import time, gmtime, strftime
 #from cElementTree.SimpleXMLWriter import XMLWriter
 
 # xtk-utils dir
@@ -39,7 +39,7 @@ def main():
 
   startDateTimeElement = xml.createElement('StartDateTime')
   buildElement.appendChild(startDateTimeElement)
-  startDateTime = xml.createTextNode("Oct 26 08:57 EDT")
+  startDateTime = xml.createTextNode(strftime("%b %d %H:%M %Z", gmtime()))
   startDateTimeElement.appendChild(startDateTime)
   
   startBuildTimeElement = xml.createElement('StartBuildTime')
@@ -54,7 +54,7 @@ def main():
 
   endDateTimeElement = xml.createElement('EndDateTime')
   buildElement.appendChild(endDateTimeElement)
-  endDateTime = xml.createTextNode("Oct 26 08:57 EDT")
+  endDateTime = xml.createTextNode(strftime("%b %d %H:%M %Z", gmtime()))
   endDateTimeElement.appendChild(endDateTime)
   
   endBuildTimeElement = xml.createElement('EndBuildTime')
@@ -71,18 +71,19 @@ def main():
 #  errorElement = xml.createElement('Error')
 #  buildElement.appendChild(errorElement)
 
+  parsefile(f1, count, len(data) - 14, buildElement, xml)
+  
   f2 = open('Build.xml', 'w')
   f2.write(xml.toprettyxml())
   f2.close()
   #  w = elementtree.XMLWriter("BuildTest.xml")
   #  xml = w.start("xml") 
  
-  #parsefile(f1, count, len(data) - 14)
 
 # read first builded file, then create method to loop
 #for line in f:
 #        print line,
-def parsefile(f, count, numberoflines):
+def parsefile(f, count, numberoflines, buildElement, xml):
   #base case
   if( count >= numberoflines):
     return
@@ -105,17 +106,27 @@ def parsefile(f, count, numberoflines):
 
   if (success < 0) :
     print "ERRORS"
+
+    #name = 'Error' + str(count)
+    errorElement = xml.createElement('Error')
+    buildElement.appendChild(errorElement)
+    #error = ""
+
     while (successline.find("error(s)") < 0) :
       print successline
+      #error += successline + " "
       successline = f.readline()
       count += 1
+    
+    #errorElement.appendChild(error)
+    
     print "SUMMARY"
     print successline
     successline = f.readline()
     count += 1
   
   #recursive call
-  parsefile(f, count, numberoflines)
+  parsefile(f, count, numberoflines, buildElement, xml)
 
 
 if __name__ == "__main__":

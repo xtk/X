@@ -1,23 +1,40 @@
 <?xml version="1.0" ?>
-<Site BuildName="Darwin-c++" BuildStamp="20111026-823-Experimental" Hostname="starfish" Name="starfish.megason-lab">
+<Site BuildName="Darwin-c++" BuildStamp="20111026-5712-Experimental" Hostname="starfish" Name="starfish.megason-lab">
 	<Build>
 		<StartDateTime>
-			Oct 26 08:57 EDT
+			Oct 26 20:57 EST
 		</StartDateTime>
 		<StartBuildTime>
-			1319656103.35
+			1319662632.1
 		</StartBuildTime>
 		<BuildCommand>
 			This is a build command
 		</BuildCommand>
 		<EndDateTime>
-			Oct 26 08:57 EDT
+			Oct 26 20:57 EST
 		</EndDateTime>
 		<EndBuildTime>
-			1319656103.35
+			1319662632.1
 		</EndBuildTime>
 		<ElapsedMinutes>
 			0
 		</ElapsedMinutes>
+		<Error/>
+		<Error/>
+		<Error/>
+		<Error/>
+		<Error/>
+		<Error/>
+		<Error/>
+		<Error/>
+		<Error/>
+		<Error/>
+		<Error/>
+		<Error/>
+		<Error/>
+		<Error/>
+		<Error/>
+		<Error/>
+		<Error/>
 	</Build>
 </Site>
