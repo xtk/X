@@ -46,7 +46,7 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
                     command += ' -f "--warning_level=VERBOSE"'
                     command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
                     command += ' > ' + real_output + os.sep + name
-                    
+# &> test.file.xml                    
                     #
                     # run, forest, run
                     #

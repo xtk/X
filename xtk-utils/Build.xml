@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<Site BuildName="Darwin-c++" BuildStamp="20111026-823-Experimental" Hostname="starfish" Name="starfish.megason-lab">
+	<Build>
+		<StartDateTime>
+			Oct 26 08:57 EDT
+		</StartDateTime>
+		<StartBuildTime>
+			1319656103.35
+		</StartBuildTime>
+		<BuildCommand>
+			This is a build command
+		</BuildCommand>
+		<EndDateTime>
+			Oct 26 08:57 EDT
+		</EndDateTime>
+		<EndBuildTime>
+			1319656103.35
+		</EndBuildTime>
+		<ElapsedMinutes>
+			0
+		</ElapsedMinutes>
+	</Build>
+</Site>
