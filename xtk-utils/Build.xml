@@ -1,127 +1,7 @@
-<?xml version="1.0" ?><Site BuildName="Darwin-c++" BuildStamp="20111027-5420-Experimental" Hostname="starfish" Name="starfish.megason-lab"><Build><StartDateTime>Oct 27 12:54 EST</StartDateTime><StartBuildTime>1319720060.94</StartBuildTime><BuildCommand>This is a build command</BuildCommand><EndDateTime>Oct 27 12:54 EST</EndDateTime><EndBuildTime>1319720060.94</EndBuildTime><ElapsedMinutes>0</ElapsedMinutes><Warning><BuildLogLine>10</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>14</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>18</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>28</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>32</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>36</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>46</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:134: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>134</SourceLineNumber><PostContext> * @param {EventTarget|goog.events.EventTarget} src The node to listen to
-
-                                              ^
-</PostContext></Warning><Warning><BuildLogLine>50</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:245: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>245</SourceLineNumber><PostContext> * @param {EventTarget|goog.events.EventTarget} src The node to listen to
-
-                                              ^
-</PostContext></Warning><Warning><BuildLogLine>54</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:273: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>273</SourceLineNumber><PostContext> * @param {EventTarget|goog.events.EventTarget} src The node to listen to
-
-                                              ^
-</PostContext></Warning><Warning><BuildLogLine>58</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:291: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>291</SourceLineNumber><PostContext> * @param {EventTarget|goog.events.EventTarget} src The target to stop
-
-                                              ^
-</PostContext></Warning><Warning><BuildLogLine>62</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:396: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>396</SourceLineNumber><PostContext> * @param {EventTarget|goog.events.EventTarget} src The target to stop
-
-                                              ^
-</PostContext></Warning><Warning><BuildLogLine>66</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:571: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>571</SourceLineNumber><PostContext> * @param {EventTarget|goog.events.EventTarget} src The node from which to get
-
-                                              ^
-</PostContext></Warning><Warning><BuildLogLine>70</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:607: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>607</SourceLineNumber><PostContext> * @param {EventTarget|goog.events.EventTarget} obj Target to get listeners for.
-
-                                              ^
-</PostContext></Warning><Warning><BuildLogLine>74</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:783: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>783</SourceLineNumber><PostContext> * @param {goog.events.EventTarget} src  The event target.
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>78</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>82</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:893: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>893</SourceLineNumber><PostContext> * @this {goog.events.EventTarget|Object} The object or Element that
-
-                                 ^
-</PostContext></Warning><Warning><BuildLogLine>86</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:37: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>37</SourceLineNumber><PostContext> * @param {EventTarget|goog.events.EventTarget} src The node to listen to
-
-                                              ^
-</PostContext></Warning><Warning><BuildLogLine>90</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>94</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:55: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>55</SourceLineNumber><PostContext> * @param {EventTarget|goog.events.EventTarget} src The node to remove listener
-
-                                              ^
-</PostContext></Warning><Warning><BuildLogLine>98</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>102</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/listener.js:68: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/listener.js</SourceFile><SourceLineNumber>68</SourceLineNumber><PostContext> * @type {Object|goog.events.EventTarget}
-
-                                        ^
-</PostContext></Warning><Warning><BuildLogLine>112</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>116</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>120</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>130</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>134</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>138</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>148</BuildLogLine><Text>/Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
+<?xml version="1.0" ?><Site BuildName="Darwin-c++" BuildStamp="20111027-4218-Experimental" Hostname="starfish" Name="starfish.megason-lab"><Build><StartDateTime>Oct 27 14:42 EST</StartDateTime><StartBuildTime>1319726538.65</StartBuildTime><BuildCommand>This is a build command</BuildCommand><EndDateTime>Oct 27 14:42 EST</EndDateTime><EndBuildTime>1319726538.65</EndBuildTime><ElapsedMinutes>0</ElapsedMinutes><Warning><BuildLogLine>148</BuildLogLine><Text>/Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
 </Text><SourceFile>/Users/nr52/projectX/xtk/io/interactor.js</SourceFile><SourceLineNumber>372</SourceLineNumber><PostContext>  e._in = (event.deltaY &gt; 0);
 
            ^
-</PostContext></Warning><Warning><BuildLogLine>152</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>156</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>160</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
 </PostContext></Warning><Warning><BuildLogLine>164</BuildLogLine><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
 </Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>  var axis = axis.normalize();
 
@@ -198,34 +78,10 @@ required: goog.math.Vec3
 </Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>497</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>258</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>262</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>266</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
 </PostContext></Warning><Warning><BuildLogLine>270</BuildLogLine><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
 </Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>  var axis = axis.normalize();
 
       ^
-</PostContext></Warning><Warning><BuildLogLine>280</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>284</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>288</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
 </PostContext></Warning><Warning><BuildLogLine>292</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
 </Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>258</SourceLineNumber><PostContext>X.object.OPACITY_COMPARATOR = function(object1, object2) {
 
@@ -238,30 +94,6 @@ required: (Number|null)
 </Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>280</SourceLineNumber><PostContext>found   : number
 
 required: (Number|null)
-</PostContext></Warning><Warning><BuildLogLine>314</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>318</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>322</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>332</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>336</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>340</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
 </PostContext></Warning><Warning><BuildLogLine>344</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
 </Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>258</SourceLineNumber><PostContext>X.object.OPACITY_COMPARATOR = function(object1, object2) {
 
@@ -274,42 +106,6 @@ required: (Number|null)
 </Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>280</SourceLineNumber><PostContext>found   : number
 
 required: (Number|null)
-</PostContext></Warning><Warning><BuildLogLine>366</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>370</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>374</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>384</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>388</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>392</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>402</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>406</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>410</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
 </PostContext></Warning><Warning><BuildLogLine>414</BuildLogLine><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
 </Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>  var axis = axis.normalize();
 
@@ -398,18 +194,6 @@ required: goog.math.Matrix
 </Text><SourceFile>/Users/nr52/projectX/xtk/io/interactor.js</SourceFile><SourceLineNumber>372</SourceLineNumber><PostContext>  e._in = (event.deltaY &gt; 0);
 
            ^
-</PostContext></Warning><Warning><BuildLogLine>520</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>524</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>528</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
 </PostContext></Warning><Warning><BuildLogLine>532</BuildLogLine><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
 </Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>  var axis = axis.normalize();
 
@@ -510,18 +294,6 @@ required: number
 </Text><SourceFile>/Users/nr52/projectX/xtk/io/interactor.js</SourceFile><SourceLineNumber>372</SourceLineNumber><PostContext>  e._in = (event.deltaY &gt; 0);
 
            ^
-</PostContext></Warning><Warning><BuildLogLine>674</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>678</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>682</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
 </PostContext></Warning><Warning><BuildLogLine>686</BuildLogLine><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
 </Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>  var axis = axis.normalize();
 
@@ -618,18 +390,6 @@ required: number
 </Text><SourceFile>/Users/nr52/projectX/xtk/io/interactor.js</SourceFile><SourceLineNumber>372</SourceLineNumber><PostContext>  e._in = (event.deltaY &gt; 0);
 
            ^
-</PostContext></Warning><Warning><BuildLogLine>824</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>828</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>832</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
 </PostContext></Warning><Warning><BuildLogLine>836</BuildLogLine><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
 </Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>  var axis = axis.normalize();
 
@@ -722,18 +482,6 @@ required: number
 </Text><SourceFile>/Users/nr52/projectX/xtk/visualization/shaders.js</SourceFile><SourceLineNumber>80</SourceLineNumber><PostContext>  var t = '';
 
       ^
-</PostContext></Warning><Warning><BuildLogLine>970</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile><SourceLineNumber>875</SourceLineNumber><PostContext> * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-
-                                  ^
-</PostContext></Warning><Warning><BuildLogLine>974</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>44</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-
-                                   ^
-</PostContext></Warning><Warning><BuildLogLine>978</BuildLogLine><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile><SourceLineNumber>62</SourceLineNumber><PostContext> * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-
-                                   ^
 </PostContext></Warning><Warning><BuildLogLine>982</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
 </Text><SourceFile>/Users/nr52/projectX/xtk/visualization/shaders.js</SourceFile><SourceLineNumber>80</SourceLineNumber><PostContext>  var t = '';
 

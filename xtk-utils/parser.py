@@ -105,40 +105,43 @@ def parsefile(f, count, numberoflines, buildElement, xml):
   if (success < 0) :
     while (successline.find("error(s)") < 0) :
       warning = successline.find('WARNING')
+      googclosurewarning = successline.find("closure-library/closure/goog")
       if(warning>0):
-        error = successline
-        errorElement = xml.createElement('Warning')
-        buildElement.appendChild(errorElement)
+        if( googclosurewarning <= 0):
+          error = successline
+          errorElement = xml.createElement('Warning')
+          buildElement.appendChild(errorElement)
         
-        buildLogLineElement = xml.createElement('BuildLogLine')
-        errorElement.appendChild(buildLogLineElement)
-        buildLogLine = xml.createTextNode(str(count))
-        buildLogLineElement.appendChild(buildLogLine)
+          buildLogLineElement = xml.createElement('BuildLogLine')
+          errorElement.appendChild(buildLogLineElement)
+          buildLogLine = xml.createTextNode(str(count))
+          buildLogLineElement.appendChild(buildLogLine)
         
-        textWarningElement = xml.createElement('Text')
-        errorElement.appendChild(textWarningElement)
-        errorNode = xml.createTextNode(error)
-        textWarningElement.appendChild(errorNode)
+          textWarningElement = xml.createElement('Text')
+          errorElement.appendChild(textWarningElement)
+          errorNode = xml.createTextNode(error)
+          textWarningElement.appendChild(errorNode)
         
-        sourceFileElement = xml.createElement('SourceFile')
-        errorElement.appendChild(sourceFileElement)
-        sourceFile = xml.createTextNode(error.split(':')[0])
-        sourceFileElement.appendChild(sourceFile)
+          sourceFileElement = xml.createElement('SourceFile')
+          errorElement.appendChild(sourceFileElement)
+          sourceFile = xml.createTextNode(error.split(':')[0])
+          sourceFileElement.appendChild(sourceFile)
        
-        sourceLineNumberElement = xml.createElement('SourceLineNumber')
-        errorElement.appendChild(sourceLineNumberElement)
-        sourceLineNumber = xml.createTextNode(error.split(':')[1].split(':')[0])
-        sourceLineNumberElement.appendChild(sourceLineNumber)
+          sourceLineNumberElement = xml.createElement('SourceLineNumber')
+          errorElement.appendChild(sourceLineNumberElement)
+          sourceLineNumber = xml.createTextNode(error.split(':')[1].split(':')[0])
+          sourceLineNumberElement.appendChild(sourceLineNumber)
 
         successline = f.readline()
         count += 1
         successline2 = f.readline()
         count += 1
      
-        postContextElement = xml.createElement('PostContext')
-        errorElement.appendChild(postContextElement)
-        postContext = xml.createTextNode(successline + '\n' + successline2)
-        postContextElement.appendChild(postContext)
+        if( googclosurewarning <= 0):
+          postContextElement = xml.createElement('PostContext')
+          errorElement.appendChild(postContextElement)
+          postContext = xml.createTextNode(successline + '\n' + successline2)
+          postContextElement.appendChild(postContext)
 
         successline = f.readline()
         count += 1
