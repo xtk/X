@@ -93,11 +93,9 @@ def parsefile(f, count, numberoflines, buildElement, xml):
   f.readline();
   count +=3
 
-  print "BUILD COMMAND:"
+  #build command
   line = f.readline()
   count += 1
-  print line
-  print line.split('command: ')[1];
 
   #succeed or warnings!
   successline = f.readline()
@@ -105,15 +103,17 @@ def parsefile(f, count, numberoflines, buildElement, xml):
   count += 1
 
   if (success < 0) :
-    print "ERRORS"
-
-
     while (successline.find("error(s)") < 0) :
       warning = successline.find('WARNING')
       if(warning>0):
         error = successline
         errorElement = xml.createElement('Warning')
         buildElement.appendChild(errorElement)
+        
+        buildLogLineElement = xml.createElement('BuildLogLine')
+        errorElement.appendChild(buildLogLineElement)
+        buildLogLine = xml.createTextNode(str(count))
+        buildLogLineElement.appendChild(buildLogLine)
         
         textWarningElement = xml.createElement('Text')
         errorElement.appendChild(textWarningElement)
@@ -124,14 +124,28 @@ def parsefile(f, count, numberoflines, buildElement, xml):
         errorElement.appendChild(sourceFileElement)
         sourceFile = xml.createTextNode(error.split(':')[0])
         sourceFileElement.appendChild(sourceFile)
+       
+        sourceLineNumberElement = xml.createElement('SourceLineNumber')
+        errorElement.appendChild(sourceLineNumberElement)
+        sourceLineNumber = xml.createTextNode(error.split(':')[1].split(':')[0])
+        sourceLineNumberElement.appendChild(sourceLineNumber)
 
-       #error = successline + " "
+        successline = f.readline()
+        count += 1
+        successline2 = f.readline()
+        count += 1
+     
+        postContextElement = xml.createElement('PostContext')
+        errorElement.appendChild(postContextElement)
+        postContext = xml.createTextNode(successline + '\n' + successline2)
+        postContextElement.appendChild(postContext)
+
+        successline = f.readline()
+        count += 1
+
       successline = f.readline()
       count += 1
-   
-    
-    print "SUMMARY"
-    print successline
+      
     successline = f.readline()
     count += 1
   
