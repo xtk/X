@@ -101,11 +101,20 @@ X.object = function(type) {
   this._colors = new X.colors();
   
   /**
-   * The texture of this object. TODO
+   * The texture of this object.
    * 
+   * @type {?X.texture}
    * @protected
    */
   this._texture = null;
+  
+  /**
+   * The mapping between object and texture coordinates.
+   * 
+   * @type {?Array}
+   * @protected
+   */
+  this._textureCoordinateMap = null;
   
   /**
    * The lightning of this object. TODO
@@ -246,6 +255,18 @@ X.object.prototype.setTexture = function(texture) {
   }
   
   this._texture = texture;
+  
+};
+
+
+/**
+ * Get the mapping between texture and object coordinates.
+ * 
+ * @return {?Array} The texture coordinate map.
+ */
+X.object.prototype.textureCoordinateMap = function() {
+
+  return this._textureCoordinateMap;
   
 };
 
