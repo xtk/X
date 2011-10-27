@@ -37,47 +37,20 @@ def main():
   buildElement = xml.createElement('Build')
   siteElement.appendChild(buildElement)
 
-  startDateTimeElement = xml.createElement('StartDateTime')
-  buildElement.appendChild(startDateTimeElement)
-  startDateTime = xml.createTextNode(strftime("%b %d %H:%M %Z", gmtime()))
-  startDateTimeElement.appendChild(startDateTime)
+  fillxml(xml, buildElement, 'StartDateTime', strftime("%b %d %H:%M %Z", gmtime()))
+  fillxml(xml, buildElement, 'StartBuildTime', str(time()))
+  # to correct
+  fillxml(xml, buildElement, 'BuildCommand', 'this is a build command')
+  fillxml(xml, buildElement, 'EndDateTime', strftime("%b %d %H:%M %Z", gmtime()))
+  fillxml(xml, buildElement, 'EndBuildTime', str(time()))
+  # to correct
+  fillxml(xml, buildElement, 'ElapsedMinutes', '0')
   
-  startBuildTimeElement = xml.createElement('StartBuildTime')
-  buildElement.appendChild(startBuildTimeElement)
-  startBuildTime = xml.createTextNode(str(time()))
-  startBuildTimeElement.appendChild(startBuildTime)
-  
-  buildCommandElement = xml.createElement('BuildCommand')
-  buildElement.appendChild(buildCommandElement)
-  buildCommand = xml.createTextNode("This is a build command")
-  buildCommandElement.appendChild(buildCommand)
-
-  endDateTimeElement = xml.createElement('EndDateTime')
-  buildElement.appendChild(endDateTimeElement)
-  endDateTime = xml.createTextNode(strftime("%b %d %H:%M %Z", gmtime()))
-  endDateTimeElement.appendChild(endDateTime)
-  
-  endBuildTimeElement = xml.createElement('EndBuildTime')
-  buildElement.appendChild(endBuildTimeElement)
-  endBuildTime = xml.createTextNode(str(time()))
-  endBuildTimeElement.appendChild(endBuildTime)
-  
-  elapsedMinutesElement = xml.createElement('ElapsedMinutes')
-  buildElement.appendChild(elapsedMinutesElement)
-  elapsedMinutes = xml.createTextNode("0")
-  elapsedMinutesElement.appendChild(elapsedMinutes)
-
-
-#  errorElement = xml.createElement('Error')
-#  buildElement.appendChild(errorElement)
-
   parsefile(f1, count, len(data) - 14, buildElement, xml)
   
   f2 = open('Build.xml', 'w')
   f2.write(xml.toxml())
   f2.close()
-  #  w = elementtree.XMLWriter("BuildTest.xml")
-  #  xml = w.start("xml") 
  
 
 # read first builded file, then create method to loop
@@ -112,36 +85,19 @@ def parsefile(f, count, numberoflines, buildElement, xml):
           errorElement = xml.createElement('Warning')
           buildElement.appendChild(errorElement)
         
-          buildLogLineElement = xml.createElement('BuildLogLine')
-          errorElement.appendChild(buildLogLineElement)
-          buildLogLine = xml.createTextNode(str(count))
-          buildLogLineElement.appendChild(buildLogLine)
-        
-          textWarningElement = xml.createElement('Text')
-          errorElement.appendChild(textWarningElement)
-          errorNode = xml.createTextNode(error)
-          textWarningElement.appendChild(errorNode)
-        
-          sourceFileElement = xml.createElement('SourceFile')
-          errorElement.appendChild(sourceFileElement)
-          sourceFile = xml.createTextNode(error.split(':')[0])
-          sourceFileElement.appendChild(sourceFile)
-       
-          sourceLineNumberElement = xml.createElement('SourceLineNumber')
-          errorElement.appendChild(sourceLineNumberElement)
-          sourceLineNumber = xml.createTextNode(error.split(':')[1].split(':')[0])
-          sourceLineNumberElement.appendChild(sourceLineNumber)
-
+          fillxml(xml, errorElement, 'BuildLogLine', str(count))
+          fillxml(xml, errorElement, 'Text', error)
+          fillxml(xml, errorElement, 'SourceFile', error.split(':')[0])
+          fillxml(xml, errorElement, 'SourceLineNumber', error.split(':')[1].split(':')[0])
+         
         successline = f.readline()
         count += 1
         successline2 = f.readline()
         count += 1
      
         if( googclosurewarning <= 0):
-          postContextElement = xml.createElement('PostContext')
-          errorElement.appendChild(postContextElement)
-          postContext = xml.createTextNode(successline + '\n' + successline2)
-          postContextElement.appendChild(postContext)
+          # how does it know "error element"?
+          fillxml(xml, errorElement, 'PostContext', successline + '\n' + successline2)
 
         successline = f.readline()
         count += 1
@@ -154,6 +110,12 @@ def parsefile(f, count, numberoflines, buildElement, xml):
   
   #recursive call
   parsefile(f, count, numberoflines, buildElement, xml)
+
+def fillxml(xml, parent, elementname, content):
+  element = xml.createElement(elementname)
+  parent.appendChild(element)
+  elementcontent = xml.createTextNode(content)
+  element.appendChild(elementcontent)  
 
 
 if __name__ == "__main__":
