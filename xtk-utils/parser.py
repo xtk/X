@@ -19,17 +19,20 @@ def main():
 
   xml = minidom.Document()
 
-  siteElement = xml.createElement('Site')
+  system_info = os.uname()
 
-  siteElement.setAttribute('BuildName', 'Darwin-c++')
+  siteElement = xml.createElement('Site')
+  systeminfo = os.uname()
+  siteElement.setAttribute('BuildName', system_info[0] + '-' + system_info[2])
+
 
   now = datetime.datetime.now()
   buildtime = str(now.year) + str(now.month) + str(now.day) + "-" + str(now.minute) + str(now.second)
   buildtype = 'Experimental'
   buildstamp = buildtime + '-' + buildtype
   siteElement.setAttribute('BuildStamp', buildstamp)
-  siteElement.setAttribute('Name', 'starfish.megason-lab')
-  siteElement.setAttribute('Hostname', 'starfish')
+  siteElement.setAttribute('Name', system_info[1])
+  siteElement.setAttribute('Hostname', system_info[1])
 
   xml.appendChild(siteElement)
 
