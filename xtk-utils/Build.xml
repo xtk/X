@@ -1,954 +1,186 @@
-<?xml version="1.0" ?>
-<Site BuildName="Darwin-c++" BuildStamp="20111026-5055-Experimental" Hostname="starfish" Name="starfish.megason-lab">
-	<Build>
-		<StartDateTime>
-			Oct 26 23:50 EST
-		</StartDateTime>
-		<StartBuildTime>
-			1319673055.64
-		</StartBuildTime>
-		<BuildCommand>
-			This is a build command
-		</BuildCommand>
-		<EndDateTime>
-			Oct 26 23:50 EST
-		</EndDateTime>
-		<EndBuildTime>
-			1319673055.64
-		</EndBuildTime>
-		<ElapsedMinutes>
-			0
-		</ElapsedMinutes>
-		<Error>
-			 /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:134: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-  * @param {EventTarget|goog.events.EventTarget} src The node to listen to
-                                               ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:245: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-  * @param {EventTarget|goog.events.EventTarget} src The node to listen to
-                                               ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:273: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-  * @param {EventTarget|goog.events.EventTarget} src The node to listen to
-                                               ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:291: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-  * @param {EventTarget|goog.events.EventTarget} src The target to stop
-                                               ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:396: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-  * @param {EventTarget|goog.events.EventTarget} src The target to stop
-                                               ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:571: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-  * @param {EventTarget|goog.events.EventTarget} src The node from which to get
-                                               ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:607: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-  * @param {EventTarget|goog.events.EventTarget} obj Target to get listeners for.
-                                               ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:783: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-  * @param {goog.events.EventTarget} src  The event target.
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:893: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-  * @this {goog.events.EventTarget|Object} The object or Element that
-                                  ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:37: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-  * @param {EventTarget|goog.events.EventTarget} src The node to listen to
-                                               ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:55: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-  * @param {EventTarget|goog.events.EventTarget} src The node to remove listener
-                                               ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/listener.js:68: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
-  * @type {Object|goog.events.EventTarget}
-                                         ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
-   e._in = (event.deltaY &gt; 0);
-            ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- /Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
-   var axis = axis.normalize();
-       ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
- found   : (goog.math.Vec2|null)
- required: goog.math.Vec2
-   this.pan(event._distance);
-            ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
- found   : (goog.math.Vec2|null)
- required: goog.math.Vec2
-   this.rotate(event._distance);
-               ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return this._perspective;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return this._view;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
- found   : (goog.math.Vec3|null)
- required: goog.math.Vec3
-   return this._position;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - Property RenderEvent never defined on X.renderer
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - Property renderer never defined on X
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - X.renderer is never defined
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - Property RenderEvent never defined on X.renderer
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - Property renderer never defined on X
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - X.renderer is never defined
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - Property RenderEvent never defined on X.renderer
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - Property renderer never defined on X
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - X.renderer is never defined
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - Property RenderEvent never defined on X.renderer
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - Property renderer never defined on X
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - X.renderer is never defined
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return matrix.translate(invertedCameraPosition.invert());
-                          ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- /Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
-   var axis = axis.normalize();
-       ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
- X.object.OPACITY_COMPARATOR = function(object1, object2) {
-                                       ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
- found   : number
- required: (Number|null)
-     return 1;
-            ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
- found   : number
- required: (Number|null)
-     return -1;
-             ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
- X.object.OPACITY_COMPARATOR = function(object1, object2) {
-                                       ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
- found   : number
- required: (Number|null)
-     return 1;
-            ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
- found   : number
- required: (Number|null)
-     return -1;
-             ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- /Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
-   var axis = axis.normalize();
-       ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:127: WARNING - Bad type annotation. Unknown type X.interactor
-  * @param {!X.interactor} interactor The interactor which should be observed.
-                         ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:132: WARNING - X.interactor is never defined
-       !(interactor instanceof X.interactor)) {
-                               ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
- found   : (goog.math.Vec2|null)
- required: goog.math.Vec2
-   this.pan(event._distance);
-            ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
- found   : (goog.math.Vec2|null)
- required: goog.math.Vec2
-   this.rotate(event._distance);
-               ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return this._perspective;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return this._view;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
- found   : (goog.math.Vec3|null)
- required: goog.math.Vec3
-   return this._position;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - Property RenderEvent never defined on X.renderer
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - Property renderer never defined on X
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - X.renderer is never defined
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - Property RenderEvent never defined on X.renderer
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - Property renderer never defined on X
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - X.renderer is never defined
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - Property RenderEvent never defined on X.renderer
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - Property renderer never defined on X
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - X.renderer is never defined
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - Property RenderEvent never defined on X.renderer
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - Property renderer never defined on X
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - X.renderer is never defined
-   this.dispatchEvent(new X.renderer.RenderEvent());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return matrix.translate(invertedCameraPosition.invert());
-                          ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
-   e._in = (event.deltaY &gt; 0);
-            ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- /Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
-   var axis = axis.normalize();
-       ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
- X.object.OPACITY_COMPARATOR = function(object1, object2) {
-                                       ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
- found   : number
- required: (Number|null)
-     return 1;
-            ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
- found   : number
- required: (Number|null)
-     return -1;
-             ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
- found   : (goog.math.Vec2|null)
- required: goog.math.Vec2
-   this.pan(event._distance);
-            ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
- found   : (goog.math.Vec2|null)
- required: goog.math.Vec2
-   this.rotate(event._distance);
-               ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return this._perspective;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return this._view;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
- found   : (goog.math.Vec3|null)
- required: goog.math.Vec3
-   return this._position;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return matrix.translate(invertedCameraPosition.invert());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:42: WARNING - X.renderer2D is never defined
-   if (!(this instanceof X.renderer2D) &amp;&amp; !(this instanceof X.renderer3D)) {
-                         ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:42: WARNING - X.renderer3D is never defined
-   if (!(this instanceof X.renderer2D) &amp;&amp; !(this instanceof X.renderer3D)) {
-                                                            ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:476: WARNING - Missing return statement. Function expected to return boolean.
- X.renderer.prototype.setLighting = function(lighting) {
-                                            ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:765: WARNING - actual parameter 1 of X.colors.prototype.add does not match formal parameter
- found   : (X.color|null)
- required: (Array|X.color)
-       colors.add(objectColor);
-                  ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:885: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(0, 0, viewMatrix.getValueAt(0, 0));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:886: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(0, 1, viewMatrix.getValueAt(0, 1));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:887: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(0, 2, viewMatrix.getValueAt(0, 2));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:889: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(1, 0, viewMatrix.getValueAt(1, 0));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:890: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(1, 1, viewMatrix.getValueAt(1, 1));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:891: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(1, 2, viewMatrix.getValueAt(1, 2));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:893: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(2, 0, viewMatrix.getValueAt(2, 0));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:894: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(2, 1, viewMatrix.getValueAt(2, 1));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:895: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(2, 2, viewMatrix.getValueAt(2, 2));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
-   var t = '';
-       ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
-   e._in = (event.deltaY &gt; 0);
-            ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- /Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
-   var axis = axis.normalize();
-       ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
- X.object.OPACITY_COMPARATOR = function(object1, object2) {
-                                       ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
- found   : number
- required: (Number|null)
-     return 1;
-            ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
- found   : number
- required: (Number|null)
-     return -1;
-             ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
- found   : (goog.math.Vec2|null)
- required: goog.math.Vec2
-   this.pan(event._distance);
-            ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
- found   : (goog.math.Vec2|null)
- required: goog.math.Vec2
-   this.rotate(event._distance);
-               ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return this._perspective;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return this._view;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
- found   : (goog.math.Vec3|null)
- required: goog.math.Vec3
-   return this._position;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return matrix.translate(invertedCameraPosition.invert());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:42: WARNING - X.renderer3D is never defined
-   if (!(this instanceof X.renderer2D) &amp;&amp; !(this instanceof X.renderer3D)) {
-                                                            ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:476: WARNING - Missing return statement. Function expected to return boolean.
- X.renderer.prototype.setLighting = function(lighting) {
-                                            ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:765: WARNING - actual parameter 1 of X.colors.prototype.add does not match formal parameter
- found   : (X.color|null)
- required: (Array|X.color)
-       colors.add(objectColor);
-                  ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:885: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(0, 0, viewMatrix.getValueAt(0, 0));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:886: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(0, 1, viewMatrix.getValueAt(0, 1));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:887: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(0, 2, viewMatrix.getValueAt(0, 2));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:889: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(1, 0, viewMatrix.getValueAt(1, 0));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:890: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(1, 1, viewMatrix.getValueAt(1, 1));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:891: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(1, 2, viewMatrix.getValueAt(1, 2));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:893: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(2, 0, viewMatrix.getValueAt(2, 0));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:894: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(2, 1, viewMatrix.getValueAt(2, 1));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:895: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(2, 2, viewMatrix.getValueAt(2, 2));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
-   var t = '';
-       ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
-   e._in = (event.deltaY &gt; 0);
-            ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- /Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
-   var axis = axis.normalize();
-       ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
- X.object.OPACITY_COMPARATOR = function(object1, object2) {
-                                       ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
- found   : number
- required: (Number|null)
-     return 1;
-            ^
- 
- /Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
- found   : number
- required: (Number|null)
-     return -1;
-             ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
- found   : (goog.math.Vec2|null)
- required: goog.math.Vec2
-   this.pan(event._distance);
-            ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
- found   : (goog.math.Vec2|null)
- required: goog.math.Vec2
-   this.rotate(event._distance);
-               ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return this._perspective;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return this._view;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
- found   : (goog.math.Vec3|null)
- required: goog.math.Vec3
-   return this._position;
-          ^
- 
- /Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
- found   : (goog.math.Matrix|null)
- required: goog.math.Matrix
-   return matrix.translate(invertedCameraPosition.invert());
-                          ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:42: WARNING - X.renderer2D is never defined
-   if (!(this instanceof X.renderer2D) &amp;&amp; !(this instanceof X.renderer3D)) {
-                         ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:476: WARNING - Missing return statement. Function expected to return boolean.
- X.renderer.prototype.setLighting = function(lighting) {
-                                            ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:765: WARNING - actual parameter 1 of X.colors.prototype.add does not match formal parameter
- found   : (X.color|null)
- required: (Array|X.color)
-       colors.add(objectColor);
-                  ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:885: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(0, 0, viewMatrix.getValueAt(0, 0));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:886: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(0, 1, viewMatrix.getValueAt(0, 1));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:887: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(0, 2, viewMatrix.getValueAt(0, 2));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:889: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(1, 0, viewMatrix.getValueAt(1, 0));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:890: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(1, 1, viewMatrix.getValueAt(1, 1));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:891: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(1, 2, viewMatrix.getValueAt(1, 2));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:893: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(2, 0, viewMatrix.getValueAt(2, 0));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:894: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(2, 1, viewMatrix.getValueAt(2, 1));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/renderer.js:895: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
- found   : (null|number)
- required: number
-   matrix.setValueAt(2, 2, viewMatrix.getValueAt(2, 2));
-                                                ^
- 
- /Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
-   var t = '';
-       ^
- 
- 
-		</Error>
-		<Error>
-			 /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
-  * @param {goog.debug.ErrorHandler} errorHandler Error handler with which to
-                                   ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to add
-                                    ^
- 
- /Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
-  * @param {goog.events.EventHandler=} opt_eventHandler Event handler to remove
-                                    ^
- 
- /Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
-   var t = '';
-       ^
- 
- 
-		</Error>
-	</Build>
-</Site>
+<?xml version="1.0" ?><Site BuildName="Darwin-c++" BuildStamp="20111026-199-Experimental" Hostname="starfish" Name="starfish.megason-lab"><Build><StartDateTime>Oct 27 00:19 EST</StartDateTime><StartBuildTime>1319674749.39</StartBuildTime><BuildCommand>This is a build command</BuildCommand><EndDateTime>Oct 27 00:19 EST</EndDateTime><EndBuildTime>1319674749.39</EndBuildTime><ElapsedMinutes>0</ElapsedMinutes><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:134: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:245: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:273: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:291: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:396: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:571: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:607: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:783: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:893: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:37: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:55: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/listener.js:68: WARNING - Bad type annotation. Unknown type goog.events.EventTarget
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/listener.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
+</Text><SourceFile>/Users/nr52/projectX/xtk/io/interactor.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
+</Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
+</Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
+</Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:127: WARNING - Bad type annotation. Unknown type X.interactor
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:132: WARNING - X.interactor is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
+</Text><SourceFile>/Users/nr52/projectX/xtk/io/interactor.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
+</Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:42: WARNING - X.renderer2D is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:42: WARNING - X.renderer3D is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:476: WARNING - Missing return statement. Function expected to return boolean.
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:765: WARNING - actual parameter 1 of X.colors.prototype.add does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:885: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:886: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:887: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:889: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:890: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:891: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:893: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:894: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:895: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/shaders.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
+</Text><SourceFile>/Users/nr52/projectX/xtk/io/interactor.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
+</Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:42: WARNING - X.renderer3D is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:476: WARNING - Missing return statement. Function expected to return boolean.
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:765: WARNING - actual parameter 1 of X.colors.prototype.add does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:885: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:886: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:887: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:889: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:890: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:891: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:893: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:894: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:895: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/shaders.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
+</Text><SourceFile>/Users/nr52/projectX/xtk/io/interactor.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
+</Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:42: WARNING - X.renderer2D is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:476: WARNING - Missing return statement. Function expected to return boolean.
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:765: WARNING - actual parameter 1 of X.colors.prototype.add does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:885: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:886: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:887: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:889: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:890: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:891: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:893: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:894: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:895: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/shaders.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js:875: WARNING - Bad type annotation. Unknown type goog.debug.ErrorHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/events.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:44: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js:62: WARNING - Bad type annotation. Unknown type goog.events.EventHandler
+</Text><SourceFile>/Users/nr52/projectX/xtk/lib/closure-library/closure/goog/events/eventwrapper.js</SourceFile></Warning><Warning><Text>/Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/shaders.js</SourceFile></Warning></Build></Site>

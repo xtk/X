@@ -74,7 +74,7 @@ def main():
   parsefile(f1, count, len(data) - 14, buildElement, xml)
   
   f2 = open('Build.xml', 'w')
-  f2.write(xml.toprettyxml())
+  f2.write(xml.toxml())
   f2.close()
   #  w = elementtree.XMLWriter("BuildTest.xml")
   #  xml = w.start("xml") 
@@ -107,18 +107,28 @@ def parsefile(f, count, numberoflines, buildElement, xml):
   if (success < 0) :
     print "ERRORS"
 
-    errorElement = xml.createElement('Error')
-    buildElement.appendChild(errorElement)
-    error = " "
 
     while (successline.find("error(s)") < 0) :
-      print successline
-      error += successline + " "
+      warning = successline.find('WARNING')
+      if(warning>0):
+        error = successline
+        errorElement = xml.createElement('Warning')
+        buildElement.appendChild(errorElement)
+        
+        textWarningElement = xml.createElement('Text')
+        errorElement.appendChild(textWarningElement)
+        errorNode = xml.createTextNode(error)
+        textWarningElement.appendChild(errorNode)
+        
+        sourceFileElement = xml.createElement('SourceFile')
+        errorElement.appendChild(sourceFileElement)
+        sourceFile = xml.createTextNode(error.split(':')[0])
+        sourceFileElement.appendChild(sourceFile)
+
+       #error = successline + " "
       successline = f.readline()
       count += 1
    
-    errorNode = xml.createTextNode(error)
-    errorElement.appendChild(errorNode)
     
     print "SUMMARY"
     print successline
