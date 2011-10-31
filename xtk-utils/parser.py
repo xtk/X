@@ -80,12 +80,18 @@ def parsefile(f, count, numberoflines, buildElement, xml):
 
   if (success < 0) :
     while (successline.find("error(s)") < 0) :
+      print successline
       warning = successline.find('WARNING')
+      error1 = successline.find('ERROR')
       googclosurewarning = successline.find("closure-library/closure/goog")
-      if(warning>0):
+      
+      if(warning>0 or error1>0):
         if( googclosurewarning <= 0):
           error = successline
-          errorElement = xml.createElement('Warning')
+          if(warning>0):
+            errorElement = xml.createElement('Warning')
+          else:
+            errorElement = xml.createElement('Error')
           buildElement.appendChild(errorElement)
         
           fillxml(xml, errorElement, 'BuildLogLine', str(count))
