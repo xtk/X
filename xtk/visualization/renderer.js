@@ -233,7 +233,7 @@ X.renderer = function(width, height) {
    * @type {!goog.structs.Map}
    * @protected
    */
-  this._texturePosBuffer = new goog.structs.Map();
+  this._texturePositionBuffers = new goog.structs.Map();
   
   /**
    * A hash map of opacity buffers of this renderer. Each buffer is associated
@@ -827,7 +827,120 @@ X.renderer.prototype.setupObject_ = function(object) {
     
   }
   
-  // TODO release all buffers, if they exist
+  // check if object already existed..
+  if (this._objects.contains(object)) {
+    
+    // .. it did
+    
+    // remove it from the tree
+    this._objects.remove(object);
+    
+    // clear all glBuffers by reading the X.buffer
+    
+    // VERTICES
+    var oldVertexBuffer = this._vertexBuffers.get(object.id());
+    if (goog.isDefAndNotNull(oldVertexBuffer)) {
+      
+      if (this._gl.isBuffer(oldVertexBuffer.glBuffer())) {
+        
+        this._gl.deleteBuffer(oldVertexBuffer.glBuffer());
+        
+      }
+      
+    }
+    
+    // NORMALS
+    var oldNormalBuffer = this._vertexBuffers.get(object.id());
+    if (goog.isDefAndNotNull(oldNormalBuffer)) {
+      
+      if (this._gl.isBuffer(oldNormalBuffer.glBuffer())) {
+        
+        this._gl.deleteBuffer(oldNormalBuffer.glBuffer());
+        
+      }
+      
+    }
+    
+    // COLORS
+    var oldColorBuffer = this._colorBuffers.get(object.id());
+    if (goog.isDefAndNotNull(oldColorBuffer)) {
+      
+      if (this._gl.isBuffer(oldColorBuffer.glBuffer())) {
+        
+        this._gl.deleteBuffer(oldColorBuffer.glBuffer());
+        
+      }
+      
+    }
+    
+    // OPACITY
+    var oldOpacityBuffer = this._opacityBuffers.get(object.id());
+    if (goog.isDefAndNotNull(oldOpacityBuffer)) {
+      
+      if (this._gl.isBuffer(oldOpacityBuffer.glBuffer())) {
+        
+        this._gl.deleteBuffer(oldOpacityBuffer.glBuffer());
+        
+      }
+      
+    }
+    
+    // TRANSFORM
+    var oldTransformBuffer0 = this._transformBuffers0.get(object.id());
+    if (goog.isDefAndNotNull(oldTransformBuffer0)) {
+      
+      if (this._gl.isBuffer(oldTransformBuffer0.glBuffer())) {
+        
+        this._gl.deleteBuffer(oldTransformBuffer0.glBuffer());
+        
+      }
+      
+    }
+    var oldTransformBuffer1 = this._transformBuffers1.get(object.id());
+    if (goog.isDefAndNotNull(oldTransformBuffer1)) {
+      
+      if (this._gl.isBuffer(oldTransformBuffer1.glBuffer())) {
+        
+        this._gl.deleteBuffer(oldTransformBuffer1.glBuffer());
+        
+      }
+      
+    }
+    var oldTransformBuffer2 = this._transformBuffers2.get(object.id());
+    if (goog.isDefAndNotNull(oldTransformBuffer2)) {
+      
+      if (this._gl.isBuffer(oldTransformBuffer2.glBuffer())) {
+        
+        this._gl.deleteBuffer(oldTransformBuffer2.glBuffer());
+        
+      }
+      
+    }
+    var oldTransformBuffer3 = this._transformBuffers3.get(object.id());
+    if (goog.isDefAndNotNull(oldTransformBuffer3)) {
+      
+      if (this._gl.isBuffer(oldTransformBuffer3.glBuffer())) {
+        
+        this._gl.deleteBuffer(oldTransformBuffer3.glBuffer());
+        
+      }
+      
+    }
+    
+    // TEXTURE
+    var oldTexturePositionBuffer = this._texturePositionBuffers
+        .get(object.id());
+    if (goog.isDefAndNotNull(oldTexturePositionBuffer)) {
+      
+      if (this._gl.isBuffer(oldTexturePositionBuffer.glBuffer())) {
+        
+        this._gl.deleteBuffer(oldTexturePositionBuffer.glBuffer());
+        
+      }
+      
+    }
+    
+  }
   
   //
   // VERTICES
@@ -1117,7 +1230,7 @@ X.renderer.prototype.setupObject_ = function(object) {
   this._transformBuffers1.set(object.id(), transformBuffer1);
   this._transformBuffers2.set(object.id(), transformBuffer2);
   this._transformBuffers3.set(object.id(), transformBuffer3);
-  this._texturePosBuffer.set(object.id(), texturePositionBuffer);
+  this._texturePositionBuffers.set(object.id(), texturePositionBuffer);
 };
 
 
@@ -1210,7 +1323,7 @@ X.renderer.prototype.render = function() {
       var transformBuffer1 = this._transformBuffers1.get(id);
       var transformBuffer2 = this._transformBuffers2.get(id);
       var transformBuffer3 = this._transformBuffers3.get(id);
-      var texturePosBuffer = this._texturePosBuffer.get(id);
+      var texturePosBuffer = this._texturePositionBuffers.get(id);
       
       // ..bind the glBuffers
       
