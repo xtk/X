@@ -41,7 +41,7 @@ X.texture = function(file) {
   
   this._file = file;
   
-  this._filter = X.texture.filters.LINEAR;
+  this._filter = X.texture.filters.SHARP;
   
 };
 // inherit from X.base
@@ -55,9 +55,8 @@ goog.inherits(X.texture, X.base);
  */
 X.texture.filters = {
   // different filters for texture display
-  NEAREST: 'NEAREST',
-  LINEAR: 'LINEAR',
-  LINEAR_MIPMAP_NEAREST: 'LINEAR_MIPMAP_NEAREST'
+  SHARP: 'SHARP',
+  SMOOTH: 'SMOOTH'
 };
 
 

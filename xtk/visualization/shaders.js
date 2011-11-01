@@ -46,8 +46,6 @@ X.shaders = function() {
   t += 'attribute vec3 vertexColor;\n';
   t += 'attribute float vertexOpacity;\n';
   t += 'attribute vec2 vertexTexturePos;\n';
-  t += 'attribute bool vertexTextureOn;\n';
-  t += 'attribute sampler2D vertexTextureSampler;\n';
   // the transform matrix has to be passed row-wise
   t += 'attribute vec4 vertexTransform0,vertexTransform1;\n';
   t += 'attribute vec4 vertexTransform2,vertexTransform3;\n';
@@ -56,16 +54,14 @@ X.shaders = function() {
   t += 'uniform mat4 perspective;\n';
   t += 'uniform mat3 normal;\n';
   t += '\n';
-  t += 'uniform bool lighting;\n';
+  // t += 'uniform bool lighting;\n';
   t += 'varying lowp vec4 fragmentColor;\n';
-  t += 'varying lowp vec3 lightingWeighting;\n';
+  // t += 'varying lowp vec3 lightingWeighting;\n';
   t += 'varying vec2 fragmentTexturePos;\n';
-  t += 'varying bool fragmentTextureOn;\n';
-  t += 'varying sampler2D fragmentTextureSampler;\n';
   t += '\n';
   t += 'void main(void) {\n';
   // t += ' if(lighting){';
-  t += '  lightingWeighting = vec3(0.0, 0.0, 1.0);\n';
+  t += ' vec3 lightingWeighting = vec3(0.0, 0.0, 1.0);\n';
   // t += ' gl_Position = perspective * view * vec4(vertexPosition, 1.0);\n';
   // t += ' fragmentColor =
   // vec4(vertexColor*lightingWeighting,vertexOpacity);\n';
@@ -79,8 +75,8 @@ X.shaders = function() {
   t += '  tPosition.z = dot(vec4(vertexPosition, 1.0),vertexTransform2);\n';
   t += '  tPosition.w = dot(vec4(vertexPosition, 1.0),vertexTransform3);\n';
   t += '  gl_Position = perspective * view * tPosition;\n';
+  t += '  fragmentTexturePos = vertexTexturePos;\n';
   t += '  fragmentColor = vec4(vertexColor*dLW,vertexOpacity);\n';
-  // t += ' }';
   t += '}\n';
   this._vertexShaderSource = t;
   
@@ -99,18 +95,16 @@ X.shaders = function() {
   t += '\n';
   t += 'varying lowp vec4 fragmentColor;\n';
   t += 'varying vec2 fragmentTexturePos;\n';
-  t += 'varying bool fragmentTextureOn;\n';
-  t += 'varying sampler2D fragmentTextureSampler;\n';
+  t += 'uniform bool useTexture;\n';
+  t += 'uniform sampler2D textureSampler;\n';
   t += '\n';
   t += 'void main(void) {\n';
-  t += '  if (fragmentTextureOn) {\n';
-  // use texture
-  t += '    gl_FragColor = texture2D(fragmentTextureSampler,';
-  t += '    vec2(fragmentTexturePos.s,fragmentTexturePos.t));\n';
-  t += '  } else {\n';
-  // use color
-  t += '    gl_FragColor = fragmentColor;\n';
-  t += '  }\n';
+  t += ' if (useTexture) {\n';
+  t += '   gl_FragColor = texture2D(textureSampler,';
+  t += '   vec2(fragmentTexturePos.s,fragmentTexturePos.t));\n';
+  t += ' } else {\n';
+  t += '   gl_FragColor = fragmentColor;\n';
+  t += ' }\n';
   t += '}\n';
   this._fragmentShaderSource = t;
   
@@ -145,6 +139,14 @@ X.shaders = function() {
    * @protected
    */
   this._opacityAttribute = 'vertexOpacity';
+  
+  /**
+   * The string to access the texture position inside the vertex shader source.
+   * 
+   * @type {!string}
+   * @protected
+   */
+  this._texturePosAttribute = 'vertexTexturePos';
   
   /**
    * The string to access the first row of the transform matrix inside the
@@ -207,7 +209,13 @@ X.shaders = function() {
    */
   this._perspectiveUniform = 'perspective';
   
+  // TODO comments
+  
   this._normalUniform = 'normal';
+  
+  this._useTextureUniform = 'useTexture';
+  
+  this._textureSamplerUniform = 'textureSampler';
   
 };
 // inherit from X.base
@@ -383,6 +391,40 @@ X.shaders.prototype.transform3 = function() {
 
 
 /**
+ * TODO
+ * 
+ * @returns {String}
+ */
+X.shaders.prototype.texturePos = function() {
+
+  return this._texturePosAttribute;
+  
+};
+
+
+/**
+ * TODO
+ * 
+ * @returns {String}
+ */
+X.shaders.prototype.textureSampler = function() {
+
+  return this._textureSamplerUniform;
+  
+};
+
+
+/**
+ * TODO
+ */
+X.shaders.prototype.useTexture = function() {
+
+  return this._useTextureUniform;
+  
+};
+
+
+/**
  * Checks if the configured shaders object is valid.
  * 
  * @return {boolean} TRUE or FALSE depending on success.
@@ -463,6 +505,33 @@ X.shaders.prototype.validate = function() {
     
     throw new X.exception(
         'Fatal: Could not validate shader! The lighting was bogus.');
+    
+  }
+  
+  t = this._vertexShaderSource.search(this._texturePosAttribute);
+  
+  if (t == -1) {
+    
+    throw new X.exception(
+        'Fatal: Could not validate shader! The texturePosAttribute was bogus.');
+    
+  }
+  
+  t = this._fragmentShaderSource.search(this._textureSamplerUniform);
+  
+  if (t == -1) {
+    
+    throw new X.exception(
+        'Fatal: Could not validate shader! The textureSamplerUniform was bogus.');
+    
+  }
+  
+  t = this._fragmentShaderSource.search(this._useTextureUniform);
+  
+  if (t == -1) {
+    
+    throw new X.exception(
+        'Fatal: Could not validate shader! The useTextureUniform was bogus.');
     
   }
   
