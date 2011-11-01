@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><Site BuildName="Darwin-11.1.0" BuildStamp="20111027-2251-Experimental" Hostname="starfish.megason-lab" Name="starfish.megason-lab"><Build><StartDateTime>Oct 27 22:22 EST</StartDateTime><StartBuildTime>1319754171.46</StartBuildTime><BuildCommand>this is a build command</BuildCommand><EndDateTime>Oct 27 22:22 EST</EndDateTime><EndBuildTime>1319754171.46</EndBuildTime><ElapsedMinutes>0</ElapsedMinutes><Warning><BuildLogLine>148</BuildLogLine><Text>/Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
+<?xml version="1.0" ?><Site BuildName="Darwin-11.1.0" BuildStamp="2011111-468-Experimental" Hostname="starfish.megason-lab" Name="starfish.megason-lab"><Build><StartDateTime>Nov 01 19:46 EST</StartDateTime><StartBuildTime>1320176768.05</StartBuildTime><BuildCommand>this is a build command</BuildCommand><EndDateTime>Nov 01 19:46 EST</EndDateTime><EndBuildTime>1320176768.05</EndBuildTime><ElapsedMinutes>0</ElapsedMinutes><Warning><BuildLogLine>148</BuildLogLine><Text>/Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
 </Text><SourceFile>/Users/nr52/projectX/xtk/io/interactor.js</SourceFile><SourceLineNumber>372</SourceLineNumber><PostContext>  e._in = (event.deltaY &gt; 0);
 
            ^
@@ -190,299 +190,31 @@ required: goog.math.Vec3
 </Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>497</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>516</BuildLogLine><Text>/Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
-</Text><SourceFile>/Users/nr52/projectX/xtk/io/interactor.js</SourceFile><SourceLineNumber>372</SourceLineNumber><PostContext>  e._in = (event.deltaY &gt; 0);
-
-           ^
-</PostContext></Warning><Warning><BuildLogLine>532</BuildLogLine><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
-</Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>  var axis = axis.normalize();
-
-      ^
-</PostContext></Warning><Warning><BuildLogLine>536</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
-</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>258</SourceLineNumber><PostContext>X.object.OPACITY_COMPARATOR = function(object1, object2) {
-
-                                      ^
-</PostContext></Warning><Warning><BuildLogLine>540</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>274</SourceLineNumber><PostContext>found   : number
-
-required: (Number|null)
-</PostContext></Warning><Warning><BuildLogLine>546</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>280</SourceLineNumber><PostContext>found   : number
-
-required: (Number|null)
-</PostContext></Warning><Warning><BuildLogLine>552</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>187</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
-
-required: goog.math.Vec2
-</PostContext></Warning><Warning><BuildLogLine>558</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>206</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
-
-required: goog.math.Vec2
-</PostContext></Warning><Warning><BuildLogLine>564</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>218</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
-
-required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>570</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>230</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
-
-required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>576</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>242</SourceLineNumber><PostContext>found   : (goog.math.Vec3|null)
-
-required: goog.math.Vec3
-</PostContext></Warning><Warning><BuildLogLine>582</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>497</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
-
-required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>588</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:42: WARNING - X.renderer2D is never defined
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>42</SourceLineNumber><PostContext>  if (!(this instanceof X.renderer2D) &amp;&amp; !(this instanceof X.renderer3D)) {
-
-                        ^
-</PostContext></Warning><Warning><BuildLogLine>592</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:42: WARNING - X.renderer3D is never defined
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>42</SourceLineNumber><PostContext>  if (!(this instanceof X.renderer2D) &amp;&amp; !(this instanceof X.renderer3D)) {
-
-                                                           ^
-</PostContext></Warning><Warning><BuildLogLine>596</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:476: WARNING - Missing return statement. Function expected to return boolean.
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>476</SourceLineNumber><PostContext>X.renderer.prototype.setLighting = function(lighting) {
-
-                                           ^
-</PostContext></Warning><Warning><BuildLogLine>600</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:765: WARNING - actual parameter 1 of X.colors.prototype.add does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>765</SourceLineNumber><PostContext>found   : (X.color|null)
-
-required: (Array|X.color)
-</PostContext></Warning><Warning><BuildLogLine>606</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:885: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>885</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>612</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:886: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>886</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>618</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:887: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>887</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>624</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:889: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>889</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>630</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:890: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>890</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>636</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:891: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>891</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>642</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:893: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>893</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>648</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:894: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>894</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>654</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:895: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>895</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>660</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/shaders.js</SourceFile><SourceLineNumber>80</SourceLineNumber><PostContext>  var t = '';
-
-      ^
-</PostContext></Warning><Warning><BuildLogLine>670</BuildLogLine><Text>/Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
-</Text><SourceFile>/Users/nr52/projectX/xtk/io/interactor.js</SourceFile><SourceLineNumber>372</SourceLineNumber><PostContext>  e._in = (event.deltaY &gt; 0);
-
-           ^
-</PostContext></Warning><Warning><BuildLogLine>686</BuildLogLine><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
-</Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>  var axis = axis.normalize();
-
-      ^
-</PostContext></Warning><Warning><BuildLogLine>690</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
-</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>258</SourceLineNumber><PostContext>X.object.OPACITY_COMPARATOR = function(object1, object2) {
-
-                                      ^
-</PostContext></Warning><Warning><BuildLogLine>694</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>274</SourceLineNumber><PostContext>found   : number
-
-required: (Number|null)
-</PostContext></Warning><Warning><BuildLogLine>700</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>280</SourceLineNumber><PostContext>found   : number
-
-required: (Number|null)
-</PostContext></Warning><Warning><BuildLogLine>706</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>187</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
-
-required: goog.math.Vec2
-</PostContext></Warning><Warning><BuildLogLine>712</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>206</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
-
-required: goog.math.Vec2
-</PostContext></Warning><Warning><BuildLogLine>718</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>218</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
-
-required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>724</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>230</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
-
-required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>730</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>242</SourceLineNumber><PostContext>found   : (goog.math.Vec3|null)
-
-required: goog.math.Vec3
-</PostContext></Warning><Warning><BuildLogLine>736</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>497</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
-
-required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>742</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:42: WARNING - X.renderer3D is never defined
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>42</SourceLineNumber><PostContext>  if (!(this instanceof X.renderer2D) &amp;&amp; !(this instanceof X.renderer3D)) {
-
-                                                           ^
-</PostContext></Warning><Warning><BuildLogLine>746</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:476: WARNING - Missing return statement. Function expected to return boolean.
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>476</SourceLineNumber><PostContext>X.renderer.prototype.setLighting = function(lighting) {
-
-                                           ^
-</PostContext></Warning><Warning><BuildLogLine>750</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:765: WARNING - actual parameter 1 of X.colors.prototype.add does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>765</SourceLineNumber><PostContext>found   : (X.color|null)
-
-required: (Array|X.color)
-</PostContext></Warning><Warning><BuildLogLine>756</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:885: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>885</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>762</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:886: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>886</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>768</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:887: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>887</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>774</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:889: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>889</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>780</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:890: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>890</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>786</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:891: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>891</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>792</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:893: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>893</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>798</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:894: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>894</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>804</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:895: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>895</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>810</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/shaders.js</SourceFile><SourceLineNumber>80</SourceLineNumber><PostContext>  var t = '';
-
-      ^
-</PostContext></Warning><Warning><BuildLogLine>820</BuildLogLine><Text>/Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
-</Text><SourceFile>/Users/nr52/projectX/xtk/io/interactor.js</SourceFile><SourceLineNumber>372</SourceLineNumber><PostContext>  e._in = (event.deltaY &gt; 0);
-
-           ^
-</PostContext></Warning><Warning><BuildLogLine>836</BuildLogLine><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
-</Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>  var axis = axis.normalize();
-
-      ^
-</PostContext></Warning><Warning><BuildLogLine>840</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
-</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>258</SourceLineNumber><PostContext>X.object.OPACITY_COMPARATOR = function(object1, object2) {
-
-                                      ^
-</PostContext></Warning><Warning><BuildLogLine>844</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>274</SourceLineNumber><PostContext>found   : number
-
-required: (Number|null)
-</PostContext></Warning><Warning><BuildLogLine>850</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>280</SourceLineNumber><PostContext>found   : number
-
-required: (Number|null)
-</PostContext></Warning><Warning><BuildLogLine>856</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>187</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
-
-required: goog.math.Vec2
-</PostContext></Warning><Warning><BuildLogLine>862</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>206</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
-
-required: goog.math.Vec2
-</PostContext></Warning><Warning><BuildLogLine>868</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>218</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
-
-required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>874</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>230</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
-
-required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>880</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>242</SourceLineNumber><PostContext>found   : (goog.math.Vec3|null)
-
-required: goog.math.Vec3
-</PostContext></Warning><Warning><BuildLogLine>886</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>497</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
-
-required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>892</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:42: WARNING - X.renderer2D is never defined
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>42</SourceLineNumber><PostContext>  if (!(this instanceof X.renderer2D) &amp;&amp; !(this instanceof X.renderer3D)) {
-
-                        ^
-</PostContext></Warning><Warning><BuildLogLine>896</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:476: WARNING - Missing return statement. Function expected to return boolean.
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>476</SourceLineNumber><PostContext>X.renderer.prototype.setLighting = function(lighting) {
-
-                                           ^
-</PostContext></Warning><Warning><BuildLogLine>900</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:765: WARNING - actual parameter 1 of X.colors.prototype.add does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>765</SourceLineNumber><PostContext>found   : (X.color|null)
-
-required: (Array|X.color)
-</PostContext></Warning><Warning><BuildLogLine>906</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:885: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>885</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>912</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:886: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>886</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>918</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:887: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>887</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>924</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:889: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>889</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>930</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:890: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>890</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>936</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:891: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>891</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>942</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:893: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>893</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>948</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:894: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>894</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>954</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:895: WARNING - actual parameter 3 of goog.math.Matrix.prototype.setValueAt does not match formal parameter
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>895</SourceLineNumber><PostContext>found   : (null|number)
-
-required: number
-</PostContext></Warning><Warning><BuildLogLine>960</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
-</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/shaders.js</SourceFile><SourceLineNumber>80</SourceLineNumber><PostContext>  var t = '';
-
-      ^
-</PostContext></Warning><Warning><BuildLogLine>982</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
+</PostContext></Warning><Error><BuildLogLine>516</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:41: ERROR - variable toto is undefined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>41</SourceLineNumber><PostContext>toto = tata
+
+^
+</PostContext></Error><Error><BuildLogLine>520</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:41: ERROR - variable tata is undefined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>41</SourceLineNumber><PostContext>toto = tata
+
+       ^
+</PostContext></Error><Error><BuildLogLine>530</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:41: ERROR - variable toto is undefined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>41</SourceLineNumber><PostContext>toto = tata
+
+^
+</PostContext></Error><Error><BuildLogLine>534</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:41: ERROR - variable tata is undefined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>41</SourceLineNumber><PostContext>toto = tata
+
+       ^
+</PostContext></Error><Error><BuildLogLine>544</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:41: ERROR - variable toto is undefined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>41</SourceLineNumber><PostContext>toto = tata
+
+^
+</PostContext></Error><Error><BuildLogLine>548</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:41: ERROR - variable tata is undefined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>41</SourceLineNumber><PostContext>toto = tata
+
+       ^
+</PostContext></Error><Warning><BuildLogLine>570</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
 </Text><SourceFile>/Users/nr52/projectX/xtk/visualization/shaders.js</SourceFile><SourceLineNumber>80</SourceLineNumber><PostContext>  var t = '';
 
       ^

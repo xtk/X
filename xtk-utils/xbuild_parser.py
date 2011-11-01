@@ -8,11 +8,11 @@ from time import time, gmtime, strftime
 #from cElementTree.SimpleXMLWriter import XMLWriter
 
 # xtk-utils dir
-def main():
+def calculate(buildtype, filename):
   xtkUtilsDir = os.path.abspath( os.path.dirname( sys.argv[0] ) )
 
-  f = open( xtkUtilsDir + os.sep + 'test.xml', 'r' );
-  f1 = open( xtkUtilsDir + os.sep + 'test.xml', 'r' );
+  f = open( xtkUtilsDir + os.sep + filename, 'r' );
+  f1 = open( xtkUtilsDir + os.sep + filename, 'r' );
 
   count = 0
   data = f.readlines()
@@ -28,7 +28,7 @@ def main():
 
   now = datetime.datetime.now()
   buildtime = str(now.year) + str(now.month) + str(now.day) + "-" + str(now.minute) + str(now.second)
-  buildtype = 'Experimental'
+  buildtype = buildtype
   buildstamp = buildtime + '-' + buildtype
   siteElement.setAttribute('BuildStamp', buildstamp)
   siteElement.setAttribute('Name', system_info[1])
@@ -40,6 +40,10 @@ def main():
   buildElement = xml.createElement('Build')
   siteElement.appendChild(buildElement)
 
+  f1.readline();
+  f1.readline();
+  f1.readline();
+  
   fillxml(xml, buildElement, 'StartDateTime', strftime("%b %d %H:%M %Z", gmtime()))
   fillxml(xml, buildElement, 'StartBuildTime', str(time()))
   # to correct
@@ -64,8 +68,8 @@ def parsefile(f, count, numberoflines, buildElement, xml):
   if( count >= numberoflines):
     return
 
-  f.readline()
   f.readline();
+  f.readline()
   f.readline();
   count +=3
 
@@ -127,7 +131,7 @@ def fillxml(xml, parent, elementname, content):
   element.appendChild(elementcontent)  
 
 
-if __name__ == "__main__":
-    main()
-    command = "ctest -S xtk.cmake -V"
-    os.system(command)
+#if __name__ == "__main__":
+#    main()
+#    command = "ctest -S xtk.cmake -V"
+#    os.system(command)

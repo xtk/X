@@ -9,6 +9,8 @@ import os, sys, argparse
 # xtk imports
 # to be renamed...?
 import paths
+import xbuild_parser
+
 import scripts.deps
 import scripts.style
 import scripts.doc
@@ -95,6 +97,20 @@ option_group.add_argument( '-jo', '--jsdoc_only',
                     default=False,
                     help='Only generate documentation of the target projects.' )
 
+# experimental build
+option_group.add_argument( '-e', '--experimental',
+                    action='store_true',
+                    dest='experimental',
+                    default=False,
+                    help='Experimental build. Reports to cdash.xtk.org' )
+
+# nightly build
+option_group.add_argument( '-n', '--nightly',
+                    action='store_true',
+                    dest='nightly',
+                    default=False,
+                    help='Nightly build. Reports to cdash.xtk.org' )
+
 # testing
 test_group.add_argument( '-t', '--test',
                     action='store_true',
@@ -119,6 +135,8 @@ if( True in value_list ):
         options.style_only = False
         options.deps_only = False
         options.jsdoc_only = False
+        # build type
+        options.experimental = True
 
     else:
         if( options.style ):
@@ -266,6 +284,19 @@ else:
     # inputs: namespace, project dir, build tool
     scripts.compile.calculate( 'X', paths.xtkDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath )
     scripts.compile.calculate( paths.projectName, paths.appDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath )
+
+# report to cdash
+# need timing info
+if( options.experimental):
+    xbuild_parser.calculate('Experimental', 'xtk_build.log')
+    command = "ctest -S xtk.cmake -V"
+    os.system(command)
+elif(option.nightly):
+    xbuild_parser.calculate('Nightly', 'project_build.log')
+    command = "ctest -S xtk.cmake -V"
+    os.system(command)
+
+# delete temp output file
 
 print 'Code Compiled'
 print '*-----------------------*'
