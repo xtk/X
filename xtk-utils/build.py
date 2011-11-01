@@ -137,7 +137,7 @@ if( True in value_list ):
         options.jsdoc_only = False
         # build type
         options.experimental = True
-
+        options.nightly = True
     else:
         if( options.style ):
             options.style = False
@@ -291,8 +291,9 @@ if( options.experimental):
     xbuild_parser.calculate('Experimental', 'xtk_build.log')
     command = "ctest -S xtk.cmake -V"
     os.system(command)
-elif(option.nightly):
-    xbuild_parser.calculate('Nightly', 'project_build.log')
+
+if(option.nightly):
+    xbuild_parser.calculate('Nightly', 'xtk_build.log')
     command = "ctest -S xtk.cmake -V"
     os.system(command)
 
