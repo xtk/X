@@ -146,11 +146,11 @@ sampleApp.run = function() {
       sliceView3.setLighting(lighting);
       sliceView3.render();
       threeDView.setLighting(lighting);
-      box3.transform().rotateY(5);
+      box3.transform().rotateY(3);
       threeDView.setupTransform_(box3);
       // threeDView.setupObject_(box3);
       threeDView.render();
-    }, 100);
+    }, 15);
     
     c.out(sliceView1.print());
     c.out(sliceView2.print());
