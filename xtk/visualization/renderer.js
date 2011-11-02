@@ -797,7 +797,230 @@ X.renderer.prototype.add = function(object) {
     
   }
   
+  this.setupVertices_(object);
+  console.log('a');
+  this.setupTransform_(object);
+  
   this.setupObject_(object);
+  
+};
+
+
+
+X.renderer.prototype.setupTransform_ = function(object) {
+
+  if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
+      !goog.isDefAndNotNull(this._camera)) {
+    
+    throw new X.exception('Fatal: Renderer was not initialized properly!');
+    
+  }
+  
+  if (!goog.isDefAndNotNull(object) || !(object instanceof X.object)) {
+    
+    throw new X.exception('Fatal: Illegal object!');
+    
+  }
+  
+
+  // remove old TRANSFORM
+  var oldTransformBuffer0 = this._transformBuffers0.get(object.id());
+  if (goog.isDefAndNotNull(oldTransformBuffer0)) {
+    
+    if (this._gl.isBuffer(oldTransformBuffer0.glBuffer())) {
+      
+      this._gl.deleteBuffer(oldTransformBuffer0.glBuffer());
+      
+    }
+    
+  }
+  var oldTransformBuffer1 = this._transformBuffers1.get(object.id());
+  if (goog.isDefAndNotNull(oldTransformBuffer1)) {
+    
+    if (this._gl.isBuffer(oldTransformBuffer1.glBuffer())) {
+      
+      this._gl.deleteBuffer(oldTransformBuffer1.glBuffer());
+      
+    }
+    
+  }
+  var oldTransformBuffer2 = this._transformBuffers2.get(object.id());
+  if (goog.isDefAndNotNull(oldTransformBuffer2)) {
+    
+    if (this._gl.isBuffer(oldTransformBuffer2.glBuffer())) {
+      
+      this._gl.deleteBuffer(oldTransformBuffer2.glBuffer());
+      
+    }
+    
+  }
+  var oldTransformBuffer3 = this._transformBuffers3.get(object.id());
+  if (goog.isDefAndNotNull(oldTransformBuffer3)) {
+    
+    if (this._gl.isBuffer(oldTransformBuffer3.glBuffer())) {
+      
+      this._gl.deleteBuffer(oldTransformBuffer3.glBuffer());
+      
+    }
+    
+  }
+  
+
+
+  //
+  // TRANSFORM
+  //
+  // since we want each vertex to be able to sit under a transform,
+  // and we can not define a mat4 attribute on the shaders, we pass the
+  // transform matrix as 4x size4-vectors.
+  
+  // get the transform matrix of this object
+  var transform = object.transform().matrix();
+  
+  var glTransformBuffer0 = this._gl.createBuffer();
+  
+  // we need to convert the transform row0 to an array to set it for all
+  // vertices
+  tmpArray = new Array(object.points().flatten().length * 4);
+  var j;
+  for (j = 0; j < tmpArray.length; j = j + 4) {
+    
+    tmpArray[j] = transform.getValueAt(0, 0);
+    tmpArray[j + 1] = transform.getValueAt(0, 1);
+    tmpArray[j + 2] = transform.getValueAt(0, 2);
+    tmpArray[j + 3] = transform.getValueAt(0, 3);
+    
+  }
+  
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer0);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
+      this._gl.STATIC_DRAW);
+  
+  // create an X.buffer to store the transform
+  var transformBuffer0 = new X.buffer(glTransformBuffer0, object.points()
+      .count(), 4);
+  
+
+  var glTransformBuffer1 = this._gl.createBuffer();
+  
+  // we need to convert the transform row1 to an array to set it for all
+  // vertices
+  tmpArray = new Array(object.points().flatten().length * 4);
+  for (j = 0; j < tmpArray.length; j = j + 4) {
+    
+    tmpArray[j] = transform.getValueAt(1, 0);
+    tmpArray[j + 1] = transform.getValueAt(1, 1);
+    tmpArray[j + 2] = transform.getValueAt(1, 2);
+    tmpArray[j + 3] = transform.getValueAt(1, 3);
+    
+  }
+  
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer1);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
+      this._gl.STATIC_DRAW);
+  
+  // create an X.buffer to store the transform
+  var transformBuffer1 = new X.buffer(glTransformBuffer1, object.points()
+      .count(), 4);
+  
+  var glTransformBuffer2 = this._gl.createBuffer();
+  
+  // we need to convert the transform row2 to an array to set it for all
+  // vertices
+  tmpArray = new Array(object.points().flatten().length * 4);
+  for (j = 0; j < tmpArray.length; j = j + 4) {
+    
+    tmpArray[j] = transform.getValueAt(2, 0);
+    tmpArray[j + 1] = transform.getValueAt(2, 1);
+    tmpArray[j + 2] = transform.getValueAt(2, 2);
+    tmpArray[j + 3] = transform.getValueAt(2, 3);
+    
+  }
+  
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer2);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
+      this._gl.STATIC_DRAW);
+  
+  // create an X.buffer to store the transform
+  var transformBuffer2 = new X.buffer(glTransformBuffer2, object.points()
+      .count(), 4);
+  
+
+  var glTransformBuffer3 = this._gl.createBuffer();
+  
+  // we need to convert the transform row3 to an array to set it for all
+  // vertices
+  tmpArray = new Array(object.points().flatten().length * 4);
+  for (j = 0; j < tmpArray.length; j = j + 4) {
+    
+    tmpArray[j] = transform.getValueAt(3, 0);
+    tmpArray[j + 1] = transform.getValueAt(3, 1);
+    tmpArray[j + 2] = transform.getValueAt(3, 2);
+    tmpArray[j + 3] = transform.getValueAt(3, 3);
+    
+  }
+  
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer3);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
+      this._gl.STATIC_DRAW);
+  
+  // create an X.buffer to store the transform
+  var transformBuffer3 = new X.buffer(glTransformBuffer3, object.points()
+      .count(), 4);
+  
+  // add the buffers for the new object to the internal hash maps
+  this._transformBuffers0.set(object.id(), transformBuffer0);
+  this._transformBuffers1.set(object.id(), transformBuffer1);
+  this._transformBuffers2.set(object.id(), transformBuffer2);
+  this._transformBuffers3.set(object.id(), transformBuffer3);
+  
+};
+
+
+X.renderer.prototype.setupVertices_ = function(object) {
+
+  if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
+      !goog.isDefAndNotNull(this._camera)) {
+    
+    throw new X.exception('Fatal: Renderer was not initialized properly!');
+    
+  }
+  
+  if (!goog.isDefAndNotNull(object) || !(object instanceof X.object)) {
+    
+    throw new X.exception('Fatal: Illegal object!');
+    
+  }
+  
+  // remove old VERTICES
+  var oldVertexBuffer = this._vertexBuffers.get(object.id());
+  if (goog.isDefAndNotNull(oldVertexBuffer)) {
+    
+    if (this._gl.isBuffer(oldVertexBuffer.glBuffer())) {
+      
+      this._gl.deleteBuffer(oldVertexBuffer.glBuffer());
+      
+    }
+    
+  }
+  
+
+  //
+  // VERTICES
+  //
+  var glVertexBuffer = this._gl.createBuffer();
+  
+  // bind and fill with vertices of current object
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.points()
+      .flatten()), this._gl.STATIC_DRAW);
+  
+  // create an X.buffer to store the vertices
+  // every vertex consists of 3 items (x,y,z)
+  var vertexBuffer = new X.buffer(glVertexBuffer, object.points().count(), 3);
+  
+  // add the buffers for the new object to the internal hash maps
+  this._vertexBuffers.set(object.id(), vertexBuffer);
   
 };
 
@@ -837,18 +1060,8 @@ X.renderer.prototype.setupObject_ = function(object) {
     
     // clear all glBuffers by reading the X.buffer
     
-    // VERTICES
-    var oldVertexBuffer = this._vertexBuffers.get(object.id());
-    if (goog.isDefAndNotNull(oldVertexBuffer)) {
-      
-      if (this._gl.isBuffer(oldVertexBuffer.glBuffer())) {
-        
-        this._gl.deleteBuffer(oldVertexBuffer.glBuffer());
-        
-      }
-      
-    }
-    
+
+
     // NORMALS
     var oldNormalBuffer = this._vertexBuffers.get(object.id());
     if (goog.isDefAndNotNull(oldNormalBuffer)) {
@@ -885,48 +1098,6 @@ X.renderer.prototype.setupObject_ = function(object) {
       
     }
     
-    // TRANSFORM
-    var oldTransformBuffer0 = this._transformBuffers0.get(object.id());
-    if (goog.isDefAndNotNull(oldTransformBuffer0)) {
-      
-      if (this._gl.isBuffer(oldTransformBuffer0.glBuffer())) {
-        
-        this._gl.deleteBuffer(oldTransformBuffer0.glBuffer());
-        
-      }
-      
-    }
-    var oldTransformBuffer1 = this._transformBuffers1.get(object.id());
-    if (goog.isDefAndNotNull(oldTransformBuffer1)) {
-      
-      if (this._gl.isBuffer(oldTransformBuffer1.glBuffer())) {
-        
-        this._gl.deleteBuffer(oldTransformBuffer1.glBuffer());
-        
-      }
-      
-    }
-    var oldTransformBuffer2 = this._transformBuffers2.get(object.id());
-    if (goog.isDefAndNotNull(oldTransformBuffer2)) {
-      
-      if (this._gl.isBuffer(oldTransformBuffer2.glBuffer())) {
-        
-        this._gl.deleteBuffer(oldTransformBuffer2.glBuffer());
-        
-      }
-      
-    }
-    var oldTransformBuffer3 = this._transformBuffers3.get(object.id());
-    if (goog.isDefAndNotNull(oldTransformBuffer3)) {
-      
-      if (this._gl.isBuffer(oldTransformBuffer3.glBuffer())) {
-        
-        this._gl.deleteBuffer(oldTransformBuffer3.glBuffer());
-        
-      }
-      
-    }
-    
     // TEXTURE
     var oldTexturePositionBuffer = this._texturePositionBuffers
         .get(object.id());
@@ -941,20 +1112,6 @@ X.renderer.prototype.setupObject_ = function(object) {
     }
     
   }
-  
-  //
-  // VERTICES
-  //
-  var glVertexBuffer = this._gl.createBuffer();
-  
-  // bind and fill with vertices of current object
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.points()
-      .flatten()), this._gl.STATIC_DRAW);
-  
-  // create an X.buffer to store the vertices
-  // every vertex consists of 3 items (x,y,z)
-  var vertexBuffer = new X.buffer(glVertexBuffer, object.points().count(), 3);
   
   //
   // NORMALS
@@ -1055,103 +1212,6 @@ X.renderer.prototype.setupObject_ = function(object) {
   // create an X.buffer to store the opacity
   var opacityBuffer = new X.buffer(glOpacityBuffer, 1, 1);
   
-  //
-  // TRANSFORM
-  //
-  // since we want each vertex to be able to sit under a transform,
-  // and we can not define a mat4 attribute on the shaders, we pass the
-  // transform matrix as 4x size4-vectors.
-  
-  // get the transform matrix of this object
-  var transform = object.transform().matrix();
-  
-  var glTransformBuffer0 = this._gl.createBuffer();
-  
-  // we need to convert the transform row0 to an array to set it for all
-  // vertices
-  tmpArray = new Array(object.points().flatten().length * 4);
-  for (j = 0; j < tmpArray.length; j = j + 4) {
-    
-    tmpArray[j] = transform.getValueAt(0, 0);
-    tmpArray[j + 1] = transform.getValueAt(0, 1);
-    tmpArray[j + 2] = transform.getValueAt(0, 2);
-    tmpArray[j + 3] = transform.getValueAt(0, 3);
-    
-  }
-  
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer0);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
-      this._gl.STATIC_DRAW);
-  
-  // create an X.buffer to store the transform
-  var transformBuffer0 = new X.buffer(glTransformBuffer0, colors.count(), 4);
-  
-
-  var glTransformBuffer1 = this._gl.createBuffer();
-  
-  // we need to convert the transform row1 to an array to set it for all
-  // vertices
-  tmpArray = new Array(object.points().flatten().length * 4);
-  for (j = 0; j < tmpArray.length; j = j + 4) {
-    
-    tmpArray[j] = transform.getValueAt(1, 0);
-    tmpArray[j + 1] = transform.getValueAt(1, 1);
-    tmpArray[j + 2] = transform.getValueAt(1, 2);
-    tmpArray[j + 3] = transform.getValueAt(1, 3);
-    
-  }
-  
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer1);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
-      this._gl.STATIC_DRAW);
-  
-  // create an X.buffer to store the transform
-  var transformBuffer1 = new X.buffer(glTransformBuffer1, colors.count(), 4);
-  
-
-  var glTransformBuffer2 = this._gl.createBuffer();
-  
-  // we need to convert the transform row2 to an array to set it for all
-  // vertices
-  tmpArray = new Array(object.points().flatten().length * 4);
-  for (j = 0; j < tmpArray.length; j = j + 4) {
-    
-    tmpArray[j] = transform.getValueAt(2, 0);
-    tmpArray[j + 1] = transform.getValueAt(2, 1);
-    tmpArray[j + 2] = transform.getValueAt(2, 2);
-    tmpArray[j + 3] = transform.getValueAt(2, 3);
-    
-  }
-  
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer2);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
-      this._gl.STATIC_DRAW);
-  
-  // create an X.buffer to store the transform
-  var transformBuffer2 = new X.buffer(glTransformBuffer2, colors.count(), 4);
-  
-
-  var glTransformBuffer3 = this._gl.createBuffer();
-  
-  // we need to convert the transform row3 to an array to set it for all
-  // vertices
-  tmpArray = new Array(object.points().flatten().length * 4);
-  for (j = 0; j < tmpArray.length; j = j + 4) {
-    
-    tmpArray[j] = transform.getValueAt(3, 0);
-    tmpArray[j + 1] = transform.getValueAt(3, 1);
-    tmpArray[j + 2] = transform.getValueAt(3, 2);
-    tmpArray[j + 3] = transform.getValueAt(3, 3);
-    
-  }
-  
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer3);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
-      this._gl.STATIC_DRAW);
-  
-  // create an X.buffer to store the transform
-  var transformBuffer3 = new X.buffer(glTransformBuffer3, colors.count(), 4);
-  
 
   //
   // TEXTURE
@@ -1221,15 +1281,11 @@ X.renderer.prototype.setupObject_ = function(object) {
     
   }
   
-  // add the buffers for the new object to the internal hash maps
-  this._vertexBuffers.set(object.id(), vertexBuffer);
+
   this._normalBuffers.set(object.id(), normalBuffer);
   this._colorBuffers.set(object.id(), colorBuffer);
   this._opacityBuffers.set(object.id(), opacityBuffer);
-  this._transformBuffers0.set(object.id(), transformBuffer0);
-  this._transformBuffers1.set(object.id(), transformBuffer1);
-  this._transformBuffers2.set(object.id(), transformBuffer2);
-  this._transformBuffers3.set(object.id(), transformBuffer3);
+  
   this._texturePositionBuffers.set(object.id(), texturePositionBuffer);
 };
 

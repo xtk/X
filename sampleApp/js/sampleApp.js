@@ -147,7 +147,8 @@ sampleApp.run = function() {
       sliceView3.render();
       threeDView.setLighting(lighting);
       box3.transform().rotateY(5);
-      threeDView.setupObject_(box3);
+      threeDView.setupTransform_(box3);
+      // threeDView.setupObject_(box3);
       threeDView.render();
     }, 100);
     
