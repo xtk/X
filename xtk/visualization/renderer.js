@@ -547,8 +547,8 @@ X.renderer.prototype.init = function() {
   // create a canvas object with certain properties
   var canvas = goog.dom.createDom('canvas');
   // css properties
-  canvas.style.setProperty('background-color', this.backgroundColor()
-      .toString());
+  canvas.style.backgroundColor = this.backgroundColor().toString();
+  
   // width and height can not be set using CSS but via object properties
   canvas.width = this.width();
   canvas.height = this.height();
