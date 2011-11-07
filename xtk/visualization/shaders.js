@@ -86,13 +86,13 @@ X.shaders = function() {
    * @protected
    */
   this._fragmentShaderSource = '';
-  var t = '';
-  t += 'varying lowp vec4 fragmentColor;\n';
-  t += '\n';
-  t += 'void main(void) {\n';
-  t += '  gl_FragColor = fragmentColor;\n';
-  t += '}\n';
-  this._fragmentShaderSource = t;
+  var t2 = '';
+  t2 += 'varying lowp vec4 fragmentColor;\n';
+  t2 += '\n';
+  t2 += 'void main(void) {\n';
+  t2 += '  gl_FragColor = fragmentColor;\n';
+  t2 += '}\n';
+  this._fragmentShaderSource = t2;
 
   /**
    * The string to access the position inside the vertex shader source.
@@ -281,7 +281,7 @@ X.shaders.prototype.perspective = function() {
 /**
  * Get the normal uniform locator
  *
- * @return {String} The normal uniform locator.
+ * @return {String|null} The normal uniform locator.
  */
 X.shaders.prototype.normalUniform = function() {
 

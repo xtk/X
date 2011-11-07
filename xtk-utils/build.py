@@ -292,7 +292,7 @@ if( options.experimental):
     command = "ctest -S xtk.cmake -V"
     os.system(command)
 
-if(option.nightly):
+if(options.nightly):
     xbuild_parser.calculate('Nightly', 'xtk_build.log')
     command = "ctest -S xtk.cmake -V"
     os.system(command)
