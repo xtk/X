@@ -23,6 +23,7 @@ goog.require('goog.events.BrowserEvent');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.style');
+goog.require('goog.style_test');
 goog.require('goog.testing.jsunit');
 goog.require('goog.userAgent');
 
@@ -196,6 +197,13 @@ i {
 }
 
 #test-visible {
+  background: yellow;
+  position: absolute;
+  overflow: hidden;
+}
+
+#test-visible2 {
+  background: #ebebeb;
   position: absolute;
   overflow: hidden;
 }
@@ -472,11 +480,13 @@ xxxxxxxx x</div>
   <div id="item8" class="scrollable-container-item">8</div>
 </div>
 
-<div id="test-visible" style="background-color:yellow;">
+<div id="test-visible">
 Test-visible
 <div id="test-visible-el" style="height:200px;">Test-visible</div>
 Test-visible
 </div>
+
+<div id="test-visible2"></div>
 
 <div id="msFilter" style="-ms-filter:'alpha(opacity=0)'">
   A div</div>
@@ -488,6 +498,7 @@ Test-visible
 </div>
 <script>
 
+var EPSILON = 2;
 var $ = goog.dom.getElement;
 
 function setUpPage() {
@@ -506,6 +517,12 @@ function setUpPage() {
 
 function setUp() {
   window.scrollTo(0, 0);
+}
+
+function tearDown() {
+  var testVisibleDiv2 = goog.dom.getElement('test-visible2');
+  testVisibleDiv2.setAttribute('style', '');
+  testVisibleDiv2.innerHTML = '';
 }
 
 function testSetStyle() {
@@ -2030,9 +2047,209 @@ function testGetVisibleRectForElement() {
   var iframeDoc = goog.dom.getFrameContentDocument(iframe);
   el = iframeDoc.getElementById('test-visible');
   visible = goog.style.getVisibleRectForElement(el);
-  // Just check whether it is not null, which means non-zero height
+
+  var iframeViewportSize = goog.dom.getDomHelper(el).getViewportSize();
+  // NOTE(user): For iframe, the clipping viewport is always the iframe
+  // viewport, and not the actual browser viewport.
   assertNotNull(visible);
+  assertEquals(0, visible.top);
+  assertEquals(iframeViewportSize.height, visible.bottom);
+  assertEquals(0, visible.left);
+  assertEquals(iframeViewportSize.width, visible.right);
 };
+
+function testGetVisibleRectForElementWithBodyScrolled() {
+  var container = goog.dom.getElement('test-visible2');
+  var dom = goog.dom.getDomHelper(container);
+  var el = dom.createDom('div', undefined, 'Test');
+  el.style.position = 'absolute';
+  dom.append(container, el);
+
+  container.style.position = 'absolute';
+  goog.style.setPosition(container, 20, 500);
+  goog.style.setSize(container, 100, 150);
+
+  // Scroll body container such that container is exactly at top.
+  window.scrollTo(0, 500);
+  var visibleRect = goog.style.getVisibleRectForElement(el);
+  assertNotNull(visibleRect);
+  assertRoughlyEquals(500, visibleRect.top, EPSILON);
+  assertRoughlyEquals(20, visibleRect.left, EPSILON);
+  assertRoughlyEquals(650, visibleRect.bottom, EPSILON);
+  assertRoughlyEquals(120, visibleRect.right, EPSILON);
+
+  // Top 100px is clipped by window viewport.
+  window.scrollTo(0, 600);
+  var visibleRect = goog.style.getVisibleRectForElement(el);
+  assertNotNull(visibleRect);
+  assertRoughlyEquals(600, visibleRect.top, EPSILON);
+  assertRoughlyEquals(20, visibleRect.left, EPSILON);
+  assertRoughlyEquals(650, visibleRect.bottom, EPSILON);
+  assertRoughlyEquals(120, visibleRect.right, EPSILON);
+
+  var winSize = dom.getViewportSize();
+
+  // Left 50px is clipped by window viewport.
+  // Right part is clipped by window viewport.
+  goog.style.setSize(container, 10000, 150);
+  window.scrollTo(70, 500);
+  var visibleRect = goog.style.getVisibleRectForElement(el);
+  assertNotNull(visibleRect);
+  assertRoughlyEquals(500, visibleRect.top, EPSILON);
+  assertRoughlyEquals(70, visibleRect.left, EPSILON);
+  assertRoughlyEquals(650, visibleRect.bottom, EPSILON);
+  assertRoughlyEquals(70 + winSize.width, visibleRect.right, EPSILON);
+
+  // Bottom part is clipped by window viewport.
+  goog.style.setSize(container, 100, 2000);
+  window.scrollTo(0, 500);
+  var visibleRect = goog.style.getVisibleRectForElement(el);
+  assertNotNull(visibleRect);
+  assertRoughlyEquals(500, visibleRect.top, EPSILON);
+  assertRoughlyEquals(20, visibleRect.left, EPSILON);
+  assertRoughlyEquals(120, visibleRect.right, EPSILON);
+  assertRoughlyEquals(500 + winSize.height, visibleRect.bottom, EPSILON);
+
+  goog.style.setPosition(container, 10000, 10000);
+  assertNull(goog.style.getVisibleRectForElement(el));
+}
+
+function testGetVisibleRectForElementWithNestedAreaAndNonOffsetAncestor() {
+  var container = goog.dom.getElement('test-visible2');
+  var dom = goog.dom.getDomHelper(container);
+  var container2 = dom.createDom('div');
+  var el = dom.createDom('div', undefined, 'Test');
+  el.style.position = 'absolute';
+  dom.append(container, container2);
+  dom.append(container2, el);
+
+  container.style.position = 'absolute';
+  goog.style.setPosition(container, 20, 500);
+  goog.style.setSize(container, 100, 150);
+
+  // container2 is a scrollable container but is not an offsetParent of
+  // the element. It is ignored in the computation.
+  container2.style.overflow = 'hidden';
+  container2.style.marginTop = '50px';
+  container2.style.marginLeft = '100px';
+  goog.style.setSize(container2, 150, 100);
+
+  // Scroll body container such that container is exactly at top.
+  window.scrollTo(0, 500);
+  var visibleRect = goog.style.getVisibleRectForElement(el);
+  assertNotNull(visibleRect);
+  assertRoughlyEquals(500, visibleRect.top, EPSILON);
+  assertRoughlyEquals(20, visibleRect.left, EPSILON);
+  assertRoughlyEquals(650, visibleRect.bottom, EPSILON);
+  assertRoughlyEquals(120, visibleRect.right, EPSILON);
+
+  // Top 100px is clipped by window viewport.
+  window.scrollTo(0, 600);
+  var visibleRect = goog.style.getVisibleRectForElement(el);
+  assertNotNull(visibleRect);
+  assertRoughlyEquals(600, visibleRect.top, EPSILON);
+  assertRoughlyEquals(20, visibleRect.left, EPSILON);
+  assertRoughlyEquals(650, visibleRect.bottom, EPSILON);
+  assertRoughlyEquals(120, visibleRect.right, EPSILON);
+
+  var winSize = dom.getViewportSize();
+
+  // Left 50px is clipped by window viewport.
+  // Right part is clipped by window viewport.
+  goog.style.setSize(container, 10000, 150);
+  window.scrollTo(70, 500);
+  var visibleRect = goog.style.getVisibleRectForElement(el);
+  assertNotNull(visibleRect);
+  assertRoughlyEquals(500, visibleRect.top, EPSILON);
+  assertRoughlyEquals(70, visibleRect.left, EPSILON);
+  assertRoughlyEquals(650, visibleRect.bottom, EPSILON);
+  assertRoughlyEquals(70 + winSize.width, visibleRect.right, EPSILON);
+
+  // Bottom part is clipped by window viewport.
+  goog.style.setSize(container, 100, 2000);
+  window.scrollTo(0, 500);
+  var visibleRect = goog.style.getVisibleRectForElement(el);
+  assertNotNull(visibleRect);
+  assertRoughlyEquals(500, visibleRect.top, EPSILON);
+  assertRoughlyEquals(20, visibleRect.left, EPSILON);
+  assertRoughlyEquals(120, visibleRect.right, EPSILON);
+  assertRoughlyEquals(500 + winSize.height, visibleRect.bottom, EPSILON);
+
+  goog.style.setPosition(container, 10000, 10000);
+  assertNull(goog.style.getVisibleRectForElement(el));
+}
+
+function testGetVisibleRectForElementInsideNestedScrollableArea() {
+  var container = goog.dom.getElement('test-visible2');
+  var dom = goog.dom.getDomHelper(container);
+  var container2 = dom.createDom('div');
+  var el = dom.createDom('div', undefined, 'Test');
+  el.style.position = 'absolute';
+  dom.append(container, container2);
+  dom.append(container2, el);
+
+  container.style.position = 'absolute';
+  goog.style.setPosition(container, 100 /* left */, 500 /* top */);
+  goog.style.setSize(container, 300 /* width */, 300 /* height */);
+
+  container2.style.overflow = 'hidden';
+  container2.style.position = 'relative';
+  goog.style.setPosition(container2, 100, 50);
+  goog.style.setSize(container2, 150, 100);
+
+  // Scroll body container such that container is exactly at top.
+  window.scrollTo(0, 500);
+  var visibleRect = goog.style.getVisibleRectForElement(el);
+  assertNotNull(visibleRect);
+  assertRoughlyEquals(550, visibleRect.top, EPSILON);
+  assertRoughlyEquals(200, visibleRect.left, EPSILON);
+  assertRoughlyEquals(650, visibleRect.bottom, EPSILON);
+  assertRoughlyEquals(350, visibleRect.right, EPSILON);
+
+  // Left 50px is clipped by container.
+  goog.style.setPosition(container2, -50, 50);
+  var visibleRect = goog.style.getVisibleRectForElement(el);
+  assertNotNull(visibleRect);
+  assertRoughlyEquals(550, visibleRect.top, EPSILON);
+  assertRoughlyEquals(100, visibleRect.left, EPSILON);
+  assertRoughlyEquals(650, visibleRect.bottom, EPSILON);
+  assertRoughlyEquals(200, visibleRect.right, EPSILON);
+
+  // Right part is clipped by container.
+  goog.style.setPosition(container2, 100, 50);
+  goog.style.setWidth(container2, 1000, 100);
+  var visibleRect = goog.style.getVisibleRectForElement(el);
+  assertNotNull(visibleRect);
+  assertRoughlyEquals(550, visibleRect.top, EPSILON);
+  assertRoughlyEquals(200, visibleRect.left, EPSILON);
+  assertRoughlyEquals(650, visibleRect.bottom, EPSILON);
+  assertRoughlyEquals(400, visibleRect.right, EPSILON);
+
+  // Top 50px is clipped by container.
+  goog.style.setStyle(container2, 'width', '150px');
+  goog.style.setStyle(container2, 'top', '-50px');
+  var visibleRect = goog.style.getVisibleRectForElement(el);
+  assertNotNull(visibleRect);
+  assertRoughlyEquals(500, visibleRect.top, EPSILON);
+  assertRoughlyEquals(200, visibleRect.left, EPSILON);
+  assertRoughlyEquals(550, visibleRect.bottom, EPSILON);
+  assertRoughlyEquals(350, visibleRect.right, EPSILON);
+
+  // Bottom part is clipped by container.
+  goog.style.setStyle(container2, 'top', '50px');
+  goog.style.setStyle(container2, 'height', '1000px');
+  var visibleRect = goog.style.getVisibleRectForElement(el);
+  assertNotNull(visibleRect);
+  assertRoughlyEquals(550, visibleRect.top, EPSILON);
+  assertRoughlyEquals(200, visibleRect.left, EPSILON);
+  assertRoughlyEquals(800, visibleRect.bottom, EPSILON);
+  assertRoughlyEquals(350, visibleRect.right, EPSILON);
+
+  // Outside viewport.
+  goog.style.setStyle(container2, 'top', '10000px');
+  goog.style.setStyle(container2, 'left', '10000px');
+  assertNull(goog.style.getVisibleRectForElement(el));
+}
 
 function testGeckoMacOrX11RoundPosition() {
   if ((goog.userAgent.MAC || goog.userAgent.X11) && goog.userAgent.GECKO &&
@@ -2087,32 +2304,7 @@ function testScrollIntoContainerView() {
 }
 
 function testScrollBarWidth() {
-  var width = goog.style.getScrollbarWidth();
-  assertTrue(width > 0);
-
-  var outer = goog.dom.getElement('test-scrollbarwidth');
-  var inner = goog.dom.getElementsByTagNameAndClass('div', null, outer)[0];
-  assertTrue('should have a scroll bar', hasVerticalScroll(outer));
-  assertTrue('should have a scroll bar', hasHorizontalScroll(outer));
-
-  // Get the inner div absolute width
-  goog.style.setStyle(outer, 'width', '100%');
-  assertTrue('should have a scroll bar', hasVerticalScroll(outer));
-  assertFalse('should not have a scroll bar', hasHorizontalScroll(outer));
-  var innerAbsoluteWidth = inner.offsetWidth;
-
-  // Leave the vertical scroll and remove the horizontal by using the scroll
-  // bar width calculation.
-  goog.style.setStyle(outer, 'width',
-      (innerAbsoluteWidth + width) + 'px');
-  assertTrue('should have a scroll bar', hasVerticalScroll(outer));
-  assertFalse('should not have a scroll bar', hasHorizontalScroll(outer));
-
-  // verify by adding 1 more pixel (brings back the vertical scroll bar).
-  goog.style.setStyle(outer, 'width',
-      (innerAbsoluteWidth + width - 1) + 'px');
-  assertTrue('should have a scroll bar', hasVerticalScroll(outer));
-  assertTrue('should have a scroll bar', hasHorizontalScroll(outer));
+  goog.style_test.testScrollbarWidth();
 }
 
 function testOffsetParent() {
@@ -2127,7 +2319,7 @@ function hasVerticalScroll(el) {
 }
 
 function hasHorizontalScroll(el) {
-  return el.clientHeight != 0 && el.offsetHeight - el.clientHeight  > 0;
+  return el.clientHeight != 0 && el.offsetHeight - el.clientHeight > 0;
 }
 </script>
 

@@ -33,6 +33,7 @@ See the COPYING file for details.
 </head>
 <body>
 <div>
+  <span id="decorate" class="goog-checkbox"></span>
   <span id="normal" class="goog-checkbox"></span>
   <span id="checked" class="goog-checkbox goog-checkbox-checked"></span>
   <span id="unchecked" class="goog-checkbox goog-checkbox-unchecked"></span>
@@ -144,6 +145,30 @@ See the COPYING file for details.
     assertFalse('toggling has been prevented', checkbox.getChecked());
   }
 
+  function testCheckboxAriaLabelledby() {
+    var label = goog.dom.createElement('div');
+    var label2 = goog.dom.createElement('div',  {id: checkbox.makeId('foo')});
+    document.body.appendChild(label);
+    document.body.appendChild(label2);
+    try {
+      checkbox.setChecked(false);
+      checkbox.setLabel(label);
+      checkbox.render(label);
+
+      assertEquals(label.id,
+          goog.dom.a11y.getState(checkbox.getElement(),
+              goog.dom.a11y.State.LABELLEDBY));
+
+      checkbox.setLabel(label2);
+      assertEquals(label2.id,
+          goog.dom.a11y.getState(checkbox.getElement(),
+              goog.dom.a11y.State.LABELLEDBY));
+    } finally {
+      document.body.removeChild(label);
+      document.body.removeChild(label2);
+    }
+  }
+
   function testLabel() {
     var label = goog.dom.createElement('div');
     document.body.appendChild(label);
@@ -248,8 +273,32 @@ See the COPYING file for details.
         goog.dom.a11y.getRole(checkbox.getElement()));
   }
 
-  function testUpdateAriaState() {
+  function testCreateDomUpdateAriaState() {
     checkbox.createDom();
+
+    assertEquals('Checkbox must have default false ARIA state aria-checked',
+        'false', goog.dom.a11y.getState(checkbox.getElement(),
+        goog.dom.a11y.State.CHECKED));
+
+    checkbox.setChecked(goog.ui.Checkbox.State.CHECKED);
+    assertEquals('Checkbox must have true ARIA state aria-checked', 'true',
+        goog.dom.a11y.getState(checkbox.getElement(),
+        goog.dom.a11y.State.CHECKED));
+
+    checkbox.setChecked(goog.ui.Checkbox.State.UNCHECKED);
+    assertEquals('Checkbox must have false ARIA state aria-checked', 'false',
+        goog.dom.a11y.getState(checkbox.getElement(),
+        goog.dom.a11y.State.CHECKED));
+
+    checkbox.setChecked(goog.ui.Checkbox.State.UNDETERMINED);
+    assertEquals('Checkbox must have mixed ARIA state aria-checked', 'mixed',
+        goog.dom.a11y.getState(checkbox.getElement(),
+        goog.dom.a11y.State.CHECKED));
+  }
+
+  function testDecorateUpdateAriaState() {
+    var decorateSpan = goog.dom.getElement('decorate');
+    checkbox.decorate(decorateSpan);
 
     assertEquals('Checkbox must have default false ARIA state aria-checked',
         'false', goog.dom.a11y.getState(checkbox.getElement(),

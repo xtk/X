@@ -21,6 +21,8 @@
 goog.provide('goog.ui.Checkbox');
 goog.provide('goog.ui.Checkbox.State');
 
+goog.require('goog.dom.a11y');
+goog.require('goog.dom.a11y.State');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.ui.CheckboxRenderer');
@@ -115,11 +117,11 @@ goog.ui.Checkbox.prototype.isUndetermined = function() {
 
 /**
  * Sets the checked state of the checkbox.
- * @param {goog.ui.Checkbox.State} checked The checked state to set.
+ * @param {?boolean} checked The checked state to set.
  */
 goog.ui.Checkbox.prototype.setChecked = function(checked) {
   if (checked != this.checked_) {
-    this.checked_ = checked;
+    this.checked_ = /** @type {goog.ui.Checkbox.State} */ (checked);
     this.getRenderer().setCheckboxState(this.getElement(), this.checked_);
   }
 };
@@ -170,7 +172,7 @@ goog.ui.Checkbox.prototype.toggle = function() {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Checkbox.prototype.enterDocument = function() {
   goog.base(this, 'enterDocument');
   if (this.isHandleMouseEvents()) {
@@ -196,6 +198,15 @@ goog.ui.Checkbox.prototype.enterDocument = function() {
     handler.listen(this.getElement(),
         goog.events.EventType.CLICK, this.handleClickOrSpace_);
   }
+
+  // Set aria label.
+  if (this.label_) {
+    if (!this.label_.id) {
+      this.label_.id = this.makeId('lbl');
+    }
+    goog.dom.a11y.setState(this.getElement(),
+        goog.dom.a11y.State.LABELLEDBY, this.label_.id);
+  }
 };
 
 
@@ -204,7 +215,7 @@ goog.ui.Checkbox.prototype.enterDocument = function() {
  * focusable. In particular this fails in Chrome.
  * Note: in general tabIndex=-1 will prevent from keyboard focus but enables
  * mouse focus, however in this case the control class prevents mouse focus.
- * @inheritDoc
+ * @override
  */
 goog.ui.Checkbox.prototype.setEnabled = function(enabled) {
   goog.base(this, 'setEnabled', enabled);
@@ -232,7 +243,7 @@ goog.ui.Checkbox.prototype.handleClickOrSpace_ = function(e) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.ui.Checkbox.prototype.handleKeyEventInternal = function(e) {
   if (e.keyCode == goog.events.KeyCodes.SPACE) {
     this.handleClickOrSpace_(e);

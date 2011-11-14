@@ -13,6 +13,7 @@ See the COPYING file for details.
 <script>
   goog.require('goog.debug.EntryPointMonitor');
   goog.require('goog.debug.ErrorHandler');
+  goog.require('goog.debug.ErrorHandler.ProtectedFunctionError');
   goog.require('goog.events');
   goog.require('goog.events.EventTarget');
   goog.require('goog.events.EventType');
@@ -29,7 +30,6 @@ See the COPYING file for details.
 
   function tearDown() {
     goog.events.handleBrowserEvent_ = originalHandleBrowserEvent;
-    goog.events.pools.setProxyCallbackFunction(originalHandleBrowserEvent);
     goog.events.removeAll();
   }
 
@@ -40,6 +40,16 @@ See the COPYING file for details.
     });
 
     goog.events.protectBrowserEventEntryPoint(errorHandler);
+
+    var protectedHandleBrowserEvent_ = goog.events.handleBrowserEvent_;
+    goog.events.handleBrowserEvent_ = function(evt) {
+      try {
+        protectedHandleBrowserEvent_(evt);
+      } catch (e) {
+        assertTrue(
+            e instanceof goog.debug.ErrorHandler.ProtectedFunctionError);
+      }
+    };
 
     var bodyEl = document.body;
     goog.events.listen(bodyEl, goog.events.EventType.CLICK, function(e){
