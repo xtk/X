@@ -65,6 +65,7 @@ goog.events.KeyCodes = {
   SEVEN: 55,
   EIGHT: 56,
   NINE: 57,
+  FF_SEMICOLON: 59, // Firefox (Gecko) fires this for semicolon instead of 186
   QUESTION_MARK: 63, // needs localization
   A: 65,
   B: 66,
@@ -123,6 +124,12 @@ goog.events.KeyCodes = {
   F11: 122,
   F12: 123,
   NUMLOCK: 144,
+  SCROLL_LOCK: 145,
+
+  // OS-specific media keys like volume controls and browser controls.
+  FIRST_MEDIA_KEY: 166,
+  LAST_MEDIA_KEY: 183,
+
   SEMICOLON: 186,            // needs localization
   DASH: 189,                 // needs localization
   EQUALS: 187,               // needs localization
@@ -130,6 +137,7 @@ goog.events.KeyCodes = {
   PERIOD: 190,               // needs localization
   SLASH: 191,                // needs localization
   APOSTROPHE: 192,           // needs localization
+  TILDE: 192,                // needs localization
   SINGLE_QUOTE: 222,         // needs localization
   OPEN_SQUARE_BRACKET: 219,  // needs localization
   BACKSLASH: 220,            // needs localization
@@ -148,7 +156,7 @@ goog.events.KeyCodes = {
 
 
 /**
- * Returns true if the event contains a text modifying key
+ * Returns true if the event contains a text modifying key.
  * @param {goog.events.BrowserEvent} e A key event.
  * @return {boolean} Whether it's a text modifying key.
  */
@@ -184,13 +192,15 @@ goog.events.KeyCodes.isTextModifyingKeyEvent = function(e) {
     case goog.events.KeyCodes.PHANTOM:
     case goog.events.KeyCodes.PRINT_SCREEN:
     case goog.events.KeyCodes.RIGHT:
+    case goog.events.KeyCodes.SCROLL_LOCK:
     case goog.events.KeyCodes.SHIFT:
     case goog.events.KeyCodes.UP:
     case goog.events.KeyCodes.WIN_KEY:
     case goog.events.KeyCodes.WIN_KEY_RIGHT:
       return false;
     default:
-      return true;
+      return e.keyCode < goog.events.KeyCodes.FIRST_MEDIA_KEY ||
+          e.keyCode > goog.events.KeyCodes.LAST_MEDIA_KEY;
   }
 };
 
@@ -267,6 +277,7 @@ goog.events.KeyCodes.firesKeyPressEvent = function(keyCode, opt_heldKeyCode,
 
 /**
  * Returns true if the key produces a character.
+ * This does not cover characters on non-US keyboards (Russian, Hebrew, etc.).
  *
  * @param {number} keyCode A key code.
  * @return {boolean} Whether it's a character key.
@@ -300,6 +311,7 @@ goog.events.KeyCodes.isCharacterKey = function(keyCode) {
     case goog.events.KeyCodes.NUM_PERIOD:
     case goog.events.KeyCodes.NUM_DIVISION:
     case goog.events.KeyCodes.SEMICOLON:
+    case goog.events.KeyCodes.FF_SEMICOLON:
     case goog.events.KeyCodes.DASH:
     case goog.events.KeyCodes.EQUALS:
     case goog.events.KeyCodes.COMMA:
