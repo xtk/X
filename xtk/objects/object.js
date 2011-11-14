@@ -117,13 +117,6 @@ X.object = function(type) {
   this._textureCoordinateMap = null;
   
   /**
-   * The lightning of this object. TODO
-   * 
-   * @protected
-   */
-  this._lightning = null;
-  
-  /**
    * The opacity of this object.
    * 
    * @type {number}

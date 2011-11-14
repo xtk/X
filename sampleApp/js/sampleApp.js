@@ -29,21 +29,20 @@ sampleApp.run = function() {
     
     // is lighting enabled?
     var lighting = document.getElementById('lighting').checked;
-    
-    var sliceView1 = new X.renderer2D(300, 300);
-    sliceView1.setContainerById('sliceView1');
-    sliceView1.init();
-    sliceView1.setLighting(lighting);
-    
-    var sliceView2 = new X.renderer2D(300, 300);
-    sliceView2.setContainerById('sliceView2');
-    sliceView2.init();
-    sliceView2.setLighting(lighting);
-    
-    var sliceView3 = new X.renderer2D(300, 300);
-    sliceView3.setContainerById('sliceView3');
-    sliceView3.init();
-    sliceView3.setLighting(lighting);
+    // var sliceView1 = new X.renderer2D(300, 300);
+    // sliceView1.setContainerById('sliceView1');
+    // sliceView1.init();
+    // sliceView1.setLighting(lighting);
+    //    
+    // var sliceView2 = new X.renderer2D(300, 300);
+    // sliceView2.setContainerById('sliceView2');
+    // sliceView2.init();
+    // sliceView2.setLighting(lighting);
+    //    
+    // var sliceView3 = new X.renderer2D(300, 300);
+    // sliceView3.setContainerById('sliceView3');
+    // sliceView3.init();
+    // sliceView3.setLighting(lighting);
     //
     // create a 'lightblue' 3D renderer in the div with id '3d' (see
     // ../index.html)
@@ -51,7 +50,11 @@ sampleApp.run = function() {
     threeDView.setContainerById('threeDView');
     threeDView.setBackgroundColor('#b3b3e7');
     threeDView.init();
+    c.out('sss');
     threeDView.setLighting(lighting);
+    
+
+
     /*
      * var object1 = new X.object(); // we can add points as
      * goog.math.Coordinate3 or just as 1-D arrays with 3 // items
@@ -93,20 +96,23 @@ sampleApp.run = function() {
         .setColors(new X.color(1, 0, 0), new X.color(0, 1, 0), new X.color(0,
             0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
             1, 1));
+    // box1.setTexture(new X.texture('xtk.png'));
     box1.setOpacity(0.5);
     
+    // var vtkObj = new X.vtkObject('model.vtk');
+    
     // create a box with a solid color
-    var box2 = new X.box(new goog.math.Vec3(-10, -10, -10), 5, 5, 5);
-    box2.setColor(new X.color(0, 0, 1));
-    box2.setOpacity(0.6);
-    box2.transform().translateX(-50);
-    box2.transform().translateY(30);
-    box2.transform().translateZ(-30);
-    box2.transform().rotateX(45);
+    // var box2 = new X.box(new goog.math.Vec3(-10, -10, -10), 5, 5, 5);
+    // box2.setColor(new X.color(0, 0, 1));
+    // box2.setOpacity(0.6);
+    // box2.transform().translateX(-50);
+    // box2.transform().translateY(30);
+    // box2.transform().translateZ(-30);
+    // box2.transform().rotateX(45);
     
     // create a box with different colored sides
-    var box3 = new X.box(new goog.math.Vec3(0, 0, 0), 3, 3, 3);
-    box3.setTexture(new X.texture('xtk.png'));
+    // var box3 = new X.box(new goog.math.Vec3(0, 0, 0), 3, 3, 3);
+    // box3.setTexture(new X.texture('xtk_dark.png'));
     // box3
     // .setColors(new X.color(1, 0, 0), new X.color(0, 1, 0), new X.color(0,
     // 0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
@@ -129,33 +135,40 @@ sampleApp.run = function() {
      * threeDView.addObject(object2); threeDView.addObject(object3);
      * threeDView.addObject(object4); threeDView.addObject(object5);
      */
-    // threeDView.addObject(box1);
-    // threeDView.addObject(box2);
-    threeDView.add(box3);
+    threeDView.add(box1);
+    // threeDView.add(box2);
+    // threeDView.add(box3);
+    
+    threeDView._isReady = true;
     
     // we probably do not need to time this because of an appropriate event
     // mechanism?
     // temp, should update lighting like that, should use events!
     setInterval(function() {
 
-      lighting = document.getElementById('lighting').checked;
-      sliceView1.setLighting(lighting);
-      sliceView1.render();
-      sliceView2.setLighting(lighting);
-      sliceView2.render();
-      sliceView3.setLighting(lighting);
-      sliceView3.render();
-      threeDView.setLighting(lighting);
-      box3.transform().rotateY(3);
-      threeDView.setupTransform_(box3);
+      // lighting = document.getElementById('lighting').checked;
+      // sliceView1.setLighting(lighting);
+      // sliceView1.render();
+      // sliceView2.setLighting(lighting);
+      // sliceView2.render();
+      // sliceView3.setLighting(lighting);
+      // sliceView3.render();
+      // threeDView.setLighting(lighting);
+      box1.transform().rotateZ(3);
+      // box2.transform().rotateY(3);
+      // box3.transform().rotateY(3);
+      // box3.transform().rotateX(3);
+      // threeDView.setupTransform_(box1);
+      // threeDView.setupTransform_(box2);
+      // threeDView.setupTransform_(box3);
       // threeDView.setupObject_(box3);
       threeDView.render();
     }, 15);
     
-    c.out(sliceView1.print());
-    c.out(sliceView2.print());
-    c.out(sliceView3.print());
-    c.out(threeDView.print());
+    // c.out(sliceView1.print());
+    // c.out(sliceView2.print());
+    // c.out(sliceView3.print());
+    // c.out(threeDView.print());
     
     // goog.events.listen(threeDView.interactor(), 'mouseup', testCB);
     
@@ -218,8 +231,8 @@ sampleApp.run = function() {
         }
       }
       
-      threeDView.addObject(objectN);
-      threeDView.render();
+      threeDView.add(objectN);
+      // threeDView.render();
       
     }
     

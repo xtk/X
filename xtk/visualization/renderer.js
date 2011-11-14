@@ -236,6 +236,15 @@ X.renderer = function(width, height) {
   this._texturePositionBuffers = new goog.structs.Map();
   
   /**
+   * A hash map of different textures assigned to this renderer. The maximum
+   * number of textures is limited to 32 by WebGL.
+   * 
+   * @type {!goog.structs.Map}
+   * @protected
+   */
+  this._textures = new goog.structs.Map();
+  
+  /**
    * A hash map of opacity buffers of this renderer. Each buffer is associated
    * with a displayable object using its unique id.
    * 
@@ -245,6 +254,8 @@ X.renderer = function(width, height) {
   this._opacityBuffers = new goog.structs.Map();
   
   this._lighting = true;
+  
+  this._isReady = false;
   
 };
 // inherit from X.base
@@ -798,7 +809,6 @@ X.renderer.prototype.add = function(object) {
   }
   
   this.setupVertices_(object);
-  console.log('a');
   this.setupTransform_(object);
   
   this.setupObject_(object);
@@ -1229,46 +1239,86 @@ X.renderer.prototype.setupObject_ = function(object) {
       
     }
     
+    // check if the exact texture was already registered within the glContext
+    var reuseTexture = false;
+    if (goog.isDefAndNotNull(this._textures.get(object.texture().file()))) {
+      
+      reuseTexture = true;
+      
+    }
+    
+    // check if the maximum number of textures is reached
+    // if we reuse an existing texture, skip this check
+    if (this._textures.getCount() >= 32 && !reuseTexture) {
+      
+      throw new X.exception(
+          'Fatal: The maximum number of textures (32) is reached!');
+      
+    }
+    
     // load the texture
-    var textureImage = new Image();
-    var texture = this._gl.createTexture();
-    texture.image = textureImage;
-    
-    textureImage.onload = function() {
+    // but only if we do not reuse an existing texture
+    if (!reuseTexture) {
+      
+      // setup the image
+      var textureImage = new Image();
+      
+      // setup the glTexture
+      var texture = this._gl.createTexture();
+      
+      // connect the image and the glTexture
+      texture.image = textureImage;
+      
+      textureHandler = function(texture) {
 
-      this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
+        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
+        
+        this._gl.bindTexture(this._gl.TEXTURE_2D, texture);
+        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA,
+            this._gl.RGBA, this._gl.UNSIGNED_BYTE, texture.image);
+        
+        // TODO different filters?
+        this._gl.texParameteri(this._gl.TEXTURE_2D,
+            this._gl.TEXTURE_MAG_FILTER, this._gl.LINEAR);
+        this._gl.texParameteri(this._gl.TEXTURE_2D,
+            this._gl.TEXTURE_MIN_FILTER, this._gl.LINEAR);
+        
+        // release the texture binding to clear things
+        this._gl.bindTexture(this._gl.TEXTURE_2D, null);
+        
+      }.bind(this);
       
-      this._gl.bindTexture(this._gl.TEXTURE_2D, this._currentTexture);
-      this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, this._gl.RGBA,
-          this._gl.UNSIGNED_BYTE, this._currentTexture.image);
-      this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER,
-          this._gl.LINEAR);
-      this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER,
-          this._gl.LINEAR);
+      // handler after the image was completely loaded
+      textureImage.onload = textureHandler(texture);
       
-      this._gl.bindTexture(this._gl.TEXTURE_2D, null);
+      var currentTextureFilename = object.texture().file();
       
-    }.bind(this);
+      // save the glTexture to the internal hash map of textures
+      this._textures.set(currentTextureFilename, texture);
+      
+      // configue the image source
+      textureImage.src = currentTextureFilename;
+      
+
+    } // check if this is a new texture
     
-    this._currentTexture = texture;
-    textureImage.src = object.texture().file();
+    // in any case, we have to buffer the texture-coordinate-map a.k.a. as
+    // texture positions
     
-    // create color buffer
-    var glTexturePosBuffer = this._gl.createBuffer();
-    // TODO
+    // create texture buffer
+    var glTexturePositionBuffer = this._gl.createBuffer();
+    
     // bind and fill with colors defined above
-    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTexturePosBuffer);
+    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTexturePositionBuffer);
     this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object
         .textureCoordinateMap()), this._gl.STATIC_DRAW);
     
     // create an X.buffer to store the texture-coordinate map
-    texturePositionBuffer = new X.buffer(glTexturePosBuffer, object
+    texturePositionBuffer = new X.buffer(glTexturePositionBuffer, object
         .textureCoordinateMap().length, 2);
     
-
-  }
+  } // check if object has a texture
   
-
   //
   // FINAL STEPS
   //
@@ -1303,6 +1353,29 @@ X.renderer.prototype.render = function() {
     throw new X.exception('Fatal: The renderer was not initialized properly!');
     
   }
+  
+  // READY CHECK
+  //
+  // now we check if we are ready to display everything
+  // - ready means: all textures loaded and setup, all external files loaded and
+  // setup and all other objects loaded and setup
+  //
+  // if we are not ready, we wait and show the progress
+  // if we are ready, we continue with the rendering
+  if (!this._isReady) {
+    
+    // we are not ready yet
+    return;
+    
+  } else {
+    
+    // we are ready!
+    
+  }
+  
+  //
+  // CURTAIN UP! LET THE SHOW BEGIN..
+  //
   
   // clear the canvas
   this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
@@ -1379,7 +1452,7 @@ X.renderer.prototype.render = function() {
       var transformBuffer1 = this._transformBuffers1.get(id);
       var transformBuffer2 = this._transformBuffers2.get(id);
       var transformBuffer3 = this._transformBuffers3.get(id);
-      var texturePosBuffer = this._texturePositionBuffers.get(id);
+      var texturePositionBuffer = this._texturePositionBuffers.get(id);
       
       // ..bind the glBuffers
       
@@ -1412,7 +1485,7 @@ X.renderer.prototype.render = function() {
           this._shaderProgram, this._shaders.useTexture());
       
       if (goog.isDefAndNotNull(object.texture()) &&
-          goog.isDefAndNotNull(texturePosBuffer)) {
+          goog.isDefAndNotNull(texturePositionBuffer)) {
         //
         // texture associated to this object
         //
@@ -1426,17 +1499,28 @@ X.renderer.prototype.render = function() {
         
         // bind the texture
         this._gl.activeTexture(this._gl.TEXTURE0);
-        this._gl.bindTexture(this._gl.TEXTURE_2D, this._currentTexture);
+        
+        // grab the texture from the internal hash map using the filename as the
+        // key
+        this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures.get(object
+            .texture().file()));
         this._gl.uniform1i(textureSamplerUniformLocation, 0);
         
-        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, texturePosBuffer.glBuffer());
+        // propagate the current texture-coordinate-map to WebGL
+        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, texturePositionBuffer
+            .glBuffer());
         
         this._gl.vertexAttribPointer(this._texturePositionAttribute,
-            texturePosBuffer.itemSize(), this._gl.FLOAT, false, 0, 0);
+            texturePositionBuffer.itemSize(), this._gl.FLOAT, false, 0, 0);
         
       } else {
         // no texture for this object
         this._gl.uniform1i(useTextureUniformLocation, false);
+        
+        // we always have to configure the attribute of the texture positions
+        // even if no textures are in use
+        this._gl.vertexAttribPointer(this._texturePositionAttribute,
+            vertexBuffer.itemSize(), this._gl.FLOAT, false, 0, 0);
         
       }
       
@@ -1478,6 +1562,8 @@ X.renderer.prototype.render = function() {
       
       // this._gl.drawElements(drawMode, vertexBuffer.itemCount(),
       // this._gl.UNSIGNED_SHORT, 0);
+      
+      console.log('drawn');
       
     } else {
       
