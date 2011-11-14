@@ -329,7 +329,7 @@ goog.fx.Dragger.prototype.setEnabled = function(enabled) {
 };
 
 
-/** @inheritDoc */
+/** @override */
 goog.fx.Dragger.prototype.disposeInternal = function() {
   goog.fx.Dragger.superClass_.disposeInternal.call(this);
 
@@ -595,8 +595,8 @@ goog.fx.Dragger.prototype.calculatePosition_ = function(dx, dy) {
  */
 goog.fx.Dragger.prototype.onScroll_ = function(e) {
   var pos = this.calculatePosition_(0, 0);
-  e.clientX = this.pageScroll.x - this.clientX;
-  e.clientY = this.pageScroll.y - this.clientY;
+  e.clientX = this.clientX;
+  e.clientY = this.clientY;
   this.doDrag(e, pos.x, pos.y, true);
 };
 
