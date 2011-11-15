@@ -1269,8 +1269,14 @@ X.renderer.prototype.setupObject_ = function(object) {
       // connect the image and the glTexture
       texture.image = textureImage;
       
-      textureHandler = function(texture) {
+      this.textureHandler = function() {
 
+        // textureImage.onload = function() {
+        
+        // console.log(texture);
+        
+        // texture = this._currentTexture;
+        
         this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
         
         this._gl.bindTexture(this._gl.TEXTURE_2D, texture);
@@ -1289,7 +1295,9 @@ X.renderer.prototype.setupObject_ = function(object) {
       }.bind(this);
       
       // handler after the image was completely loaded
-      textureImage.onload = textureHandler(texture);
+      textureImage.onload = this.textureHandler.bind(this, texture);
+      
+      // this._currentTexture = texture;
       
       var currentTextureFilename = object.texture().file();
       
@@ -1299,7 +1307,6 @@ X.renderer.prototype.setupObject_ = function(object) {
       // configue the image source
       textureImage.src = currentTextureFilename;
       
-
     } // check if this is a new texture
     
     // in any case, we have to buffer the texture-coordinate-map a.k.a. as
@@ -1562,8 +1569,6 @@ X.renderer.prototype.render = function() {
       
       // this._gl.drawElements(drawMode, vertexBuffer.itemCount(),
       // this._gl.UNSIGNED_SHORT, 0);
-      
-      console.log('drawn');
       
     } else {
       

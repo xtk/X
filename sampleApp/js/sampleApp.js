@@ -50,7 +50,6 @@ sampleApp.run = function() {
     threeDView.setContainerById('threeDView');
     threeDView.setBackgroundColor('#b3b3e7');
     threeDView.init();
-    c.out('sss');
     threeDView.setLighting(lighting);
     
 
@@ -96,8 +95,8 @@ sampleApp.run = function() {
         .setColors(new X.color(1, 0, 0), new X.color(0, 1, 0), new X.color(0,
             0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
             1, 1));
-    // box1.setTexture(new X.texture('xtk.png'));
-    box1.setOpacity(0.5);
+    box1.setTexture(new X.texture('xtk.png'));
+    // box1.setOpacity(0.5);
     
     // var vtkObj = new X.vtkObject('model.vtk');
     
@@ -158,10 +157,10 @@ sampleApp.run = function() {
       // box2.transform().rotateY(3);
       // box3.transform().rotateY(3);
       // box3.transform().rotateX(3);
-      // threeDView.setupTransform_(box1);
+      threeDView.setupTransform_(box1);
       // threeDView.setupTransform_(box2);
       // threeDView.setupTransform_(box3);
-      // threeDView.setupObject_(box3);
+      // threeDView.setupObject_(box1);
       threeDView.render();
     }, 15);
     
