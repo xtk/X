@@ -14,6 +14,7 @@ goog.require('X.colors');
 goog.require('X.event');
 goog.require('X.exception');
 goog.require('X.interactor');
+goog.require('X.loader');
 goog.require('X.matrixHelper');
 goog.require('X.object');
 goog.require('X.points');
@@ -256,6 +257,8 @@ X.renderer = function(width, height) {
   this._lighting = true;
   
   this._isReady = false;
+  
+  this._loader = new X.loader();
   
 };
 // inherit from X.base
@@ -1269,7 +1272,7 @@ X.renderer.prototype.setupObject_ = function(object) {
       // connect the image and the glTexture
       texture.image = textureImage;
       
-      this.textureHandler = function() {
+      this.textureHandler = function(texture) {
 
         // textureImage.onload = function() {
         

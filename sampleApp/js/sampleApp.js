@@ -48,7 +48,7 @@ sampleApp.run = function() {
     // ../index.html)
     var threeDView = new X.renderer3D(912, 400);
     threeDView.setContainerById('threeDView');
-    threeDView.setBackgroundColor('#b3b3e7');
+    // threeDView.setBackgroundColor('#b3b3e7');
     threeDView.init();
     threeDView.setLighting(lighting);
     
@@ -91,10 +91,6 @@ sampleApp.run = function() {
 
     // create a box with different colored sides
     var box1 = new X.box(new goog.math.Vec3(10, 10, 10), 5, 10, 20);
-    box1
-        .setColors(new X.color(1, 0, 0), new X.color(0, 1, 0), new X.color(0,
-            0, 1), new X.color(1, 1, 0), new X.color(1, 0, 1), new X.color(0,
-            1, 1));
     box1.setTexture(new X.texture('xtk.png'));
     // box1.setOpacity(0.5);
     
