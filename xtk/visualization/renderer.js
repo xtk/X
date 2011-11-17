@@ -27,6 +27,7 @@ goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec3');
 goog.require('goog.structs.AvlTree');
 goog.require('goog.structs.Map');
+goog.require('goog.Timer');
 
 
 
@@ -259,7 +260,7 @@ X.renderer = function(width, height) {
   
   this._isReady = false;
   
-  this._loader = new X.loader();
+  this._loader = null;
   
 };
 // inherit from X.base
@@ -539,6 +540,19 @@ X.renderer.prototype.lighting = function() {
 X.renderer.prototype.setLighting = function(lighting) {
 
   this._lighting = lighting;
+};
+
+
+X.renderer.prototype.loader = function() {
+
+  if (!goog.isDefAndNotNull(this._loader)) {
+    
+    this._loader = new X.loader();
+    
+  }
+  
+  return this._loader;
+  
 };
 
 
@@ -1367,14 +1381,33 @@ X.renderer.prototype.render = function() {
   //
   // if we are not ready, we wait and show the progress
   // if we are ready, we continue with the rendering
-  if (!this._isReady) {
+  
+  // let's check if render() was called before and the single-shot timer is
+  // already there
+  // f.e., if we are in a setInterval-configured render loop, we do not want to
+  // create multiple single-shot timers
+  if (goog.isDefAndNotNull(this._readyCheckTimer)) {
     
-    // we are not ready yet
     return;
+    
+  }
+  
+  if (!this.loader().completed()) {
+    
+    // we are not ready yet.. the loader is still working
+    this._readyCheckTimer = goog.Timer.callOnce(function() {
+
+      // try to render now..
+      // if the loader is ready it will work, else wise another single-shot gets
+      // configured in 500 ms
+      this.render();
+      this._readyCheckTimer = null; // destroy the timer
+    }.bind(this), 500); // check again in 500 ms
+    return; // .. and jump out
     
   } else {
     
-    // we are ready!
+    // we are ready! yahoooo!
     
   }
   

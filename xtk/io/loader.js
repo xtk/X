@@ -32,9 +32,23 @@ X.loader = function() {
    */
   this._className = 'loader';
   
+  this._completed = false;
+  
+  goog.Timer.callOnce(function() {
+
+    this._completed = true;
+  }.bind(this), 6000);
+  
 };
 // inherit from X.base
 goog.inherits(X.loader, X.base);
+
+
+X.loader.prototype.completed = function() {
+
+  return this._completed;
+  
+};
 
 
 // export symbols (required for advanced compilation)
