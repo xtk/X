@@ -21,6 +21,7 @@ goog.require('X.points');
 goog.require('X.shaders');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('goog.iter.Iterator');
 goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec3');
@@ -1272,35 +1273,9 @@ X.renderer.prototype.setupObject_ = function(object) {
       // connect the image and the glTexture
       texture.image = textureImage;
       
-      this.textureHandler = function(texture) {
-
-        // textureImage.onload = function() {
-        
-        // console.log(texture);
-        
-        // texture = this._currentTexture;
-        
-        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
-        
-        this._gl.bindTexture(this._gl.TEXTURE_2D, texture);
-        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA,
-            this._gl.RGBA, this._gl.UNSIGNED_BYTE, texture.image);
-        
-        // TODO different filters?
-        this._gl.texParameteri(this._gl.TEXTURE_2D,
-            this._gl.TEXTURE_MAG_FILTER, this._gl.LINEAR);
-        this._gl.texParameteri(this._gl.TEXTURE_2D,
-            this._gl.TEXTURE_MIN_FILTER, this._gl.LINEAR);
-        
-        // release the texture binding to clear things
-        this._gl.bindTexture(this._gl.TEXTURE_2D, null);
-        
-      }.bind(this);
-      
       // handler after the image was completely loaded
-      textureImage.onload = this.textureHandler.bind(this, texture);
-      
-      // this._currentTexture = texture;
+      goog.events.listenOnce(textureImage, goog.events.EventType.LOAD,
+          this.activateTexture.bind(this, texture));
       
       var currentTextureFilename = object.texture().file();
       
@@ -1347,6 +1322,26 @@ X.renderer.prototype.setupObject_ = function(object) {
   this._opacityBuffers.set(object.id(), opacityBuffer);
   
   this._texturePositionBuffers.set(object.id(), texturePositionBuffer);
+};
+
+
+X.renderer.prototype.activateTexture = function(texture) {
+
+  this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
+  
+  this._gl.bindTexture(this._gl.TEXTURE_2D, texture);
+  this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, this._gl.RGBA,
+      this._gl.UNSIGNED_BYTE, texture.image);
+  
+  // TODO different filters?
+  this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER,
+      this._gl.LINEAR);
+  this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER,
+      this._gl.LINEAR);
+  
+  // release the texture binding to clear things
+  this._gl.bindTexture(this._gl.TEXTURE_2D, null);
+  
 };
 
 
@@ -1583,6 +1578,8 @@ X.renderer.prototype.render = function() {
   } // loop through objects
   
 };
+
+
 
 /*
  * THE FOLLOWING IS OBSOLETE AND NOT WORKING FOR NOW

@@ -48,7 +48,7 @@ sampleApp.run = function() {
     // ../index.html)
     var threeDView = new X.renderer3D(912, 400);
     threeDView.setContainerById('threeDView');
-    // threeDView.setBackgroundColor('#b3b3e7');
+    threeDView.setBackgroundColor('#b3b3e7');
     threeDView.init();
     threeDView.setLighting(lighting);
     
@@ -106,7 +106,7 @@ sampleApp.run = function() {
     // box2.transform().rotateX(45);
     
     // create a box with different colored sides
-    // var box3 = new X.box(new goog.math.Vec3(0, 0, 0), 3, 3, 3);
+    var box3 = new X.box(new goog.math.Vec3(0, 0, 0), 3, 3, 3);
     // box3.setTexture(new X.texture('xtk_dark.png'));
     // box3
     // .setColors(new X.color(1, 0, 0), new X.color(0, 1, 0), new X.color(0,
@@ -115,7 +115,7 @@ sampleApp.run = function() {
     // // box3.transform().rotateX(30);
     // box3.transform().rotateY(30);
     // box3.transform().rotateZ(30);
-    // box3.setTexture(new X.texture('xtk.png'));
+    box3.setTexture(new X.texture('xtk_dark.png'));
     // box3.setOpacity(0.7);
     
     /*
@@ -132,7 +132,7 @@ sampleApp.run = function() {
      */
     threeDView.add(box1);
     // threeDView.add(box2);
-    // threeDView.add(box3);
+    threeDView.add(box3);
     
     threeDView._isReady = true;
     
