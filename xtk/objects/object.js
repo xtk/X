@@ -116,7 +116,7 @@ X.object = function(type) {
   /**
    * The opacity of this object.
    *
-   * @type {number}
+   * @type {Number}
    * @protected
    */
   this._opacity = 1.0;
@@ -241,7 +241,7 @@ X.object.prototype.setColor = function(color) {
  * Get the opacity of this object. If the object is fully opaque, this returns
  * 1.
  *
- * @return {number} The opacity in the range 0..1.
+ * @return {Number} The opacity in the range 0..1.
  */
 X.object.prototype.opacity = function() {
 
@@ -253,7 +253,7 @@ X.object.prototype.opacity = function() {
 /**
  * Set the opacity of this object.
  *
- * @param {number} opacity The opacity value in the range 0..1.
+ * @param {Number} opacity The opacity value in the range 0..1.
  */
 X.object.prototype.setOpacity = function(opacity) {
 

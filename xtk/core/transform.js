@@ -8,6 +8,7 @@ goog.provide('X.transform');
 // requires
 goog.require('X.base');
 goog.require('X.exception');
+goog.require('X.matrixHelper')
 goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec3');
 

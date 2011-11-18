@@ -629,7 +629,7 @@ X.renderer.prototype.init = function() {
   // listen to render requests from the camera
   // these get fired after user-interaction and camera re-positioning to re-draw
   // all objects
-  goog.events.listen(camera, X.renderer.events.RENDER, this.render.bind(this));
+  goog.events.listen(camera, X.camera.events.RENDER_CAMERA, this.render.bind(this));
 
   //
   // attach all created objects as class attributes

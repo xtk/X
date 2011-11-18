@@ -7,10 +7,10 @@ goog.provide('X.camera');
 goog.provide('X.camera.PanEvent');
 goog.provide('X.camera.RotateEvent');
 goog.provide('X.camera.ZoomEvent');
-
+goog.provide('X.camera.RenderEvent')
 // requires
-goog.require('X.base');
 goog.require('X.event');
+goog.require('X.base');
 goog.require('X.exception');
 goog.require('X.matrixHelper');
 goog.require('goog.math.Matrix');
@@ -116,7 +116,10 @@ X.camera.events = {
   ROTATE: X.event.uniqueId('rotate'),
 
   // the zoom event, where the camera Z coordinate changes
-  ZOOM: X.event.uniqueId('zoom')
+  ZOOM: X.event.uniqueId('zoom'),
+
+  // update the renderer
+  RENDER_CAMERA: X.event.uniqueId('rendercamera')
 };
 
 
@@ -304,7 +307,7 @@ X.camera.prototype.calculateViewingFrustum_ = function(left, right, bottom,
 
 
 /**
- * Perform a pan operation. This method fires a X.renderer.RenderEvent() after
+ * Perform a pan operation. This method fires a X.camera.RenderEvent() after
  * the calculation is done.
  *
  * @param {!goog.math.Vec2} distance The distance of the panning in respect of
@@ -327,13 +330,13 @@ X.camera.prototype.pan = function(distance) {
 
 
   // fire a render event
-  this.dispatchEvent(new X.renderer.RenderEvent());
+  this.dispatchEvent(new X.camera.RenderEvent());
 
 };
 
 
 /**
- * Perform a rotate operation. This method fires a X.renderer.RenderEvent()
+ * Perform a rotate operation. This method fires a X.camera.RenderEvent()
  * after the calculation is done.
  *
  * @param {!goog.math.Vec2} distance The distance of the rotation in respect of
@@ -372,13 +375,13 @@ X.camera.prototype.rotate = function(distance) {
   this._view = this._view.multiply(rotateY.multiply(rotateX));
 
   // fire a render event
-  this.dispatchEvent(new X.renderer.RenderEvent());
+  this.dispatchEvent(new X.camera.RenderEvent());
 
 };
 
 
 /**
- * Perform a zoom in operation. This method fires a X.renderer.RenderEvent()
+ * Perform a zoom in operation. This method fires a X.camera.RenderEvent()
  * after the calculation is done.
  *
  * @param {boolean} fast Enables/disables the fast mode which zooms much
@@ -402,13 +405,13 @@ X.camera.prototype.zoomIn = function(fast) {
   this._view = zoomMatrix.multiply(this._view);
 
   // fire a render event
-  this.dispatchEvent(new X.renderer.RenderEvent());
+  this.dispatchEvent(new X.camera.RenderEvent());
 
 };
 
 
 /**
- * Perform a zoom out operation. This method fires a X.renderer.RenderEvent()
+ * Perform a zoom out operation. This method fires a X.camera.RenderEvent()
  * after the calculation is done.
  *
  * @param {boolean} fast Enables/disables the fast mode which zooms much
@@ -432,7 +435,7 @@ X.camera.prototype.zoomOut = function(fast) {
   this._view = zoomMatrix.multiply(this._view);
 
   // fire a render event
-  this.dispatchEvent(new X.renderer.RenderEvent());
+  this.dispatchEvent(new X.camera.RenderEvent());
 
 };
 
@@ -563,8 +566,6 @@ X.camera.RotateEvent = function() {
 // inherit from X.event
 goog.inherits(X.camera.RotateEvent, X.event);
 
-
-
 /**
  * The zoom event to initiate zoom in or zoom out.
  *
@@ -598,6 +599,27 @@ X.camera.ZoomEvent = function() {
 // inherit from X.event
 goog.inherits(X.camera.ZoomEvent, X.event);
 
+/**
+ * The render event to update renderer.
+ *
+ * @constructor
+ * @extends {X.event}
+ */
+X.camera.RenderEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.camera.RENDER_CAMERA);
+  
+  /**
+   * The timestamp of this render event.
+   *
+   * @type {!number}
+   */
+  this._timestamp = Date.now();
+};
+// inherit from X.event
+goog.inherits(X.camera.RenderEvent, X.event);
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.camera', X.camera);
 goog.exportSymbol('X.camera.prototype.observe', X.camera.prototype.observe);
@@ -616,6 +638,8 @@ goog.exportSymbol('X.camera.prototype.observe', X.camera.prototype.observe);
 goog.exportSymbol('X.camera.PanEvent', X.camera.PanEvent);
 goog.exportSymbol('X.camera.RotateEvent', X.camera.RotateEvent);
 goog.exportSymbol('X.camera.ZoomEvent', X.camera.ZoomEvent);
+goog.exportSymbol('X.camera.RenderEvent', X.camera.RenderEvent);
 
 goog.exportSymbol('goog.math.Vec2', goog.math.Vec2);
 goog.exportSymbol('goog.math.Vec3', goog.math.Vec3);
+goog.exportSymbol('goog.math.Matrix', goog.math.Matrix);

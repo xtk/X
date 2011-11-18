@@ -39,7 +39,7 @@ X.shaders = function() {
    * @type {!string}
    * @protected
    */
-  this._vertexShaderSource = '';
+  this._vertexshaderSource = '';
   var t = '';
   t += 'attribute vec3 vertexPosition;\n';
   t += 'attribute vec3 vertexNormal;\n';
@@ -76,23 +76,23 @@ X.shaders = function() {
   t += '  fragmentColor = vec4(vertexColor*dLW,vertexOpacity);\n';
   // t += ' }';
   t += '}\n';
-  this._vertexShaderSource = t;
+  this._vertexshaderSource = t;
 
   /**
    * The fragment shader source of this shader pair. By default, a basic shader
    * supporting fragment colors is defined.
    *
-   * @type {!string}
+   * @type {!String}
    * @protected
    */
-  this._fragmentShaderSource = '';
+  this._fragmentshaderSource = '';
   var t2 = '';
   t2 += 'varying lowp vec4 fragmentColor;\n';
   t2 += '\n';
   t2 += 'void main(void) {\n';
   t2 += '  gl_FragColor = fragmentColor;\n';
   t2 += '}\n';
-  this._fragmentShaderSource = t2;
+  this._fragmentshaderSource = t2;
 
   /**
    * The string to access the position inside the vertex shader source.
@@ -201,7 +201,7 @@ goog.inherits(X.shaders, X.base);
  */
 X.shaders.prototype.vertex = function() {
 
-  return this._vertexShaderSource;
+  return this._vertexshaderSource;
 
 };
 
@@ -209,11 +209,11 @@ X.shaders.prototype.vertex = function() {
 /**
  * Get the fragment shader source of this shader pair.
  *
- * @return {!string} The fragment shader source.
+ * @return {!String} The fragment shader source.
  */
 X.shaders.prototype.fragment = function() {
 
-  return this._fragmentShaderSource;
+  return this._fragmentshaderSource;
 
 };
 
@@ -281,7 +281,7 @@ X.shaders.prototype.perspective = function() {
 /**
  * Get the normal uniform locator
  *
- * @return {String|null} The normal uniform locator.
+ * @return {String} The normal uniform locator.
  */
 X.shaders.prototype.normalUniform = function() {
 
@@ -374,7 +374,7 @@ X.shaders.prototype.validate = function() {
 
   var t = 31337;
 
-  t = this._vertexShaderSource.search(this._positionAttribute);
+  t = this._vertexshaderSource.search(this._positionAttribute);
 
   if (t == -1) {
 
@@ -383,7 +383,7 @@ X.shaders.prototype.validate = function() {
 
   }
 
-  t = this._vertexShaderSource.search(this._normalAttribute);
+  t = this._vertexshaderSource.search(this._normalAttribute);
 
   if (t == -1) {
 
@@ -392,7 +392,7 @@ X.shaders.prototype.validate = function() {
 
   }
 
-  t = this._vertexShaderSource.search(this._colorAttribute);
+  t = this._vertexshaderSource.search(this._colorAttribute);
 
   if (t == -1) {
 
@@ -401,7 +401,7 @@ X.shaders.prototype.validate = function() {
 
   }
 
-  t = this._vertexShaderSource.search(this._opacityAttribute);
+  t = this._vertexshaderSource.search(this._opacityAttribute);
 
   if (t == -1) {
 
@@ -410,7 +410,7 @@ X.shaders.prototype.validate = function() {
 
   }
 
-  t = this._vertexShaderSource.search(this._perspectiveUniform);
+  t = this._vertexshaderSource.search(this._perspectiveUniform);
 
   if (t == -1) {
 
@@ -419,7 +419,7 @@ X.shaders.prototype.validate = function() {
 
   }
 
-  t = this._vertexShaderSource.search(this._viewUniform);
+  t = this._vertexshaderSource.search(this._viewUniform);
 
   if (t == -1) {
 
@@ -428,7 +428,7 @@ X.shaders.prototype.validate = function() {
 
   }
 
-  t = this._vertexShaderSource.search(this._normalUniform);
+  t = this._vertexshaderSource.search(this._normalUniform);
 
   if (t == -1) {
 
@@ -437,7 +437,7 @@ X.shaders.prototype.validate = function() {
 
   }
 
-  t = this._vertexShaderSource.search(this._lighting);
+  t = this._vertexshaderSource.search(this._lighting);
 
   if (t == -1) {
 
