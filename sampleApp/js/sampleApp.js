@@ -137,26 +137,26 @@ sampleApp.run = function() {
     // we probably do not need to time this because of an appropriate event
     // mechanism?
     // temp, should update lighting like that, should use events!
-    setInterval(function() {
-
-      // lighting = document.getElementById('lighting').checked;
-      // sliceView1.setLighting(lighting);
-      // sliceView1.render();
-      // sliceView2.setLighting(lighting);
-      // sliceView2.render();
-      // sliceView3.setLighting(lighting);
-      // sliceView3.render();
-      // threeDView.setLighting(lighting);
-      box1.transform().rotateZ(3);
-      // box2.transform().rotateY(3);
-      // box3.transform().rotateY(3);
-      // box3.transform().rotateX(3);
-      threeDView.setupTransform_(box1);
-      // threeDView.setupTransform_(box2);
-      // threeDView.setupTransform_(box3);
-      // threeDView.setupObject_(box1);
-      threeDView.render();
-    }, 15);
+    // setInterval(function() {
+    
+    // lighting = document.getElementById('lighting').checked;
+    // sliceView1.setLighting(lighting);
+    // sliceView1.render();
+    // sliceView2.setLighting(lighting);
+    // sliceView2.render();
+    // sliceView3.setLighting(lighting);
+    // sliceView3.render();
+    // threeDView.setLighting(lighting);
+    box1.transform().rotateZ(3);
+    // box2.transform().rotateY(3);
+    // box3.transform().rotateY(3);
+    // box3.transform().rotateX(3);
+    threeDView.setupTransform_(box1);
+    // threeDView.setupTransform_(box2);
+    // threeDView.setupTransform_(box3);
+    // threeDView.setupObject_(box1);
+    threeDView.render();
+    // }, 15);
     
     // c.out(sliceView1.print());
     // c.out(sliceView2.print());

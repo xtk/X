@@ -32,7 +32,7 @@ X.loader = function() {
    */
   this._className = 'loader';
   
-  this._completed = false;
+  this._completed = true;
   
   goog.Timer.callOnce(function() {
 
@@ -47,6 +47,14 @@ goog.inherits(X.loader, X.base);
 X.loader.prototype.completed = function() {
 
   return this._completed;
+  
+};
+
+X.loader.prototype.addTexture = function() {
+
+  
+  // reset completed flag to false
+  this._completed = false;
   
 };
 
