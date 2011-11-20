@@ -259,8 +259,12 @@ X.renderer = function(width, height) {
   
   this._lighting = true;
   
-  this._isReady = false;
-  
+  /**
+   * The loader associated with this renderer.
+   * 
+   * @type {?X.loader}
+   * @protected
+   */
   this._loader = null;
   
 };
@@ -809,6 +813,7 @@ X.renderer.prototype.addShaders = function(shaders) {
   this._gl.useProgram(shaderProgram);
   
   // store the index of the position, color, opacity etc. attributes
+  // TODO use a single hashmap to store the attribute pointers
   this._vertexPositionAttribute = this._gl.getAttribLocation(shaderProgram,
       shaders.position());
   this._gl.enableVertexAttribArray(this._vertexPositionAttribute);
@@ -877,7 +882,8 @@ X.renderer.prototype.add = function(object) {
     
   }
   
-  // TODO move this to the update method.. then, objects can have texture and be
+  // TODO move this to the update method.. then, objects can have texture _and_
+  // be
   // vtk based etc.
   
   // here we check first if additional loading is necessary
@@ -906,7 +912,7 @@ X.renderer.prototype.add = function(object) {
   
   // }
   
-
+  // no texture or external file
   this.setupVertices_(object);
   this.setupTransform_(object);
   
@@ -1338,7 +1344,8 @@ X.renderer.prototype.setupObject_ = function(object) {
       
     }
     
-    // setup the glTexture
+    // setup the glTexture, at this point the image for the texture was already
+    // loaded thanks to X.loader
     var texture = this._gl.createTexture();
     
     // connect the image and the glTexture
@@ -1347,49 +1354,6 @@ X.renderer.prototype.setupObject_ = function(object) {
     this._textures.set(object.texture().file(), texture);
     
     this.activateTexture(texture);
-    
-    // handler after the image was completely loaded
-    // goog.events.listenOnce(textureImage, goog.events.EventType.LOAD,
-    // this.activateTexture.bind(this, texture));
-    
-    //    
-    // // check if the exact texture was already registered within the glContext
-    // var reuseTexture = false;
-    // if (goog.isDefAndNotNull(this._textures.get(object.texture().file()))) {
-    //      
-    // reuseTexture = true;
-    //      
-    // }
-    //    
-    // // load the texture
-    // // but only if we do not reuse an existing texture
-    // if (!reuseTexture) {
-    //      
-    // // setup the image
-    // var textureImage = new Image();
-    //      
-    // // setup the glTexture
-    // var texture = this._gl.createTexture();
-    //      
-    // // connect the image and the glTexture
-    // texture.image = textureImage;
-    //      
-    // // handler after the image was completely loaded
-    // goog.events.listenOnce(textureImage, goog.events.EventType.LOAD,
-    // this.activateTexture.bind(this, texture));
-    //      
-    // var currentTextureFilename = object.texture().file();
-    //      
-    // // save the glTexture to the internal hash map of textures
-    // this._textures.set(currentTextureFilename, texture);
-    //      
-    // // configue the image source
-    // textureImage.src = currentTextureFilename;
-    //      
-    // } // check if this is a new texture
-    
-    // in any case, we have to buffer the texture-coordinate-map a.k.a. as
-    // texture positions
     
     // create texture buffer
     var glTexturePositionBuffer = this._gl.createBuffer();

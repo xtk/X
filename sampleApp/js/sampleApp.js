@@ -97,13 +97,13 @@ sampleApp.run = function() {
     // var vtkObj = new X.vtkObject('model.vtk');
     
     // create a box with a solid color
-    // var box2 = new X.box(new goog.math.Vec3(-10, -10, -10), 5, 5, 5);
-    // box2.setColor(new X.color(0, 0, 1));
-    // box2.setOpacity(0.6);
-    // box2.transform().translateX(-50);
-    // box2.transform().translateY(30);
-    // box2.transform().translateZ(-30);
-    // box2.transform().rotateX(45);
+    var box2 = new X.box(new goog.math.Vec3(-10, -10, -10), 5, 5, 5);
+    box2.setColor(new X.color(0, 0, 1));
+    box2.setOpacity(0.6);
+    box2.transform().translateX(-50);
+    box2.transform().translateY(30);
+    box2.transform().translateZ(-30);
+    box2.transform().rotateX(45);
     
     // create a box with different colored sides
     var box3 = new X.box(new goog.math.Vec3(0, 0, 0), 3, 3, 3);
@@ -131,7 +131,7 @@ sampleApp.run = function() {
      * threeDView.addObject(object4); threeDView.addObject(object5);
      */
     threeDView.add(box1);
-    // threeDView.add(box2);
+    threeDView.add(box2);
     threeDView.add(box3);
     
     // we probably do not need to time this because of an appropriate event
