@@ -1,5 +1,6 @@
 # imports
 import os, sys
+from socket import getfqdn
 # WRITE XML
 from xml.dom import minidom
 # GET DATE
@@ -25,14 +26,15 @@ def calculate(buildtype, filename):
   systeminfo = os.uname()
   siteElement.setAttribute('BuildName', system_info[0] + '-' + system_info[2])
 
+  hostname = getfqdn()
 
   now = datetime.datetime.now()
   buildtime = str(now.year) + str(now.month) + str(now.day) + "-" + str(now.minute) + str(now.second)
   buildtype = buildtype
   buildstamp = buildtime + '-' + buildtype
   siteElement.setAttribute('BuildStamp', buildstamp)
-  siteElement.setAttribute('Name', system_info[1])
-  siteElement.setAttribute('Hostname', system_info[1])
+  siteElement.setAttribute('Name', hostname)
+  siteElement.setAttribute('Hostname', hostname)
 
   xml.appendChild(siteElement)
 
