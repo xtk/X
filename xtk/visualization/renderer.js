@@ -996,7 +996,7 @@ X.renderer.prototype.setupTransform_ = function(object) {
   
   // we need to convert the transform row0 to an array to set it for all
   // vertices
-  tmpArray = new Array(object.points().flatten().length * 4);
+  var tmpArray = new Array(object.points().flatten().length * 4);
   var j;
   for (j = 0; j < tmpArray.length; j = j + 4) {
     
