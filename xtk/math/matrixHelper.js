@@ -106,7 +106,7 @@ goog.math.Matrix.prototype.translate = X.matrixHelper.translate;
  * @return {goog.math.Matrix} The result of this rotation.
  * @throws {X.exception} An exception if the rotation fails.
  */
-X.matrixHelper.rotate = function(angle, axis) {
+X.matrixHelper.rotate = function(angle, iaxis) {
 
   var dimensions = this.getSize();
 
@@ -116,7 +116,7 @@ X.matrixHelper.rotate = function(angle, axis) {
 
   }
 
-  if (!goog.isDefAndNotNull(axis) || !(axis instanceof goog.math.Vec3)) {
+  if (!goog.isDefAndNotNull(iaxis) || !(iaxis instanceof goog.math.Vec3)) {
 
     throw new X.exception('Fatal: Invalid axis vector!');
 
@@ -129,7 +129,7 @@ X.matrixHelper.rotate = function(angle, axis) {
   }
 
   // normalize the axis
-  var axis = axis.normalize();
+  var axis = iaxis.normalize();
 
   // trigonometrical fun
   var cos = Math.cos(angle);

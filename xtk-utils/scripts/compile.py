@@ -1,6 +1,7 @@
 # imports
 #
 import os, sys
+import time
 
 def calculate( namespace, dir, xtkdir, buildtool, compiler):
     print '+++++++++++++++++++++++++++++++'
@@ -18,6 +19,12 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
     # create ouput folder if it doesn't exist
     if not os.path.exists(output): os.makedirs(output)
 
+    # remove file if exists
+    if os.path.exists('temp_build.log'): os.remove( 'temp_build.log' )
+
+    # start compilation time
+    start = time.clock()
+    
     #compile all files
     if(namespace == 'X'):
         for root, dirs, files in os.walk(dir):
@@ -46,12 +53,14 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
                     command += ' -f "--warning_level=VERBOSE"'
                     command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
                     command += ' > ' + real_output + os.sep + name
-                    
+# &> test.file.xml                    
                     #
                     # run, forest, run
                     #
-                    os.system( command )
-
+                    os.system( command + ' 2> temp' )
+                    os.system( 'cat temp' )
+                    os.system( 'cat temp >> temp_build.log' )
+                    if os.path.exists('temp'): os.remove( 'temp' )
     
     # compile project
     else:
@@ -68,5 +77,25 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
         #
         # run, forest, run
         #
-        os.system( command )
+        os.system( command + ' &> temp' )
+        os.system( 'cat temp' )
+        os.system( 'cat temp >> temp_build.log' )
+        if os.path.exists('temp'): os.remove( 'temp' )
+
+    # end compilation time
+    end = time.clock()
+    processingTime = end - start
+
+    if(namespace == 'X'):
+        os.system( 'echo ' + str(start) + ' > xtk_build.log')
+        os.system( 'echo ' + str(end) + ' >> xtk_build.log')
+        os.system( 'echo ' + str(processingTime) + ' >> xtk_build.log')
+        os.system( 'cat temp_build.log >> xtk_build.log')
+    else:
+        os.system( 'echo ' + str(start) + ' > project_build.log')
+        os.system( 'echo ' + str(end) + ' >> project_build.log')
+        os.system( 'echo ' + str(processingTime) + ' >> project_build.log')
+        os.system( 'cat temp_build.log >> project_build.log')
+
+    if os.path.exists('temp_build.log'): os.remove( 'temp_build.log' )
     print '>> OUTPUT: ' + output + os.sep + namespace + '.js'

@@ -1,0 +1,221 @@
+<?xml version="1.0" ?><Site BuildName="Darwin-11.1.0" BuildStamp="2011111-468-Experimental" Hostname="starfish.megason-lab" Name="starfish.megason-lab"><Build><StartDateTime>Nov 01 19:46 EST</StartDateTime><StartBuildTime>1320176768.05</StartBuildTime><BuildCommand>this is a build command</BuildCommand><EndDateTime>Nov 01 19:46 EST</EndDateTime><EndBuildTime>1320176768.05</EndBuildTime><ElapsedMinutes>0</ElapsedMinutes><Warning><BuildLogLine>148</BuildLogLine><Text>/Users/nr52/projectX/xtk/io/interactor.js:372: WARNING - Property deltaY never defined on Event
+</Text><SourceFile>/Users/nr52/projectX/xtk/io/interactor.js</SourceFile><SourceLineNumber>372</SourceLineNumber><PostContext>  e._in = (event.deltaY &gt; 0);
+
+           ^
+</PostContext></Warning><Warning><BuildLogLine>164</BuildLogLine><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
+</Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>  var axis = axis.normalize();
+
+      ^
+</PostContext></Warning><Warning><BuildLogLine>168</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>187</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
+
+required: goog.math.Vec2
+</PostContext></Warning><Warning><BuildLogLine>174</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>206</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
+
+required: goog.math.Vec2
+</PostContext></Warning><Warning><BuildLogLine>180</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>218</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+
+required: goog.math.Matrix
+</PostContext></Warning><Warning><BuildLogLine>186</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>230</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+
+required: goog.math.Matrix
+</PostContext></Warning><Warning><BuildLogLine>192</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>242</SourceLineNumber><PostContext>found   : (goog.math.Vec3|null)
+
+required: goog.math.Vec3
+</PostContext></Warning><Warning><BuildLogLine>198</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>339</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>202</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>339</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>206</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>339</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>210</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>368</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>214</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>368</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>218</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>368</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>222</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>398</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>226</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>398</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>230</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>398</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>234</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>428</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>238</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>428</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>242</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>428</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>246</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>497</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+
+required: goog.math.Matrix
+</PostContext></Warning><Warning><BuildLogLine>270</BuildLogLine><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
+</Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>  var axis = axis.normalize();
+
+      ^
+</PostContext></Warning><Warning><BuildLogLine>292</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>258</SourceLineNumber><PostContext>X.object.OPACITY_COMPARATOR = function(object1, object2) {
+
+                                      ^
+</PostContext></Warning><Warning><BuildLogLine>296</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>274</SourceLineNumber><PostContext>found   : number
+
+required: (Number|null)
+</PostContext></Warning><Warning><BuildLogLine>302</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>280</SourceLineNumber><PostContext>found   : number
+
+required: (Number|null)
+</PostContext></Warning><Warning><BuildLogLine>344</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:258: WARNING - Missing return statement. Function expected to return (Number|null).
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>258</SourceLineNumber><PostContext>X.object.OPACITY_COMPARATOR = function(object1, object2) {
+
+                                      ^
+</PostContext></Warning><Warning><BuildLogLine>348</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:274: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>274</SourceLineNumber><PostContext>found   : number
+
+required: (Number|null)
+</PostContext></Warning><Warning><BuildLogLine>354</BuildLogLine><Text>/Users/nr52/projectX/xtk/objects/object.js:280: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/objects/object.js</SourceFile><SourceLineNumber>280</SourceLineNumber><PostContext>found   : number
+
+required: (Number|null)
+</PostContext></Warning><Warning><BuildLogLine>414</BuildLogLine><Text>/Users/nr52/projectX/xtk/math/matrixHelper.js:132: WARNING - Redeclared variable: axis
+</Text><SourceFile>/Users/nr52/projectX/xtk/math/matrixHelper.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>  var axis = axis.normalize();
+
+      ^
+</PostContext></Warning><Warning><BuildLogLine>418</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:127: WARNING - Bad type annotation. Unknown type X.interactor
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>127</SourceLineNumber><PostContext> * @param {!X.interactor} interactor The interactor which should be observed.
+
+                        ^
+</PostContext></Warning><Warning><BuildLogLine>422</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:132: WARNING - X.interactor is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>      !(interactor instanceof X.interactor)) {
+
+                              ^
+</PostContext></Warning><Warning><BuildLogLine>426</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>187</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
+
+required: goog.math.Vec2
+</PostContext></Warning><Warning><BuildLogLine>432</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>206</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
+
+required: goog.math.Vec2
+</PostContext></Warning><Warning><BuildLogLine>438</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:218: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>218</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+
+required: goog.math.Matrix
+</PostContext></Warning><Warning><BuildLogLine>444</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:230: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>230</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+
+required: goog.math.Matrix
+</PostContext></Warning><Warning><BuildLogLine>450</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:242: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>242</SourceLineNumber><PostContext>found   : (goog.math.Vec3|null)
+
+required: goog.math.Vec3
+</PostContext></Warning><Warning><BuildLogLine>456</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>339</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>460</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>339</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>464</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:339: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>339</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>468</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>368</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>472</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>368</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>476</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:368: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>368</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>480</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>398</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>484</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>398</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>488</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:398: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>398</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>492</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - Property RenderEvent never defined on X.renderer
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>428</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>496</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - Property renderer never defined on X
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>428</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>500</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:428: WARNING - X.renderer is never defined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>428</SourceLineNumber><PostContext>  this.dispatchEvent(new X.renderer.RenderEvent());
+
+                         ^
+</PostContext></Warning><Warning><BuildLogLine>504</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/camera.js:497: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/camera.js</SourceFile><SourceLineNumber>497</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+
+required: goog.math.Matrix
+</PostContext></Warning><Error><BuildLogLine>516</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:41: ERROR - variable toto is undefined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>41</SourceLineNumber><PostContext>toto = tata
+
+^
+</PostContext></Error><Error><BuildLogLine>520</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:41: ERROR - variable tata is undefined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>41</SourceLineNumber><PostContext>toto = tata
+
+       ^
+</PostContext></Error><Error><BuildLogLine>530</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:41: ERROR - variable toto is undefined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>41</SourceLineNumber><PostContext>toto = tata
+
+^
+</PostContext></Error><Error><BuildLogLine>534</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:41: ERROR - variable tata is undefined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>41</SourceLineNumber><PostContext>toto = tata
+
+       ^
+</PostContext></Error><Error><BuildLogLine>544</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:41: ERROR - variable toto is undefined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>41</SourceLineNumber><PostContext>toto = tata
+
+^
+</PostContext></Error><Error><BuildLogLine>548</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/renderer.js:41: ERROR - variable tata is undefined
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/renderer.js</SourceFile><SourceLineNumber>41</SourceLineNumber><PostContext>toto = tata
+
+       ^
+</PostContext></Error><Warning><BuildLogLine>570</BuildLogLine><Text>/Users/nr52/projectX/xtk/visualization/shaders.js:80: WARNING - Redeclared variable: t
+</Text><SourceFile>/Users/nr52/projectX/xtk/visualization/shaders.js</SourceFile><SourceLineNumber>80</SourceLineNumber><PostContext>  var t = '';
+
+      ^
+</PostContext></Warning></Build></Site>
