@@ -616,3 +616,6 @@ goog.exportSymbol('X.camera.prototype.observe', X.camera.prototype.observe);
 goog.exportSymbol('X.camera.PanEvent', X.camera.PanEvent);
 goog.exportSymbol('X.camera.RotateEvent', X.camera.RotateEvent);
 goog.exportSymbol('X.camera.ZoomEvent', X.camera.ZoomEvent);
+
+goog.exportSymbol('goog.math.Vec2', goog.math.Vec2);
+goog.exportSymbol('goog.math.Vec3', goog.math.Vec3);

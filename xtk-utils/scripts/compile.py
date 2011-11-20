@@ -58,7 +58,8 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
                     # run, forest, run
                     #
                     os.system( command + ' 2> temp' )
-                    os.system( 'cat temp' )
+                    # get current location
+                    os.system( 'bash scripts/readtemp.sh temp' )
                     os.system( 'cat temp >> temp_build.log' )
                     if os.path.exists('temp'): os.remove( 'temp' )
     
@@ -78,7 +79,7 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
         # run, forest, run
         #
         os.system( command + ' &> temp' )
-        os.system( 'cat temp' )
+        os.system( 'bash readtemp.sh temp' )
         os.system( 'cat temp >> temp_build.log' )
         if os.path.exists('temp'): os.remove( 'temp' )
 
