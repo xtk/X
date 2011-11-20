@@ -5,6 +5,7 @@
 // provides
 goog.provide('X.renderer');
 goog.provide('X.renderer.RenderEvent');
+goog.provide('X.renderer.ModifiedEvent');
 
 // requires
 goog.require('X.base');
@@ -274,7 +275,8 @@ goog.inherits(X.renderer, X.base);
  */
 X.renderer.events = {
   // the render event
-  RENDER: X.event.uniqueId('render')
+  RENDER: X.event.uniqueId('render'),
+  MODIFIED: X.event.uniqueId('modified')
 };
 
 
@@ -300,6 +302,37 @@ X.renderer.RenderEvent = function() {
 };
 // inherit from X.event
 goog.inherits(X.renderer.RenderEvent, X.event);
+
+
+/**
+ * The modified event to update a single object.
+ * 
+ * @constructor
+ * @extends {X.event}
+ */
+X.renderer.ModifiedEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.renderer.events.MODIFIED);
+  
+  /**
+   * The timestamp of this modified event.
+   * 
+   * @type {!number}
+   */
+  this._timestamp = Date.now();
+  
+  /**
+   * The associated X.object of this modified event.
+   * 
+   * @type {?X.object}
+   */
+  this._object = null;
+  
+};
+// inherit from X.event
+goog.inherits(X.renderer.ModifiedEvent, X.event);
+
 
 
 /**
@@ -547,11 +580,29 @@ X.renderer.prototype.loader = function() {
 
   if (!goog.isDefAndNotNull(this._loader)) {
     
+    // create a new loader on demand (lazy loading)
     this._loader = new X.loader();
+    
+    // listen to a modified event which gets fired after loading was completed
+    goog.events.listen(this.loader(), X.renderer.events.MODIFIED,
+        this.onModified.bind(this));
     
   }
   
   return this._loader;
+  
+};
+
+X.renderer.prototype.onModified = function(event) {
+
+  var object = event._object;
+  
+  this.setupVertices_(object);
+  this.setupTransform_(object);
+  
+  this.setupObject_(object);
+  
+  this.render();
   
 };
 
@@ -826,6 +877,36 @@ X.renderer.prototype.add = function(object) {
     
   }
   
+  // TODO move this to the update method.. then, objects can have texture and be
+  // vtk based etc.
+  
+  // here we check first if additional loading is necessary
+  // this would be the case if
+  // a) the object has an external texture
+  // b) the object is based on an external file (vtk, stl...)
+  // in these cases, we do not directly update the object but activate the
+  // X.loader to get the externals and then let it call the update method
+  if (goog.isDefAndNotNull(object.texture())) {
+    // texture associated to this object
+    
+    // start loading..
+    this.loader().loadTexture(object);
+    
+    return;
+    
+  } // else if (object instanceof X.vtkObject) {
+  
+  // this.loader().loadVtkObject(object);
+  // return;
+  
+  // } else if (object instanceof X.stlObject) {
+  
+  // this.loader().loadStlObject(object);
+  // return;
+  
+  // }
+  
+
   this.setupVertices_(object);
   this.setupTransform_(object);
   
@@ -1257,49 +1338,55 @@ X.renderer.prototype.setupObject_ = function(object) {
       
     }
     
-    // check if the exact texture was already registered within the glContext
-    var reuseTexture = false;
-    if (goog.isDefAndNotNull(this._textures.get(object.texture().file()))) {
-      
-      reuseTexture = true;
-      
-    }
+    // setup the glTexture
+    var texture = this._gl.createTexture();
     
-    // check if the maximum number of textures is reached
-    // if we reuse an existing texture, skip this check
-    if (this._textures.getCount() >= 32 && !reuseTexture) {
-      
-      throw new X.exception(
-          'Fatal: The maximum number of textures (32) is reached!');
-      
-    }
+    // connect the image and the glTexture
+    texture.image = object.texture().image();
     
-    // load the texture
-    // but only if we do not reuse an existing texture
-    if (!reuseTexture) {
-      
-      // setup the image
-      var textureImage = new Image();
-      
-      // setup the glTexture
-      var texture = this._gl.createTexture();
-      
-      // connect the image and the glTexture
-      texture.image = textureImage;
-      
-      // handler after the image was completely loaded
-      goog.events.listenOnce(textureImage, goog.events.EventType.LOAD,
-          this.activateTexture.bind(this, texture));
-      
-      var currentTextureFilename = object.texture().file();
-      
-      // save the glTexture to the internal hash map of textures
-      this._textures.set(currentTextureFilename, texture);
-      
-      // configue the image source
-      textureImage.src = currentTextureFilename;
-      
-    } // check if this is a new texture
+    this._textures.set(object.texture().file(), texture);
+    
+    this.activateTexture(texture);
+    
+    // handler after the image was completely loaded
+    // goog.events.listenOnce(textureImage, goog.events.EventType.LOAD,
+    // this.activateTexture.bind(this, texture));
+    
+    //    
+    // // check if the exact texture was already registered within the glContext
+    // var reuseTexture = false;
+    // if (goog.isDefAndNotNull(this._textures.get(object.texture().file()))) {
+    //      
+    // reuseTexture = true;
+    //      
+    // }
+    //    
+    // // load the texture
+    // // but only if we do not reuse an existing texture
+    // if (!reuseTexture) {
+    //      
+    // // setup the image
+    // var textureImage = new Image();
+    //      
+    // // setup the glTexture
+    // var texture = this._gl.createTexture();
+    //      
+    // // connect the image and the glTexture
+    // texture.image = textureImage;
+    //      
+    // // handler after the image was completely loaded
+    // goog.events.listenOnce(textureImage, goog.events.EventType.LOAD,
+    // this.activateTexture.bind(this, texture));
+    //      
+    // var currentTextureFilename = object.texture().file();
+    //      
+    // // save the glTexture to the internal hash map of textures
+    // this._textures.set(currentTextureFilename, texture);
+    //      
+    // // configue the image source
+    // textureImage.src = currentTextureFilename;
+    //      
+    // } // check if this is a new texture
     
     // in any case, we have to buffer the texture-coordinate-map a.k.a. as
     // texture positions
@@ -1397,11 +1484,13 @@ X.renderer.prototype.render = function() {
     // we are not ready yet.. the loader is still working
     this._readyCheckTimer = goog.Timer.callOnce(function() {
 
+      this._readyCheckTimer = null; // destroy the timer
+      
       // try to render now..
       // if the loader is ready it will work, else wise another single-shot gets
       // configured in 500 ms
       this.render();
-      this._readyCheckTimer = null; // destroy the timer
+      
     }.bind(this), 500); // check again in 500 ms
     return; // .. and jump out
     
@@ -1409,6 +1498,7 @@ X.renderer.prototype.render = function() {
     
     // we are ready! yahoooo!
     
+
   }
   
   //

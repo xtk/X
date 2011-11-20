@@ -43,6 +43,8 @@ X.texture = function(file) {
   
   this._filter = X.texture.filters.SHARP;
   
+  this._image = null;
+  
 };
 // inherit from X.base
 goog.inherits(X.texture, X.base);
@@ -68,6 +70,20 @@ X.texture.filters = {
 X.texture.prototype.file = function() {
 
   return this._file;
+  
+};
+
+
+X.texture.prototype.image = function() {
+
+  return this._image;
+  
+};
+
+
+X.texture.prototype.setImage = function(image) {
+
+  this._image = image;
   
 };
 
