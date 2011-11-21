@@ -4,7 +4,7 @@ XTK_DIR=$XTKUTILS_DIR/../
 
 cd $XTK_DIR
 git checkout master
-update=$(git diff origin/master)
+update=$(git diff origin/master ../xtk)
 if [ ${#update} > 0 ]
   then
     git pull
