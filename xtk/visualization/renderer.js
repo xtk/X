@@ -243,41 +243,6 @@ goog.inherits(X.renderer, X.base);
 
 
 /**
- * The events of this class.
- *
- * @enum {string}
- */
-X.renderer.events = {
-  // the render event
-  RENDER: X.event.uniqueId('render')
-};
-
-
-
-/**
- * The render event to initiate a re-rendering of all objects.
- *
- * @constructor
- * @extends {X.event}
- */
-X.renderer.RenderEvent = function() {
-
-  // call the default event constructor
-  goog.base(this, X.renderer.events.RENDER);
-
-  /**
-   * The timestamp of this render event.
-   *
-   * @type {!number}
-   */
-  this._timestamp = Date.now();
-
-};
-// inherit from X.event
-goog.inherits(X.renderer.RenderEvent, X.event);
-
-
-/**
  * Get the dimension of this renderer. E.g. 2 for two-dimensional, 3 for
  * three-dimensional.
  *
@@ -629,7 +594,7 @@ X.renderer.prototype.init = function() {
   // listen to render requests from the camera
   // these get fired after user-interaction and camera re-positioning to re-draw
   // all objects
-  goog.events.listen(camera, X.camera.events.RENDER_CAMERA, this.render.bind(this));
+  goog.events.listen(camera, X.event.events.RENDER, this.render.bind(this));
 
   //
   // attach all created objects as class attributes

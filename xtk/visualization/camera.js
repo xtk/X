@@ -4,12 +4,12 @@
 
 // provides
 goog.provide('X.camera');
-goog.provide('X.camera.PanEvent');
-goog.provide('X.camera.RotateEvent');
-goog.provide('X.camera.ZoomEvent');
-goog.provide('X.camera.RenderEvent')
+
 // requires
-goog.require('X.event');
+goog.require('X.event.ZoomEvent');
+goog.require('X.event.RotateEvent');
+goog.require('X.event.PanEvent');
+goog.require('X.event.RenderEvent');
 goog.require('X.base');
 goog.require('X.exception');
 goog.require('X.matrixHelper');
@@ -102,27 +102,6 @@ X.camera = function(width, height) {
 // inherit from X.base
 goog.inherits(X.camera, X.base);
 
-
-/**
- * The events of this class.
- *
- * @enum {string}
- */
-X.camera.events = {
-  // the pan event, where the camera and focus get moved accordingly
-  PAN: X.event.uniqueId('pan'),
-
-  // the rotate event, where only the camera gets moved
-  ROTATE: X.event.uniqueId('rotate'),
-
-  // the zoom event, where the camera Z coordinate changes
-  ZOOM: X.event.uniqueId('zoom'),
-
-  // update the renderer
-  RENDER_CAMERA: X.event.uniqueId('rendercamera')
-};
-
-
 /**
  * Configures observes for a given interactor. The method sets up listeners for
  * PAN, ROTATE and ZOOM events.
@@ -138,10 +117,10 @@ X.camera.prototype.observe = function(interactor) {
 
   }
 
-  goog.events.listen(interactor, X.camera.events.PAN, this.onPan.bind(this));
-  goog.events.listen(interactor, X.camera.events.ROTATE, this.onRotate
+  goog.events.listen(interactor, X.event.events.PAN, this.onPan.bind(this));
+  goog.events.listen(interactor, X.event.events.ROTATE, this.onRotate
       .bind(this));
-  goog.events.listen(interactor, X.camera.events.ZOOM, this.onZoom.bind(this));
+  goog.events.listen(interactor, X.event.events.ZOOM, this.onZoom.bind(this));
 
 };
 
@@ -154,7 +133,7 @@ X.camera.prototype.observe = function(interactor) {
  */
 X.camera.prototype.onZoom = function(event) {
 
-  if (!(event instanceof X.camera.ZoomEvent)) {
+  if (!(event instanceof X.event.ZoomEvent)) {
 
     throw new X.exception('Fatal: Received no valid zoom event!');
 
@@ -181,7 +160,7 @@ X.camera.prototype.onZoom = function(event) {
  */
 X.camera.prototype.onPan = function(event) {
 
-  if (!(event instanceof X.camera.PanEvent)) {
+  if (!(event instanceof X.event.PanEvent)) {
 
     throw new X.exception('Fatal: Received no valid pan event!');
 
@@ -200,7 +179,9 @@ X.camera.prototype.onPan = function(event) {
  */
 X.camera.prototype.onRotate = function(event) {
 
-  if (!(event instanceof X.camera.RotateEvent)) {
+  console.log('rotate received!!!')
+
+  if (!(event instanceof X.event.RotateEvent)) {
 
     throw new X.exception('Fatal: Received no valid rotate event!');
 
@@ -330,7 +311,7 @@ X.camera.prototype.pan = function(distance) {
 
 
   // fire a render event
-  this.dispatchEvent(new X.camera.RenderEvent());
+  this.dispatchEvent(new X.event.RenderEvent());
 
 };
 
@@ -375,7 +356,7 @@ X.camera.prototype.rotate = function(distance) {
   this._view = this._view.multiply(rotateY.multiply(rotateX));
 
   // fire a render event
-  this.dispatchEvent(new X.camera.RenderEvent());
+  this.dispatchEvent(new X.event.RenderEvent());
 
 };
 
@@ -405,7 +386,7 @@ X.camera.prototype.zoomIn = function(fast) {
   this._view = zoomMatrix.multiply(this._view);
 
   // fire a render event
-  this.dispatchEvent(new X.camera.RenderEvent());
+  this.dispatchEvent(new X.event.RenderEvent());
 
 };
 
@@ -435,7 +416,7 @@ X.camera.prototype.zoomOut = function(fast) {
   this._view = zoomMatrix.multiply(this._view);
 
   // fire a render event
-  this.dispatchEvent(new X.camera.RenderEvent());
+  this.dispatchEvent(new X.event.RenderEvent());
 
 };
 
@@ -508,118 +489,6 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
 
 };
 
-
-
-/**
- * The pan event to initiate moving the camera and the focus.
- *
- * @constructor
- * @extends {X.event}
- */
-X.camera.PanEvent = function() {
-
-  // call the default event constructor
-  goog.base(this, X.camera.events.PAN);
-
-  /**
-   * The distance to pan in screen space.
-   *
-   * @type {?goog.math.Vec2}
-   * @protected
-   */
-  this._distance = null;
-
-};
-// inherit from X.event
-goog.inherits(X.camera.PanEvent, X.event);
-
-
-
-/**
- * The rotate event to initiate moving the camera around the focus.
- *
- * @constructor
- * @extends {X.event}
- */
-X.camera.RotateEvent = function() {
-
-  // call the default event constructor
-  goog.base(this, X.camera.events.ROTATE);
-
-  /**
-   * The distance to pan in screen space.
-   *
-   * @type {?goog.math.Vec2}
-   * @protected
-   */
-  this._distance = null;
-
-  /**
-   * The angle in degrees to pan around the last mouse position in screen space.
-   *
-   * @type {!number}
-   * @protected
-   */
-  this._angle = 0;
-
-};
-// inherit from X.event
-goog.inherits(X.camera.RotateEvent, X.event);
-
-/**
- * The zoom event to initiate zoom in or zoom out.
- *
- * @constructor
- * @extends {X.event}
- */
-X.camera.ZoomEvent = function() {
-
-  // call the default event constructor
-  goog.base(this, X.camera.events.ZOOM);
-
-  /**
-   * The flag for the zooming direction. If TRUE, the zoom operation will move
-   * the objects closer to the camera. If FALSE, further away from the camera.
-   *
-   * @type {!boolean}
-   * @protected
-   */
-  this._in = false;
-
-  /**
-   * The flag for the zooming speed. If TRUE, the zoom operation will happen
-   * fast. If FALSE, there will be a fine zoom operation.
-   *
-   * @type {!boolean}
-   * @protected
-   */
-  this._fast = false;
-
-};
-// inherit from X.event
-goog.inherits(X.camera.ZoomEvent, X.event);
-
-/**
- * The render event to update renderer.
- *
- * @constructor
- * @extends {X.event}
- */
-X.camera.RenderEvent = function() {
-
-  // call the default event constructor
-  goog.base(this, X.camera.RENDER_CAMERA);
-  
-  /**
-   * The timestamp of this render event.
-   *
-   * @type {!number}
-   */
-  this._timestamp = Date.now();
-};
-// inherit from X.event
-goog.inherits(X.camera.RenderEvent, X.event);
-
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.camera', X.camera);
 goog.exportSymbol('X.camera.prototype.observe', X.camera.prototype.observe);
@@ -635,10 +504,6 @@ goog.exportSymbol('X.camera.prototype.rotate', X.camera.prototype.rotate);
 goog.exportSymbol('X.camera.prototype.zoomIn', X.camera.prototype.zoomIn);
 goog.exportSymbol('X.camera.prototype.zoomOut', X.camera.prototype.zoomOut);
 goog.exportSymbol('X.camera.prototype.observe', X.camera.prototype.observe);
-goog.exportSymbol('X.camera.PanEvent', X.camera.PanEvent);
-goog.exportSymbol('X.camera.RotateEvent', X.camera.RotateEvent);
-goog.exportSymbol('X.camera.ZoomEvent', X.camera.ZoomEvent);
-goog.exportSymbol('X.camera.RenderEvent', X.camera.RenderEvent);
 
 goog.exportSymbol('goog.math.Vec2', goog.math.Vec2);
 goog.exportSymbol('goog.math.Vec3', goog.math.Vec3);

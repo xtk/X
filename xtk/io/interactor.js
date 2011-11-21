@@ -7,10 +7,10 @@ goog.provide('X.interactor');
 
 // requires
 goog.require('X.base');
-goog.require('X.camera');
-goog.require('X.camera.PanEvent');
-goog.require('X.camera.RotateEvent');
-goog.require('X.camera.ZoomEvent');
+goog.require('X.event');
+goog.require('X.event.RotateEvent');
+goog.require('X.event.PanEvent');
+goog.require('X.event.ZoomEvent');
 goog.require('X.exception');
 goog.require('goog.dom');
 goog.require('goog.events');
@@ -247,7 +247,7 @@ X.interactor.prototype.onMouseMovementOutside = function(event) {
 /**
  * Callback for mouse movement events inside the associated DOM element. This
  * distinguishes by pressed mouse buttons, key accelerators etc. and fires
- * proper X.camera events.
+ * proper X.event events.
  *
  * @param {Event} event The browser fired event.
  */
@@ -300,8 +300,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
     //
 
     // create a new pan event
-    var e = new X.camera.RotateEvent();
-
+    var e = new X.event.RotateEvent();
     // attach the distance vector
     e._distance = distance;
 
@@ -318,7 +317,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
     //
 
     // create a new pan event
-    var e = new X.camera.PanEvent();
+    var e = new X.event.PanEvent();
 
     // attach the distance vector
     e._distance = distance;
@@ -333,7 +332,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
     //
 
     // create a new zoom event
-    var e = new X.camera.ZoomEvent();
+    var e = new X.event.ZoomEvent();
 
     // set the zoom direction
     // true if zooming in, false if zooming out
@@ -354,7 +353,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
 
 /**
  * Callback for mouse wheel events on the associated DOM element. This fires
- * proper X.camera events.
+ * proper X.event events.
  *
  * @param {Event} event The browser fired event.
  */
@@ -364,7 +363,7 @@ X.interactor.prototype.onMouseWheel = function(event) {
   event.preventDefault();
 
   // create a new zoom event
-  var e = new X.camera.ZoomEvent();
+  var e = new X.event.ZoomEvent();
 
   // set the zoom direction
   // true if zooming in, false if zooming out
