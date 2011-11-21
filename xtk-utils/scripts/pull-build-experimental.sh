@@ -4,7 +4,12 @@ XTK_DIR=$XTKUTILS_DIR/../
 
 cd $XTK_DIR
 git checkout master
-git pull
-cd $XTKUTILS_DIR
-python build.py -e
+pull=$(git diff origin/master)
+echo ${pull}
+if [ -n pull ]
+  then
+    git pull
+    cd $XTKUTILS_DIR
+    python build.py -e
+fi
 
