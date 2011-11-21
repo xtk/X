@@ -6,7 +6,7 @@ cd $XTK_DIR
 git checkout master
 pull=$(git diff origin/master)
 echo ${pull}
-if [ -z ${pull} ]
+if [ -n ${pull} ]
   then
     git pull
     cd $XTKUTILS_DIR
