@@ -5,7 +5,10 @@ XTK_DIR=$XTKUTILS_DIR/../
 cd $XTK_DIR
 git checkout master
 pull=$(git diff origin/master)
+
 echo ${pull}
+echo ${#pull}
+
 if [ ${#pull} > 0]
   then
     git pull
