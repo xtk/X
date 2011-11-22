@@ -111,6 +111,13 @@ option_group.add_argument( '-n', '--nightly',
                     default=False,
                     help='Nightly build. Reports to cdash.xtk.org' )
 
+# nightly build
+option_group.add_argument( '-c', '--continuous',
+                    action='store_true',
+                    dest='continuous',
+                    default=False,
+                    help='Continuous build. Reports to cdash.xtk.org' )
+
 # testing
 test_group.add_argument( '-t', '--test',
                     action='store_true',
@@ -138,6 +145,7 @@ if( True in value_list ):
         # build type
         options.experimental = True
         options.nightly = True
+        options.continuous = True
     else:
         if( options.style ):
             options.style = False
@@ -296,6 +304,12 @@ if(options.nightly):
     xbuild_parser.calculate('Nightly', 'xtk_build.log')
     command = "ctest -S xtk.cmake -V"
     os.system(command)
+
+if(options.continuous):
+    xbuild_parser.calculate('Continuous', 'xtk_build.log')
+    command = "ctest -S xtk.cmake -V"
+    os.system(command)
+
 
 # delete temp output file
 
