@@ -6,14 +6,7 @@ cd $XTK_DIR
 git checkout master
 # reset the Build.xml file
 git checkout xtk-utils/Build.xml
-# git diff returns 1 when there are changes
-git diff origin/master --quiet
-if [ $? -eq 1 ]
-  then
-    git pull
-    cd $XTKUTILS_DIR
-    # -c: continuous
-    python build.py -c
-  else
-    echo 'no remote changes.. exiting..';
-fi
+
+old_head=$(git-rev-parse --verify HEAD) && git-pull -n >/dev/null 2>&1 || exit
+new_head=$(git-rev-parse --verify HEAD)
+test "$old_head" = "$new_head" || python $XTKUTILS_DIR/build.py -c
