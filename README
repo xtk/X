@@ -16,4 +16,4 @@ xtk-build:compiled version of the xtk library, if you want your project to be go
 sampleApp: demo application based on google closure and using xtk
 sampleApp2: demo application using xtk with google closure
 
-..
+.....
