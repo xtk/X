@@ -4,6 +4,8 @@ XTK_DIR=$XTKUTILS_DIR/../
 
 cd $XTK_DIR
 git checkout master
+# reset the Build.xml file
+git checkout xtk-utils/Build.xml
 # git diff returns 1 when there are changes
 git diff origin/master --quiet
 if [ $? eq 1 ]
