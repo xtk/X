@@ -8,7 +8,7 @@ git checkout master
 git checkout xtk-utils/Build.xml
 # git diff returns 1 when there are changes
 git diff origin/master --quiet
-if [ $? eq 1 ]
+if [ $? -eq 1 ]
   then
     git pull
     cd $XTKUTILS_DIR

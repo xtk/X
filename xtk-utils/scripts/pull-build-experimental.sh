@@ -4,8 +4,11 @@ XTK_DIR=$XTKUTILS_DIR/../
 
 cd $XTK_DIR
 git checkout master
-update=$(git diff origin/master)
-if [ ${update} ]
+# reset the Build.xml file
+git checkout xtk-utils/Build.xml
+# git diff returns 1 when there are changes
+git diff origin/master --quiet
+if [ $? -eq 1 ]
   then
     git pull
     cd $XTKUTILS_DIR
