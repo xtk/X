@@ -7,6 +7,13 @@ git checkout master
 # reset the Build.xml file
 git checkout xtk-utils/Build.xml
 
-old_head=$(git rev-parse --verify HEAD) && git-pull -n >/dev/null 2>&1 || exit
+old_head=$(git rev-parse --verify HEAD) && git-pull -n >/dev/null 2>&1
 new_head=$(git rev-parse --verify HEAD)
-test "$old_head" = "$new_head" || python $XTKUTILS_DIR/build.py -e
+
+if [ "$old_head" != "$new_head" ]
+then
+  # rebuild
+  python $XTKUTILS_DIR/build.py -e
+else
+  echo 'no changes..'
+fi
