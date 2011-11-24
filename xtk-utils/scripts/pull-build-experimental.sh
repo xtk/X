@@ -14,7 +14,8 @@ new_head=$(git rev-parse --verify HEAD)
 if [ "$old_head" != "$new_head" ]
 then
   # rebuild
-  python $XTKUTILS_DIR/build.py -e
+  cd $XTKUTILS_DIR
+  python build.py -e
 else
   echo 'no changes..'
 fi
