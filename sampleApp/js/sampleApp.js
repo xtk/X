@@ -6,7 +6,6 @@ goog.require('X.color');
 goog.require('X.colors');
 goog.require('X.console');
 goog.require('X.object');
-goog.require('X.renderer2D');
 goog.require('X.renderer3D');
 
 
@@ -46,8 +45,7 @@ sampleApp.run = function() {
     //
     // create a 'lightblue' 3D renderer in the div with id '3d' (see
     // ../index.html)
-    var threeDView = new X.renderer3D(912, 400);
-    threeDView.setContainerById('threeDView');
+    var threeDView = new X.renderer3D('threeDView');
     threeDView.setBackgroundColor('#b3b3e7');
     threeDView.init();
     threeDView.setLighting(lighting);

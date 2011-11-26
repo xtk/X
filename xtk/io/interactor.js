@@ -272,12 +272,12 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
   this._lastMousePosition = currentMousePosition.clone();
   
   // threshold the distance to avoid 'irregular' movement
-  if (Math.abs(distance.x) < 2) {
+  if (Math.abs(distance.x) < 5) {
     
     distance.x = 0;
     
   }
-  if (Math.abs(distance.y) < 2) {
+  if (Math.abs(distance.y) < 5) {
     
     distance.y = 0;
     
