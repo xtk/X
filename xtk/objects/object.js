@@ -117,6 +117,14 @@ X.object = function(type) {
   this._textureCoordinateMap = null;
   
   /**
+   * The filename if this object represents an external file.
+   * 
+   * @type {String}
+   * @protected
+   */
+  this._file = null;
+  
+  /**
    * The opacity of this object.
    * 
    * @type {number}

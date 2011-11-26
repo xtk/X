@@ -35,30 +35,31 @@ goog.require('goog.Timer');
 /**
  * Create a renderer with the given width and height.
  * 
- * @param {number} width The width of the renderer.
- * @param {number} height The height of the renderer.
  * @constructor
  * @extends {X.base}
  */
-X.renderer = function(width, height) {
+X.renderer = function(container) {
 
-  // check if this instance is a valid subclass of X.renderer
-  if (!(this instanceof X.renderer2D) && !(this instanceof X.renderer3D)) {
+  // check if a container is passed
+  if (!goog.isDefAndNotNull(container)) {
     
-    var message = '';
-    message += 'Fatal: X.renderer should not be instantiated directly.';
-    message += 'Use X.renderer2D or X.renderer3D instead.';
-    throw new X.exception(message);
+    throw new X.exception(
+        'Fatal: An ID to a valid container (<div>..) is required!');
     
   }
   
-  // validate width and height
-  if (!goog.isNumber(width) || !goog.isNumber(height)) {
+  // check if the passed container is really valid
+  var _container = goog.dom.getElement(container);
+  
+  if (!goog.dom.isElement(_container) || _container.clientWidth == 0 ||
+      _container.clientHeight == 0) {
     
-    throw new X.exception('Fatal: Invalid width or height for the renderer.');
+    throw new X.exception(
+        'Fatal: Could not find the given container or it has an undefined size!');
     
   }
   
+  //
   // call the standard constructor of X.base
   goog.base(this);
   
@@ -80,12 +81,20 @@ X.renderer = function(width, height) {
   this._dimension = -1;
   
   /**
+   * The HTML container of this renderer, E.g. a <div>.
+   * 
+   * @type {!Element}
+   * @protected
+   */
+  this._container = goog.dom.getElement(_container);
+  
+  /**
    * The width of this renderer.
    * 
    * @type {!number}
    * @protected
    */
-  this._width = width;
+  this._width = this._container.clientWidth;
   
   /**
    * The height of this renderer.
@@ -93,7 +102,7 @@ X.renderer = function(width, height) {
    * @type {!number}
    * @protected
    */
-  this._height = height;
+  this._height = this._container.clientHeight;
   
   /**
    * The background color of this renderer.
@@ -102,14 +111,6 @@ X.renderer = function(width, height) {
    * @protected
    */
   this._backgroundColor = '#000000';
-  
-  /**
-   * The HTML container of this renderer, E.g a name of a <div>.
-   * 
-   * @type {?Element}
-   * @protected
-   */
-  this._container = null;
   
   /**
    * The Canvas of this renderer.
@@ -365,25 +366,6 @@ X.renderer.prototype.width = function() {
 
 
 /**
- * Set the width for this renderer.
- * 
- * @param {!number} width The width for this renderer.
- */
-X.renderer.prototype.setWidth = function(width) {
-
-  if (this._canvas) {
-    
-    // the canvas was already created, let's update it
-    this._canvas.style.setProperty('width', width.toString());
-    
-  }
-  
-  this._width = width;
-  
-};
-
-
-/**
  * Get the height of this renderer.
  * 
  * @return {!number} The height of this renderer.
@@ -391,25 +373,6 @@ X.renderer.prototype.setWidth = function(width) {
 X.renderer.prototype.height = function() {
 
   return this._height;
-  
-};
-
-
-/**
- * Set the height for this renderer.
- * 
- * @param {!number} height The height for this renderer.
- */
-X.renderer.prototype.setHeight = function(height) {
-
-  if (this._canvas) {
-    
-    // the canvas was already created, let's update it
-    this._canvas.style.setProperty('height', height.toString());
-    
-  }
-  
-  this._height = height;
   
 };
 
@@ -456,7 +419,7 @@ X.renderer.prototype.canvas = function() {
 
   if (!goog.isDefAndNotNull(this._canvas)) {
     
-    throw new X.exception('Fatal: No valid canvas for this renderer!');
+    this._canvas = goog.dom.createDom('canvas');
     
   }
   
@@ -469,65 +432,11 @@ X.renderer.prototype.canvas = function() {
  * Get the container of this renderer.
  * 
  * @return {!Element} The container of this renderer as a DOM object.
- * @throws {X.exception} An exception if the <body> could not be found.
  */
 X.renderer.prototype.container = function() {
 
-  // if no _container is associated, use the document.body
-  if (!this._container) {
-    
-    var _document = goog.dom.getDocument();
-    var body = _document.body;
-    
-    if (!body) {
-      
-      // throw exception when we can not find the body
-      throw new X.exception('Fatal: Could not find <body></body>!');
-      
-    }
-    
-    this._container = body;
-    
-  }
-  
   // return the _container
   return this._container;
-  
-};
-
-
-/**
- * Set the container (DOM object) for this renderer.
- * 
- * @param {Element} container A container (DOM object).
- * @throws {X.exception} An exception if the container could not be found.
- */
-X.renderer.prototype.setContainer = function(container) {
-
-  if (!container) {
-    
-    // throw exception if the container is invalid
-    throw new X.exception('Fatal: Could not find container!');
-    
-  }
-  
-  this._container = container;
-  
-};
-
-
-/**
- * Set the container for this renderer using an id of a DOM object.
- * 
- * @param {!string} containerId An id of a DOM object.
- */
-X.renderer.prototype.setContainerById = function(containerId) {
-
-  // retrieve the DOM object with the given id
-  var container = goog.dom.getElement(containerId);
-  
-  // try to set it as a container
-  this.setContainer(container);
   
 };
 
@@ -615,21 +524,15 @@ X.renderer.prototype.onModified = function(event) {
  * Create the canvas of this renderer inside the configured container and using
  * attributes like width, height, backgroundColor etc. Then, initialize the
  * WebGL context and attach all necessary objects (e.g. camera, shaders..).
- * Finally, initialize the event listeners. All this will only happen once, no
- * matter how often this method is called.
+ * Finally, initialize the event listeners.
  * 
  * @throws {X.exception} An exception if there were problems during
  *           initialization.
  */
 X.renderer.prototype.init = function() {
 
-  // if the canvas already exists, exit now
-  if (goog.isDefAndNotNull(this._canvas)) {
-    return;
-  }
-  
-  // create a canvas object with certain properties
-  var canvas = goog.dom.createDom('canvas');
+  // get the canvas
+  var canvas = this.canvas();
   // css properties
   canvas.style.backgroundColor = this.backgroundColor().toString();
   
