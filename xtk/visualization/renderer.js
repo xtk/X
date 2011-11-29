@@ -520,8 +520,6 @@ X.renderer.prototype.onModified = function(event) {
   console.log('start.. ' + object.id() + ': ' + Date());
   this.setupVertices_(object);
   console.log('setup vertices.. DONE ' + object.id() + ': ' + Date());
-  this.setupTransform_(object);
-  console.log('setup transforms.. DONE ' + object.id() + ': ' + Date());
   this.setupObject_(object);
   console.log('setup object.. DONE ' + object.id() + ': ' + Date());
   this.render();
@@ -744,22 +742,6 @@ X.renderer.prototype.addShaders = function(shaders) {
       shaders.opacity());
   this._gl.enableVertexAttribArray(this._vertexOpacityAttribute);
   
-  this._vertexTransform0Attribute = this._gl.getAttribLocation(shaderProgram,
-      shaders.transform0());
-  this._gl.enableVertexAttribArray(this._vertexTransform0Attribute);
-  
-  this._vertexTransform1Attribute = this._gl.getAttribLocation(shaderProgram,
-      shaders.transform1());
-  this._gl.enableVertexAttribArray(this._vertexTransform1Attribute);
-  
-  this._vertexTransform2Attribute = this._gl.getAttribLocation(shaderProgram,
-      shaders.transform2());
-  this._gl.enableVertexAttribArray(this._vertexTransform2Attribute);
-  
-  this._vertexTransform3Attribute = this._gl.getAttribLocation(shaderProgram,
-      shaders.transform3());
-  this._gl.enableVertexAttribArray(this._vertexTransform3Attribute);
-  
   this._texturePositionAttribute = this._gl.getAttribLocation(shaderProgram,
       shaders.texturePos());
   this._gl.enableVertexAttribArray(this._texturePositionAttribute);
@@ -834,187 +816,9 @@ X.renderer.prototype.add = function(object) {
   
   // no texture or external file
   this.setupVertices_(object);
-  this.setupTransform_(object);
+  // this.setupTransform_(object);
   
   this.setupObject_(object);
-  
-};
-
-
-
-X.renderer.prototype.setupTransform_ = function(object) {
-
-  if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
-      !goog.isDefAndNotNull(this._camera)) {
-    
-    throw new X.exception('Fatal: Renderer was not initialized properly!');
-    
-  }
-  
-  if (!goog.isDefAndNotNull(object) || !(object instanceof X.object)) {
-    
-    throw new X.exception('Fatal: Illegal object!');
-    
-  }
-  
-
-  // remove old TRANSFORM
-  var oldTransformBuffer0 = this._transformBuffers0.get(object.id());
-  if (goog.isDefAndNotNull(oldTransformBuffer0)) {
-    
-    if (this._gl.isBuffer(oldTransformBuffer0.glBuffer())) {
-      
-      this._gl.deleteBuffer(oldTransformBuffer0.glBuffer());
-      
-    }
-    
-  }
-  var oldTransformBuffer1 = this._transformBuffers1.get(object.id());
-  if (goog.isDefAndNotNull(oldTransformBuffer1)) {
-    
-    if (this._gl.isBuffer(oldTransformBuffer1.glBuffer())) {
-      
-      this._gl.deleteBuffer(oldTransformBuffer1.glBuffer());
-      
-    }
-    
-  }
-  var oldTransformBuffer2 = this._transformBuffers2.get(object.id());
-  if (goog.isDefAndNotNull(oldTransformBuffer2)) {
-    
-    if (this._gl.isBuffer(oldTransformBuffer2.glBuffer())) {
-      
-      this._gl.deleteBuffer(oldTransformBuffer2.glBuffer());
-      
-    }
-    
-  }
-  var oldTransformBuffer3 = this._transformBuffers3.get(object.id());
-  if (goog.isDefAndNotNull(oldTransformBuffer3)) {
-    
-    if (this._gl.isBuffer(oldTransformBuffer3.glBuffer())) {
-      
-      this._gl.deleteBuffer(oldTransformBuffer3.glBuffer());
-      
-    }
-    
-  }
-  
-
-
-  //
-  // TRANSFORM
-  //
-  // since we want each vertex to be able to sit under a transform,
-  // and we can not define a mat4 attribute on the shaders, we pass the
-  // transform matrix as 4x size4-vectors.
-  
-  // get the transform matrix of this object
-  var transform = object.transform().matrix();
-  
-  var glTransformBuffer0 = this._gl.createBuffer();
-  
-  console.log('transforms: flattening.. START ' + object.id() + ': ' + Date());
-  
-  // var flattenedPointsLength = object.points().flatten().length;
-  var flattenedPointsLength = object.tmpcnt;
-  
-  console.log('transforms: flattening.. DONE ' + object.id() + ': ' + Date());
-  
-  // we need to convert the transform row0 to an array to set it for all
-  // vertices
-  var tmpArray = new Array(flattenedPointsLength * 4);
-  var j;
-  for (j = 0; j < tmpArray.length; j = j + 4) {
-    
-    tmpArray[j] = transform.getValueAt(0, 0);
-    tmpArray[j + 1] = transform.getValueAt(0, 1);
-    tmpArray[j + 2] = transform.getValueAt(0, 2);
-    tmpArray[j + 3] = transform.getValueAt(0, 3);
-    
-  }
-  
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer0);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
-      this._gl.STATIC_DRAW);
-  
-  // create an X.buffer to store the transform
-  var transformBuffer0 = new X.buffer(glTransformBuffer0, object.points()
-      .count(), 4);
-  
-
-  var glTransformBuffer1 = this._gl.createBuffer();
-  
-  // we need to convert the transform row1 to an array to set it for all
-  // vertices
-  tmpArray = new Array(flattenedPointsLength * 4);
-  for (j = 0; j < tmpArray.length; j = j + 4) {
-    
-    tmpArray[j] = transform.getValueAt(1, 0);
-    tmpArray[j + 1] = transform.getValueAt(1, 1);
-    tmpArray[j + 2] = transform.getValueAt(1, 2);
-    tmpArray[j + 3] = transform.getValueAt(1, 3);
-    
-  }
-  
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer1);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
-      this._gl.STATIC_DRAW);
-  
-  // create an X.buffer to store the transform
-  var transformBuffer1 = new X.buffer(glTransformBuffer1, object.points()
-      .count(), 4);
-  
-  var glTransformBuffer2 = this._gl.createBuffer();
-  
-  // we need to convert the transform row2 to an array to set it for all
-  // vertices
-  tmpArray = new Array(flattenedPointsLength * 4);
-  for (j = 0; j < tmpArray.length; j = j + 4) {
-    
-    tmpArray[j] = transform.getValueAt(2, 0);
-    tmpArray[j + 1] = transform.getValueAt(2, 1);
-    tmpArray[j + 2] = transform.getValueAt(2, 2);
-    tmpArray[j + 3] = transform.getValueAt(2, 3);
-    
-  }
-  
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer2);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
-      this._gl.STATIC_DRAW);
-  
-  // create an X.buffer to store the transform
-  var transformBuffer2 = new X.buffer(glTransformBuffer2, object.points()
-      .count(), 4);
-  
-
-  var glTransformBuffer3 = this._gl.createBuffer();
-  
-  // we need to convert the transform row3 to an array to set it for all
-  // vertices
-  tmpArray = new Array(flattenedPointsLength * 4);
-  for (j = 0; j < tmpArray.length; j = j + 4) {
-    
-    tmpArray[j] = transform.getValueAt(3, 0);
-    tmpArray[j + 1] = transform.getValueAt(3, 1);
-    tmpArray[j + 2] = transform.getValueAt(3, 2);
-    tmpArray[j + 3] = transform.getValueAt(3, 3);
-    
-  }
-  
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTransformBuffer3);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
-      this._gl.STATIC_DRAW);
-  
-  // create an X.buffer to store the transform
-  var transformBuffer3 = new X.buffer(glTransformBuffer3, object.points()
-      .count(), 4);
-  
-  // add the buffers for the new object to the internal hash maps
-  this._transformBuffers0.set(object.id(), transformBuffer0);
-  this._transformBuffers1.set(object.id(), transformBuffer1);
-  this._transformBuffers2.set(object.id(), transformBuffer2);
-  this._transformBuffers3.set(object.id(), transformBuffer3);
   
 };
 
@@ -1495,10 +1299,6 @@ X.renderer.prototype.render = function() {
       var normalBuffer = this._normalBuffers.get(id);
       var colorBuffer = this._colorBuffers.get(id);
       var opacityBuffer = this._opacityBuffers.get(id);
-      var transformBuffer0 = this._transformBuffers0.get(id);
-      var transformBuffer1 = this._transformBuffers1.get(id);
-      var transformBuffer2 = this._transformBuffers2.get(id);
-      var transformBuffer3 = this._transformBuffers3.get(id);
       var texturePositionBuffer = this._texturePositionBuffers.get(id);
       
       // ..bind the glBuffers
@@ -1572,25 +1372,13 @@ X.renderer.prototype.render = function() {
       }
       
       // TRANSFORMS
-      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, transformBuffer0.glBuffer());
       
-      this._gl.vertexAttribPointer(this._vertexTransform0Attribute,
-          transformBuffer0.itemSize(), this._gl.FLOAT, false, 0, 0);
+      // propagate transform to the uniform matrices of the shader
+      var transformUniformLocation = this._gl.getUniformLocation(
+          this._shaderProgram, this._shaders.transform());
       
-      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, transformBuffer1.glBuffer());
-      
-      this._gl.vertexAttribPointer(this._vertexTransform1Attribute,
-          transformBuffer1.itemSize(), this._gl.FLOAT, false, 0, 0);
-      
-      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, transformBuffer2.glBuffer());
-      
-      this._gl.vertexAttribPointer(this._vertexTransform2Attribute,
-          transformBuffer2.itemSize(), this._gl.FLOAT, false, 0, 0);
-      
-      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, transformBuffer3.glBuffer());
-      
-      this._gl.vertexAttribPointer(this._vertexTransform3Attribute,
-          transformBuffer3.itemSize(), this._gl.FLOAT, false, 0, 0);
+      this._gl.uniformMatrix4fv(transformUniformLocation, false,
+          new Float32Array(object.transform().matrix().flatten()));
       
 
       // .. and draw with the object's draw mode
