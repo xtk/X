@@ -7,7 +7,6 @@ goog.provide('X.object');
 
 // requires
 goog.require('X.base');
-goog.require('X.color');
 goog.require('X.colors');
 goog.require('X.exception');
 goog.require('X.points');
@@ -69,12 +68,12 @@ X.object = function(type) {
   this._transform = new X.transform();
   
   /**
-   * The object color.
+   * The object color. By default, this is white.
    * 
-   * @type {X.color}
+   * @type {Array}
    * @protected
    */
-  this._color = null;
+  this._color = [1, 1, 1];
   
   /**
    * The points of this object.
@@ -275,18 +274,25 @@ X.object.prototype.textureCoordinateMap = function() {
 /**
  * Set the object color. This overrides any point colors.
  * 
- * @param {!X.color} color The color to set for the object.
+ * @param {!number} r The Red value in the range of 0..1
+ * @param {!number} g The Green value in the range of 0..1
+ * @param {!number} b The Blue value in the range of 0..1
+ * @throws {X.exception} An exception if the given color values are invalid.
  */
-X.object.prototype.setColor = function(color) {
+X.object.prototype.setColor = function(r, g, b) {
 
-  // we accept either null or a X.color as argument
-  if (!goog.isDefAndNotNull(color) && !(color instanceof X.color)) {
+  // we accept only numbers as arguments
+  if ((!goog.isNumber(r) && r < 0.0 && r > 1.0) ||
+      (!goog.isNumber(g) && g < 0.0 && g > 1.0) ||
+      (!goog.isNumber(b) && b < 0.0 && b > 1.0)) {
     
     throw new X.exception('Fatal: Invalid color.');
     
   }
   
-  this._color = color;
+  this._color[0] = r;
+  this._color[1] = g;
+  this._color[2] = b;
   
 };
 
