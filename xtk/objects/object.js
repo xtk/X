@@ -323,6 +323,20 @@ X.object.prototype.setOpacity = function(opacity) {
 };
 
 
+X.object.prototype.load = function(file) {
+
+  this._file = file;
+  
+};
+
+
+X.object.prototype.file = function() {
+
+  return this._file;
+  
+};
+
+
 /**
  * Compare two X.objects by their opacity values.
  * 

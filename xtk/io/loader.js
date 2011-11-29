@@ -10,6 +10,8 @@ goog.require('X.base');
 goog.require('X.exception');
 goog.require('X.object');
 goog.require('goog.events.EventType');
+goog.require('goog.net.EventType');
+goog.require('goog.net.XhrIo');
 goog.require('goog.structs.Map');
 
 /**
@@ -94,14 +96,14 @@ X.loader.prototype.loadTexture = function(object) {
   
   // handler after the image was completely loaded
   goog.events.listenOnce(image, goog.events.EventType.LOAD,
-      this.textureLoadCompleted.bind(this, object));
+      this.loadTextureCompleted.bind(this, object));
   
   // add this loading job to our jobs map
   this.jobs_().set(object.id(), false);
   
 };
 
-X.loader.prototype.textureLoadCompleted = function(object) {
+X.loader.prototype.loadTextureCompleted = function(object) {
 
   // at this point the image for the texture was loaded properly
   
@@ -115,6 +117,123 @@ X.loader.prototype.textureLoadCompleted = function(object) {
   this.jobs_().set(object.id(), true);
   
 };
+
+X.loader.prototype.loadFile = function(object) {
+
+  if (!goog.isDefAndNotNull(object.file())) {
+    
+    // should not happen :)
+    throw new X.exception('Fatal: Internal error during file loading.');
+    
+  }
+  
+  var file = object.file();
+  
+  var request = new XMLHttpRequest();
+  
+  request.addEventListener('progress',
+      this.loadFileProgress.bind(this, object), false);
+  
+  goog.events.listen(request, 'abort', this.loadFileFailed.bind(this, request,
+      object));
+  
+  goog.events.listen(request, 'error', this.loadFileFailed.bind(this, request,
+      object));
+  
+  goog.events.listen(request, 'load', this.loadFileCompleted.bind(this,
+      request, object));
+  
+  request.open('GET', file, true);
+  
+  request.send(null);
+  
+};
+
+X.loader.prototype.loadFileProgress = function(object, event) {
+
+  if (event.lengthComputable) {
+    var progress = event.loaded / event.total;
+    console.log(progress);
+  }
+  
+};
+
+X.loader.prototype.loadFileFailed = function(downloader, object) {
+
+  console.log('err');
+  
+};
+
+X.loader.prototype.loadFileCompleted = function(downloader, object) {
+
+  var file = object.file();
+  
+  var fileExtension = file.split('.').pop();
+  
+  var readAsArray = downloader.response.split('\n');
+  var objectN = object;
+  
+  var tmpArray = Array();
+  var tmpArray2 = Array();
+  var ind = 0;
+  var ind2 = 0;
+  
+  var i;
+  for (i = 0; i < readAsArray.length; i++) {
+    
+    var tmp = readAsArray[i];
+    var tmpstr = tmp.split(' ');
+    
+    if (tmpstr[3] == 'vertex') {
+      
+      var x = tmpstr[4];
+      var y = tmpstr[5];
+      var z = tmpstr[6];
+      objectN.points().add([x, y, z]);
+      
+      tmpArray[ind] = x;
+      tmpArray[ind + 1] = y;
+      tmpArray[ind + 2] = z;
+      
+
+      ind = ind + 3;
+      
+
+    } else if (tmpstr[1] == 'facet') {
+      var x = tmpstr[3];
+      var y = tmpstr[4];
+      var z = tmpstr[5];
+      objectN.normals().add([x, y, z]);
+      objectN.normals().add([x, y, z]);
+      objectN.normals().add([x, y, z]);
+      
+      tmpArray2[ind] = x;
+      tmpArray2[ind + 1] = y;
+      tmpArray2[ind + 2] = z;
+      tmpArray2[ind + 3] = x;
+      tmpArray2[ind + 4] = y;
+      tmpArray2[ind + 5] = z;
+      tmpArray2[ind + 6] = x;
+      tmpArray2[ind + 7] = y;
+      tmpArray2[ind + 8] = z;
+      
+      ind2 = ind2 + 9;
+      
+    }
+  }
+  
+  object.tmparr = tmpArray;
+  object.tmparr2 = tmpArray2;
+  object.tmpcnt = ind + 1;
+  object.tmpcnt2 = ind2 + 1;
+  
+  var modifiedEvent = new X.renderer.ModifiedEvent();
+  modifiedEvent._object = object;
+  this.dispatchEvent(modifiedEvent);
+  // console.log(downloader.response);
+  
+};
+
 
 
 // export symbols (required for advanced compilation)

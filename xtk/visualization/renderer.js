@@ -169,6 +169,14 @@ X.renderer = function(container) {
   this._objects = new goog.structs.AvlTree(X.object.OPACITY_COMPARATOR);
   
   /**
+   * A hash map of shader attribute pointers.
+   * 
+   * @type {!goog.structs.Map}
+   * @protected
+   */
+  this._attributePointers = new goog.structs.Map();
+  
+  /**
    * A hash map of vertex buffers of this renderer. Each buffer is associated
    * with a displayable object using its unique id.
    * 
@@ -410,10 +418,10 @@ X.renderer.prototype.setBackgroundColor = function(backgroundColor) {
 
 
 /**
- * Get the canvas of this renderer.
+ * Get the canvas of this renderer. If a canvas does not exist yet it gets
+ * created.
  * 
  * @return {!Element} The canvas of this renderer.
- * @throws {X.exception} An exception if this renderer does not have a canvas.
  */
 X.renderer.prototype.canvas = function() {
 
@@ -509,12 +517,13 @@ X.renderer.prototype.loader = function() {
 X.renderer.prototype.onModified = function(event) {
 
   var object = event._object;
-  
+  console.log('start.. ' + object.id() + ': ' + Date());
   this.setupVertices_(object);
+  console.log('setup vertices.. DONE ' + object.id() + ': ' + Date());
   this.setupTransform_(object);
-  
+  console.log('setup transforms.. DONE ' + object.id() + ': ' + Date());
   this.setupObject_(object);
-  
+  console.log('setup object.. DONE ' + object.id() + ': ' + Date());
   this.render();
   
 };
@@ -716,7 +725,9 @@ X.renderer.prototype.addShaders = function(shaders) {
   this._gl.useProgram(shaderProgram);
   
   // store the index of the position, color, opacity etc. attributes
-  // TODO use a single hashmap to store the attribute pointers
+  
+  // this._attributePointers.set(key, value)
+  
   this._vertexPositionAttribute = this._gl.getAttribLocation(shaderProgram,
       shaders.position());
   this._gl.enableVertexAttribArray(this._vertexPositionAttribute);
@@ -803,7 +814,13 @@ X.renderer.prototype.add = function(object) {
     
     return;
     
-  } // else if (object instanceof X.vtkObject) {
+  } else if (goog.isDefAndNotNull(object.file())) {
+    
+    this.loader().loadFile(object);
+    
+    return;
+    
+  }
   
   // this.loader().loadVtkObject(object);
   // return;
@@ -897,9 +914,16 @@ X.renderer.prototype.setupTransform_ = function(object) {
   
   var glTransformBuffer0 = this._gl.createBuffer();
   
+  console.log('transforms: flattening.. START ' + object.id() + ': ' + Date());
+  
+  // var flattenedPointsLength = object.points().flatten().length;
+  var flattenedPointsLength = object.tmpcnt;
+  
+  console.log('transforms: flattening.. DONE ' + object.id() + ': ' + Date());
+  
   // we need to convert the transform row0 to an array to set it for all
   // vertices
-  var tmpArray = new Array(object.points().flatten().length * 4);
+  var tmpArray = new Array(flattenedPointsLength * 4);
   var j;
   for (j = 0; j < tmpArray.length; j = j + 4) {
     
@@ -923,7 +947,7 @@ X.renderer.prototype.setupTransform_ = function(object) {
   
   // we need to convert the transform row1 to an array to set it for all
   // vertices
-  tmpArray = new Array(object.points().flatten().length * 4);
+  tmpArray = new Array(flattenedPointsLength * 4);
   for (j = 0; j < tmpArray.length; j = j + 4) {
     
     tmpArray[j] = transform.getValueAt(1, 0);
@@ -945,7 +969,7 @@ X.renderer.prototype.setupTransform_ = function(object) {
   
   // we need to convert the transform row2 to an array to set it for all
   // vertices
-  tmpArray = new Array(object.points().flatten().length * 4);
+  tmpArray = new Array(flattenedPointsLength * 4);
   for (j = 0; j < tmpArray.length; j = j + 4) {
     
     tmpArray[j] = transform.getValueAt(2, 0);
@@ -968,7 +992,7 @@ X.renderer.prototype.setupTransform_ = function(object) {
   
   // we need to convert the transform row3 to an array to set it for all
   // vertices
-  tmpArray = new Array(object.points().flatten().length * 4);
+  tmpArray = new Array(flattenedPointsLength * 4);
   for (j = 0; j < tmpArray.length; j = j + 4) {
     
     tmpArray[j] = transform.getValueAt(3, 0);
@@ -1030,8 +1054,12 @@ X.renderer.prototype.setupVertices_ = function(object) {
   
   // bind and fill with vertices of current object
   this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.points()
-      .flatten()), this._gl.STATIC_DRAW);
+  
+  // var ttt = object.points().flatten();
+  var ttt = object.tmparr;
+  
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(ttt),
+      this._gl.STATIC_DRAW);
   
   // create an X.buffer to store the vertices
   // every vertex consists of 3 items (x,y,z)
@@ -1134,16 +1162,21 @@ X.renderer.prototype.setupObject_ = function(object) {
   //
   // NORMALS
   //
+  console.log('normals.. START ' + object.id() + ': ' + Date());
   var glNormalBuffer = this._gl.createBuffer();
+  
+  // var nnn = object.normals().flatten();
+  var nnn = object.tmparr2;
   
   // bind and fill with normals of current object
   this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glNormalBuffer);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.normals()
-      .flatten()), this._gl.STATIC_DRAW);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(nnn),
+      this._gl.STATIC_DRAW);
   
   // create an X.buffer to store the normals
   // every normal consists of 3 items (x,y,z)
   var normalBuffer = new X.buffer(glNormalBuffer, object.normals().count(), 3);
+  console.log('normals.. DONE ' + object.id() + ': ' + Date());
   
   //
   // COLORS
@@ -1162,7 +1195,7 @@ X.renderer.prototype.setupObject_ = function(object) {
   //
   // in all cases, we do not want to correct the passed in object but just
   // correct to good value internally
-  
+  console.log('colors START ' + object.id() + ': ' + Date());
   var colorsValid = false;
   var objectColor = new X.color(1, 1, 1); // initialize to default color (white)
   var colors = null;
@@ -1187,26 +1220,40 @@ X.renderer.prototype.setupObject_ = function(object) {
     
     colors = new X.colors();
     
+    var tmparr = Array();
+    
+    var ind = 0;
+    
     var i;
     for (i = 0; i < object.points().count(); i++) {
       
       colors.add(objectColor);
+      tmparr[ind] = 1;
+      tmparr[ind + 1] = 0;
+      tmparr[ind + 2] = 0;
       
+      ind = ind + 3;
     }
     
   }
   
   var glColorBuffer = this._gl.createBuffer();
   
+  // var ccc = colors.flatten();
+  var ccc = tmparr;
+  
   // bind and fill with colors defined above
   this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glColorBuffer);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER,
-      new Float32Array(colors.flatten()), this._gl.STATIC_DRAW);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmparr),
+      this._gl.STATIC_DRAW);
   
   // create an X.buffer to store the colors
   // every color consists of 3 items (r,g,b)
   var colorBuffer = new X.buffer(glColorBuffer, colors.count(), 3);
   
+  console.log('colors DONE ' + object.id() + ': ' + Date());
+  
+  console.log('opacity start ' + object.id() + ': ' + Date());
   //
   // OPACITY
   //
@@ -1214,7 +1261,11 @@ X.renderer.prototype.setupObject_ = function(object) {
   
   // we need to convert the single opacity value to an array to set it for all
   // vertices
-  var tmpArray = new Array(object.points().flatten().length);
+  
+  // var cnttt= object.points().flatten().length
+  var cnttt = object.tmpcnt;
+  
+  var tmpArray = new Array(cnttt);
   var j;
   for (j = 0; j < tmpArray.length; ++j) {
     
@@ -1230,7 +1281,8 @@ X.renderer.prototype.setupObject_ = function(object) {
   // create an X.buffer to store the opacity
   var opacityBuffer = new X.buffer(glOpacityBuffer, 1, 1);
   
-
+  console.log('opacity.. DONE ' + object.id() + ': ' + Date());
+  
   //
   // TEXTURE
   //
