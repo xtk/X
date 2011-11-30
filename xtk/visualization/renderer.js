@@ -11,15 +11,14 @@ goog.provide('X.renderer.ModifiedEvent');
 goog.require('X.base');
 goog.require('X.buffer');
 goog.require('X.camera');
-goog.require('X.colors');
 goog.require('X.event');
 goog.require('X.exception');
 goog.require('X.interactor');
 goog.require('X.loader');
 goog.require('X.matrixHelper');
 goog.require('X.object');
-goog.require('X.points');
 goog.require('X.shaders');
+goog.require('X.triplets');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -152,10 +151,11 @@ X.renderer = function(container) {
    */
   this._camera = null;
   
-  /*
+  /**
    * The interactor of this renderer.
    * 
-   * @type {?X.interactor} @protected
+   * @type {?X.interactor}
+   * @protected
    */
   this._interactor = null;
   
@@ -202,42 +202,6 @@ X.renderer = function(container) {
    * @protected
    */
   this._colorBuffers = new goog.structs.Map();
-  
-  /**
-   * A hash map of color buffers of this renderer. Each buffer is associated
-   * with a displayable object using its unique id.
-   * 
-   * @type {!goog.structs.Map}
-   * @protected
-   */
-  this._transformBuffers0 = new goog.structs.Map();
-  
-  /**
-   * A hash map of color buffers of this renderer. Each buffer is associated
-   * with a displayable object using its unique id.
-   * 
-   * @type {!goog.structs.Map}
-   * @protected
-   */
-  this._transformBuffers1 = new goog.structs.Map();
-  
-  /**
-   * A hash map of color buffers of this renderer. Each buffer is associated
-   * with a displayable object using its unique id.
-   * 
-   * @type {!goog.structs.Map}
-   * @protected
-   */
-  this._transformBuffers2 = new goog.structs.Map();
-  
-  /**
-   * A hash map of color buffers of this renderer. Each buffer is associated
-   * with a displayable object using its unique id.
-   * 
-   * @type {!goog.structs.Map}
-   * @protected
-   */
-  this._transformBuffers3 = new goog.structs.Map();
   
   /**
    * A hash map of texture position buffers of this renderer. Each buffer is
@@ -468,7 +432,7 @@ X.renderer.prototype.interactor = function() {
 /**
  * Get the lighting of this renderer.
  * 
- * @return {!boolean} TRUE if lightning is active, FALSE if inactive.
+ * @return {!boolean} TRUE if lighting is active, FALSE if inactive.
  */
 X.renderer.prototype.lighting = function() {
 
@@ -581,14 +545,12 @@ X.renderer.prototype.init = function() {
     // the canvas color
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     
-    // enable depth testing
-    // gl.enable(gl.DEPTH_TEST);
-    // TODO transparency
+    // enable transparency
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    // enable depth testing
     gl.enable(gl.DEPTH_TEST);
-    
-    // perspective rendering
+    // .. with perspective rendering
     gl.depthFunc(gl.LEQUAL);
     
     // clear color and depth buffer
@@ -596,6 +558,7 @@ X.renderer.prototype.init = function() {
     
   } catch (e) {
     
+    // this exception indicates if the browser supports WebGL
     throw new X.exception('Fatal: Exception while accessing GL Context!\n' + e);
     
   }
@@ -804,7 +767,6 @@ X.renderer.prototype.add = function(object) {
   
   // no texture or external file
   this.setupVertices_(object);
-  // this.setupTransform_(object);
   
   this.setupObject_(object);
   
@@ -847,11 +809,8 @@ X.renderer.prototype.setupVertices_ = function(object) {
   // bind and fill with vertices of current object
   this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
   
-  // var ttt = object.points().flatten();
-  var ttt = object.tmparr;
-  
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(ttt),
-      this._gl.STATIC_DRAW);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.points()
+      .all()), this._gl.STATIC_DRAW);
   
   // create an X.buffer to store the vertices
   // every vertex consists of 3 items (x,y,z)
@@ -945,13 +904,10 @@ X.renderer.prototype.setupObject_ = function(object) {
   window.console.log('normals.. START ' + object.id() + ': ' + Date());
   var glNormalBuffer = this._gl.createBuffer();
   
-  // var nnn = object.normals().flatten();
-  var nnn = object.tmparr2;
-  
   // bind and fill with normals of current object
   this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glNormalBuffer);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(nnn),
-      this._gl.STATIC_DRAW);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.normals()
+      .all()), this._gl.STATIC_DRAW);
   
   // create an X.buffer to store the normals
   // every normal consists of 3 items (x,y,z)

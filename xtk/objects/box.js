@@ -9,7 +9,7 @@ goog.provide('X.box');
 goog.require('X.base');
 goog.require('X.exception');
 goog.require('X.object');
-goog.require('X.points');
+goog.require('X.triplets');
 goog.require('goog.math.Vec3');
 
 
@@ -272,24 +272,19 @@ X.box.prototype.create_ = function() {
     
     for (j = 0; j < numberOfVerticesY; ++j) {
       
-      this.points().add(
-          [E.x + (i * this._spacingX), E.y - (j * this._spacingY), E.z]);
-      this.points().add(
-          [E.x + (i * this._spacingX) + this._spacingX,
-           E.y - (j * this._spacingY), E.z]);
-      this.points().add(
-          [E.x + (i * this._spacingX),
-           E.y - (j * this._spacingY) - this._spacingY, E.z]);
+      this.points().add(E.x + (i * this._spacingX), E.y - (j * this._spacingY),
+          E.z);
+      this.points().add(E.x + (i * this._spacingX) + this._spacingX,
+          E.y - (j * this._spacingY), E.z);
+      this.points().add(E.x + (i * this._spacingX),
+          E.y - (j * this._spacingY) - this._spacingY, E.z);
       
-      this.points().add(
-          [E.x + (i * this._spacingX) + this._spacingX,
-           E.y - (j * this._spacingY), E.z]);
-      this.points().add(
-          [E.x + (i * this._spacingX),
-           E.y - (j * this._spacingY) - this._spacingY, E.z]);
-      this.points().add(
-          [E.x + (i * this._spacingX) + this._spacingX,
-           E.y - (j * this._spacingY) - this._spacingY, E.z]);
+      this.points().add(E.x + (i * this._spacingX) + this._spacingX,
+          E.y - (j * this._spacingY), E.z);
+      this.points().add(E.x + (i * this._spacingX),
+          E.y - (j * this._spacingY) - this._spacingY, E.z);
+      this.points().add(E.x + (i * this._spacingX) + this._spacingX,
+          E.y - (j * this._spacingY) - this._spacingY, E.z);
       
       // if side colors are configured, set them
       if (this._backColor) {
@@ -306,7 +301,7 @@ X.box.prototype.create_ = function() {
 
       var count;
       for (count = 0; count < 6; ++count) {
-        this.normals().add([0, 0, -1]);
+        this.normals().add(0, 0, -1);
       } // for loop of normals
       
     } // for j
@@ -322,24 +317,19 @@ X.box.prototype.create_ = function() {
     
     for (j = 0; j < numberOfVerticesZ; ++j) {
       
-      this.points().add(
-          [A.x + (i * this._spacingX), A.y, A.z - (j * this._spacingZ)]);
-      this.points().add(
-          [A.x + (i * this._spacingX) + this._spacingX, A.y,
-           A.z - (j * this._spacingZ)]);
-      this.points().add(
-          [A.x + (i * this._spacingX), A.y,
-           A.z - (j * this._spacingZ) - this._spacingZ]);
+      this.points().add(A.x + (i * this._spacingX), A.y,
+          A.z - (j * this._spacingZ));
+      this.points().add(A.x + (i * this._spacingX) + this._spacingX, A.y,
+          A.z - (j * this._spacingZ));
+      this.points().add(A.x + (i * this._spacingX), A.y,
+          A.z - (j * this._spacingZ) - this._spacingZ);
       
-      this.points().add(
-          [A.x + (i * this._spacingX) + this._spacingX, A.y,
-           A.z - (j * this._spacingZ)]);
-      this.points().add(
-          [A.x + (i * this._spacingX), A.y,
-           A.z - (j * this._spacingZ) - this._spacingZ]);
-      this.points().add(
-          [A.x + (i * this._spacingX) + this._spacingX, A.y,
-           A.z - (j * this._spacingZ) - this._spacingZ]);
+      this.points().add(A.x + (i * this._spacingX) + this._spacingX, A.y,
+          A.z - (j * this._spacingZ));
+      this.points().add(A.x + (i * this._spacingX), A.y,
+          A.z - (j * this._spacingZ) - this._spacingZ);
+      this.points().add(A.x + (i * this._spacingX) + this._spacingX, A.y,
+          A.z - (j * this._spacingZ) - this._spacingZ);
       
       // if side colors are configured, set them
       if (this._topColor) {
@@ -355,7 +345,7 @@ X.box.prototype.create_ = function() {
       
       var count;
       for (count = 0; count < 6; ++count) {
-        this.normals().add([0, 1, 0]);
+        this.normals().add(0, 1, 0);
       } // for loop of normals
       
     } // for j
@@ -371,24 +361,19 @@ X.box.prototype.create_ = function() {
     
     for (j = 0; j < numberOfVerticesZ; ++j) {
       
-      this.points().add(
-          [B.x, B.y - (i * this._spacingY), B.z - (j * this._spacingZ)]);
-      this.points().add(
-          [B.x, B.y - (i * this._spacingY) - this._spacingY,
-           B.z - (j * this._spacingZ)]);
-      this.points().add(
-          [B.x, B.y - (i * this._spacingY),
-           B.z - (j * this._spacingZ) - this._spacingZ]);
+      this.points().add(B.x, B.y - (i * this._spacingY),
+          B.z - (j * this._spacingZ));
+      this.points().add(B.x, B.y - (i * this._spacingY) - this._spacingY,
+          B.z - (j * this._spacingZ));
+      this.points().add(B.x, B.y - (i * this._spacingY),
+          B.z - (j * this._spacingZ) - this._spacingZ);
       
-      this.points().add(
-          [B.x, B.y - (i * this._spacingY) - this._spacingY,
-           B.z - (j * this._spacingZ)]);
-      this.points().add(
-          [B.x, B.y - (i * this._spacingY),
-           B.z - (j * this._spacingZ) - this._spacingZ]);
-      this.points().add(
-          [B.x, B.y - (i * this._spacingY) - this._spacingY,
-           B.z - (j * this._spacingZ) - this._spacingZ]);
+      this.points().add(B.x, B.y - (i * this._spacingY) - this._spacingY,
+          B.z - (j * this._spacingZ));
+      this.points().add(B.x, B.y - (i * this._spacingY),
+          B.z - (j * this._spacingZ) - this._spacingZ);
+      this.points().add(B.x, B.y - (i * this._spacingY) - this._spacingY,
+          B.z - (j * this._spacingZ) - this._spacingZ);
       
       // if side colors are configured, set them
       if (this._rightColor) {
@@ -404,7 +389,7 @@ X.box.prototype.create_ = function() {
       
       var count;
       for (count = 0; count < 6; ++count) {
-        this.normals().add([1, 0, 0]);
+        this.normals().add(1, 0, 0);
       } // for loop of normals
       
     } // for j
@@ -420,24 +405,19 @@ X.box.prototype.create_ = function() {
     
     for (j = 0; j < numberOfVerticesZ; ++j) {
       
-      this.points().add(
-          [C.x + (i * this._spacingX), C.y, C.z - (j * this._spacingZ)]);
-      this.points().add(
-          [C.x + (i * this._spacingX) + this._spacingX, C.y,
-           C.z - (j * this._spacingZ)]);
-      this.points().add(
-          [C.x + (i * this._spacingX), C.y,
-           C.z - (j * this._spacingZ) - this._spacingZ]);
+      this.points().add(C.x + (i * this._spacingX), C.y,
+          C.z - (j * this._spacingZ));
+      this.points().add(C.x + (i * this._spacingX) + this._spacingX, C.y,
+          C.z - (j * this._spacingZ));
+      this.points().add(C.x + (i * this._spacingX), C.y,
+          C.z - (j * this._spacingZ) - this._spacingZ);
       
-      this.points().add(
-          [C.x + (i * this._spacingX) + this._spacingX, C.y,
-           C.z - (j * this._spacingZ)]);
-      this.points().add(
-          [C.x + (i * this._spacingX), C.y,
-           C.z - (j * this._spacingZ) - this._spacingZ]);
-      this.points().add(
-          [C.x + (i * this._spacingX) + this._spacingX, C.y,
-           C.z - (j * this._spacingZ) - this._spacingZ]);
+      this.points().add(C.x + (i * this._spacingX) + this._spacingX, C.y,
+          C.z - (j * this._spacingZ));
+      this.points().add(C.x + (i * this._spacingX), C.y,
+          C.z - (j * this._spacingZ) - this._spacingZ);
+      this.points().add(C.x + (i * this._spacingX) + this._spacingX, C.y,
+          C.z - (j * this._spacingZ) - this._spacingZ);
       
       // if side colors are configured, set them
       if (this._bottomColor) {
@@ -453,7 +433,7 @@ X.box.prototype.create_ = function() {
       
       var count;
       for (count = 0; count < 6; ++count) {
-        this.normals().add([-1, 0, 0]);
+        this.normals().add(-1, 0, 0);
       } // for loop of normals
       
     } // for j
@@ -469,24 +449,19 @@ X.box.prototype.create_ = function() {
     
     for (j = 0; j < numberOfVerticesZ; ++j) {
       
-      this.points().add(
-          [A.x, A.y - (i * this._spacingY), A.z - (j * this._spacingZ)]);
-      this.points().add(
-          [A.x, A.y - (i * this._spacingY) - this._spacingY,
-           A.z - (j * this._spacingZ)]);
-      this.points().add(
-          [A.x, A.y - (i * this._spacingY),
-           A.z - (j * this._spacingZ) - this._spacingZ]);
+      this.points().add(A.x, A.y - (i * this._spacingY),
+          A.z - (j * this._spacingZ));
+      this.points().add(A.x, A.y - (i * this._spacingY) - this._spacingY,
+          A.z - (j * this._spacingZ));
+      this.points().add(A.x, A.y - (i * this._spacingY),
+          A.z - (j * this._spacingZ) - this._spacingZ);
       
-      this.points().add(
-          [A.x, A.y - (i * this._spacingY) - this._spacingY,
-           A.z - (j * this._spacingZ)]);
-      this.points().add(
-          [A.x, A.y - (i * this._spacingY),
-           A.z - (j * this._spacingZ) - this._spacingZ]);
-      this.points().add(
-          [A.x, A.y - (i * this._spacingY) - this._spacingY,
-           A.z - (j * this._spacingZ) - this._spacingZ]);
+      this.points().add(A.x, A.y - (i * this._spacingY) - this._spacingY,
+          A.z - (j * this._spacingZ));
+      this.points().add(A.x, A.y - (i * this._spacingY),
+          A.z - (j * this._spacingZ) - this._spacingZ);
+      this.points().add(A.x, A.y - (i * this._spacingY) - this._spacingY,
+          A.z - (j * this._spacingZ) - this._spacingZ);
       
       // if side colors are configured, set them
       if (this._leftColor) {
@@ -502,7 +477,7 @@ X.box.prototype.create_ = function() {
       
       var count;
       for (count = 0; count < 6; ++count) {
-        this.normals().add([0, -1, 0]);
+        this.normals().add(0, -1, 0);
       } // for loop of normals
       
     } // for j
@@ -518,24 +493,19 @@ X.box.prototype.create_ = function() {
     
     for (j = 0; j < numberOfVerticesY; ++j) {
       
-      this.points().add(
-          [A.x + (i * this._spacingX), A.y - (j * this._spacingY), A.z]);
-      this.points().add(
-          [A.x + (i * this._spacingX) + this._spacingX,
-           A.y - (j * this._spacingY), A.z]);
-      this.points().add(
-          [A.x + (i * this._spacingX),
-           A.y - (j * this._spacingY) - this._spacingY, A.z]);
+      this.points().add(A.x + (i * this._spacingX), A.y - (j * this._spacingY),
+          A.z);
+      this.points().add(A.x + (i * this._spacingX) + this._spacingX,
+          A.y - (j * this._spacingY), A.z);
+      this.points().add(A.x + (i * this._spacingX),
+          A.y - (j * this._spacingY) - this._spacingY, A.z);
       
-      this.points().add(
-          [A.x + (i * this._spacingX) + this._spacingX,
-           A.y - (j * this._spacingY), A.z]);
-      this.points().add(
-          [A.x + (i * this._spacingX),
-           A.y - (j * this._spacingY) - this._spacingY, A.z]);
-      this.points().add(
-          [A.x + (i * this._spacingX) + this._spacingX,
-           A.y - (j * this._spacingY) - this._spacingY, A.z]);
+      this.points().add(A.x + (i * this._spacingX) + this._spacingX,
+          A.y - (j * this._spacingY), A.z);
+      this.points().add(A.x + (i * this._spacingX),
+          A.y - (j * this._spacingY) - this._spacingY, A.z);
+      this.points().add(A.x + (i * this._spacingX) + this._spacingX,
+          A.y - (j * this._spacingY) - this._spacingY, A.z);
       
       // if side colors are configured, set them
       if (this._frontColor) {
@@ -551,7 +521,7 @@ X.box.prototype.create_ = function() {
       
       var count;
       for (count = 0; count < 6; ++count) {
-        this.normals().add([0, 0, 1]);
+        this.normals().add(0, 0, 1);
       } // for loop of normals
       
     } // for j

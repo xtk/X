@@ -7,18 +7,16 @@ goog.provide('X.object');
 
 // requires
 goog.require('X.base');
-goog.require('X.colors');
 goog.require('X.exception');
-goog.require('X.points');
+goog.require('X.triplets');
 goog.require('X.texture');
 goog.require('X.transform');
-goog.require('goog.structs.Set');
 
 
 
 /**
- * Create a displayable object. Objects may have points, colors, a texture and a
- * lightning source.
+ * Create a displayable object. Objects may have points, colors, a texture, or
+ * may be loaded from a file in addition to opacity and visibility settings.
  * 
  * @constructor
  * @param {X.object.types} type The rendering type for this object.
@@ -78,26 +76,26 @@ X.object = function(type) {
   /**
    * The points of this object.
    * 
-   * @type {X.points}
+   * @type {X.triplets}
    * @protected
    */
-  this._points = new X.points();
+  this._points = new X.triplets();
   
   /**
    * The normals of this object.
    * 
-   * @type {X.points}
+   * @type {X.triplets}
    * @protected
    */
-  this._normals = new X.points();
+  this._normals = new X.triplets();
   
   /**
    * The point colors of this object.
    * 
-   * @type {X.colors}
+   * @type {X.triplets}
    * @protected
    */
-  this._colors = new X.colors();
+  this._colors = new X.triplets();
   
   /**
    * The texture of this object.
@@ -183,7 +181,7 @@ X.object.prototype.transform = function() {
 /**
  * Get the points of this object.
  * 
- * @return {X.points} The points.
+ * @return {X.triplets} The points.
  */
 X.object.prototype.points = function() {
 
@@ -195,7 +193,7 @@ X.object.prototype.points = function() {
 /**
  * Get the normals of this object.
  * 
- * @return {X.points} The normals.
+ * @return {X.triplets} The normals.
  */
 X.object.prototype.normals = function() {
 
@@ -207,7 +205,7 @@ X.object.prototype.normals = function() {
 /**
  * Get the point colors of this object.
  * 
- * @return {X.colors} The point colors.
+ * @return {X.triplets} The point colors.
  */
 X.object.prototype.colors = function() {
 
@@ -329,6 +327,12 @@ X.object.prototype.setOpacity = function(opacity) {
 };
 
 
+/**
+ * Load this object from a file or reset the associated file.
+ * 
+ * @param {?String} file The file path/URL to load. If null, reset the
+ *          associated file.
+ */
 X.object.prototype.load = function(file) {
 
   this._file = file;
@@ -336,6 +340,11 @@ X.object.prototype.load = function(file) {
 };
 
 
+/**
+ * Get the associated file for this object.
+ * 
+ * @return {?String} The associated file or null if no file is associated.
+ */
 X.object.prototype.file = function() {
 
   return this._file;
@@ -394,4 +403,6 @@ goog.exportSymbol('X.object.prototype.setColor', X.object.prototype.setColor);
 goog.exportSymbol('X.object.prototype.opacity', X.object.prototype.opacity);
 goog.exportSymbol('X.object.prototype.setOpacity',
     X.object.prototype.setOpacity);
+goog.exportSymbol('X.object.prototype.load', X.object.prototype.load);
+goog.exportSymbol('X.object.prototype.file', X.object.prototype.file);
 goog.exportSymbol('X.object.OPACITY_COMPARATOR', X.object.OPACITY_COMPARATOR);

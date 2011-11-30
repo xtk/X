@@ -173,11 +173,6 @@ X.loader.prototype.loadFileCompleted = function(downloader, object) {
   var readAsArray = downloader.response.split('\n');
   var objectN = object;
   
-  var tmpArray = Array();
-  var tmpArray2 = Array();
-  var ind = 0;
-  var ind2 = 0;
-  
   var i;
   for (i = 0; i < readAsArray.length; i++) {
     
@@ -186,46 +181,22 @@ X.loader.prototype.loadFileCompleted = function(downloader, object) {
     
     if (tmpstr[3] == 'vertex') {
       
-      var x = tmpstr[4];
-      var y = tmpstr[5];
-      var z = tmpstr[6];
-      objectN.points().add([x, y, z]);
-      
-      tmpArray[ind] = x;
-      tmpArray[ind + 1] = y;
-      tmpArray[ind + 2] = z;
-      
-
-      ind = ind + 3;
+      var x = parseFloat(tmpstr[4]);
+      var y = parseFloat(tmpstr[5]);
+      var z = parseFloat(tmpstr[6]);
+      objectN.points().add(x, y, z);
       
 
     } else if (tmpstr[1] == 'facet') {
-      var x = tmpstr[3];
-      var y = tmpstr[4];
-      var z = tmpstr[5];
-      objectN.normals().add([x, y, z]);
-      objectN.normals().add([x, y, z]);
-      objectN.normals().add([x, y, z]);
-      
-      tmpArray2[ind] = x;
-      tmpArray2[ind + 1] = y;
-      tmpArray2[ind + 2] = z;
-      tmpArray2[ind + 3] = x;
-      tmpArray2[ind + 4] = y;
-      tmpArray2[ind + 5] = z;
-      tmpArray2[ind + 6] = x;
-      tmpArray2[ind + 7] = y;
-      tmpArray2[ind + 8] = z;
-      
-      ind2 = ind2 + 9;
+      var x = parseFloat(tmpstr[3]);
+      var y = parseFloat(tmpstr[4]);
+      var z = parseFloat(tmpstr[5]);
+      objectN.normals().add(x, y, z);
+      objectN.normals().add(x, y, z);
+      objectN.normals().add(x, y, z);
       
     }
   }
-  
-  object.tmparr = tmpArray;
-  object.tmparr2 = tmpArray2;
-  object.tmpcnt = ind + 1;
-  object.tmpcnt2 = ind2 + 1;
   
   var modifiedEvent = new X.renderer.ModifiedEvent();
   modifiedEvent._object = object;
