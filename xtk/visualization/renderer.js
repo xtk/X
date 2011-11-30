@@ -257,15 +257,7 @@ X.renderer = function(container) {
    */
   this._textures = new goog.structs.Map();
   
-  /**
-   * A hash map of opacity buffers of this renderer. Each buffer is associated
-   * with a displayable object using its unique id.
-   * 
-   * @type {!goog.structs.Map}
-   * @protected
-   */
-  this._opacityBuffers = new goog.structs.Map();
-  
+
   this._lighting = true;
   
   /**
@@ -738,10 +730,6 @@ X.renderer.prototype.addShaders = function(shaders) {
       shaders.color());
   this._gl.enableVertexAttribArray(this._vertexColorAttribute);
   
-  this._vertexOpacityAttribute = this._gl.getAttribLocation(shaderProgram,
-      shaders.opacity());
-  this._gl.enableVertexAttribArray(this._vertexOpacityAttribute);
-  
   this._texturePositionAttribute = this._gl.getAttribLocation(shaderProgram,
       shaders.texturePos());
   this._gl.enableVertexAttribArray(this._texturePositionAttribute);
@@ -936,18 +924,6 @@ X.renderer.prototype.setupObject_ = function(object) {
       
     }
     
-    // OPACITY
-    var oldOpacityBuffer = this._opacityBuffers.get(object.id());
-    if (goog.isDefAndNotNull(oldOpacityBuffer)) {
-      
-      if (this._gl.isBuffer(oldOpacityBuffer.glBuffer())) {
-        
-        this._gl.deleteBuffer(oldOpacityBuffer.glBuffer());
-        
-      }
-      
-    }
-    
     // TEXTURE
     var oldTexturePositionBuffer = this._texturePositionBuffers
         .get(object.id());
@@ -1065,36 +1041,6 @@ X.renderer.prototype.setupObject_ = function(object) {
   
 
 
-  console.log('opacity start ' + object.id() + ': ' + Date());
-  //
-  // OPACITY
-  //
-  var glOpacityBuffer = this._gl.createBuffer();
-  
-  // we need to convert the single opacity value to an array to set it for all
-  // vertices
-  
-  // var cnttt= object.points().flatten().length
-  var cnttt = object.tmpcnt;
-  
-  var tmpArray = new Array(cnttt);
-  var j;
-  for (j = 0; j < tmpArray.length; ++j) {
-    
-    tmpArray[j] = object.opacity();
-    
-  }
-  
-  // bind and fill with opacity value
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glOpacityBuffer);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmpArray),
-      this._gl.STATIC_DRAW);
-  
-  // create an X.buffer to store the opacity
-  var opacityBuffer = new X.buffer(glOpacityBuffer, 1, 1);
-  
-  console.log('opacity.. DONE ' + object.id() + ': ' + Date());
-  
   //
   // TEXTURE
   //
@@ -1151,7 +1097,6 @@ X.renderer.prototype.setupObject_ = function(object) {
 
   this._normalBuffers.set(object.id(), normalBuffer);
   // this._colorBuffers.set(object.id(), colorBuffer);
-  this._opacityBuffers.set(object.id(), opacityBuffer);
   
   this._texturePositionBuffers.set(object.id(), texturePositionBuffer);
 };
@@ -1306,7 +1251,6 @@ X.renderer.prototype.render = function() {
       var vertexBuffer = this._vertexBuffers.get(id);
       var normalBuffer = this._normalBuffers.get(id);
       // var colorBuffer = this._colorBuffers.get(id);
-      var opacityBuffer = this._opacityBuffers.get(id);
       var texturePositionBuffer = this._texturePositionBuffers.get(id);
       
       // ..bind the glBuffers
@@ -1341,10 +1285,11 @@ X.renderer.prototype.render = function() {
       // .itemSize(), this._gl.FLOAT, false, 0, 0);
       
       // OPACITY
-      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, opacityBuffer.glBuffer());
+      var objectOpacityUniformLocation = this._gl.getUniformLocation(
+          this._shaderProgram, this._shaders.objectOpacity());
       
-      this._gl.vertexAttribPointer(this._vertexOpacityAttribute, opacityBuffer
-          .itemSize(), this._gl.FLOAT, false, 0, 0);
+      this._gl.uniform1f(objectOpacityUniformLocation, parseFloat(object
+          .opacity()));
       
       // TEXTURE
       var useTextureUniformLocation = this._gl.getUniformLocation(
@@ -1393,10 +1338,10 @@ X.renderer.prototype.render = function() {
       // TRANSFORMS
       
       // propagate transform to the uniform matrices of the shader
-      var transformUniformLocation = this._gl.getUniformLocation(
-          this._shaderProgram, this._shaders.transform());
+      var objectTransformUniformLocation = this._gl.getUniformLocation(
+          this._shaderProgram, this._shaders.objectTransform());
       
-      this._gl.uniformMatrix4fv(transformUniformLocation, false,
+      this._gl.uniformMatrix4fv(objectTransformUniformLocation, false,
           new Float32Array(object.transform().matrix().flatten()));
       
 
