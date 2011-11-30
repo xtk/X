@@ -922,81 +922,32 @@ X.renderer.prototype.setupObject_ = function(object) {
   
   // check if we have point colors, then we need to setup the glBuffer and the
   // X.buffer
+  var colorBuffer = null;
   
-  //  
-  // // first, we check if the object colors are properly defined
-  // //
-  // // case 1:
-  // // object has an object color defined
-  // // we create point colors matching this object color
-  // // case 2:
-  // // object has not an object color defined and does have the same number of
-  // // points and point-colors defined
-  // // case 3:
-  // // object has not an object color defined and also not the same number of
-  // // points and point-colors, then we set the object color to 1
-  // //
-  // // in all cases, we do not want to correct the passed in object but just
-  // // correct to good value internally
-  // window.console.log('colors START ' + object.id() + ': ' + Date());
-  // var colorsValid = false;
-  //
-  // var colors = null;
-  //  
-  // // if no object color was set up, check for valid point colors
-  // if (goog.isNull(object.color())) {
-  //    
-  // // no object color, check if valid point-colors are defined
-  // colorsValid = (object.points().count() == object.colors().count());
-  // colors = object.colors();
-  //    
-  // } else {
-  //    
-  // // valid object color
-  // objectColor = object.color();
-  //    
-  // }
-  //  
-  // // if we don't have valid colors at this point, create some based on the
-  // // objectColor
-  // if (!colorsValid) {
-  //    
-  // colors = new X.colors();
-  //    
-  // var tmparr = Array();
-  //    
-  // var ind = 0;
-  //    
-  // var i;
-  // for (i = 0; i < object.points().count(); i++) {
-  //      
-  // tmparr[ind] = 1;
-  // tmparr[ind + 1] = 0;
-  // tmparr[ind + 2] = 0;
-  //      
-  // ind = ind + 3;
-  // }
-  //    
-  // }
-  //  
-  // var glColorBuffer = this._gl.createBuffer();
-  //  
-  // // var ccc = colors.flatten();
-  // var ccc = tmparr;
-  //  
-  // // bind and fill with colors defined above
-  // this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glColorBuffer);
-  // this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(tmparr),
-  // this._gl.STATIC_DRAW);
-  //  
-  // // create an X.buffer to store the colors
-  // // every color consists of 3 items (r,g,b)
-  // var colorBuffer = new X.buffer(glColorBuffer, colors.count(), 3);
-  //  
-  // window.console.log('colors DONE ' + object.id() + ': ' + Date());
+  if (object.colors().length() > 0) {
+    
+    // yes, there are point colors setup
+    
+    // check if the point colors are valid, note that we use the length for this
+    // check which is slightly faster!
+    if (object.colors().length() != object.points().length()) {
+      
+      // mismatch, this can not work
+      throw new X.exception('Fatal: Mismatch between points and point colors!');
+      
+    }
+    
+    // bind and fill with colors defined above
+    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glColorBuffer);
+    this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.colors()
+        .all()), this._gl.STATIC_DRAW);
+    
+    // create an X.buffer to store the colors
+    // every color consists of 3 items (r,g,b)
+    colorBuffer = new X.buffer(glColorBuffer, colors.count(), 3);
+    
+  }
   
-
-
   //
   // TEXTURE
   //
@@ -1052,8 +1003,7 @@ X.renderer.prototype.setupObject_ = function(object) {
   
 
   this._normalBuffers.set(object.id(), normalBuffer);
-  // this._colorBuffers.set(object.id(), colorBuffer);
-  
+  this._colorBuffers.set(object.id(), colorBuffer);
   this._texturePositionBuffers.set(object.id(), texturePositionBuffer);
 };
 
@@ -1206,7 +1156,7 @@ X.renderer.prototype.render = function() {
 
       var vertexBuffer = this._vertexBuffers.get(id);
       var normalBuffer = this._normalBuffers.get(id);
-      // var colorBuffer = this._colorBuffers.get(id);
+      var colorBuffer = this._colorBuffers.get(id);
       var texturePositionBuffer = this._texturePositionBuffers.get(id);
       
       // ..bind the glBuffers
@@ -1224,21 +1174,43 @@ X.renderer.prototype.render = function() {
           .itemSize(), this._gl.FLOAT, false, 0, 0);
       
       // COLORS
+      var useObjectColorUniformLocation = this._gl.getUniformLocation(
+          this._shaderProgram, this._shaders.useObjectColor());
       
-      // we have a solid object color
-      var objectColor = object.color();
-      
-      var objectColorUniformLocation = this._gl.getUniformLocation(
-          this._shaderProgram, this._shaders.objectColor());
-      
-      this._gl.uniform3f(objectColorUniformLocation,
-          parseFloat(objectColor[0]), parseFloat(objectColor[1]),
-          parseFloat(objectColor[2]));
-      
-      // this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());
-      //      
-      // this._gl.vertexAttribPointer(this._vertexColorAttribute, colorBuffer
-      // .itemSize(), this._gl.FLOAT, false, 0, 0);
+      if (goog.isDefAndNotNull(colorBuffer)) {
+        
+        // point colors are defined for this object
+        
+        // de-activate the useObjectColor flag on the shader
+        this._gl.uniform1i(useObjectColorUniformLocation, false);
+        
+        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());
+        
+        this._gl.vertexAttribPointer(this._vertexColorAttribute, colorBuffer
+            .itemSize(), this._gl.FLOAT, false, 0, 0);
+        
+      } else {
+        
+        // we have a solid object color
+        
+        // activate the useObjectColor flag on the shader
+        this._gl.uniform1i(useObjectColorUniformLocation, true);
+        
+        var objectColor = object.color();
+        
+        var objectColorUniformLocation = this._gl.getUniformLocation(
+            this._shaderProgram, this._shaders.objectColor());
+        
+        this._gl.uniform3f(objectColorUniformLocation,
+            parseFloat(objectColor[0]), parseFloat(objectColor[1]),
+            parseFloat(objectColor[2]));
+        
+        // we always have to configure the attribute of the point colors
+        // even if no point colors are in use
+        this._gl.vertexAttribPointer(this._vertexColorAttribute, vertexBuffer
+            .itemSize(), this._gl.FLOAT, false, 0, 0);
+        
+      }
       
       // OPACITY
       var objectOpacityUniformLocation = this._gl.getUniformLocation(

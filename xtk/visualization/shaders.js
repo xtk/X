@@ -43,12 +43,13 @@ X.shaders = function() {
   var t = '';
   t += 'attribute vec3 vertexPosition;\n';
   t += 'attribute vec3 vertexNormal;\n';
-  // t += 'attribute vec3 vertexColor;\n';
+  t += 'attribute vec3 vertexColor;\n';
   t += 'attribute vec2 vertexTexturePos;\n';
   t += '\n';
   t += 'uniform mat4 view;\n';
   t += 'uniform mat4 perspective;\n';
   t += 'uniform mat4 objectTransform;\n';
+  t += 'uniform bool useObjectColor;\n';
   t += 'uniform vec3 objectColor;\n';
   t += 'uniform float objectOpacity;\n';
   t += 'uniform mat3 normal;\n';
@@ -62,7 +63,11 @@ X.shaders = function() {
   t += '  float dLW = max(dot(transformedNormal, lightingWeighting ), 0.0);\n';
   t += '  gl_Position = perspective * view * objectTransform * vec4(vertexPosition, 1.0);\n';
   t += '  fragmentTexturePos = vertexTexturePos;\n';
-  t += '  fragmentColor = vec4(objectColor*dLW,objectOpacity);\n';
+  t += '  if (useObjectColor) {\n';
+  t += '    fragmentColor = vec4(objectColor*dLW,objectOpacity);\n';
+  t += '  } else {\n';
+  t += '    fragmentColor = vec4(vertexColor*dLW,objectOpacity);\n';
+  t += '  }\n';
   t += '}\n';
   this._vertexShaderSource = t;
   
@@ -160,6 +165,9 @@ X.shaders = function() {
    * @protected
    */
   this._objectTransformUniform = 'objectTransform';
+  
+
+  this._useObjectColorUniform = 'useObjectColor';
   
 
   /**
@@ -286,6 +294,16 @@ X.shaders.prototype.perspective = function() {
 X.shaders.prototype.objectTransform = function() {
 
   return this._objectTransformUniform;
+  
+};
+
+
+/**
+ * TODO
+ */
+X.shaders.prototype.useObjectColor = function() {
+
+  return this._useObjectColorUniform;
   
 };
 
@@ -444,6 +462,15 @@ X.shaders.prototype.validate = function() {
     
     throw new X.exception(
         'Fatal: Could not validate shader! The transformUniform was bogus.');
+    
+  }
+  
+  t = this._vertexShaderSource.search(this._useObjectColorUniform);
+  
+  if (t == -1) {
+    
+    throw new X.exception(
+        'Fatal: Could not validate shader! The useObjectColorUniform was bogus.');
     
   }
   
