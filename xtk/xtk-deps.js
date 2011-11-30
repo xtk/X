@@ -5,7 +5,6 @@ goog.addDependency('../../../../core/event.js', ['X.event'], ['X', 'goog.events'
 goog.addDependency('../../../../core/exception.js', ['X.exception'], ['X.base']);
 goog.addDependency('../../../../core/texture.js', ['X.texture'], ['X.base', 'X.exception']);
 goog.addDependency('../../../../core/transform.js', ['X.transform'], ['X.base', 'X.exception', 'goog.math.Matrix', 'goog.math.Vec3']);
-goog.addDependency('../../../../io/console.js', ['X.console'], ['X.base', 'X.exception', 'goog.dom']);
 goog.addDependency('../../../../io/interactor.js', ['X.interactor'], ['X.base', 'X.camera', 'X.camera.PanEvent', 'X.camera.RotateEvent', 'X.camera.ZoomEvent', 'X.exception', 'goog.dom', 'goog.events', 'goog.events.BrowserEvent.MouseButton', 'goog.events.EventType', 'goog.events.MouseWheelHandler', 'goog.math.Vec2']);
 goog.addDependency('../../../../io/loader.js', ['X.loader'], ['X.base', 'X.exception', 'X.object', 'goog.events.EventType', 'goog.net.EventType', 'goog.net.XhrIo', 'goog.structs.Map']);
 goog.addDependency('../../../../math/matrixHelper.js', ['X.matrixHelper'], ['X.exception', 'goog.math.Matrix', 'goog.math.Vec2', 'goog.math.Vec3']);

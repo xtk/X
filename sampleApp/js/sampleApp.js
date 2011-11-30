@@ -2,9 +2,7 @@ goog.provide('sampleApp');
 goog.provide('sampleApp.run');
 
 goog.require('X.box');
-goog.require('X.color');
 goog.require('X.colors');
-goog.require('X.console');
 goog.require('X.object');
 goog.require('X.renderer3D');
 
@@ -14,9 +12,7 @@ goog.require('X.renderer3D');
  */
 sampleApp.run = function() {
 
-  var c = new X.console();
-  
-  c.out('Starting sampleApp.init..');
+  console.log('Starting sampleApp.init..');
   
   try {
     
@@ -96,7 +92,7 @@ sampleApp.run = function() {
     
     // create a box with a solid color
     var box2 = new X.box(new goog.math.Vec3(-10, -10, -10), 5, 5, 5);
-    box2.setColor(new X.color(0, 0, 1));
+    box2.setColor(0, 0, 1);
     box2.setOpacity(0.6);
     box2.transform().translateX(-50);
     box2.transform().translateY(30);
@@ -165,7 +161,7 @@ sampleApp.run = function() {
     
     function testCB(e) {
 
-      c.out(e);
+      console.log(e);
       
     }
     
