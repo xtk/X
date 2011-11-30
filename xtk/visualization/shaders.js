@@ -43,13 +43,14 @@ X.shaders = function() {
   var t = '';
   t += 'attribute vec3 vertexPosition;\n';
   t += 'attribute vec3 vertexNormal;\n';
-  t += 'attribute vec3 vertexColor;\n';
-  t += 'attribute float vertexOpacity;\n';
+  // t += 'attribute vec3 vertexColor;\n';
   t += 'attribute vec2 vertexTexturePos;\n';
   t += '\n';
   t += 'uniform mat4 view;\n';
   t += 'uniform mat4 perspective;\n';
-  t += 'uniform mat4 transform;\n';
+  t += 'uniform mat4 objectTransform;\n';
+  t += 'uniform vec3 objectColor;\n';
+  t += 'uniform float objectOpacity;\n';
   t += 'uniform mat3 normal;\n';
   t += '\n';
   t += 'varying lowp vec4 fragmentColor;\n';
@@ -59,9 +60,9 @@ X.shaders = function() {
   t += '  vec3 lightingWeighting = vec3(0.0, 0.0, 1.0);\n';
   t += '  vec3 transformedNormal = normal * vertexNormal;\n';
   t += '  float dLW = max(dot(transformedNormal, lightingWeighting ), 0.0);\n';
-  t += '  gl_Position = perspective * view * transform * vec4(vertexPosition, 1.0);\n';
+  t += '  gl_Position = perspective * view * objectTransform * vec4(vertexPosition, 1.0);\n';
   t += '  fragmentTexturePos = vertexTexturePos;\n';
-  t += '  fragmentColor = vec4(vertexColor*dLW,vertexOpacity);\n';
+  t += '  fragmentColor = vec4(objectColor*dLW,objectOpacity);\n';
   t += '}\n';
   this._vertexShaderSource = t;
   
@@ -118,57 +119,14 @@ X.shaders = function() {
   this._colorAttribute = 'vertexColor';
   
   /**
-   * The string to access the opacity value inside the vertex shader source.
-   * 
-   * @type {!string}
-   * @protected
-   */
-  this._opacityAttribute = 'vertexOpacity';
-  
-  /**
    * The string to access the texture position inside the vertex shader source.
    * 
    * @type {!string}
    * @protected
    */
   this._texturePosAttribute = 'vertexTexturePos';
-  //  
-  // /**
-  // * The string to access the first row of the transform matrix inside the
-  // * vertex shader source.
-  // *
-  // * @type {!string}
-  // * @protected
-  // */
-  // this._transform0Attribute = 'vertexTransform0';
-  //  
-  // /**
-  // * The string to access the second row of the transform matrix inside the
-  // * vertex shader source.
-  // *
-  // * @type {!string}
-  // * @protected
-  // */
-  // this._transform1Attribute = 'vertexTransform1';
-  //  
-  // /**
-  // * The string to access the third row of the transform matrix inside the
-  // * vertex shader source.
-  // *
-  // * @type {!string}
-  // * @protected
-  // */
-  // this._transform2Attribute = 'vertexTransform2';
-  //  
-  // /**
-  // * The string to access the fourth row of the transform matrix inside the
-  // * vertex shader source.
-  // *
-  // * @type {!string}
-  // * @protected
-  // */
-  // this._transform3Attribute = 'vertexTransform3';
   
+
   /**
    * The string to access the opacity value inside the vertex shader source.
    * 
@@ -201,7 +159,27 @@ X.shaders = function() {
    * @type {!string}
    * @protected
    */
-  this._transformUniform = 'transform';
+  this._objectTransformUniform = 'objectTransform';
+  
+
+  /**
+   * The string to access the objectColor uniform inside the vertex shader
+   * source.
+   * 
+   * @type {!string}
+   * @protected
+   */
+  this._objectColorUniform = 'objectColor';
+  
+
+  /**
+   * The string to access the objectOpacity uniform inside the vertex shader
+   * source.
+   * 
+   * @type {!string}
+   * @protected
+   */
+  this._objectOpacityUniform = 'objectOpacity';
   
   // TODO comments
   
@@ -303,36 +281,47 @@ X.shaders.prototype.perspective = function() {
 /**
  * Get the transform uniform locator.
  * 
- * @return {!string} The perspective uniform locator.
+ * @return {!string} The transform uniform locator.
  */
-X.shaders.prototype.transform = function() {
+X.shaders.prototype.objectTransform = function() {
 
-  return this._transformUniform;
+  return this._objectTransformUniform;
   
 };
 
 
 /**
- * Get the normal uniform locator <<<<<<< HEAD
+ * Get the objectColor uniform locator.
  * 
- * @return {String} The normal uniform locator. =======
- * @return {String|null} The normal uniform locator. >>>>>>> master
+ * @return {!string} The objectColor uniform locator.
+ */
+X.shaders.prototype.objectColor = function() {
+
+  return this._objectColorUniform;
+  
+};
+
+
+/**
+ * Get the objectOpacity uniform locator.
+ * 
+ * @return {!string} The objectColor uniform locator.
+ */
+X.shaders.prototype.objectOpacity = function() {
+
+  return this._objectOpacityUniform;
+  
+};
+
+
+/**
+ * Get the normal uniform locator
+ * 
+ * @return {String|null} The normal uniform locator.
  */
 X.shaders.prototype.normalUniform = function() {
 
   return this._normalUniform;
-  
-};
-
-
-/**
- * Get the vertex opacity attribute locator.
- * 
- * @return {!string} The vertex opacity attribute locator.
- */
-X.shaders.prototype.opacity = function() {
-
-  return this._opacityAttribute;
   
 };
 
@@ -413,14 +402,14 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._vertexShaderSource.search(this._colorAttribute);
-  
-  if (t == -1) {
-    
-    throw new X.exception(
-        'Fatal: Could not validate shader! The colorAttribute was bogus.');
-    
-  }
+  // t = this._vertexShaderSource.search(this._colorAttribute);
+  //  
+  // if (t == -1) {
+  //    
+  // throw new X.exception(
+  // 'Fatal: Could not validate shader! The colorAttribute was bogus.');
+  //    
+  // }
   
   t = this._vertexShaderSource.search(this._opacityAttribute);
   
@@ -449,12 +438,30 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._vertexShaderSource.search(this._transformUniform);
+  t = this._vertexShaderSource.search(this._objectTransformUniform);
   
   if (t == -1) {
     
     throw new X.exception(
         'Fatal: Could not validate shader! The transformUniform was bogus.');
+    
+  }
+  
+  t = this._vertexShaderSource.search(this._objectColorUniform);
+  
+  if (t == -1) {
+    
+    throw new X.exception(
+        'Fatal: Could not validate shader! The objectColorUniform was bogus.');
+    
+  }
+  
+  t = this._vertexShaderSource.search(this._objectOpacityUniform);
+  
+  if (t == -1) {
+    
+    throw new X.exception(
+        'Fatal: Could not validate shader! The objectOpacityUniform was bogus.');
     
   }
   

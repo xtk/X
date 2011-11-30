@@ -45,14 +45,6 @@ X.base = function() {
    */
   this._id = X.uniqueId('X');
   
-  /**
-   * A timestamp of the last modification of this object.
-   * 
-   * @type {Number}
-   * @protected
-   */
-  this._timestamp = Date.now();
-  
 
 };
 // enable events

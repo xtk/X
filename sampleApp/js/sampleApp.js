@@ -2,9 +2,7 @@ goog.provide('sampleApp');
 goog.provide('sampleApp.run');
 
 goog.require('X.box');
-goog.require('X.color');
 goog.require('X.colors');
-goog.require('X.console');
 goog.require('X.object');
 goog.require('X.renderer3D');
 
@@ -14,9 +12,7 @@ goog.require('X.renderer3D');
  */
 sampleApp.run = function() {
 
-  var c = new X.console();
-  
-  c.out('Starting sampleApp.init..');
+  console.log('Starting sampleApp.init..');
   
   try {
     
@@ -27,7 +23,7 @@ sampleApp.run = function() {
     // container is used
     
     // is lighting enabled?
-    var lighting = document.getElementById('lighting').checked;
+    // var lighting = document.getElementById('lighting').checked;
     // var sliceView1 = new X.renderer2D(300, 300);
     // sliceView1.setContainerById('sliceView1');
     // sliceView1.init();
@@ -48,7 +44,7 @@ sampleApp.run = function() {
     var threeDView = new X.renderer3D('threeDView');
     threeDView.setBackgroundColor('#b3b3e7');
     threeDView.init();
-    threeDView.setLighting(lighting);
+    // threeDView.setLighting(lighting);
     
 
 
@@ -96,7 +92,7 @@ sampleApp.run = function() {
     
     // create a box with a solid color
     var box2 = new X.box(new goog.math.Vec3(-10, -10, -10), 5, 5, 5);
-    box2.setColor(new X.color(0, 0, 1));
+    box2.setColor(0, 0, 1);
     box2.setOpacity(0.6);
     box2.transform().translateX(-50);
     box2.transform().translateY(30);
@@ -128,8 +124,8 @@ sampleApp.run = function() {
      * threeDView.addObject(object2); threeDView.addObject(object3);
      * threeDView.addObject(object4); threeDView.addObject(object5);
      */
-    threeDView.add(box1);
-    threeDView.add(box2);
+    // threeDView.add(box1);
+    // threeDView.add(box2);
     threeDView.add(box3);
     
     // we probably do not need to time this because of an appropriate event
@@ -149,7 +145,7 @@ sampleApp.run = function() {
     // box2.transform().rotateY(3);
     // box3.transform().rotateY(3);
     // box3.transform().rotateX(3);
-    threeDView.setupTransform_(box1);
+    // threeDView.setupTransform_(box1);
     // threeDView.setupTransform_(box2);
     // threeDView.setupTransform_(box3);
     // threeDView.setupObject_(box1);
@@ -165,80 +161,80 @@ sampleApp.run = function() {
     
     function testCB(e) {
 
-      c.out(e);
+      console.log(e);
       
     }
     
 
     // THE FOLLOWING IS A HACK UNTIL THE INTERACTOR IS READY
-    function handleFileSelect(evt) {
-
-      evt.stopPropagation();
-      evt.preventDefault();
-      
-      var files = evt.dataTransfer.files; // FileList object.
-      
-      // files is a FileList of File objects. List some properties.
-      
-      var i, f = 0;
-      for (i = 0; f = files[i]; i++) {
-        
-        var reader = new FileReader();
-        
-        reader.onloadend = testcallback;
-        
-        reader.readAsText(f);
-        
-      }
-      
-    }
+    // function handleFileSelect(evt) {
+    //
+    // evt.stopPropagation();
+    // evt.preventDefault();
+    //      
+    // var files = evt.dataTransfer.files; // FileList object.
+    //      
+    // // files is a FileList of File objects. List some properties.
+    //      
+    // var i, f = 0;
+    // for (i = 0; f = files[i]; i++) {
+    //        
+    // var reader = new FileReader();
+    //        
+    // reader.onloadend = testcallback;
+    //        
+    // reader.readAsText(f);
+    //        
+    // }
+    //      
+    // }
+    //    
+    // function testcallback(evt) {
+    //
+    // var result = evt.target.result;
+    // var readAsArray = result.split('\n');
+    // var objectN = new X.object();
+    //      
+    // var i;
+    // for (i = 0; i < readAsArray.length; i++) {
+    //        
+    // var tmp = readAsArray[i];
+    // var tmpstr = tmp.split(' ');
+    //        
+    // if (tmpstr[3] == 'vertex') {
+    //          
+    // var x = tmpstr[4];
+    // var y = tmpstr[5];
+    // var z = tmpstr[6];
+    // objectN.points().add([x, y, z]);
+    //          
+    // } else if (tmpstr[1] == 'facet') {
+    // var x = tmpstr[3];
+    // var y = tmpstr[4];
+    // var z = tmpstr[5];
+    // objectN.normals().add([x, y, z]);
+    // objectN.normals().add([x, y, z]);
+    // objectN.normals().add([x, y, z]);
+    // }
+    // }
+    //      
+    // threeDView.add(objectN);
+    // // threeDView.render();
+    //      
+    // }
+    //    
+    // function handleDragOver(evt) {
+    //
+    // evt.stopPropagation();
+    // evt.preventDefault();
+    // }
+    //    
+    // // Setup the dnd listeners.
+    // var dropZone = document.getElementById('threeDView');
+    // dropZone.addEventListener('dragover', handleDragOver, false);
+    // dropZone.addEventListener('drop', handleFileSelect, false);
+    //    
     
-    function testcallback(evt) {
-
-      var result = evt.target.result;
-      var readAsArray = result.split('\n');
-      var objectN = new X.object();
-      
-      var i;
-      for (i = 0; i < readAsArray.length; i++) {
-        
-        var tmp = readAsArray[i];
-        var tmpstr = tmp.split(' ');
-        
-        if (tmpstr[3] == 'vertex') {
-          
-          var x = tmpstr[4];
-          var y = tmpstr[5];
-          var z = tmpstr[6];
-          objectN.points().add([x, y, z]);
-          
-        } else if (tmpstr[1] == 'facet') {
-          var x = tmpstr[3];
-          var y = tmpstr[4];
-          var z = tmpstr[5];
-          objectN.normals().add([x, y, z]);
-          objectN.normals().add([x, y, z]);
-          objectN.normals().add([x, y, z]);
-        }
-      }
-      
-      threeDView.add(objectN);
-      // threeDView.render();
-      
-    }
-    
-    function handleDragOver(evt) {
-
-      evt.stopPropagation();
-      evt.preventDefault();
-    }
-    
-    // Setup the dnd listeners.
-    var dropZone = document.getElementById('threeDView');
-    dropZone.addEventListener('dragover', handleDragOver, false);
-    dropZone.addEventListener('drop', handleFileSelect, false);
-    
-
 
   } catch (e) {
     
