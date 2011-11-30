@@ -19,7 +19,8 @@ goog.require('goog.math.Vec3');
  * 
  * @constructor
  * @inheritDoc
- * @param {!goog.math.Vec3} center The center position in 3D space.
+ * @param {!Array} center The center position in 3D space as a 1-D Array with
+ *          length 3.
  * @param {!number} radiusX The radius of the box in X-direction.
  * @param {!number} radiusY The radius of the box in Y-direction.
  * @param {!number} radiusZ The radius of the box in Z-direction.
@@ -27,7 +28,8 @@ goog.require('goog.math.Vec3');
  */
 X.box = function(center, radiusX, radiusY, radiusZ, type) {
 
-  if (!goog.isDefAndNotNull(center) || !(center instanceof goog.math.Vec3)) {
+  if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
+      (center.length != 3)) {
     
     throw new X.exception('Fatal: Invalid center for the box!');
     
@@ -113,55 +115,62 @@ goog.inherits(X.box, X.object);
 
 /**
  * Set side colors for this X.box. This triggers the re-creation of all vertices
- * of this object after the colors are set.
+ * of this object after the colors are set. All colors must be given as 1-D
+ * arrays with the length 3 to hold R,G,B values.
  * 
- * @param {!X.color} front The X.color for the front (in positive Z direction)
+ * @param {!Array} front The X.color for the front (in positive Z direction)
  *          facing side.
- * @param {!X.color} top The X.color for the top (in positive Y direction)
+ * @param {!Array} top The X.color for the top (in positive Y direction) facing
+ *          side.
+ * @param {!Array} right The X.color for the right (in positive X direction)
  *          facing side.
- * @param {!X.color} right The X.color for the right (in positive X direction)
+ * @param {!Array} bottom The X.color for the bottom (in negative Y direction)
  *          facing side.
- * @param {!X.color} bottom The X.color for the bottom (in negative Y direction)
+ * @param {!Array} left The X.color for the left (in negative X direction)
  *          facing side.
- * @param {!X.color} left The X.color for the left (in negative X direction)
- *          facing side.
- * @param {!X.color} back The X.color for the back (in negative Z direction)
+ * @param {!Array} back The X.color for the back (in negative Z direction)
  *          facing side.
  * @throws {X.exception} If the given colors are invalid.
  */
 X.box.prototype.setColors = function(front, top, right, bottom, left, back) {
 
-  if (!goog.isDefAndNotNull(front) || !(front instanceof X.color)) {
+  if (!goog.isDefAndNotNull(front) || !(front instanceof Array) ||
+      (front.length != 3)) {
     
     throw new X.exception('Fatal: Wrong color for front side!');
     
   }
   
-  if (!goog.isDefAndNotNull(top) || !(top instanceof X.color)) {
+  if (!goog.isDefAndNotNull(top) || !(top instanceof Array) ||
+      (top.length != 3)) {
     
     throw new X.exception('Fatal: Wrong color for top side!');
     
   }
   
-  if (!goog.isDefAndNotNull(right) || !(right instanceof X.color)) {
+  if (!goog.isDefAndNotNull(right) || !(right instanceof Array) ||
+      (right.length != 3)) {
     
     throw new X.exception('Fatal: Wrong color for right side!');
     
   }
   
-  if (!goog.isDefAndNotNull(bottom) || !(bottom instanceof X.color)) {
+  if (!goog.isDefAndNotNull(bottom) || !(bottom instanceof Array) ||
+      (bottom.length != 3)) {
     
     throw new X.exception('Fatal: Wrong color for bottom side!');
     
   }
   
-  if (!goog.isDefAndNotNull(left) || !(left instanceof X.color)) {
+  if (!goog.isDefAndNotNull(left) || !(left instanceof Array) ||
+      (left.length != 3)) {
     
     throw new X.exception('Fatal: Wrong color for left side!');
     
   }
   
-  if (!goog.isDefAndNotNull(back) || !(back instanceof X.color)) {
+  if (!goog.isDefAndNotNull(back) || !(back instanceof Array) ||
+      (back.length != 3)) {
     
     throw new X.exception('Fatal: Wrong color for right side!');
     
@@ -226,29 +235,29 @@ X.box.prototype.create_ = function() {
   //
   // (G is the only invisible corner)
   
-  var A = new goog.math.Vec3(this._center.x - this._radiusX, this._center.y +
-      this._radiusY, this._center.z + this._radiusZ);
+  var A = new goog.math.Vec3(this._center[0] - this._radiusX, this._center[1] +
+      this._radiusY, this._center[2] + this._radiusZ);
   
-  var B = new goog.math.Vec3(this._center.x + this._radiusX, this._center.y +
-      this._radiusY, this._center.z + this._radiusZ);
+  var B = new goog.math.Vec3(this._center[0] + this._radiusX, this._center[1] +
+      this._radiusY, this._center[2] + this._radiusZ);
   
-  var C = new goog.math.Vec3(this._center.x - this._radiusX, this._center.y -
-      this._radiusY, this._center.z + this._radiusZ);
+  var C = new goog.math.Vec3(this._center[0] - this._radiusX, this._center[1] -
+      this._radiusY, this._center[2] + this._radiusZ);
   
-  var D = new goog.math.Vec3(this._center.x + this._radiusX, this._center.y -
-      this._radiusY, this._center.z + this._radiusZ);
+  var D = new goog.math.Vec3(this._center[0] + this._radiusX, this._center[1] -
+      this._radiusY, this._center[2] + this._radiusZ);
   
-  var E = new goog.math.Vec3(this._center.x - this._radiusX, this._center.y +
-      this._radiusY, this._center.z - this._radiusZ);
+  var E = new goog.math.Vec3(this._center[0] - this._radiusX, this._center[1] +
+      this._radiusY, this._center[2] - this._radiusZ);
   
-  var F = new goog.math.Vec3(this._center.x + this._radiusX, this._center.y +
-      this._radiusY, this._center.z - this._radiusZ);
+  var F = new goog.math.Vec3(this._center[0] + this._radiusX, this._center[1] +
+      this._radiusY, this._center[2] - this._radiusZ);
   
-  var G = new goog.math.Vec3(this._center.x - this._radiusX, this._center.y -
-      this._radiusY, this._center.z - this._radiusZ);
+  var G = new goog.math.Vec3(this._center[0] - this._radiusX, this._center[1] -
+      this._radiusY, this._center[2] - this._radiusZ);
   
-  var H = new goog.math.Vec3(this._center.x + this._radiusX, this._center.y -
-      this._radiusY, this._center.z - this._radiusZ);
+  var H = new goog.math.Vec3(this._center[0] + this._radiusX, this._center[1] -
+      this._radiusY, this._center[2] - this._radiusZ);
   
 
   // number of vertices for edge X
@@ -292,7 +301,8 @@ X.box.prototype.create_ = function() {
         var cF;
         for (cF = 0; cF < 6; ++cF) {
           
-          this.colors().add(this._backColor);
+          this.colors().add(this._backColor[0], this._backColor[1],
+              this._backColor[2]);
           
         } // for loop of colors
         
@@ -337,7 +347,8 @@ X.box.prototype.create_ = function() {
         var cB;
         for (cB = 0; cB < 6; ++cB) {
           
-          this.colors().add(this._topColor);
+          this.colors().add(this._topColor[0], this._topColor[1],
+              this._topColor[2]);
           
         } // for loop of colors
         
@@ -381,7 +392,8 @@ X.box.prototype.create_ = function() {
         var cC;
         for (cC = 0; cC < 6; ++cC) {
           
-          this.colors().add(this._rightColor);
+          this.colors().add(this._rightColor[0], this._rightColor[1],
+              this._rightColor[2]);
           
         } // for loop of colors
         
@@ -425,7 +437,8 @@ X.box.prototype.create_ = function() {
         var cD;
         for (cD = 0; cD < 6; ++cD) {
           
-          this.colors().add(this._bottomColor);
+          this.colors().add(this._bottomColor[0], this._bottomColor[1],
+              this._bottomColor[2]);
           
         } // for loop of colors
         
@@ -469,7 +482,8 @@ X.box.prototype.create_ = function() {
         var cE;
         for (cE = 0; cE < 6; ++cE) {
           
-          this.colors().add(this._leftColor);
+          this.colors().add(this._leftColor[0], this._leftColor[1],
+              this._leftColor[2]);
           
         } // for loop of colors
         
@@ -513,7 +527,8 @@ X.box.prototype.create_ = function() {
         var cA;
         for (cA = 0; cA < 6; ++cA) {
           
-          this.colors().add(this._frontColor);
+          this.colors().add(this._frontColor[0], this._frontColor[1],
+              this._frontColor[2]);
           
         } // for loop of colors
         

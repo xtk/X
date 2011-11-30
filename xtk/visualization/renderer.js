@@ -936,6 +936,7 @@ X.renderer.prototype.setupObject_ = function(object) {
       throw new X.exception('Fatal: Mismatch between points and point colors!');
       
     }
+    var glColorBuffer = this._gl.createBuffer();
     
     // bind and fill with colors defined above
     this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glColorBuffer);
@@ -944,7 +945,7 @@ X.renderer.prototype.setupObject_ = function(object) {
     
     // create an X.buffer to store the colors
     // every color consists of 3 items (r,g,b)
-    colorBuffer = new X.buffer(glColorBuffer, colors.count(), 3);
+    colorBuffer = new X.buffer(glColorBuffer, object.colors().count(), 3);
     
   }
   
