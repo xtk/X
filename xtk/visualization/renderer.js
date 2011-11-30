@@ -509,11 +509,11 @@ X.renderer.prototype.loader = function() {
 X.renderer.prototype.onModified = function(event) {
 
   var object = event._object;
-  console.log('start.. ' + object.id() + ': ' + Date());
+  window.console.log('start.. ' + object.id() + ': ' + Date());
   this.setupVertices_(object);
-  console.log('setup vertices.. DONE ' + object.id() + ': ' + Date());
+  window.console.log('setup vertices.. DONE ' + object.id() + ': ' + Date());
   this.setupObject_(object);
-  console.log('setup object.. DONE ' + object.id() + ': ' + Date());
+  window.console.log('setup object.. DONE ' + object.id() + ': ' + Date());
   this.render();
   
 };
@@ -942,7 +942,7 @@ X.renderer.prototype.setupObject_ = function(object) {
   //
   // NORMALS
   //
-  console.log('normals.. START ' + object.id() + ': ' + Date());
+  window.console.log('normals.. START ' + object.id() + ': ' + Date());
   var glNormalBuffer = this._gl.createBuffer();
   
   // var nnn = object.normals().flatten();
@@ -956,7 +956,7 @@ X.renderer.prototype.setupObject_ = function(object) {
   // create an X.buffer to store the normals
   // every normal consists of 3 items (x,y,z)
   var normalBuffer = new X.buffer(glNormalBuffer, object.normals().count(), 3);
-  console.log('normals.. DONE ' + object.id() + ': ' + Date());
+  window.console.log('normals.. DONE ' + object.id() + ': ' + Date());
   
   //
   // COLORS
@@ -982,7 +982,7 @@ X.renderer.prototype.setupObject_ = function(object) {
   // //
   // // in all cases, we do not want to correct the passed in object but just
   // // correct to good value internally
-  // console.log('colors START ' + object.id() + ': ' + Date());
+  // window.console.log('colors START ' + object.id() + ': ' + Date());
   // var colorsValid = false;
   //
   // var colors = null;
@@ -1037,7 +1037,7 @@ X.renderer.prototype.setupObject_ = function(object) {
   // // every color consists of 3 items (r,g,b)
   // var colorBuffer = new X.buffer(glColorBuffer, colors.count(), 3);
   //  
-  // console.log('colors DONE ' + object.id() + ': ' + Date());
+  // window.console.log('colors DONE ' + object.id() + ': ' + Date());
   
 
 

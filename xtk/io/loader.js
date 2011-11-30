@@ -153,14 +153,14 @@ X.loader.prototype.loadFileProgress = function(object, event) {
 
   if (event.lengthComputable) {
     var progress = event.loaded / event.total;
-    console.log(progress);
+    window.console.log(progress);
   }
   
 };
 
 X.loader.prototype.loadFileFailed = function(downloader, object) {
 
-  console.log('err');
+  window.console.log('err');
   
 };
 
