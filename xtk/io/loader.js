@@ -9,6 +9,7 @@ goog.provide('X.loader');
 goog.require('X.base');
 goog.require('X.exception');
 goog.require('X.object');
+goog.require('X.parserSTL');
 goog.require('goog.events.EventType');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
@@ -168,35 +169,10 @@ X.loader.prototype.loadFileCompleted = function(downloader, object) {
 
   var file = object.file();
   
-  var fileExtension = file.split('.').pop();
+  // var fileExtension = file.split('.').pop();
   
-  var readAsArray = downloader.response.split('\n');
-  var objectN = object;
-  
-  var i;
-  for (i = 0; i < readAsArray.length; i++) {
-    
-    var tmp = readAsArray[i];
-    var tmpstr = tmp.split(' ');
-    
-    if (tmpstr[3] == 'vertex') {
-      
-      var x = parseFloat(tmpstr[4]);
-      var y = parseFloat(tmpstr[5]);
-      var z = parseFloat(tmpstr[6]);
-      objectN.points().add(x, y, z);
-      
-
-    } else if (tmpstr[1] == 'facet') {
-      var x = parseFloat(tmpstr[3]);
-      var y = parseFloat(tmpstr[4]);
-      var z = parseFloat(tmpstr[5]);
-      objectN.normals().add(x, y, z);
-      objectN.normals().add(x, y, z);
-      objectN.normals().add(x, y, z);
-      
-    }
-  }
+  var stlParser = new X.parserSTL();
+  object = stlParser.parse(object, downloader.response);
   
   var modifiedEvent = new X.renderer.ModifiedEvent();
   modifiedEvent._object = object;
