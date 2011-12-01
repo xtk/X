@@ -11,8 +11,6 @@ goog.require('X.exception');
 goog.require('X.object');
 goog.require('X.parserSTL');
 goog.require('goog.events.EventType');
-goog.require('goog.net.EventType');
-goog.require('goog.net.XhrIo');
 goog.require('goog.structs.Map');
 
 /**
@@ -41,10 +39,7 @@ X.loader = function() {
    */
   this._jobs_ = null;
   
-  // goog.Timer.callOnce(function() {
-  
-  // this._completed = true;
-  // }.bind(this), 6000);
+  this._progress_ = 0;
   
 };
 // inherit from X.base
@@ -102,6 +97,9 @@ X.loader.prototype.loadTexture = function(object) {
   // add this loading job to our jobs map
   this.jobs_().set(object.id(), false);
   
+  // this is a very fast step so we count it as 30% of the total texture load
+  // time
+  this.addProgress(0.3);
 };
 
 X.loader.prototype.loadTextureCompleted = function(object) {
@@ -117,6 +115,10 @@ X.loader.prototype.loadTextureCompleted = function(object) {
   // mark the loading job as completed
   this.jobs_().set(object.id(), true);
   
+  // here we add the rest of the setup step 0.7 and a full progress tick for the
+  // load completion
+  this.addProgress(1.7);
+  
 };
 
 X.loader.prototype.loadFile = function(object) {
@@ -128,25 +130,49 @@ X.loader.prototype.loadFile = function(object) {
     
   }
   
+  // get the associated file of the object
   var file = object.file();
   
+  // check if the file is supported
+  var fileExtension = file.split('.').pop();
+  fileExtension = fileExtension.toUpperCase();
+  
+  if (!(fileExtension in X.parser.extensions)) {
+    
+    // file format is not supported
+    throw new X.exception('Fatal: The ' + fileExtension +
+        ' file format is not supported!');
+    
+  }
+  
+  // we use a simple XHR to get the file contents
+  // this works for binary and for ascii files
   var request = new XMLHttpRequest();
   
+  // listen to progress events.. here, goog.events.listen did not work
   request.addEventListener('progress',
       this.loadFileProgress.bind(this, object), false);
   
+  // listen to abort events
   goog.events.listen(request, 'abort', this.loadFileFailed.bind(this, request,
       object));
   
+  // listen to error events
   goog.events.listen(request, 'error', this.loadFileFailed.bind(this, request,
       object));
   
+  // listen to completed events
   goog.events.listen(request, 'load', this.loadFileCompleted.bind(this,
       request, object));
   
+  // configure the URL
   request.open('GET', file, true);
   
+  // .. and GO!
   request.send(null);
+  
+  // add this loading job to our jobs map
+  this.jobs_().set(object.id(), false);
   
 };
 
@@ -154,30 +180,68 @@ X.loader.prototype.loadFileProgress = function(object, event) {
 
   if (event.lengthComputable) {
     var progress = event.loaded / event.total;
-    window.console.log(progress);
+    
+    this.addProgress(progress);
+    
   }
   
 };
 
-X.loader.prototype.loadFileFailed = function(downloader, object) {
 
-  window.console.log('err');
+X.loader.prototype.addProgress = function(value) {
+
+  // we have a three stage system during loading
+  //
+  // stage 1: loading in X.loader
+  // stage 2: parsing in X.parser (when loading textures, this does not happen
+  // so the loading adds a 2 in total)
+  // stage 3: setting up in X.renderer
+  //
+  // each stage adds progress from 0..1 with a total of 1 at the end
+  //
+  // we add an additional 'faked' job to not let the user wait with 100%
+  // progress
+  this._progress_ += value / (this._jobs_.getCount() + 1) / 3;
+  
+  if (this._progress_ > 1) {
+    
+    this._progress_ = 1;
+    
+  }
   
 };
 
-X.loader.prototype.loadFileCompleted = function(downloader, object) {
+
+X.loader.prototype.loadFileFailed = function(request, object) {
+
+  throw new X.exception('Fatal: Could not get the file.');
+  
+};
+
+X.loader.prototype.loadFileCompleted = function(request, object) {
 
   var file = object.file();
   
-  // var fileExtension = file.split('.').pop();
+  var fileExtension = file.split('.').pop();
   
-  var stlParser = new X.parserSTL();
-  object = stlParser.parse(object, downloader.response);
+  // setup a parser depending on the fileExtension
+  // at this point, we already know that the file format is supported
+  
+  if (fileExtension == 'stl') {
+    var stlParser = new X.parserSTL();
+    object = stlParser.parse(object, request.response);
+  }
+  
+  // the parsing is done here..
+  this.addProgress(1);
   
   var modifiedEvent = new X.renderer.ModifiedEvent();
   modifiedEvent._object = object;
   this.dispatchEvent(modifiedEvent);
   // console.log(downloader.response);
+  
+  // mark the loading job as completed
+  this.jobs_().set(object.id(), true);
   
 };
 

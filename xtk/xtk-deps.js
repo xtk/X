@@ -7,7 +7,7 @@ goog.addDependency('../../../../core/texture.js', ['X.texture'], ['X.base', 'X.e
 goog.addDependency('../../../../core/transform.js', ['X.transform'], ['X.base', 'X.exception', 'goog.math.Matrix', 'goog.math.Vec3']);
 goog.addDependency('../../../../core/triplets.js', ['X.triplets'], ['X.base', 'X.exception', 'goog.math.Coordinate3', 'goog.structs.Map']);
 goog.addDependency('../../../../io/interactor.js', ['X.interactor'], ['X.base', 'X.camera', 'X.camera.PanEvent', 'X.camera.RotateEvent', 'X.camera.ZoomEvent', 'X.exception', 'goog.dom', 'goog.events', 'goog.events.BrowserEvent.MouseButton', 'goog.events.EventType', 'goog.events.MouseWheelHandler', 'goog.math.Vec2']);
-goog.addDependency('../../../../io/loader.js', ['X.loader'], ['X.base', 'X.exception', 'X.object', 'X.parserSTL', 'goog.events.EventType', 'goog.net.EventType', 'goog.net.XhrIo', 'goog.structs.Map']);
+goog.addDependency('../../../../io/loader.js', ['X.loader'], ['X.base', 'X.exception', 'X.object', 'X.parserSTL', 'goog.events.EventType', 'goog.structs.Map']);
 goog.addDependency('../../../../io/parser.js', ['X.parser'], ['X.base', 'X.exception']);
 goog.addDependency('../../../../io/parserSTL.js', ['X.parserSTL'], ['X.exception', 'X.parser', 'X.triplets']);
 goog.addDependency('../../../../math/matrixHelper.js', ['X.matrixHelper'], ['X.exception', 'goog.math.Matrix', 'goog.math.Vec2', 'goog.math.Vec3']);
@@ -15,7 +15,7 @@ goog.addDependency('../../../../objects/box.js', ['X.box'], ['X.base', 'X.except
 goog.addDependency('../../../../objects/object.js', ['X.object'], ['X.base', 'X.exception', 'X.texture', 'X.transform', 'X.triplets']);
 goog.addDependency('../../../../visualization/buffer.js', ['X.buffer'], ['X.base', 'X.exception']);
 goog.addDependency('../../../../visualization/camera.js', ['X.camera', 'X.camera.PanEvent', 'X.camera.RotateEvent', 'X.camera.ZoomEvent'], ['X.base', 'X.event', 'X.exception', 'X.matrixHelper', 'goog.math.Matrix', 'goog.math.Vec3']);
-goog.addDependency('../../../../visualization/renderer.js', ['X.renderer', 'X.renderer.ModifiedEvent', 'X.renderer.RenderEvent'], ['X.base', 'X.buffer', 'X.camera', 'X.event', 'X.exception', 'X.interactor', 'X.loader', 'X.matrixHelper', 'X.object', 'X.shaders', 'X.triplets', 'goog.Timer', 'goog.dom', 'goog.events', 'goog.events.EventType', 'goog.iter.Iterator', 'goog.math.Matrix', 'goog.math.Vec3', 'goog.structs.AvlTree', 'goog.structs.Map']);
+goog.addDependency('../../../../visualization/renderer.js', ['X.renderer', 'X.renderer.ModifiedEvent', 'X.renderer.RenderEvent'], ['X.base', 'X.buffer', 'X.camera', 'X.event', 'X.exception', 'X.interactor', 'X.loader', 'X.matrixHelper', 'X.object', 'X.shaders', 'X.triplets', 'goog.Timer', 'goog.dom', 'goog.events', 'goog.events.EventType', 'goog.iter.Iterator', 'goog.math.Matrix', 'goog.math.Vec3', 'goog.structs.AvlTree', 'goog.structs.Map', 'goog.ui.ProgressBar']);
 goog.addDependency('../../../../visualization/renderer2D.js', ['X.renderer2D'], ['X.renderer']);
 goog.addDependency('../../../../visualization/renderer3D.js', ['X.renderer3D'], ['X.renderer']);
 goog.addDependency('../../../../visualization/shaders.js', ['X.shaders'], ['X.base', 'X.exception']);

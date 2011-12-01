@@ -28,6 +28,7 @@ goog.require('goog.math.Vec3');
 goog.require('goog.structs.AvlTree');
 goog.require('goog.structs.Map');
 goog.require('goog.Timer');
+goog.require('goog.ui.ProgressBar');
 
 
 
@@ -232,6 +233,37 @@ X.renderer = function(container) {
    */
   this._loader = null;
   
+  this._progressBarEnabled = true;
+  
+  this._progressBar = null;
+  
+  this._progressBarStyle = null;
+  
+  var css1 = '.progress-bar-horizontal {\n';
+  css1 += '  position: relative;\n';
+  // css1 += ' top: 100px;\n';
+  // css1 += ' left: 100px;\n';
+  css1 += '  border: 1px solid #949dad;\n';
+  css1 += '  background: white;\n';
+  css1 += '  padding: 1px;\n';
+  css1 += '  overflow: hidden;\n';
+  css1 += '  margin: 2px;\n';
+  css1 += '  width: 100px;\n';
+  css1 += '  height: 5px;\n';
+  css1 += '}';
+  var css2 = '.progress-bar-thumb {\n';
+  css2 += '  position: relative;\n';
+  // css2 += ' background: #d4e4ff;\n';
+  css2 += '  background: #F62217;\n';
+  css2 += '  overflow: hidden;\n';
+  css2 += '  width: 100%;\n';
+  css2 += '  height: 100%;\n';
+  css2 += '}';
+  var css3 = '.progress-bar-thumb-done {\n';
+  css3 += '  background: #57E964;\n';
+  css3 += '}';
+  this._progressBarCss = [css1, css2, css3];
+  
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
@@ -363,7 +395,7 @@ X.renderer.prototype.setBackgroundColor = function(backgroundColor) {
   if (this._canvas) {
     
     // the canvas was already created, let's update it
-    this._canvas.style.setProperty('background-color', backgroundColor
+    this._container.style.setProperty('background-color', backgroundColor
         .toString());
     
   }
@@ -473,11 +505,11 @@ X.renderer.prototype.loader = function() {
 X.renderer.prototype.onModified = function(event) {
 
   var object = event._object;
-  window.console.log('start.. ' + object.id() + ': ' + Date());
   this.setupVertices_(object);
-  window.console.log('setup vertices.. DONE ' + object.id() + ': ' + Date());
+  
   this.setupObject_(object);
-  window.console.log('setup object.. DONE ' + object.id() + ': ' + Date());
+  
+  // this call is required if we are not in an animation loop
   this.render();
   
 };
@@ -496,13 +528,16 @@ X.renderer.prototype.init = function() {
 
   // get the canvas
   var canvas = this.canvas();
+  
+  //
   // css properties
-  canvas.style.backgroundColor = this.backgroundColor().toString();
+  this.setBackgroundColor(this._backgroundColor.toString());
   
   // width and height can not be set using CSS but via object properties
   canvas.width = this.width();
   canvas.height = this.height();
   
+  //
   // append it to the container
   goog.dom.appendChild(this.container(), canvas);
   
@@ -517,10 +552,10 @@ X.renderer.prototype.init = function() {
   try {
     
     var gl = canvas.getContext('experimental-webgl');
-    // TODO contexts have different names in different browsers
     
   } catch (e) {
     
+    // TODO show dialog
     throw new X.exception('Fatal: Exception while getting GL Context!\n' + e);
     
   }
@@ -755,17 +790,7 @@ X.renderer.prototype.add = function(object) {
     
   }
   
-  // this.loader().loadVtkObject(object);
-  // return;
-  
-  // } else if (object instanceof X.stlObject) {
-  
-  // this.loader().loadStlObject(object);
-  // return;
-  
-  // }
-  
-  // no texture or external file
+  // no texture or external file - skip the loader
   this.setupVertices_(object);
   
   this.setupObject_(object);
@@ -818,6 +843,8 @@ X.renderer.prototype.setupVertices_ = function(object) {
   
   // add the buffers for the new object to the internal hash maps
   this._vertexBuffers.set(object.id(), vertexBuffer);
+  
+  this.loader().addProgress(0.3);
   
 };
 
@@ -901,7 +928,6 @@ X.renderer.prototype.setupObject_ = function(object) {
   //
   // NORMALS
   //
-  window.console.log('normals.. START ' + object.id() + ': ' + Date());
   var glNormalBuffer = this._gl.createBuffer();
   
   // bind and fill with normals of current object
@@ -912,7 +938,9 @@ X.renderer.prototype.setupObject_ = function(object) {
   // create an X.buffer to store the normals
   // every normal consists of 3 items (x,y,z)
   var normalBuffer = new X.buffer(glNormalBuffer, object.normals().count(), 3);
-  window.console.log('normals.. DONE ' + object.id() + ': ' + Date());
+  
+  // update progress
+  this.loader().addProgress(0.3);
   
   //
   // COLORS
@@ -948,6 +976,8 @@ X.renderer.prototype.setupObject_ = function(object) {
     colorBuffer = new X.buffer(glColorBuffer, object.colors().count(), 3);
     
   }
+  
+  this.loader().addProgress(0.3);
   
   //
   // TEXTURE
@@ -989,6 +1019,8 @@ X.renderer.prototype.setupObject_ = function(object) {
         .textureCoordinateMap().length, 2);
     
   } // check if object has a texture
+  
+  this.loader().addProgress(0.1);
   
   //
   // FINAL STEPS
@@ -1062,7 +1094,58 @@ X.renderer.prototype.render = function() {
     
   }
   
+  //
+  // LOADING..
+  //
   if (!this.loader().completed()) {
+    
+    if (this._progressBarEnabled) {
+      
+      // create a progress bar here if this is the first render request and the
+      // loader is working
+      if (!this._progressBar) {
+        
+        // hide the webGL canvas
+        this.canvas().width = 0;
+        this.canvas().height = 0;
+        
+        // enable relative positioning for the main container
+        // this is required to place the progressBar in the center
+        this._oldContainerPositionStyle = this.container().style.position;
+        this.container().style.position = 'relative';
+        
+        // add some CSS to the <head>
+        var head = goog.dom.getDocument().getElementsByTagName('head')[0];
+        var style = goog.dom.createDom('style');
+        style.type = 'text/css';
+        style.media = 'screen';
+        var css = goog.dom.createTextNode(this._progressBarCss[0]);
+        var css2 = goog.dom.createTextNode(this._progressBarCss[1]);
+        var css3 = goog.dom.createTextNode(this._progressBarCss[2]);
+        goog.dom.appendChild(head, style);
+        goog.dom.appendChild(style, css);
+        goog.dom.appendChild(style, css2);
+        goog.dom.appendChild(style, css3);
+        
+        var pb = new goog.ui.ProgressBar();
+        // pb.setOrientation(goog.ui.ProgressBar.Orientation.VERTICAL);
+        pb.render(this.container());
+        
+        // place the progressBar in the center
+        var pbElement = pb.getElement();
+        pbElement.style.position = 'absolute';
+        pbElement.style.top = (this.height() - 5) / 2;
+        pbElement.style.left = (this.width() - 100) / 2;
+        
+        this._progressBar = pb;
+        this._progressBarStyle = style;
+        
+      }
+      
+      // .. update the progressBar
+      this._progressBar.setValue(this.loader()._progress_ * 100);
+      
+    }
     
     // we are not ready yet.. the loader is still working
     this._readyCheckTimer = goog.Timer.callOnce(function() {
@@ -1074,15 +1157,61 @@ X.renderer.prototype.render = function() {
       // configured in 500 ms
       this.render();
       
-    }.bind(this), 500); // check again in 500 ms
+    }.bind(this), 200); // check again in 500 ms
     return; // .. and jump out
     
   } else {
     
     // we are ready! yahoooo!
+    // this means the X.loader is done..
     
+    if (this._progressBarEnabled) {
+      
+      if (this._progressBar && this._progressBar.getValue() != 100) {
+        
+        // for eye candy, let the progress bar complete
+        this._progressBar.setValue(100);
+        goog.dom.getFirstElementChild(this._progressBar.getElement()).classList
+            .add('progress-bar-thumb-done');
+        
+        // change the color to green
+        
+        // wait for a short time
+        this._readyCheckTimer = goog.Timer.callOnce(function() {
 
+          this._readyCheckTimer = null;
+          
+          this.render();
+          
+        }.bind(this), 500);
+        // .. and jump out
+        return;
+        
+      }
+      
+      //
+      // FINAL ENTRY POINT
+      if (this._progressBar.getValue() == 100) {
+        
+        // hide the progress bar
+        goog.dom.removeNode(this._progressBarStyle);
+        goog.dom.removeNode(this._progressBar.getElement());
+        
+        // reset the position style for the container
+        this.container().style.position = this._oldContainerPositionStyle;
+        
+        // show the webGL canvas
+        this.canvas().width = this.width();
+        this.canvas().height = this.height();
+        
+      }
+      
+    }
+    
   }
+  //
+  // END OF LOADING
+  //
   
   //
   // CURTAIN UP! LET THE SHOW BEGIN..
@@ -1368,10 +1497,6 @@ goog.exportSymbol('X.renderer.prototype.setBackgroundColor',
 goog.exportSymbol('X.renderer.prototype.canvas', X.renderer.prototype.canvas);
 goog.exportSymbol('X.renderer.prototype.container',
     X.renderer.prototype.container);
-goog.exportSymbol('X.renderer.prototype.setContainer',
-    X.renderer.prototype.setContainer);
-goog.exportSymbol('X.renderer.prototype.setContainerById',
-    X.renderer.prototype.setContainerById);
 goog.exportSymbol('X.renderer.prototype.camera', X.renderer.prototype.camera);
 goog.exportSymbol('X.renderer.prototype.interactor',
     X.renderer.prototype.interactor);
