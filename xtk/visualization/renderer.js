@@ -395,7 +395,7 @@ X.renderer.prototype.setBackgroundColor = function(backgroundColor) {
   if (this._canvas) {
     
     // the canvas was already created, let's update it
-    this._container.style.setProperty('background-color', backgroundColor
+    this._canvas.style.setProperty('background-color', backgroundColor
         .toString());
     
   }
@@ -1105,10 +1105,6 @@ X.renderer.prototype.render = function() {
       // loader is working
       if (!this._progressBar) {
         
-        // hide the webGL canvas
-        this.canvas().width = 0;
-        this.canvas().height = 0;
-        
         // enable relative positioning for the main container
         // this is required to place the progressBar in the center
         this._oldContainerPositionStyle = this.container().style.position;
@@ -1199,10 +1195,6 @@ X.renderer.prototype.render = function() {
         
         // reset the position style for the container
         this.container().style.position = this._oldContainerPositionStyle;
-        
-        // show the webGL canvas
-        this.canvas().width = this.width();
-        this.canvas().height = this.height();
         
       }
       
