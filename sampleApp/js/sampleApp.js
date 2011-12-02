@@ -3,7 +3,7 @@ goog.provide('sampleApp.run');
 
 goog.require('X.box');
 goog.require('X.object');
-goog.require('X.renderer3D');
+goog.require('X.renderer');
 goog.require('X.triplets');
 
 
@@ -16,7 +16,7 @@ sampleApp.run = function() {
   
   try {
     
-    var r = new X.renderer3D('threeDView');
+    var r = new X.renderer('threeDView');
     r.setBackgroundColor('#b3b3e7');
     r.init();
     

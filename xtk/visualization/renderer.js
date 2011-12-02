@@ -73,14 +73,6 @@ X.renderer = function(container) {
   this._className = 'renderer';
   
   /**
-   * The dimension of this renderer.
-   * 
-   * @type {!number}
-   * @protected
-   */
-  this._dimension = -1;
-  
-  /**
    * The HTML container of this renderer, E.g. a <div>.
    * 
    * @type {!Element}
@@ -222,9 +214,6 @@ X.renderer = function(container) {
    */
   this._textures = new goog.structs.Map();
   
-
-  this._lighting = true;
-  
   /**
    * The loader associated with this renderer.
    * 
@@ -233,12 +222,38 @@ X.renderer = function(container) {
    */
   this._loader = null;
   
+  /**
+   * Flag to enable or disable the progress bar during loading.
+   * 
+   * @type {bool}
+   * @protected
+   */
   this._progressBarEnabled = true;
   
+  /**
+   * The progressBar of this renderer.
+   * 
+   * @type {?Element}
+   * @protected
+   */
   this._progressBar = null;
   
+  /**
+   * The progressBar CSS style DOM element of this renderer.
+   * 
+   * @type {?Element}
+   * @protected
+   */
   this._progressBarStyle = null;
   
+  /**
+   * The collection of progressBar CSS definitions.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._progressBarCss = [];
+  // configure some styles
   var css1 = '.progress-bar-horizontal {\n';
   css1 += '  position: relative;\n';
   css1 += '  border: 1px solid #949dad;\n';
@@ -251,7 +266,6 @@ X.renderer = function(container) {
   css1 += '}';
   var css2 = '.progress-bar-thumb {\n';
   css2 += '  position: relative;\n';
-  // css2 += ' background: #d4e4ff;\n';
   css2 += '  background: #F62217;\n';
   css2 += '  overflow: hidden;\n';
   css2 += '  width: 0%;\n';
@@ -260,6 +274,7 @@ X.renderer = function(container) {
   var css3 = '.progress-bar-thumb-done {\n';
   css3 += '  background: #57E964;\n';
   css3 += '}';
+  // .. and save them for later use
   this._progressBarCss = [css1, css2, css3];
   
 };
@@ -332,19 +347,6 @@ X.renderer.ModifiedEvent = function() {
 // inherit from X.event
 goog.inherits(X.renderer.ModifiedEvent, X.event);
 
-
-
-/**
- * Get the dimension of this renderer. E.g. 2 for two-dimensional, 3 for
- * three-dimensional.
- * 
- * @return {!number} The dimension of this renderer.
- */
-X.renderer.prototype.dimension = function() {
-
-  return this._dimension;
-  
-};
 
 
 /**
@@ -459,29 +461,11 @@ X.renderer.prototype.interactor = function() {
 
 
 /**
- * Get the lighting of this renderer.
+ * Get the loader of this renderer. If no loader exists yet, this method creates
+ * one.
  * 
- * @return {!boolean} TRUE if lighting is active, FALSE if inactive.
+ * @return {X.loader} The associated loader.
  */
-X.renderer.prototype.lighting = function() {
-
-  return this._lighting;
-  
-};
-
-
-/**
- * Set the lighting of this renderer.
- * 
- * @param {!boolean} lighting TRUE or FALSE to activate/deactivate the
- *          lightning.
- */
-X.renderer.prototype.setLighting = function(lighting) {
-
-  this._lighting = lighting;
-};
-
-
 X.renderer.prototype.loader = function() {
 
   if (!goog.isDefAndNotNull(this._loader)) {
@@ -1257,11 +1241,6 @@ X.renderer.prototype.render = function() {
   this._gl.uniformMatrix3fv(normalUniformLocation, false, new Float32Array(
       matrix.getInverse().getTranspose().flatten()));
   
-  // var lightingUniformLocation = this._gl.getUniformLocation(
-  // this._shaderProgram, this._shaders.lighting());
-  //  
-  // this._gl.uniform1i(lightingUniformLocation, this._lighting);
-  
 
   //
   // loop through all objects and (re-)draw them
@@ -1431,58 +1410,8 @@ X.renderer.prototype.render = function() {
 };
 
 
-
-/*
- * THE FOLLOWING IS OBSOLETE AND NOT WORKING FOR NOW
- * 
- * X.renderer.prototype.convertWorldToDisplayCoordinates = function(vector) {
- * 
- * var view = this._camera.view(); var perspective = this._camera.perspective();
- * 
- * var viewPerspective = goog.math.Matrix.createIdentityMatrix(4);
- * 
- * viewPerspective = viewPerspective.multiply(perspective); viewPerspective =
- * viewPerspective.multiply(view);
- * 
- * var twoDVectorAsMatrix; twoDVectorAsMatrix =
- * viewPerspective.multiplyByVector(vector);
- * 
- * var x = (twoDVectorAsMatrix.getValueAt(0, 0) + 1) / 2.0; x = x *
- * this.width();
- * 
- * var y = (1 - twoDVectorAsMatrix.getValueAt(0, 1)) / 2.0; y = y *
- * this.height();
- * 
- * return new goog.math.Vec2(Math.round(x), Math.round(y)); }; // source //
- * http://webglfactory.blogspot.com/2011/05/how-to-convert-world-to-screen.html
- * X.renderer.prototype.viewportToNormalizedViewport = function(vector) {
- * 
- * var view = this._camera.view(); var perspective = this._camera.perspective();
- * 
- * var viewPerspective = goog.math.Matrix.createIdentityMatrix(4);
- * viewPerspective = viewPerspective.multiply(perspective); viewPerspective =
- * viewPerspective.multiply(view);
- * 
- * var viewPerspectiveInverse = viewPerspective.getInverse();
- * 
- * 
- * var x = 2.0 * vector.x / this.width() - 1; var y = -2.0 * vector.y /
- * this.height() + 1;
- * 
- * threeDVector = new goog.math.Vec3(x, y, 0); threeDVectorAsMatrix =
- * viewPerspectiveInverse.multiplyByVector(threeDVector);
- * 
- * threeDVector.x = threeDVectorAsMatrix.getValueAt(0, 0); threeDVector.y =
- * threeDVectorAsMatrix.getValueAt(1, 0); threeDVector.z =
- * threeDVectorAsMatrix.getValueAt(2, 0);
- * 
- * return threeDVector; };
- */
-
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer', X.renderer);
-goog.exportSymbol('X.renderer.prototype.dimension',
-    X.renderer.prototype.dimension);
 goog.exportSymbol('X.renderer.prototype.width', X.renderer.prototype.width);
 goog.exportSymbol('X.renderer.prototype.setWidth',
     X.renderer.prototype.setWidth);
