@@ -212,6 +212,13 @@ X.loader.prototype.addProgress = function(value) {
 };
 
 
+X.loader.prototype.progress = function() {
+
+  return this._progress_;
+  
+};
+
+
 X.loader.prototype.loadFileFailed = function(request, object) {
 
   throw new X.exception('Fatal: Could not get the file.');

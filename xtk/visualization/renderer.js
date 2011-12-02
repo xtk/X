@@ -241,8 +241,6 @@ X.renderer = function(container) {
   
   var css1 = '.progress-bar-horizontal {\n';
   css1 += '  position: relative;\n';
-  // css1 += ' top: 100px;\n';
-  // css1 += ' left: 100px;\n';
   css1 += '  border: 1px solid #949dad;\n';
   css1 += '  background: white;\n';
   css1 += '  padding: 1px;\n';
@@ -256,7 +254,7 @@ X.renderer = function(container) {
   // css2 += ' background: #d4e4ff;\n';
   css2 += '  background: #F62217;\n';
   css2 += '  overflow: hidden;\n';
-  css2 += '  width: 100%;\n';
+  css2 += '  width: 0%;\n';
   css2 += '  height: 100%;\n';
   css2 += '}';
   var css3 = '.progress-bar-thumb-done {\n';
@@ -395,8 +393,7 @@ X.renderer.prototype.setBackgroundColor = function(backgroundColor) {
   if (this._canvas) {
     
     // the canvas was already created, let's update it
-    this._canvas.style.setProperty('background-color', backgroundColor
-        .toString());
+    this._canvas.style.backgroundColor = backgroundColor.toString();
     
   }
   
@@ -1107,7 +1104,6 @@ X.renderer.prototype.render = function() {
         
         // enable relative positioning for the main container
         // this is required to place the progressBar in the center
-        this._oldContainerPositionStyle = this.container().style.position;
         this.container().style.position = 'relative';
         
         // add some CSS to the <head>
@@ -1124,7 +1120,6 @@ X.renderer.prototype.render = function() {
         goog.dom.appendChild(style, css3);
         
         var pb = new goog.ui.ProgressBar();
-        // pb.setOrientation(goog.ui.ProgressBar.Orientation.VERTICAL);
         pb.render(this.container());
         
         // place the progressBar in the center
@@ -1139,7 +1134,7 @@ X.renderer.prototype.render = function() {
       }
       
       // .. update the progressBar
-      this._progressBar.setValue(this.loader()._progress_ * 100);
+      this._progressBar.setValue(this.loader().progress() * 100);
       
     }
     
@@ -1153,7 +1148,7 @@ X.renderer.prototype.render = function() {
       // configured in 500 ms
       this.render();
       
-    }.bind(this), 200); // check again in 500 ms
+    }.bind(this), 500); // check again in 500 ms
     return; // .. and jump out
     
   } else {
@@ -1163,42 +1158,54 @@ X.renderer.prototype.render = function() {
     
     if (this._progressBarEnabled) {
       
-      if (this._progressBar && this._progressBar.getValue() != 100) {
+      if (this._progressBar) {
         
-        // for eye candy, let the progress bar complete
-        this._progressBar.setValue(100);
-        goog.dom.getFirstElementChild(this._progressBar.getElement()).classList
-            .add('progress-bar-thumb-done');
+        // hide the original progress bar
+        goog.dom.removeNode(this._progressBar.getElement());
         
-        // change the color to green
+        // create a 'fake' new progress bar in place of the original one
+        // the new one always shows 100
+        var pb = new goog.ui.ProgressBar();
+        pb.setValue(100);
+        // this rendering was the trick to force the browser to update the
+        // progressbar
+        pb.render(this.container());
         
+        // place the progressBar in the center
+        var pbElement = pb.getElement();
+        pbElement.style.position = 'absolute';
+        pbElement.style.top = (this.height() - 5) / 2;
+        pbElement.style.left = (this.width() - 100) / 2;
+        
+        // get the actual progress element of the progressBar
+        var pbBar = goog.dom.getFirstElementChild(pb.getElement());
+        
+        // .. change the color to green
+        pbBar.classList.add('progress-bar-thumb-done');
+        
+        this._progressBar = pb;
+        
+
         // wait for a short time
         this._readyCheckTimer = goog.Timer.callOnce(function() {
 
           this._readyCheckTimer = null;
           
+          // hide the progress bar
+          goog.dom.removeNode(this._progressBarStyle);
+          goog.dom.removeNode(this._progressBar.getElement());
+          this._progressBar = null;
+          this._progressBarStyle = null;
+          
           this.render();
           
-        }.bind(this), 500);
+        }.bind(this), 1000);
         // .. and jump out
         return;
         
-      }
+      } // if progressBar still exists
       
-      //
-      // FINAL ENTRY POINT
-      if (this._progressBar.getValue() == 100) {
-        
-        // hide the progress bar
-        goog.dom.removeNode(this._progressBarStyle);
-        goog.dom.removeNode(this._progressBar.getElement());
-        
-        // reset the position style for the container
-        this.container().style.position = this._oldContainerPositionStyle;
-        
-      }
-      
-    }
+    } // if progressBar is enabled
     
   }
   //
@@ -1313,7 +1320,7 @@ X.renderer.prototype.render = function() {
         
       } else {
         
-        // we have a solid object color
+        // we have a fixed object color
         
         // activate the useObjectColor flag on the shader
         this._gl.uniform1i(useObjectColorUniformLocation, true);
