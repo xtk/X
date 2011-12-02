@@ -245,6 +245,28 @@ X.camera.prototype.position = function() {
 
 
 /**
+ * Set the position of this camera. This forces a re-calculation of the view
+ * matrix. This action _does not_ force an immediate render event automatically.
+ * 
+ * @param {!Array} position The new camera position as an Array with length 3.
+ */
+X.camera.prototype.setPosition = function(x, y, z) {
+
+  if (!goog.isNumber(x) || !goog.isNumber(y) || !goog.isNumber(z)) {
+    
+    throw new X.exception('Fatal: The position was invalid.');
+    
+  }
+  
+  this._position = new goog.math.Vec3(x, y, z);
+  
+  // update the view matrix
+  this._view = this.lookAt_(this._position, this._focus);
+  
+};
+
+
+/**
  * Calculate a perspective matrix based on the given values. This calculation is
  * based on known principles of Computer Vision (Source: TODO?).
  * 
@@ -468,6 +490,14 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
   // Y vector = up
   var yVector = this._up.clone();
   
+  // WARNING: there is a problem if yVector == zVector
+  if (yVector.equals(zVector)) {
+    
+    // we now change the zVector a little bit
+    yVector.z = 0.000001;
+    
+  }
+  
   // X vector = Y x Z
   var xVector = goog.math.Vec3.cross(yVector, zVector);
   
@@ -608,6 +638,8 @@ goog.exportSymbol('X.camera.prototype.perspective',
     X.camera.prototype.perspective);
 goog.exportSymbol('X.camera.prototype.view', X.camera.prototype.view);
 goog.exportSymbol('X.camera.prototype.position', X.camera.prototype.position);
+goog.exportSymbol('X.camera.prototype.setPosition',
+    X.camera.prototype.setPosition);
 goog.exportSymbol('X.camera.prototype.pan', X.camera.prototype.pan);
 goog.exportSymbol('X.camera.prototype.rotate', X.camera.prototype.rotate);
 goog.exportSymbol('X.camera.prototype.zoomIn', X.camera.prototype.zoomIn);
