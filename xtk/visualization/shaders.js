@@ -51,23 +51,25 @@ X.shaders = function() {
   t += 'uniform mat4 objectTransform;\n';
   t += 'uniform bool useObjectColor;\n';
   t += 'uniform vec3 objectColor;\n';
-  t += 'uniform float objectOpacity;\n';
   t += 'uniform mat3 normal;\n';
   t += '\n';
-  t += 'varying lowp vec4 fragmentColor;\n';
+  t += 'varying vec4 fVertexPosition;\n';
+  t += 'varying lowp vec3 fragmentColor;\n';
   t += 'varying vec2 fragmentTexturePos;\n';
+  t += 'varying vec3 fTransformedVertexNormal;\n';
   t += '\n';
   t += 'void main(void) {\n';
-  t += '  vec3 lightingWeighting = vec3(0.0, 0.0, 1.0);\n';
-  t += '  vec3 transformedNormal = normal * vertexNormal;\n';
-  t += '  float dLW = max(dot(transformedNormal, lightingWeighting ), 0.0);\n';
-  t += '  gl_Position = perspective * view * objectTransform * vec4(vertexPosition, 1.0);\n';
+  // setup varying -> fragment shader
+  t += '  fTransformedVertexNormal = normal * vertexNormal;\n';
+  t += '  fVertexPosition = view * objectTransform * vec4(vertexPosition, 1.0);\n';
   t += '  fragmentTexturePos = vertexTexturePos;\n';
   t += '  if (useObjectColor) {\n';
-  t += '    fragmentColor = vec4(objectColor*dLW,objectOpacity);\n';
+  t += '    fragmentColor = objectColor;\n';
   t += '  } else {\n';
-  t += '    fragmentColor = vec4(vertexColor*dLW,objectOpacity);\n';
+  t += '    fragmentColor = vertexColor;\n';
   t += '  }\n';
+  // setup vertex Position in the GL context
+  t += '  gl_Position = perspective * fVertexPosition;\n';
   t += '}\n';
   this._vertexShaderSource = t;
   
@@ -84,17 +86,39 @@ X.shaders = function() {
   t2 += 'precision highp float;\n';
   t2 += '#endif\n';
   t2 += '\n';
-  t2 += 'varying lowp vec4 fragmentColor;\n';
-  t2 += 'varying vec2 fragmentTexturePos;\n';
   t2 += 'uniform bool useTexture;\n';
   t2 += 'uniform sampler2D textureSampler;\n';
+  t2 += 'uniform float objectOpacity;\n';
+  t2 += '\n';
+  t2 += 'varying vec4 fVertexPosition;\n';
+  t2 += 'varying lowp vec3 fragmentColor;\n';
+  t2 += 'varying vec2 fragmentTexturePos;\n';
+  t2 += 'varying vec3 fTransformedVertexNormal;\n';
   t2 += '\n';
   t2 += 'void main(void) {\n';
   t2 += ' if (useTexture) {\n';
   t2 += '   gl_FragColor = texture2D(textureSampler,';
   t2 += '   vec2(fragmentTexturePos.s,fragmentTexturePos.t));\n';
   t2 += ' } else {\n';
-  t2 += '   gl_FragColor = fragmentColor;\n';
+  // configure advanced lighting
+  t2 += '   vec3 nNormal = normalize(fTransformedVertexNormal);\n';
+  t2 += '   vec3 light = vec3(0.0, 0.0, 1.0);\n';
+  t2 += '   vec3 lightDirection = vec3(-10.0, 4.0, -20.0);\n';
+  t2 += '   lightDirection = normalize(lightDirection);\n';
+  t2 += ' vec3 eyeDirection = normalize(-fVertexPosition.xyz);\n';
+  // REFLECTION? does not look so good I think, so let's disable it for now
+  // t2 += ' vec3 reflectionDirection = reflect(-lightDirection, nNormal);\n';
+  t2 += ' vec3 reflectionDirection = nNormal;\n';
+  // configure specular (16.0 is material property), diffuse and ambient
+  t2 += '   float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 16.0);\n';
+  t2 += '   float diffuse = 0.8 * max(dot(nNormal, light), 0.0);\n';
+  t2 += '   float ambient = 0.2;\n';
+  // .. and now setup the fragment color using these three values and the
+  // opacity
+  t2 += '   gl_FragColor = vec4(fragmentColor * ambient +\n';
+  t2 += '                       fragmentColor * diffuse +\n';
+  t2 += '                       vec3(1.0, 1.0, 1.0) * specular,\n';
+  t2 += '                       objectOpacity);\n';
   t2 += ' }\n';
   t2 += '}\n';
   this._fragmentShaderSource = t2;
@@ -130,15 +154,6 @@ X.shaders = function() {
    * @protected
    */
   this._texturePosAttribute = 'vertexTexturePos';
-  
-
-  /**
-   * The string to access the opacity value inside the vertex shader source.
-   * 
-   * @type {!string}
-   * @protected
-   */
-  this._lighting = 'lighting';
   
   /**
    * The string to access the view matrix inside the vertex shader source.
@@ -420,21 +435,12 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  // t = this._vertexShaderSource.search(this._colorAttribute);
-  //  
-  // if (t == -1) {
-  //    
-  // throw new X.exception(
-  // 'Fatal: Could not validate shader! The colorAttribute was bogus.');
-  //    
-  // }
-  
-  t = this._vertexShaderSource.search(this._opacityAttribute);
+  t = this._vertexShaderSource.search(this._colorAttribute);
   
   if (t == -1) {
     
     throw new X.exception(
-        'Fatal: Could not validate shader! The opacityAttribute was bogus.');
+        'Fatal: Could not validate shader! The colorAttribute was bogus.');
     
   }
   
@@ -483,7 +489,7 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._vertexShaderSource.search(this._objectOpacityUniform);
+  t = this._fragmentShaderSource.search(this._objectOpacityUniform);
   
   if (t == -1) {
     
@@ -498,15 +504,6 @@ X.shaders.prototype.validate = function() {
     
     throw new X.exception(
         'Fatal: Could not validate shader! The normalUniform was bogus.');
-    
-  }
-  
-  t = this._vertexShaderSource.search(this._lighting);
-  
-  if (t == -1) {
-    
-    throw new X.exception(
-        'Fatal: Could not validate shader! The lighting was bogus.');
     
   }
   
