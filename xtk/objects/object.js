@@ -309,6 +309,30 @@ X.object.prototype.opacity = function() {
 
 
 /**
+ * Set the visibility of this object.
+ * 
+ * @param {boolean} visible The object's new visibility.
+ */
+X.object.prototype.setVisible = function(visible) {
+
+  this._visibility = visible;
+  
+};
+
+
+/**
+ * Get the visibility of this object.
+ * 
+ * @return {boolean} TRUE if the object is visible, FALSE otherwise.
+ */
+X.object.prototype.visible = function() {
+
+  return this._visibility;
+  
+};
+
+
+/**
  * Set the opacity of this object.
  * 
  * @param {Number} opacity The opacity value in the range 0..1.

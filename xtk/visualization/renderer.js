@@ -440,7 +440,7 @@ X.renderer.prototype.onModified = function(event) {
   this.setupObject_(object);
   
   // this call is required if we are not in an animation loop
-  this.render();
+  // this.render();
   
 };
 
@@ -1215,6 +1215,15 @@ X.renderer.prototype.render = function() {
     
     if (object) {
       // we have a valid object
+      
+      // check visibility
+      if (!object.visible()) {
+        
+        // not visible, continue to the next one..
+        continue;
+        
+      }
+      
       var id = object.id();
       
 
