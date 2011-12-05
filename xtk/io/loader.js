@@ -7,8 +7,10 @@ goog.provide('X.loader');
 
 // requires
 goog.require('X.base');
+goog.require('X.event');
 goog.require('X.exception');
 goog.require('X.object');
+goog.require('X.parser.ModifiedEvent');
 goog.require('X.parserSTL');
 goog.require('goog.events.EventType');
 goog.require('goog.structs.Map');
@@ -44,6 +46,35 @@ X.loader = function() {
 };
 // inherit from X.base
 goog.inherits(X.loader, X.base);
+
+
+
+X.loader.events = {
+  PROGRESS: X.event.uniqueId('progress')
+};
+
+
+/**
+ * The modified event to update a single object.
+ * 
+ * @constructor
+ * @extends {X.event}
+ */
+X.loader.ProgressEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.loader.events.PROGRESS);
+  
+  /**
+   * The associated X.object of this modified event.
+   * 
+   * @type {?X.object}
+   */
+  this._value = 0;
+  
+};
+// inherit from X.event
+goog.inherits(X.loader.ProgressEvent, X.event);
 
 
 X.loader.prototype.jobs_ = function() {
@@ -187,7 +218,6 @@ X.loader.prototype.loadFileProgress = function(object, event) {
   
 };
 
-
 X.loader.prototype.addProgress = function(value) {
 
   // we have a three stage system during loading
@@ -235,12 +265,29 @@ X.loader.prototype.loadFileCompleted = function(request, object) {
   // at this point, we already know that the file format is supported
   
   if (fileExtension == 'stl') {
+    
     var stlParser = new X.parserSTL();
+    
+    goog.events.listen(stlParser, X.parser.events.MODIFIED,
+        this.parseFileCompleted.bind(this));
+    
     object = stlParser.parse(object, request.response);
+    
+    // this.parseFileCompleted(object);
+    
   }
   
+
+
+};
+
+
+X.loader.prototype.parseFileCompleted = function(event) {
+
+  object = event._object;
+  
   // the parsing is done here..
-  this.addProgress(1);
+  // this.addProgress(1);
   
   var modifiedEvent = new X.renderer.ModifiedEvent();
   modifiedEvent._object = object;

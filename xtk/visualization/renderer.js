@@ -1169,7 +1169,6 @@ X.renderer.prototype.render = function() {
         
         this._progressBar = pb;
         
-
         // wait for a short time
         this._readyCheckTimer = goog.Timer.callOnce(function() {
 

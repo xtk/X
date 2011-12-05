@@ -27,7 +27,7 @@ sampleApp.run = function() {
     // create a box with a solid color
     var box2 = new X.box([-10, -10, -10], 5, 5, 5);
     box2.setColor(0, 0, 1);
-    box2.setOpacity(0.6);
+    // box2.setOpacity(0.6);
     box2.transform().translateX(-50);
     box2.transform().translateY(30);
     box2.transform().translateZ(-30);
@@ -55,6 +55,7 @@ sampleApp.run = function() {
     // animation!
     setInterval(function() {
 
+      box2.transform().rotateX(1);
       box1.transform().rotateZ(3);
       r.render();
       
