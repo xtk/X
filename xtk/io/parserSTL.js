@@ -7,8 +7,8 @@ goog.provide('X.parserSTL');
 
 // requires
 goog.require('X.exception');
+goog.require('X.event');
 goog.require('X.parser');
-goog.require('X.parser.ModifiedEvent');
 goog.require('X.triplets');
 
 
@@ -114,7 +114,7 @@ X.parserSTL.prototype.parse = function(object, data) {
     }
   }
   
-  var modifiedEvent = new X.parser.ModifiedEvent();
+  var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
   this.dispatchEvent(modifiedEvent);
   

@@ -39,7 +39,7 @@ X.shaders = function() {
    * @type {!string}
    * @protected
    */
-  this._vertexShaderSource = '';
+  this._vertexshaderSource = '';
   var t = '';
   t += 'attribute vec3 vertexPosition;\n';
   t += 'attribute vec3 vertexNormal;\n';
@@ -71,7 +71,7 @@ X.shaders = function() {
   // setup vertex Position in the GL context
   t += '  gl_Position = perspective * fVertexPosition;\n';
   t += '}\n';
-  this._vertexShaderSource = t;
+  this._vertexshaderSource = t;
   
   /**
    * The fragment shader source of this shader pair. By default, a basic shader
@@ -80,7 +80,7 @@ X.shaders = function() {
    * @type {!string}
    * @protected
    */
-  this._fragmentShaderSource = '';
+  this._fragmentshaderSource = '';
   var t2 = '';
   t2 += '#ifdef GL_ES\n';
   t2 += 'precision highp float;\n';
@@ -121,7 +121,7 @@ X.shaders = function() {
   t2 += '                       objectOpacity);\n';
   t2 += ' }\n';
   t2 += '}\n';
-  this._fragmentShaderSource = t2;
+  this._fragmentshaderSource = t2;
   
   /**
    * The string to access the position inside the vertex shader source.
@@ -224,7 +224,7 @@ goog.inherits(X.shaders, X.base);
  */
 X.shaders.prototype.vertex = function() {
 
-  return this._vertexShaderSource;
+  return this._vertexshaderSource;
   
 };
 
@@ -232,11 +232,11 @@ X.shaders.prototype.vertex = function() {
 /**
  * Get the fragment shader source of this shader pair.
  * 
- * @return {!string} The fragment shader source.
+ * @return {!String} The fragment shader source.
  */
 X.shaders.prototype.fragment = function() {
 
-  return this._fragmentShaderSource;
+  return this._fragmentshaderSource;
   
 };
 
@@ -302,9 +302,9 @@ X.shaders.prototype.perspective = function() {
 
 
 /**
- * Get the transform uniform locator.
+ * Get the normal uniform locator
  * 
- * @return {!string} The transform uniform locator.
+ * @return {String} The normal uniform locator.
  */
 X.shaders.prototype.objectTransform = function() {
 
@@ -417,7 +417,7 @@ X.shaders.prototype.validate = function() {
   
   var t = 31337;
   
-  t = this._vertexShaderSource.search(this._positionAttribute);
+  t = this._vertexshaderSource.search(this._positionAttribute);
   
   if (t == -1) {
     
@@ -426,7 +426,7 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._vertexShaderSource.search(this._normalAttribute);
+  t = this._vertexshaderSource.search(this._normalAttribute);
   
   if (t == -1) {
     
@@ -435,7 +435,7 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._vertexShaderSource.search(this._colorAttribute);
+  t = this._vertexshaderSource.search(this._colorAttribute);
   
   if (t == -1) {
     
@@ -444,7 +444,16 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._vertexShaderSource.search(this._perspectiveUniform);
+  t = this._vertexshaderSource.search(this._opacityAttribute);
+  
+  if (t == -1) {
+    
+    throw new X.exception(
+        'Fatal: Could not validate shader! The opacityAttribute was bogus.');
+    
+  }
+  
+  t = this._vertexshaderSource.search(this._perspectiveUniform);
   
   if (t == -1) {
     
@@ -453,7 +462,7 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._vertexShaderSource.search(this._viewUniform);
+  t = this._vertexshaderSource.search(this._viewUniform);
   
   if (t == -1) {
     
@@ -462,7 +471,7 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._vertexShaderSource.search(this._objectTransformUniform);
+  t = this._vertexshaderSource.search(this._objectTransformUniform);
   
   if (t == -1) {
     
@@ -471,7 +480,7 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._vertexShaderSource.search(this._useObjectColorUniform);
+  t = this._vertexshaderSource.search(this._useObjectColorUniform);
   
   if (t == -1) {
     
@@ -480,7 +489,7 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._vertexShaderSource.search(this._objectColorUniform);
+  t = this._vertexshaderSource.search(this._objectColorUniform);
   
   if (t == -1) {
     
@@ -489,7 +498,7 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._fragmentShaderSource.search(this._objectOpacityUniform);
+  t = this._fragmentshaderSource.search(this._objectOpacityUniform);
   
   if (t == -1) {
     
@@ -498,7 +507,7 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._vertexShaderSource.search(this._normalUniform);
+  t = this._vertexshaderSource.search(this._normalUniform);
   
   if (t == -1) {
     
@@ -507,7 +516,7 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._vertexShaderSource.search(this._texturePosAttribute);
+  t = this._vertexshaderSource.search(this._texturePosAttribute);
   
   if (t == -1) {
     
@@ -516,7 +525,7 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._fragmentShaderSource.search(this._textureSamplerUniform);
+  t = this._fragmentshaderSource.search(this._textureSamplerUniform);
   
   if (t == -1) {
     
@@ -525,7 +534,7 @@ X.shaders.prototype.validate = function() {
     
   }
   
-  t = this._fragmentShaderSource.search(this._useTextureUniform);
+  t = this._fragmentshaderSource.search(this._useTextureUniform);
   
   if (t == -1) {
     

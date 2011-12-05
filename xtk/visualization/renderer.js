@@ -4,8 +4,6 @@
 
 // provides
 goog.provide('X.renderer');
-goog.provide('X.renderer.RenderEvent');
-goog.provide('X.renderer.ModifiedEvent');
 
 // requires
 goog.require('X.base');
@@ -283,73 +281,6 @@ goog.inherits(X.renderer, X.base);
 
 
 /**
- * The events of this class.
- * 
- * @enum {string}
- */
-X.renderer.events = {
-  // the render event
-  RENDER: X.event.uniqueId('render'),
-  MODIFIED: X.event.uniqueId('modified')
-};
-
-
-
-/**
- * The render event to initiate a re-rendering of all objects.
- * 
- * @constructor
- * @extends {X.event}
- */
-X.renderer.RenderEvent = function() {
-
-  // call the default event constructor
-  goog.base(this, X.renderer.events.RENDER);
-  
-  /**
-   * The timestamp of this render event.
-   * 
-   * @type {!number}
-   */
-  this._timestamp = Date.now();
-  
-};
-// inherit from X.event
-goog.inherits(X.renderer.RenderEvent, X.event);
-
-
-/**
- * The modified event to update a single object.
- * 
- * @constructor
- * @extends {X.event}
- */
-X.renderer.ModifiedEvent = function() {
-
-  // call the default event constructor
-  goog.base(this, X.renderer.events.MODIFIED);
-  
-  /**
-   * The timestamp of this modified event.
-   * 
-   * @type {!number}
-   */
-  this._timestamp = Date.now();
-  
-  /**
-   * The associated X.object of this modified event.
-   * 
-   * @type {?X.object}
-   */
-  this._object = null;
-  
-};
-// inherit from X.event
-goog.inherits(X.renderer.ModifiedEvent, X.event);
-
-
-
-/**
  * Get the width of this renderer.
  * 
  * @return {!number} The width of this renderer.
@@ -405,7 +336,7 @@ X.renderer.prototype.setBackgroundColor = function(backgroundColor) {
 
 
 /**
- * Get the canvas of this renderer. If a canvas does not exist yet it gets
+ * Get the canvas of this renderer. If a canvas does not exist yet, it gets
  * created.
  * 
  * @return {!Element} The canvas of this renderer.
@@ -474,8 +405,8 @@ X.renderer.prototype.loader = function() {
     this._loader = new X.loader();
     
     // listen to a modified event which gets fired after loading was completed
-    goog.events.listen(this.loader(), X.renderer.events.MODIFIED,
-        this.onModified.bind(this));
+    goog.events.listen(this.loader(), X.event.events.MODIFIED, this.onModified
+        .bind(this));
     
   }
   
@@ -603,7 +534,7 @@ X.renderer.prototype.init = function() {
   // listen to render requests from the camera
   // these get fired after user-interaction and camera re-positioning to re-draw
   // all objects
-  goog.events.listen(camera, X.renderer.events.RENDER, this.render.bind(this));
+  goog.events.listen(camera, X.event.events.RENDER, this.render.bind(this));
   
   //
   // attach all created objects as class attributes

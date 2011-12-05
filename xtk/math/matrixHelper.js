@@ -4,6 +4,10 @@
 
 // provides
 goog.provide('X.matrixHelper');
+goog.provide('goog.math.Matrix.rotate');
+goog.provide('goog.math.Matrix.translate');
+goog.provide('goog.math.Matrix.flatten');
+goog.provide('goog.math.Matrix.multiplyByVector');
 
 // requires
 goog.require('X.exception');
@@ -102,7 +106,7 @@ goog.math.Matrix.prototype.translate = X.matrixHelper.translate;
  *
  * @this {goog.math.Matrix}
  * @param {!number} angle The rotation angle.
- * @param {!goog.math.Vec3} axis The axis to rotate around.
+ * @param {!goog.math.Vec3} iaxis The axis to rotate around.
  * @return {goog.math.Matrix} The result of this rotation.
  * @throws {X.exception} An exception if the rotation fails.
  */
@@ -241,3 +245,18 @@ X.matrixHelper.multiplyByVector = function(vector) {
  * Register the function to the goog.math.Matrix API
  */
 goog.math.Matrix.prototype.multiplyByVector = X.matrixHelper.multiplyByVector;
+
+goog.exportSymbol('X.matrixHelper', X.matrixHelper);
+goog.exportSymbol('X.matrixHelper.flatten', X.matrixHelper.flatten);
+goog.exportSymbol('X.matrixHelper.translate', X.matrixHelper.translate);
+goog.exportSymbol('X.matrixHelper.rotate', X.matrixHelper.rotate);
+goog.exportSymbol('X.matrixHelper.multiplyByVector', X.matrixHelper.multiplyByVector);
+
+goog.exportSymbol('goog.math.Matrix.flatten', goog.math.Matrix.flatten);
+goog.exportSymbol('goog.math.Matrix.translate', goog.math.Matrix.translate);
+goog.exportSymbol('goog.math.Matrix.rotate', goog.math.Matrix.rotate);
+goog.exportSymbol('goog.math.Matrix.multiplyByVector', goog.math.Matrix.multiplyByVector);
+
+goog.exportSymbol('goog.math.Matrix', goog.math.Matrix);
+goog.exportSymbol('goog.math.Vec2', goog.math.Vec2);
+goog.exportSymbol('goog.math.Vec3', goog.math.Vec3);

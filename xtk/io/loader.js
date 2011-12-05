@@ -10,7 +10,6 @@ goog.require('X.base');
 goog.require('X.event');
 goog.require('X.exception');
 goog.require('X.object');
-goog.require('X.parser.ModifiedEvent');
 goog.require('X.parserSTL');
 goog.require('goog.events.EventType');
 goog.require('goog.structs.Map');
@@ -139,7 +138,7 @@ X.loader.prototype.loadTextureCompleted = function(object) {
   
   // fire the modified event and attach this object so the renderer can update
   // it properly
-  var modifiedEvent = new X.renderer.ModifiedEvent();
+  var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
   this.dispatchEvent(modifiedEvent);
   
@@ -268,7 +267,7 @@ X.loader.prototype.loadFileCompleted = function(request, object) {
     
     var stlParser = new X.parserSTL();
     
-    goog.events.listen(stlParser, X.parser.events.MODIFIED,
+    goog.events.listen(stlParser, X.event.events.MODIFIED,
         this.parseFileCompleted.bind(this));
     
     object = stlParser.parse(object, request.response);
@@ -289,7 +288,7 @@ X.loader.prototype.parseFileCompleted = function(event) {
   // the parsing is done here..
   // this.addProgress(1);
   
-  var modifiedEvent = new X.renderer.ModifiedEvent();
+  var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
   this.dispatchEvent(modifiedEvent);
   // console.log(downloader.response);

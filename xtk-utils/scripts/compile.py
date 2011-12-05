@@ -59,7 +59,7 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
                     #
                     os.system( command + ' 2> temp' )
                     # get current location
-                    os.system( 'bash scripts/readtemp.sh temp' )
+                    os.system( 'bash scripts/colorPrompt.sh temp' )
                     os.system( 'cat temp >> temp_build.log' )
                     if os.path.exists('temp'): os.remove( 'temp' )
     
@@ -79,7 +79,7 @@ def calculate( namespace, dir, xtkdir, buildtool, compiler):
         # run, forest, run
         #
         os.system( command + ' &> temp' )
-        os.system( 'bash readtemp.sh temp' )
+        os.system( 'bash colorPrompt.sh temp' )
         os.system( 'cat temp >> temp_build.log' )
         if os.path.exists('temp'): os.remove( 'temp' )
 

@@ -4,7 +4,6 @@
 
 // provides
 goog.provide('X.parser');
-goog.provide('X.parser.ModifiedEvent');
 
 // requires
 goog.require('X.base');
@@ -49,41 +48,6 @@ X.parser.extensions = {
   STL: 'STL',
   VTK: 'VTK'
 };
-
-
-X.parser.events = {
-  MODIFIED: X.event.uniqueId('modified')
-};
-
-
-/**
- * The modified event to update a single object.
- * 
- * @constructor
- * @extends {X.event}
- */
-X.parser.ModifiedEvent = function() {
-
-  // call the default event constructor
-  goog.base(this, X.parser.events.MODIFIED);
-  
-  /**
-   * The timestamp of this modified event.
-   * 
-   * @type {!number}
-   */
-  this._timestamp = Date.now();
-  
-  /**
-   * The associated X.object of this modified event.
-   * 
-   * @type {?X.object}
-   */
-  this._object = null;
-  
-};
-// inherit from X.event
-goog.inherits(X.parser.ModifiedEvent, X.event);
 
 
 /**
