@@ -409,10 +409,6 @@ X.renderer.prototype.loader = function() {
     goog.events.listen(this.loader(), X.event.events.PROGRESS, this.onProgress
         .bind(this));
     
-    // listen to a modified event which gets fired after loading was completed
-    goog.events.listen(this.loader(), X.event.events.MODIFIED, this.onModified
-        .bind(this));
-    
   }
   
   return this._loader;
@@ -426,7 +422,7 @@ X.renderer.prototype.onProgress = function(event) {
     
     var progress = event._value;
     this._progressBar.setValue(progress * 100);
-    console.log(progress);
+    
   }
   
 };
@@ -435,12 +431,8 @@ X.renderer.prototype.onProgress = function(event) {
 X.renderer.prototype.onModified = function(event) {
 
   var object = event._object;
-  this.setupVertices_(object);
   
-  this.setupObject_(object);
-  
-  // this call is required if we are not in an animation loop
-  // this.render();
+  this.update_(object);
   
 };
 
@@ -795,87 +787,11 @@ X.renderer.prototype.add = function(object) {
     
   }
   
-  // TODO move this to the update method.. then, objects can have texture _and_
-  // be
-  // vtk based etc.
+  // listen to modified events of this object
+  goog.events.listen(object, X.event.events.MODIFIED, this.onModified
+      .bind(this));
   
-  // here we check first if additional loading is necessary
-  // this would be the case if
-  // a) the object has an external texture
-  // b) the object is based on an external file (vtk, stl...)
-  // in these cases, we do not directly update the object but activate the
-  // X.loader to get the externals and then let it call the update method
-  if (goog.isDefAndNotNull(object.texture())) {
-    // texture associated to this object
-    
-    // start loading..
-    this.loader().loadTexture(object);
-    
-    return;
-    
-  } else if (goog.isDefAndNotNull(object.file())) {
-    
-    this.loader().loadFile(object);
-    
-    return;
-    
-  }
-  
-  // no texture or external file - skip the loader
-  this.setupVertices_(object);
-  
-  this.setupObject_(object);
-  
-};
-
-
-X.renderer.prototype.setupVertices_ = function(object) {
-
-  if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
-      !goog.isDefAndNotNull(this._camera)) {
-    
-    throw new X.exception('Fatal: Renderer was not initialized properly!');
-    
-  }
-  
-  if (!goog.isDefAndNotNull(object) || !(object instanceof X.object)) {
-    
-    throw new X.exception('Fatal: Illegal object!');
-    
-  }
-  
-  // remove old VERTICES
-  var oldVertexBuffer = this._vertexBuffers.get(object.id());
-  if (goog.isDefAndNotNull(oldVertexBuffer)) {
-    
-    if (this._gl.isBuffer(oldVertexBuffer.glBuffer())) {
-      
-      this._gl.deleteBuffer(oldVertexBuffer.glBuffer());
-      
-    }
-    
-  }
-  
-
-  //
-  // VERTICES
-  //
-  var glVertexBuffer = this._gl.createBuffer();
-  
-  // bind and fill with vertices of current object
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
-  
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.points()
-      .all()), this._gl.STATIC_DRAW);
-  
-  // create an X.buffer to store the vertices
-  // every vertex consists of 3 items (x,y,z)
-  var vertexBuffer = new X.buffer(glVertexBuffer, object.points().count(), 3);
-  
-  // add the buffers for the new object to the internal hash maps
-  this._vertexBuffers.set(object.id(), vertexBuffer);
-  
-  this.loader().addProgress(0.3);
+  this.update_(object);
   
 };
 
@@ -890,7 +806,7 @@ X.renderer.prototype.setupVertices_ = function(object) {
  * @throws {X.exception} An exception if something goes wrong.
  * @private
  */
-X.renderer.prototype.setupObject_ = function(object) {
+X.renderer.prototype.update_ = function(object) {
 
   if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
       !goog.isDefAndNotNull(this._camera)) {
@@ -916,7 +832,18 @@ X.renderer.prototype.setupObject_ = function(object) {
     // clear all glBuffers by reading the X.buffer
     
 
-
+    // VERTICES
+    var oldVertexBuffer = this._vertexBuffers.get(object.id());
+    if (goog.isDefAndNotNull(oldVertexBuffer)) {
+      
+      if (this._gl.isBuffer(oldVertexBuffer.glBuffer())) {
+        
+        this._gl.deleteBuffer(oldVertexBuffer.glBuffer());
+        
+      }
+      
+    }
+    
     // NORMALS
     var oldNormalBuffer = this._vertexBuffers.get(object.id());
     if (goog.isDefAndNotNull(oldNormalBuffer)) {
@@ -955,6 +882,47 @@ X.renderer.prototype.setupObject_ = function(object) {
     }
     
   }
+  
+  // here we check first if additional loading is necessary
+  // this would be the case if
+  // a) the object has an external texture
+  // b) the object is based on an external file (vtk, stl...)
+  // in these cases, we do not directly update the object but activate the
+  // X.loader to get the externals and then let it call the update method
+  if (goog.isDefAndNotNull(object.texture()) && object.texture().dirty()) {
+    // texture associated to this object and it is dirty..
+    
+    // start loading..
+    this.loader().loadTexture(object);
+    
+    return;
+    
+  } else if (goog.isDefAndNotNull(object.file()) && object.dirty()) {
+    // this object is based on an external file and it is dirty..
+    
+    // start loading..
+    this.loader().loadFile(object);
+    
+    return;
+    
+  }
+  
+  //
+  // VERTICES
+  //
+  var glVertexBuffer = this._gl.createBuffer();
+  
+  // bind and fill with vertices of current object
+  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
+  
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.points()
+      .all()), this._gl.STATIC_DRAW);
+  
+  // create an X.buffer to store the vertices
+  // every vertex consists of 3 items (x,y,z)
+  var vertexBuffer = new X.buffer(glVertexBuffer, object.points().count(), 3);
+  
+  this.loader().addProgress(0.3);
   
   //
   // NORMALS
@@ -1065,7 +1033,8 @@ X.renderer.prototype.setupObject_ = function(object) {
     
   }
   
-
+  // add the buffers for the object to the internal hash maps
+  this._vertexBuffers.set(object.id(), vertexBuffer);
   this._normalBuffers.set(object.id(), normalBuffer);
   this._colorBuffers.set(object.id(), colorBuffer);
   this._texturePositionBuffers.set(object.id(), texturePositionBuffer);

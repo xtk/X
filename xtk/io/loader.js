@@ -135,12 +135,10 @@ X.loader.prototype.loadTexture = function(object) {
 X.loader.prototype.loadTextureCompleted = function(object) {
 
   // at this point the image for the texture was loaded properly
+  object.texture().clean();
   
-  // fire the modified event and attach this object so the renderer can update
-  // it properly
-  var modifiedEvent = new X.event.ModifiedEvent();
-  modifiedEvent._object = object;
-  this.dispatchEvent(modifiedEvent);
+  // fire the modified event
+  object.modified();
   
   // mark the loading job as completed
   this.jobs_().set(object.id(), true);
@@ -227,7 +225,7 @@ X.loader.prototype.addProgress = function(value) {
   // stage 3: setting up in X.renderer
   //
   // each stage adds progress from 0..1 with a total of 1 at the end
-  this._progress_ += value / (this._jobs_.getCount()) / 3;
+  this._progress_ += value / (this.jobs_().getCount()) / 3;
   
   if (this._progress_ > 1) {
     
@@ -268,7 +266,7 @@ X.loader.prototype.loadFileCompleted = function(request, object) {
     
     var stlParser = new X.parserSTL();
     
-    goog.events.listen(stlParser, X.event.events.MODIFIED,
+    goog.events.listenOnce(stlParser, X.event.events.MODIFIED,
         this.parseFileCompleted.bind(this));
     
     object = stlParser.parse(object, request.response);
@@ -287,12 +285,10 @@ X.loader.prototype.parseFileCompleted = function(event) {
   object = event._object;
   
   // the parsing is done here..
-  // this.addProgress(1);
+  object.clean();
   
-  var modifiedEvent = new X.event.ModifiedEvent();
-  modifiedEvent._object = object;
-  this.dispatchEvent(modifiedEvent);
-  // console.log(downloader.response);
+  // fire the modified event
+  object.modified();
   
   // mark the loading job as completed
   this.jobs_().set(object.id(), true);

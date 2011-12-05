@@ -360,6 +360,7 @@ X.object.prototype.setOpacity = function(opacity) {
 X.object.prototype.load = function(file) {
 
   this._file = file;
+  this._dirty_ = true;
   
 };
 
@@ -372,6 +373,18 @@ X.object.prototype.load = function(file) {
 X.object.prototype.file = function() {
 
   return this._file;
+  
+};
+
+
+/**
+ * Fire a modified event for this object.
+ */
+X.object.prototype.modified = function() {
+
+  var modifiedEvent = new X.event.ModifiedEvent();
+  modifiedEvent._object = this;
+  this.dispatchEvent(modifiedEvent);
   
 };
 

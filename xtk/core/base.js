@@ -45,7 +45,13 @@ X.base = function() {
    */
   this._id = X.uniqueId('X');
   
-
+  /**
+   * The 'dirty' flag of this object.
+   * 
+   * @type {boolean}
+   * @private
+   */
+  this._dirty_ = false;
 };
 // enable events
 goog.inherits(X.base, goog.events.EventTarget);
@@ -110,8 +116,31 @@ X.base.prototype.print = function() {
   
 };
 
+
+/**
+ * Get the 'dirty'-flag of this class.
+ * 
+ * @return {boolean} TRUE if this class is dirty, FALSE otherwise.
+ */
+X.base.prototype.dirty = function() {
+
+  return this._dirty_;
+  
+};
+
+
+/**
+ * Remove the 'dirty'-flag of this class.
+ */
+X.base.prototype.clean = function() {
+
+  this._dirty_ = false;
+  
+};
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.base', X.base);
 goog.exportSymbol('X.base.prototype.className', X.base.prototype.className);
 goog.exportSymbol('X.base.prototype.id', X.base.prototype.id);
 goog.exportSymbol('X.base.prototype.print', X.base.prototype.print);
+goog.exportSymbol('X.base.prototype.dirty', X.base.prototype.dirty);
