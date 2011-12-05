@@ -446,6 +446,8 @@ X.renderer.prototype.showProgressBar_ = function() {
     // loader is working
     if (!this._progressBar) {
       
+      this._progressBar = 1;
+      
       // enable relative positioning for the main container
       // this is required to place the progressBar in the center
       this.container().style.position = 'relative';
@@ -515,9 +517,9 @@ X.renderer.prototype.hideProgressBar_ = function() {
       this._progressBar = pb;
       
       // wait for a short time
-      this._readyCheckTimer = goog.Timer.callOnce(function() {
+      this._readyCheckTimer2 = goog.Timer.callOnce(function() {
 
-        this._readyCheckTimer = null;
+        this._readyCheckTimer2 = null;
         
         // hide the progress bar
         goog.dom.removeNode(this._progressBarStyle);
@@ -527,7 +529,7 @@ X.renderer.prototype.hideProgressBar_ = function() {
         
         this.render();
         
-      }.bind(this), 1000);
+      }.bind(this), 2000);
       // .. and jump out
       return;
       
@@ -1099,7 +1101,7 @@ X.renderer.prototype.render = function() {
   //
   if (!this.loader().completed()) {
     
-    // we are not ready yet.. the loader is still working
+    // we are not ready yet.. the loader is still working;
     
     this.showProgressBar_();
     
@@ -1113,7 +1115,7 @@ X.renderer.prototype.render = function() {
       // configured in 500 ms
       this.render();
       
-    }.bind(this), 500); // check again in 500 ms
+    }.bind(this), 100); // check again in 500 ms
     
     return; // .. and jump out
     
@@ -1121,7 +1123,6 @@ X.renderer.prototype.render = function() {
     
     // we are ready! yahoooo!
     // this means the X.loader is done..
-    
     this.hideProgressBar_();
     
     // .. we exit here since the hiding takes some time and automatically

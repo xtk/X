@@ -53,14 +53,13 @@ sampleApp.run = function() {
     r.add(box4);
     
     // animation!
-    // setInterval(function() {
-    
-    box2.transform().rotateX(1);
-    box1.transform().rotateZ(3);
-    r._progressBarEnabled = false;
-    r.render();
-    
-    // }, 15);
+    setInterval(function() {
+
+      box2.transform().rotateX(1);
+      box1.transform().rotateZ(3);
+      r.render();
+      
+    }, 15);
     
 
     // CUSTOM EVENTS

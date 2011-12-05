@@ -135,7 +135,7 @@ X.loader.prototype.loadTexture = function(object) {
 X.loader.prototype.loadTextureCompleted = function(object) {
 
   // at this point the image for the texture was loaded properly
-  object.texture().clean();
+  object.texture().setClean();
   
   // fire the modified event
   object.modified();
@@ -285,7 +285,7 @@ X.loader.prototype.parseFileCompleted = function(event) {
   object = event._object;
   
   // the parsing is done here..
-  object.clean();
+  object.setClean();
   
   // fire the modified event
   object.modified();

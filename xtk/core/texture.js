@@ -47,7 +47,7 @@ X.texture = function(file) {
   
   // since we pass a new texture file in the constructor, directly mark this
   // object as dirty
-  this._dirty_ = true;
+  this._dirty = true;
   
 };
 // inherit from X.base

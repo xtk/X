@@ -49,9 +49,9 @@ X.base = function() {
    * The 'dirty' flag of this object.
    * 
    * @type {boolean}
-   * @private
+   * @protected
    */
-  this._dirty_ = false;
+  this._dirty = false;
 };
 // enable events
 goog.inherits(X.base, goog.events.EventTarget);
@@ -124,7 +124,7 @@ X.base.prototype.print = function() {
  */
 X.base.prototype.dirty = function() {
 
-  return this._dirty_;
+  return this._dirty;
   
 };
 
@@ -132,9 +132,9 @@ X.base.prototype.dirty = function() {
 /**
  * Remove the 'dirty'-flag of this class.
  */
-X.base.prototype.clean = function() {
+X.base.prototype.setClean = function() {
 
-  this._dirty_ = false;
+  this._dirty = false;
   
 };
 
@@ -144,3 +144,4 @@ goog.exportSymbol('X.base.prototype.className', X.base.prototype.className);
 goog.exportSymbol('X.base.prototype.id', X.base.prototype.id);
 goog.exportSymbol('X.base.prototype.print', X.base.prototype.print);
 goog.exportSymbol('X.base.prototype.dirty', X.base.prototype.dirty);
+goog.exportSymbol('X.base.prototype.setClean', X.base.prototype.setClean);

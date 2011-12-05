@@ -135,7 +135,7 @@ X.object = function(type) {
    * @type {boolean}
    * @protected
    */
-  this._visibility = true;
+  this._visible = true;
   
 };
 // inherit from X.base
@@ -315,7 +315,7 @@ X.object.prototype.opacity = function() {
  */
 X.object.prototype.setVisible = function(visible) {
 
-  this._visibility = visible;
+  this._visible = visible;
   
 };
 
@@ -327,7 +327,7 @@ X.object.prototype.setVisible = function(visible) {
  */
 X.object.prototype.visible = function() {
 
-  return this._visibility;
+  return this._visible;
   
 };
 
@@ -360,7 +360,7 @@ X.object.prototype.setOpacity = function(opacity) {
 X.object.prototype.load = function(file) {
 
   this._file = file;
-  this._dirty_ = true;
+  this._dirty = true;
   
 };
 
