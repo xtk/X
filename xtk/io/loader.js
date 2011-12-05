@@ -227,16 +227,17 @@ X.loader.prototype.addProgress = function(value) {
   // stage 3: setting up in X.renderer
   //
   // each stage adds progress from 0..1 with a total of 1 at the end
-  //
-  // we add an additional 'faked' job to not let the user wait with 100%
-  // progress
-  this._progress_ += value / (this._jobs_.getCount() + 1) / 3;
+  this._progress_ += value / (this._jobs_.getCount()) / 3;
   
   if (this._progress_ > 1) {
     
     this._progress_ = 1;
     
   }
+  
+  var progressEvent = new X.event.ProgressEvent();
+  progressEvent._value = this._progress_;
+  this.dispatchEvent(progressEvent);
   
 };
 

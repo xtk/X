@@ -404,6 +404,11 @@ X.renderer.prototype.loader = function() {
     // create a new loader on demand (lazy loading)
     this._loader = new X.loader();
     
+    // listen to a progress event which gets fired during loading whenever
+    // progress was made
+    goog.events.listen(this.loader(), X.event.events.PROGRESS, this.onProgress
+        .bind(this));
+    
     // listen to a modified event which gets fired after loading was completed
     goog.events.listen(this.loader(), X.event.events.MODIFIED, this.onModified
         .bind(this));
@@ -414,6 +419,19 @@ X.renderer.prototype.loader = function() {
   
 };
 
+
+X.renderer.prototype.onProgress = function(event) {
+
+  if (this._progressBar) {
+    
+    var progress = event._value;
+    this._progressBar.setValue(progress * 100);
+    console.log(progress);
+  }
+  
+};
+
+
 X.renderer.prototype.onModified = function(event) {
 
   var object = event._object;
@@ -423,6 +441,107 @@ X.renderer.prototype.onModified = function(event) {
   
   // this call is required if we are not in an animation loop
   this.render();
+  
+};
+
+
+X.renderer.prototype.showProgressBar_ = function() {
+
+  // only do the following if the progressBar was not turned off
+  if (this._progressBarEnabled) {
+    
+    // create a progress bar here if this is the first render request and the
+    // loader is working
+    if (!this._progressBar) {
+      
+      // enable relative positioning for the main container
+      // this is required to place the progressBar in the center
+      this.container().style.position = 'relative';
+      
+      // add some CSS to the <head>
+      var head = goog.dom.getDocument().getElementsByTagName('head')[0];
+      var style = goog.dom.createDom('style');
+      style.type = 'text/css';
+      style.media = 'screen';
+      var css = goog.dom.createTextNode(this._progressBarCss[0]);
+      var css2 = goog.dom.createTextNode(this._progressBarCss[1]);
+      var css3 = goog.dom.createTextNode(this._progressBarCss[2]);
+      goog.dom.appendChild(head, style);
+      goog.dom.appendChild(style, css);
+      goog.dom.appendChild(style, css2);
+      goog.dom.appendChild(style, css3);
+      
+      var pb = new goog.ui.ProgressBar();
+      pb.render(this.container());
+      
+      // place the progressBar in the center
+      var pbElement = pb.getElement();
+      pbElement.style.position = 'absolute';
+      pbElement.style.top = (this.height() - 5) / 2;
+      pbElement.style.left = (this.width() - 100) / 2;
+      
+      this._progressBar = pb;
+      this._progressBarStyle = style;
+      
+    }
+    
+  }
+  
+};
+
+
+X.renderer.prototype.hideProgressBar_ = function() {
+
+  // only do the following if the progressBar was not turned off
+  if (this._progressBarEnabled) {
+    
+    if (this._progressBar) {
+      
+      // hide the original progress bar
+      goog.dom.removeNode(this._progressBar.getElement());
+      
+      // create a 'fake' new progress bar in place of the original one
+      // the new one always shows 100
+      var pb = new goog.ui.ProgressBar();
+      pb.setValue(100);
+      // this rendering was the trick to force the browser to update the
+      // progressbar
+      pb.render(this.container());
+      
+      // place the progressBar in the center
+      var pbElement = pb.getElement();
+      pbElement.style.position = 'absolute';
+      pbElement.style.top = (this.height() - 5) / 2;
+      pbElement.style.left = (this.width() - 100) / 2;
+      
+      // get the actual progress element of the progressBar
+      var pbBar = goog.dom.getFirstElementChild(pb.getElement());
+      
+      // .. change the color to green
+      pbBar.classList.add('progress-bar-thumb-done');
+      
+      this._progressBar = pb;
+      
+      // wait for a short time
+      this._readyCheckTimer = goog.Timer.callOnce(function() {
+
+        this._readyCheckTimer = null;
+        
+        // hide the progress bar
+        goog.dom.removeNode(this._progressBarStyle);
+        goog.dom.removeNode(this._progressBar.getElement());
+        this._progressBar = null;
+        this._progressBarStyle = null;
+        
+        this.render();
+        
+      }.bind(this), 1000);
+      // .. and jump out
+      return;
+      
+    } // if progressBar still exists
+    
+  } // if progressBar is enabled
   
 };
 
@@ -993,7 +1112,7 @@ X.renderer.prototype.render = function() {
   // - ready means: all textures loaded and setup, all external files loaded and
   // setup and all other objects loaded and setup
   //
-  // if we are not ready, we wait and show the progress
+  // if we are not ready, we wait..
   // if we are ready, we continue with the rendering
   
   // let's check if render() was called before and the single-shot timer is
@@ -1011,49 +1130,11 @@ X.renderer.prototype.render = function() {
   //
   if (!this.loader().completed()) {
     
-    if (this._progressBarEnabled) {
-      
-      // create a progress bar here if this is the first render request and the
-      // loader is working
-      if (!this._progressBar) {
-        
-        // enable relative positioning for the main container
-        // this is required to place the progressBar in the center
-        this.container().style.position = 'relative';
-        
-        // add some CSS to the <head>
-        var head = goog.dom.getDocument().getElementsByTagName('head')[0];
-        var style = goog.dom.createDom('style');
-        style.type = 'text/css';
-        style.media = 'screen';
-        var css = goog.dom.createTextNode(this._progressBarCss[0]);
-        var css2 = goog.dom.createTextNode(this._progressBarCss[1]);
-        var css3 = goog.dom.createTextNode(this._progressBarCss[2]);
-        goog.dom.appendChild(head, style);
-        goog.dom.appendChild(style, css);
-        goog.dom.appendChild(style, css2);
-        goog.dom.appendChild(style, css3);
-        
-        var pb = new goog.ui.ProgressBar();
-        pb.render(this.container());
-        
-        // place the progressBar in the center
-        var pbElement = pb.getElement();
-        pbElement.style.position = 'absolute';
-        pbElement.style.top = (this.height() - 5) / 2;
-        pbElement.style.left = (this.width() - 100) / 2;
-        
-        this._progressBar = pb;
-        this._progressBarStyle = style;
-        
-      }
-      
-      // .. update the progressBar
-      this._progressBar.setValue(this.loader().progress() * 100);
-      
-    }
-    
     // we are not ready yet.. the loader is still working
+    
+    this.showProgressBar_();
+    
+    // let's check again in a short time
     this._readyCheckTimer = goog.Timer.callOnce(function() {
 
       this._readyCheckTimer = null; // destroy the timer
@@ -1064,62 +1145,19 @@ X.renderer.prototype.render = function() {
       this.render();
       
     }.bind(this), 500); // check again in 500 ms
+    
     return; // .. and jump out
     
-  } else {
+  } else if (this._progressBar) {
     
     // we are ready! yahoooo!
     // this means the X.loader is done..
     
-    if (this._progressBarEnabled) {
-      
-      if (this._progressBar) {
-        
-        // hide the original progress bar
-        goog.dom.removeNode(this._progressBar.getElement());
-        
-        // create a 'fake' new progress bar in place of the original one
-        // the new one always shows 100
-        var pb = new goog.ui.ProgressBar();
-        pb.setValue(100);
-        // this rendering was the trick to force the browser to update the
-        // progressbar
-        pb.render(this.container());
-        
-        // place the progressBar in the center
-        var pbElement = pb.getElement();
-        pbElement.style.position = 'absolute';
-        pbElement.style.top = (this.height() - 5) / 2;
-        pbElement.style.left = (this.width() - 100) / 2;
-        
-        // get the actual progress element of the progressBar
-        var pbBar = goog.dom.getFirstElementChild(pb.getElement());
-        
-        // .. change the color to green
-        pbBar.classList.add('progress-bar-thumb-done');
-        
-        this._progressBar = pb;
-        
-        // wait for a short time
-        this._readyCheckTimer = goog.Timer.callOnce(function() {
-
-          this._readyCheckTimer = null;
-          
-          // hide the progress bar
-          goog.dom.removeNode(this._progressBarStyle);
-          goog.dom.removeNode(this._progressBar.getElement());
-          this._progressBar = null;
-          this._progressBarStyle = null;
-          
-          this.render();
-          
-        }.bind(this), 1000);
-        // .. and jump out
-        return;
-        
-      } // if progressBar still exists
-      
-    } // if progressBar is enabled
+    this.hideProgressBar_();
+    
+    // .. we exit here since the hiding takes some time and automatically
+    // triggers the rendering when done
+    return;
     
   }
   //

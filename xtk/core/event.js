@@ -69,7 +69,10 @@ X.event.events = {
   RENDER: X.event.uniqueId('render'),
   
   // the object modified event
-  MODIFIED: X.event.uniqueId('modified')
+  MODIFIED: X.event.uniqueId('modified'),
+  
+  // the loading progress event
+  PROGRESS: X.event.uniqueId('progress')
 };
 
 
@@ -186,7 +189,7 @@ goog.inherits(X.event.RenderEvent, X.event);
 
 
 /**
- * The pan event to initiate moving the event and the focus.
+ * The modified event to flag an object as 'dirty'.
  * 
  * @constructor
  * @extends {X.event}
@@ -209,6 +212,30 @@ X.event.ModifiedEvent = function() {
 goog.inherits(X.event.ModifiedEvent, X.event);
 
 
+/**
+ * This event indicates progress during loading.
+ * 
+ * @constructor
+ * @extends {X.event}
+ */
+X.event.ProgressEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.event.events.PROGRESS);
+  
+  /**
+   * The progress value.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._value = 0;
+  
+};
+// inherit from goog.events.Event
+goog.inherits(X.event.ProgressEvent, X.event);
+
+
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.event', X.event);
@@ -224,3 +251,5 @@ goog.exportSymbol('X.event.prototype.RenderEvent',
     X.event.prototype.RenderEvent);
 goog.exportSymbol('X.event.prototype.ModifiedEvent',
     X.event.prototype.ModifiedEvent);
+goog.exportSymbol('X.event.prototype.ProgressEvent',
+    X.event.prototype.ProgressEvent);
