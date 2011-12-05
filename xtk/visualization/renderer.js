@@ -1177,7 +1177,8 @@ X.renderer.prototype.render = function() {
   // grab the current view from the camera
   var viewMatrix = this._camera.view();
   
-  // propagate perspective and view to the uniform matrices of the shader
+  // propagate perspective, view and normal matrices to the uniforms of
+  // the shader
   var perspectiveUniformLocation = this._gl.getUniformLocation(
       this._shaderProgram, this._shaders.perspective());
   
@@ -1193,21 +1194,8 @@ X.renderer.prototype.render = function() {
   var normalUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
       this._shaders.normalUniform());
   
-  var matrix = goog.math.Matrix.createIdentityMatrix(3);
-  matrix.setValueAt(0, 0, viewMatrix.getValueAt(0, 0));
-  matrix.setValueAt(0, 1, viewMatrix.getValueAt(0, 1));
-  matrix.setValueAt(0, 2, viewMatrix.getValueAt(0, 2));
-  
-  matrix.setValueAt(1, 0, viewMatrix.getValueAt(1, 0));
-  matrix.setValueAt(1, 1, viewMatrix.getValueAt(1, 1));
-  matrix.setValueAt(1, 2, viewMatrix.getValueAt(1, 2));
-  
-  matrix.setValueAt(2, 0, viewMatrix.getValueAt(2, 0));
-  matrix.setValueAt(2, 1, viewMatrix.getValueAt(2, 1));
-  matrix.setValueAt(2, 2, viewMatrix.getValueAt(2, 2));
-  
-  this._gl.uniformMatrix3fv(normalUniformLocation, false, new Float32Array(
-      matrix.getInverse().getTranspose().flatten()));
+  this._gl.uniformMatrix4fv(normalUniformLocation, false, new Float32Array(
+      viewMatrix.getInverse().getTranspose().flatten()));
   
 
   //

@@ -51,17 +51,18 @@ X.shaders = function() {
   t += 'uniform mat4 objectTransform;\n';
   t += 'uniform bool useObjectColor;\n';
   t += 'uniform vec3 objectColor;\n';
-  t += 'uniform mat3 normal;\n';
+  t += 'uniform mat4 normal;\n';
   t += '\n';
   t += 'varying vec4 fVertexPosition;\n';
   t += 'varying lowp vec3 fragmentColor;\n';
   t += 'varying vec2 fragmentTexturePos;\n';
-  t += 'varying vec3 fTransformedVertexNormal;\n';
+  t += 'varying vec4 fTransformedVertexNormal;\n';
   t += '\n';
   t += 'void main(void) {\n';
   // setup varying -> fragment shader
-  t += '  fTransformedVertexNormal = normal * vertexNormal;\n';
+  t += '  fTransformedVertexNormal = normal * objectTransform * vec4(vertexNormal,1.0);\n';
   t += '  fVertexPosition = view * objectTransform * vec4(vertexPosition, 1.0);\n';
+  // t += ' fTransformedVertexNormal = view * vec4(vertexNormal, 1.0);\n';
   t += '  fragmentTexturePos = vertexTexturePos;\n';
   t += '  if (useObjectColor) {\n';
   t += '    fragmentColor = objectColor;\n';
@@ -93,7 +94,7 @@ X.shaders = function() {
   t2 += 'varying vec4 fVertexPosition;\n';
   t2 += 'varying lowp vec3 fragmentColor;\n';
   t2 += 'varying vec2 fragmentTexturePos;\n';
-  t2 += 'varying vec3 fTransformedVertexNormal;\n';
+  t2 += 'varying vec4 fTransformedVertexNormal;\n';
   t2 += '\n';
   t2 += 'void main(void) {\n';
   t2 += ' if (useTexture) {\n';
@@ -101,7 +102,7 @@ X.shaders = function() {
   t2 += '   vec2(fragmentTexturePos.s,fragmentTexturePos.t));\n';
   t2 += ' } else {\n';
   // configure advanced lighting
-  t2 += '   vec3 nNormal = normalize(fTransformedVertexNormal);\n';
+  t2 += '   vec3 nNormal = normalize(fTransformedVertexNormal.xyz);\n';
   t2 += '   vec3 light = vec3(0.0, 0.0, 1.0);\n';
   t2 += '   vec3 lightDirection = vec3(-10.0, 4.0, -20.0);\n';
   t2 += '   lightDirection = normalize(lightDirection);\n';
