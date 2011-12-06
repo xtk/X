@@ -129,6 +129,8 @@ X.object = function(type) {
    */
   this._opacity = 1.0;
   
+  this._children = null;
+  
   /**
    * The visibility of this object.
    * 
@@ -398,6 +400,19 @@ X.object.prototype.modified = function() {
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = this;
   this.dispatchEvent(modifiedEvent);
+  
+};
+
+
+X.object.prototype.children = function() {
+
+  if (!this._children) {
+    
+    this._children = new Array();
+    
+  }
+  
+  return this._children;
   
 };
 
