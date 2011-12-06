@@ -14,7 +14,7 @@ goog.require('X.triplets');
 
 
 /**
- * Create a parser for the .STL format.
+ * Create a parser for the ascii .STL format.
  * 
  * @constructor
  * @extends {X.base}

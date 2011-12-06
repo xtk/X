@@ -150,6 +150,7 @@ goog.inherits(X.object, X.base);
 X.object.types = {
   // the render event
   TRIANGLES: 'TRIANGLES',
+  TRIANGLE_STRIPS: 'TRIANGLE_STRIPS',
   LINES: 'LINES'
 };
 
@@ -162,6 +163,18 @@ X.object.types = {
 X.object.prototype.type = function() {
 
   return this._type;
+  
+};
+
+
+/**
+ * Set the rendering type of this object.
+ * 
+ * @param {X.object.types} type The rendering type.
+ */
+X.object.prototype.setType = function(type) {
+
+  this._type = type;
   
 };
 

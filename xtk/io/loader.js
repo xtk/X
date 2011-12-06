@@ -11,6 +11,7 @@ goog.require('X.event');
 goog.require('X.exception');
 goog.require('X.object');
 goog.require('X.parserSTL');
+goog.require('X.parserVTK');
 goog.require('goog.events.EventType');
 goog.require('goog.structs.Map');
 
@@ -158,6 +159,10 @@ X.loader.prototype.loadFile = function(object) {
     
   }
   
+  // clear all points and normals of the object
+  object.points().clear();
+  object.normals().clear();
+  
   // get the associated file of the object
   var file = object.file();
   
@@ -269,9 +274,16 @@ X.loader.prototype.loadFileCompleted = function(request, object) {
     goog.events.listenOnce(stlParser, X.event.events.MODIFIED,
         this.parseFileCompleted.bind(this));
     
-    object = stlParser.parse(object, request.response);
+    stlParser.parse(object, request.response);
     
-    // this.parseFileCompleted(object);
+  } else if (fileExtension == 'vtk') {
+    
+    var vtkParser = new X.parserVTK();
+    
+    goog.events.listenOnce(vtkParser, X.event.events.MODIFIED,
+        this.parseFileCompleted.bind(this));
+    
+    vtkParser.parse(object, request.response);
     
   }
   
