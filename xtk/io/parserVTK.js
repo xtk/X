@@ -45,6 +45,8 @@ goog.inherits(X.parserVTK, X.parser);
  */
 X.parserVTK.prototype.parse = function(object, data) {
 
+  var d = 0;
+  
   var p = object.points();
   var n = object.normals();
   
@@ -88,6 +90,8 @@ X.parserVTK.prototype.parse = function(object, data) {
     if (lineFields[0] == 'POINTS') {
       
       pointsMode = true;
+      geometryMode = false;
+      pointDataMode = false;
       
       numberOfPoints = lineFields[1];
       
@@ -97,6 +101,8 @@ X.parserVTK.prototype.parse = function(object, data) {
     } else if (lineFields[0] == 'VERTICES') {
       
       geometryMode = true;
+      pointsMode = false;
+      pointDataMode = false;
       numberOfGeometries = lineFields[1];
       geometryType = X.object.types.TRIANGLES;
       
@@ -106,6 +112,8 @@ X.parserVTK.prototype.parse = function(object, data) {
     } else if (lineFields[0] == 'TRIANGLE_STRIPS') {
       
       geometryMode = true;
+      pointsMode = false;
+      pointDataMode = false;
       numberOfGeometries = lineFields[1];
       geometryType = X.object.types.TRIANGLE_STRIPS;
       
@@ -115,6 +123,8 @@ X.parserVTK.prototype.parse = function(object, data) {
     } else if (lineFields[0] == 'LINES') {
       
       geometryMode = true;
+      pointsMode = false;
+      pointDataMode = false;
       numberOfGeometries = lineFields[1];
       geometryType = X.object.types.LINES;
       
@@ -124,6 +134,8 @@ X.parserVTK.prototype.parse = function(object, data) {
     } else if (lineFields[0] == 'POLYGONS') {
       
       geometryMode = true;
+      pointsMode = false;
+      pointDataMode = false;
       numberOfGeometries = lineFields[1];
       geometryType = X.object.types.TRIANGLES;
       
@@ -133,6 +145,8 @@ X.parserVTK.prototype.parse = function(object, data) {
     } else if (lineFields[0] == 'POINT_DATA') {
       
       pointDataMode = true;
+      pointsMode = false;
+      geometryMode = false;
       numberOfPointDatas = lineFields[1];
       
       // go to next line
@@ -146,9 +160,6 @@ X.parserVTK.prototype.parse = function(object, data) {
       
       if (lineFields.length == 1 || isNaN(parseFloat(lineFields[0]))) {
         
-        console.log('i:' + i + ' ' + lineFields);
-        console.log('parsed ' + unorderedPoints.count() + ' points');
-        
         // this likely means end of pointsMode
         pointsMode = false;
         
@@ -157,25 +168,30 @@ X.parserVTK.prototype.parse = function(object, data) {
       }
       
       // assume 9 coordinate values (== 3 points) in one row
-      var x0 = parseFloat(lineFields[0]);
-      var y0 = parseFloat(lineFields[1]);
-      var z0 = parseFloat(lineFields[2]);
-      unorderedPoints.add(x0, y0, z0);
+      if (lineFields.length >= 3) {
+        var x0 = parseFloat(lineFields[0]);
+        var y0 = parseFloat(lineFields[1]);
+        var z0 = parseFloat(lineFields[2]);
+        unorderedPoints.add(x0, y0, z0);
+      }
       
-      // TODO
+      // TODO generalize
+      if (lineFields.length >= 6) {
+        var x1 = parseFloat(lineFields[3]);
+        var y1 = parseFloat(lineFields[4]);
+        var z1 = parseFloat(lineFields[5]);
+        unorderedPoints.add(x1, y1, z1);
+      }
       
-      var x1 = parseFloat(lineFields[3]);
-      var y1 = parseFloat(lineFields[4]);
-      var z1 = parseFloat(lineFields[5]);
-      unorderedPoints.add(x1, y1, z1);
-      var x2 = parseFloat(lineFields[6]);
-      var y2 = parseFloat(lineFields[7]);
-      var z2 = parseFloat(lineFields[8]);
-      unorderedPoints.add(x2, y2, z2);
+      if (lineFields.length >= 9) {
+        var x2 = parseFloat(lineFields[6]);
+        var y2 = parseFloat(lineFields[7]);
+        var z2 = parseFloat(lineFields[8]);
+        unorderedPoints.add(x2, y2, z2);
+      }
       
     } else if (geometryMode) {
-      console.log(i);
-      console.log(lineFields);
+      
       if (lineFields.length == 1 || isNaN(parseFloat(lineFields[0]))) {
         
         // this likely means end of geometryMode
@@ -188,6 +204,7 @@ X.parserVTK.prototype.parse = function(object, data) {
       
       var values = lineFields.slice(1);
       
+
       // append all index values to the main geometryIndexes array
       geometryIndexes = geometryIndexes.concat(values);
       
@@ -240,13 +257,17 @@ X.parserVTK.prototype.parse = function(object, data) {
   // b) a sequence of normals (if applicable)
   // c) an ordered array of indices
   
+  console.log(unorderedPoints.get(unorderedPoints.count() - 1))
+  console.log(unorderedNormals.count());
+  
   // we can now order the points and normals according to the indices
   // and create the points and normals for our X.object
   var j = 0;
   var length = geometryIndexes.length;
+  console.log(length);
   for (j = 0; j < length; j++) {
     
-    var currentIndex = geometryIndexes[j];
+    var currentIndex = parseInt(geometryIndexes[j]);
     
     // grab the point with the currentIndex
     var currentPoint = unorderedPoints.get(currentIndex);

@@ -1326,6 +1326,10 @@ X.renderer.prototype.render = function() {
         
         drawMode = this._gl.LINES;
         
+      } else if (object.type() == X.object.types.TRIANGLE_STRIPS) {
+        
+        drawMode = this._gl.TRIANGLE_STRIP;
+        
       }
       
       this._gl.drawArrays(drawMode, 0, vertexBuffer.itemCount());
