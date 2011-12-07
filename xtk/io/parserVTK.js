@@ -62,7 +62,7 @@ X.parserVTK.prototype.parse = function(object, data) {
   var unorderedNormals = new X.triplets();
   
   // .. we also need a buffer for all indices
-  var geometryIndexes = [];
+  var geometries = [];
   
 
   var pointsMode = false;
@@ -95,6 +95,8 @@ X.parserVTK.prototype.parse = function(object, data) {
       
       numberOfPoints = lineFields[1];
       
+      console.log('POINTS ' + numberOfPoints);
+      
       // go to next line
       continue;
       
@@ -116,6 +118,8 @@ X.parserVTK.prototype.parse = function(object, data) {
       pointDataMode = false;
       numberOfGeometries = lineFields[1];
       geometryType = X.object.types.TRIANGLE_STRIPS;
+      
+      console.log('T_STRIPS: ' + numberOfGeometries);
       
       // go to next line
       continue;
@@ -149,6 +153,8 @@ X.parserVTK.prototype.parse = function(object, data) {
       geometryMode = false;
       numberOfPointDatas = lineFields[1];
       
+      console.log('P_DATA' + numberOfPointDatas);
+      
       // go to next line
       continue;
       
@@ -156,9 +162,9 @@ X.parserVTK.prototype.parse = function(object, data) {
     
     if (pointsMode) {
       
-      // TODO does not detect the end quite right now
-      
       if (lineFields.length == 1 || isNaN(parseFloat(lineFields[0]))) {
+        
+        console.log('end of points');
         
         // this likely means end of pointsMode
         pointsMode = false;
@@ -172,6 +178,7 @@ X.parserVTK.prototype.parse = function(object, data) {
         var x0 = parseFloat(lineFields[0]);
         var y0 = parseFloat(lineFields[1]);
         var z0 = parseFloat(lineFields[2]);
+        
         unorderedPoints.add(x0, y0, z0);
       }
       
@@ -187,6 +194,7 @@ X.parserVTK.prototype.parse = function(object, data) {
         var x2 = parseFloat(lineFields[6]);
         var y2 = parseFloat(lineFields[7]);
         var z2 = parseFloat(lineFields[8]);
+        
         unorderedPoints.add(x2, y2, z2);
       }
       
@@ -204,9 +212,8 @@ X.parserVTK.prototype.parse = function(object, data) {
       
       var values = lineFields.slice(1);
       
-
-      // append all index values to the main geometryIndexes array
-      geometryIndexes = geometryIndexes.concat(values);
+      // append all index values to the main geometries array
+      geometries.push(values);// = geometries.concat(values);
       
     } else if (pointDataMode) {
       
@@ -222,8 +229,10 @@ X.parserVTK.prototype.parse = function(object, data) {
       
       if (lineFields.length == 1 || isNaN(parseFloat(lineFields[0]))) {
         
+        console.log('end of pd');
+        
         // this likely means end of pointDataMode
-        pointsMode = false;
+        pointDataMode = false;
         normalsMode = false;
         
         continue;
@@ -233,19 +242,27 @@ X.parserVTK.prototype.parse = function(object, data) {
       if (normalsMode) {
         
         // assume 9 coordinate values (== 3 points) in one row
-        var x0 = parseFloat(lineFields[0]);
-        var y0 = parseFloat(lineFields[1]);
-        var z0 = parseFloat(lineFields[2]);
-        unorderedNormals.add(x0, y0, z0);
-        var x1 = parseFloat(lineFields[3]);
-        var y1 = parseFloat(lineFields[4]);
-        var z1 = parseFloat(lineFields[5]);
-        unorderedNormals.add(x1, y1, z1);
-        var x2 = parseFloat(lineFields[6]);
-        var y2 = parseFloat(lineFields[7]);
-        var z2 = parseFloat(lineFields[8]);
-        unorderedNormals.add(x2, y2, z2);
         
+        if (lineFields.length >= 3) {
+          var x0 = parseFloat(lineFields[0]);
+          var y0 = parseFloat(lineFields[1]);
+          var z0 = parseFloat(lineFields[2]);
+          unorderedNormals.add(x0, y0, z0);
+        }
+        if (lineFields.length >= 6) {
+          var x1 = parseFloat(lineFields[3]);
+          var y1 = parseFloat(lineFields[4]);
+          var z1 = parseFloat(lineFields[5]);
+          unorderedNormals.add(x1, y1, z1);
+        }
+        if (lineFields.length >= 9) {
+          var x2 = parseFloat(lineFields[6]);
+          var y2 = parseFloat(lineFields[7]);
+          var z2 = parseFloat(lineFields[8]);
+          unorderedNormals.add(x2, y2, z2);
+        }
+        
+
       }
       
     }
@@ -258,33 +275,50 @@ X.parserVTK.prototype.parse = function(object, data) {
   // c) an ordered array of indices
   
   console.log(unorderedPoints.get(unorderedPoints.count() - 1))
-  console.log(unorderedNormals.count());
+  console.log(unorderedPoints.count());
   
   // we can now order the points and normals according to the indices
   // and create the points and normals for our X.object
   var j = 0;
-  var length = geometryIndexes.length;
+  var length = geometries.length;
   console.log(length);
   for (j = 0; j < length; j++) {
     
-    var currentIndex = parseInt(geometryIndexes[j]);
+    var currentGeometry = geometries[j];
+    var currentGeometryLength = currentGeometry.length;
+    var k = 0;
+    console.log(geometryType);
+    var child = new X.object(geometryType);
+    var p = child.points();
+    var n = child.normals();
     
-    // grab the point with the currentIndex
-    var currentPoint = unorderedPoints.get(currentIndex);
-    
-    // .. and add it
-    p.add(currentPoint[0], currentPoint[1], currentPoint[2]);
-    
-    // grab the normal with the currentIndex
-    if (j < unorderedNormals.count()) {
-      var currentNormals = unorderedNormals.get(currentIndex);
+    for (k = 0; k < currentGeometryLength; k++) {
       
-      // .. and them
-      n.add(currentNormals[0], currentNormals[1], currentNormals[2]);
-      n.add(currentNormals[0], currentNormals[1], currentNormals[2]);
-      n.add(currentNormals[0], currentNormals[1], currentNormals[2]);
+      var currentIndex = parseInt(currentGeometry[k]);
       
-    }
+      // var currentIndex = parseInt(geometries[j]);
+      
+      // grab the point with the currentIndex
+      var currentPoint = unorderedPoints.get(currentIndex);
+      
+      // .. and add it
+      p.add(currentPoint[0], currentPoint[1], currentPoint[2]);
+      
+      // grab the normal with the currentIndex
+      if (currentIndex < unorderedNormals.length()) {
+        var currentNormals = unorderedNormals.get(currentIndex);
+        
+        // .. and them
+        n.add(currentNormals[0], currentNormals[1], currentNormals[2]);
+        // n.add(currentNormals[0], currentNormals[1], currentNormals[2]);
+        // n.add(currentNormals[0], currentNormals[1], currentNormals[2]);
+        
+      }
+      
+    } // for loop throught the currentGeometry
+    
+    // now add the child to the main object
+    object.children().push(child);
     
   }
   

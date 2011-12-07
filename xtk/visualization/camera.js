@@ -87,8 +87,8 @@ X.camera = function(width, height) {
    * @type {goog.math.Matrix}
    * @protected
    */
-  this._perspective = this.calculatePerspective_(this._fieldOfView,
-      (width / height), 1, 10000);
+  this._perspective = new Float32Array(this.calculatePerspective_(
+      this._fieldOfView, (width / height), 1, 10000).flatten());
   
   /**
    * The view matrix.
@@ -96,7 +96,10 @@ X.camera = function(width, height) {
    * @type {goog.math.Matrix}
    * @protected
    */
-  this._view = this.lookAt_(this._position, this._focus);
+  var lookAt = this.lookAt_(this._position, this._focus);
+  this._view = new Float32Array(lookAt.flatten());
+  this._viewInverseTransposed = new Float32Array(lookAt.getInverse()
+      .getTranspose().flatten());
   
 };
 // inherit from X.base

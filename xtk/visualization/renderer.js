@@ -647,7 +647,7 @@ X.renderer.prototype.init = function() {
   // listen to render requests from the camera
   // these get fired after user-interaction and camera re-positioning to re-draw
   // all objects
-  goog.events.listen(camera, X.event.events.RENDER, this.render.bind(this));
+  goog.events.listen(camera, X.event.events.RENDER, this.render_.bind(this));
   
   //
   // attach all created objects as class attributes
@@ -885,7 +885,29 @@ X.renderer.prototype.update_ = function(object) {
     
   }
   
-  // here we check first if additional loading is necessary
+  // MULTI OBJECTS
+  //
+  // objects can have N child objects which again can have M child objects and
+  // so on
+  //
+  // check if this object has children
+  if (object.hasChildren()) {
+    
+    // loop through the children and recursively setup the object
+    var children = object.children();
+    var numberOfChildren = children.length;
+    var c = 0;
+    
+    for (c = 0; c < numberOfChildren; c++) {
+      
+      this.update_(children[c]);
+      
+    }
+    
+  }
+  
+
+  // here we check if additional loading is necessary
   // this would be the case if
   // a) the object has an external texture
   // b) the object is based on an external file (vtk, stl...)
@@ -1138,6 +1160,13 @@ X.renderer.prototype.render = function() {
   // CURTAIN UP! LET THE SHOW BEGIN..
   //
   
+  this.render_();
+  
+};
+
+
+X.renderer.prototype.render_ = function() {
+
   // clear the canvas
   this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
   
@@ -1146,26 +1175,28 @@ X.renderer.prototype.render = function() {
   
   // grab the current view from the camera
   var viewMatrix = this._camera.view();
+  var viewMatrixInverseTransposed = this._camera._viewInverseTransposed;
   
   // propagate perspective, view and normal matrices to the uniforms of
   // the shader
   var perspectiveUniformLocation = this._gl.getUniformLocation(
       this._shaderProgram, this._shaders.perspective());
   
+  // this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
+  // new Float32Array(perspectiveMatrix.flatten()));
   this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
-      new Float32Array(perspectiveMatrix.flatten()));
+      perspectiveMatrix);
   
   var viewUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
       this._shaders.view());
   
-  this._gl.uniformMatrix4fv(viewUniformLocation, false, new Float32Array(
-      viewMatrix.flatten()));
+  this._gl.uniformMatrix4fv(viewUniformLocation, false, viewMatrix);
   
   var normalUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
       this._shaders.normalUniform());
   
-  this._gl.uniformMatrix4fv(normalUniformLocation, false, new Float32Array(
-      viewMatrix.getInverse().getTranspose().flatten()));
+  this._gl.uniformMatrix4fv(normalUniformLocation, false,
+      viewMatrixInverseTransposed);
   
 
   //
@@ -1312,10 +1343,9 @@ X.renderer.prototype.render = function() {
       var objectTransformUniformLocation = this._gl.getUniformLocation(
           this._shaderProgram, this._shaders.objectTransform());
       
-      this._gl.uniformMatrix4fv(objectTransformUniformLocation, false,
-          new Float32Array(object.transform().matrix().flatten()));
+      this._gl.uniformMatrix4fv(objectTransformUniformLocation, false, object
+          .transform()._glMatrix);
       
-
       // .. and draw with the object's draw mode
       var drawMode = -1;
       if (object.type() == X.object.types.TRIANGLES) {
