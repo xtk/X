@@ -130,6 +130,10 @@ X.parserVTK.prototype.parse = function(object, data) {
     
     this.configureLines(unorderedPoints, unorderedNormals, p, n);
     
+  } else if (this._objectType == X.object.types.POLYGONS) {
+    
+    this.configurePolygons(unorderedPoints, unorderedNormals, p, n);
+    
   }
   
   // .. and set the objectType
@@ -191,6 +195,10 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     this._pointDataMode = false;
     this._objectType = X.object.types.TRIANGLES;
     
+    // reset all former geometries since we only support 1 geometry type per
+    // file (the last one specified)
+    this._geometries = [];
+    
     // go to next line
     return;
     
@@ -202,6 +210,10 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     this._pointsMode = false;
     this._pointDataMode = false;
     this._objectType = X.object.types.TRIANGLE_STRIPS;
+    
+    // reset all former geometries since we only support 1 geometry type per
+    // file (the last one specified)
+    this._geometries = [];
     
     // go to next line
     return;
@@ -215,6 +227,10 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     this._pointDataMode = false;
     this._objectType = X.object.types.LINES;
     
+    // reset all former geometries since we only support 1 geometry type per
+    // file (the last one specified)
+    this._geometries = [];
+    
     // go to next line
     return;
     
@@ -226,7 +242,11 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     this._geometryMode = true;
     this._pointsMode = false;
     this._pointDataMode = false;
-    this._objectType = X.object.types.TRIANGLES;
+    this._objectType = X.object.types.POLYGONS;
+    
+    // reset all former geometries since we only support 1 geometry type per
+    // file (the last one specified)
+    this._geometries = [];
     
     // go to next line
     return;
@@ -397,6 +417,11 @@ X.parserVTK.prototype.configureTriangles = function(unorderedPoints,
         // .. and add it
         n.add(currentNormals[0], currentNormals[1], currentNormals[2]);
         
+      } else {
+        
+        // add an aritficial normal
+        n.add(1, 1, 1);
+        
       }
       
     } // for loop through the currentGeometry
@@ -444,7 +469,7 @@ X.parserVTK.prototype.configureTriangleStrips = function(unorderedPoints,
         
         p.add(currentPoint[0], currentPoint[1], currentPoint[2]);
         
-      }
+      } // end of points
       
       if (currentIndex < numberOfUnorderedNormals) {
         
@@ -462,7 +487,20 @@ X.parserVTK.prototype.configureTriangleStrips = function(unorderedPoints,
           
         }
         
-      }
+      } else {
+        
+        // add an aritficial normal
+        n.add(1, 1, 1);
+        
+        if (k == 0 || k == currentGeometryLength - 1) {
+          
+          // if this is the first or last point of the triangle strip, add it
+          // again
+          n.add(1, 1, 1);
+          
+        }
+        
+      } // end of normals
       
     } // for loop through the currentGeometry
     
@@ -527,6 +565,65 @@ X.parserVTK.prototype.configureLines = function(unorderedPoints,
         // .. and add both
         n.add(currentNormals[0], currentNormals[1], currentNormals[2]);
         n.add(nextNormals[0], nextNormals[1], nextNormals[2]);
+        
+      } else {
+        
+        // add an aritficial normal
+        n.add(1, 1, 1);
+        n.add(1, 1, 1);
+        
+      }
+      
+    } // for loop through the currentGeometry
+    
+    i--;
+    
+  } while (i > 0);
+  
+};
+
+
+X.parserVTK.prototype.configurePolygons = function(unorderedPoints,
+    unorderedNormals, p, n) {
+
+  // cache often used values for fast access
+  var numberOfUnorderedNormals = unorderedNormals.length();
+  
+  var numberOfGeometries = this._geometries.length;
+  var i = numberOfGeometries;
+  // we use this loop here since it's slightly faster than the for loop
+  do {
+    
+    // we want to loop through the geometries in the range 0..(N - 1)
+    var currentGeometry = this._geometries[numberOfGeometries - i];
+    var currentGeometryLength = currentGeometry.length;
+    
+    // in the sub-loop we loop through the indices of the current geometry
+    // since this is TRIANGLE_STRIPS rendering mode, we just add the point to
+    // the object's points
+    var k;
+    for (k = 0; k < currentGeometryLength; k++) {
+      //      
+      var currentIndex = parseInt(currentGeometry[k]);
+      
+      // grab the point with the currentIndex
+      var currentPoint = unorderedPoints.get(currentIndex);
+      
+      // .. and add it
+      p.add(currentPoint[0], currentPoint[1], currentPoint[2]);
+      
+      if (currentIndex < numberOfUnorderedNormals) {
+        
+        // grab the normal with the currentIndex, if it exists
+        var currentNormals = unorderedNormals.get(currentIndex);
+        
+        // .. and add it
+        n.add(currentNormals[0], currentNormals[1], currentNormals[2]);
+        
+      } else {
+        
+        // add an aritficial normal
+        n.add(1, 1, 1);
         
       }
       

@@ -1354,11 +1354,25 @@ X.renderer.prototype.render_ = function() {
         
       } else if (object.type() == X.object.types.LINES) {
         
+        this._gl.lineWidth(object.lineWidth());
+        
         drawMode = this._gl.LINES;
         
       } else if (object.type() == X.object.types.TRIANGLE_STRIPS) {
         
         drawMode = this._gl.TRIANGLE_STRIP;
+        
+      } else if (object.type() == X.object.types.POLYGONS) {
+        
+        if (vertexBuffer.itemCount() % 3 == 0) {
+          
+          drawMode = this._gl.TRIANGLES;
+          
+        } else {
+          
+          drawMode = this._gl.TRIANGLE_FAN;
+          
+        }
         
       }
       

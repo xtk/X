@@ -28,7 +28,8 @@ X.object = function(type) {
   var validType = X.object.types.TRIANGLES;
   
   if (goog.isDefAndNotNull(type) &&
-      (type == X.object.types.LINES || type == X.object.types.TRIANGLES || type == X.object.types.TRIANGLE_STRIPS)) {
+      (type == X.object.types.LINES || type == X.object.types.TRIANGLES ||
+          type == X.object.types.TRIANGLE_STRIPS || type == X.object.types.POLYGONS)) {
     
     // if a valid type was provided, we use it instead..
     // at this point, the provided type is always valid
@@ -139,6 +140,8 @@ X.object = function(type) {
    */
   this._visible = true;
   
+  this._lineWidth = 1;
+  
 };
 // inherit from X.base
 goog.inherits(X.object, X.base);
@@ -153,7 +156,8 @@ X.object.types = {
   // the render event
   TRIANGLES: 'TRIANGLES',
   TRIANGLE_STRIPS: 'TRIANGLE_STRIPS',
-  LINES: 'LINES'
+  LINES: 'LINES',
+  POLYGONS: 'POLYGONS'
 };
 
 
@@ -426,6 +430,19 @@ X.object.prototype.hasChildren = function() {
   }
   
   return (this._children.length > 0);
+  
+};
+
+
+X.object.prototype.setLineWidth = function(width) {
+
+  this._lineWidth = width;
+  
+};
+
+X.object.prototype.lineWidth = function() {
+
+  return this._lineWidth;
   
 };
 
