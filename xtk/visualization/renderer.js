@@ -157,7 +157,8 @@ X.renderer = function(container) {
    * @type {!goog.structs.AvlTree}
    * @protected
    */
-  this._objects = new goog.structs.AvlTree(X.object.OPACITY_COMPARATOR);
+  // this._objects = new goog.structs.AvlTree(X.object.OPACITY_COMPARATOR);
+  this._objects = new Array();
   
   /**
    * A hash map of shader attribute pointers.
@@ -446,8 +447,6 @@ X.renderer.prototype.showProgressBar_ = function() {
     // loader is working
     if (!this._progressBar) {
       
-      this._progressBar = 1;
-      
       // enable relative positioning for the main container
       // this is required to place the progressBar in the center
       this.container().style.position = 'relative';
@@ -522,8 +521,12 @@ X.renderer.prototype.hideProgressBar_ = function() {
         this._readyCheckTimer2 = null;
         
         // hide the progress bar
-        goog.dom.removeNode(this._progressBarStyle);
-        goog.dom.removeNode(this._progressBar.getElement());
+        if (this._progressBarStyle) {
+          goog.dom.removeNode(this._progressBarStyle);
+        }
+        if (this._progressBar) {
+          goog.dom.removeNode(this._progressBar.getElement());
+        }
         this._progressBar = null;
         this._progressBarStyle = null;
         
@@ -647,7 +650,7 @@ X.renderer.prototype.init = function() {
   // listen to render requests from the camera
   // these get fired after user-interaction and camera re-positioning to re-draw
   // all objects
-  goog.events.listen(camera, X.event.events.RENDER, this.render.bind(this));
+  goog.events.listen(camera, X.event.events.RENDER, this.render_.bind(this));
   
   //
   // attach all created objects as class attributes
@@ -824,8 +827,10 @@ X.renderer.prototype.update_ = function(object) {
   }
   
   // check if object already existed..
-  if (this._objects.contains(object)) {
-    
+  // if (this._objects.contains(object)) {
+  
+  // TODO
+  if (1 == 2) {
     // .. it did
     
     // remove it from the tree
@@ -885,7 +890,29 @@ X.renderer.prototype.update_ = function(object) {
     
   }
   
-  // here we check first if additional loading is necessary
+  // MULTI OBJECTS
+  //
+  // objects can have N child objects which again can have M child objects and
+  // so on
+  //
+  // check if this object has children
+  if (object.hasChildren()) {
+    
+    // loop through the children and recursively setup the object
+    var children = object.children();
+    var numberOfChildren = children.length;
+    var c = 0;
+    
+    for (c = 0; c < numberOfChildren; c++) {
+      
+      this.update_(children[c]);
+      
+    }
+    
+  }
+  
+
+  // here we check if additional loading is necessary
   // this would be the case if
   // a) the object has an external texture
   // b) the object is based on an external file (vtk, stl...)
@@ -1029,7 +1056,7 @@ X.renderer.prototype.update_ = function(object) {
   
   // add the object to the internal tree which reflects the rendering order
   // (based on opacity)
-  if (!this._objects.add(object)) {
+  if (!this._objects.push(object)) {
     
     throw new X.exception('Fatal: Could not add object to this renderer.');
     
@@ -1138,6 +1165,13 @@ X.renderer.prototype.render = function() {
   // CURTAIN UP! LET THE SHOW BEGIN..
   //
   
+  this.render_();
+  
+};
+
+
+X.renderer.prototype.render_ = function() {
+
   // clear the canvas
   this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
   
@@ -1145,37 +1179,34 @@ X.renderer.prototype.render = function() {
   var perspectiveMatrix = this._camera.perspective();
   
   // grab the current view from the camera
-  var viewMatrix = this._camera.view();
+  var viewMatrix = this._camera.glView();
+  var viewMatrixInverseTransposed = this._camera.glViewInvertedTransposed();
   
   // propagate perspective, view and normal matrices to the uniforms of
   // the shader
   var perspectiveUniformLocation = this._gl.getUniformLocation(
       this._shaderProgram, this._shaders.perspective());
   
+  // this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
+  // new Float32Array(perspectiveMatrix.flatten()));
   this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
-      new Float32Array(perspectiveMatrix.flatten()));
+      perspectiveMatrix);
   
   var viewUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
       this._shaders.view());
   
-  this._gl.uniformMatrix4fv(viewUniformLocation, false, new Float32Array(
-      viewMatrix.flatten()));
+  this._gl.uniformMatrix4fv(viewUniformLocation, false, viewMatrix);
   
   var normalUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
       this._shaders.normalUniform());
   
-  this._gl.uniformMatrix4fv(normalUniformLocation, false, new Float32Array(
-      viewMatrix.getInverse().getTranspose().flatten()));
+  this._gl.uniformMatrix4fv(normalUniformLocation, false,
+      viewMatrixInverseTransposed);
   
 
   //
   // loop through all objects and (re-)draw them
-  //
-  // the rendering order is important in terms of opacity/transparency of
-  // objects
-  // thus, the most opaque objects are rendered first, the least opaque (== the
-  // most transparent) objects are rendered last
-  var objects = this._objects.getValues();
+  var objects = this._objects;// .getValues();
   var numberOfObjects = objects.length;
   
   var i;
@@ -1312,10 +1343,9 @@ X.renderer.prototype.render = function() {
       var objectTransformUniformLocation = this._gl.getUniformLocation(
           this._shaderProgram, this._shaders.objectTransform());
       
-      this._gl.uniformMatrix4fv(objectTransformUniformLocation, false,
-          new Float32Array(object.transform().matrix().flatten()));
+      this._gl.uniformMatrix4fv(objectTransformUniformLocation, false, object
+          .transform().glMatrix());
       
-
       // .. and draw with the object's draw mode
       var drawMode = -1;
       if (object.type() == X.object.types.TRIANGLES) {

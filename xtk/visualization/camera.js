@@ -87,8 +87,8 @@ X.camera = function(width, height) {
    * @type {goog.math.Matrix}
    * @protected
    */
-  this._perspective = this.calculatePerspective_(this._fieldOfView,
-      (width / height), 1, 10000);
+  this._perspective = new Float32Array(this.calculatePerspective_(
+      this._fieldOfView, (width / height), 1, 10000).flatten());
   
   /**
    * The view matrix.
@@ -97,6 +97,23 @@ X.camera = function(width, height) {
    * @protected
    */
   this._view = this.lookAt_(this._position, this._focus);
+  
+  /**
+   * The view matrix as a 'ready-to-use'-gl version.
+   * 
+   * @type {Object}
+   * @protected
+   */
+  this._glView = new Float32Array(this._view.flatten());
+  
+  /**
+   * The inverted and transposed view matrix as a 'ready-to-use'-gl version.
+   * 
+   * @type {Object}
+   * @protected
+   */
+  this._glViewInvertedTransposed = new Float32Array(this._view.getInverse()
+      .getTranspose().flatten());
   
 };
 // inherit from X.base
@@ -216,6 +233,30 @@ X.camera.prototype.view = function() {
 
 
 /**
+ * Get the view matrix as a 'ready-to-use'-gl version.
+ * 
+ * @return {!Object} The view matrix as a Float32Array.
+ */
+X.camera.prototype.glView = function() {
+
+  return this._glView;
+  
+};
+
+
+/**
+ * Get the inverted and transposed view matrix as a 'ready-to-use'-gl version.
+ * 
+ * @return {!Object} The inverted and transposed view matrix as a Float32Array.
+ */
+X.camera.prototype.glViewInvertedTransposed = function() {
+
+  return this._glViewInvertedTransposed;
+  
+};
+
+
+/**
  * Get the position of this camera.
  * 
  * @return {!goog.math.Vec3} The position.
@@ -243,8 +284,11 @@ X.camera.prototype.setPosition = function(x, y, z) {
   
   this._position = new goog.math.Vec3(x, y, z);
   
-  // update the view matrix
+  // update the view matrix and its gl versions
   this._view = this.lookAt_(this._position, this._focus);
+  this._glView = new Float32Array(this._view.flatten());
+  this._glViewInvertedTransposed = new Float32Array(this._view.getInverse()
+      .getTranspose().flatten());
   
 };
 
@@ -329,8 +373,10 @@ X.camera.prototype.pan = function(distance) {
   var panMatrix = identity.translate(distance3d);
   
   this._view = panMatrix.multiply(this._view);
+  this._glView = new Float32Array(this._view.flatten());
+  this._glViewInvertedTransposed = new Float32Array(this._view.getInverse()
+      .getTranspose().flatten());
   
-
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
   
@@ -375,6 +421,9 @@ X.camera.prototype.rotate = function(distance) {
   
   // perform the actual rotation calculation
   this._view = this._view.multiply(rotateY.multiply(rotateX));
+  this._glView = new Float32Array(this._view.flatten());
+  this._glViewInvertedTransposed = new Float32Array(this._view.getInverse()
+      .getTranspose().flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -405,6 +454,9 @@ X.camera.prototype.zoomIn = function(fast) {
   var zoomMatrix = identity.translate(zoomVector);
   
   this._view = zoomMatrix.multiply(this._view);
+  this._glView = new Float32Array(this._view.flatten());
+  this._glViewInvertedTransposed = new Float32Array(this._view.getInverse()
+      .getTranspose().flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -435,6 +487,9 @@ X.camera.prototype.zoomOut = function(fast) {
   var zoomMatrix = identity.translate(zoomVector);
   
   this._view = zoomMatrix.multiply(this._view);
+  this._glView = new Float32Array(this._view.flatten());
+  this._glViewInvertedTransposed = new Float32Array(this._view.getInverse()
+      .getTranspose().flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());

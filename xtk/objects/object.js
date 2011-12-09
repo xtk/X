@@ -28,7 +28,7 @@ X.object = function(type) {
   var validType = X.object.types.TRIANGLES;
   
   if (goog.isDefAndNotNull(type) &&
-      (type == X.object.types.LINES || type == X.object.types.TRIANGLES)) {
+      (type == X.object.types.LINES || type == X.object.types.TRIANGLES || type == X.object.types.TRIANGLE_STRIPS)) {
     
     // if a valid type was provided, we use it instead..
     // at this point, the provided type is always valid
@@ -128,6 +128,8 @@ X.object = function(type) {
    * @protected
    */
   this._opacity = 1.0;
+  
+  this._children = null;
   
   /**
    * The visibility of this object.
@@ -398,6 +400,32 @@ X.object.prototype.modified = function() {
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = this;
   this.dispatchEvent(modifiedEvent);
+  
+};
+
+
+X.object.prototype.children = function() {
+
+  if (!this._children) {
+    
+    this._children = new Array();
+    
+  }
+  
+  return this._children;
+  
+};
+
+
+X.object.prototype.hasChildren = function() {
+
+  if (!this._children) {
+    
+    return false;
+    
+  }
+  
+  return (this._children.length > 0);
   
 };
 

@@ -44,12 +44,9 @@ goog.inherits(X.parserSTL, X.parser);
  */
 X.parserSTL.prototype.parse = function(object, data) {
 
-  var readAsArray = data.split('\n');
+  var dataAsArray = data.split('\n');
   
-  var numberOfLines = readAsArray.length;
-  var progressPerIteration = 8 / numberOfLines;
-  var when = numberOfLines / 3;
-  var already = 0;
+  var numberOfLines = dataAsArray.length;
   
   var p = object.points();
   var n = object.normals();
@@ -67,7 +64,7 @@ X.parserSTL.prototype.parse = function(object, data) {
   // do {
   // i--;
   //    
-  // this.parseLine_(p, n, readAsArray[i]);
+  // this.parseLine_(p, n, dataAsArray[i]);
   //    
   // } while (i > 0);
   
@@ -82,36 +79,28 @@ X.parserSTL.prototype.parse = function(object, data) {
   var i = 0;
   var n2 = numberOfLines % 8;
   while (n2--) {
-    this.parseLine(p, n, readAsArray[i]);
+    this.parseLine(p, n, dataAsArray[i]);
     i++;
   }
   
   n2 = (numberOfLines * 0.125) ^ 0;
   while (n2--) {
-    this.parseLine(p, n, readAsArray[i]);
+    this.parseLine(p, n, dataAsArray[i]);
     i++;
-    this.parseLine(p, n, readAsArray[i]);
+    this.parseLine(p, n, dataAsArray[i]);
     i++;
-    this.parseLine(p, n, readAsArray[i]);
+    this.parseLine(p, n, dataAsArray[i]);
     i++;
-    this.parseLine(p, n, readAsArray[i]);
+    this.parseLine(p, n, dataAsArray[i]);
     i++;
-    this.parseLine(p, n, readAsArray[i]);
+    this.parseLine(p, n, dataAsArray[i]);
     i++;
-    this.parseLine(p, n, readAsArray[i]);
+    this.parseLine(p, n, dataAsArray[i]);
     i++;
-    this.parseLine(p, n, readAsArray[i]);
+    this.parseLine(p, n, dataAsArray[i]);
     i++;
-    this.parseLine(p, n, readAsArray[i]);
+    this.parseLine(p, n, dataAsArray[i]);
     i++;
-    
-    if (i > when * (already + 1)) {
-      var e = new X.loader.ProgressEvent();
-      e._value = progressPerIteration * when;
-      
-      this.dispatchEvent(e);
-      already++;
-    }
   }
   
   var modifiedEvent = new X.event.ModifiedEvent();

@@ -85,6 +85,9 @@ X.triplets.prototype.get = function(id) {
     
   }
   
+  // we need to convert the id to the index in the array
+  id = id * 3;
+  
   return [this._triplets_[id], this._triplets_[id + 1], this._triplets_[id + 2]];
   
 };
