@@ -34,8 +34,7 @@ function testXbaseID() {
   b1 = new X.base();
   b2 = new X.base();
 
-  assertEquals(b1.id(), 'X1');
-  assertEquals(b2.id(), 'X2');
+  assertNotEquals(b1.id(), b2.id());
 }
 
 /**
@@ -50,5 +49,5 @@ function testXbaseDirty() {
 
   // clean the object
   b.setClean();
-  assertEquals( b.dirty(), true);
+  assertEquals( b.dirty(), false);
 }

@@ -1,1213 +1,1021 @@
-<?xml version="1.0" ?><Site BuildName="Darwin-11.2.0" BuildStamp="20111211-367-Experimental" Hostname="ligero.local" Name="ligero.local"><Build><StartDateTime>Dec 12 01:36 EST</StartDateTime><StartBuildTime>1323653767.69</StartBuildTime><BuildCommand>this is a build command</BuildCommand><EndDateTime>Dec 12 01:36 EST</EndDateTime><EndBuildTime>1323653767.69</EndBuildTime><ElapsedMinutes>0</ElapsedMinutes><Warning><BuildLogLine>5</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+<?xml version="1.0" ?><Site BuildName="Darwin-11.2.0" BuildStamp="20111212-5917-Continuous" Hostname="starfish.megason-lab" Name="starfish.megason-lab"><Build><StartDateTime>Dec 12 20:59 EST</StartDateTime><StartBuildTime>1323723557.09</StartBuildTime><BuildCommand>this is a build command</BuildCommand><EndDateTime>Dec 12 20:59 EST</EndDateTime><EndBuildTime>1323723557.09</EndBuildTime><ElapsedMinutes>0</ElapsedMinutes><Warning><BuildLogLine>5</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>27</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>27</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>37</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:93: WARNING - Bad type annotation. Unknown type goog.math.Vec2
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>93</SourceLineNumber><PostContext>   * @type {?goog.math.Vec2}
+</PostContext></Warning><Warning><BuildLogLine>37</BuildLogLine><Text>/Users/nr52/projectX/core/event.js:93: WARNING - Bad type annotation. Unknown type goog.math.Vec2
+</Text><SourceFile>/Users/nr52/projectX/core/event.js</SourceFile><SourceLineNumber>93</SourceLineNumber><PostContext>   * @type {?goog.math.Vec2}
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>41</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:117: WARNING - Bad type annotation. Unknown type goog.math.Vec2
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>   * @type {?goog.math.Vec2}
+</PostContext></Warning><Warning><BuildLogLine>41</BuildLogLine><Text>/Users/nr52/projectX/core/event.js:117: WARNING - Bad type annotation. Unknown type goog.math.Vec2
+</Text><SourceFile>/Users/nr52/projectX/core/event.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>   * @type {?goog.math.Vec2}
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>45</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:205: WARNING - Bad type annotation. Unknown type X.object
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>205</SourceLineNumber><PostContext>   * @type {?X.object}
+</PostContext></Warning><Warning><BuildLogLine>45</BuildLogLine><Text>/Users/nr52/projectX/core/event.js:205: WARNING - Bad type annotation. Unknown type X.object
+</Text><SourceFile>/Users/nr52/projectX/core/event.js</SourceFile><SourceLineNumber>205</SourceLineNumber><PostContext>   * @type {?X.object}
 
                      ^
-</PostContext></Warning><Warning><BuildLogLine>49</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:246: WARNING - Property PanEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>246</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.PanEvent', X.event.prototype.PanEvent);
-
-                                                ^
-</PostContext></Warning><Warning><BuildLogLine>53</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:248: WARNING - Property RotateEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>248</SourceLineNumber><PostContext>    X.event.prototype.RotateEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>57</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:249: WARNING - Property ZoomEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>249</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.ZoomEvent', X.event.prototype.ZoomEvent);
-
-                                                 ^
-</PostContext></Warning><Warning><BuildLogLine>61</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:251: WARNING - Property RenderEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>251</SourceLineNumber><PostContext>    X.event.prototype.RenderEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>65</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:253: WARNING - Property ModifiedEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>253</SourceLineNumber><PostContext>    X.event.prototype.ModifiedEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>69</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:255: WARNING - Property ProgressEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>255</SourceLineNumber><PostContext>    X.event.prototype.ProgressEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>133</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>109</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>155</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>131</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>177</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>153</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>187</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:75: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>75</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>163</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:75: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>75</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>193</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:97: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>97</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>169</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:97: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>97</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>199</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:119: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>119</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>175</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:119: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>119</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>205</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:141: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>141</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>181</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:141: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>141</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>211</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:163: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>163</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>187</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:163: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>163</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>217</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:185: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>185</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>193</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:185: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>185</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>235</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>211</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>241</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>217</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>247</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>223</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>253</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>229</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>259</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>235</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>265</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>241</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>287</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>263</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>297</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:205: WARNING - Bad type annotation. Unknown type X.object
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>205</SourceLineNumber><PostContext>   * @type {?X.object}
+</PostContext></Warning><Warning><BuildLogLine>273</BuildLogLine><Text>/Users/nr52/projectX/core/event.js:205: WARNING - Bad type annotation. Unknown type X.object
+</Text><SourceFile>/Users/nr52/projectX/core/event.js</SourceFile><SourceLineNumber>205</SourceLineNumber><PostContext>   * @type {?X.object}
 
                      ^
-</PostContext></Warning><Warning><BuildLogLine>301</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:246: WARNING - Property PanEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>246</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.PanEvent', X.event.prototype.PanEvent);
-
-                                                ^
-</PostContext></Warning><Warning><BuildLogLine>305</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:248: WARNING - Property RotateEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>248</SourceLineNumber><PostContext>    X.event.prototype.RotateEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>309</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:249: WARNING - Property ZoomEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>249</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.ZoomEvent', X.event.prototype.ZoomEvent);
-
-                                                 ^
-</PostContext></Warning><Warning><BuildLogLine>313</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:251: WARNING - Property RenderEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>251</SourceLineNumber><PostContext>    X.event.prototype.RenderEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>317</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:253: WARNING - Property ModifiedEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>253</SourceLineNumber><PostContext>    X.event.prototype.ModifiedEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>321</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:255: WARNING - Property ProgressEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>255</SourceLineNumber><PostContext>    X.event.prototype.ProgressEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>325</BuildLogLine><Text>/Users/d/Projects/X/io/interactor.js:373: WARNING - Property deltaY never defined on Event
-</Text><SourceFile>/Users/d/Projects/X/io/interactor.js</SourceFile><SourceLineNumber>373</SourceLineNumber><PostContext>  e._in = (event.deltaY &gt; 0);
+</PostContext></Warning><Warning><BuildLogLine>277</BuildLogLine><Text>/Users/nr52/projectX/io/interactor.js:373: WARNING - Property deltaY never defined on Event
+</Text><SourceFile>/Users/nr52/projectX/io/interactor.js</SourceFile><SourceLineNumber>373</SourceLineNumber><PostContext>  e._in = (event.deltaY &gt; 0);
 
            ^
-</PostContext></Warning><Warning><BuildLogLine>341</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>293</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>351</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:246: WARNING - Property PanEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>246</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.PanEvent', X.event.prototype.PanEvent);
-
-                                                ^
-</PostContext></Warning><Warning><BuildLogLine>355</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:248: WARNING - Property RotateEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>248</SourceLineNumber><PostContext>    X.event.prototype.RotateEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>359</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:249: WARNING - Property ZoomEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>249</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.ZoomEvent', X.event.prototype.ZoomEvent);
-
-                                                 ^
-</PostContext></Warning><Warning><BuildLogLine>363</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:251: WARNING - Property RenderEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>251</SourceLineNumber><PostContext>    X.event.prototype.RenderEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>367</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:253: WARNING - Property ModifiedEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>253</SourceLineNumber><PostContext>    X.event.prototype.ModifiedEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>371</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:255: WARNING - Property ProgressEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>255</SourceLineNumber><PostContext>    X.event.prototype.ProgressEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>375</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:75: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>75</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>303</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:75: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>75</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>381</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:97: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>97</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>309</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:97: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>97</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>387</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:119: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>119</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>315</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:119: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>119</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>393</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:141: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>141</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>321</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:141: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>141</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>399</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:163: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>163</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>327</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:163: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>163</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>405</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:185: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>185</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>333</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:185: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>185</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>411</BuildLogLine><Text>/Users/d/Projects/X/io/loader.js:73: WARNING - assignment to property _value of X.loader.ProgressEvent
-</Text><SourceFile>/Users/d/Projects/X/io/loader.js</SourceFile><SourceLineNumber>73</SourceLineNumber><PostContext>found   : number
+</PostContext></Warning><Warning><BuildLogLine>339</BuildLogLine><Text>/Users/nr52/projectX/io/loader.js:73: WARNING - assignment to property _value of X.loader.ProgressEvent
+</Text><SourceFile>/Users/nr52/projectX/io/loader.js</SourceFile><SourceLineNumber>73</SourceLineNumber><PostContext>found   : number
 
 required: (X.object|null)
-</PostContext></Warning><Warning><BuildLogLine>417</BuildLogLine><Text>/Users/d/Projects/X/io/loader.js:186: WARNING - Property addEventListener never defined on XMLHttpRequest
-</Text><SourceFile>/Users/d/Projects/X/io/loader.js</SourceFile><SourceLineNumber>186</SourceLineNumber><PostContext>  request.addEventListener('progress',
+</PostContext></Warning><Warning><BuildLogLine>345</BuildLogLine><Text>/Users/nr52/projectX/io/loader.js:186: WARNING - Property addEventListener never defined on XMLHttpRequest
+</Text><SourceFile>/Users/nr52/projectX/io/loader.js</SourceFile><SourceLineNumber>186</SourceLineNumber><PostContext>  request.addEventListener('progress',
 
   ^
-</PostContext></Warning><Warning><BuildLogLine>421</BuildLogLine><Text>/Users/d/Projects/X/io/loader.js:190: WARNING - actual parameter 1 of goog.events.listen does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/io/loader.js</SourceFile><SourceLineNumber>190</SourceLineNumber><PostContext>found   : XMLHttpRequest
+</PostContext></Warning><Warning><BuildLogLine>349</BuildLogLine><Text>/Users/nr52/projectX/io/loader.js:190: WARNING - actual parameter 1 of goog.events.listen does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/io/loader.js</SourceFile><SourceLineNumber>190</SourceLineNumber><PostContext>found   : XMLHttpRequest
 
 required: (EventTarget|goog.events.EventTarget|null)
-</PostContext></Warning><Warning><BuildLogLine>427</BuildLogLine><Text>/Users/d/Projects/X/io/loader.js:194: WARNING - actual parameter 1 of goog.events.listen does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/io/loader.js</SourceFile><SourceLineNumber>194</SourceLineNumber><PostContext>found   : XMLHttpRequest
+</PostContext></Warning><Warning><BuildLogLine>355</BuildLogLine><Text>/Users/nr52/projectX/io/loader.js:194: WARNING - actual parameter 1 of goog.events.listen does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/io/loader.js</SourceFile><SourceLineNumber>194</SourceLineNumber><PostContext>found   : XMLHttpRequest
 
 required: (EventTarget|goog.events.EventTarget|null)
-</PostContext></Warning><Warning><BuildLogLine>433</BuildLogLine><Text>/Users/d/Projects/X/io/loader.js:198: WARNING - actual parameter 1 of goog.events.listen does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/io/loader.js</SourceFile><SourceLineNumber>198</SourceLineNumber><PostContext>found   : XMLHttpRequest
+</PostContext></Warning><Warning><BuildLogLine>361</BuildLogLine><Text>/Users/nr52/projectX/io/loader.js:198: WARNING - actual parameter 1 of goog.events.listen does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/io/loader.js</SourceFile><SourceLineNumber>198</SourceLineNumber><PostContext>found   : XMLHttpRequest
 
 required: (EventTarget|goog.events.EventTarget|null)
-</PostContext></Warning><Warning><BuildLogLine>439</BuildLogLine><Text>/Users/d/Projects/X/io/parserSTL.js:26: WARNING - actual parameter 1 of X.parser.call does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/io/parserSTL.js</SourceFile><SourceLineNumber>26</SourceLineNumber><PostContext>found   : X.parserSTL
+</PostContext></Warning><Warning><BuildLogLine>367</BuildLogLine><Text>/Users/nr52/projectX/io/parserSTL.js:26: WARNING - actual parameter 1 of X.parser.call does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/io/parserSTL.js</SourceFile><SourceLineNumber>26</SourceLineNumber><PostContext>found   : X.parserSTL
 
 required: (X.parser|null|undefined)
-</PostContext></Warning><Warning><BuildLogLine>445</BuildLogLine><Text>/Users/d/Projects/X/io/parserSTL.js:39: WARNING - mismatch in declaration of superclass type
-</Text><SourceFile>/Users/d/Projects/X/io/parserSTL.js</SourceFile><SourceLineNumber>39</SourceLineNumber><PostContext>found   : X.parser
+</PostContext></Warning><Warning><BuildLogLine>373</BuildLogLine><Text>/Users/nr52/projectX/io/parserSTL.js:39: WARNING - mismatch in declaration of superclass type
+</Text><SourceFile>/Users/nr52/projectX/io/parserSTL.js</SourceFile><SourceLineNumber>39</SourceLineNumber><PostContext>found   : X.parser
 
 required: X.base
-</PostContext></Warning><Warning><BuildLogLine>451</BuildLogLine><Text>/Users/d/Projects/X/io/parserSTL.js:45: WARNING - property parse not defined on any superclass of X.parserSTL
-</Text><SourceFile>/Users/d/Projects/X/io/parserSTL.js</SourceFile><SourceLineNumber>45</SourceLineNumber><PostContext>X.parserSTL.prototype.parse = function(object, data) {
+</PostContext></Warning><Warning><BuildLogLine>379</BuildLogLine><Text>/Users/nr52/projectX/io/parserSTL.js:45: WARNING - property parse not defined on any superclass of X.parserSTL
+</Text><SourceFile>/Users/nr52/projectX/io/parserSTL.js</SourceFile><SourceLineNumber>45</SourceLineNumber><PostContext>X.parserSTL.prototype.parse = function(object, data) {
 
                             ^
-</PostContext></Warning><Warning><BuildLogLine>455</BuildLogLine><Text>/Users/d/Projects/X/io/parserSTL.js:124: WARNING - assignment
-</Text><SourceFile>/Users/d/Projects/X/io/parserSTL.js</SourceFile><SourceLineNumber>124</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>383</BuildLogLine><Text>/Users/nr52/projectX/io/parserSTL.js:124: WARNING - assignment
+</Text><SourceFile>/Users/nr52/projectX/io/parserSTL.js</SourceFile><SourceLineNumber>124</SourceLineNumber><PostContext>found   : string
 
 required: String
-</PostContext></Warning><Warning><BuildLogLine>461</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:27: WARNING - actual parameter 1 of X.parser.call does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>27</SourceLineNumber><PostContext>found   : X.parserVTK
+</PostContext></Warning><Warning><BuildLogLine>389</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:27: WARNING - actual parameter 1 of X.parser.call does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>27</SourceLineNumber><PostContext>found   : X.parserVTK
 
 required: (X.parser|null|undefined)
-</PostContext></Warning><Warning><BuildLogLine>467</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:40: WARNING - mismatch in declaration of superclass type
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>40</SourceLineNumber><PostContext>found   : X.parser
+</PostContext></Warning><Warning><BuildLogLine>395</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:40: WARNING - mismatch in declaration of superclass type
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>40</SourceLineNumber><PostContext>found   : X.parser
 
 required: X.base
-</PostContext></Warning><Warning><BuildLogLine>473</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:46: WARNING - property parse not defined on any superclass of X.parserVTK
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>46</SourceLineNumber><PostContext>X.parserVTK.prototype.parse = function(object, data) {
+</PostContext></Warning><Warning><BuildLogLine>401</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:46: WARNING - property parse not defined on any superclass of X.parserVTK
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>46</SourceLineNumber><PostContext>X.parserVTK.prototype.parse = function(object, data) {
 
                             ^
-</PostContext></Warning><Warning><BuildLogLine>477</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:164: WARNING - assignment
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>164</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>405</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:164: WARNING - assignment
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>164</SourceLineNumber><PostContext>found   : string
 
 required: String
-</PostContext></Warning><Warning><BuildLogLine>483</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:404: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>404</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
+</PostContext></Warning><Warning><BuildLogLine>411</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:404: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>404</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
 
                                  ^
-</PostContext></Warning><Warning><BuildLogLine>487</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:457: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>457</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
+</PostContext></Warning><Warning><BuildLogLine>415</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:457: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>457</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
 
                                  ^
-</PostContext></Warning><Warning><BuildLogLine>491</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:544: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>544</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
+</PostContext></Warning><Warning><BuildLogLine>419</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:544: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>544</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
 
                                  ^
-</PostContext></Warning><Warning><BuildLogLine>495</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:545: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>545</SourceLineNumber><PostContext>      var nextIndex = parseInt(currentGeometry[k + 1]);
+</PostContext></Warning><Warning><BuildLogLine>423</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:545: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>545</SourceLineNumber><PostContext>      var nextIndex = parseInt(currentGeometry[k + 1]);
 
                               ^
-</PostContext></Warning><Warning><BuildLogLine>499</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:607: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>607</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
+</PostContext></Warning><Warning><BuildLogLine>427</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:607: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>607</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
 
                                  ^
-</PostContext></Warning><Warning><BuildLogLine>515</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>443</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>521</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>449</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>527</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>455</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>533</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>461</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>539</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>467</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>545</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:117: WARNING - assignment to property _opacity of X.object
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>found   : number
+</PostContext></Warning><Warning><BuildLogLine>473</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:117: WARNING - assignment to property _opacity of X.object
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>found   : number
 
 required: (Number|null)
-</PostContext></Warning><Warning><BuildLogLine>551</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:169: WARNING - constant property _type assigned a value more than once
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>169</SourceLineNumber><PostContext>  this._type = type;
+</PostContext></Warning><Warning><BuildLogLine>479</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:169: WARNING - constant property _type assigned a value more than once
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>169</SourceLineNumber><PostContext>  this._type = type;
 
   ^
-</PostContext></Warning><Warning><BuildLogLine>555</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:181: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>181</SourceLineNumber><PostContext>found   : (X.transform|null)
+</PostContext></Warning><Warning><BuildLogLine>483</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:181: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>181</SourceLineNumber><PostContext>found   : (X.transform|null)
 
 required: X.transform
-</PostContext></Warning><Warning><BuildLogLine>561</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:225: WARNING - Bad type annotation. Unknown type X.color
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>225</SourceLineNumber><PostContext> * @return {X.color} The object color.
+</PostContext></Warning><Warning><BuildLogLine>489</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:225: WARNING - Bad type annotation. Unknown type X.color
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>225</SourceLineNumber><PostContext> * @return {X.color} The object color.
 
                    ^
-</PostContext></Warning><Warning><BuildLogLine>565</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>493</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>575</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:93: WARNING - Bad type annotation. Unknown type goog.math.Vec2
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>93</SourceLineNumber><PostContext>   * @type {?goog.math.Vec2}
+</PostContext></Warning><Warning><BuildLogLine>503</BuildLogLine><Text>/Users/nr52/projectX/core/event.js:93: WARNING - Bad type annotation. Unknown type goog.math.Vec2
+</Text><SourceFile>/Users/nr52/projectX/core/event.js</SourceFile><SourceLineNumber>93</SourceLineNumber><PostContext>   * @type {?goog.math.Vec2}
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>579</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:117: WARNING - Bad type annotation. Unknown type goog.math.Vec2
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>   * @type {?goog.math.Vec2}
+</PostContext></Warning><Warning><BuildLogLine>507</BuildLogLine><Text>/Users/nr52/projectX/core/event.js:117: WARNING - Bad type annotation. Unknown type goog.math.Vec2
+</Text><SourceFile>/Users/nr52/projectX/core/event.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>   * @type {?goog.math.Vec2}
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>583</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:205: WARNING - Bad type annotation. Unknown type X.object
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>205</SourceLineNumber><PostContext>   * @type {?X.object}
+</PostContext></Warning><Warning><BuildLogLine>511</BuildLogLine><Text>/Users/nr52/projectX/core/event.js:205: WARNING - Bad type annotation. Unknown type X.object
+</Text><SourceFile>/Users/nr52/projectX/core/event.js</SourceFile><SourceLineNumber>205</SourceLineNumber><PostContext>   * @type {?X.object}
 
                      ^
-</PostContext></Warning><Warning><BuildLogLine>587</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:246: WARNING - Property PanEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>246</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.PanEvent', X.event.prototype.PanEvent);
-
-                                                ^
-</PostContext></Warning><Warning><BuildLogLine>591</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:248: WARNING - Property RotateEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>248</SourceLineNumber><PostContext>    X.event.prototype.RotateEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>595</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:249: WARNING - Property ZoomEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>249</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.ZoomEvent', X.event.prototype.ZoomEvent);
-
-                                                 ^
-</PostContext></Warning><Warning><BuildLogLine>599</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:251: WARNING - Property RenderEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>251</SourceLineNumber><PostContext>    X.event.prototype.RenderEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>603</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:253: WARNING - Property ModifiedEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>253</SourceLineNumber><PostContext>    X.event.prototype.ModifiedEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>607</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:255: WARNING - Property ProgressEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>255</SourceLineNumber><PostContext>    X.event.prototype.ProgressEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>611</BuildLogLine><Text>/Users/d/Projects/X/io/parser.js:57: WARNING - Bad type annotation. Unknown type X.object
-</Text><SourceFile>/Users/d/Projects/X/io/parser.js</SourceFile><SourceLineNumber>57</SourceLineNumber><PostContext> * @param {!X.object} object The object to configure.
+</PostContext></Warning><Warning><BuildLogLine>515</BuildLogLine><Text>/Users/nr52/projectX/io/parser.js:57: WARNING - Bad type annotation. Unknown type X.object
+</Text><SourceFile>/Users/nr52/projectX/io/parser.js</SourceFile><SourceLineNumber>57</SourceLineNumber><PostContext> * @param {!X.object} object The object to configure.
 
                     ^
-</PostContext></Warning><Warning><BuildLogLine>627</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>531</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>637</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:93: WARNING - Bad type annotation. Unknown type goog.math.Vec2
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>93</SourceLineNumber><PostContext>   * @type {?goog.math.Vec2}
+</PostContext></Warning><Warning><BuildLogLine>541</BuildLogLine><Text>/Users/nr52/projectX/core/event.js:93: WARNING - Bad type annotation. Unknown type goog.math.Vec2
+</Text><SourceFile>/Users/nr52/projectX/core/event.js</SourceFile><SourceLineNumber>93</SourceLineNumber><PostContext>   * @type {?goog.math.Vec2}
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>641</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:117: WARNING - Bad type annotation. Unknown type goog.math.Vec2
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>   * @type {?goog.math.Vec2}
+</PostContext></Warning><Warning><BuildLogLine>545</BuildLogLine><Text>/Users/nr52/projectX/core/event.js:117: WARNING - Bad type annotation. Unknown type goog.math.Vec2
+</Text><SourceFile>/Users/nr52/projectX/core/event.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>   * @type {?goog.math.Vec2}
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>645</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:205: WARNING - Bad type annotation. Unknown type X.object
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>205</SourceLineNumber><PostContext>   * @type {?X.object}
+</PostContext></Warning><Warning><BuildLogLine>549</BuildLogLine><Text>/Users/nr52/projectX/core/event.js:205: WARNING - Bad type annotation. Unknown type X.object
+</Text><SourceFile>/Users/nr52/projectX/core/event.js</SourceFile><SourceLineNumber>205</SourceLineNumber><PostContext>   * @type {?X.object}
 
                      ^
-</PostContext></Warning><Warning><BuildLogLine>649</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:246: WARNING - Property PanEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>246</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.PanEvent', X.event.prototype.PanEvent);
-
-                                                ^
-</PostContext></Warning><Warning><BuildLogLine>653</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:248: WARNING - Property RotateEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>248</SourceLineNumber><PostContext>    X.event.prototype.RotateEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>657</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:249: WARNING - Property ZoomEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>249</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.ZoomEvent', X.event.prototype.ZoomEvent);
-
-                                                 ^
-</PostContext></Warning><Warning><BuildLogLine>661</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:251: WARNING - Property RenderEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>251</SourceLineNumber><PostContext>    X.event.prototype.RenderEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>665</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:253: WARNING - Property ModifiedEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>253</SourceLineNumber><PostContext>    X.event.prototype.ModifiedEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>669</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:255: WARNING - Property ProgressEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>255</SourceLineNumber><PostContext>    X.event.prototype.ProgressEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>673</BuildLogLine><Text>/Users/d/Projects/X/io/parser.js:57: WARNING - Bad type annotation. Unknown type X.object
-</Text><SourceFile>/Users/d/Projects/X/io/parser.js</SourceFile><SourceLineNumber>57</SourceLineNumber><PostContext> * @param {!X.object} object The object to configure.
+</PostContext></Warning><Warning><BuildLogLine>553</BuildLogLine><Text>/Users/nr52/projectX/io/parser.js:57: WARNING - Bad type annotation. Unknown type X.object
+</Text><SourceFile>/Users/nr52/projectX/io/parser.js</SourceFile><SourceLineNumber>57</SourceLineNumber><PostContext> * @param {!X.object} object The object to configure.
 
                     ^
-</PostContext></Warning><Warning><BuildLogLine>677</BuildLogLine><Text>/Users/d/Projects/X/io/parserSTL.js:26: WARNING - actual parameter 1 of X.parser.call does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/io/parserSTL.js</SourceFile><SourceLineNumber>26</SourceLineNumber><PostContext>found   : X.parserSTL
+</PostContext></Warning><Warning><BuildLogLine>557</BuildLogLine><Text>/Users/nr52/projectX/io/parserSTL.js:26: WARNING - actual parameter 1 of X.parser.call does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/io/parserSTL.js</SourceFile><SourceLineNumber>26</SourceLineNumber><PostContext>found   : X.parserSTL
 
 required: (X.parser|null|undefined)
-</PostContext></Warning><Warning><BuildLogLine>683</BuildLogLine><Text>/Users/d/Projects/X/io/parserSTL.js:39: WARNING - mismatch in declaration of superclass type
-</Text><SourceFile>/Users/d/Projects/X/io/parserSTL.js</SourceFile><SourceLineNumber>39</SourceLineNumber><PostContext>found   : X.parser
+</PostContext></Warning><Warning><BuildLogLine>563</BuildLogLine><Text>/Users/nr52/projectX/io/parserSTL.js:39: WARNING - mismatch in declaration of superclass type
+</Text><SourceFile>/Users/nr52/projectX/io/parserSTL.js</SourceFile><SourceLineNumber>39</SourceLineNumber><PostContext>found   : X.parser
 
 required: X.base
-</PostContext></Warning><Warning><BuildLogLine>689</BuildLogLine><Text>/Users/d/Projects/X/io/parserSTL.js:45: WARNING - property parse not defined on any superclass of X.parserSTL
-</Text><SourceFile>/Users/d/Projects/X/io/parserSTL.js</SourceFile><SourceLineNumber>45</SourceLineNumber><PostContext>X.parserSTL.prototype.parse = function(object, data) {
+</PostContext></Warning><Warning><BuildLogLine>569</BuildLogLine><Text>/Users/nr52/projectX/io/parserSTL.js:45: WARNING - property parse not defined on any superclass of X.parserSTL
+</Text><SourceFile>/Users/nr52/projectX/io/parserSTL.js</SourceFile><SourceLineNumber>45</SourceLineNumber><PostContext>X.parserSTL.prototype.parse = function(object, data) {
 
                             ^
-</PostContext></Warning><Warning><BuildLogLine>693</BuildLogLine><Text>/Users/d/Projects/X/io/parserSTL.js:51: WARNING - Property points never defined on object
-</Text><SourceFile>/Users/d/Projects/X/io/parserSTL.js</SourceFile><SourceLineNumber>51</SourceLineNumber><PostContext>  var p = object.points();
+</PostContext></Warning><Warning><BuildLogLine>573</BuildLogLine><Text>/Users/nr52/projectX/io/parserSTL.js:51: WARNING - Property points never defined on object
+</Text><SourceFile>/Users/nr52/projectX/io/parserSTL.js</SourceFile><SourceLineNumber>51</SourceLineNumber><PostContext>  var p = object.points();
 
           ^
-</PostContext></Warning><Warning><BuildLogLine>697</BuildLogLine><Text>/Users/d/Projects/X/io/parserSTL.js:52: WARNING - Property normals never defined on object
-</Text><SourceFile>/Users/d/Projects/X/io/parserSTL.js</SourceFile><SourceLineNumber>52</SourceLineNumber><PostContext>  var n = object.normals();
+</PostContext></Warning><Warning><BuildLogLine>577</BuildLogLine><Text>/Users/nr52/projectX/io/parserSTL.js:52: WARNING - Property normals never defined on object
+</Text><SourceFile>/Users/nr52/projectX/io/parserSTL.js</SourceFile><SourceLineNumber>52</SourceLineNumber><PostContext>  var n = object.normals();
 
           ^
-</PostContext></Warning><Warning><BuildLogLine>701</BuildLogLine><Text>/Users/d/Projects/X/io/parserSTL.js:124: WARNING - assignment
-</Text><SourceFile>/Users/d/Projects/X/io/parserSTL.js</SourceFile><SourceLineNumber>124</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>581</BuildLogLine><Text>/Users/nr52/projectX/io/parserSTL.js:124: WARNING - assignment
+</Text><SourceFile>/Users/nr52/projectX/io/parserSTL.js</SourceFile><SourceLineNumber>124</SourceLineNumber><PostContext>found   : string
 
 required: String
-</PostContext></Warning><Warning><BuildLogLine>719</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>599</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>729</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:246: WARNING - Property PanEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>246</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.PanEvent', X.event.prototype.PanEvent);
-
-                                                ^
-</PostContext></Warning><Warning><BuildLogLine>733</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:248: WARNING - Property RotateEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>248</SourceLineNumber><PostContext>    X.event.prototype.RotateEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>737</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:249: WARNING - Property ZoomEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>249</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.ZoomEvent', X.event.prototype.ZoomEvent);
-
-                                                 ^
-</PostContext></Warning><Warning><BuildLogLine>741</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:251: WARNING - Property RenderEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>251</SourceLineNumber><PostContext>    X.event.prototype.RenderEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>745</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:253: WARNING - Property ModifiedEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>253</SourceLineNumber><PostContext>    X.event.prototype.ModifiedEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>749</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:255: WARNING - Property ProgressEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>255</SourceLineNumber><PostContext>    X.event.prototype.ProgressEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>753</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:75: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>75</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>609</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:75: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>75</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>759</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:97: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>97</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>615</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:97: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>97</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>765</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:119: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>119</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>621</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:119: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>119</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>771</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:141: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>141</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>627</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:141: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>141</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>777</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:163: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>163</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>633</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:163: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>163</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>783</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:185: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>185</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>639</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:185: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>185</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>789</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:27: WARNING - actual parameter 1 of X.parser.call does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>27</SourceLineNumber><PostContext>found   : X.parserVTK
+</PostContext></Warning><Warning><BuildLogLine>645</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:27: WARNING - actual parameter 1 of X.parser.call does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>27</SourceLineNumber><PostContext>found   : X.parserVTK
 
 required: (X.parser|null|undefined)
-</PostContext></Warning><Warning><BuildLogLine>795</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:40: WARNING - mismatch in declaration of superclass type
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>40</SourceLineNumber><PostContext>found   : X.parser
+</PostContext></Warning><Warning><BuildLogLine>651</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:40: WARNING - mismatch in declaration of superclass type
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>40</SourceLineNumber><PostContext>found   : X.parser
 
 required: X.base
-</PostContext></Warning><Warning><BuildLogLine>801</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:46: WARNING - property parse not defined on any superclass of X.parserVTK
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>46</SourceLineNumber><PostContext>X.parserVTK.prototype.parse = function(object, data) {
+</PostContext></Warning><Warning><BuildLogLine>657</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:46: WARNING - property parse not defined on any superclass of X.parserVTK
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>46</SourceLineNumber><PostContext>X.parserVTK.prototype.parse = function(object, data) {
 
                             ^
-</PostContext></Warning><Warning><BuildLogLine>805</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:164: WARNING - assignment
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>164</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>661</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:164: WARNING - assignment
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>164</SourceLineNumber><PostContext>found   : string
 
 required: String
-</PostContext></Warning><Warning><BuildLogLine>811</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:404: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>404</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
+</PostContext></Warning><Warning><BuildLogLine>667</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:404: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>404</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
 
                                  ^
-</PostContext></Warning><Warning><BuildLogLine>815</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:457: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>457</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
+</PostContext></Warning><Warning><BuildLogLine>671</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:457: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>457</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
 
                                  ^
-</PostContext></Warning><Warning><BuildLogLine>819</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:544: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>544</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
+</PostContext></Warning><Warning><BuildLogLine>675</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:544: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>544</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
 
                                  ^
-</PostContext></Warning><Warning><BuildLogLine>823</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:545: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>545</SourceLineNumber><PostContext>      var nextIndex = parseInt(currentGeometry[k + 1]);
+</PostContext></Warning><Warning><BuildLogLine>679</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:545: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>545</SourceLineNumber><PostContext>      var nextIndex = parseInt(currentGeometry[k + 1]);
 
                               ^
-</PostContext></Warning><Warning><BuildLogLine>827</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:607: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>607</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
+</PostContext></Warning><Warning><BuildLogLine>683</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:607: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>607</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
 
                                  ^
-</PostContext></Warning><Warning><BuildLogLine>843</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>699</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>849</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>705</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>855</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>711</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>861</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>717</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>867</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>723</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>873</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:117: WARNING - assignment to property _opacity of X.object
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>found   : number
+</PostContext></Warning><Warning><BuildLogLine>729</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:117: WARNING - assignment to property _opacity of X.object
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>found   : number
 
 required: (Number|null)
-</PostContext></Warning><Warning><BuildLogLine>879</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:169: WARNING - constant property _type assigned a value more than once
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>169</SourceLineNumber><PostContext>  this._type = type;
+</PostContext></Warning><Warning><BuildLogLine>735</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:169: WARNING - constant property _type assigned a value more than once
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>169</SourceLineNumber><PostContext>  this._type = type;
 
   ^
-</PostContext></Warning><Warning><BuildLogLine>883</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:181: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>181</SourceLineNumber><PostContext>found   : (X.transform|null)
+</PostContext></Warning><Warning><BuildLogLine>739</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:181: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>181</SourceLineNumber><PostContext>found   : (X.transform|null)
 
 required: X.transform
-</PostContext></Warning><Warning><BuildLogLine>889</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:225: WARNING - Bad type annotation. Unknown type X.color
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>225</SourceLineNumber><PostContext> * @return {X.color} The object color.
+</PostContext></Warning><Warning><BuildLogLine>745</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:225: WARNING - Bad type annotation. Unknown type X.color
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>225</SourceLineNumber><PostContext> * @return {X.color} The object color.
 
                    ^
-</PostContext></Warning><Warning><BuildLogLine>893</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>749</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>915</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>771</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>921</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>777</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>927</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>783</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>933</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>789</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>939</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>795</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>945</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>801</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>955</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:75: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>75</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>811</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:75: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>75</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>961</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:97: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>97</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>817</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:97: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>97</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>967</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:119: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>119</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>823</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:119: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>119</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>973</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:141: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>141</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>829</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:141: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>141</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>979</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:163: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>163</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>835</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:163: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>163</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>985</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:185: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>185</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>841</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:185: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>185</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1003</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>859</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1009</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>865</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1015</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>871</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1021</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>877</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1027</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>883</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1033</BuildLogLine><Text>/Users/d/Projects/X/objects/box.js:47: WARNING - Function X.object.call: called with 2 argument(s). Function requires at least 0 argument(s) and no more than 1 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/objects/box.js</SourceFile><SourceLineNumber>47</SourceLineNumber><PostContext>  goog.base(this, type);
+</PostContext></Warning><Warning><BuildLogLine>889</BuildLogLine><Text>/Users/nr52/projectX/objects/box.js:47: WARNING - Function X.object.call: called with 2 argument(s). Function requires at least 0 argument(s) and no more than 1 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/objects/box.js</SourceFile><SourceLineNumber>47</SourceLineNumber><PostContext>  goog.base(this, type);
 
            ^
-</PostContext></Warning><Warning><BuildLogLine>1037</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:117: WARNING - assignment to property _opacity of X.object
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>found   : number
+</PostContext></Warning><Warning><BuildLogLine>893</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:117: WARNING - assignment to property _opacity of X.object
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>found   : number
 
 required: (Number|null)
-</PostContext></Warning><Warning><BuildLogLine>1043</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:169: WARNING - constant property _type assigned a value more than once
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>169</SourceLineNumber><PostContext>  this._type = type;
+</PostContext></Warning><Warning><BuildLogLine>899</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:169: WARNING - constant property _type assigned a value more than once
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>169</SourceLineNumber><PostContext>  this._type = type;
 
   ^
-</PostContext></Warning><Warning><BuildLogLine>1047</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:181: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>181</SourceLineNumber><PostContext>found   : (X.transform|null)
+</PostContext></Warning><Warning><BuildLogLine>903</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:181: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>181</SourceLineNumber><PostContext>found   : (X.transform|null)
 
 required: X.transform
-</PostContext></Warning><Warning><BuildLogLine>1053</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:225: WARNING - Bad type annotation. Unknown type X.color
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>225</SourceLineNumber><PostContext> * @return {X.color} The object color.
+</PostContext></Warning><Warning><BuildLogLine>909</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:225: WARNING - Bad type annotation. Unknown type X.color
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>225</SourceLineNumber><PostContext> * @return {X.color} The object color.
 
                    ^
-</PostContext></Warning><Warning><BuildLogLine>1057</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:390: WARNING - Property ModifiedEvent never defined on X.event
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>390</SourceLineNumber><PostContext>  var modifiedEvent = new X.event.ModifiedEvent();
+</PostContext></Warning><Warning><BuildLogLine>913</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:390: WARNING - Property ModifiedEvent never defined on X.event
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>390</SourceLineNumber><PostContext>  var modifiedEvent = new X.event.ModifiedEvent();
 
                           ^
-</PostContext></Warning><Warning><BuildLogLine>1061</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:390: WARNING - Property event never defined on X
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>390</SourceLineNumber><PostContext>  var modifiedEvent = new X.event.ModifiedEvent();
+</PostContext></Warning><Warning><BuildLogLine>917</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:390: WARNING - Property event never defined on X
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>390</SourceLineNumber><PostContext>  var modifiedEvent = new X.event.ModifiedEvent();
 
                           ^
-</PostContext></Warning><Warning><BuildLogLine>1065</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:390: WARNING - X.event is never defined
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>390</SourceLineNumber><PostContext>  var modifiedEvent = new X.event.ModifiedEvent();
+</PostContext></Warning><Warning><BuildLogLine>921</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:390: WARNING - X.event is never defined
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>390</SourceLineNumber><PostContext>  var modifiedEvent = new X.event.ModifiedEvent();
 
                           ^
-</PostContext></Warning><Warning><BuildLogLine>1069</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>925</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>1079</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:75: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>75</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>935</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:75: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>75</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1085</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:97: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>97</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>941</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:97: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>97</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1091</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:119: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>119</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>947</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:119: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>119</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1097</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:141: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>141</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>953</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:141: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>141</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1103</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:163: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>163</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>959</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:163: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>163</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1109</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:185: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>185</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>965</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:185: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>185</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1127</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>983</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1133</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>989</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1139</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>995</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1145</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1001</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1151</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1007</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1157</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:117: WARNING - assignment to property _opacity of X.object
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>found   : number
+</PostContext></Warning><Warning><BuildLogLine>1013</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:117: WARNING - assignment to property _opacity of X.object
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>found   : number
 
 required: (Number|null)
-</PostContext></Warning><Warning><BuildLogLine>1163</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:169: WARNING - constant property _type assigned a value more than once
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>169</SourceLineNumber><PostContext>  this._type = type;
+</PostContext></Warning><Warning><BuildLogLine>1019</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:169: WARNING - constant property _type assigned a value more than once
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>169</SourceLineNumber><PostContext>  this._type = type;
 
   ^
-</PostContext></Warning><Warning><BuildLogLine>1167</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:181: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>181</SourceLineNumber><PostContext>found   : (X.transform|null)
+</PostContext></Warning><Warning><BuildLogLine>1023</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:181: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>181</SourceLineNumber><PostContext>found   : (X.transform|null)
 
 required: X.transform
-</PostContext></Warning><Warning><BuildLogLine>1173</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:225: WARNING - Bad type annotation. Unknown type X.color
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>225</SourceLineNumber><PostContext> * @return {X.color} The object color.
+</PostContext></Warning><Warning><BuildLogLine>1029</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:225: WARNING - Bad type annotation. Unknown type X.color
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>225</SourceLineNumber><PostContext> * @return {X.color} The object color.
 
                    ^
-</PostContext></Warning><Warning><BuildLogLine>1177</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:390: WARNING - Property ModifiedEvent never defined on X.event
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>390</SourceLineNumber><PostContext>  var modifiedEvent = new X.event.ModifiedEvent();
+</PostContext></Warning><Warning><BuildLogLine>1033</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:390: WARNING - Property ModifiedEvent never defined on X.event
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>390</SourceLineNumber><PostContext>  var modifiedEvent = new X.event.ModifiedEvent();
 
                           ^
-</PostContext></Warning><Warning><BuildLogLine>1181</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:390: WARNING - Property event never defined on X
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>390</SourceLineNumber><PostContext>  var modifiedEvent = new X.event.ModifiedEvent();
+</PostContext></Warning><Warning><BuildLogLine>1037</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:390: WARNING - Property event never defined on X
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>390</SourceLineNumber><PostContext>  var modifiedEvent = new X.event.ModifiedEvent();
 
                           ^
-</PostContext></Warning><Warning><BuildLogLine>1185</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:390: WARNING - X.event is never defined
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>390</SourceLineNumber><PostContext>  var modifiedEvent = new X.event.ModifiedEvent();
+</PostContext></Warning><Warning><BuildLogLine>1041</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:390: WARNING - X.event is never defined
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>390</SourceLineNumber><PostContext>  var modifiedEvent = new X.event.ModifiedEvent();
 
                           ^
-</PostContext></Warning><Warning><BuildLogLine>1189</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>1045</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>1211</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>1067</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>1221</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:205: WARNING - Bad type annotation. Unknown type X.object
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>205</SourceLineNumber><PostContext>   * @type {?X.object}
+</PostContext></Warning><Warning><BuildLogLine>1077</BuildLogLine><Text>/Users/nr52/projectX/core/event.js:205: WARNING - Bad type annotation. Unknown type X.object
+</Text><SourceFile>/Users/nr52/projectX/core/event.js</SourceFile><SourceLineNumber>205</SourceLineNumber><PostContext>   * @type {?X.object}
 
                      ^
-</PostContext></Warning><Warning><BuildLogLine>1225</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:246: WARNING - Property PanEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>246</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.PanEvent', X.event.prototype.PanEvent);
-
-                                                ^
-</PostContext></Warning><Warning><BuildLogLine>1229</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:248: WARNING - Property RotateEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>248</SourceLineNumber><PostContext>    X.event.prototype.RotateEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>1233</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:249: WARNING - Property ZoomEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>249</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.ZoomEvent', X.event.prototype.ZoomEvent);
-
-                                                 ^
-</PostContext></Warning><Warning><BuildLogLine>1237</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:251: WARNING - Property RenderEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>251</SourceLineNumber><PostContext>    X.event.prototype.RenderEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>1241</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:253: WARNING - Property ModifiedEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>253</SourceLineNumber><PostContext>    X.event.prototype.ModifiedEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>1245</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:255: WARNING - Property ProgressEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>255</SourceLineNumber><PostContext>    X.event.prototype.ProgressEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>1261</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1093</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1267</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1099</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1273</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1105</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1279</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1111</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1285</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1117</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1291</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:90: WARNING - assignment to property _perspective of X.camera
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>90</SourceLineNumber><PostContext>found   : Float32Array
+</PostContext></Warning><Warning><BuildLogLine>1123</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:90: WARNING - assignment to property _perspective of X.camera
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>90</SourceLineNumber><PostContext>found   : Float32Array
 
 required: (goog.math.Matrix|null)
-</PostContext></Warning><Warning><BuildLogLine>1297</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:127: WARNING - Bad type annotation. Unknown type X.interactor
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>127</SourceLineNumber><PostContext> * @param {!X.interactor} interactor The interactor which should be observed.
+</PostContext></Warning><Warning><BuildLogLine>1129</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:127: WARNING - Bad type annotation. Unknown type X.interactor
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>127</SourceLineNumber><PostContext> * @param {!X.interactor} interactor The interactor which should be observed.
 
                         ^
-</PostContext></Warning><Warning><BuildLogLine>1301</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:132: WARNING - X.interactor is never defined
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>      !(interactor instanceof X.interactor)) {
+</PostContext></Warning><Warning><BuildLogLine>1133</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:132: WARNING - X.interactor is never defined
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>132</SourceLineNumber><PostContext>      !(interactor instanceof X.interactor)) {
 
                               ^
-</PostContext></Warning><Warning><BuildLogLine>1305</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:149: WARNING - Bad type annotation. Unknown type X.camera.ZoomEvent
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>149</SourceLineNumber><PostContext> * @param {!X.camera.ZoomEvent} event The event.
+</PostContext></Warning><Warning><BuildLogLine>1137</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:149: WARNING - Bad type annotation. Unknown type X.camera.ZoomEvent
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>149</SourceLineNumber><PostContext> * @param {!X.camera.ZoomEvent} event The event.
 
                               ^
-</PostContext></Warning><Warning><BuildLogLine>1309</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:176: WARNING - Bad type annotation. Unknown type X.camera.PanEvent
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>176</SourceLineNumber><PostContext> * @param {!X.camera.PanEvent} event The event.
+</PostContext></Warning><Warning><BuildLogLine>1141</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:176: WARNING - Bad type annotation. Unknown type X.camera.PanEvent
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>176</SourceLineNumber><PostContext> * @param {!X.camera.PanEvent} event The event.
 
                              ^
-</PostContext></Warning><Warning><BuildLogLine>1313</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>187</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
+</PostContext></Warning><Warning><BuildLogLine>1145</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>187</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
 
 required: goog.math.Vec2
-</PostContext></Warning><Warning><BuildLogLine>1319</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:195: WARNING - Bad type annotation. Unknown type X.camera.RotateEvent
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>195</SourceLineNumber><PostContext> * @param {!X.camera.RotateEvent} event The event.
+</PostContext></Warning><Warning><BuildLogLine>1151</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:195: WARNING - Bad type annotation. Unknown type X.camera.RotateEvent
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>195</SourceLineNumber><PostContext> * @param {!X.camera.RotateEvent} event The event.
 
                                 ^
-</PostContext></Warning><Warning><BuildLogLine>1323</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>206</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
+</PostContext></Warning><Warning><BuildLogLine>1155</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>206</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
 
 required: goog.math.Vec2
-</PostContext></Warning><Warning><BuildLogLine>1329</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:218: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>218</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>1161</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:218: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>218</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1335</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:230: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>230</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>1167</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:230: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>230</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1341</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:242: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>242</SourceLineNumber><PostContext>found   : (Object|null)
+</PostContext></Warning><Warning><BuildLogLine>1173</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:242: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>242</SourceLineNumber><PostContext>found   : (Object|null)
 
 required: Object
-</PostContext></Warning><Warning><BuildLogLine>1347</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:254: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>254</SourceLineNumber><PostContext>found   : (Object|null)
+</PostContext></Warning><Warning><BuildLogLine>1179</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:254: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>254</SourceLineNumber><PostContext>found   : (Object|null)
 
 required: Object
-</PostContext></Warning><Warning><BuildLogLine>1353</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:266: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>266</SourceLineNumber><PostContext>found   : (goog.math.Vec3|null)
+</PostContext></Warning><Warning><BuildLogLine>1185</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:266: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>266</SourceLineNumber><PostContext>found   : (goog.math.Vec3|null)
 
 required: goog.math.Vec3
-</PostContext></Warning><Warning><BuildLogLine>1359</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:277: WARNING - parameter position does not appear in X.camera.prototype.setPosition's parameter list
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>277</SourceLineNumber><PostContext>X.camera.prototype.setPosition = function(x, y, z) {
+</PostContext></Warning><Warning><BuildLogLine>1191</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:277: WARNING - parameter position does not appear in X.camera.prototype.setPosition's parameter list
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>277</SourceLineNumber><PostContext>X.camera.prototype.setPosition = function(x, y, z) {
 
                                          ^
-</PostContext></Warning><Warning><BuildLogLine>1363</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:288: WARNING - actual parameter 2 of X.camera.prototype.lookAt_ does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>288</SourceLineNumber><PostContext>found   : (goog.math.Vec3|null)
+</PostContext></Warning><Warning><BuildLogLine>1195</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:288: WARNING - actual parameter 2 of X.camera.prototype.lookAt_ does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>288</SourceLineNumber><PostContext>found   : (goog.math.Vec3|null)
 
 required: goog.math.Vec3
-</PostContext></Warning><Warning><BuildLogLine>1369</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:408: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>408</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1201</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:408: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>408</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1375</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:409: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>409</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1207</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:409: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>409</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1381</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:409: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>409</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1213</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:409: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>409</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1387</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:411: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>411</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1219</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:411: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>411</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1393</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:412: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>412</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1225</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:412: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>412</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1399</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:412: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>412</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1231</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:412: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>412</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1405</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:572: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>572</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>1237</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:572: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>572</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1411</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>1243</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>1421</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:246: WARNING - Property PanEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>246</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.PanEvent', X.event.prototype.PanEvent);
-
-                                                ^
-</PostContext></Warning><Warning><BuildLogLine>1425</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:248: WARNING - Property RotateEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>248</SourceLineNumber><PostContext>    X.event.prototype.RotateEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>1429</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:249: WARNING - Property ZoomEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>249</SourceLineNumber><PostContext>goog.exportSymbol('X.event.prototype.ZoomEvent', X.event.prototype.ZoomEvent);
-
-                                                 ^
-</PostContext></Warning><Warning><BuildLogLine>1433</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:251: WARNING - Property RenderEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>251</SourceLineNumber><PostContext>    X.event.prototype.RenderEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>1437</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:253: WARNING - Property ModifiedEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>253</SourceLineNumber><PostContext>    X.event.prototype.ModifiedEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>1441</BuildLogLine><Text>/Users/d/Projects/X/core/event.js:255: WARNING - Property ProgressEvent never defined on X.event.prototype
-</Text><SourceFile>/Users/d/Projects/X/core/event.js</SourceFile><SourceLineNumber>255</SourceLineNumber><PostContext>    X.event.prototype.ProgressEvent);
-
-    ^
-</PostContext></Warning><Warning><BuildLogLine>1445</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:75: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>75</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>1253</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:75: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>75</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1451</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:97: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>97</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>1259</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:97: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>97</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1457</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:119: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>119</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>1265</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:119: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>119</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1463</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:141: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>141</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>1271</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:141: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>141</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1469</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:163: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>163</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>1277</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:163: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>163</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1475</BuildLogLine><Text>/Users/d/Projects/X/core/transform.js:185: WARNING - assignment to property _matrix of X.transform
-</Text><SourceFile>/Users/d/Projects/X/core/transform.js</SourceFile><SourceLineNumber>185</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>1283</BuildLogLine><Text>/Users/nr52/projectX/core/transform.js:185: WARNING - assignment to property _matrix of X.transform
+</Text><SourceFile>/Users/nr52/projectX/core/transform.js</SourceFile><SourceLineNumber>185</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1481</BuildLogLine><Text>/Users/d/Projects/X/io/interactor.js:373: WARNING - Property deltaY never defined on Event
-</Text><SourceFile>/Users/d/Projects/X/io/interactor.js</SourceFile><SourceLineNumber>373</SourceLineNumber><PostContext>  e._in = (event.deltaY &gt; 0);
+</PostContext></Warning><Warning><BuildLogLine>1289</BuildLogLine><Text>/Users/nr52/projectX/io/interactor.js:373: WARNING - Property deltaY never defined on Event
+</Text><SourceFile>/Users/nr52/projectX/io/interactor.js</SourceFile><SourceLineNumber>373</SourceLineNumber><PostContext>  e._in = (event.deltaY &gt; 0);
 
            ^
-</PostContext></Warning><Warning><BuildLogLine>1485</BuildLogLine><Text>/Users/d/Projects/X/io/loader.js:73: WARNING - assignment to property _value of X.loader.ProgressEvent
-</Text><SourceFile>/Users/d/Projects/X/io/loader.js</SourceFile><SourceLineNumber>73</SourceLineNumber><PostContext>found   : number
+</PostContext></Warning><Warning><BuildLogLine>1293</BuildLogLine><Text>/Users/nr52/projectX/io/loader.js:73: WARNING - assignment to property _value of X.loader.ProgressEvent
+</Text><SourceFile>/Users/nr52/projectX/io/loader.js</SourceFile><SourceLineNumber>73</SourceLineNumber><PostContext>found   : number
 
 required: (X.object|null)
-</PostContext></Warning><Warning><BuildLogLine>1491</BuildLogLine><Text>/Users/d/Projects/X/io/loader.js:186: WARNING - Property addEventListener never defined on XMLHttpRequest
-</Text><SourceFile>/Users/d/Projects/X/io/loader.js</SourceFile><SourceLineNumber>186</SourceLineNumber><PostContext>  request.addEventListener('progress',
+</PostContext></Warning><Warning><BuildLogLine>1299</BuildLogLine><Text>/Users/nr52/projectX/io/loader.js:186: WARNING - Property addEventListener never defined on XMLHttpRequest
+</Text><SourceFile>/Users/nr52/projectX/io/loader.js</SourceFile><SourceLineNumber>186</SourceLineNumber><PostContext>  request.addEventListener('progress',
 
   ^
-</PostContext></Warning><Warning><BuildLogLine>1495</BuildLogLine><Text>/Users/d/Projects/X/io/loader.js:190: WARNING - actual parameter 1 of goog.events.listen does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/io/loader.js</SourceFile><SourceLineNumber>190</SourceLineNumber><PostContext>found   : XMLHttpRequest
+</PostContext></Warning><Warning><BuildLogLine>1303</BuildLogLine><Text>/Users/nr52/projectX/io/loader.js:190: WARNING - actual parameter 1 of goog.events.listen does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/io/loader.js</SourceFile><SourceLineNumber>190</SourceLineNumber><PostContext>found   : XMLHttpRequest
 
 required: (EventTarget|goog.events.EventTarget|null)
-</PostContext></Warning><Warning><BuildLogLine>1501</BuildLogLine><Text>/Users/d/Projects/X/io/loader.js:194: WARNING - actual parameter 1 of goog.events.listen does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/io/loader.js</SourceFile><SourceLineNumber>194</SourceLineNumber><PostContext>found   : XMLHttpRequest
+</PostContext></Warning><Warning><BuildLogLine>1309</BuildLogLine><Text>/Users/nr52/projectX/io/loader.js:194: WARNING - actual parameter 1 of goog.events.listen does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/io/loader.js</SourceFile><SourceLineNumber>194</SourceLineNumber><PostContext>found   : XMLHttpRequest
 
 required: (EventTarget|goog.events.EventTarget|null)
-</PostContext></Warning><Warning><BuildLogLine>1507</BuildLogLine><Text>/Users/d/Projects/X/io/loader.js:198: WARNING - actual parameter 1 of goog.events.listen does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/io/loader.js</SourceFile><SourceLineNumber>198</SourceLineNumber><PostContext>found   : XMLHttpRequest
+</PostContext></Warning><Warning><BuildLogLine>1315</BuildLogLine><Text>/Users/nr52/projectX/io/loader.js:198: WARNING - actual parameter 1 of goog.events.listen does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/io/loader.js</SourceFile><SourceLineNumber>198</SourceLineNumber><PostContext>found   : XMLHttpRequest
 
 required: (EventTarget|goog.events.EventTarget|null)
-</PostContext></Warning><Warning><BuildLogLine>1513</BuildLogLine><Text>/Users/d/Projects/X/io/parserSTL.js:26: WARNING - actual parameter 1 of X.parser.call does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/io/parserSTL.js</SourceFile><SourceLineNumber>26</SourceLineNumber><PostContext>found   : X.parserSTL
+</PostContext></Warning><Warning><BuildLogLine>1321</BuildLogLine><Text>/Users/nr52/projectX/io/parserSTL.js:26: WARNING - actual parameter 1 of X.parser.call does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/io/parserSTL.js</SourceFile><SourceLineNumber>26</SourceLineNumber><PostContext>found   : X.parserSTL
 
 required: (X.parser|null|undefined)
-</PostContext></Warning><Warning><BuildLogLine>1519</BuildLogLine><Text>/Users/d/Projects/X/io/parserSTL.js:39: WARNING - mismatch in declaration of superclass type
-</Text><SourceFile>/Users/d/Projects/X/io/parserSTL.js</SourceFile><SourceLineNumber>39</SourceLineNumber><PostContext>found   : X.parser
+</PostContext></Warning><Warning><BuildLogLine>1327</BuildLogLine><Text>/Users/nr52/projectX/io/parserSTL.js:39: WARNING - mismatch in declaration of superclass type
+</Text><SourceFile>/Users/nr52/projectX/io/parserSTL.js</SourceFile><SourceLineNumber>39</SourceLineNumber><PostContext>found   : X.parser
 
 required: X.base
-</PostContext></Warning><Warning><BuildLogLine>1525</BuildLogLine><Text>/Users/d/Projects/X/io/parserSTL.js:45: WARNING - property parse not defined on any superclass of X.parserSTL
-</Text><SourceFile>/Users/d/Projects/X/io/parserSTL.js</SourceFile><SourceLineNumber>45</SourceLineNumber><PostContext>X.parserSTL.prototype.parse = function(object, data) {
+</PostContext></Warning><Warning><BuildLogLine>1333</BuildLogLine><Text>/Users/nr52/projectX/io/parserSTL.js:45: WARNING - property parse not defined on any superclass of X.parserSTL
+</Text><SourceFile>/Users/nr52/projectX/io/parserSTL.js</SourceFile><SourceLineNumber>45</SourceLineNumber><PostContext>X.parserSTL.prototype.parse = function(object, data) {
 
                             ^
-</PostContext></Warning><Warning><BuildLogLine>1529</BuildLogLine><Text>/Users/d/Projects/X/io/parserSTL.js:124: WARNING - assignment
-</Text><SourceFile>/Users/d/Projects/X/io/parserSTL.js</SourceFile><SourceLineNumber>124</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>1337</BuildLogLine><Text>/Users/nr52/projectX/io/parserSTL.js:124: WARNING - assignment
+</Text><SourceFile>/Users/nr52/projectX/io/parserSTL.js</SourceFile><SourceLineNumber>124</SourceLineNumber><PostContext>found   : string
 
 required: String
-</PostContext></Warning><Warning><BuildLogLine>1535</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:27: WARNING - actual parameter 1 of X.parser.call does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>27</SourceLineNumber><PostContext>found   : X.parserVTK
+</PostContext></Warning><Warning><BuildLogLine>1343</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:27: WARNING - actual parameter 1 of X.parser.call does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>27</SourceLineNumber><PostContext>found   : X.parserVTK
 
 required: (X.parser|null|undefined)
-</PostContext></Warning><Warning><BuildLogLine>1541</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:40: WARNING - mismatch in declaration of superclass type
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>40</SourceLineNumber><PostContext>found   : X.parser
+</PostContext></Warning><Warning><BuildLogLine>1349</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:40: WARNING - mismatch in declaration of superclass type
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>40</SourceLineNumber><PostContext>found   : X.parser
 
 required: X.base
-</PostContext></Warning><Warning><BuildLogLine>1547</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:46: WARNING - property parse not defined on any superclass of X.parserVTK
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>46</SourceLineNumber><PostContext>X.parserVTK.prototype.parse = function(object, data) {
+</PostContext></Warning><Warning><BuildLogLine>1355</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:46: WARNING - property parse not defined on any superclass of X.parserVTK
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>46</SourceLineNumber><PostContext>X.parserVTK.prototype.parse = function(object, data) {
 
                             ^
-</PostContext></Warning><Warning><BuildLogLine>1551</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:164: WARNING - assignment
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>164</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>1359</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:164: WARNING - assignment
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>164</SourceLineNumber><PostContext>found   : string
 
 required: String
-</PostContext></Warning><Warning><BuildLogLine>1557</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:404: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>404</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
+</PostContext></Warning><Warning><BuildLogLine>1365</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:404: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>404</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
 
                                  ^
-</PostContext></Warning><Warning><BuildLogLine>1561</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:457: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>457</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
+</PostContext></Warning><Warning><BuildLogLine>1369</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:457: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>457</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
 
                                  ^
-</PostContext></Warning><Warning><BuildLogLine>1565</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:544: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>544</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
+</PostContext></Warning><Warning><BuildLogLine>1373</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:544: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>544</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
 
                                  ^
-</PostContext></Warning><Warning><BuildLogLine>1569</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:545: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>545</SourceLineNumber><PostContext>      var nextIndex = parseInt(currentGeometry[k + 1]);
+</PostContext></Warning><Warning><BuildLogLine>1377</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:545: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>545</SourceLineNumber><PostContext>      var nextIndex = parseInt(currentGeometry[k + 1]);
 
                               ^
-</PostContext></Warning><Warning><BuildLogLine>1573</BuildLogLine><Text>/Users/d/Projects/X/io/parserVTK.js:607: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
-</Text><SourceFile>/Users/d/Projects/X/io/parserVTK.js</SourceFile><SourceLineNumber>607</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
+</PostContext></Warning><Warning><BuildLogLine>1381</BuildLogLine><Text>/Users/nr52/projectX/io/parserVTK.js:607: WARNING - Function parseInt: called with 1 argument(s). Function requires at least 2 argument(s) and no more than 2 argument(s).
+</Text><SourceFile>/Users/nr52/projectX/io/parserVTK.js</SourceFile><SourceLineNumber>607</SourceLineNumber><PostContext>      var currentIndex = parseInt(currentGeometry[k]);
 
                                  ^
-</PostContext></Warning><Warning><BuildLogLine>1581</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1389</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:228: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>228</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1587</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1395</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1593</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1401</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:229: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>229</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1599</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1407</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:234: WARNING - actual parameter 1 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>234</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1605</BuildLogLine><Text>/Users/d/Projects/X/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1413</BuildLogLine><Text>/Users/nr52/projectX/math/matrixHelper.js:235: WARNING - actual parameter 2 of goog.math.Vec2 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/math/matrixHelper.js</SourceFile><SourceLineNumber>235</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1611</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:117: WARNING - assignment to property _opacity of X.object
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>found   : number
+</PostContext></Warning><Warning><BuildLogLine>1419</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:117: WARNING - assignment to property _opacity of X.object
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>117</SourceLineNumber><PostContext>found   : number
 
 required: (Number|null)
-</PostContext></Warning><Warning><BuildLogLine>1617</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:169: WARNING - constant property _type assigned a value more than once
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>169</SourceLineNumber><PostContext>  this._type = type;
+</PostContext></Warning><Warning><BuildLogLine>1425</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:169: WARNING - constant property _type assigned a value more than once
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>169</SourceLineNumber><PostContext>  this._type = type;
 
   ^
-</PostContext></Warning><Warning><BuildLogLine>1621</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:181: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>181</SourceLineNumber><PostContext>found   : (X.transform|null)
+</PostContext></Warning><Warning><BuildLogLine>1429</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:181: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>181</SourceLineNumber><PostContext>found   : (X.transform|null)
 
 required: X.transform
-</PostContext></Warning><Warning><BuildLogLine>1627</BuildLogLine><Text>/Users/d/Projects/X/objects/object.js:225: WARNING - Bad type annotation. Unknown type X.color
-</Text><SourceFile>/Users/d/Projects/X/objects/object.js</SourceFile><SourceLineNumber>225</SourceLineNumber><PostContext> * @return {X.color} The object color.
+</PostContext></Warning><Warning><BuildLogLine>1435</BuildLogLine><Text>/Users/nr52/projectX/objects/object.js:225: WARNING - Bad type annotation. Unknown type X.color
+</Text><SourceFile>/Users/nr52/projectX/objects/object.js</SourceFile><SourceLineNumber>225</SourceLineNumber><PostContext> * @return {X.color} The object color.
 
                    ^
-</PostContext></Warning><Warning><BuildLogLine>1631</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:90: WARNING - assignment to property _perspective of X.camera
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>90</SourceLineNumber><PostContext>found   : Float32Array
+</PostContext></Warning><Warning><BuildLogLine>1439</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:90: WARNING - assignment to property _perspective of X.camera
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>90</SourceLineNumber><PostContext>found   : Float32Array
 
 required: (goog.math.Matrix|null)
-</PostContext></Warning><Warning><BuildLogLine>1637</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:149: WARNING - Bad type annotation. Unknown type X.camera.ZoomEvent
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>149</SourceLineNumber><PostContext> * @param {!X.camera.ZoomEvent} event The event.
+</PostContext></Warning><Warning><BuildLogLine>1445</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:149: WARNING - Bad type annotation. Unknown type X.camera.ZoomEvent
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>149</SourceLineNumber><PostContext> * @param {!X.camera.ZoomEvent} event The event.
 
                               ^
-</PostContext></Warning><Warning><BuildLogLine>1641</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:176: WARNING - Bad type annotation. Unknown type X.camera.PanEvent
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>176</SourceLineNumber><PostContext> * @param {!X.camera.PanEvent} event The event.
+</PostContext></Warning><Warning><BuildLogLine>1449</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:176: WARNING - Bad type annotation. Unknown type X.camera.PanEvent
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>176</SourceLineNumber><PostContext> * @param {!X.camera.PanEvent} event The event.
 
                              ^
-</PostContext></Warning><Warning><BuildLogLine>1645</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>187</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
+</PostContext></Warning><Warning><BuildLogLine>1453</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:187: WARNING - actual parameter 1 of X.camera.prototype.pan does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>187</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
 
 required: goog.math.Vec2
-</PostContext></Warning><Warning><BuildLogLine>1651</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:195: WARNING - Bad type annotation. Unknown type X.camera.RotateEvent
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>195</SourceLineNumber><PostContext> * @param {!X.camera.RotateEvent} event The event.
+</PostContext></Warning><Warning><BuildLogLine>1459</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:195: WARNING - Bad type annotation. Unknown type X.camera.RotateEvent
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>195</SourceLineNumber><PostContext> * @param {!X.camera.RotateEvent} event The event.
 
                                 ^
-</PostContext></Warning><Warning><BuildLogLine>1655</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>206</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
+</PostContext></Warning><Warning><BuildLogLine>1463</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:206: WARNING - actual parameter 1 of X.camera.prototype.rotate does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>206</SourceLineNumber><PostContext>found   : (goog.math.Vec2|null)
 
 required: goog.math.Vec2
-</PostContext></Warning><Warning><BuildLogLine>1661</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:218: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>218</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>1469</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:218: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>218</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1667</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:230: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>230</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>1475</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:230: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>230</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1673</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:242: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>242</SourceLineNumber><PostContext>found   : (Object|null)
+</PostContext></Warning><Warning><BuildLogLine>1481</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:242: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>242</SourceLineNumber><PostContext>found   : (Object|null)
 
 required: Object
-</PostContext></Warning><Warning><BuildLogLine>1679</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:254: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>254</SourceLineNumber><PostContext>found   : (Object|null)
+</PostContext></Warning><Warning><BuildLogLine>1487</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:254: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>254</SourceLineNumber><PostContext>found   : (Object|null)
 
 required: Object
-</PostContext></Warning><Warning><BuildLogLine>1685</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:266: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>266</SourceLineNumber><PostContext>found   : (goog.math.Vec3|null)
+</PostContext></Warning><Warning><BuildLogLine>1493</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:266: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>266</SourceLineNumber><PostContext>found   : (goog.math.Vec3|null)
 
 required: goog.math.Vec3
-</PostContext></Warning><Warning><BuildLogLine>1691</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:277: WARNING - parameter position does not appear in X.camera.prototype.setPosition's parameter list
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>277</SourceLineNumber><PostContext>X.camera.prototype.setPosition = function(x, y, z) {
+</PostContext></Warning><Warning><BuildLogLine>1499</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:277: WARNING - parameter position does not appear in X.camera.prototype.setPosition's parameter list
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>277</SourceLineNumber><PostContext>X.camera.prototype.setPosition = function(x, y, z) {
 
                                          ^
-</PostContext></Warning><Warning><BuildLogLine>1695</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:288: WARNING - actual parameter 2 of X.camera.prototype.lookAt_ does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>288</SourceLineNumber><PostContext>found   : (goog.math.Vec3|null)
+</PostContext></Warning><Warning><BuildLogLine>1503</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:288: WARNING - actual parameter 2 of X.camera.prototype.lookAt_ does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>288</SourceLineNumber><PostContext>found   : (goog.math.Vec3|null)
 
 required: goog.math.Vec3
-</PostContext></Warning><Warning><BuildLogLine>1701</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:408: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>408</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1509</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:408: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>408</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1707</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:409: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>409</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1515</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:409: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>409</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1713</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:409: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>409</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1521</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:409: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>409</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1719</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:411: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>411</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1527</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:411: WARNING - actual parameter 1 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>411</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1725</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:412: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>412</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1533</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:412: WARNING - actual parameter 2 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>412</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1731</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:412: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>412</SourceLineNumber><PostContext>found   : (null|number)
+</PostContext></Warning><Warning><BuildLogLine>1539</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:412: WARNING - actual parameter 3 of goog.math.Vec3 does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>412</SourceLineNumber><PostContext>found   : (null|number)
 
 required: number
-</PostContext></Warning><Warning><BuildLogLine>1737</BuildLogLine><Text>/Users/d/Projects/X/visualization/camera.js:572: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/camera.js</SourceFile><SourceLineNumber>572</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
+</PostContext></Warning><Warning><BuildLogLine>1545</BuildLogLine><Text>/Users/nr52/projectX/visualization/camera.js:572: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/camera.js</SourceFile><SourceLineNumber>572</SourceLineNumber><PostContext>found   : (goog.math.Matrix|null)
 
 required: goog.math.Matrix
-</PostContext></Warning><Warning><BuildLogLine>1743</BuildLogLine><Text>/Users/d/Projects/X/visualization/renderer.js:78: WARNING - assignment to property _container of X.renderer
-</Text><SourceFile>/Users/d/Projects/X/visualization/renderer.js</SourceFile><SourceLineNumber>78</SourceLineNumber><PostContext>found   : (Element|null)
+</PostContext></Warning><Warning><BuildLogLine>1551</BuildLogLine><Text>/Users/nr52/projectX/visualization/renderer.js:78: WARNING - assignment to property _container of X.renderer
+</Text><SourceFile>/Users/nr52/projectX/visualization/renderer.js</SourceFile><SourceLineNumber>78</SourceLineNumber><PostContext>found   : (Element|null)
 
 required: Element
-</PostContext></Warning><Warning><BuildLogLine>1749</BuildLogLine><Text>/Users/d/Projects/X/visualization/renderer.js:224: WARNING - Bad type annotation. Unknown type bool
-</Text><SourceFile>/Users/d/Projects/X/visualization/renderer.js</SourceFile><SourceLineNumber>224</SourceLineNumber><PostContext>   * @type {bool}
+</PostContext></Warning><Warning><BuildLogLine>1557</BuildLogLine><Text>/Users/nr52/projectX/visualization/renderer.js:224: WARNING - Bad type annotation. Unknown type bool
+</Text><SourceFile>/Users/nr52/projectX/visualization/renderer.js</SourceFile><SourceLineNumber>224</SourceLineNumber><PostContext>   * @type {bool}
 
                 ^
-</PostContext></Warning><Warning><BuildLogLine>1753</BuildLogLine><Text>/Users/d/Projects/X/visualization/renderer.js:429: WARNING - Property setValue never defined on X.renderer._progressBar
-</Text><SourceFile>/Users/d/Projects/X/visualization/renderer.js</SourceFile><SourceLineNumber>429</SourceLineNumber><PostContext>    this._progressBar.setValue(progress * 100);
+</PostContext></Warning><Warning><BuildLogLine>1561</BuildLogLine><Text>/Users/nr52/projectX/visualization/renderer.js:429: WARNING - Property setValue never defined on X.renderer._progressBar
+</Text><SourceFile>/Users/nr52/projectX/visualization/renderer.js</SourceFile><SourceLineNumber>429</SourceLineNumber><PostContext>    this._progressBar.setValue(progress * 100);
 
     ^
-</PostContext></Warning><Warning><BuildLogLine>1757</BuildLogLine><Text>/Users/d/Projects/X/visualization/renderer.js:447: WARNING - actual parameter 1 of X.renderer.prototype.update_ does not match formal parameter
-</Text><SourceFile>/Users/d/Projects/X/visualization/renderer.js</SourceFile><SourceLineNumber>447</SourceLineNumber><PostContext>found   : (X.object|null)
+</PostContext></Warning><Warning><BuildLogLine>1565</BuildLogLine><Text>/Users/nr52/projectX/visualization/renderer.js:447: WARNING - actual parameter 1 of X.renderer.prototype.update_ does not match formal parameter
+</Text><SourceFile>/Users/nr52/projectX/visualization/renderer.js</SourceFile><SourceLineNumber>447</SourceLineNumber><PostContext>found   : (X.object|null)
 
 required: X.object
-</PostContext></Warning><Warning><BuildLogLine>1763</BuildLogLine><Text>/Users/d/Projects/X/visualization/renderer.js:490: WARNING - assignment to property _progressBar of X.renderer
-</Text><SourceFile>/Users/d/Projects/X/visualization/renderer.js</SourceFile><SourceLineNumber>490</SourceLineNumber><PostContext>found   : goog.ui.ProgressBar
+</PostContext></Warning><Warning><BuildLogLine>1571</BuildLogLine><Text>/Users/nr52/projectX/visualization/renderer.js:490: WARNING - assignment to property _progressBar of X.renderer
+</Text><SourceFile>/Users/nr52/projectX/visualization/renderer.js</SourceFile><SourceLineNumber>490</SourceLineNumber><PostContext>found   : goog.ui.ProgressBar
 
 required: (Element|null)
-</PostContext></Warning><Warning><BuildLogLine>1769</BuildLogLine><Text>/Users/d/Projects/X/visualization/renderer.js:511: WARNING - Property getElement never defined on X.renderer._progressBar
-</Text><SourceFile>/Users/d/Projects/X/visualization/renderer.js</SourceFile><SourceLineNumber>511</SourceLineNumber><PostContext>      goog.dom.removeNode(this._progressBar.getElement());
+</PostContext></Warning><Warning><BuildLogLine>1577</BuildLogLine><Text>/Users/nr52/projectX/visualization/renderer.js:511: WARNING - Property getElement never defined on X.renderer._progressBar
+</Text><SourceFile>/Users/nr52/projectX/visualization/renderer.js</SourceFile><SourceLineNumber>511</SourceLineNumber><PostContext>      goog.dom.removeNode(this._progressBar.getElement());
 
                           ^
-</PostContext></Warning><Warning><BuildLogLine>1773</BuildLogLine><Text>/Users/d/Projects/X/visualization/renderer.js:531: WARNING - Property classList never defined on Element
-</Text><SourceFile>/Users/d/Projects/X/visualization/renderer.js</SourceFile><SourceLineNumber>531</SourceLineNumber><PostContext>      pbBar.classList.add('progress-bar-thumb-done');
+</PostContext></Warning><Warning><BuildLogLine>1581</BuildLogLine><Text>/Users/nr52/projectX/visualization/renderer.js:531: WARNING - Property classList never defined on Element
+</Text><SourceFile>/Users/nr52/projectX/visualization/renderer.js</SourceFile><SourceLineNumber>531</SourceLineNumber><PostContext>      pbBar.classList.add('progress-bar-thumb-done');
 
       ^
-</PostContext></Warning><Warning><BuildLogLine>1777</BuildLogLine><Text>/Users/d/Projects/X/visualization/renderer.js:533: WARNING - assignment to property _progressBar of X.renderer
-</Text><SourceFile>/Users/d/Projects/X/visualization/renderer.js</SourceFile><SourceLineNumber>533</SourceLineNumber><PostContext>found   : goog.ui.ProgressBar
+</PostContext></Warning><Warning><BuildLogLine>1585</BuildLogLine><Text>/Users/nr52/projectX/visualization/renderer.js:533: WARNING - assignment to property _progressBar of X.renderer
+</Text><SourceFile>/Users/nr52/projectX/visualization/renderer.js</SourceFile><SourceLineNumber>533</SourceLineNumber><PostContext>found   : goog.ui.ProgressBar
 
 required: (Element|null)
-</PostContext></Warning><Warning><BuildLogLine>1783</BuildLogLine><Text>/Users/d/Projects/X/visualization/renderer.js:854: WARNING - Property remove never defined on X.renderer._objects
-</Text><SourceFile>/Users/d/Projects/X/visualization/renderer.js</SourceFile><SourceLineNumber>854</SourceLineNumber><PostContext>    this._objects.remove(object);
+</PostContext></Warning><Warning><BuildLogLine>1591</BuildLogLine><Text>/Users/nr52/projectX/visualization/renderer.js:854: WARNING - Property remove never defined on X.renderer._objects
+</Text><SourceFile>/Users/nr52/projectX/visualization/renderer.js</SourceFile><SourceLineNumber>854</SourceLineNumber><PostContext>    this._objects.remove(object);
 
     ^
-</PostContext></Warning><Warning><BuildLogLine>1787</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:241: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>241</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>1595</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:241: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>241</SourceLineNumber><PostContext>found   : string
 
 required: String
-</PostContext></Warning><Warning><BuildLogLine>1793</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:313: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>313</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>1601</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:313: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>313</SourceLineNumber><PostContext>found   : string
 
 required: (String|null)
-</PostContext></Warning><Warning><BuildLogLine>1799</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:359: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>359</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>1607</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:359: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>359</SourceLineNumber><PostContext>found   : string
 
 required: (String|null)
-</PostContext></Warning><Warning><BuildLogLine>1805</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:371: WARNING - Property _lighting never defined on X.shaders
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>371</SourceLineNumber><PostContext>  return this._lighting;
+</PostContext></Warning><Warning><BuildLogLine>1613</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:371: WARNING - Property _lighting never defined on X.shaders
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>371</SourceLineNumber><PostContext>  return this._lighting;
 
          ^
-</PostContext></Warning><Warning><BuildLogLine>1809</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:383: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>383</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>1617</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:383: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>383</SourceLineNumber><PostContext>found   : string
 
 required: (String|null)
-</PostContext></Warning><Warning><BuildLogLine>1815</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:395: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>395</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>1623</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:395: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>395</SourceLineNumber><PostContext>found   : string
 
 required: (String|null)
-</PostContext></Warning><Warning><BuildLogLine>1821</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:449: WARNING - Property _opacityAttribute never defined on X.shaders
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>449</SourceLineNumber><PostContext>  t = this._vertexshaderSource.search(this._opacityAttribute);
+</PostContext></Warning><Warning><BuildLogLine>1629</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:449: WARNING - Property _opacityAttribute never defined on X.shaders
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>449</SourceLineNumber><PostContext>  t = this._vertexshaderSource.search(this._opacityAttribute);
 
                                       ^
-</PostContext></Warning><Warning><BuildLogLine>1825</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:563: WARNING - Property opacity never defined on X.shaders.prototype
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>563</SourceLineNumber><PostContext>goog.exportSymbol('X.shaders.prototype.opacity', X.shaders.prototype.opacity);
+</PostContext></Warning><Warning><BuildLogLine>1633</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:563: WARNING - Property opacity never defined on X.shaders.prototype
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>563</SourceLineNumber><PostContext>goog.exportSymbol('X.shaders.prototype.opacity', X.shaders.prototype.opacity);
 
                                                  ^
-</PostContext></Warning><Warning><BuildLogLine>1829</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>1637</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
-</PostContext></Warning><Warning><BuildLogLine>1851</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:241: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>241</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>1659</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:241: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>241</SourceLineNumber><PostContext>found   : string
 
 required: String
-</PostContext></Warning><Warning><BuildLogLine>1857</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:313: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>313</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>1665</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:313: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>313</SourceLineNumber><PostContext>found   : string
 
 required: (String|null)
-</PostContext></Warning><Warning><BuildLogLine>1863</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:359: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>359</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>1671</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:359: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>359</SourceLineNumber><PostContext>found   : string
 
 required: (String|null)
-</PostContext></Warning><Warning><BuildLogLine>1869</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:371: WARNING - Property _lighting never defined on X.shaders
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>371</SourceLineNumber><PostContext>  return this._lighting;
+</PostContext></Warning><Warning><BuildLogLine>1677</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:371: WARNING - Property _lighting never defined on X.shaders
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>371</SourceLineNumber><PostContext>  return this._lighting;
 
          ^
-</PostContext></Warning><Warning><BuildLogLine>1873</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:383: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>383</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>1681</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:383: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>383</SourceLineNumber><PostContext>found   : string
 
 required: (String|null)
-</PostContext></Warning><Warning><BuildLogLine>1879</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:395: WARNING - inconsistent return type
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>395</SourceLineNumber><PostContext>found   : string
+</PostContext></Warning><Warning><BuildLogLine>1687</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:395: WARNING - inconsistent return type
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>395</SourceLineNumber><PostContext>found   : string
 
 required: (String|null)
-</PostContext></Warning><Warning><BuildLogLine>1885</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:449: WARNING - Property _opacityAttribute never defined on X.shaders
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>449</SourceLineNumber><PostContext>  t = this._vertexshaderSource.search(this._opacityAttribute);
+</PostContext></Warning><Warning><BuildLogLine>1693</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:449: WARNING - Property _opacityAttribute never defined on X.shaders
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>449</SourceLineNumber><PostContext>  t = this._vertexshaderSource.search(this._opacityAttribute);
 
                                       ^
-</PostContext></Warning><Warning><BuildLogLine>1889</BuildLogLine><Text>/Users/d/Projects/X/visualization/shaders.js:563: WARNING - Property opacity never defined on X.shaders.prototype
-</Text><SourceFile>/Users/d/Projects/X/visualization/shaders.js</SourceFile><SourceLineNumber>563</SourceLineNumber><PostContext>goog.exportSymbol('X.shaders.prototype.opacity', X.shaders.prototype.opacity);
+</PostContext></Warning><Warning><BuildLogLine>1697</BuildLogLine><Text>/Users/nr52/projectX/visualization/shaders.js:563: WARNING - Property opacity never defined on X.shaders.prototype
+</Text><SourceFile>/Users/nr52/projectX/visualization/shaders.js</SourceFile><SourceLineNumber>563</SourceLineNumber><PostContext>goog.exportSymbol('X.shaders.prototype.opacity', X.shaders.prototype.opacity);
 
                                                  ^
-</PostContext></Warning><Warning><BuildLogLine>1893</BuildLogLine><Text>/Users/d/Projects/X/xtk.js:49: WARNING - cannot instantiate non-constructor
-</Text><SourceFile>/Users/d/Projects/X/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
+</PostContext></Warning><Warning><BuildLogLine>1701</BuildLogLine><Text>/Users/nr52/projectX/xtk.js:49: WARNING - cannot instantiate non-constructor
+</Text><SourceFile>/Users/nr52/projectX/xtk.js</SourceFile><SourceLineNumber>49</SourceLineNumber><PostContext>    fBound.prototype = new fNOP();
 
                            ^
 </PostContext></Warning></Build></Site>
