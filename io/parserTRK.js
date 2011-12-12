@@ -81,13 +81,12 @@ X.parserTRK.prototype.parse = function(object, data) {
   // parse the data
   offset = header.hdr_size;
   
-  console.log(header);
-  return;
-  
   // loop through all fibers
-  for ( var i = 0; i < header.n_count; i++) {
+  for ( var i = 0; i < 2; i++) {
     var numPoints = this.parseUInt32(data, offset);
+    console.log(numPoints);
     offset += 4;
+    // continue;
     
     // loop through the points of this fiber
     for ( var j = 0; j < numPoints - 1; j++) {
@@ -99,15 +98,6 @@ X.parserTRK.prototype.parse = function(object, data) {
       offset += 4;
       
       var z = this.parseFloat32(data, offset);
-      offset += 4;
-      
-      var x_next = this.parseFloat32(data, offset);
-      offset += 4;
-      
-      var y_next = this.parseFloat32(data, offset);
-      offset += 4;
-      
-      var z_next = this.parseFloat32(data, offset);
       offset += 4;
       
       var scalars = null;
@@ -123,16 +113,12 @@ X.parserTRK.prototype.parse = function(object, data) {
       y = y / header.voxel_size[1];
       z = z / header.voxel_size[2];
       
-      x_next = x_next / header.voxel_size[0];
-      y_next = y_next / header.voxel_size[1];
-      z_next = z_next / header.voxel_size[2];
-      
       p.add(x, y, z);
-      p.add(x_next, y_next, z_next);
+      // p.add(x_next, y_next, z_next);
       
       // add artificial normals
       n.add(1, 1, 1);
-      n.add(1, 1, 1);
+      // n.add(1, 1, 1);
       
     }
     
@@ -146,13 +132,13 @@ X.parserTRK.prototype.parse = function(object, data) {
     
     // calculate track length
     // we don't support it right now in XTK
-    var length = 0.0;
-    for (j = 0; j < numPoints - 1; j++) {
-      length += Math.sqrt(Math.pow(points[j + 1].position[0] -
-          points[j].position[0], 2) +
-          Math.pow(points[j + 1].position[1] - points[j].position[1], 2) +
-          Math.pow(points[j + 1].position[2] - points[j].position[2], 2));
-    }
+    // var length = 0.0;
+    // for (j = 0; j < numPoints - 1; j++) {
+    // length += Math.sqrt(Math.pow(points[j + 1].position[0] -
+    // points[j].position[0], 2) +
+    // Math.pow(points[j + 1].position[1] - points[j].position[1], 2) +
+    // Math.pow(points[j + 1].position[2] - points[j].position[2], 2));
+    // }
     
   } // end of loop through all tracks
   

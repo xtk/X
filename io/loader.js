@@ -201,6 +201,8 @@ X.loader.prototype.loadFile = function(object) {
   
   // configure the URL
   request.open('GET', file, true);
+  request.overrideMimeType("text/plain; charset=x-user-defined");
+  request.setRequestHeader("Content-Type", "text/plain");
   
   // .. and GO!
   request.send(null);
