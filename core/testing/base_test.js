@@ -24,3 +24,31 @@ function testXbasePrint() {
   assertContains('== X.base ==\n', b.print());
 
 }
+
+/**
+ * Test for X.base.id
+ * Goal: Make sure the ID is incremented.
+ */
+function testXbaseID() {
+
+  b1 = new X.base();
+  b2 = new X.base();
+
+  assertEquals(b1.id(), 'X1');
+  assertEquals(b2.id(), 'X2');
+}
+
+/**
+ * Test for X.base.dirty
+ * Goal: Make sure the dirty flag is modified.
+ */
+function testXbaseDirty() {
+  b = new X.base();
+
+  // object dirty by default
+  assertEquals( b.dirty(), false);
+
+  // clean the object
+  b.setClean();
+  assertEquals( b.dirty(), true);
+}
