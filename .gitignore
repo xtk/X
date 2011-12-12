@@ -20,6 +20,7 @@
 
 # all build files
 *-build/*
+*-deps.js
 
 # all .log files
 *.log

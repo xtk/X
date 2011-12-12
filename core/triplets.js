@@ -1,0 +1,172 @@
+/*
+ * ${HEADER}
+ */
+
+// provides
+goog.provide('X.triplets');
+
+// requires
+goog.require('X.base');
+goog.require('X.exception');
+goog.require('goog.math.Coordinate3');
+goog.require('goog.structs.Map');
+
+
+
+/**
+ * Create an ordered container for triplets (3D tuples).
+ * 
+ * @constructor
+ * @extends {X.base}
+ */
+X.triplets = function() {
+
+  //
+  // call the standard constructor of X.base
+  goog.base(this);
+  
+  //
+  // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'triplets';
+  
+  /**
+   * The one dimensional array storing all triplets.
+   * 
+   * @type {!Array}
+   * @private
+   */
+  this._triplets_ = new Array();
+  
+};
+// inherit from X.base
+goog.inherits(X.triplets, X.base);
+
+
+/**
+ * Add a triplet to this container.
+ * 
+ * @param {!number} a The first value of the triplet.
+ * @param {!number} b The second value of the triplet.
+ * @param {!number} c The third value of the triplet.
+ * @return {!number} The id of the added triplet.
+ * @throws {X.exception} An exception if the passed coordinates are invalid.
+ */
+X.triplets.prototype.add = function(a, b, c) {
+
+  if (!goog.isNumber(a) || !goog.isNumber(b) || !goog.isNumber(c)) {
+    
+    throw new X.exception('Fatal: Invalid triplet.');
+    
+  }
+  
+  return this._triplets_.push(a, b, c) / 3;
+  
+};
+
+
+/**
+ * Get the triplet with the given id.
+ * 
+ * @param {!number} id The id of the requested triplet.
+ * @return {!Array} The triplet with the given id as a 1D Array with length 3.
+ * @throws {X.exception} An exception if the passed id is invalid or does not
+ *           exist.
+ */
+X.triplets.prototype.get = function(id) {
+
+  if (!goog.isNumber(id) || (id * 3 > this._triplets_.length)) {
+    
+    throw new X.exception('Fatal: Invalid id.');
+    
+  }
+  
+  // we need to convert the id to the index in the array
+  id = id * 3;
+  
+  return [this._triplets_[id], this._triplets_[id + 1], this._triplets_[id + 2]];
+  
+};
+
+
+/**
+ * Remove a given triplet from this container.
+ * 
+ * @param {!number} id The id of the to be removed triplet.
+ * @throws {X.exception} An exception if the passed id is invalid or does not
+ *           exist.
+ */
+X.triplets.prototype.remove = function(id) {
+
+  if (!goog.isNumber(id) || (id * 3 > this._triplets_.length)) {
+    
+    throw new X.exception('Fatal: Invalid id.');
+    
+  }
+  
+  this._triplets_.splice(id, 3);
+  
+};
+
+
+/**
+ * Get all triplets as a sequence.
+ * 
+ * @return {!Array} All triplets as a sequence in a 1D Array.
+ */
+X.triplets.prototype.all = function() {
+
+  return this._triplets_;
+  
+};
+
+
+/**
+ * Delete all triplets in this container.
+ */
+X.triplets.prototype.clear = function() {
+
+  // delete all triplets
+  this._triplets_ = new Array();
+  
+};
+
+
+/**
+ * Get the number of triplets in this container.
+ * 
+ * @return {!number} The number of triplets in this container.
+ */
+X.triplets.prototype.count = function() {
+
+  return this._triplets_.length / 3;
+  
+};
+
+
+/**
+ * Get the length of this container. This equals the number of triplets
+ * multiplied by 3.
+ * 
+ * @return {!number} The length of this container.
+ */
+X.triplets.prototype.length = function() {
+
+  return this._triplets_.length;
+  
+};
+
+
+// export symbols (required for advanced compilation)
+goog.exportSymbol('X.triplets', X.triplets);
+goog.exportSymbol('X.triplets.prototype.add', X.triplets.prototype.add);
+goog.exportSymbol('X.triplets.prototype.get', X.triplets.prototype.get);
+goog.exportSymbol('X.triplets.prototype.remove', X.triplets.prototype.remove);
+goog.exportSymbol('X.triplets.prototype.all', X.triplets.prototype.all);
+goog.exportSymbol('X.triplets.prototype.clear', X.triplets.prototype.clear);
+goog.exportSymbol('X.triplets.prototype.count', X.triplets.prototype.count);
+goog.exportSymbol('X.triplets.prototype.length', X.triplets.prototype.length);
