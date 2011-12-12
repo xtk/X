@@ -75,7 +75,7 @@ def runTests( xtkDir, xtkLibDir, browser='chrome' ):
 
   time.sleep( 3 )
 
-  result = browser.execute_script( 'return window.G_testRunner.getReport();' )
+  result = browser.execute_script( 'return window.G_testRunner.getReport(true);' )
 
   browser.close()
 
