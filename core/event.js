@@ -243,13 +243,9 @@ goog.exportSymbol('X.event.events', X.event.events);
 goog.exportSymbol('X.event.uniqueId', X.event.uniqueId);
 
 // events
-goog.exportSymbol('X.event.prototype.PanEvent', X.event.prototype.PanEvent);
-goog.exportSymbol('X.event.prototype.RotateEvent',
-    X.event.prototype.RotateEvent);
-goog.exportSymbol('X.event.prototype.ZoomEvent', X.event.prototype.ZoomEvent);
-goog.exportSymbol('X.event.prototype.RenderEvent',
-    X.event.prototype.RenderEvent);
-goog.exportSymbol('X.event.prototype.ModifiedEvent',
-    X.event.prototype.ModifiedEvent);
-goog.exportSymbol('X.event.prototype.ProgressEvent',
-    X.event.prototype.ProgressEvent);
+goog.exportSymbol('X.event.PanEvent', X.event.PanEvent);
+goog.exportSymbol('X.event.RotateEvent', X.event.RotateEvent);
+goog.exportSymbol('X.event.ZoomEvent', X.event.ZoomEvent);
+goog.exportSymbol('X.event.RenderEvent', X.event.RenderEvent);
+goog.exportSymbol('X.event.ModifiedEvent', X.event.ModifiedEvent);
+goog.exportSymbol('X.event.ProgressEvent', X.event.ProgressEvent);
