@@ -41,6 +41,8 @@ X.shaders = function() {
    */
   this._vertexshaderSource = '';
   var t = '';
+  t += 'precision mediump float;\n';
+  t += '\n';
   t += 'attribute vec3 vertexPosition;\n';
   t += 'attribute vec3 vertexNormal;\n';
   t += 'attribute vec3 vertexColor;\n';
@@ -83,9 +85,8 @@ X.shaders = function() {
    */
   this._fragmentshaderSource = '';
   var t2 = '';
-  t2 += '#ifdef GL_ES\n';
-  t2 += 'precision highp float;\n';
-  t2 += '#endif\n';
+  // android only guarantees medium precision
+  t2 += 'precision mediump float;\n';
   t2 += '\n';
   t2 += 'uniform bool useTexture;\n';
   t2 += 'uniform sampler2D textureSampler;\n';
@@ -106,10 +107,10 @@ X.shaders = function() {
   t2 += '   vec3 light = vec3(0.0, 0.0, 1.0);\n';
   t2 += '   vec3 lightDirection = vec3(-10.0, 4.0, -20.0);\n';
   t2 += '   lightDirection = normalize(lightDirection);\n';
-  t2 += ' vec3 eyeDirection = normalize(-fVertexPosition.xyz);\n';
+  t2 += '   vec3 eyeDirection = normalize(-fVertexPosition.xyz);\n';
   // REFLECTION? does not look so good I think, so let's disable it for now
   // t2 += ' vec3 reflectionDirection = reflect(-lightDirection, nNormal);\n';
-  t2 += ' vec3 reflectionDirection = nNormal;\n';
+  t2 += '   vec3 reflectionDirection = nNormal;\n';
   // configure specular (16.0 is material property), diffuse and ambient
   t2 += '   float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 16.0);\n';
   t2 += '   float diffuse = 0.8 * max(dot(nNormal, light), 0.0);\n';

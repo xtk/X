@@ -23,7 +23,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.iter.Iterator');
 goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec3');
-goog.require('goog.structs.AvlTree');
 goog.require('goog.structs.Map');
 goog.require('goog.Timer');
 goog.require('goog.ui.ProgressBar');
@@ -151,13 +150,11 @@ X.renderer = function(container) {
   this._interactor = null;
   
   /**
-   * An AVL tree containing the displayable objects of this renderer. The tree
-   * reflects the rendering order for the associated objects.
+   * An array containing the displayable objects of this renderer.
    * 
-   * @type {!goog.structs.AvlTree}
+   * @type {!Array}
    * @protected
    */
-  // this._objects = new goog.structs.AvlTree(X.object.OPACITY_COMPARATOR);
   this._objects = new Array();
   
   /**
@@ -417,6 +414,13 @@ X.renderer.prototype.loader = function() {
 };
 
 
+/**
+ * The callback for X.event.events.PROGRESS events which indicate progress
+ * updates during loading.
+ * 
+ * @param {!X.event.ProgressEvent} event The progress event holding the total
+ *          progress value.
+ */
 X.renderer.prototype.onProgress = function(event) {
 
   if (this._progressBar) {
@@ -429,6 +433,13 @@ X.renderer.prototype.onProgress = function(event) {
 };
 
 
+/**
+ * The callback for X.event.events.MODIFIED events which re-configures the
+ * object for WebGL rendering. This does not trigger re-rendering.
+ * 
+ * @param {!X.event.ModifiedEvent} event The modified event pointing to the
+ *          modified object.
+ */
 X.renderer.prototype.onModified = function(event) {
 
   var object = event._object;
@@ -438,6 +449,9 @@ X.renderer.prototype.onModified = function(event) {
 };
 
 
+/**
+ * Shows the loading progress bar by modifying the DOM tree.
+ */
 X.renderer.prototype.showProgressBar_ = function() {
 
   // only do the following if the progressBar was not turned off
@@ -483,6 +497,9 @@ X.renderer.prototype.showProgressBar_ = function() {
 };
 
 
+/**
+ * Hides the loading progress bar.
+ */
 X.renderer.prototype.hideProgressBar_ = function() {
 
   // only do the following if the progressBar was not turned off
@@ -802,8 +819,8 @@ X.renderer.prototype.add = function(object) {
 
 
 /**
- * Setup a displayable object within this renderer. The object can be a newly
- * created one or an existing one. A X.renderer.render() call has to be
+ * Configure a displayable object within this renderer. The object can be a
+ * newly created one or an existing one. A X.renderer.render() call has to be
  * initiated to display the object.
  * 
  * @param {!X.object} object The displayable object to setup within this
@@ -1030,9 +1047,24 @@ X.renderer.prototype.update_ = function(object) {
     // connect the image and the glTexture
     texture.image = object.texture().image();
     
+    //
+    // activate the texture on the WebGL side
     this._textures.set(object.texture().file(), texture);
     
-    this.activateTexture(texture);
+    this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
+    
+    this._gl.bindTexture(this._gl.TEXTURE_2D, texture);
+    this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, this._gl.RGBA,
+        this._gl.UNSIGNED_BYTE, texture.image);
+    
+    // TODO different filters?
+    this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER,
+        this._gl.LINEAR);
+    this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER,
+        this._gl.LINEAR);
+    
+    // release the texture binding to clear things
+    this._gl.bindTexture(this._gl.TEXTURE_2D, null);
     
     // create texture buffer
     var glTexturePositionBuffer = this._gl.createBuffer();
@@ -1067,26 +1099,6 @@ X.renderer.prototype.update_ = function(object) {
   this._normalBuffers.set(object.id(), normalBuffer);
   this._colorBuffers.set(object.id(), colorBuffer);
   this._texturePositionBuffers.set(object.id(), texturePositionBuffer);
-};
-
-
-X.renderer.prototype.activateTexture = function(texture) {
-
-  this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
-  
-  this._gl.bindTexture(this._gl.TEXTURE_2D, texture);
-  this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, this._gl.RGBA,
-      this._gl.UNSIGNED_BYTE, texture.image);
-  
-  // TODO different filters?
-  this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER,
-      this._gl.LINEAR);
-  this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER,
-      this._gl.LINEAR);
-  
-  // release the texture binding to clear things
-  this._gl.bindTexture(this._gl.TEXTURE_2D, null);
-  
 };
 
 
@@ -1364,6 +1376,9 @@ X.renderer.prototype.render_ = function() {
         
       } else if (object.type() == X.object.types.POLYGONS) {
         
+        // TODO right now, this is hacked.. we need to use the Van Gogh
+        // triangulation algorithm or something faster to properly convert
+        // POLYGONS to TRIANGLES.
         if (vertexBuffer.itemCount() % 3 == 0) {
           
           drawMode = this._gl.TRIANGLES;
@@ -1376,10 +1391,8 @@ X.renderer.prototype.render_ = function() {
         
       }
       
+      // push it to the GPU, baby..
       this._gl.drawArrays(drawMode, 0, vertexBuffer.itemCount());
-      
-      // this._gl.drawElements(drawMode, vertexBuffer.itemCount(),
-      // this._gl.UNSIGNED_SHORT, 0);
       
     } else {
       
@@ -1396,11 +1409,7 @@ X.renderer.prototype.render_ = function() {
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer', X.renderer);
 goog.exportSymbol('X.renderer.prototype.width', X.renderer.prototype.width);
-goog.exportSymbol('X.renderer.prototype.setWidth',
-    X.renderer.prototype.setWidth);
 goog.exportSymbol('X.renderer.prototype.height', X.renderer.prototype.height);
-goog.exportSymbol('X.renderer.prototype.setHeight',
-    X.renderer.prototype.setHeight);
 goog.exportSymbol('X.renderer.prototype.backgroundColor',
     X.renderer.prototype.backgroundColor);
 goog.exportSymbol('X.renderer.prototype.setBackgroundColor',
@@ -1414,7 +1423,5 @@ goog.exportSymbol('X.renderer.prototype.interactor',
 goog.exportSymbol('X.renderer.prototype.init', X.renderer.prototype.init);
 goog.exportSymbol('X.renderer.prototype.addShaders',
     X.renderer.prototype.addShaders);
-goog.exportSymbol('X.renderer.prototype.addObject',
-    X.renderer.prototype.addObject);
+goog.exportSymbol('X.renderer.prototype.add', X.renderer.prototype.add);
 goog.exportSymbol('X.renderer.prototype.render', X.renderer.prototype.render);
-goog.exportSymbol('X.renderer.RenderEvent', X.renderer.RenderEvent);

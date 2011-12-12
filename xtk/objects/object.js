@@ -19,24 +19,10 @@ goog.require('X.transform');
  * may be loaded from a file in addition to opacity and visibility settings.
  * 
  * @constructor
- * @param {X.object.types} type The rendering type for this object.
  * @extends {X.base}
  */
-X.object = function(type) {
+X.object = function() {
 
-  // by default, this object is described by triangles.
-  var validType = X.object.types.TRIANGLES;
-  
-  if (goog.isDefAndNotNull(type) &&
-      (type == X.object.types.LINES || type == X.object.types.TRIANGLES ||
-          type == X.object.types.TRIANGLE_STRIPS || type == X.object.types.POLYGONS)) {
-    
-    // if a valid type was provided, we use it instead..
-    // at this point, the provided type is always valid
-    validType = type;
-    
-  }
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
@@ -56,7 +42,7 @@ X.object = function(type) {
    * @type {X.object.types}
    * @const
    */
-  this._type = validType;
+  this._type = X.object.types.TRIANGLES;
   
   /**
    * The transform of this object.
@@ -446,43 +432,6 @@ X.object.prototype.lineWidth = function() {
   
 };
 
-
-/**
- * Compare two X.objects by their opacity values.
- * 
- * @param {X.object} object1 Object1 to compare against Object2.
- * @param {X.object} object2 Object2 to compare against Object1.
- * @return {Number} 1, if Object1 is less or equal opaque in comparison to
- *         Object2. -1, if Object1 is more opaque than Object2.
- */
-X.object.OPACITY_COMPARATOR = function(object1, object2) {
-
-  // check if we have two valid objects to compare
-  if (!goog.isDefAndNotNull(object1) || !goog.isDefAndNotNull(object2) ||
-      !(object1 instanceof X.object) || !(object2 instanceof X.object)) {
-    
-    throw new X.exception(
-        'Fatal: Two valid X.objects are required for comparison.');
-    
-  }
-  
-  if (object1.opacity() <= object2.opacity()) {
-    
-    // return a positive value to indicate object1 is less or equal opaque in
-    // comparison to object2
-    // this means object1 should be ordered after object2
-    return 1;
-    
-  } else if (object1.opacity() > object2.opacity()) {
-    
-    // return a negative value to indicate object1 is more opaque than object2
-    // this means object1 should be ordered before object2
-    return -1;
-    
-  }
-  
-};
-
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.object', X.object);
 goog.exportSymbol('X.object.prototype.type', X.object.prototype.type);
@@ -500,4 +449,3 @@ goog.exportSymbol('X.object.prototype.setOpacity',
     X.object.prototype.setOpacity);
 goog.exportSymbol('X.object.prototype.load', X.object.prototype.load);
 goog.exportSymbol('X.object.prototype.file', X.object.prototype.file);
-goog.exportSymbol('X.object.OPACITY_COMPARATOR', X.object.OPACITY_COMPARATOR);
