@@ -9,7 +9,8 @@ xtkUtilsDir = os.path.abspath( os.path.dirname( sys.argv[0] ) )
 projectRootDir = os.path.normpath( xtkUtilsDir + os.sep + '..' + os.sep )
 
 # xtk dir
-xtkDir = os.path.normpath( projectRootDir + os.sep + 'X' )
+#xtkDir = os.path.normpath( projectRootDir + os.sep + 'X' )
+xtkDir = projectRootDir
 
 # xtk-lib dir
 xtkLibDir = os.path.normpath( xtkDir + os.sep + 'lib' )
