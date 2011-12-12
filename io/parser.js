@@ -67,10 +67,19 @@ X.parser.prototype.parse = function(object, data) {
 
 
 // TODO acknowledge the FNNDSC webGL viewer
+
+X.parser.prototype.parseString = function(data, offset, length) {
+
+  return data.substr(offset, length);
+  
+};
+
+
 X.parser.prototype.parseFloat32 = function(data, offset) {
 
-  var b3 = parseUChar8(data, offset), b2 = parseUChar8(data, offset + 1), b1 = parseUChar8(
-      data, offset + 2), b0 = parseUChar8(data, offset + 3),
+  var b3 = this.parseUChar8(data, offset), b2 = this.parseUChar8(data,
+      offset + 1), b1 = this.parseUChar8(data, offset + 2), b0 = this
+      .parseUChar8(data, offset + 3),
 
   sign = 1 - (2 * (b0 >> 7)), exponent = (((b0 << 1) & 0xff) | (b1 >> 7)) - 127, mantissa = ((b1 & 0x7f) << 16) |
       (b2 << 8) | b3;
@@ -85,8 +94,9 @@ X.parser.prototype.parseFloat32 = function(data, offset) {
 
 X.parser.prototype.parseFloat32EndianSwapped = function(data, offset) {
 
-  var b0 = parseUChar8(data, offset), b1 = parseUChar8(data, offset + 1), b2 = parseUChar8(
-      data, offset + 2), b3 = parseUChar8(data, offset + 3),
+  var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
+      offset + 1), b2 = this.parseUChar8(data, offset + 2), b3 = this
+      .parseUChar8(data, offset + 3),
 
   sign = 1 - (2 * (b0 >> 7)), exponent = (((b0 << 1) & 0xff) | (b1 >> 7)) - 127, mantissa = ((b1 & 0x7f) << 16) |
       (b2 << 8) | b3;
@@ -104,7 +114,7 @@ X.parser.prototype.parseFloat32Array = function(data, offset, elements) {
   var arr = new Array();
   var i;
   for (i = 0; i < elements; i++) {
-    var val = parseFloat32(data, offset + (i * 4));
+    var val = this.parseFloat32(data, offset + (i * 4));
     arr[i] = val;
   }
   
@@ -114,16 +124,18 @@ X.parser.prototype.parseFloat32Array = function(data, offset, elements) {
 
 X.parser.prototype.parseUInt32 = function(data, offset) {
 
-  var b0 = parseUChar8(data, offset), b1 = parseUChar8(data, offset + 1), b2 = parseUChar8(
-      data, offset + 2), b3 = parseUChar8(data, offset + 3);
+  var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
+      offset + 1), b2 = this.parseUChar8(data, offset + 2), b3 = this
+      .parseUChar8(data, offset + 3);
   
   return (b3 << 24) + (b2 << 16) + (b1 << 8) + b0;
 };
 
 X.parser.prototype.parseUInt32EndianSwapped = function(data, offset) {
 
-  var b0 = parseUChar8(data, offset), b1 = parseUChar8(data, offset + 1), b2 = parseUChar8(
-      data, offset + 2), b3 = parseUChar8(data, offset + 3);
+  var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
+      offset + 1), b2 = this.parseUChar8(data, offset + 2), b3 = this
+      .parseUChar8(data, offset + 3);
   
   return (b0 << 24) + (b1 << 16) + (b2 << 8) + b3;
 };
@@ -131,8 +143,8 @@ X.parser.prototype.parseUInt32EndianSwapped = function(data, offset) {
 
 X.parser.prototype.parseUInt24EndianSwapped = function(data, offset) {
 
-  var b0 = parseUChar8(data, offset), b1 = parseUChar8(data, offset + 1), b2 = parseUChar8(
-      data, offset + 2);
+  var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
+      offset + 1), b2 = this.parseUChar8(data, offset + 2);
   
 
   return ((b0 << 16) + (b1 << 8) + (b2)) & 0x00FFFFFF;
@@ -140,7 +152,8 @@ X.parser.prototype.parseUInt24EndianSwapped = function(data, offset) {
 
 X.parser.prototype.parseUInt16 = function(data, offset) {
 
-  var b0 = parseUChar8(data, offset), b1 = parseUChar8(data, offset + 1);
+  var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
+      offset + 1);
   
   return (b1 << 8) + b0;
   
@@ -151,7 +164,7 @@ X.parser.prototype.parseUInt16Array = function(data, offset, elements) {
   var arr = new Array();
   var i;
   for (i = 0; i < elements; i++) {
-    var val = parseUInt16(data, offset + (i * 2));
+    var val = this.parseUInt16(data, offset + (i * 2));
     arr[i] = val;
   }
   
@@ -160,7 +173,7 @@ X.parser.prototype.parseUInt16Array = function(data, offset, elements) {
 
 X.parser.prototype.parseSChar8 = function(data, offset) {
 
-  var b = parseUChar8(data, offset);
+  var b = this.parseUChar8(data, offset);
   return b > 127 ? b - 256 : b;
   
 };
