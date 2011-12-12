@@ -46,6 +46,7 @@ X.parserTRK.prototype.parse = function(object, data) {
 
   var p = object.points();
   var n = object.normals();
+  var c = object.colors();
   
   var offset = 0;
   
@@ -81,16 +82,24 @@ X.parserTRK.prototype.parse = function(object, data) {
   // parse the data
   offset = header.hdr_size;
   
+  var numberOfFibers = header.n_count;
+  
   // loop through all fibers
-  for ( var i = 0; i < 2; i++) {
+  var fibers = [];
+  
+  var i;
+  
+  for (i = 0; i < numberOfFibers; i++) {
     var numPoints = this.parseUInt32(data, offset);
-    console.log(numPoints);
+    
+    var currentPoints = new X.triplets();
+    
     offset += 4;
-    // continue;
     
     // loop through the points of this fiber
-    for ( var j = 0; j < numPoints - 1; j++) {
+    for ( var j = 0; j < numPoints; j++) {
       
+      // read coordinates
       var x = this.parseFloat32(data, offset);
       offset += 4;
       
@@ -100,9 +109,8 @@ X.parserTRK.prototype.parse = function(object, data) {
       var z = this.parseFloat32(data, offset);
       offset += 4;
       
-      var scalars = null;
-      
       // read scalars
+      var scalars = null;
       if (header.n_scalars > 0) {
         scalars = this.parseFloat32Array(data, offset, header.n_scalars);
         offset += (header.n_scalars * 4);
@@ -113,12 +121,7 @@ X.parserTRK.prototype.parse = function(object, data) {
       y = y / header.voxel_size[1];
       z = z / header.voxel_size[2];
       
-      p.add(x, y, z);
-      // p.add(x_next, y_next, z_next);
-      
-      // add artificial normals
-      n.add(1, 1, 1);
-      // n.add(1, 1, 1);
+      currentPoints.add(x, y, z);
       
     }
     
@@ -140,10 +143,63 @@ X.parserTRK.prototype.parse = function(object, data) {
     // Math.pow(points[j + 1].position[2] - points[j].position[2], 2));
     // }
     
+    // append this track to our fibers list
+    fibers.push(currentPoints);
+    
   } // end of loop through all tracks
   
 
-
+  var min = [Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE];
+  var max = [Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE];
+  
+  // now we have a list of fibers
+  for (i = 0; i < numberOfFibers; i++) {
+    
+    // grab the current points of this fiber
+    var points = fibers[i];
+    var numberOfPoints = points.count();
+    
+    var start = points.get(0);
+    var end = points.get(numberOfPoints - 1);
+    
+    var diff = [Math.abs(end[0] - start[0]), Math.abs(end[1] - start[1]),
+                Math.abs(end[2] - start[2])];
+    
+    var distance = Math.sqrt(diff[0] * diff[0] + diff[1] * diff[1] + diff[2] *
+        diff[2]);
+    
+    diff[0] /= distance;
+    diff[1] /= distance;
+    diff[2] /= distance;
+    
+    for ( var j = 0; j < numberOfPoints - 1; j++) {
+      
+      // TODO min max check?
+      
+      // grab the point with the currentIndex
+      var currentPoint = points.get(j);
+      // and connect it to the next one
+      var nextPoint = points.get(j + 1);
+      
+      // .. and add both
+      p.add(currentPoint[0], currentPoint[1], currentPoint[2]);
+      p.add(nextPoint[0], nextPoint[1], nextPoint[2]);
+      
+      // add an artificial normal
+      n.add(1, 1, 1);
+      n.add(1, 1, 1);
+      
+      // add the color
+      c.add(diff[0], diff[1], diff[2]);
+      c.add(diff[0], diff[1], diff[2]);
+      
+    } // loop through points
+    
+  } // loop through fibers
+  
+  // set the object type to LINES
+  object.setType(X.object.types.LINES);
+  
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
   this.dispatchEvent(modifiedEvent);
