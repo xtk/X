@@ -71,7 +71,7 @@ def runTests( xtkDir, xtkLibDir, browser='chrome' ):
     return
 
   # we don't need os.sep here since it's a url
-  browser.get( "file://" + xtkDir + '/' + 'xtk_tests.html' )
+  browser.get( "file://" + xtkDir + '/testing/xtk_tests.html' )
 
   time.sleep( 3 )
 
