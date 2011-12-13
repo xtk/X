@@ -94,14 +94,6 @@ X.renderer = function(container) {
   this._height = this._container.clientHeight;
   
   /**
-   * The background color of this renderer.
-   * 
-   * @type {!string}
-   * @protected
-   */
-  this._backgroundColor = '#000000';
-  
-  /**
    * The Canvas of this renderer.
    * 
    * @type {?Element}
@@ -280,6 +272,7 @@ X.renderer = function(container) {
   // .. and save them for later use
   this._progressBarCss = [css1, css2, css3];
   
+  window.console.log('XTK Release 0 for OROBIX Srl -- http://www.goXTK.com');
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
@@ -305,37 +298,6 @@ X.renderer.prototype.width = function() {
 X.renderer.prototype.height = function() {
 
   return this._height;
-  
-};
-
-
-/**
- * Get the background color of this renderer.
- * 
- * @return {!string} The background color of this renderer.
- */
-X.renderer.prototype.backgroundColor = function() {
-
-  return this._backgroundColor;
-  
-};
-
-
-/**
- * Set the background color for this renderer.
- * 
- * @param {!string} backgroundColor The background color for this renderer.
- */
-X.renderer.prototype.setBackgroundColor = function(backgroundColor) {
-
-  if (this._canvas) {
-    
-    // the canvas was already created, let's update it
-    this._canvas.style.backgroundColor = backgroundColor.toString();
-    
-  }
-  
-  this._backgroundColor = backgroundColor;
   
 };
 
@@ -618,9 +580,9 @@ X.renderer.prototype.resetViewAndRender = function() {
 
 /**
  * Create the canvas of this renderer inside the configured container and using
- * attributes like width, height, backgroundColor etc. Then, initialize the
- * WebGL context and attach all necessary objects (e.g. camera, shaders..).
- * Finally, initialize the event listeners.
+ * attributes like width, height etc. Then, initialize the WebGL context and
+ * attach all necessary objects (e.g. camera, shaders..). Finally, initialize
+ * the event listeners.
  * 
  * @throws {X.exception} An exception if there were problems during
  *           initialization.
@@ -629,10 +591,6 @@ X.renderer.prototype.init = function() {
 
   // get the canvas
   var canvas = this.canvas();
-  
-  //
-  // css properties
-  this.setBackgroundColor(this._backgroundColor.toString());
   
   // width and height can not be set using CSS but via object properties
   canvas.width = this.width();
@@ -678,7 +636,7 @@ X.renderer.prototype.init = function() {
     gl.viewport(0, 0, this.width(), this.height());
     
     // configure opacity to 0.0 to overwrite the viewport background-color by
-    // the canvas color
+    // the container color
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     
     // enable transparency
@@ -1507,10 +1465,6 @@ X.renderer.prototype.render_ = function() {
 goog.exportSymbol('X.renderer', X.renderer);
 goog.exportSymbol('X.renderer.prototype.width', X.renderer.prototype.width);
 goog.exportSymbol('X.renderer.prototype.height', X.renderer.prototype.height);
-goog.exportSymbol('X.renderer.prototype.backgroundColor',
-    X.renderer.prototype.backgroundColor);
-goog.exportSymbol('X.renderer.prototype.setBackgroundColor',
-    X.renderer.prototype.setBackgroundColor);
 goog.exportSymbol('X.renderer.prototype.canvas', X.renderer.prototype.canvas);
 goog.exportSymbol('X.renderer.prototype.container',
     X.renderer.prototype.container);
