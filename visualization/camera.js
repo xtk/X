@@ -272,7 +272,9 @@ X.camera.prototype.position = function() {
  * Set the position of this camera. This forces a re-calculation of the view
  * matrix. This action _does not_ force an immediate render event automatically.
  * 
- * @param {!Array} position The new camera position as an Array with length 3.
+ * @param {!number} x The X component of the new camera position.
+ * @param {!number} y The Y component of the new camera position.
+ * @param {!number} z The Z component of the new camera position.
  */
 X.camera.prototype.setPosition = function(x, y, z) {
 
@@ -284,11 +286,56 @@ X.camera.prototype.setPosition = function(x, y, z) {
   
   this._position = new goog.math.Vec3(x, y, z);
   
+  this.reset();
+  
+};
+
+
+/**
+ * Reset the camera according to its configured position and focus.
+ */
+X.camera.prototype.reset = function() {
+
   // update the view matrix and its gl versions
   this._view = this.lookAt_(this._position, this._focus);
   this._glView = new Float32Array(this._view.flatten());
   this._glViewInvertedTransposed = new Float32Array(this._view.getInverse()
       .getTranspose().flatten());
+  
+};
+
+
+/**
+ * Get the focus of this camera.
+ * 
+ * @return {!goog.math.Vec3} The focus.
+ */
+X.camera.prototype.focus = function() {
+
+  return this._focus;
+  
+};
+
+
+/**
+ * Set the focus of this camera. This forces a re-calculation of the view
+ * matrix. This action _does not_ force an immediate render event automatically.
+ * 
+ * @param {!number} x The X component of the new camera focus.
+ * @param {!number} y The Y component of the new camera focus.
+ * @param {!number} z The Z component of the new camera focus.
+ */
+X.camera.prototype.setFocus = function(x, y, z) {
+
+  if (!goog.isNumber(x) || !goog.isNumber(y) || !goog.isNumber(z)) {
+    
+    throw new X.exception('Fatal: The focus was invalid.');
+    
+  }
+  
+  this._focus = new goog.math.Vec3(x, y, z);
+  
+  this.reset();
   
 };
 

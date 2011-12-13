@@ -157,6 +157,13 @@ X.renderer = function(container) {
    */
   this._objects = new Array();
   
+  this._minX = null;
+  this._maxX = null;
+  this._minY = null;
+  this._maxY = null;
+  this._minZ = null;
+  this._maxZ = null;
+  
   /**
    * A hash map of shader attribute pointers.
    * 
@@ -559,6 +566,43 @@ X.renderer.prototype.hideProgressBar_ = function() {
   
 };
 
+/**
+ * Resets the view according to the global bounding box of all associated
+ * objects. This does not trigger rendering.
+ */
+X.renderer.prototype.resetView = function() {
+
+  var focus = this._camera.focus();
+  var position = this._camera.position();
+  
+  // if the camera was positioned manually, we do not want to update the
+  // position or focus here
+  if (focus.x != 0 || focus.y != 0 || focus.z != 0 || position.x != 0 ||
+      position.y != 0 || position.z != 100) {
+    
+    this._camera.reset();
+    
+    // and jump out
+    return;
+  }
+  
+  if (this._minX && this._maxX && this._minY && this._maxY && this._minZ &&
+      this._maxZ) {
+    
+    var focusX = (this._minX + this._maxX) / 2;
+    var focusY = (this._minY + this._maxY) / 2;
+    var focusZ = (this._minZ + this._maxZ) / 2;
+    
+    focus = new goog.math.Vec3(focusX, focusY, focusZ);
+    position = new goog.math.Vec3(focusX, focusY, focusZ + 100);
+    
+  }
+  
+  this._camera.setFocus(focus.x, focus.y, focus.z);
+  this._camera.setPosition(position.x, position.y, position.z);
+  
+};
+
 
 /**
  * Create the canvas of this renderer inside the configured container and using
@@ -958,17 +1002,53 @@ X.renderer.prototype.update_ = function(object) {
   //
   var glVertexBuffer = this._gl.createBuffer();
   
+  var points = object.points();
+  
   // bind and fill with vertices of current object
   this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
   
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.points()
-      .all()), this._gl.STATIC_DRAW);
+  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(points.all()),
+      this._gl.STATIC_DRAW);
   
   // create an X.buffer to store the vertices
   // every vertex consists of 3 items (x,y,z)
-  var vertexBuffer = new X.buffer(glVertexBuffer, object.points().count(), 3);
+  var vertexBuffer = new X.buffer(glVertexBuffer, points.count(), 3);
   
   this.loader().addProgress(0.3);
+  
+  //
+  // BOUNDING BOX
+  //
+  // The global bounding incorporates all individual bounding boxes of the
+  // objects
+  
+  var transformationMatrix = object.transform().matrix();
+  
+  var tMin = transformationMatrix.multiplyByVector(new goog.math.Vec3(points
+      .minA(), points.minB(), points.minC()));
+  var tMax = transformationMatrix.multiplyByVector(new goog.math.Vec3(points
+      .maxA(), points.maxB(), points.maxC()));
+  
+  if (!this._minX || tMin.x < this._minX) {
+    this._minX = tMin.x;
+  }
+  if (!this._maxX || tMax.x > this._maxX) {
+    this._maxX = tMax.x;
+  }
+  if (!this._minY || tMin.y < this._minY) {
+    this._minY = tMin.y;
+  }
+  if (!this._maxY || tMax.y > this._maxY) {
+    this._maxY = tMax.y;
+  }
+  if (!this._minZ || tMin.z < this._minZ) {
+    this._minZ = tMin.z;
+  }
+  if (!this._maxZ || tMax.z > this._maxZ) {
+    this._maxZ = tMax.z;
+  }
+  // reset the view according to the new bounding box
+  this.resetView();
   
   //
   // NORMALS

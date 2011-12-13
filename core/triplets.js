@@ -34,6 +34,13 @@ X.triplets = function() {
    */
   this._className = 'triplets';
   
+  this._minA = null;
+  this._maxA = null;
+  this._minB = null;
+  this._maxB = null;
+  this._minC = null;
+  this._maxC = null;
+  
   /**
    * The one dimensional array storing all triplets.
    * 
@@ -64,6 +71,27 @@ X.triplets.prototype.add = function(a, b, c) {
     
   }
   
+  // update bounding box
+  if (!this._minA || a < this._minA) {
+    this._minA = a;
+  }
+  if (!this._maxA || a > this._maxA) {
+    this._maxA = a;
+  }
+  if (!this._minB || b < this._minB) {
+    this._minB = b;
+  }
+  if (!this._maxB || b > this._maxB) {
+    this._maxB = b;
+  }
+  if (!this._minC || c < this._minC) {
+    this._minC = c;
+  }
+  if (!this._maxC || c > this._maxC) {
+    this._maxC = c;
+  }
+  
+
   return this._triplets_.push(a, b, c) / 3;
   
 };
@@ -161,6 +189,44 @@ X.triplets.prototype.length = function() {
 };
 
 
+/**
+ * 
+ */
+X.triplets.prototype.minA = function() {
+
+  return this._minA;
+  
+};
+
+X.triplets.prototype.maxA = function() {
+
+  return this._maxA;
+  
+};
+
+X.triplets.prototype.minB = function() {
+
+  return this._minB;
+  
+};
+
+X.triplets.prototype.maxB = function() {
+
+  return this._maxB;
+  
+};
+
+X.triplets.prototype.minC = function() {
+
+  return this._minC;
+  
+};
+
+X.triplets.prototype.maxC = function() {
+
+  return this._maxC;
+  
+};
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.triplets', X.triplets);
 goog.exportSymbol('X.triplets.prototype.add', X.triplets.prototype.add);
