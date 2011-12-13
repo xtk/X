@@ -489,7 +489,7 @@ X.parserVTK.prototype.configureTriangleStrips = function(unorderedPoints,
         
       } else {
         
-        // add an aritficial normal
+        // add an artificial normal
         n.add(1, 1, 1);
         
         if (k == 0 || k == currentGeometryLength - 1) {
@@ -568,7 +568,7 @@ X.parserVTK.prototype.configureLines = function(unorderedPoints,
         
       } else {
         
-        // add an aritficial normal
+        // add an artificial normal
         n.add(1, 1, 1);
         n.add(1, 1, 1);
         
@@ -622,7 +622,7 @@ X.parserVTK.prototype.configurePolygons = function(unorderedPoints,
         
       } else {
         
-        // add an aritficial normal
+        // add an artificial normal
         n.add(1, 1, 1);
         
       }

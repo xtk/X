@@ -11,6 +11,7 @@ goog.require('X.event');
 goog.require('X.exception');
 goog.require('X.object');
 goog.require('X.parserSTL');
+goog.require('X.parserTRK');
 goog.require('X.parserVTK');
 goog.require('goog.events.EventType');
 goog.require('goog.structs.Map');
@@ -200,6 +201,8 @@ X.loader.prototype.loadFile = function(object) {
   
   // configure the URL
   request.open('GET', file, true);
+  request.overrideMimeType("text/plain; charset=x-user-defined");
+  request.setRequestHeader("Content-Type", "text/plain");
   
   // .. and GO!
   request.send(null);
@@ -285,9 +288,17 @@ X.loader.prototype.loadFileCompleted = function(request, object) {
     
     vtkParser.parse(object, request.response);
     
+  } else if (fileExtension == 'trk') {
+    
+    var trkParser = new X.parserTRK();
+    
+    goog.events.listenOnce(trkParser, X.event.events.MODIFIED,
+        this.parseFileCompleted.bind(this));
+    
+    trkParser.parse(object, request.response);
+    
   }
   
-
 
 };
 

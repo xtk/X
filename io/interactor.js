@@ -10,12 +10,14 @@ goog.require('X.base');
 goog.require('X.event');
 goog.require('X.event.RotateEvent');
 goog.require('X.event.PanEvent');
+goog.require('X.event.ResetViewEvent');
 goog.require('X.event.ZoomEvent');
 goog.require('X.exception');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent.MouseButton');
 goog.require('goog.events.EventType');
+goog.require('goog.events.KeyHandler');
 goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.math.Vec2');
 
@@ -68,7 +70,23 @@ X.interactor = function(element) {
   this._mouseWheelHandler = null;
   
   /**
-   * Indicatates if the left mouse button is pressed.
+   * Indicates if the keyboard should be observed.
+   * 
+   * @type {!boolean}
+   * @protected
+   */
+  this._observeKeyboard = false;
+  
+  /**
+   * Indicates if the mouse is inside the element.
+   * 
+   * @type {boolean}
+   * @protected
+   */
+  this._mouseInside = true;
+  
+  /**
+   * Indicates if the left mouse button is pressed.
    * 
    * @type {boolean}
    * @protected
@@ -76,7 +94,7 @@ X.interactor = function(element) {
   this._leftButtonDown = false;
   
   /**
-   * Indicatates if the middle mouse button is pressed.
+   * Indicates if the middle mouse button is pressed.
    * 
    * @type {boolean}
    * @protected
@@ -84,7 +102,7 @@ X.interactor = function(element) {
   this._middleButtonDown = false;
   
   /**
-   * Indicatates if the right mouse button is pressed.
+   * Indicates if the right mouse button is pressed.
    * 
    * @type {boolean}
    * @protected
@@ -164,6 +182,20 @@ X.interactor.prototype.observeMouseMovement = function() {
 
 
 /**
+ * Observe the keyboard on the associated DOM element.
+ */
+X.interactor.prototype.observeKeyboard = function() {
+
+  // set the flag
+  this._observeKeyboard = true;
+  
+  // the google closure way did not work, so let's do it this way..
+  window.onkeydown = this.onKey.bind(this);
+  
+};
+
+
+/**
  * Callback for mouse down events on the associated DOM element.
  * 
  * @param {Event} event The browser fired event.
@@ -232,6 +264,15 @@ X.interactor.prototype.onMouseUp = function(event) {
 X.interactor.prototype.onMouseMovementOutside = function(event) {
 
   // reset the click flags
+  this._mouseInside = false;
+  if (this._observeKeyboard) {
+    
+    // if we observe the keyboard, remove the observer here
+    // this is necessary if there are more than one renderer in the document
+    window.onkeydown = null;
+    
+  }
+  
   this._leftButtonDown = false;
   this._middleButtonDown = false;
   this._rightButtonDown = false;
@@ -256,6 +297,14 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
   // TODO this needs to be more generalized
   this.dispatchEvent('mouseup');
   
+  this._mouseInside = true;
+  
+  if (this._observeKeyboard && window.onkeydown == null) {
+    
+    this.observeKeyboard();
+    
+  }
+  
   // prevent any other actions by the browser (f.e. scrolling, selection..)
   event.preventDefault();
   
@@ -272,12 +321,12 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
   this._lastMousePosition = currentMousePosition.clone();
   
   // threshold the distance to avoid 'irregular' movement
-  if (Math.abs(distance.x) < 5) {
+  if (Math.abs(distance.x) < 2) {
     
     distance.x = 0;
     
   }
-  if (Math.abs(distance.y) < 5) {
+  if (Math.abs(distance.y) < 2) {
     
     distance.y = 0;
     
@@ -299,7 +348,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
     // LEFT MOUSE BUTTON DOWN AND NOT SHIFT DOWN
     //
     
-    // create a new pan event
+    // create a new rotate event
     var e = new X.event.RotateEvent();
     
     // attach the distance vector
@@ -320,6 +369,27 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
     // create a new pan event
     var e = new X.event.PanEvent();
     
+    // panning in general moves pretty fast, so we threshold the distance
+    // additionally
+    if (distance.x > 5) {
+      
+      distance.x = 5;
+      
+    } else if (distance.x < -5) {
+      
+      distance.x = -5;
+      
+    }
+    if (distance.y > 5) {
+      
+      distance.y = 5;
+      
+    } else if (distance.y < -5) {
+      
+      distance.y = -5;
+      
+    }
+    
     // attach the distance vector
     e._distance = distance;
     
@@ -337,7 +407,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
     
     // set the zoom direction
     // true if zooming in, false if zooming out
-    e._in = (distance.y < 0);
+    e._in = (distance.y > 0);
     
     // with the right click, the zoom will happen rather
     // fine than fast
@@ -353,9 +423,8 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
 
 
 /**
- * Callback for mouse wheel events on the associated DOM element. This fires <<<<<<<
- * HEAD proper X.camera events. ======= proper X.event events. >>>>>>>
- * fix_compilation
+ * Callback for mouse wheel events on the associated DOM element. This fires
+ * proper X.event events.
  * 
  * @param {Event} event The browser fired event.
  */
@@ -370,7 +439,7 @@ X.interactor.prototype.onMouseWheel = function(event) {
   // set the zoom direction
   // true if zooming in, false if zooming out
   // delta is here given by the event
-  e._in = (event.deltaY > 0);
+  e._in = (event.deltaY < 0);
   
   // with the mouseWheel, the zoom will happen rather
   // fast than fine
@@ -378,6 +447,129 @@ X.interactor.prototype.onMouseWheel = function(event) {
   
   // .. fire the event
   this.dispatchEvent(e);
+  
+};
+
+
+/**
+ * Callback for keyboard events on the associated DOM element. This fires proper
+ * X.event events.
+ * 
+ * @param {Event} event The browser fired event.
+ */
+X.interactor.prototype.onKey = function(event) {
+
+  // only listen to key events if the mouse is inside our element
+  // this f.e. enables key event listening for multiple renderers
+  if (!this._mouseInside) {
+    
+    return;
+    
+  }
+  
+  // observe the control keys (shift, alt, ..)
+  var alt = event.altKey;
+  var ctrl = event.ctrlKey;
+  var meta = event.metaKey; // this is f.e. the windows or apple key
+  var shift = event.shiftKey;
+  
+  // get the keyCode
+  var keyCode = event.keyCode;
+  
+  if (keyCode == 82 && !alt && !ctrl && !meta && !shift) {
+    
+    // 'r' but without any other control keys since we do not want to limit the
+    // user to press for example CTRL+R to reload the page
+    
+    // prevent any other actions..
+    event.preventDefault();
+    
+    // fire the ResetViewEvent
+    var e = new X.event.ResetViewEvent();
+    this.dispatchEvent(e);
+    
+  } else if (keyCode >= 37 && keyCode <= 40) {
+    
+    // keyCode <= 37 and >= 40 means the arrow keys
+    
+    // prevent any other actions..
+    event.preventDefault();
+    
+    var e = null;
+    
+    if (shift) {
+      
+      // create a new pan event
+      e = new X.event.PanEvent();
+      
+    } else if (alt) {
+      
+      // create a new zoom event
+      e = new X.event.ZoomEvent();
+      
+    } else {
+      // create a new rotate event
+      e = new X.event.RotateEvent();
+      
+    }
+    
+    if (!e) {
+      
+      // should not happen but you never know with key interaction
+      return;
+      
+    }
+    
+    // create a distance vector
+    var distance = new goog.math.Vec2();
+    distance.x = 0;
+    distance.y = 0;
+    
+    if (keyCode == 37) {
+      // '<-' LEFT
+      distance.x = 5;
+      if (alt) {
+        // for zoom, we configure the zooming behavior
+        e._in = true;
+        e._fast = false;
+      }
+      
+    } else if (keyCode == 39) {
+      // '->' RIGHT
+      distance.x = -5;
+      if (alt) {
+        // for zoom, we configure the zooming behavior
+        e._in = false;
+        e._fast = false;
+      }
+      
+    } else if (keyCode == 38) {
+      // '^-' TOP
+      distance.y = 5;
+      if (alt) {
+        // for zoom, we configure the zooming behavior
+        e._in = true;
+        e._fast = true;
+      }
+      
+    } else if (keyCode == 40) {
+      // '-v' BOTTOM
+      distance.y = -5;
+      if (alt) {
+        // for zoom, we configure the zooming behavior
+        e._in = false;
+        e._fast = true;
+      }
+      
+    }
+    
+    // attach the distance vector
+    e._distance = distance;
+    
+    // .. fire the event
+    this.dispatchEvent(e);
+    
+  }
   
 };
 
