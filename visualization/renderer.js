@@ -272,7 +272,7 @@ X.renderer = function(container) {
   // .. and save them for later use
   this._progressBarCss = [css1, css2, css3];
   
-  window.console.log('XTK Release 0 for OROBIX Srl -- http://www.goXTK.com');
+  window.console.log('XTK Release 0 -- http://www.goXTK.com');
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
