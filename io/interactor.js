@@ -433,8 +433,6 @@ X.interactor.prototype.onMouseWheel = function(event) {
   // prevent any other action (like scrolling..)
   event.preventDefault();
   
-  console.log(event.deltaY);
-  
   // create a new zoom event
   var e = new X.event.ZoomEvent();
   
