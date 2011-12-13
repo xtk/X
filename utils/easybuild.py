@@ -50,6 +50,8 @@ for j in jsFiles:
 command += ' --root=' + os.path.join( xtkDir )
 command += ' --output_mode=compiled'
 command += ' --compiler_jar ' + compilerJar
+command += ' -f "--warning_level=VERBOSE"'
+#command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
 command += ' > xtk.js'
 
 os.system( command + ' 2> temp' )
