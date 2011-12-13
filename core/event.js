@@ -11,6 +11,7 @@ goog.provide('X.event.ZoomEvent');
 goog.provide('X.event.RotateEvent');
 goog.provide('X.event.PanEvent');
 goog.provide('X.event.RenderEvent');
+goog.provide('X.event.ResetViewEvent');
 goog.provide('X.event.ModifiedEvent');
 
 // requires
@@ -67,6 +68,9 @@ X.event.events = {
   
   // the render event
   RENDER: X.event.uniqueId('render'),
+  
+  // the reset view event
+  RESETVIEW: X.event.uniqueId('resetview'),
   
   // the object modified event
   MODIFIED: X.event.uniqueId('modified'),
@@ -188,6 +192,23 @@ X.event.RenderEvent = function() {
 goog.inherits(X.event.RenderEvent, X.event);
 
 
+
+/**
+ * The render event to update renderer.
+ * 
+ * @constructor
+ * @extends {X.event}
+ */
+X.event.ResetViewEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.event.events.RESETVIEW);
+  
+};
+// inherit from goog.events.Event
+goog.inherits(X.event.ResetViewEvent, X.event);
+
+
 /**
  * The modified event to flag an object as 'dirty'.
  * 
@@ -247,5 +268,6 @@ goog.exportSymbol('X.event.PanEvent', X.event.PanEvent);
 goog.exportSymbol('X.event.RotateEvent', X.event.RotateEvent);
 goog.exportSymbol('X.event.ZoomEvent', X.event.ZoomEvent);
 goog.exportSymbol('X.event.RenderEvent', X.event.RenderEvent);
+goog.exportSymbol('X.event.ResetViewEvent', X.event.ResetViewEvent);
 goog.exportSymbol('X.event.ModifiedEvent', X.event.ModifiedEvent);
 goog.exportSymbol('X.event.ProgressEvent', X.event.ProgressEvent);

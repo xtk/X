@@ -605,6 +605,18 @@ X.renderer.prototype.resetView = function() {
 
 
 /**
+ * Resets the view according to the global bounding box of all associated
+ * objects _and_ triggers re-rendering.
+ */
+X.renderer.prototype.resetViewAndRender = function() {
+
+  this.resetView();
+  this.render_();
+  
+};
+
+
+/**
  * Create the canvas of this renderer inside the configured container and using
  * attributes like width, height, backgroundColor etc. Then, initialize the
  * WebGL context and attach all necessary objects (e.g. camera, shaders..).
@@ -698,18 +710,22 @@ X.renderer.prototype.init = function() {
   //
   // create a new interactor
   var interactor = new X.interactor(canvas);
+  // TODO flags to disable the interactor on X.renderer-base
+  interactor.observeKeyboard();
   interactor.observeMouseWheel();
   interactor.observeMouseClicks();
   interactor.observeMouseMovement();
+  // .. listen to resetViewEvents
+  goog.events.listen(interactor, X.event.events.RESETVIEW,
+      this.resetViewAndRender.bind(this));
   
-
   //
   // create a new camera
   // width and height are required to calculate the perspective
   var camera = new X.camera(this.width(), this.height());
   // observe the interactor for user interactions (mouse-movements etc.)
   camera.observe(interactor);
-  // listen to render requests from the camera
+  // ..listen to render requests from the camera
   // these get fired after user-interaction and camera re-positioning to re-draw
   // all objects
   goog.events.listen(camera, X.event.events.RENDER, this.render_.bind(this));
