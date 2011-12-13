@@ -272,12 +272,12 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
   this._lastMousePosition = currentMousePosition.clone();
   
   // threshold the distance to avoid 'irregular' movement
-  if (Math.abs(distance.x) < 5) {
+  if (Math.abs(distance.x) < 2) {
     
     distance.x = 0;
     
   }
-  if (Math.abs(distance.y) < 5) {
+  if (Math.abs(distance.y) < 2) {
     
     distance.y = 0;
     
@@ -299,7 +299,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
     // LEFT MOUSE BUTTON DOWN AND NOT SHIFT DOWN
     //
     
-    // create a new pan event
+    // create a new rotate event
     var e = new X.event.RotateEvent();
     
     // attach the distance vector
@@ -319,6 +319,27 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
     
     // create a new pan event
     var e = new X.event.PanEvent();
+    
+    // panning in general moves pretty fast, so we threshold the distance
+    // additionally
+    if (distance.x > 5) {
+      
+      distance.x = 5;
+      
+    } else if (distance.x < -5) {
+      
+      distance.x = -5;
+      
+    }
+    if (distance.y > 5) {
+      
+      distance.y = 5;
+      
+    } else if (distance.y < -5) {
+      
+      distance.y = -5;
+      
+    }
     
     // attach the distance vector
     e._distance = distance;

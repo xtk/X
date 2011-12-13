@@ -487,7 +487,7 @@ X.camera.prototype.rotate = function(distance) {
  */
 X.camera.prototype.zoomIn = function(fast) {
 
-  var zoomStep = 30;
+  var zoomStep = 20;
   
   if (goog.isDefAndNotNull(fast) && !fast) {
     
