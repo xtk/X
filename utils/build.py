@@ -14,7 +14,6 @@ import xbuild_parser
 import scripts.deps
 import scripts.style
 import scripts.doc
-import scripts.compile
 import scripts.test
 
 parser = argparse.ArgumentParser( description='This the XTK build tool' )
@@ -24,7 +23,6 @@ parser = argparse.ArgumentParser( description='This the XTK build tool' )
 # testing is also separate
 target_group = parser.add_mutually_exclusive_group()
 option_group = parser.add_mutually_exclusive_group()
-test_group = parser.add_mutually_exclusive_group()
 
 # verbose
 parser.add_argument( '-v', '--verbose',
@@ -34,30 +32,11 @@ parser.add_argument( '-v', '--verbose',
                     help='More verbose.' )
 
 # target project
-target_group.add_argument( '-xo', '--xtk_only',
-                    action='store_true',
-                    dest='xtk_only',
-                    default=False,
-                    help='Build only XTK. A new folder \'xtk-build\'will be created.' )
-
-target_group.add_argument( '-ao', '--app_only',
-                    action='store_true',
-                    dest='app_only',
-                    default=False,
-                    help='Build only the application. A new folder \'application-build\'will be created.' )
-
 target_group.add_argument( '-a', '--all',
                           action='store_true',
                           dest='all',
                           default=False,
                           help='Check style, build doc, build deps and compile code' )
-
-parser.add_argument( '-ad', '--appDir',
-                    action='store',
-                    dest=paths.appDir,
-                    default=paths.appDir,
-                    help='Location of the xtk-based applicatoion you want to build. A new folder \'application-build\' will be created.' )
-
 # style
 parser.add_argument( '-s', '--style',
                     action='store_true',
@@ -96,6 +75,18 @@ option_group.add_argument( '-jo', '--jsdoc_only',
                     dest='jsdoc_only',
                     default=False,
                     help='Only generate documentation of the target projects.' )
+# testing
+option_group.add_argument( '-t', '--test',
+                    action='store_true',
+                    dest='test',
+                    default=False,
+                    help='Run all tests in Chrome and Firefox.' )
+
+option_group.add_argument( '-to', '--test_only',
+                    action='store_true',
+                    dest='test_only',
+                    default=False,
+                    help='Only run all tests in Chrome and Firefox.' )
 
 # experimental build
 option_group.add_argument( '-e', '--experimental',
@@ -111,25 +102,18 @@ option_group.add_argument( '-n', '--nightly',
                     default=False,
                     help='Nightly build. Reports to cdash.xtk.org' )
 
-# nightly build
+# continuous build
 option_group.add_argument( '-c', '--continuous',
                     action='store_true',
                     dest='continuous',
                     default=False,
                     help='Continuous build. Reports to cdash.xtk.org' )
 
-# testing
-test_group.add_argument( '-t', '--test',
-                    action='store_true',
-                    dest='test',
-                    default=False,
-                    help='Run all tests in Chrome and Firefox.' )
-
 options = parser.parse_args()
 
 # sanity check, in case we turn on deps and style_only at the same time
 value_list = [options.style_only, options.deps_only, options.jsdoc_only]
-name_list = ['style_only', 'deps_only', 'jsdoc_only']
+name_list = ['style_only', 'deps_only', 'jsdoc_only', 'test_only']
 
 if( True in value_list ):
     index = value_list.index( True )
@@ -139,9 +123,11 @@ if( True in value_list ):
         options.style = True
         options.deps = True
         options.jsdoc = True
+        options.test = True
         options.style_only = False
         options.deps_only = False
         options.jsdoc_only = False
+        options.test_only = False
         # build type
         options.experimental = True
         options.nightly = True
@@ -156,30 +142,18 @@ if( True in value_list ):
         if( options.jsdoc ):
             options.jsdoc = False
             print '>> WARNING: using \'--' + str( name_list[index] ) + '\': --jsdoc will have no effect'
-
-if( options.test ):
-    print '*-----------------------*'
-    print 'Testing..'
-    scripts.test.calculate( paths.xtkDir, paths.xtkLibDir )
-    print 'Testing done.'
-    print '*-----------------------*'
-    print 'Enjoy XTK'
-    sys.exit()
+        if( options.test ):
+            options.test = False
+            print '>> WARNING: using \'--' + str( name_list[index] ) + '\': --test will have no effect'
 
 if ( options.verbose ):
     print '___________>T<___________'
     print ' ' + parser.description
     print '*-----------------------*'
     print '*'
-    print '* xtk_only..........: ' + str( options.xtk_only )
-    print '* app_only..........: ' + str( options.app_only )
-    print '*'
     print '* build tool........: ' + paths.compilerFilePath
     print '* compiler file path: ' + paths.closureBuilderFilePath
     print '* xtkDir............: ' + paths.xtkDir
-    print '*'
-    print '* projectName.......: ' + paths.projectName
-    print '* appDir............: ' + paths.appDir
     print '*'
     print '* style.............: ' + str( options.style )
     print '* style_only........: ' + str( options.style_only )
@@ -193,6 +167,10 @@ if ( options.verbose ):
     print '* jsdoc_only........: ' + str( options.jsdoc_only )
     print '* jsdoc dir.........: ' + paths.jsdocDir
     print '*'
+    print '* test..............: ' + str( options.test )
+    print '* test_only.........: ' + str( options.test_only )
+    print '* test dir..........: ' + '!!! to be added !!!'
+    print '*'
     print '*-----------------------*'
 
 #
@@ -204,16 +182,8 @@ if( options.style or options.style_only ):
     print '*-----------------------*'
     print 'Checking style '
 
-    if( options.xtk_only ):
-        # inputs: namespace, project dir, build tool
-        scripts.style.calculate( 'xtk', paths.xtkDir, paths.closureLinterFilePath )
-    elif( options.app_only ):
-        # inputs: namespace, project dir, build tool
-        scripts.style.calculate( paths.projectName, paths.appDir, paths.closureLinterFilePath )
-    else:
-        # inputs: namespace, project dir, build tool
-        scripts.style.calculate( 'xtk', paths.xtkDir, paths.closureLinterFilePath )
-        scripts.style.calculate( paths.projectName, paths.appDir, paths.closureLinterFilePath )
+    # inputs: namespace, project dir, build tool
+    scripts.style.calculate( 'xtk', paths.xtkDir, paths.closureLinterFilePath )
 
     print 'Style checked'
     print '*-----------------------*'
@@ -231,16 +201,8 @@ if( options.deps or options.deps_only ):
     print '*-----------------------*'
     print 'Generating dependencies '
 
-    if( options.xtk_only ):
-        # inputs: namespace, project dir, build tool
-        scripts.deps.calculate( 'xtk', paths.xtkDir, paths.closureDepsFilePath )
-    elif( options.app_only ):
-        # inputs: namespace, project dir, build tool
-        scripts.deps.calculate( paths.projectName, paths.appDir, paths.closureDepsFilePath )
-    else:
-        # inputs: namespace, project dir, build tool
-        scripts.deps.calculate( 'xtk', paths.xtkDir, paths.closureDepsFilePath )
-        scripts.deps.calculate( paths.projectName, paths.appDir, paths.closureDepsFilePath )
+    # inputs: namespace, project dir, build tool
+    scripts.deps.calculate( 'xtk', paths.xtkDir, paths.closureDepsFilePath )
 
     print 'Dependencies generated'
     print '*-----------------------*'
@@ -257,16 +219,8 @@ if( options.jsdoc or options.jsdoc_only ):
     print '*-----------------------*'
     print 'Generating Documentation '
 
-    if( options.xtk_only ):
-        # inputs: namespace, project dir, build tool
-        scripts.doc.calculate( 'xtk', paths.xtkDir, paths.jsdocDir )
-    elif( options.app_only ):
-        # inputs: namespace, project dir, build tool
-        scripts.doc.calculate( paths.projectName, paths.appDir, paths.jsdocDir )
-    else:
-        # inputs: namespace, project dir, build tool
-        scripts.doc.calculate( 'xtk', paths.xtkDir, paths.jsdocDir )
-        scripts.doc.calculate( paths.projectName, paths.appDir, paths.jsdocDir )
+    # inputs: namespace, project dir, build tool
+    scripts.doc.calculate( 'xtk', paths.xtkDir, paths.jsdocDir )
 
     print 'Documentation generated'
     print '*-----------------------*'
@@ -275,6 +229,16 @@ if( options.jsdoc or options.jsdoc_only ):
         print 'Enjoy XTK'
         sys.exit()
 
+
+if( options.test_only ):
+    print '*-----------------------*'
+    print 'Testing WITHOUT compilation...'
+    scripts.test.calculate( paths.xtkDir, paths.xtkLibDir )
+    print 'Testing done.'
+    print '*-----------------------*'
+    print 'Enjoy XTK'
+    sys.exit()
+
 #
 # Compile the project
 #
@@ -282,16 +246,16 @@ if( options.jsdoc or options.jsdoc_only ):
 print '*-----------------------*'
 print 'Compiling Code'
 
-if( options.xtk_only ):
-    # inputs: namespace, project dir, build tool
-    scripts.compile.calculate( 'X', paths.xtkDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath )
-elif( options.app_only ):
-    # inputs: namespace, project dir, build tool
-    scripts.compile.calculate( paths.projectName, paths.appDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath )
-else:
-    # inputs: namespace, project dir, build tool
-    scripts.compile.calculate( 'X', paths.xtkDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath )
-    scripts.compile.calculate( paths.projectName, paths.appDir, paths.xtkDir, paths.closureBuilderFilePath, paths.compilerFilePath )
+os.system('python easybuild.py')
+
+if( options.test ):
+    print '*-----------------------*'
+    print 'Testing WITH compilation...'
+    print 'Should give path to xtb-build and update log file'
+    scripts.test.calculate( paths.xtkDir, paths.xtkLibDir )
+    print 'Testing done.'
+    print '*-----------------------*'
+    print 'Enjoy XTK'
 
 # report to cdash
 # need timing info
@@ -315,7 +279,3 @@ if(options.continuous):
 
 print 'Code Compiled'
 print '*-----------------------*'
-
-
-
-

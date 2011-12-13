@@ -1,6 +1,7 @@
 import sys
 import os
 import string
+import time
 
 xtkUtilsDir = os.path.abspath( os.path.dirname( sys.argv[0] ) )
 xtkDir = os.path.normpath( xtkUtilsDir + os.sep + '..' + os.sep )
@@ -18,6 +19,12 @@ excludePaths = ['lib', 'testing', 'deps']
 
 # scan for .js files
 jsFilesGenerator = treescan.ScanTreeForJsFiles( xtkDir )
+
+
+# remove file if exists
+if os.path.exists( 'temp_build.log' ): os.remove( 'temp_build.log' )
+# start compilation time
+start = time.clock()
 
 # list of final .js files to compile
 jsFiles = []
@@ -43,5 +50,22 @@ for j in jsFiles:
 command += ' --root=' + os.path.join( xtkDir )
 command += ' --output_mode=compiled'
 command += ' --compiler_jar ' + compilerJar
+command += ' > xtk.js'
 
-os.system( command )
+os.system( command + ' 2> temp' )
+# get current location
+os.system( 'bash scripts/colorPrompt.sh temp' )
+os.system( 'cat temp >> temp_build.log' )
+if os.path.exists( 'temp' ): os.remove( 'temp' )
+
+# end compilation time
+end = time.clock()
+processingTime = end - start
+
+os.system( 'echo ' + str( start ) + ' > xtk_build.log' )
+os.system( 'echo ' + str( end ) + ' >> xtk_build.log' )
+os.system( 'echo ' + str( processingTime ) + ' >> xtk_build.log' )
+os.system( 'cat temp_build.log >> xtk_build.log' )
+
+if os.path.exists( 'temp_build.log' ): os.remove( 'temp_build.log' )
+print '>> OUTPUT: xtk.js'
