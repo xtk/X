@@ -159,19 +159,6 @@ X.parserTRK.prototype.parse = function(object, data) {
     var points = fibers[i];
     var numberOfPoints = points.count();
     
-    var start = points.get(0);
-    var end = points.get(numberOfPoints - 1);
-    
-    var diff = [Math.abs(end[0] - start[0]), Math.abs(end[1] - start[1]),
-                Math.abs(end[2] - start[2])];
-    
-    var distance = Math.sqrt(diff[0] * diff[0] + diff[1] * diff[1] + diff[2] *
-        diff[2]);
-    
-    diff[0] /= distance;
-    diff[1] /= distance;
-    diff[2] /= distance;
-    
     for ( var j = 0; j < numberOfPoints - 1; j++) {
       
       // TODO min max check?
@@ -188,6 +175,19 @@ X.parserTRK.prototype.parse = function(object, data) {
       // add an artificial normal
       n.add(1, 1, 1);
       n.add(1, 1, 1);
+      
+      var start = currentPoint;
+      var end = nextPoint;
+      
+      var diff = [Math.abs(end[0] - start[0]), Math.abs(end[1] - start[1]),
+                  Math.abs(end[2] - start[2])];
+      
+      var distance = Math.sqrt(diff[0] * diff[0] + diff[1] * diff[1] + diff[2] *
+          diff[2]);
+      
+      diff[0] /= distance;
+      diff[1] /= distance;
+      diff[2] /= distance;
       
       // add the color
       c.add(diff[0], diff[1], diff[2]);

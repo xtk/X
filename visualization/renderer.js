@@ -674,6 +674,7 @@ X.renderer.prototype.init = function() {
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     // enable depth testing
     gl.enable(gl.DEPTH_TEST);
+    // gl.polygonOffset(1.0, 1.0);
     // .. with perspective rendering
     gl.depthFunc(gl.LEQUAL);
     
