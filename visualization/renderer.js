@@ -27,6 +27,8 @@ goog.require('goog.structs.Map');
 goog.require('goog.Timer');
 goog.require('goog.ui.ProgressBar');
 
+//
+goog.require('X.box')
 
 
 /**
@@ -272,6 +274,17 @@ X.renderer = function(container) {
   // .. and save them for later use
   this._progressBarCss = [css1, css2, css3];
   
+  // create a box with textures for now....
+  // get width and height to choose position and height
+  this._enableOrientationBox = false;
+  this._orientationBox = new X.box([0, 0, 0], 5, 5, 5);
+  /*this.orientationBox.setColors([255, 0, 0],
+                                [0, 255, 0],
+                                [0, 0, 255],
+                                [255, 128, 0],
+                                [0, 255, 128],
+                                [128, 0, 255]);
+*/
   window.console.log('XTK Release 0 -- http://www.goXTK.com');
 };
 // inherit from X.base
@@ -704,6 +717,8 @@ X.renderer.prototype.init = function() {
   // attached to this renderer since we check for these
   var defaultShaders = new X.shaders();
   this.addShaders(defaultShaders);
+
+  this.enableOrientationBox(true);
   
 };
 
@@ -1457,7 +1472,80 @@ X.renderer.prototype.render_ = function() {
     }
     
   } // loop through objects
-  
+
+  // deal with the orientation widget
+      //do sth for the visibility (should be able to disable it)
+
+      // modiy uniforms of the shader to only rotate (no zoom/no pan)
+      // no zoom
+      // pan to corner
+      // rotate
+      if(this._enableOrientationBox)
+      {
+      window.console.log('Orientation Box activated');
+      
+      var object = this._orientationBox;
+      var id = object.id();
+      
+      // create the vertex buffer
+      ///////////////////////////
+      var glVertexBuffer = this._gl.createBuffer();
+      var points = object.points();
+      // bind and fill with vertices of current object
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
+      this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(points.all()),
+      this._gl.STATIC_DRAW); 
+      // create an X.buffer to store the vertices
+      // every vertex consists of 3 items (x,y,z)
+      var vertexBuffer = new X.buffer(glVertexBuffer, points.count(), 3);
+      
+      // play with the matrices
+      // ....
+      // put it back!
+
+      // VERTICES
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
+      
+      this._gl.vertexAttribPointer(this._vertexPositionAttribute, vertexBuffer
+          .itemSize(), this._gl.FLOAT, false, 0, 0);
+      
+
+      // .. and draw with the object's draw mode
+      ///////////////////////////////////////
+      var drawMode = -1;
+      if (object.type() == X.object.types.TRIANGLES) {
+        
+        drawMode = this._gl.TRIANGLES;
+        
+      } else if (object.type() == X.object.types.LINES) {
+        
+        this._gl.lineWidth(object.lineWidth());
+        
+        drawMode = this._gl.LINES;
+        
+      } else if (object.type() == X.object.types.TRIANGLE_STRIPS) {
+        
+        drawMode = this._gl.TRIANGLE_STRIP;
+        
+      } else if (object.type() == X.object.types.POLYGONS) {
+        
+          
+      drawMode = this._gl.TRIANGLES;
+      }
+     
+      // push it to the GPU, baby..
+      this._gl.drawArrays(drawMode, 0, vertexBuffer.itemCount());
+    }  
+};
+
+/**
+ * Activate the orientation box, to get a better sense of the orientation of the scene
+ * 
+ * @param {!boolean} activate Activate the orientation box
+ */
+X.renderer.prototype.enableOrientationBox = function(activate) {
+  this._enableOrientationBox = activate;
+  //this.add(this._orientationBox)
 };
 
 
@@ -1476,3 +1564,4 @@ goog.exportSymbol('X.renderer.prototype.addShaders',
     X.renderer.prototype.addShaders);
 goog.exportSymbol('X.renderer.prototype.add', X.renderer.prototype.add);
 goog.exportSymbol('X.renderer.prototype.render', X.renderer.prototype.render);
+goog.exportSymbol('X.renderer.prototype.enableOrientationBox', X.renderer.prototype.enableOrientationBox);
