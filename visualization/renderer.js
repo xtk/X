@@ -1482,78 +1482,82 @@ X.renderer.prototype.render_ = function() {
       // undo it after! ->  store temp matrices
       if(this._enableOrientationBox)
       {
+
+  var canvas = this.canvas();
+    var gl = canvas.getContext('experimental-webgl');
+    gl.disable(gl.DEPTH_TEST);
       var oldView = this._camera.view();
       var oldGL   = this._camera.glView();
       var oldGL2  = this._camera.glViewInvertedTransposed();
 
     
       // reset view
-      this.resetView();
+     // this.resetView();
 
     
-    //var focusX = (this._minX + this._maxX);
-    //var focusY = (this._minY + this._maxY);
-    //var focusZ = (this._minZ + this._maxZ);
+    var focusX = (this._minX + this._maxX);
+    var focusY = (this._minY + this._maxY);
+    var focusZ = (this._minZ + this._maxZ);
     
-    //this._camera.setFocus(focusX, focusY, focusZ);
-    //this._camera.setPosition(focusX, focusY, focusZ + 100);
+    this._camera.setFocus(focusX, focusY, focusZ);
+    this._camera.setPosition(focusX, focusY, focusZ + 100);
   
     //this._camera.setFocus(focus.x, focus.y, focus.z);
     //this._camera.setPosition(position.x, position.y, position.z);
   
 
-   // grab the current perspective from the camera
-  var newperspectiveMatrix = this._camera.perspective();
+    // grab the current perspective from the camera
+    var newperspectiveMatrix = this._camera.perspective();
   
-  // grab the current view from the camera
-  var newviewMatrix = this._camera.glView();
-  var newviewMatrixInverseTransposed = this._camera.glViewInvertedTransposed();
+    // grab the current view from the camera
+    var newviewMatrix = this._camera.glView();
+    var newviewMatrixInverseTransposed = this._camera.glViewInvertedTransposed();
   
-  // propagate perspective, view and normal matrices to the uniforms of
-  // the shader
-  var newperspectiveUniformLocation = this._gl.getUniformLocation(
-      this._shaderProgram, this._shaders.perspective());
+    // propagate perspective, view and normal matrices to the uniforms of
+    // the shader
+    var newperspectiveUniformLocation = this._gl.getUniformLocation(
+        this._shaderProgram, this._shaders.perspective());
   
-  // this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
-  // new Float32Array(perspectiveMatrix.flatten()));
-  this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
-      newperspectiveMatrix);
+    // this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
+    // new Float32Array(perspectiveMatrix.flatten()));
+    this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
+        newperspectiveMatrix);
   
-  var newviewUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
-      this._shaders.view());
+    var newviewUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
+    this._shaders.view());
   
-  this._gl.uniformMatrix4fv(newviewUniformLocation, false, newviewMatrix);
+    this._gl.uniformMatrix4fv(newviewUniformLocation, false, newviewMatrix);
   
-  var newnormalUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
-      this._shaders.normalUniform());
+    var newnormalUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
+    this._shaders.normalUniform());
   
-  this._gl.uniformMatrix4fv(newnormalUniformLocation, false,
+    this._gl.uniformMatrix4fv(newnormalUniformLocation, false,
       newviewMatrixInverseTransposed);
       
-      // store rotation matrices
-      window.console.log('Orientation Box activated');
+    // store rotation matrices
+    window.console.log('Orientation Box activated');
       
-      var object = this._orientationBox;
-      var id = object.id();
+    var object = this._orientationBox;
+    var id = object.id();
       
-      // create the vertex buffer
-      ///////////////////////////
-      var glVertexBuffer = this._gl.createBuffer();
-      var points = object.points();
-      // bind and fill with vertices of current object
-      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
-      this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(points.all()),
-      this._gl.STATIC_DRAW); 
-      // create an X.buffer to store the vertices
-      // every vertex consists of 3 items (x,y,z)
-      var vertexBuffer = new X.buffer(glVertexBuffer, points.count(), 3);
+    // create the vertex buffer
+    ///////////////////////////
+    var glVertexBuffer = this._gl.createBuffer();
+    var points = object.points();
+    // bind and fill with vertices of current object
+    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
+    this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(points.all()),
+    this._gl.STATIC_DRAW); 
+    // create an X.buffer to store the vertices
+    // every vertex consists of 3 items (x,y,z)
+    var vertexBuffer = new X.buffer(glVertexBuffer, points.count(), 3);
       
-      // play with the matrices
-      // ....
-      // put it back!
+    // play with the matrices
+    // ....
+    // put it back!
 
-      // VERTICES
-      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
+    // VERTICES
+    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
       
       this._gl.vertexAttribPointer(this._vertexPositionAttribute, vertexBuffer
           .itemSize(), this._gl.FLOAT, false, 0, 0);
@@ -1585,6 +1589,7 @@ X.renderer.prototype.render_ = function() {
       // push it to the GPU, baby..
       this._gl.drawArrays(drawMode, 0, vertexBuffer.itemCount());
 
+    gl.enable(gl.DEPTH_TEST);
     // restore view matrix!
     this._camera.setView(oldView);
     this._camera.setGLView(oldGL);
