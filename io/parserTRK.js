@@ -10,6 +10,7 @@ goog.require('X.exception');
 goog.require('X.event');
 goog.require('X.parser');
 goog.require('X.triplets');
+goog.require('goog.math.Vec3');
 
 
 
@@ -87,8 +88,14 @@ X.parserTRK.prototype.parse = function(object, data) {
   // loop through all fibers
   var fibers = [];
   
-  var i;
+  var minX = null;
+  var maxX = null;
+  var minY = null;
+  var maxY = null;
+  var minZ = null;
+  var maxZ = null;
   
+  var i;
   for (i = 0; i < numberOfFibers; i++) {
     var numPoints = this.parseUInt32(data, offset);
     
@@ -128,8 +135,8 @@ X.parserTRK.prototype.parse = function(object, data) {
     // read additional properties, if existing
     // we don't support them right now in XTK
     if (header.n_properties > 0) {
-      var properties = this
-          .parseFloat32Array(data, offset, header.n_properties);
+      // var properties = this
+      // .parseFloat32Array(data, offset, header.n_properties);
       offset += (header.n_properties * 4);
     }
     
@@ -143,14 +150,44 @@ X.parserTRK.prototype.parse = function(object, data) {
     // Math.pow(points[j + 1].position[2] - points[j].position[2], 2));
     // }
     
+    // we need to get the bounding box of the whole .trk file before we add the
+    // points to properly setup normals
+    
+    var cMinX = currentPoints.minA();
+    var cMaxX = currentPoints.maxA();
+    var cMinY = currentPoints.minB();
+    var cMaxY = currentPoints.maxB();
+    var cMinZ = currentPoints.minC();
+    var cMaxZ = currentPoints.maxC();
+    
+    if (!minX || cMinX < minX) {
+      minX = cMinX;
+    }
+    if (!maxX || cMaxX > maxX) {
+      maxX = cMaxX;
+    }
+    if (!minY || cMinY < minY) {
+      minY = cMinY;
+    }
+    if (!maxY || cMaxY > maxY) {
+      maxY = cMaxY;
+    }
+    if (!minZ || cMinZ < minZ) {
+      minZ = cMinZ;
+    }
+    if (!maxZ || cMaxZ > maxZ) {
+      maxZ = cMaxZ;
+    }
+    
     // append this track to our fibers list
     fibers.push(currentPoints);
     
   } // end of loop through all tracks
   
-
-  var min = [Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE];
-  var max = [Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE];
+  // calculate the center based on the bounding box of the whole .trk file
+  var centerX = (minX + maxX) / 2;
+  var centerY = (minY + maxY) / 2;
+  var centerZ = (minZ + maxZ) / 2;
   
   // now we have a list of fibers
   for (i = 0; i < numberOfFibers; i++) {
@@ -172,9 +209,22 @@ X.parserTRK.prototype.parse = function(object, data) {
       p.add(currentPoint[0], currentPoint[1], currentPoint[2]);
       p.add(nextPoint[0], nextPoint[1], nextPoint[2]);
       
-      // add an artificial normal
-      n.add(1, 1, 1);
-      n.add(1, 1, 1);
+      // calculate and add the normals for the two points
+      var nCurrentPointX = currentPoint[0] - centerX;
+      var nCurrentPointY = currentPoint[1] - centerY;
+      var nCurrentPointZ = currentPoint[2] - centerZ;
+      var nCurrentPointLength = Math.sqrt(nCurrentPointX * nCurrentPointX +
+          nCurrentPointY * nCurrentPointY + nCurrentPointZ * nCurrentPointZ);
+      var nNextPointX = nextPoint[0] - centerX;
+      var nNextPointY = nextPoint[1] - centerY;
+      var nNextPointZ = nextPoint[2] - centerZ;
+      var nNextPointLength = Math.sqrt(nNextPointX * nNextPointX + nNextPointY *
+          nNextPointY + nNextPointZ * nNextPointZ);
+      
+      n.add(nCurrentPointX / nCurrentPointLength, nCurrentPointY /
+          nCurrentPointLength, nCurrentPointZ / nCurrentPointLength);
+      n.add(nNextPointX / nNextPointLength, nNextPointY / nNextPointLength,
+          nNextPointZ / nNextPointLength);
       
       var start = currentPoint;
       var end = nextPoint;

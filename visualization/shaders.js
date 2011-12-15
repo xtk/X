@@ -108,9 +108,8 @@ X.shaders = function() {
   t2 += '   vec3 lightDirection = vec3(-10.0, 4.0, -20.0);\n';
   t2 += '   lightDirection = normalize(lightDirection);\n';
   t2 += '   vec3 eyeDirection = normalize(-fVertexPosition.xyz);\n';
-  // REFLECTION? does not look so good I think, so let's disable it for now
-  // t2 += ' vec3 reflectionDirection = reflect(-lightDirection, nNormal);\n';
-  t2 += '   vec3 reflectionDirection = nNormal;\n';
+  t2 += ' vec3 reflectionDirection = reflect(-lightDirection, nNormal);\n';
+  // t2 += ' vec3 reflectionDirection = nNormal;\n'; <-- to disable reflection
   // configure specular (16.0 is material property), diffuse and ambient
   t2 += '   float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 16.0);\n';
   t2 += '   float diffuse = 0.8 * max(dot(nNormal, light), 0.0);\n';
@@ -119,7 +118,7 @@ X.shaders = function() {
   // opacity
   t2 += '   gl_FragColor = vec4(fragmentColor * ambient +\n';
   t2 += '                       fragmentColor * diffuse +\n';
-  t2 += '                       vec3(1.0, 1.0, 1.0) * specular,\n';
+  t2 += '                       vec3(0.2, 0.2, 0.2) * specular,\n';
   t2 += '                       objectOpacity);\n';
   t2 += ' }\n';
   t2 += '}\n';
