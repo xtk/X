@@ -1476,12 +1476,61 @@ X.renderer.prototype.render_ = function() {
   // deal with the orientation widget
       //do sth for the visibility (should be able to disable it)
 
-      // modiy uniforms of the shader to only rotate (no zoom/no pan)
       // no zoom
       // pan to corner
       // rotate
+      // undo it after! ->  store temp matrices
       if(this._enableOrientationBox)
       {
+      var oldView = this._camera.view();
+      var oldGL   = this._camera.glView();
+      var oldGL2  = this._camera.glViewInvertedTransposed();
+
+    
+      // reset view
+      this.resetView();
+
+    
+    //var focusX = (this._minX + this._maxX);
+    //var focusY = (this._minY + this._maxY);
+    //var focusZ = (this._minZ + this._maxZ);
+    
+    //this._camera.setFocus(focusX, focusY, focusZ);
+    //this._camera.setPosition(focusX, focusY, focusZ + 100);
+  
+    //this._camera.setFocus(focus.x, focus.y, focus.z);
+    //this._camera.setPosition(position.x, position.y, position.z);
+  
+
+   // grab the current perspective from the camera
+  var newperspectiveMatrix = this._camera.perspective();
+  
+  // grab the current view from the camera
+  var newviewMatrix = this._camera.glView();
+  var newviewMatrixInverseTransposed = this._camera.glViewInvertedTransposed();
+  
+  // propagate perspective, view and normal matrices to the uniforms of
+  // the shader
+  var newperspectiveUniformLocation = this._gl.getUniformLocation(
+      this._shaderProgram, this._shaders.perspective());
+  
+  // this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
+  // new Float32Array(perspectiveMatrix.flatten()));
+  this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
+      newperspectiveMatrix);
+  
+  var newviewUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
+      this._shaders.view());
+  
+  this._gl.uniformMatrix4fv(newviewUniformLocation, false, newviewMatrix);
+  
+  var newnormalUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
+      this._shaders.normalUniform());
+  
+  this._gl.uniformMatrix4fv(newnormalUniformLocation, false,
+      newviewMatrixInverseTransposed);
+      
+      // store rotation matrices
       window.console.log('Orientation Box activated');
       
       var object = this._orientationBox;
@@ -1535,6 +1584,11 @@ X.renderer.prototype.render_ = function() {
      
       // push it to the GPU, baby..
       this._gl.drawArrays(drawMode, 0, vertexBuffer.itemCount());
+
+    // restore view matrix!
+    this._camera.setView(oldView);
+    this._camera.setGLView(oldGL);
+    this._camera.setGLViewInverted(oldGL2);
     }  
 };
 

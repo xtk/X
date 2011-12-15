@@ -219,6 +219,16 @@ X.camera.prototype.perspective = function() {
   
 };
 
+/**
+ * Set the perspective matrix of the three-dimensional space.
+ * Useful to put back the matrix after modification for the orientationBox
+ *
+ * @param {!goog.math.Matrix} perspectiveMatrix The perspective matrix.
+ */
+X.camera.prototype.setPerspective = function(perspectiveMatrix) {
+  this._perspective = perspectiveMatrix;
+}
+
 
 /**
  * Get the view matrix of the three-dimensional space.
@@ -231,6 +241,16 @@ X.camera.prototype.view = function() {
   
 };
 
+/**
+ * Get the view matrix of the three-dimensional space.
+ * 
+ * @param {!goog.math.Matrix} view The view matrix.
+ */
+X.camera.prototype.setView = function(view) {
+
+  this._view = view;
+  
+};
 
 /**
  * Get the view matrix as a 'ready-to-use'-gl version.
@@ -243,6 +263,15 @@ X.camera.prototype.glView = function() {
   
 };
 
+/**
+ * Set the glView matrix
+ * Useful to put back the matrix after modification for the orientationBox
+ *
+ * @param {!Object} glViewMatrix The glView matrix.
+ */
+X.camera.prototype.setGLView = function(glViewMatrix) {
+  this._glView = glViewMatrix;
+}
 
 /**
  * Get the inverted and transposed view matrix as a 'ready-to-use'-gl version.
@@ -254,6 +283,16 @@ X.camera.prototype.glViewInvertedTransposed = function() {
   return this._glViewInvertedTransposed;
   
 };
+
+/**
+ * Set the glViewInverted matrix
+ * Useful to put back the matrix after modification for the orientationBox
+ *
+ * @param {!Object} glViewInvertedMatrix The glView matrix.
+ */
+X.camera.prototype.setGLViewInverted = function(glViewInvertedMatrix) {
+  this._glViewInvertedTransposed = glViewInvertedMatrix;
+}
 
 
 /**
@@ -638,6 +677,11 @@ goog.exportSymbol('X.camera.prototype.rotate', X.camera.prototype.rotate);
 goog.exportSymbol('X.camera.prototype.zoomIn', X.camera.prototype.zoomIn);
 goog.exportSymbol('X.camera.prototype.zoomOut', X.camera.prototype.zoomOut);
 goog.exportSymbol('X.camera.prototype.observe', X.camera.prototype.observe);
+
+goog.exportSymbol('X.camera.prototype.setPerspective', X.camera.prototype.setPerspective);
+goog.exportSymbol('X.camera.prototype.setView', X.camera.prototype.setView);
+goog.exportSymbol('X.camera.prototype.setGLView', X.camera.prototype.setGLView);
+goog.exportSymbol('X.camera.prototype.setGLViewInverted', X.camera.prototype.setGLViewInverted);
 
 goog.exportSymbol('goog.math.Vec2', goog.math.Vec2);
 goog.exportSymbol('goog.math.Vec3', goog.math.Vec3);
