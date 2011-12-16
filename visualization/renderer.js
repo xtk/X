@@ -575,7 +575,6 @@ X.renderer.prototype.resetView = function() {
   
   this._camera.setFocus(focus.x, focus.y, focus.z);
   this._camera.setPosition(position.x, position.y, position.z);
-  
 };
 
 
@@ -1483,9 +1482,10 @@ X.renderer.prototype.render_ = function() {
       if(this._enableOrientationBox)
       {
 
-  var canvas = this.canvas();
-    var gl = canvas.getContext('experimental-webgl');
-    gl.disable(gl.DEPTH_TEST);
+      var canvas = this.canvas();
+      var gl = canvas.getContext('experimental-webgl');
+      gl.disable(gl.DEPTH_TEST);
+      
       var oldView = this._camera.view();
       var oldGL   = this._camera.glView();
       var oldGL2  = this._camera.glViewInvertedTransposed();
@@ -1505,7 +1505,11 @@ X.renderer.prototype.render_ = function() {
     //this._camera.setFocus(focus.x, focus.y, focus.z);
     //this._camera.setPosition(position.x, position.y, position.z);
   
-
+    var rotation = this._camera.rotation();
+    if(rotation)
+      {
+      this._camera.rotate(rotation, false);
+      }
     // grab the current perspective from the camera
     var newperspectiveMatrix = this._camera.perspective();
   

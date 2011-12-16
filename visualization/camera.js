@@ -15,6 +15,7 @@ goog.require('X.exception');
 goog.require('X.matrixHelper');
 goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec3');
+goog.require('goog.math.Vec2');
 
 
 
@@ -114,7 +115,9 @@ X.camera = function(width, height) {
    */
   this._glViewInvertedTransposed = new Float32Array(this._view.getInverse()
       .getTranspose().flatten());
-  
+
+
+  this._rotation = new goog.math.Vec2(0, 0);
 };
 // inherit from X.base
 goog.inherits(X.camera, X.base);
@@ -202,9 +205,9 @@ X.camera.prototype.onRotate = function(event) {
     throw new X.exception('Fatal: Received no valid rotate event!');
     
   }
-  
-  this.rotate(event._distance);
-  
+ 
+  this._rotation.add(event._distance); 
+  this.rotate(event._distance, true);
 };
 
 
@@ -475,8 +478,9 @@ X.camera.prototype.pan = function(distance) {
  * 
  * @param {!goog.math.Vec2} distance The distance of the rotation in respect of
  *          the last camera position.
+ * @param {!boolean} render do we fire a render
  */
-X.camera.prototype.rotate = function(distance) {
+X.camera.prototype.rotate = function(distance, render) {
 
   if (!(distance instanceof goog.math.Vec2)) {
     
@@ -512,10 +516,20 @@ X.camera.prototype.rotate = function(distance) {
       .getTranspose().flatten());
   
   // fire a render event
+  if( render ){
   this.dispatchEvent(new X.event.RenderEvent());
-  
+  }
 };
 
+
+/**
+ * Perform a rotate operation. This method fires a X.camera.RenderEvent() after
+ * the calculation is done.
+ *          the last camera position.
+ */
+X.camera.prototype.rotation = function() {
+  return this._rotation;
+};
 
 /**
  * Perform a zoom in operation. This method fires a X.camera.RenderEvent() after
@@ -676,6 +690,7 @@ goog.exportSymbol('X.camera.prototype.pan', X.camera.prototype.pan);
 goog.exportSymbol('X.camera.prototype.rotate', X.camera.prototype.rotate);
 goog.exportSymbol('X.camera.prototype.zoomIn', X.camera.prototype.zoomIn);
 goog.exportSymbol('X.camera.prototype.zoomOut', X.camera.prototype.zoomOut);
+goog.exportSymbol('X.camera.prototype.rotation', X.camera.prototype.rotation);
 goog.exportSymbol('X.camera.prototype.observe', X.camera.prototype.observe);
 
 goog.exportSymbol('X.camera.prototype.setPerspective', X.camera.prototype.setPerspective);
