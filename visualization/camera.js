@@ -532,6 +532,14 @@ X.camera.prototype.rotation = function() {
 };
 
 /**
+ * Perform a rotate operation. This method fires a X.camera.RenderEvent() after
+ * the calculation is done.
+ *          the last camera position.
+ */
+X.camera.prototype.resetRotation = function() {
+  this._rotation = new goog.math.Vec2(0, 0);
+};
+/**
  * Perform a zoom in operation. This method fires a X.camera.RenderEvent() after
  * the calculation is done.
  * 
@@ -691,6 +699,7 @@ goog.exportSymbol('X.camera.prototype.rotate', X.camera.prototype.rotate);
 goog.exportSymbol('X.camera.prototype.zoomIn', X.camera.prototype.zoomIn);
 goog.exportSymbol('X.camera.prototype.zoomOut', X.camera.prototype.zoomOut);
 goog.exportSymbol('X.camera.prototype.rotation', X.camera.prototype.rotation);
+goog.exportSymbol('X.camera.prototype.resetRotation', X.camera.prototype.resetRotation);
 goog.exportSymbol('X.camera.prototype.observe', X.camera.prototype.observe);
 
 goog.exportSymbol('X.camera.prototype.setPerspective', X.camera.prototype.setPerspective);

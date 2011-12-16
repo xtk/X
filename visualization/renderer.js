@@ -556,7 +556,6 @@ X.renderer.prototype.resetView = function() {
       position.y != 0 || position.z != 100) {
     
     this._camera.reset();
-    
     // and jump out
     return;
   }
@@ -575,6 +574,7 @@ X.renderer.prototype.resetView = function() {
   
   this._camera.setFocus(focus.x, focus.y, focus.z);
   this._camera.setPosition(position.x, position.y, position.z);
+
 };
 
 
@@ -585,6 +585,7 @@ X.renderer.prototype.resetView = function() {
 X.renderer.prototype.resetViewAndRender = function() {
 
   this.resetView();
+  this._camera.resetRotation();
   this.render_();
   
 };
@@ -1495,9 +1496,9 @@ X.renderer.prototype.render_ = function() {
      // this.resetView();
 
     
-    var focusX = (this._minX + this._maxX);
-    var focusY = (this._minY + this._maxY);
-    var focusZ = (this._minZ + this._maxZ);
+    var focusX = (-this._width/10);
+    var focusY = (this._height/10);
+    var focusZ = (100);
     
     this._camera.setFocus(focusX, focusY, focusZ);
     this._camera.setPosition(focusX, focusY, focusZ + 100);
@@ -1593,7 +1594,15 @@ X.renderer.prototype.render_ = function() {
       // push it to the GPU, baby..
       this._gl.drawArrays(drawMode, 0, vertexBuffer.itemCount());
 
+    // enable DEPTH TEST
     gl.enable(gl.DEPTH_TEST);
+    // restore the focus
+    var focusX = (this._minX + this._maxX) / 2;
+    var focusY = (this._minY + this._maxY) / 2;
+    var focusZ = (this._minZ + this._maxZ) / 2;
+    this._camera.setFocus(focusX, focusY, focusZ);
+    this._camera.setPosition(focusX, focusY, focusZ + 100);
+    
     // restore view matrix!
     this._camera.setView(oldView);
     this._camera.setGLView(oldGL);
