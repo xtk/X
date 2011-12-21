@@ -548,8 +548,9 @@ X.renderer.prototype.resetView = function() {
     return;
   }
   
-  if (this._minX && this._maxX && this._minY && this._maxY && this._minZ &&
-      this._maxZ) {
+  if (!goog.isNull(this._minX) && !goog.isNull(this._maxX) &&
+      !goog.isNull(this._minY) && !goog.isNull(this._maxY) &&
+      !goog.isNull(this._minZ) && !goog.isNull(this._maxZ)) {
     
     var focusX = (this._minX + this._maxX) / 2;
     var focusY = (this._minY + this._maxY) / 2;
@@ -1004,24 +1005,25 @@ X.renderer.prototype.update_ = function(object) {
   var tMax = transformationMatrix.multiplyByVector(new goog.math.Vec3(points
       .maxA(), points.maxB(), points.maxC()));
   
-  if (!this._minX || tMin.x < this._minX) {
+  if (goog.isNull(this._minX) || tMin.x < this._minX) {
     this._minX = tMin.x;
   }
-  if (!this._maxX || tMax.x > this._maxX) {
+  if (goog.isNull(this._maxX) || tMax.x > this._maxX) {
     this._maxX = tMax.x;
   }
-  if (!this._minY || tMin.y < this._minY) {
+  if (goog.isNull(this._minY) || tMin.y < this._minY) {
     this._minY = tMin.y;
   }
-  if (!this._maxY || tMax.y > this._maxY) {
+  if (goog.isNull(this._maxY) || tMax.y > this._maxY) {
     this._maxY = tMax.y;
   }
-  if (!this._minZ || tMin.z < this._minZ) {
+  if (goog.isNull(this._minZ) || tMin.z < this._minZ) {
     this._minZ = tMin.z;
   }
-  if (!this._maxZ || tMax.z > this._maxZ) {
+  if (goog.isNull(this._maxZ) || tMax.z > this._maxZ) {
     this._maxZ = tMax.z;
   }
+  
   // reset the view according to the new bounding box
   this.resetView();
   
