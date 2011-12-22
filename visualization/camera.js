@@ -579,7 +579,7 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
   if (yVector.equals(zVector)) {
     
     // we now change the zVector a little bit
-    yVector.z = 0.000001;
+    yVector.z += 0.000001;
     
   }
   
@@ -594,29 +594,31 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
   yVector = yVector.normalize();
   
   // create view matrix
+  // first row
   matrix.setValueAt(0, 0, xVector.x);
   matrix.setValueAt(0, 1, xVector.y);
   matrix.setValueAt(0, 2, xVector.z);
-  matrix.setValueAt(0, 3, 0);
+  matrix.setValueAt(0, 3, -cameraPosition.x);
   
+  // second row
   matrix.setValueAt(1, 0, yVector.x);
   matrix.setValueAt(1, 1, yVector.y);
   matrix.setValueAt(1, 2, yVector.z);
-  matrix.setValueAt(1, 3, 0);
+  matrix.setValueAt(1, 3, -cameraPosition.y);
   
+  // third row
   matrix.setValueAt(2, 0, zVector.x);
   matrix.setValueAt(2, 1, zVector.y);
   matrix.setValueAt(2, 2, zVector.z);
-  matrix.setValueAt(2, 3, 0);
+  matrix.setValueAt(2, 3, -cameraPosition.z);
   
+  // last row
   matrix.setValueAt(3, 0, 0);
   matrix.setValueAt(3, 1, 0);
   matrix.setValueAt(3, 2, 0);
   matrix.setValueAt(3, 3, 1);
   
-  var invertedCameraPosition = cameraPosition.clone();
-  
-  return matrix.translate(invertedCameraPosition.invert());
+  return matrix;
   
 };
 
