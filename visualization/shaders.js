@@ -15,7 +15,7 @@ goog.require('X.exception');
  * Create a pair of shaders which consists of a vertex and a fragment shader.
  * 
  * @constructor
- * @extends {X.base}
+ * @extends X.base
  */
 X.shaders = function() {
 

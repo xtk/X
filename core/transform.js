@@ -8,8 +8,7 @@ goog.provide('X.transform');
 // requires
 goog.require('X.base');
 goog.require('X.exception');
-goog.require('X.matrixHelper');
-goog.require('goog.math.Matrix');
+goog.require('X.matrix');
 goog.require('goog.math.Vec3');
 
 
@@ -18,7 +17,7 @@ goog.require('goog.math.Vec3');
  * Create a transform.
  * 
  * @constructor
- * @extends {X.base}
+ * @extends X.base
  */
 X.transform = function() {
 
@@ -38,10 +37,10 @@ X.transform = function() {
   /**
    * The transformation matrix.
    * 
-   * @type {!goog.math.Matrix}
+   * @type {!X.matrix}
    * @protected
    */
-  this._matrix = goog.math.Matrix.createIdentityMatrix(4);
+  this._matrix = X.matrix.createIdentityMatrix(4);
   
   /**
    * The transformation matrix as a 'ready-to-use'-gl version.
@@ -191,7 +190,7 @@ X.transform.prototype.translateZ = function(distance) {
 /**
  * Get the transformation matrix.
  * 
- * @return {!goog.math.Matrix} The transformation matrix.
+ * @return {!X.matrix} The transformation matrix.
  */
 X.transform.prototype.matrix = function() {
 

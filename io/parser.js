@@ -16,7 +16,7 @@ goog.require('X.exception');
  * Create a parser for binary or ascii data.
  * 
  * @constructor
- * @extends {X.base}
+ * @extends X.base
  */
 X.parser = function() {
 

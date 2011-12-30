@@ -16,7 +16,7 @@ goog.require('X.exception');
  * 
  * @constructor
  * @param {string} file The filename of the image.
- * @extends {X.base}
+ * @extends X.base
  */
 X.texture = function(file) {
 

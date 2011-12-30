@@ -13,7 +13,7 @@ goog.require('X.event');
 goog.require('X.exception');
 goog.require('X.interactor');
 goog.require('X.loader');
-goog.require('X.matrixHelper');
+goog.require('X.matrix');
 goog.require('X.object');
 goog.require('X.shaders');
 goog.require('X.triplets');
@@ -21,7 +21,6 @@ goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.iter.Iterator');
-goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec3');
 goog.require('goog.structs.Map');
 goog.require('goog.Timer');
@@ -33,7 +32,7 @@ goog.require('goog.ui.ProgressBar');
  * Create a renderer with the given width and height.
  * 
  * @constructor
- * @extends {X.base}
+ * @extends X.base
  */
 X.renderer = function(container) {
 

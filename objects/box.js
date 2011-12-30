@@ -24,9 +24,9 @@ goog.require('goog.math.Vec3');
  * @param {!number} radiusX The radius of the box in X-direction.
  * @param {!number} radiusY The radius of the box in Y-direction.
  * @param {!number} radiusZ The radius of the box in Z-direction.
- * @extends {X.object}
+ * @extends X.object
  */
-X.box = function(center, radiusX, radiusY, radiusZ, type) {
+X.box = function(center, radiusX, radiusY, radiusZ) {
 
   if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
       (center.length != 3)) {
@@ -44,7 +44,7 @@ X.box = function(center, radiusX, radiusY, radiusZ, type) {
   
   //
   // call the standard constructor of X.base
-  goog.base(this, type);
+  goog.base(this);
   
   //
   // class attributes

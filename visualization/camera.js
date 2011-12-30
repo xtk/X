@@ -12,8 +12,7 @@ goog.require('X.event.PanEvent');
 goog.require('X.event.RenderEvent');
 goog.require('X.base');
 goog.require('X.exception');
-goog.require('X.matrixHelper');
-goog.require('goog.math.Matrix');
+goog.require('X.matrix');
 goog.require('goog.math.Vec3');
 
 
@@ -24,7 +23,7 @@ goog.require('goog.math.Vec3');
  * @constructor
  * @param {number} width The width of the camera's viewport.
  * @param {number} height The height of the camera's viewport.
- * @extends {X.base}
+ * @extends X.base
  */
 X.camera = function(width, height) {
 
@@ -84,7 +83,7 @@ X.camera = function(width, height) {
   /**
    * The perspective matrix.
    * 
-   * @type {goog.math.Matrix}
+   * @type {X.matrix}
    * @protected
    */
   this._perspective = new Float32Array(this.calculatePerspective_(
@@ -93,7 +92,7 @@ X.camera = function(width, height) {
   /**
    * The view matrix.
    * 
-   * @type {goog.math.Matrix}
+   * @type {X.matrix}
    * @protected
    */
   this._view = this.lookAt_(this._position, this._focus);
@@ -146,7 +145,7 @@ X.camera.prototype.observe = function(interactor) {
 /**
  * The callback for a ZOOM event.
  * 
- * @param {!X.camera.ZoomEvent} event The event.
+ * @param {!X.event.ZoomEvent} event The event.
  * @throws {X.exception} An exception if the event is invalid.
  */
 X.camera.prototype.onZoom = function(event) {
@@ -173,7 +172,7 @@ X.camera.prototype.onZoom = function(event) {
 /**
  * The callback for a PAN event.
  * 
- * @param {!X.camera.PanEvent} event The event.
+ * @param {!X.event.PanEvent} event The event.
  * @throws {X.exception} An exception if the event is invalid.
  */
 X.camera.prototype.onPan = function(event) {
@@ -192,7 +191,7 @@ X.camera.prototype.onPan = function(event) {
 /**
  * The callback for a ROTATE event.
  * 
- * @param {!X.camera.RotateEvent} event The event.
+ * @param {!X.event.RotateEvent} event The event.
  * @throws {X.exception} An exception if the event is invalid.
  */
 X.camera.prototype.onRotate = function(event) {
@@ -211,7 +210,7 @@ X.camera.prototype.onRotate = function(event) {
 /**
  * Get the perspective matrix of the three-dimensional space.
  * 
- * @return {!goog.math.Matrix} The perspective matrix.
+ * @return {!X.matrix} The perspective matrix.
  */
 X.camera.prototype.perspective = function() {
 
@@ -223,7 +222,7 @@ X.camera.prototype.perspective = function() {
 /**
  * Get the view matrix of the three-dimensional space.
  * 
- * @return {!goog.math.Matrix} The view matrix.
+ * @return {!X.matrix} The view matrix.
  */
 X.camera.prototype.view = function() {
 
@@ -351,7 +350,7 @@ X.camera.prototype.setFocus = function(x, y, z) {
  *          plane (close to the eye).
  * @param {number} zFarClippingPlane The Z coordinate of the far clipping plane
  *          (far from the eye).
- * @return {goog.math.Matrix} The perspective matrix.
+ * @return {X.matrix} The perspective matrix.
  * @private
  */
 X.camera.prototype.calculatePerspective_ = function(fieldOfViewY, aspectRatio,
@@ -380,7 +379,7 @@ X.camera.prototype.calculatePerspective_ = function(fieldOfViewY, aspectRatio,
  * @param {number} top The X coordinate of the top border.
  * @param {number} znear The Z coordinate of the near the eye border.
  * @param {number} zfar The Z coordinate of the far of the eye border.
- * @return {goog.math.Matrix} The frustum matrix.
+ * @return {X.matrix} The frustum matrix.
  * @private
  */
 X.camera.prototype.calculateViewingFrustum_ = function(left, right, bottom,
@@ -393,8 +392,7 @@ X.camera.prototype.calculateViewingFrustum_ = function(left, right, bottom,
   var C = -(zfar + znear) / (zfar - znear);
   var D = -2 * zfar * znear / (zfar - znear);
   
-  return new goog.math.Matrix([[X, 0, A, 0], [0, Y, B, 0], [0, 0, C, D],
-                               [0, 0, -1, 0]]);
+  return new X.matrix([[X, 0, A, 0], [0, Y, B, 0], [0, 0, C, D], [0, 0, -1, 0]]);
   
 };
 
@@ -416,7 +414,7 @@ X.camera.prototype.pan = function(distance) {
   
   var distance3d = new goog.math.Vec3(-distance.x, distance.y, 0);
   
-  var identity = goog.math.Matrix.createIdentityMatrix(4);
+  var identity = X.matrix.createIdentityMatrix(4);
   var panMatrix = identity.translate(distance3d);
   
   this._view = panMatrix.multiply(this._view);
@@ -450,7 +448,7 @@ X.camera.prototype.rotate = function(distance) {
   var angleX = -distance.x / 5 * Math.PI / 180;
   var angleY = -distance.y / 5 * Math.PI / 180;
   
-  var identity = goog.math.Matrix.createIdentityMatrix(4);
+  var identity = X.matrix.createIdentityMatrix(4);
   // the x-Axis vector is determined by the first row of the view matrix
   var xAxisVector = new goog.math.Vec3(this._view.getValueAt(0, 0), this._view
       .getValueAt(0, 1), this._view.getValueAt(0, 2));
@@ -497,7 +495,7 @@ X.camera.prototype.zoomIn = function(fast) {
   
   var zoomVector = new goog.math.Vec3(0, 0, zoomStep);
   
-  var identity = goog.math.Matrix.createIdentityMatrix(4);
+  var identity = X.matrix.createIdentityMatrix(4);
   var zoomMatrix = identity.translate(zoomVector);
   
   this._view = zoomMatrix.multiply(this._view);
@@ -530,7 +528,7 @@ X.camera.prototype.zoomOut = function(fast) {
   
   var zoomVector = new goog.math.Vec3(0, 0, -zoomStep);
   
-  var identity = goog.math.Matrix.createIdentityMatrix(4);
+  var identity = X.matrix.createIdentityMatrix(4);
   var zoomMatrix = identity.translate(zoomVector);
   
   this._view = zoomMatrix.multiply(this._view);
@@ -549,7 +547,7 @@ X.camera.prototype.zoomOut = function(fast) {
  * 
  * @param {!goog.math.Vec3} cameraPosition The camera position.
  * @param {!goog.math.Vec3} targetPoint The focus (target) point.
- * @return {!goog.math.Matrix} The view matrix.
+ * @return {!X.matrix} The view matrix.
  * @private
  */
 X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
@@ -562,7 +560,7 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
     
   }
   
-  var matrix = goog.math.Matrix.createIdentityMatrix(4);
+  var matrix = X.matrix.createIdentityMatrix(4);
   
   // Make rotation matrix
   
@@ -643,4 +641,3 @@ goog.exportSymbol('X.camera.prototype.observe', X.camera.prototype.observe);
 
 goog.exportSymbol('goog.math.Vec2', goog.math.Vec2);
 goog.exportSymbol('goog.math.Vec3', goog.math.Vec3);
-goog.exportSymbol('goog.math.Matrix', goog.math.Matrix);

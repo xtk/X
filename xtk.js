@@ -6,6 +6,12 @@ goog.provide('X');
 // uniqueId mechanism
 var __uniqueIdCounter = 0;
 
+/**
+ * XXX
+ * 
+ * @namespace
+ */
+var X;
 
 /**
  * Return a uniqueId with the given prefix.

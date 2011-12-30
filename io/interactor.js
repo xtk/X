@@ -28,7 +28,7 @@ goog.require('goog.math.Vec2');
  * 
  * @constructor
  * @param {Element} element The DOM element to be observed.
- * @extends {X.base}
+ * @extends X.base
  */
 X.interactor = function(element) {
 
@@ -521,9 +521,7 @@ X.interactor.prototype.onKey = function(event) {
     }
     
     // create a distance vector
-    var distance = new goog.math.Vec2();
-    distance.x = 0;
-    distance.y = 0;
+    var distance = new goog.math.Vec2(0, 0);
     
     if (keyCode == 37) {
       // '<-' LEFT

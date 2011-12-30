@@ -18,7 +18,7 @@ goog.require('X.triplets');
  * Create a parser for the ascii .VTK format.
  * 
  * @constructor
- * @extends {X.base}
+ * @extends X.parser
  */
 X.parserVTK = function() {
 
@@ -401,7 +401,7 @@ X.parserVTK.prototype.configureTriangles = function(unorderedPoints,
     var k;
     for (k = 0; k < currentGeometryLength; k++) {
       //      
-      var currentIndex = parseInt(currentGeometry[k]);
+      var currentIndex = parseInt(currentGeometry[k], 10);
       
       // grab the point with the currentIndex
       var currentPoint = unorderedPoints.get(currentIndex);
@@ -454,7 +454,7 @@ X.parserVTK.prototype.configureTriangleStrips = function(unorderedPoints,
     var k;
     for (k = 0; k < currentGeometryLength; k++) {
       //      
-      var currentIndex = parseInt(currentGeometry[k]);
+      var currentIndex = parseInt(currentGeometry[k], 10);
       
       // grab the point with the currentIndex
       var currentPoint = unorderedPoints.get(currentIndex);
@@ -541,8 +541,8 @@ X.parserVTK.prototype.configureLines = function(unorderedPoints,
     var k;
     for (k = 0; k < currentGeometryLength - 1; k++) {
       //      
-      var currentIndex = parseInt(currentGeometry[k]);
-      var nextIndex = parseInt(currentGeometry[k + 1]);
+      var currentIndex = parseInt(currentGeometry[k], 10);
+      var nextIndex = parseInt(currentGeometry[k + 1], 10);
       
       // grab the point with the currentIndex
       var currentPoint = unorderedPoints.get(currentIndex);
@@ -604,7 +604,7 @@ X.parserVTK.prototype.configurePolygons = function(unorderedPoints,
     var k;
     for (k = 0; k < currentGeometryLength; k++) {
       //      
-      var currentIndex = parseInt(currentGeometry[k]);
+      var currentIndex = parseInt(currentGeometry[k], 10);
       
       // grab the point with the currentIndex
       var currentPoint = unorderedPoints.get(currentIndex);

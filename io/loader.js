@@ -21,7 +21,7 @@ goog.require('goog.structs.Map');
  * loading process is monitored and summarized to a total progress value.
  * 
  * @constructor
- * @extends {X.base}
+ * @extends X.base
  */
 X.loader = function() {
 
@@ -47,35 +47,6 @@ X.loader = function() {
 };
 // inherit from X.base
 goog.inherits(X.loader, X.base);
-
-
-
-X.loader.events = {
-  PROGRESS: X.event.uniqueId('progress')
-};
-
-
-/**
- * The modified event to update a single object.
- * 
- * @constructor
- * @extends {X.event}
- */
-X.loader.ProgressEvent = function() {
-
-  // call the default event constructor
-  goog.base(this, X.loader.events.PROGRESS);
-  
-  /**
-   * The associated X.object of this modified event.
-   * 
-   * @type {?X.object}
-   */
-  this._value = 0;
-  
-};
-// inherit from X.event
-goog.inherits(X.loader.ProgressEvent, X.event);
 
 
 X.loader.prototype.jobs_ = function() {

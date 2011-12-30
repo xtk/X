@@ -17,7 +17,7 @@
 temp*
 
 # all doc files
-*/doc/*
+#*/doc/*
 
 # all build files
 *-build/*

@@ -17,7 +17,7 @@ goog.require('goog.events.EventTarget');
  * registered for event handling.
  * 
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends goog.events.EventTarget
  */
 X.base = function() {
 

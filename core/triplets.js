@@ -17,7 +17,7 @@ goog.require('goog.structs.Map');
  * Create an ordered container for triplets (3D tuples).
  * 
  * @constructor
- * @extends {X.base}
+ * @extends X.base
  */
 X.triplets = function() {
 

@@ -6,7 +6,7 @@
 goog.provide('X.event');
 goog.provide('X.event.events');
 
-// functions provided
+// events provided
 goog.provide('X.event.ZoomEvent');
 goog.provide('X.event.RotateEvent');
 goog.provide('X.event.PanEvent');
@@ -26,13 +26,24 @@ goog.require('goog.events.Event');
  * 
  * @constructor
  * @param {string} type A type identifier for this event.
- * @extends {goog.events.Event}
+ * @extends goog.events.Event
  */
 X.event = function(type) {
 
   //
   // call the default event constructor
   goog.base(this, type);
+  
+  //
+  // class attributes
+  
+  /**
+   * The className of this class.
+   * 
+   * @type {string}
+   * @protected
+   */
+  this._className = 'event';
   
 };
 // inherit from goog.events.Event
@@ -84,7 +95,7 @@ X.event.events = {
  * The pan event to initiate moving the event and the focus.
  * 
  * @constructor
- * @extends {X.event}
+ * @extends X.event
  */
 X.event.PanEvent = function() {
 
@@ -108,7 +119,7 @@ goog.inherits(X.event.PanEvent, X.event);
  * The rotate event to initiate moving the event around the focus.
  * 
  * @constructor
- * @extends {X.event}
+ * @extends X.event
  */
 X.event.RotateEvent = function() {
 
@@ -140,7 +151,7 @@ goog.inherits(X.event.RotateEvent, X.event);
  * The zoom event to initiate zoom in or zoom out.
  * 
  * @constructor
- * @extends {X.event}
+ * @extends X.event
  */
 X.event.ZoomEvent = function() {
 
@@ -174,7 +185,7 @@ goog.inherits(X.event.ZoomEvent, X.event);
  * The render event to update renderer.
  * 
  * @constructor
- * @extends {X.event}
+ * @extends X.event
  */
 X.event.RenderEvent = function() {
 
@@ -197,7 +208,7 @@ goog.inherits(X.event.RenderEvent, X.event);
  * The render event to update renderer.
  * 
  * @constructor
- * @extends {X.event}
+ * @extends X.event
  */
 X.event.ResetViewEvent = function() {
 
@@ -213,7 +224,7 @@ goog.inherits(X.event.ResetViewEvent, X.event);
  * The modified event to flag an object as 'dirty'.
  * 
  * @constructor
- * @extends {X.event}
+ * @extends X.event
  */
 X.event.ModifiedEvent = function() {
 
@@ -237,7 +248,7 @@ goog.inherits(X.event.ModifiedEvent, X.event);
  * This event indicates progress during loading.
  * 
  * @constructor
- * @extends {X.event}
+ * @extends X.event
  */
 X.event.ProgressEvent = function() {
 

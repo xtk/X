@@ -19,7 +19,7 @@ goog.require('X.transform');
  * may be loaded from a file in addition to opacity and visibility settings.
  * 
  * @constructor
- * @extends {X.base}
+ * @extends X.base
  */
 X.object = function() {
 

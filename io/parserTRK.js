@@ -18,7 +18,7 @@ goog.require('goog.math.Vec3');
  * Create a parser for the binary .TRK format.
  * 
  * @constructor
- * @extends {X.base}
+ * @extends X.parser
  */
 X.parserTRK = function() {
 
