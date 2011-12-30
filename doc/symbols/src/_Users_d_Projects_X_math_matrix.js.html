@@ -149,7 +149,7 @@
 <span class='line'>142</span>   </span><span class="PUNC">}</span><span class="WHIT">
 <span class='line'>143</span> </span><span class="WHIT">  
 <span class='line'>144</span>   </span><span class="COMM">// now multiply this matrix with the transformationMatrix and return it..</span><span class="WHIT">
-<span class='line'>145</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.multiply</span><span class="PUNC">(</span><span class="NAME">transformationMatrix</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>145</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">X.matrix</span><span class="PUNC">(</span><span class="NAME">this.multiply</span><span class="PUNC">(</span><span class="NAME">transformationMatrix</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>146</span> </span><span class="WHIT">  
 <span class='line'>147</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>148</span> 
@@ -210,7 +210,7 @@
 <span class='line'>203</span> </span><span class="WHIT">  </span><span class="NAME">rotationMatrix.setValueAt</span><span class="PUNC">(</span><span class="NUMB">2</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">2</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">cos</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">axis.z</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">axis.z</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NUMB">1</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="WHIT"> </span><span class="NAME">cos</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>204</span> </span><span class="WHIT">  
 <span class='line'>205</span>   </span><span class="COMM">// now multiply and return</span><span class="WHIT">
-<span class='line'>206</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.multiply</span><span class="PUNC">(</span><span class="NAME">rotationMatrix</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>206</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">X.matrix</span><span class="PUNC">(</span><span class="NAME">this.multiply</span><span class="PUNC">(</span><span class="NAME">rotationMatrix</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>207</span> </span><span class="WHIT">  
 <span class='line'>208</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>209</span> 

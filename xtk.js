@@ -9,9 +9,9 @@ var __uniqueIdCounter = 0;
 /**
  * XXX
  * 
- * @namespace
+ * @const
  */
-var X;
+var X = X || {};
 
 /**
  * Return a uniqueId with the given prefix.

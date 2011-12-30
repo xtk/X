@@ -142,7 +142,7 @@ X.matrix.prototype.translate = function(vector) {
   }
   
   // now multiply this matrix with the transformationMatrix and return it..
-  return this.multiply(transformationMatrix);
+  return new X.matrix(this.multiply(transformationMatrix));
   
 };
 
@@ -203,7 +203,7 @@ X.matrix.prototype.rotate = function(angle, iaxis) {
   rotationMatrix.setValueAt(2, 2, cos + axis.z * axis.z * (1 - cos));
   
   // now multiply and return
-  return this.multiply(rotationMatrix);
+  return new X.matrix(this.multiply(rotationMatrix));
   
 };
 

@@ -111,8 +111,8 @@ X.camera = function(width, height) {
    * @type {Object}
    * @protected
    */
-  this._glViewInvertedTransposed = new Float32Array(this._view.getInverse()
-      .getTranspose().flatten());
+  this._glViewInvertedTransposed = new Float32Array(new X.matrix(this._view
+      .getInverse().getTranspose()).flatten());
   
 };
 // inherit from X.base
@@ -298,8 +298,8 @@ X.camera.prototype.reset = function() {
   // update the view matrix and its gl versions
   this._view = this.lookAt_(this._position, this._focus);
   this._glView = new Float32Array(this._view.flatten());
-  this._glViewInvertedTransposed = new Float32Array(this._view.getInverse()
-      .getTranspose().flatten());
+  this._glViewInvertedTransposed = new Float32Array(new X.matrix(this._view
+      .getInverse().getTranspose()).flatten());
   
 };
 
@@ -385,14 +385,14 @@ X.camera.prototype.calculatePerspective_ = function(fieldOfViewY, aspectRatio,
 X.camera.prototype.calculateViewingFrustum_ = function(left, right, bottom,
     top, znear, zfar) {
 
-  var X = 2 * znear / (right - left);
-  var Y = 2 * znear / (top - bottom);
-  var A = (right + left) / (right - left);
-  var B = (top + bottom) / (top - bottom);
-  var C = -(zfar + znear) / (zfar - znear);
-  var D = -2 * zfar * znear / (zfar - znear);
+  var x = 2 * znear / (right - left);
+  var y = 2 * znear / (top - bottom);
+  var a = (right + left) / (right - left);
+  var b = (top + bottom) / (top - bottom);
+  var c = -(zfar + znear) / (zfar - znear);
+  var d = -2 * zfar * znear / (zfar - znear);
   
-  return new X.matrix([[X, 0, A, 0], [0, Y, B, 0], [0, 0, C, D], [0, 0, -1, 0]]);
+  return new X.matrix([[x, 0, a, 0], [0, y, b, 0], [0, 0, c, d], [0, 0, -1, 0]]);
   
 };
 
@@ -417,10 +417,10 @@ X.camera.prototype.pan = function(distance) {
   var identity = X.matrix.createIdentityMatrix(4);
   var panMatrix = identity.translate(distance3d);
   
-  this._view = panMatrix.multiply(this._view);
+  this._view = new X.matrix(panMatrix.multiply(this._view));
   this._glView = new Float32Array(this._view.flatten());
-  this._glViewInvertedTransposed = new Float32Array(this._view.getInverse()
-      .getTranspose().flatten());
+  this._glViewInvertedTransposed = new Float32Array(new X.matrix(this._view
+      .getInverse().getTranspose()).flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -465,10 +465,10 @@ X.camera.prototype.rotate = function(distance) {
   var rotateY = identity.rotate(angleY, xAxisVector);
   
   // perform the actual rotation calculation
-  this._view = this._view.multiply(rotateY.multiply(rotateX));
+  this._view = new X.matrix(this._view.multiply(rotateY.multiply(rotateX)));
   this._glView = new Float32Array(this._view.flatten());
-  this._glViewInvertedTransposed = new Float32Array(this._view.getInverse()
-      .getTranspose().flatten());
+  this._glViewInvertedTransposed = new Float32Array(new X.matrix(this._view
+      .getInverse().getTranspose()).flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -498,10 +498,10 @@ X.camera.prototype.zoomIn = function(fast) {
   var identity = X.matrix.createIdentityMatrix(4);
   var zoomMatrix = identity.translate(zoomVector);
   
-  this._view = zoomMatrix.multiply(this._view);
+  this._view = new X.matrix(zoomMatrix.multiply(this._view));
   this._glView = new Float32Array(this._view.flatten());
-  this._glViewInvertedTransposed = new Float32Array(this._view.getInverse()
-      .getTranspose().flatten());
+  this._glViewInvertedTransposed = new Float32Array(new X.matrix(this._view
+      .getInverse().getTranspose()).flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -531,10 +531,10 @@ X.camera.prototype.zoomOut = function(fast) {
   var identity = X.matrix.createIdentityMatrix(4);
   var zoomMatrix = identity.translate(zoomVector);
   
-  this._view = zoomMatrix.multiply(this._view);
+  this._view = new X.matrix(zoomMatrix.multiply(this._view));
   this._glView = new Float32Array(this._view.flatten());
-  this._glViewInvertedTransposed = new Float32Array(this._view.getInverse()
-      .getTranspose().flatten());
+  this._glViewInvertedTransposed = new Float32Array(new X.matrix(this._view
+      .getInverse().getTranspose()).flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
