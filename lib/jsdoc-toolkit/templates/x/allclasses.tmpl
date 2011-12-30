@@ -1,0 +1,74 @@
+<div align="center">{+new Link().toFile("index.html").withText("Class Index")+}
+| {+new Link().toFile("files.html").withText("File Index")+}</div>
+<hr />
+<h2>Classes</h2>
+<ul class="classList">
+  {!
+    var categories = new Array();
+    var categoriesContent = new Array();
+  !}
+	<for each="thisClass" in="data">
+  {!
+		if (thisClass.alias != "_global_" && thisClass.alias != "Function") {
+
+		  if (thisClass.srcFile) {
+
+   		  var category = thisClass.srcFile.split("/");
+        category = category[category.length-2];
+
+        var categoryExists = false;
+
+        for (var j=0; j<categories.length; j++) {
+
+          if (categories[j] == category) {
+
+            categoryExists = true;
+            break;
+
+          }
+
+        }
+
+        if (!categoryExists && category != 'X') {
+
+          categories.push(category);
+
+        }
+
+        categoriesContent.push([category,thisClass.alias]);
+
+      }
+
+		}
+	!}
+	</for>
+</ul>
+<ul class="classList">
+	{!
+
+	  categories.sort();
+
+	  for (var c=0; c<categories.length; c++) {
+
+      var currentCategory = categories[c];
+
+	    output += '<h2>' + currentCategory.toUpperCase() + '</h2>';
+
+      for (var d=0; d<categoriesContent.length; d++) {
+
+        var currentContent = categoriesContent[d];
+
+        if (currentContent[0].equals(currentCategory)) {
+
+          output += '<li>' + new Link().toClass(currentContent[1]) + '</li>';
+
+        }
+
+      }
+
+	  }
+
+	!}
+
+</ul>
+<hr />
