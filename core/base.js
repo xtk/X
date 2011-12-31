@@ -13,8 +13,8 @@ goog.require('goog.events.EventTarget');
 
 
 /**
- * The superclass class for all X.base-objects. All derived objects will be
- * registered for event handling.
+ * The superclass for all X.base-objects. All derived objects will be registered
+ * for event handling.
  * 
  * @constructor
  * @extends goog.events.EventTarget

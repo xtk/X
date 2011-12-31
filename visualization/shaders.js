@@ -108,7 +108,7 @@ X.shaders = function() {
   t2 += '   vec3 lightDirection = vec3(-10.0, 4.0, -20.0);\n';
   t2 += '   lightDirection = normalize(lightDirection);\n';
   t2 += '   vec3 eyeDirection = normalize(-fVertexPosition.xyz);\n';
-  t2 += ' vec3 reflectionDirection = reflect(-lightDirection, nNormal);\n';
+  t2 += '   vec3 reflectionDirection = reflect(-lightDirection, nNormal);\n';
   // t2 += ' vec3 reflectionDirection = nNormal;\n'; <-- to disable reflection
   // configure specular (16.0 is material property), diffuse and ambient
   t2 += '   float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 16.0);\n';
