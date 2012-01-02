@@ -115,7 +115,7 @@ X.parserSTL.prototype.parse = function(object, data) {
  * 
  * @param {!X.triplets} p The object's points as a X.triplets container.
  * @param {!X.triplets} n The object's normals as a X.triplets container.
- * @param {!String} line The line to parse.
+ * @param {!string} line The line to parse.
  * @protected
  */
 X.parserSTL.prototype.parseLine = function(p, n, line) {

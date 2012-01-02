@@ -116,7 +116,7 @@ X.shaders = function() {
   // configure specular (10.0 is material property), diffuse and ambient
   t2 += '   float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 10.0);\n';
   t2 += '   float diffuse = 0.8 * max(dot(nNormal, light), 0.0);\n';
-  t2 += '   float ambient = 0.2;\n';
+  t2 += '   float ambient = 0.3;\n';
   // .. and now setup the fragment color using these three values and the
   // opacity
   t2 += '   gl_FragColor = vec4(fragmentColor * ambient +\n';
@@ -182,7 +182,7 @@ X.shaders.prototype.vertex = function() {
 /**
  * Get the fragment shader source of this shader pair.
  * 
- * @return {!String} The fragment shader source.
+ * @return {!string} The fragment shader source.
  */
 X.shaders.prototype.fragment = function() {
 

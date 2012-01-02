@@ -37,17 +37,17 @@ X.object = function() {
   this._className = 'object';
   
   /**
-   * The rendering type of this object.
+   * The rendering type of this object, default is {X.object.types.TRIANGLES}.
    * 
    * @type {X.object.types}
-   * @const
+   * @protected
    */
   this._type = X.object.types.TRIANGLES;
   
   /**
    * The transform of this object.
    * 
-   * @type {X.transform}
+   * @type {!X.transform}
    * @protected
    */
   this._transform = new X.transform();
@@ -55,7 +55,7 @@ X.object = function() {
   /**
    * The object color. By default, this is white.
    * 
-   * @type {Array}
+   * @type {!Array}
    * @protected
    */
   this._color = [1, 1, 1];
@@ -63,7 +63,7 @@ X.object = function() {
   /**
    * The points of this object.
    * 
-   * @type {X.triplets}
+   * @type {!X.triplets}
    * @protected
    */
   this._points = new X.triplets();
@@ -71,7 +71,7 @@ X.object = function() {
   /**
    * The normals of this object.
    * 
-   * @type {X.triplets}
+   * @type {!X.triplets}
    * @protected
    */
   this._normals = new X.triplets();
@@ -79,7 +79,7 @@ X.object = function() {
   /**
    * The point colors of this object.
    * 
-   * @type {X.triplets}
+   * @type {!X.triplets}
    * @protected
    */
   this._colors = new X.triplets();
@@ -103,7 +103,7 @@ X.object = function() {
   /**
    * The filename if this object represents an external file.
    * 
-   * @type {String}
+   * @type {?string}
    * @protected
    */
   this._file = null;
@@ -111,7 +111,7 @@ X.object = function() {
   /**
    * The opacity of this object.
    * 
-   * @type {Number}
+   * @type {number}
    * @protected
    */
   this._opacity = 1.0;
@@ -126,6 +126,12 @@ X.object = function() {
    */
   this._visible = true;
   
+  /**
+   * The line width, only used in X.object.types.LINES mode.
+   * 
+   * @type {number}
+   * @protected
+   */
   this._lineWidth = 1;
   
 };
@@ -186,7 +192,7 @@ X.object.prototype.transform = function() {
 /**
  * Get the points of this object.
  * 
- * @return {X.triplets} The points.
+ * @return {!X.triplets} The points.
  */
 X.object.prototype.points = function() {
 
@@ -198,7 +204,7 @@ X.object.prototype.points = function() {
 /**
  * Get the normals of this object.
  * 
- * @return {X.triplets} The normals.
+ * @return {!X.triplets} The normals.
  */
 X.object.prototype.normals = function() {
 
@@ -210,7 +216,7 @@ X.object.prototype.normals = function() {
 /**
  * Get the point colors of this object.
  * 
- * @return {X.triplets} The point colors.
+ * @return {!X.triplets} The point colors.
  */
 X.object.prototype.colors = function() {
 
@@ -222,7 +228,7 @@ X.object.prototype.colors = function() {
 /**
  * Get the object color.
  * 
- * @return {X.color} The object color.
+ * @return {!Array} The object color.
  */
 X.object.prototype.color = function() {
 
@@ -304,7 +310,7 @@ X.object.prototype.setColor = function(r, g, b) {
  * Get the opacity of this object. If the object is fully opaque, this returns
  * 1.
  * 
- * @return {Number} The opacity in the range 0..1.
+ * @return {number} The opacity in the range 0..1.
  */
 X.object.prototype.opacity = function() {
 
@@ -340,7 +346,7 @@ X.object.prototype.visible = function() {
 /**
  * Set the opacity of this object.
  * 
- * @param {Number} opacity The opacity value in the range 0..1.
+ * @param {number} opacity The opacity value in the range 0..1.
  */
 X.object.prototype.setOpacity = function(opacity) {
 
@@ -359,7 +365,7 @@ X.object.prototype.setOpacity = function(opacity) {
 /**
  * Load this object from a file or reset the associated file.
  * 
- * @param {?String} file The file path/URL to load. If null, reset the
+ * @param {?string} file The file path/URL to load. If null, reset the
  *          associated file.
  */
 X.object.prototype.load = function(file) {
@@ -373,7 +379,7 @@ X.object.prototype.load = function(file) {
 /**
  * Get the associated file for this object.
  * 
- * @return {?String} The associated file or null if no file is associated.
+ * @return {?string} The associated file or null if no file is associated.
  */
 X.object.prototype.file = function() {
 
@@ -394,6 +400,12 @@ X.object.prototype.modified = function() {
 };
 
 
+/**
+ * Get the children of this object. Each object can have N children which get
+ * automatically rendered when the top level object gets rendered.
+ * 
+ * @return {!Array} The children of this object which are again objects.
+ */
 X.object.prototype.children = function() {
 
   if (!this._children) {
@@ -407,6 +419,11 @@ X.object.prototype.children = function() {
 };
 
 
+/**
+ * Check if this object has children.
+ * 
+ * @return {boolean} TRUE if this object has children, if not FALSE.
+ */
 X.object.prototype.hasChildren = function() {
 
   if (!this._children) {
@@ -420,12 +437,32 @@ X.object.prototype.hasChildren = function() {
 };
 
 
+/**
+ * Set the line width for this object. The line width is only used in
+ * X.object.types.LINES rendering mode.
+ * 
+ * @param {!number} width The line width.
+ * @throws {X.exception} An exception if the given width is invalid.
+ */
 X.object.prototype.setLineWidth = function(width) {
 
+  if (!goog.isNumber(width)) {
+    
+    throw new X.exception('Fatal: Invalid line width!');
+    
+  }
+  
   this._lineWidth = width;
   
 };
 
+
+/**
+ * Get the line width of this object. The line width is only used in
+ * X.object.types.LINES rendering mode.
+ * 
+ * @return {!number} The line width.
+ */
 X.object.prototype.lineWidth = function() {
 
   return this._lineWidth;

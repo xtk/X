@@ -105,10 +105,10 @@ X.event.PanEvent = function() {
   /**
    * The distance to pan in screen space.
    * 
-   * @type {?goog.math.Vec2}
+   * @type {!goog.math.Vec2}
    * @protected
    */
-  this._distance = null;
+  this._distance = new goog.math.Vec2(0, 0);
   
 };
 // inherit from goog.events.Event
@@ -129,10 +129,10 @@ X.event.RotateEvent = function() {
   /**
    * The distance to pan in screen space.
    * 
-   * @type {?goog.math.Vec2}
+   * @type {!goog.math.Vec2}
    * @protected
    */
-  this._distance = null;
+  this._distance = new goog.math.Vec2(0, 0);
   
   /**
    * The angle in degrees to pan around the last mouse position in screen space.
@@ -234,10 +234,10 @@ X.event.ModifiedEvent = function() {
   /**
    * The object which was modified.
    * 
-   * @type {?X.object}
+   * @type {!X.object}
    * @protected
    */
-  this._object = null;
+  this._object = new X.object();
   
 };
 // inherit from goog.events.Event

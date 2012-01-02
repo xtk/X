@@ -108,7 +108,7 @@ X.matrix.prototype.flatten = function() {
  * 
  * @this {X.matrix}
  * @param {!goog.math.Vec2|!goog.math.Vec3} vector The translation vector.
- * @return {goog.math.Matrix} The result of this translation.
+ * @return {!X.matrix} The result of this translation.
  * @throws {X.exception} An exception if the translation fails.
  */
 X.matrix.prototype.translate = function(vector) {
@@ -153,7 +153,7 @@ X.matrix.prototype.translate = function(vector) {
  * @this {X.matrix}
  * @param {!number} angle The rotation angle.
  * @param {!goog.math.Vec3} iaxis The axis to rotate around.
- * @return {goog.math.Matrix} The result of this rotation.
+ * @return {!X.matrix} The result of this rotation.
  * @throws {X.exception} An exception if the rotation fails.
  */
 X.matrix.prototype.rotate = function(angle, iaxis) {
@@ -265,14 +265,16 @@ X.matrix.prototype.multiplyByVector = function(vector) {
   if (resultDimensions.height >= 3) {
     
     // 3d vector
-    resultVector = new goog.math.Vec3(resultMatrix.getValueAt(0, 0),
-        resultMatrix.getValueAt(1, 0), resultMatrix.getValueAt(2, 0));
+    resultVector = new goog.math.Vec3(
+        parseFloat(resultMatrix.getValueAt(0, 0)), parseFloat(resultMatrix
+            .getValueAt(1, 0)), parseFloat(resultMatrix.getValueAt(2, 0)));
     
   } else {
     
     // 2d vector
-    resultVector = new goog.math.Vec2(resultMatrix.getValueAt(0, 0),
-        resultMatrix.getValueAt(1, 0));
+    resultVector = new goog.math.Vec2(
+        parseFloat(resultMatrix.getValueAt(0, 0)), parseFloat(resultMatrix
+            .getValueAt(1, 0)));
     
   }
   

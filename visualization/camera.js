@@ -51,23 +51,23 @@ X.camera = function(width, height) {
   /**
    * The field of view in degrees.
    * 
-   * @type {number}
+   * @type {!number}
    * @const
    */
   this._fieldOfView = 45;
   
   /**
-   * The position of this camera.
+   * The position of this camera, by default 0, 0, 100.
    * 
-   * @type {goog.math.Vec3}
+   * @type {!goog.math.Vec3}
    * @protected
    */
   this._position = new goog.math.Vec3(0, 0, 100);
   
   /**
-   * The focus point of this camera.
+   * The focus point of this camera, by default 0, 0, 0.
    * 
-   * @type {goog.math.Vec3}
+   * @type {!goog.math.Vec3}
    * @protected
    */
   this._focus = new goog.math.Vec3(0, 0, 0);
@@ -75,7 +75,7 @@ X.camera = function(width, height) {
   /**
    * The unit vector pointing to the top of the three-dimensional space.
    * 
-   * @type {goog.math.Vec3}
+   * @type {!goog.math.Vec3}
    * @protected
    */
   this._up = new goog.math.Vec3(0, 1, 0);
@@ -83,7 +83,7 @@ X.camera = function(width, height) {
   /**
    * The perspective matrix.
    * 
-   * @type {X.matrix}
+   * @type {!Object}
    * @protected
    */
   this._perspective = new Float32Array(this.calculatePerspective_(
@@ -92,7 +92,7 @@ X.camera = function(width, height) {
   /**
    * The view matrix.
    * 
-   * @type {X.matrix}
+   * @type {!X.matrix}
    * @protected
    */
   this._view = this.lookAt_(this._position, this._focus);
@@ -100,7 +100,7 @@ X.camera = function(width, height) {
   /**
    * The view matrix as a 'ready-to-use'-gl version.
    * 
-   * @type {Object}
+   * @type {!Object}
    * @protected
    */
   this._glView = new Float32Array(this._view.flatten());
@@ -199,9 +199,10 @@ X.camera.prototype.onRotate = function(event) {
 
 
 /**
- * Get the perspective matrix of the three-dimensional space.
+ * Get the perspective matrix of the three-dimensional space as a
+ * 'ready-to-use'-gl version.
  * 
- * @return {!X.matrix} The perspective matrix.
+ * @return {!Object} The perspective matrix.
  */
 X.camera.prototype.perspective = function() {
 
@@ -275,7 +276,6 @@ X.camera.prototype.setPosition = function(x, y, z) {
 X.camera.prototype.reset = function() {
 
   // update the view matrix and its gl versions
-  console.log(this._position, this._focus);
   this._view = this.lookAt_(this._position, this._focus);
   this._glView = new Float32Array(this._view.flatten());
   
@@ -426,11 +426,13 @@ X.camera.prototype.rotate = function(distance) {
   
   var identity = X.matrix.createIdentityMatrix(4);
   // the x-Axis vector is determined by the first row of the view matrix
-  var xAxisVector = new goog.math.Vec3(this._view.getValueAt(0, 0), this._view
-      .getValueAt(0, 1), this._view.getValueAt(0, 2));
+  var xAxisVector = new goog.math.Vec3(parseFloat(this._view.getValueAt(0, 0)),
+      parseFloat(this._view.getValueAt(0, 1)), parseFloat(this._view
+          .getValueAt(0, 2)));
   // the y-Axis vector is determined by the second row of the view matrix
-  var yAxisVector = new goog.math.Vec3(this._view.getValueAt(1, 0), this._view
-      .getValueAt(1, 1), this._view.getValueAt(1, 2));
+  var yAxisVector = new goog.math.Vec3(parseFloat(this._view.getValueAt(1, 0)),
+      parseFloat(this._view.getValueAt(1, 1)), parseFloat(this._view
+          .getValueAt(1, 2)));
   
   // we rotate around the Y Axis when the mouse moves along the screen in X
   // direction

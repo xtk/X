@@ -7,7 +7,7 @@ goog.provide('X');
 var __uniqueIdCounter = 0;
 
 /**
- * XXX
+ * The XTK namespace.
  * 
  * @const
  */

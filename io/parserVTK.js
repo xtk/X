@@ -61,7 +61,7 @@ X.parserVTK.prototype.parse = function(object, data) {
   
   // even if vtk files support multiple object types in the same file, we only
   // support one kind
-  this._objectType = null;
+  this._objectType = X.object.types.TRIANGLES;
   
   // this mode indicates that the next lines will be X,Y,Z coordinates
   this._pointsMode = false;
@@ -154,7 +154,7 @@ X.parserVTK.prototype.parse = function(object, data) {
  *          object.
  * @param {!X.triplets} unorderedNormals A normals container as a X.triplets
  *          object.
- * @param {!String} line The line to parse.
+ * @param {!string} line The line to parse.
  * @protected
  */
 X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,

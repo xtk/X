@@ -71,7 +71,7 @@ X.renderer = function(container) {
   /**
    * The HTML container of this renderer, E.g. a <div>.
    * 
-   * @type {!Element}
+   * @type {?Element}
    * @protected
    */
   this._container = goog.dom.getElement(_container);
@@ -228,7 +228,7 @@ X.renderer = function(container) {
   /**
    * Flag to enable or disable the progress bar during loading.
    * 
-   * @type {bool}
+   * @type {boolean}
    * @protected
    */
   this._progressBarEnabled = true;
@@ -236,7 +236,7 @@ X.renderer = function(container) {
   /**
    * The progressBar of this renderer.
    * 
-   * @type {?Element}
+   * @type {?goog.ui.ProgressBar}
    * @protected
    */
   this._progressBar = null;
@@ -279,6 +279,8 @@ X.renderer = function(container) {
   css3 += '}';
   // .. and save them for later use
   this._progressBarCss = [css1, css2, css3];
+  
+  this._locked = false;
   
   window.console.log('XTK Release 0 -- http://www.goXTK.com');
 };
@@ -332,7 +334,7 @@ X.renderer.prototype.canvas = function() {
 /**
  * Get the container of this renderer.
  * 
- * @return {!Element} The container of this renderer as a DOM object.
+ * @return {?Element} The container of this renderer as a DOM object.
  */
 X.renderer.prototype.container = function() {
 
@@ -840,12 +842,12 @@ X.renderer.prototype.update_ = function(object) {
   // check if object already existed..
   // if (this._objects.contains(object)) {
   
-  // TODO
+  // TODO after deleting the tree, this has to be adopted to the array
   if (1 == 2) {
     // .. it did
     
     // remove it from the tree
-    this._objects.remove(object);
+    // this._objects.remove(object); NOW ARRAY!
     
     // clear all glBuffers by reading the X.buffer
     
@@ -947,6 +949,20 @@ X.renderer.prototype.update_ = function(object) {
     
   }
   
+
+  // a simple locking mechanism to prevent multiple calls when using
+  // asynchronous requests
+  var counter = 0;
+  while (this._locked) {
+    
+    // wait
+    counter++;
+    
+  }
+  
+  this._locked = true;
+  
+
   //
   // VERTICES
   //
@@ -1130,6 +1146,10 @@ X.renderer.prototype.update_ = function(object) {
   this._normalBuffers.set(object.id(), normalBuffer);
   this._colorBuffers.set(object.id(), colorBuffer);
   this._texturePositionBuffers.set(object.id(), texturePositionBuffer);
+  
+  // unlock
+  this._locked = false;
+  
 };
 
 
