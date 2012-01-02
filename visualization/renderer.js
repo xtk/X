@@ -164,6 +164,14 @@ X.renderer = function(container) {
   this._attributePointers = new goog.structs.Map();
   
   /**
+   * A hash map of shader uniform locations.
+   * 
+   * @type {!goog.structs.Map}
+   * @protected
+   */
+  this._uniformLocations = new goog.structs.Map();
+  
+  /**
    * A hash map of vertex buffers of this renderer. Each buffer is associated
    * with a displayable object using its unique id.
    * 
@@ -777,39 +785,33 @@ X.renderer.prototype.addShaders = function(shaders) {
   // activate the new shaderProgram
   this._gl.useProgram(shaderProgram);
   
-  // store the index of the position, color, opacity etc. attributes
-  
-  // this._attributePointers.set(key, value)
-  
-  this._vertexPositionAttribute = this._gl.getAttribLocation(shaderProgram,
-      X.shaders.attributes.VERTEXPOSITION);
-  this._gl.enableVertexAttribArray(this._vertexPositionAttribute);
-  
-  this._normalPositionAttribute = this._gl.getAttribLocation(shaderProgram,
-      X.shaders.attributes.VERTEXNORMAL);
-  this._gl.enableVertexAttribArray(this._normalPositionAttribute);
-  
-  this._vertexColorAttribute = this._gl.getAttribLocation(shaderProgram,
-      X.shaders.attributes.VERTEXCOLOR);
-  this._gl.enableVertexAttribArray(this._vertexColorAttribute);
-  
-  this._texturePositionAttribute = this._gl.getAttribLocation(shaderProgram,
-      X.shaders.attributes.VERTEXTEXTUREPOS);
-  this._gl.enableVertexAttribArray(this._texturePositionAttribute);
-  
   // attach the shaderProgram to this renderer
   this._shaderProgram = shaderProgram;
   
-  this._viewUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
-      X.shaders.uniforms.VIEW);
+  // store the pointers to the shaders' attributes
+  var attributes = Object.keys(X.shaders.attributes);
   
-  this._perspectiveUniformLocation = this._gl.getUniformLocation(
-      this._shaderProgram, X.shaders.uniforms.PERSPECTIVE);
+  attributes.forEach(function(a) {
+
+    a = eval("X.shaders.attributes." + a);
+    this._attributePointers.set(a, this._gl.getAttribLocation(
+        this._shaderProgram, a));
+    this._gl.enableVertexAttribArray(this._attributePointers.get(a));
+    
+  }.bind(this));
   
-  this._normalUniformLocation = this._gl.getUniformLocation(
-      this._shaderProgram, X.shaders.uniforms.NORMAL);
+  // store the pointers to the shaders' uniforms
+  var uniforms = Object.keys(X.shaders.uniforms);
   
-  // attach the shaders to this renderer
+  uniforms.forEach(function(u) {
+
+    u = eval("X.shaders.uniforms." + u);
+    this._uniformLocations.set(u, this._gl.getUniformLocation(
+        this._shaderProgram, u));
+    
+  }.bind(this));
+  
+  // finally, attach the shaders to this renderer
   this._shaders = shaders;
   
 };
@@ -1261,10 +1263,11 @@ X.renderer.prototype.render_ = function() {
   
   // propagate perspective and view matrices to the uniforms of
   // the shader
-  this._gl.uniformMatrix4fv(this._perspectiveUniformLocation, false,
-      perspectiveMatrix);
+  this._gl.uniformMatrix4fv(this._uniformLocations
+      .get(X.shaders.uniforms.PERSPECTIVE), false, perspectiveMatrix);
   
-  this._gl.uniformMatrix4fv(this._viewUniformLocation, false, viewMatrix);
+  this._gl.uniformMatrix4fv(
+      this._uniformLocations.get(X.shaders.uniforms.VIEW), false, viewMatrix);
   
 
   //
@@ -1301,65 +1304,59 @@ X.renderer.prototype.render_ = function() {
       // VERTICES
       this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
       
-      this._gl.vertexAttribPointer(this._vertexPositionAttribute, vertexBuffer
-          .itemSize(), this._gl.FLOAT, false, 0, 0);
+      this._gl.vertexAttribPointer(this._attributePointers
+          .get(X.shaders.attributes.VERTEXPOSITION), vertexBuffer.itemSize(),
+          this._gl.FLOAT, false, 0, 0);
       
       // NORMALS
       this._gl.bindBuffer(this._gl.ARRAY_BUFFER, normalBuffer.glBuffer());
       
-      this._gl.vertexAttribPointer(this._normalPositionAttribute, normalBuffer
-          .itemSize(), this._gl.FLOAT, false, 0, 0);
+      this._gl.vertexAttribPointer(this._attributePointers
+          .get(X.shaders.attributes.VERTEXNORMAL), normalBuffer.itemSize(),
+          this._gl.FLOAT, false, 0, 0);
       
       // COLORS
-      var useObjectColorUniformLocation = this._gl.getUniformLocation(
-          this._shaderProgram, X.shaders.uniforms.USEOBJECTCOLOR);
-      
       if (goog.isDefAndNotNull(colorBuffer)) {
         
         // point colors are defined for this object
         
         // de-activate the useObjectColor flag on the shader
-        this._gl.uniform1i(useObjectColorUniformLocation, false);
+        this._gl.uniform1i(this._uniformLocations
+            .get(X.shaders.uniforms.USEOBJECTCOLOR), false);
         
         this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());
         
-        this._gl.vertexAttribPointer(this._vertexColorAttribute, colorBuffer
-            .itemSize(), this._gl.FLOAT, false, 0, 0);
+        this._gl.vertexAttribPointer(this._attributePointers
+            .get(X.shaders.attributes.VERTEXCOLOR), colorBuffer.itemSize(),
+            this._gl.FLOAT, false, 0, 0);
         
       } else {
         
         // we have a fixed object color
         
         // activate the useObjectColor flag on the shader
-        this._gl.uniform1i(useObjectColorUniformLocation, true);
+        this._gl.uniform1i(this._uniformLocations
+            .get(X.shaders.uniforms.USEOBJECTCOLOR), true);
         
         var objectColor = object.color();
         
-        var objectColorUniformLocation = this._gl.getUniformLocation(
-            this._shaderProgram, X.shaders.uniforms.OBJECTCOLOR);
-        
-        this._gl.uniform3f(objectColorUniformLocation,
-            parseFloat(objectColor[0]), parseFloat(objectColor[1]),
-            parseFloat(objectColor[2]));
+        this._gl.uniform3f(this._uniformLocations
+            .get(X.shaders.uniforms.OBJECTCOLOR), parseFloat(objectColor[0]),
+            parseFloat(objectColor[1]), parseFloat(objectColor[2]));
         
         // we always have to configure the attribute of the point colors
         // even if no point colors are in use
-        this._gl.vertexAttribPointer(this._vertexColorAttribute, vertexBuffer
-            .itemSize(), this._gl.FLOAT, false, 0, 0);
+        this._gl.vertexAttribPointer(this._attributePointers
+            .get(X.shaders.attributes.VERTEXCOLOR), vertexBuffer.itemSize(),
+            this._gl.FLOAT, false, 0, 0);
         
       }
       
       // OPACITY
-      var objectOpacityUniformLocation = this._gl.getUniformLocation(
-          this._shaderProgram, X.shaders.uniforms.OBJECTOPACITY);
-      
-      this._gl.uniform1f(objectOpacityUniformLocation, parseFloat(object
-          .opacity()));
+      this._gl.uniform1f(this._uniformLocations
+          .get(X.shaders.uniforms.OBJECTOPACITY), parseFloat(object.opacity()));
       
       // TEXTURE
-      var useTextureUniformLocation = this._gl.getUniformLocation(
-          this._shaderProgram, X.shaders.uniforms.USETEXTURE);
-      
       if (goog.isDefAndNotNull(object.texture()) &&
           goog.isDefAndNotNull(texturePositionBuffer)) {
         //
@@ -1367,11 +1364,10 @@ X.renderer.prototype.render_ = function() {
         //
         
         // activate the texture flag on the shader
-        this._gl.uniform1i(useTextureUniformLocation, true);
+        this._gl.uniform1i(this._uniformLocations
+            .get(X.shaders.uniforms.USETEXTURE), true);
         
         // setup the sampler
-        var textureSamplerUniformLocation = this._gl.getUniformLocation(
-            this._shaderProgram, X.shaders.uniforms.TEXTURESAMPLE);
         
         // bind the texture
         this._gl.activeTexture(this._gl.TEXTURE0);
@@ -1380,36 +1376,40 @@ X.renderer.prototype.render_ = function() {
         // key
         this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures.get(object
             .texture().file()));
-        this._gl.uniform1i(textureSamplerUniformLocation, 0);
+        this._gl.uniform1i(this._uniformLocations
+            .get(X.shaders.uniforms.TEXTURESAMPLER), 0);
         
         // propagate the current texture-coordinate-map to WebGL
         this._gl.bindBuffer(this._gl.ARRAY_BUFFER, texturePositionBuffer
             .glBuffer());
         
-        this._gl.vertexAttribPointer(this._texturePositionAttribute,
-            texturePositionBuffer.itemSize(), this._gl.FLOAT, false, 0, 0);
+        this._gl.vertexAttribPointer(this._attributePointers
+            .get(X.shaders.attributes.VERTEXTEXTUREPOS), texturePositionBuffer
+            .itemSize(), this._gl.FLOAT, false, 0, 0);
         
       } else {
         // no texture for this object
-        this._gl.uniform1i(useTextureUniformLocation, false);
+        this._gl.uniform1i(this._uniformLocations
+            .get(X.shaders.uniforms.USETEXTURE), false);
         
         // we always have to configure the attribute of the texture positions
         // even if no textures are in use
-        this._gl.vertexAttribPointer(this._texturePositionAttribute,
-            vertexBuffer.itemSize(), this._gl.FLOAT, false, 0, 0);
+        this._gl.vertexAttribPointer(this._attributePointers
+            .get(X.shaders.attributes.VERTEXTEXTUREPOS), vertexBuffer
+            .itemSize(), this._gl.FLOAT, false, 0, 0);
         
       }
       
       // TRANSFORMS
       
       // propagate transform to the uniform matrices of the shader
-      var objectTransformUniformLocation = this._gl.getUniformLocation(
-          this._shaderProgram, X.shaders.uniforms.OBJECTTRANSFORM);
+      this._gl.uniformMatrix4fv(this._uniformLocations
+          .get(X.shaders.uniforms.OBJECTTRANSFORM), false, object.transform()
+          .glMatrix());
       
-      this._gl.uniformMatrix4fv(objectTransformUniformLocation, false, object
-          .transform().glMatrix());
-      
-      // .. and draw with the object's draw mode
+      //
+      // .. and draw with the object's DRAW MODE
+      //
       var drawMode = -1;
       if (object.type() == X.object.types.TRIANGLES) {
         
