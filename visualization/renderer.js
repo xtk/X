@@ -154,6 +154,7 @@ X.renderer = function(container) {
   this._maxY = null;
   this._minZ = null;
   this._maxZ = null;
+  this._center = [0, 0, 0];
   
   /**
    * A hash map of shader attribute pointers.
@@ -535,53 +536,15 @@ X.renderer.prototype.hideProgressBar_ = function() {
   
 };
 
-/**
- * Resets the view according to the global bounding box of all associated
- * objects. This does not trigger rendering.
- */
-X.renderer.prototype.resetView = function() {
-
-  var focus = this._camera.focus();
-  var position = this._camera.position();
-  
-  // if the camera was positioned manually, we do not want to update the
-  // position or focus here
-  if (focus.x != 0 || focus.y != 0 || focus.z != 0 || position.x != 0 ||
-      position.y != 0 || position.z != 100) {
-    
-    this._camera.reset();
-    
-    // and jump out
-    return;
-  }
-  
-  if (!goog.isNull(this._minX) && !goog.isNull(this._maxX) &&
-      !goog.isNull(this._minY) && !goog.isNull(this._maxY) &&
-      !goog.isNull(this._minZ) && !goog.isNull(this._maxZ)) {
-    
-    var focusX = (this._minX + this._maxX) / 2;
-    var focusY = (this._minY + this._maxY) / 2;
-    var focusZ = (this._minZ + this._maxZ) / 2;
-    
-    focus = new goog.math.Vec3(focusX, focusY, focusZ);
-    // TODO the Z+100 might not be generalized enough
-    position = new goog.math.Vec3(focusX, focusY, focusZ + 100);
-    
-  }
-  
-  this._camera.setFocus(focus.x, focus.y, focus.z);
-  this._camera.setPosition(position.x, position.y, position.z);
-  
-};
-
 
 /**
  * Resets the view according to the global bounding box of all associated
- * objects _and_ triggers re-rendering.
+ * objects, the configured camera position as well as its focus _and_ triggers
+ * re-rendering.
  */
 X.renderer.prototype.resetViewAndRender = function() {
 
-  this.resetView();
+  this._camera.reset();
   this.render_();
   
 };
@@ -1034,9 +997,9 @@ X.renderer.prototype.update_ = function(object) {
   if (goog.isNull(this._maxZ) || tMax.z > this._maxZ) {
     this._maxZ = tMax.z;
   }
-  
-  // reset the view according to the new bounding box
-  this.resetView();
+  // we always keep track of the current center position
+  this._center = [(this._minX + this._maxX) / 2, (this._minY + this._maxY) / 2,
+                  (this._minZ + this._maxZ) / 2];
   
   //
   // NORMALS
@@ -1269,7 +1232,12 @@ X.renderer.prototype.render_ = function() {
   this._gl.uniformMatrix4fv(
       this._uniformLocations.get(X.shaders.uniforms.VIEW), false, viewMatrix);
   
-
+  // propagate the objects' center to the shader
+  //
+  var center = this._center;
+  this._gl.uniform3f(this._uniformLocations.get(X.shaders.uniforms.CENTER),
+      parseFloat(center[0]), parseFloat(center[1]), parseFloat(center[2]));
+  
   //
   // loop through all objects and (re-)draw them
   var objects = this._objects;

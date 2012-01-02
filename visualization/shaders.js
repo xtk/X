@@ -50,6 +50,7 @@ X.shaders = function() {
   t += '\n';
   t += 'uniform mat4 view;\n';
   t += 'uniform mat4 perspective;\n';
+  t += 'uniform vec3 center;\n';
   t += 'uniform mat4 objectTransform;\n';
   t += 'uniform bool useObjectColor;\n';
   t += 'uniform vec3 objectColor;\n';
@@ -62,7 +63,9 @@ X.shaders = function() {
   t += 'void main(void) {\n';
   // setup varying -> fragment shader
   t += '  fTransformedVertexNormal = mat3(view) * mat3(objectTransform) * vertexNormal;\n';
-  t += '  fVertexPosition = view * objectTransform * vec4(vertexPosition, 1.0);\n';
+  // t += ' vec4 gVertexPosition = vec4(fVertexPosition.xyz - focus, 1.0);\n';
+  t += '  vec3 vertexPosition2 = vertexPosition - center;\n';
+  t += '  fVertexPosition = view * objectTransform * vec4(vertexPosition2, 1.0);\n';
   t += '  fragmentTexturePos = vertexTexturePos;\n';
   t += '  if (useObjectColor) {\n';
   t += '    fragmentColor = objectColor;\n';
@@ -103,13 +106,15 @@ X.shaders = function() {
   // configure advanced lighting
   t2 += '   vec3 nNormal = normalize(fTransformedVertexNormal);\n';
   t2 += '   vec3 light = vec3(0.0, 0.0, 1.0);\n';
-  t2 += '   vec3 lightDirection = vec3(-10.0, 4.0, -20.0);\n';
+  // t2 += ' vec3 lightDirection = vec3(-10.0, 4.0, -20.0);\n';
+  // I liked the following better
+  t2 += '   vec3 lightDirection = vec3(0,0,-10);\n';
   t2 += '   lightDirection = normalize(lightDirection);\n';
   t2 += '   vec3 eyeDirection = normalize(-fVertexPosition.xyz);\n';
   t2 += '   vec3 reflectionDirection = reflect(-lightDirection, nNormal);\n';
   // t2 += ' vec3 reflectionDirection = nNormal;\n'; <-- to disable reflection
-  // configure specular (16.0 is material property), diffuse and ambient
-  t2 += '   float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 16.0);\n';
+  // configure specular (10.0 is material property), diffuse and ambient
+  t2 += '   float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 10.0);\n';
   t2 += '   float diffuse = 0.8 * max(dot(nNormal, light), 0.0);\n';
   t2 += '   float ambient = 0.2;\n';
   // .. and now setup the fragment color using these three values and the
@@ -151,6 +156,7 @@ X.shaders.attributes = {
 X.shaders.uniforms = {
   VIEW: 'view',
   PERSPECTIVE: 'perspective',
+  CENTER: 'center',
   OBJECTTRANSFORM: 'objectTransform',
   USEOBJECTCOLOR: 'useObjectColor',
   OBJECTCOLOR: 'objectColor',

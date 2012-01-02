@@ -275,6 +275,7 @@ X.camera.prototype.setPosition = function(x, y, z) {
 X.camera.prototype.reset = function() {
 
   // update the view matrix and its gl versions
+  console.log(this._position, this._focus);
   this._view = this.lookAt_(this._position, this._focus);
   this._glView = new Float32Array(this._view.flatten());
   
@@ -565,19 +566,19 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
   matrix.setValueAt(0, 0, xVector.x);
   matrix.setValueAt(0, 1, xVector.y);
   matrix.setValueAt(0, 2, xVector.z);
-  matrix.setValueAt(0, 3, -cameraPosition.x);
+  matrix.setValueAt(0, 3, 0);
   
   // second row
   matrix.setValueAt(1, 0, yVector.x);
   matrix.setValueAt(1, 1, yVector.y);
   matrix.setValueAt(1, 2, yVector.z);
-  matrix.setValueAt(1, 3, -cameraPosition.y);
+  matrix.setValueAt(1, 3, 0);
   
   // third row
   matrix.setValueAt(2, 0, zVector.x);
   matrix.setValueAt(2, 1, zVector.y);
   matrix.setValueAt(2, 2, zVector.z);
-  matrix.setValueAt(2, 3, -cameraPosition.z);
+  matrix.setValueAt(2, 3, 0);
   
   // last row
   matrix.setValueAt(3, 0, 0);
@@ -585,7 +586,9 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
   matrix.setValueAt(3, 2, 0);
   matrix.setValueAt(3, 3, 1);
   
-  return matrix;
+  var invertedCameraPosition = cameraPosition.clone();
+  
+  return matrix.translate(invertedCameraPosition.invert());
   
 };
 
