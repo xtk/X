@@ -43,9 +43,16 @@ if (!Function.prototype.bind) {
           "Function.prototype.bind - what is trying to be bound is not callable");
     }
     
-    var fSlice = Array.prototype.slice, aArgs = fSlice.call(arguments, 1), fToBind = this, fNOP = function() {
+    var fSlice = Array.prototype.slice, aArgs = fSlice.call(arguments, 1), fToBind = this;
+    
+    /**
+     * @constructor
+     */
+    var fNOP = function() {
 
-    }, fBound = function() {
+    };
+    
+    var fBound = function() {
 
       return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs
           .concat(fSlice.call(arguments)));

@@ -185,7 +185,7 @@ X.matrix.prototype.rotate = function(angle, iaxis) {
   var cos = Math.cos(angle);
   var sin = Math.sin(angle);
   
-  var rotationMatrix = new goog.math.Matrix.createIdentityMatrix(4);
+  var rotationMatrix = goog.math.Matrix.createIdentityMatrix(4);
   
   // build rotation matrix according to
   // http://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle

@@ -436,6 +436,11 @@ X.interactor.prototype.onMouseWheel = function(event) {
   // create a new zoom event
   var e = new X.event.ZoomEvent();
   
+  // make sure, deltaY is defined
+  if (!goog.isDefAndNotNull(event.deltaY)) {
+    event.deltaY = 0;
+  }
+  
   // set the zoom direction
   // true if zooming in, false if zooming out
   // delta is here given by the event
