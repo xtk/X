@@ -10,7 +10,7 @@
 *.settings
 
 #OSX specifics
-.DS_Store
+*.DS_Store
 
 # temp files
 .temp_*

@@ -556,6 +556,7 @@ X.renderer.prototype.resetView = function() {
     var focusZ = (this._minZ + this._maxZ) / 2;
     
     focus = new goog.math.Vec3(focusX, focusY, focusZ);
+    // TODO the Z+100 might not be generalized enough
     position = new goog.math.Vec3(focusX, focusY, focusZ + 100);
     
   }
@@ -732,7 +733,7 @@ X.renderer.prototype.addShaders = function(shaders) {
   }
   
   // call the validate() method of the shader pair
-  // this will cause exceptions if the validation fails..
+  // this will cause an exception if the validation fails..
   shaders.validate();
   
   // compile the fragment and vertex shaders
@@ -781,23 +782,32 @@ X.renderer.prototype.addShaders = function(shaders) {
   // this._attributePointers.set(key, value)
   
   this._vertexPositionAttribute = this._gl.getAttribLocation(shaderProgram,
-      shaders.position());
+      X.shaders.attributes.VERTEXPOSITION);
   this._gl.enableVertexAttribArray(this._vertexPositionAttribute);
   
   this._normalPositionAttribute = this._gl.getAttribLocation(shaderProgram,
-      shaders.normal());
+      X.shaders.attributes.VERTEXNORMAL);
   this._gl.enableVertexAttribArray(this._normalPositionAttribute);
   
   this._vertexColorAttribute = this._gl.getAttribLocation(shaderProgram,
-      shaders.color());
+      X.shaders.attributes.VERTEXCOLOR);
   this._gl.enableVertexAttribArray(this._vertexColorAttribute);
   
   this._texturePositionAttribute = this._gl.getAttribLocation(shaderProgram,
-      shaders.texturePos());
+      X.shaders.attributes.VERTEXTEXTUREPOS);
   this._gl.enableVertexAttribArray(this._texturePositionAttribute);
   
   // attach the shaderProgram to this renderer
   this._shaderProgram = shaderProgram;
+  
+  this._viewUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
+      X.shaders.uniforms.VIEW);
+  
+  this._perspectiveUniformLocation = this._gl.getUniformLocation(
+      this._shaderProgram, X.shaders.uniforms.PERSPECTIVE);
+  
+  this._normalUniformLocation = this._gl.getUniformLocation(
+      this._shaderProgram, X.shaders.uniforms.NORMAL);
   
   // attach the shaders to this renderer
   this._shaders = shaders;
@@ -1248,33 +1258,18 @@ X.renderer.prototype.render_ = function() {
   
   // grab the current view from the camera
   var viewMatrix = this._camera.glView();
-  var viewMatrixInverseTransposed = this._camera.glViewInvertedTransposed();
   
-  // propagate perspective, view and normal matrices to the uniforms of
+  // propagate perspective and view matrices to the uniforms of
   // the shader
-  var perspectiveUniformLocation = this._gl.getUniformLocation(
-      this._shaderProgram, this._shaders.perspective());
-  
-  // this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
-  // new Float32Array(perspectiveMatrix.flatten()));
-  this._gl.uniformMatrix4fv(perspectiveUniformLocation, false,
+  this._gl.uniformMatrix4fv(this._perspectiveUniformLocation, false,
       perspectiveMatrix);
   
-  var viewUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
-      this._shaders.view());
-  
-  this._gl.uniformMatrix4fv(viewUniformLocation, false, viewMatrix);
-  
-  var normalUniformLocation = this._gl.getUniformLocation(this._shaderProgram,
-      this._shaders.normalUniform());
-  
-  this._gl.uniformMatrix4fv(normalUniformLocation, false,
-      viewMatrixInverseTransposed);
+  this._gl.uniformMatrix4fv(this._viewUniformLocation, false, viewMatrix);
   
 
   //
   // loop through all objects and (re-)draw them
-  var objects = this._objects;// .getValues();
+  var objects = this._objects;
   var numberOfObjects = objects.length;
   
   var i;
@@ -1317,7 +1312,7 @@ X.renderer.prototype.render_ = function() {
       
       // COLORS
       var useObjectColorUniformLocation = this._gl.getUniformLocation(
-          this._shaderProgram, this._shaders.useObjectColor());
+          this._shaderProgram, X.shaders.uniforms.USEOBJECTCOLOR);
       
       if (goog.isDefAndNotNull(colorBuffer)) {
         
@@ -1341,7 +1336,7 @@ X.renderer.prototype.render_ = function() {
         var objectColor = object.color();
         
         var objectColorUniformLocation = this._gl.getUniformLocation(
-            this._shaderProgram, this._shaders.objectColor());
+            this._shaderProgram, X.shaders.uniforms.OBJECTCOLOR);
         
         this._gl.uniform3f(objectColorUniformLocation,
             parseFloat(objectColor[0]), parseFloat(objectColor[1]),
@@ -1356,14 +1351,14 @@ X.renderer.prototype.render_ = function() {
       
       // OPACITY
       var objectOpacityUniformLocation = this._gl.getUniformLocation(
-          this._shaderProgram, this._shaders.objectOpacity());
+          this._shaderProgram, X.shaders.uniforms.OBJECTOPACITY);
       
       this._gl.uniform1f(objectOpacityUniformLocation, parseFloat(object
           .opacity()));
       
       // TEXTURE
       var useTextureUniformLocation = this._gl.getUniformLocation(
-          this._shaderProgram, this._shaders.useTexture());
+          this._shaderProgram, X.shaders.uniforms.USETEXTURE);
       
       if (goog.isDefAndNotNull(object.texture()) &&
           goog.isDefAndNotNull(texturePositionBuffer)) {
@@ -1376,7 +1371,7 @@ X.renderer.prototype.render_ = function() {
         
         // setup the sampler
         var textureSamplerUniformLocation = this._gl.getUniformLocation(
-            this._shaderProgram, this._shaders.textureSampler());
+            this._shaderProgram, X.shaders.uniforms.TEXTURESAMPLE);
         
         // bind the texture
         this._gl.activeTexture(this._gl.TEXTURE0);
@@ -1409,7 +1404,7 @@ X.renderer.prototype.render_ = function() {
       
       // propagate transform to the uniform matrices of the shader
       var objectTransformUniformLocation = this._gl.getUniformLocation(
-          this._shaderProgram, this._shaders.objectTransform());
+          this._shaderProgram, X.shaders.uniforms.OBJECTTRANSFORM);
       
       this._gl.uniformMatrix4fv(objectTransformUniformLocation, false, object
           .transform().glMatrix());

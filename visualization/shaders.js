@@ -53,18 +53,16 @@ X.shaders = function() {
   t += 'uniform mat4 objectTransform;\n';
   t += 'uniform bool useObjectColor;\n';
   t += 'uniform vec3 objectColor;\n';
-  t += 'uniform mat4 normal;\n';
   t += '\n';
   t += 'varying vec4 fVertexPosition;\n';
   t += 'varying lowp vec3 fragmentColor;\n';
   t += 'varying vec2 fragmentTexturePos;\n';
-  t += 'varying vec4 fTransformedVertexNormal;\n';
+  t += 'varying vec3 fTransformedVertexNormal;\n';
   t += '\n';
   t += 'void main(void) {\n';
   // setup varying -> fragment shader
-  t += '  fTransformedVertexNormal = normal * objectTransform * vec4(vertexNormal,1.0);\n';
+  t += '  fTransformedVertexNormal = mat3(view) * mat3(objectTransform) * vertexNormal;\n';
   t += '  fVertexPosition = view * objectTransform * vec4(vertexPosition, 1.0);\n';
-  // t += ' fTransformedVertexNormal = view * vec4(vertexNormal, 1.0);\n';
   t += '  fragmentTexturePos = vertexTexturePos;\n';
   t += '  if (useObjectColor) {\n';
   t += '    fragmentColor = objectColor;\n';
@@ -95,7 +93,7 @@ X.shaders = function() {
   t2 += 'varying vec4 fVertexPosition;\n';
   t2 += 'varying lowp vec3 fragmentColor;\n';
   t2 += 'varying vec2 fragmentTexturePos;\n';
-  t2 += 'varying vec4 fTransformedVertexNormal;\n';
+  t2 += 'varying vec3 fTransformedVertexNormal;\n';
   t2 += '\n';
   t2 += 'void main(void) {\n';
   t2 += ' if (useTexture) {\n';
@@ -103,7 +101,7 @@ X.shaders = function() {
   t2 += '   vec2(fragmentTexturePos.s,fragmentTexturePos.t));\n';
   t2 += ' } else {\n';
   // configure advanced lighting
-  t2 += '   vec3 nNormal = normalize(fTransformedVertexNormal.xyz);\n';
+  t2 += '   vec3 nNormal = normalize(fTransformedVertexNormal);\n';
   t2 += '   vec3 light = vec3(0.0, 0.0, 1.0);\n';
   t2 += '   vec3 lightDirection = vec3(-10.0, 4.0, -20.0);\n';
   t2 += '   lightDirection = normalize(lightDirection);\n';
@@ -124,98 +122,43 @@ X.shaders = function() {
   t2 += '}\n';
   this._fragmentshaderSource = t2;
   
-  /**
-   * The string to access the position inside the vertex shader source.
-   * 
-   * @type {!string}
-   * @protected
-   */
-  this._positionAttribute = 'vertexPosition';
-  
-  /**
-   * The string to access the position inside the vertex shader source.
-   * 
-   * @type {!string}
-   * @protected
-   */
-  this._normalAttribute = 'vertexNormal';
-  
-  /**
-   * The string to access the color inside the vertex shader source.
-   * 
-   * @type {!string}
-   * @protected
-   */
-  this._colorAttribute = 'vertexColor';
-  
-  /**
-   * The string to access the texture position inside the vertex shader source.
-   * 
-   * @type {!string}
-   * @protected
-   */
-  this._texturePosAttribute = 'vertexTexturePos';
-  
-  /**
-   * The string to access the view matrix inside the vertex shader source.
-   * 
-   * @type {!string}
-   * @protected
-   */
-  this._viewUniform = 'view';
-  
-  /**
-   * The string to access the perspective matrix inside the vertex shader
-   * source.
-   * 
-   * @type {!string}
-   * @protected
-   */
-  this._perspectiveUniform = 'perspective';
-  
 
-  /**
-   * The string to access the transform matrix inside the vertex shader source.
-   * 
-   * @type {!string}
-   * @protected
-   */
-  this._objectTransformUniform = 'objectTransform';
-  
-
-  this._useObjectColorUniform = 'useObjectColor';
-  
-
-  /**
-   * The string to access the objectColor uniform inside the vertex shader
-   * source.
-   * 
-   * @type {!string}
-   * @protected
-   */
-  this._objectColorUniform = 'objectColor';
-  
-
-  /**
-   * The string to access the objectOpacity uniform inside the vertex shader
-   * source.
-   * 
-   * @type {!string}
-   * @protected
-   */
-  this._objectOpacityUniform = 'objectOpacity';
-  
-  // TODO comments
-  
-  this._normalUniform = 'normal';
-  
-  this._useTextureUniform = 'useTexture';
-  
-  this._textureSamplerUniform = 'textureSampler';
-  
 };
 // inherit from X.base
 goog.inherits(X.shaders, X.base);
+
+
+/**
+ * The X.shaders' vertex attributes.
+ * 
+ * @enum {string}
+ * @protected
+ */
+X.shaders.attributes = {
+  VERTEXPOSITION: 'vertexPosition',
+  VERTEXNORMAL: 'vertexNormal',
+  VERTEXCOLOR: 'vertexColor',
+  VERTEXTEXTUREPOS: 'vertexTexturePos'
+};
+
+
+/**
+ * The X.shaders' uniforms.
+ * 
+ * @enum {string}
+ * @protected
+ */
+X.shaders.uniforms = {
+  VIEW: 'view',
+  PERSPECTIVE: 'perspective',
+  OBJECTTRANSFORM: 'objectTransform',
+  USEOBJECTCOLOR: 'useObjectColor',
+  OBJECTCOLOR: 'objectColor',
+  OBJECTOPACITY: 'objectOpacity',
+  NORMAL: 'normal',
+  USETEXTURE: 'useTexture',
+  TEXTURESAMPLER: 'textureSampler'
+};
 
 
 /**
@@ -243,304 +186,50 @@ X.shaders.prototype.fragment = function() {
 
 
 /**
- * Get the vertex position attribute locator.
- * 
- * @return {!string} The vertex position attribute locator.
- */
-X.shaders.prototype.position = function() {
-
-  return this._positionAttribute;
-  
-};
-
-
-/**
- * Get the vertex position attribute locator.
- * 
- * @return {!string} The vertex position attribute locator.
- */
-X.shaders.prototype.normal = function() {
-
-  return this._normalAttribute;
-  
-};
-
-
-/**
- * Get the vertex color attribute locator.
- * 
- * @return {!string} The vertex color attribute locator.
- */
-X.shaders.prototype.color = function() {
-
-  return this._colorAttribute;
-  
-};
-
-
-/**
- * Get the view uniform locator.
- * 
- * @return {!string} The view uniform locator.
- */
-X.shaders.prototype.view = function() {
-
-  return this._viewUniform;
-  
-};
-
-
-/**
- * Get the perspective uniform locator.
- * 
- * @return {!string} The perspective uniform locator.
- */
-X.shaders.prototype.perspective = function() {
-
-  return this._perspectiveUniform;
-  
-};
-
-
-/**
- * Get the normal uniform locator
- * 
- * @return {String} The normal uniform locator.
- */
-X.shaders.prototype.objectTransform = function() {
-
-  return this._objectTransformUniform;
-  
-};
-
-
-/**
- * TODO
- */
-X.shaders.prototype.useObjectColor = function() {
-
-  return this._useObjectColorUniform;
-  
-};
-
-
-/**
- * Get the objectColor uniform locator.
- * 
- * @return {!string} The objectColor uniform locator.
- */
-X.shaders.prototype.objectColor = function() {
-
-  return this._objectColorUniform;
-  
-};
-
-
-/**
- * Get the objectOpacity uniform locator.
- * 
- * @return {!string} The objectColor uniform locator.
- */
-X.shaders.prototype.objectOpacity = function() {
-
-  return this._objectOpacityUniform;
-  
-};
-
-
-/**
- * Get the normal uniform locator
- * 
- * @return {String|null} The normal uniform locator.
- */
-X.shaders.prototype.normalUniform = function() {
-
-  return this._normalUniform;
-  
-};
-
-
-/**
- * Get the lightning uniform locator.
- * 
- * @return {!string} The opacity uniform locator.
- */
-X.shaders.prototype.lighting = function() {
-
-  return this._lighting;
-  
-};
-
-
-/**
- * TODO
- * 
- * @returns {String}
- */
-X.shaders.prototype.texturePos = function() {
-
-  return this._texturePosAttribute;
-  
-};
-
-
-/**
- * TODO
- * 
- * @returns {String}
- */
-X.shaders.prototype.textureSampler = function() {
-
-  return this._textureSamplerUniform;
-  
-};
-
-
-/**
- * TODO
- */
-X.shaders.prototype.useTexture = function() {
-
-  return this._useTextureUniform;
-  
-};
-
-
-/**
- * Checks if the configured shaders object is valid.
+ * Checks if this configured shaders object is valid in terms of using the
+ * defined attributes and uniforms.
  * 
  * @return {boolean} TRUE or FALSE depending on success.
  * @throws {X.exception} An exception if the shader is invalid.
  */
 X.shaders.prototype.validate = function() {
 
-  // check if the sources are compatible to the attributes and uniforms
+  // check if the shader sources are compatible to the attributes and uniforms
   
-  var t = 31337;
+  var attributes = Object.keys(X.shaders.attributes);
+  var uniforms = Object.keys(X.shaders.uniforms);
   
-  t = this._vertexshaderSource.search(this._positionAttribute);
+  // check if all attributes are used either in the vertex or the fragment
+  // shader
+  var attributesValid = attributes.every(function(a) {
+
+    a = eval("X.shaders.attributes." + a);
+    return (this._vertexshaderSource.search(a) != -1) ||
+        (this._fragmentshaderSource.search(a) != -1);
+    
+  }.bind(this));
   
-  if (t == -1) {
+  if (!attributesValid) {
     
     throw new X.exception(
-        'Fatal: Could not validate shader! The positionAttribute was bogus.');
+        'Fatal: Could not find all attributes in the shader sources!');
     
   }
   
-  t = this._vertexshaderSource.search(this._normalAttribute);
+  // check if all attributes are used either in the vertex or the fragment
+  // shader
+  var uniformsValid = uniforms.every(function(u) {
+
+    u = eval("X.shaders.uniforms." + u);
+    return (this._vertexshaderSource.search(u) != -1) ||
+        (this._fragmentshaderSource.search(u) != -1);
+    
+  }.bind(this));
   
-  if (t == -1) {
+  if (!uniformsValid) {
     
     throw new X.exception(
-        'Fatal: Could not validate shader! The normalAttribute was bogus.');
-    
-  }
-  
-  t = this._vertexshaderSource.search(this._colorAttribute);
-  
-  if (t == -1) {
-    
-    throw new X.exception(
-        'Fatal: Could not validate shader! The colorAttribute was bogus.');
-    
-  }
-  
-  t = this._vertexshaderSource.search(this._opacityAttribute);
-  
-  if (t == -1) {
-    
-    throw new X.exception(
-        'Fatal: Could not validate shader! The opacityAttribute was bogus.');
-    
-  }
-  
-  t = this._vertexshaderSource.search(this._perspectiveUniform);
-  
-  if (t == -1) {
-    
-    throw new X.exception(
-        'Fatal: Could not validate shader! The perspectiveUniform was bogus.');
-    
-  }
-  
-  t = this._vertexshaderSource.search(this._viewUniform);
-  
-  if (t == -1) {
-    
-    throw new X.exception(
-        'Fatal: Could not validate shader! The viewUniform was bogus.');
-    
-  }
-  
-  t = this._vertexshaderSource.search(this._objectTransformUniform);
-  
-  if (t == -1) {
-    
-    throw new X.exception(
-        'Fatal: Could not validate shader! The transformUniform was bogus.');
-    
-  }
-  
-  t = this._vertexshaderSource.search(this._useObjectColorUniform);
-  
-  if (t == -1) {
-    
-    throw new X.exception(
-        'Fatal: Could not validate shader! The useObjectColorUniform was bogus.');
-    
-  }
-  
-  t = this._vertexshaderSource.search(this._objectColorUniform);
-  
-  if (t == -1) {
-    
-    throw new X.exception(
-        'Fatal: Could not validate shader! The objectColorUniform was bogus.');
-    
-  }
-  
-  t = this._fragmentshaderSource.search(this._objectOpacityUniform);
-  
-  if (t == -1) {
-    
-    throw new X.exception(
-        'Fatal: Could not validate shader! The objectOpacityUniform was bogus.');
-    
-  }
-  
-  t = this._vertexshaderSource.search(this._normalUniform);
-  
-  if (t == -1) {
-    
-    throw new X.exception(
-        'Fatal: Could not validate shader! The normalUniform was bogus.');
-    
-  }
-  
-  t = this._vertexshaderSource.search(this._texturePosAttribute);
-  
-  if (t == -1) {
-    
-    throw new X.exception(
-        'Fatal: Could not validate shader! The texturePosAttribute was bogus.');
-    
-  }
-  
-  t = this._fragmentshaderSource.search(this._textureSamplerUniform);
-  
-  if (t == -1) {
-    
-    throw new X.exception(
-        'Fatal: Could not validate shader! The textureSamplerUniform was bogus.');
-    
-  }
-  
-  t = this._fragmentshaderSource.search(this._useTextureUniform);
-  
-  if (t == -1) {
-    
-    throw new X.exception(
-        'Fatal: Could not validate shader! The useTextureUniform was bogus.');
+        'Fatal: Could not find all uniforms in the shader sources!');
     
   }
   
@@ -548,16 +237,10 @@ X.shaders.prototype.validate = function() {
   
 };
 
-// TODO: texture, lightning etc.
-
-// export symbols (requiered for advanced compilation)
+// export symbols (required for advanced compilation)
 goog.exportSymbol('X.shaders', X.shaders);
+goog.exportSymbol('X.shaders.attributes', X.shaders.attributes);
+goog.exportSymbol('X.shaders.uniforms', X.shaders.uniforms);
 goog.exportSymbol('X.shaders.prototype.vertex', X.shaders.prototype.vertex);
 goog.exportSymbol('X.shaders.prototype.fragment', X.shaders.prototype.fragment);
-goog.exportSymbol('X.shaders.prototype.position', X.shaders.prototype.position);
-goog.exportSymbol('X.shaders.prototype.color', X.shaders.prototype.color);
-goog.exportSymbol('X.shaders.prototype.view', X.shaders.prototype.view);
-goog.exportSymbol('X.shaders.prototype.perspective',
-    X.shaders.prototype.perspective);
-goog.exportSymbol('X.shaders.prototype.opacity', X.shaders.prototype.opacity);
 goog.exportSymbol('X.shaders.prototype.validate', X.shaders.prototype.validate);

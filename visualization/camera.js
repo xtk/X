@@ -105,15 +105,6 @@ X.camera = function(width, height) {
    */
   this._glView = new Float32Array(this._view.flatten());
   
-  /**
-   * The inverted and transposed view matrix as a 'ready-to-use'-gl version.
-   * 
-   * @type {Object}
-   * @protected
-   */
-  this._glViewInvertedTransposed = new Float32Array(new X.matrix(this._view
-      .getInverse().getTranspose()).flatten());
-  
 };
 // inherit from X.base
 goog.inherits(X.camera, X.base);
@@ -244,18 +235,6 @@ X.camera.prototype.glView = function() {
 
 
 /**
- * Get the inverted and transposed view matrix as a 'ready-to-use'-gl version.
- * 
- * @return {!Object} The inverted and transposed view matrix as a Float32Array.
- */
-X.camera.prototype.glViewInvertedTransposed = function() {
-
-  return this._glViewInvertedTransposed;
-  
-};
-
-
-/**
  * Get the position of this camera.
  * 
  * @return {!goog.math.Vec3} The position.
@@ -298,8 +277,6 @@ X.camera.prototype.reset = function() {
   // update the view matrix and its gl versions
   this._view = this.lookAt_(this._position, this._focus);
   this._glView = new Float32Array(this._view.flatten());
-  this._glViewInvertedTransposed = new Float32Array(new X.matrix(this._view
-      .getInverse().getTranspose()).flatten());
   
 };
 
@@ -419,8 +396,6 @@ X.camera.prototype.pan = function(distance) {
   
   this._view = new X.matrix(panMatrix.multiply(this._view));
   this._glView = new Float32Array(this._view.flatten());
-  this._glViewInvertedTransposed = new Float32Array(new X.matrix(this._view
-      .getInverse().getTranspose()).flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -467,8 +442,6 @@ X.camera.prototype.rotate = function(distance) {
   // perform the actual rotation calculation
   this._view = new X.matrix(this._view.multiply(rotateY.multiply(rotateX)));
   this._glView = new Float32Array(this._view.flatten());
-  this._glViewInvertedTransposed = new Float32Array(new X.matrix(this._view
-      .getInverse().getTranspose()).flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -500,8 +473,6 @@ X.camera.prototype.zoomIn = function(fast) {
   
   this._view = new X.matrix(zoomMatrix.multiply(this._view));
   this._glView = new Float32Array(this._view.flatten());
-  this._glViewInvertedTransposed = new Float32Array(new X.matrix(this._view
-      .getInverse().getTranspose()).flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -533,8 +504,6 @@ X.camera.prototype.zoomOut = function(fast) {
   
   this._view = new X.matrix(zoomMatrix.multiply(this._view));
   this._glView = new Float32Array(this._view.flatten());
-  this._glViewInvertedTransposed = new Float32Array(new X.matrix(this._view
-      .getInverse().getTranspose()).flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
