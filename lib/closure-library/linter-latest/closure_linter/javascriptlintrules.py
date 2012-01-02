@@ -97,6 +97,22 @@ class JavaScriptLintRules(ecmalintrules.EcmaScriptLintRules):
         self._CheckForMissingSpaceBeforeToken(
             token.attached_object.name_token)
 
+        if (error_check.ShouldCheck(Rule.OPTIONAL_TYPE_MARKER) and
+            flag.type is not None and flag.name is not None):
+          # Check for optional marker in type.
+          if (flag.type.endswith('=') and
+              not flag.name.startswith('opt_')):
+            self._HandleError(errors.JSDOC_MISSING_OPTIONAL_PREFIX,
+                              'Optional parameter name %s must be prefixed '
+                              'with opt_.' % flag.name,
+                              token)
+          elif (not flag.type.endswith('=') and
+                flag.name.startswith('opt_')):
+            self._HandleError(errors.JSDOC_MISSING_OPTIONAL_TYPE,
+                              'Optional parameter %s type must end with =.' %
+                              flag.name,
+                              token)
+
       if flag.flag_type in state.GetDocFlag().HAS_TYPE:
         # Check for both missing type token and empty type braces '{}'
         # Missing suppress types are reported separately and we allow enums
@@ -128,11 +144,17 @@ class JavaScriptLintRules(ecmalintrules.EcmaScriptLintRules):
             Position.All(token.string))
 
     elif token.type == Type.END_DOC_COMMENT:
+      doc_comment = state.GetDocComment()
+
+      # When @externs appears in a @fileoverview comment, it should trigger
+      # the same limited doc checks as a special filename like externs.js.
+      if doc_comment.HasFlag('fileoverview') and doc_comment.HasFlag('externs'):
+        self._SetLimitedDocChecks(True)
+
       if (error_check.ShouldCheck(Rule.BLANK_LINES_AT_TOP_LEVEL) and
           not self._is_html and state.InTopLevel() and not state.InBlock()):
 
         # Check if we're in a fileoverview or constructor JsDoc.
-        doc_comment = state.GetDocComment()
         is_constructor = (
             doc_comment.HasFlag('constructor') or
             doc_comment.HasFlag('interface'))
@@ -441,7 +463,7 @@ class JavaScriptLintRules(ecmalintrules.EcmaScriptLintRules):
           errors.GOOG_PROVIDES_NOT_ALPHABETIZED,
           'goog.provide classes must be alphabetized.  The correct code is:\n' +
           '\n'.join(
-              map(lambda x: 'goog.require(\'%s\');' % x, provides_result[1])),
+              map(lambda x: 'goog.provide(\'%s\');' % x, provides_result[1])),
           provides_result[0],
           position=Position.AtBeginning(),
           fix_data=provides_result[0])

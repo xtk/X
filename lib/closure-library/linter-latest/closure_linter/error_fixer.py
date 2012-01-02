@@ -34,6 +34,16 @@ Type = javascripttokens.JavaScriptTokenType
 
 END_OF_FLAG_TYPE = re.compile(r'(}?\s*)$')
 
+# Regex to represent common mistake inverting author name and email as
+# @author User Name (user@company)
+INVERTED_AUTHOR_SPEC = re.compile(r'(?P<leading_whitespace>\s*)'
+                                  '(?P<name>[^(]+)'
+                                  '(?P<whitespace_after_name>\s+)'
+                                  '\('
+                                  '(?P<email>[^\s]+@[^)\s]+)'
+                                  '\)'
+                                  '(?P<trailing_characters>.*)')
+
 FLAGS = flags.FLAGS
 flags.DEFINE_boolean('disable_indentation_fixing', False,
                      'Whether to disable automatic fixing of indentation.')
@@ -103,6 +113,19 @@ class ErrorFixer(errorhandler.ErrorHandler):
         iterator.string = iterator.string.replace(
             'null|', '').replace('|null', '')
         iterator = iterator.next
+
+      # Create a new flag object with updated type info.
+      token.attached_object = javascriptstatetracker.JsDocFlag(token)
+      self._AddFix(token)
+
+    elif code == errors.JSDOC_MISSING_OPTIONAL_TYPE:
+      iterator = token.attached_object.type_end_token
+      if iterator.type == Type.DOC_END_BRACE or iterator.string.isspace():
+        iterator = iterator.previous
+
+      ending_space = len(iterator.string) - len(iterator.string.rstrip())
+      iterator.string = '%s=%s' % (iterator.string.rstrip(),
+                                   ' ' * ending_space)
 
       # Create a new flag object with updated type info.
       token.attached_object = javascriptstatetracker.JsDocFlag(token)
@@ -265,6 +288,16 @@ class ErrorFixer(errorhandler.ErrorHandler):
         tokenutil.DeleteToken(token.previous)
         tokenutil.DeleteToken(token.next)
         self._AddFix([token])
+
+    elif code == errors.INVALID_AUTHOR_TAG_DESCRIPTION:
+      match = INVERTED_AUTHOR_SPEC.match(token.string)
+      if match:
+        token.string = '%s%s%s(%s)%s' % (match.group('leading_whitespace'),
+                                         match.group('email'),
+                                         match.group('whitespace_after_name'),
+                                         match.group('name'),
+                                         match.group('trailing_characters'))
+        self._AddFix(token)
 
     elif (code == errors.WRONG_INDENTATION and
           not FLAGS.disable_indentation_fixing):

@@ -33,6 +33,7 @@ class Rule(object):
   WELL_FORMED_AUTHOR = 'well_formed_author'
   NO_BRACES_AROUND_INHERIT_DOC = 'no_braces_around_inherit_doc'
   BRACES_AROUND_TYPE = 'braces_around_type'
+  OPTIONAL_TYPE_MARKER = 'optional_type_marker'
 
   # Rule to raise all known errors.
   ALL = 'all'
@@ -43,7 +44,8 @@ class Rule(object):
                              INDENTATION,
                              WELL_FORMED_AUTHOR,
                              NO_BRACES_AROUND_INHERIT_DOC,
-                             BRACES_AROUND_TYPE])
+                             BRACES_AROUND_TYPE,
+                             OPTIONAL_TYPE_MARKER])
 
 
 flags.DEFINE_boolean('strict', False,
@@ -62,7 +64,9 @@ flags.DEFINE_multistring('jslint_error', [],
                          ' - ' + Rule.NO_BRACES_AROUND_INHERIT_DOC + ': '
                          'forbids braces around @inheritdoc JsDoc tags.\n'
                          ' - ' + Rule.BRACES_AROUND_TYPE + ': enforces braces '
-                         'around types in JsDoc tags.\n')
+                         'around types in JsDoc tags.\n'
+                         ' - ' + Rule.OPTIONAL_TYPE_MARKER + ': checks correct '
+                         'use of optional marker = in param types.\n')
 
 
 def ShouldCheck(rule):

@@ -63,6 +63,14 @@ class LintRulesBase(object):
     if errorrules.ShouldReportError(code):
       self.__checker.HandleError(code, message, token, position, fix_data)
 
+  def _SetLimitedDocChecks(self, limited_doc_checks):
+    """Sets whether doc checking is relaxed for this file.
+
+    Args:
+      limited_doc_checks: Whether doc checking is relaxed for this file.
+    """
+    self._limited_doc_checks = limited_doc_checks
+
   def CheckToken(self, token, parser_state):
     """Checks a token, given the current parser_state, for warnings and errors.
 

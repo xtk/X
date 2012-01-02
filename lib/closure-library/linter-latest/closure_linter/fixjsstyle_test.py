@@ -45,6 +45,13 @@ class FixJsStyleTest(googletest.TestCase):
       raise IOError('Could not find testdata resource for %s: %s' %
                     (self._filename, ex))
 
+    with open(input_filename) as f:
+      for line in f:
+        # Go to last line.
+        pass
+      self.assertTrue(line == line.rstrip(), 'fixjsstyle.js should not end '
+                      'with a new line.')
+
     # Autofix the file, sending output to a fake file.
     actual = StringIO.StringIO()
     style_checker = checker.JavaScriptStyleChecker(

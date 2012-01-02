@@ -462,6 +462,14 @@ Test-visible
 <div id="offset-parent" style="position:relative">
   <div id="offset-child">child</div>
 </div>
+
+<div id="offset-parent-overflow"
+     style="overflow: scroll; width: 50px; height: 50px;">
+  <a id="offset-child-overflow">
+    scrollscrollscrollscrollscrollscrollscrollscroll
+  </a>
+</div>
+
 <script>
 
 var EPSILON = 2;
@@ -832,7 +840,7 @@ function testGetPageOffsetElementOffscreen() {
 function testGetPageOffsetFixedPositionElements() {
   // Skip these tests in certain browsers.
   // position:fixed is not supported in IE before version 7
-  // TODO(user): This conditional looks fishy: it excludes all versions of
+  // TODO(gboyer): This conditional looks fishy: it excludes all versions of
   // IE version 6 and greater.
   if (!goog.userAgent.IE || !goog.userAgent.isVersion('6')) {
     // Test with a position fixed element
@@ -1282,6 +1290,16 @@ function testSetBorderBoxSize() {
              goog.userAgent.IE && goog.userAgent.isVersion('8')) {
     assertEquals('border-box', el.style.boxSizing);
   }
+
+  // Try a negative width/height.
+  setBorderBoxSize(el, new Size(-10, -10));
+
+  // Setting the border box smaller than the borders will just give you
+  // a content box of size 0.
+  // NOTE(nicksantos): I'm not really sure why IE7 is special here.
+  var isIeLt8 = goog.userAgent.IE && !goog.userAgent.isVersion('8');
+  assertEquals(20, el.offsetWidth);
+  assertEquals(isIeLt8 ? 39 : 20, el.offsetHeight);
 }
 
 function testSetContentBoxSize() {
@@ -1328,6 +1346,14 @@ function testSetContentBoxSize() {
              goog.userAgent.IE && goog.userAgent.isVersion('8')) {
     assertEquals('content-box', el.style.boxSizing);
   }
+
+  // Try a negative width/height.
+  setContentBoxSize(el, new Size(-10, -10));
+
+  // NOTE(nicksantos): I'm not really sure why IE7 is special here.
+  var isIeLt8 = goog.userAgent.IE && !goog.userAgent.isVersion('8');
+  assertEquals(20, el.offsetWidth);
+  assertEquals(isIeLt8 ? 39 : 20, el.offsetHeight);
 }
 
 function testGetPaddingBox() {
@@ -2185,9 +2211,15 @@ function testScrollBarWidth() {
 }
 
 function testOffsetParent() {
+  var parent = goog.dom.getElement('offset-parent');
+  var child = goog.dom.getElement('offset-child');
+  assertEquals(parent, goog.style.getOffsetParent(child));
+}
+
+function testOverflowOffsetParent() {
   var $ = goog.dom.getElement;
-  var parent = $('offset-parent');
-  var child = $('offset-child');
+  var parent = goog.dom.getElement('offset-parent-overflow');
+  var child = goog.dom.getElement('offset-child-overflow');
   assertEquals(parent, goog.style.getOffsetParent(child));
 }
 

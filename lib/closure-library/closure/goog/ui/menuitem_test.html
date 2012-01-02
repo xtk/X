@@ -7,6 +7,7 @@ Use of this source code is governed by the Apache License, Version 2.0.
 See the COPYING file for details.
 -->
 <!--
+Author: attila@google.com (Attila Bodis)
 -->
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,8 +18,10 @@ See the COPYING file for details.
     goog.require('goog.dom');
     goog.require('goog.dom.NodeType');
     goog.require('goog.dom.classes');
+    goog.require('goog.events.KeyCodes');
     goog.require('goog.testing.events');
     goog.require('goog.testing.jsunit');
+    goog.require('goog.testing.recordFunction');
     goog.require('goog.ui.Component.State');
     goog.require('goog.ui.MenuItem');
     goog.require('goog.ui.MenuItemRenderer');
@@ -305,6 +308,47 @@ See the COPYING file for details.
       item.setCaption('');
       assertEquals('getCaption() must return empty string', '',
           item.getCaption());
+    }
+
+    function testGetSetCaptionForItemWithMnemonics() {
+      var contentArr = [];
+      contentArr.push(goog.dom.createDom('span',
+          goog.getCssName('goog-menuitem-mnemonic-hint'), 'H'));
+      contentArr.push(goog.dom.createTextNode('ello'));
+      item.setCaption(contentArr);
+      assertEquals('getCaption() must not return hint markup', 'Hello',
+          item.getCaption());
+
+      contentArr = [];
+      contentArr.push(goog.dom.createTextNode('Hello'));
+      contentArr.push(goog.dom.createDom('span',
+          goog.getCssName('goog-menuitem-mnemonic-separator'), '(',
+          goog.dom.createDom('span',
+              goog.getCssName('goog-menuitem-mnemonic-hint'), 'J'), ')'));
+      item.setCaption(contentArr);
+      assertEquals('getCaption() must not return the paranethetical mnemonic',
+          'Hello', item.getCaption());
+
+      item.setCaption('');
+      assertEquals('getCaption() must return the empty string', '',
+      item.getCaption());
+    }
+
+    function testHandleKeyEventInternalWithMnemonic() {
+      item.performActionInternal =
+          goog.testing.recordFunction(item.performActionInternal);
+      item.setMnemonic(goog.events.KeyCodes.F);
+      item.handleKeyEventInternal({'keyCode': goog.events.KeyCodes.F});
+      assertEquals('performActionInternal must be called', 1,
+          item.performActionInternal.getCallCount());
+    }
+
+    function testHandleKeyEventInternalWithoutMnemonic() {
+      item.performActionInternal = goog.testing.recordFunction(
+          item.performActionInternal);
+      item.handleKeyEventInternal({'keyCode': goog.events.KeyCodes.F});
+      assertEquals('performActionInternal must not be called without a' +
+          ' mnemonic', 0, item.performActionInternal.getCallCount());
     }
 
     function testRender() {
