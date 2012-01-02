@@ -528,7 +528,7 @@ X.renderer.prototype.hideProgressBar_ = function() {
         
         this.render();
         
-      }.bind(this), 2000);
+      }.bind(this), 700);
       // .. and jump out
       return;
       
