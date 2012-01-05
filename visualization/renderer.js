@@ -805,6 +805,27 @@ X.renderer.prototype.add = function(object) {
     
   }
   
+  // MULTI OBJECTS
+  //
+  // objects can have N child objects which again can have M child objects and
+  // so on
+  //
+  // check if this object has children
+  if (object.hasChildren()) {
+    
+    // loop through the children and recursively setup the object
+    var children = object.children();
+    var numberOfChildren = children.length;
+    var c = 0;
+    
+    for (c = 0; c < numberOfChildren; c++) {
+      
+      this.add(children[c]);
+      
+    }
+    
+  }
+  
   // listen to modified events of this object
   goog.events.listen(object, X.event.events.MODIFIED, this.onModified
       .bind(this));
@@ -903,27 +924,6 @@ X.renderer.prototype.update_ = function(object) {
     
   }
   
-  // MULTI OBJECTS
-  //
-  // objects can have N child objects which again can have M child objects and
-  // so on
-  //
-  // check if this object has children
-  if (object.hasChildren()) {
-    
-    // loop through the children and recursively setup the object
-    var children = object.children();
-    var numberOfChildren = children.length;
-    var c = 0;
-    
-    for (c = 0; c < numberOfChildren; c++) {
-      
-      this.update_(children[c]);
-      
-    }
-    
-  }
-  
 
   // here we check if additional loading is necessary
   // this would be the case if
@@ -944,6 +944,13 @@ X.renderer.prototype.update_ = function(object) {
     
     // start loading..
     this.loader().loadFile(object);
+    
+    return;
+    
+  }
+  
+  // check if this is an empty object, if yes, jump out
+  if (object.points().count() == 0) {
     
     return;
     

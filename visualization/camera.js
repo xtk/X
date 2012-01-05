@@ -318,6 +318,41 @@ X.camera.prototype.setFocus = function(x, y, z) {
 
 
 /**
+ * Get the up-vector of this camera.
+ * 
+ * @return {!goog.math.Vec3} The up vector.
+ */
+X.camera.prototype.up = function() {
+
+  return this._up;
+  
+};
+
+
+/**
+ * Set the up-vector of this camera. This forces a re-calculation of the view
+ * matrix. This action _does not_ force an immediate render event automatically.
+ * 
+ * @param {!number} x The X component of the new camera up-vector.
+ * @param {!number} y The Y component of the new camera up-vector.
+ * @param {!number} z The Z component of the new camera up-vector.
+ */
+X.camera.prototype.setUp = function(x, y, z) {
+
+  if (!goog.isNumber(x) || !goog.isNumber(y) || !goog.isNumber(z)) {
+    
+    throw new X.exception('Fatal: The up-vector was invalid.');
+    
+  }
+  
+  this._up = new goog.math.Vec3(x, y, z);
+  
+  this.reset();
+  
+};
+
+
+/**
  * Calculate a perspective matrix based on the given values. This calculation is
  * based on known principles of Computer Vision (Source: TODO?).
  * 
@@ -607,11 +642,12 @@ goog.exportSymbol('X.camera.prototype.view', X.camera.prototype.view);
 goog.exportSymbol('X.camera.prototype.position', X.camera.prototype.position);
 goog.exportSymbol('X.camera.prototype.setPosition',
     X.camera.prototype.setPosition);
+goog.exportSymbol('X.camera.prototype.focus', X.camera.prototype.focus);
+goog.exportSymbol('X.camera.prototype.setFocus', X.camera.prototype.setFocus);
+goog.exportSymbol('X.camera.prototype.up', X.camera.prototype.up);
+goog.exportSymbol('X.camera.prototype.setUp', X.camera.prototype.setUp);
 goog.exportSymbol('X.camera.prototype.pan', X.camera.prototype.pan);
 goog.exportSymbol('X.camera.prototype.rotate', X.camera.prototype.rotate);
 goog.exportSymbol('X.camera.prototype.zoomIn', X.camera.prototype.zoomIn);
 goog.exportSymbol('X.camera.prototype.zoomOut', X.camera.prototype.zoomOut);
 goog.exportSymbol('X.camera.prototype.observe', X.camera.prototype.observe);
-
-goog.exportSymbol('goog.math.Vec2', goog.math.Vec2);
-goog.exportSymbol('goog.math.Vec3', goog.math.Vec3);

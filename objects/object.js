@@ -299,6 +299,21 @@ X.object.prototype.setColor = function(r, g, b) {
     
   }
   
+  if (this.hasChildren()) {
+    
+    // loop through the children and propagate the new color
+    var children = this.children();
+    var numberOfChildren = children.length;
+    var c = 0;
+    
+    for (c = 0; c < numberOfChildren; c++) {
+      
+      children[c].setColor(r, g, b);
+      
+    }
+    
+  }
+  
   this._color[0] = r;
   this._color[1] = g;
   this._color[2] = b;
@@ -326,6 +341,21 @@ X.object.prototype.opacity = function() {
  */
 X.object.prototype.setVisible = function(visible) {
 
+  if (this.hasChildren()) {
+    
+    // loop through the children and propagate the new color
+    var children = this.children();
+    var numberOfChildren = children.length;
+    var c = 0;
+    
+    for (c = 0; c < numberOfChildren; c++) {
+      
+      children[c].setVisible(visible);
+      
+    }
+    
+  }
+  
   this._visible = visible;
   
 };
