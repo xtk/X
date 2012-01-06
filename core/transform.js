@@ -65,7 +65,7 @@ X.transform.prototype.rotateX = function(angle) {
 
   if (!goog.isNumber(angle) || angle < -360 || angle > 360) {
     
-    throw new X.exception('Fatal: Invalid angle!');
+    throw new X.exception('Invalid angle!');
     
   }
   
@@ -73,6 +73,8 @@ X.transform.prototype.rotateX = function(angle) {
   
   this._matrix = this._matrix.rotate(angleInRadii, new goog.math.Vec3(0, 1, 0));
   this._glMatrix = new Float32Array(this._matrix.flatten());
+  
+  this._dirty = true;
   
 };
 
@@ -87,7 +89,7 @@ X.transform.prototype.rotateY = function(angle) {
 
   if (!goog.isNumber(angle) || angle < -360 || angle > 360) {
     
-    throw new X.exception('Fatal: Invalid angle!');
+    throw new X.exception('Invalid angle!');
     
   }
   
@@ -95,6 +97,8 @@ X.transform.prototype.rotateY = function(angle) {
   
   this._matrix = this._matrix.rotate(angleInRadii, new goog.math.Vec3(1, 0, 0));
   this._glMatrix = new Float32Array(this._matrix.flatten());
+  
+  this._dirty = true;
   
 };
 
@@ -109,7 +113,7 @@ X.transform.prototype.rotateZ = function(angle) {
 
   if (!goog.isNumber(angle) || angle < -360 || angle > 360) {
     
-    throw new X.exception('Fatal: Invalid angle!');
+    throw new X.exception('Invalid angle!');
     
   }
   
@@ -117,6 +121,8 @@ X.transform.prototype.rotateZ = function(angle) {
   
   this._matrix = this._matrix.rotate(angleInRadii, new goog.math.Vec3(0, 0, 1));
   this._glMatrix = new Float32Array(this._matrix.flatten());
+  
+  this._dirty = true;
   
 };
 
@@ -131,7 +137,7 @@ X.transform.prototype.translateX = function(distance) {
 
   if (!goog.isNumber(distance)) {
     
-    throw new X.exception('Fatal: Invalid distance!');
+    throw new X.exception('Invalid distance!');
     
   }
   
@@ -139,6 +145,8 @@ X.transform.prototype.translateX = function(distance) {
   
   this._matrix = this._matrix.translate(vector);
   this._glMatrix = new Float32Array(this._matrix.flatten());
+  
+  this._dirty = true;
   
 };
 
@@ -153,7 +161,7 @@ X.transform.prototype.translateY = function(distance) {
 
   if (!goog.isNumber(distance)) {
     
-    throw new X.exception('Fatal: Invalid distance!');
+    throw new X.exception('Invalid distance!');
     
   }
   
@@ -161,6 +169,8 @@ X.transform.prototype.translateY = function(distance) {
   
   this._matrix = this._matrix.translate(vector);
   this._glMatrix = new Float32Array(this._matrix.flatten());
+  
+  this._dirty = true;
   
 };
 
@@ -175,7 +185,7 @@ X.transform.prototype.translateZ = function(distance) {
 
   if (!goog.isNumber(distance)) {
     
-    throw new X.exception('Fatal: Invalid distance!');
+    throw new X.exception('Invalid distance!');
     
   }
   
@@ -183,6 +193,8 @@ X.transform.prototype.translateZ = function(distance) {
   
   this._matrix = this._matrix.translate(vector);
   this._glMatrix = new Float32Array(this._matrix.flatten());
+  
+  this._dirty = true;
   
 };
 

@@ -35,8 +35,7 @@ X.interactor = function(element) {
   // check if we have a valid element
   if (!goog.isDefAndNotNull(element) || !(element instanceof Element)) {
     
-    throw new X.exception(
-        'Fatal: Could not add interactor to the given element.');
+    throw new X.exception('Could not add interactor to the given element.');
     
   }
   

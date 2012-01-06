@@ -31,14 +31,14 @@ X.box = function(center, radiusX, radiusY, radiusZ) {
   if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
       (center.length != 3)) {
     
-    throw new X.exception('Fatal: Invalid center for the box!');
+    throw new X.exception('Invalid center for the box!');
     
   }
   
   if (!goog.isNumber(radiusX) || !goog.isNumber(radiusY) ||
       !goog.isNumber(radiusZ)) {
     
-    throw new X.exception('Fatal: Wrong edge lengths for the box!');
+    throw new X.exception('Wrong edge lengths for the box!');
     
   }
   
@@ -137,42 +137,42 @@ X.box.prototype.setColors = function(front, top, right, bottom, left, back) {
   if (!goog.isDefAndNotNull(front) || !(front instanceof Array) ||
       (front.length != 3)) {
     
-    throw new X.exception('Fatal: Wrong color for front side!');
+    throw new X.exception('Wrong color for front side!');
     
   }
   
   if (!goog.isDefAndNotNull(top) || !(top instanceof Array) ||
       (top.length != 3)) {
     
-    throw new X.exception('Fatal: Wrong color for top side!');
+    throw new X.exception('Wrong color for top side!');
     
   }
   
   if (!goog.isDefAndNotNull(right) || !(right instanceof Array) ||
       (right.length != 3)) {
     
-    throw new X.exception('Fatal: Wrong color for right side!');
+    throw new X.exception('Wrong color for right side!');
     
   }
   
   if (!goog.isDefAndNotNull(bottom) || !(bottom instanceof Array) ||
       (bottom.length != 3)) {
     
-    throw new X.exception('Fatal: Wrong color for bottom side!');
+    throw new X.exception('Wrong color for bottom side!');
     
   }
   
   if (!goog.isDefAndNotNull(left) || !(left instanceof Array) ||
       (left.length != 3)) {
     
-    throw new X.exception('Fatal: Wrong color for left side!');
+    throw new X.exception('Wrong color for left side!');
     
   }
   
   if (!goog.isDefAndNotNull(back) || !(back instanceof Array) ||
       (back.length != 3)) {
     
-    throw new X.exception('Fatal: Wrong color for right side!');
+    throw new X.exception('Wrong color for right side!');
     
   }
   
@@ -199,7 +199,7 @@ X.box.prototype.setSpacing = function(spacing) {
 
   if (!goog.isNumber(spacing)) {
     
-    throw new X.exception('Fatal: Wrong spacing value!');
+    throw new X.exception('Wrong spacing value!');
     
   }
   

@@ -39,8 +39,7 @@ X.renderer = function(container) {
   // check if a container is passed
   if (!goog.isDefAndNotNull(container)) {
     
-    throw new X.exception(
-        'Fatal: An ID to a valid container (<div>..) is required!');
+    throw new X.exception('An ID to a valid container (<div>..) is required!');
     
   }
   
@@ -51,7 +50,7 @@ X.renderer = function(container) {
       _container.clientHeight == 0) {
     
     throw new X.exception(
-        'Fatal: Could not find the given container or it has an undefined size!');
+        'Could not find the given container or it has an undefined size!');
     
   }
   
@@ -598,7 +597,7 @@ X.renderer.prototype.init = function() {
   } catch (e) {
     
     // TODO show dialog
-    throw new X.exception('Fatal: Exception while getting GL Context!\n' + e);
+    throw new X.exception('Exception while getting GL Context!\n' + e);
     
   }
   
@@ -607,7 +606,7 @@ X.renderer.prototype.init = function() {
   //
   if (!gl) {
     
-    throw new X.exception('Fatal: WebGL not supported!');
+    throw new X.exception('WebGL not supported!');
     
   }
   
@@ -637,7 +636,7 @@ X.renderer.prototype.init = function() {
   } catch (e) {
     
     // this exception indicates if the browser supports WebGL
-    throw new X.exception('Fatal: Exception while accessing GL Context!\n' + e);
+    throw new X.exception('Exception while accessing GL Context!\n' + e);
     
   }
   
@@ -703,14 +702,14 @@ X.renderer.prototype.addShaders = function(shaders) {
   if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
       !goog.isDefAndNotNull(this._camera)) {
     
-    throw new X.exception('Fatal: Renderer was not initialized properly!');
+    throw new X.exception('Renderer was not initialized properly!');
     
   }
   
   // check if the given shaders are valid
   if (!goog.isDefAndNotNull(shaders) || !(shaders instanceof X.shaders)) {
     
-    throw new X.exception('Fatal: Could not add shaders!');
+    throw new X.exception('Could not add shaders!');
     
   }
   
@@ -732,14 +731,14 @@ X.renderer.prototype.addShaders = function(shaders) {
   
   if (!this._gl.getShaderParameter(glFragmentShader, this._gl.COMPILE_STATUS)) {
     
-    throw new X.exception('Fatal: Fragement Shader compilation failed!\n' +
+    throw new X.exception('Fragement Shader compilation failed!\n' +
         this._gl.getShaderInfoLog(glFragmentShader));
     
   }
   
   if (!this._gl.getShaderParameter(glVertexShader, this._gl.COMPILE_STATUS)) {
     
-    throw new X.exception('Fatal: Vertex Shader compilation failed!\n' +
+    throw new X.exception('Vertex Shader compilation failed!\n' +
         this._gl.getShaderInfoLog(glVertexShader));
     
   }
@@ -752,7 +751,7 @@ X.renderer.prototype.addShaders = function(shaders) {
   
   if (!this._gl.getProgramParameter(shaderProgram, this._gl.LINK_STATUS)) {
     
-    throw new X.exception('Fatal: Could not create shader program!');
+    throw new X.exception('Could not create shader program!');
     
   }
   
@@ -823,13 +822,13 @@ X.renderer.prototype.add_ = function(object) {
   if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
       !goog.isDefAndNotNull(this._camera)) {
     
-    throw new X.exception('Fatal: Renderer was not initialized properly!');
+    throw new X.exception('Renderer was not initialized properly!');
     
   }
   
   if (!goog.isDefAndNotNull(object) || !(object instanceof X.object)) {
     
-    throw new X.exception('Fatal: Illegal object!');
+    throw new X.exception('Illegal object!');
     
   }
   
@@ -878,13 +877,13 @@ X.renderer.prototype.update_ = function(object) {
   if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
       !goog.isDefAndNotNull(this._camera)) {
     
-    throw new X.exception('Fatal: Renderer was not initialized properly!');
+    throw new X.exception('Renderer was not initialized properly!');
     
   }
   
   if (!goog.isDefAndNotNull(object) || !(object instanceof X.object)) {
     
-    throw new X.exception('Fatal: Illegal object!');
+    throw new X.exception('Illegal object!');
     
   }
   
@@ -967,7 +966,7 @@ X.renderer.prototype.update_ = function(object) {
     
     return;
     
-  } else if (goog.isDefAndNotNull(object.file()) && object.dirty()) {
+  } else if (goog.isDefAndNotNull(object.file()) && object.file().dirty()) {
     // this object is based on an external file and it is dirty..
     
     // start loading..
@@ -1089,7 +1088,7 @@ X.renderer.prototype.update_ = function(object) {
     if (object.colors().length() != object.points().length()) {
       
       // mismatch, this can not work
-      throw new X.exception('Fatal: Mismatch between points and point colors!');
+      throw new X.exception('Mismatch between points and point colors!');
       
     }
     var glColorBuffer = this._gl.createBuffer();
@@ -1117,7 +1116,7 @@ X.renderer.prototype.update_ = function(object) {
     // check if we have a valid texture-to-object's-coordinate map
     if (!goog.isDefAndNotNull(object.textureCoordinateMap())) {
       
-      var m = 'Fatal: Can not add an object and texture ';
+      var m = 'Can not add an object and texture ';
       m += 'without valid coordinate mapping! Set the textureCoordinateMap!';
       throw new X.exception(m);
       
@@ -1173,7 +1172,7 @@ X.renderer.prototype.update_ = function(object) {
   // (based on opacity)
   if (!this._objects.push(object)) {
     
-    throw new X.exception('Fatal: Could not add object to this renderer.');
+    throw new X.exception('Could not add object to this renderer.');
     
   }
   
@@ -1199,7 +1198,7 @@ X.renderer.prototype.render = function() {
 
   if (!this._canvas || !this._gl || !this._camera) {
     
-    throw new X.exception('Fatal: The renderer was not initialized properly!');
+    throw new X.exception('The renderer was not initialized properly!');
     
   }
   
@@ -1514,7 +1513,7 @@ X.renderer.prototype.render_ = function() {
       
     } else {
       
-      var message = 'Fatal: Could not retrieve object for (re-)drawing!';
+      var message = 'Could not retrieve object for (re-)drawing!';
       throw new X.exception(message);
       
     }

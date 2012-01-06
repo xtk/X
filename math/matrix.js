@@ -115,7 +115,7 @@ X.matrix.prototype.translate = function(vector) {
 
   if (!this.isSquare()) {
     
-    throw new X.exception('Fatal: Can not translate non-square matrix!');
+    throw new X.exception('Can not translate non-square matrix!');
     
   }
   
@@ -137,7 +137,7 @@ X.matrix.prototype.translate = function(vector) {
     
   } else {
     
-    throw new X.exception('Fatal: Translation failed!');
+    throw new X.exception('Translation failed!');
     
   }
   
@@ -162,19 +162,19 @@ X.matrix.prototype.rotate = function(angle, iaxis) {
   
   if (dimensions.height != 4 || !this.isSquare()) {
     
-    throw new X.exception('Fatal: Only 4x4 matrices can be rotated!');
+    throw new X.exception('Only 4x4 matrices can be rotated!');
     
   }
   
   if (!goog.isDefAndNotNull(iaxis) || !(iaxis instanceof goog.math.Vec3)) {
     
-    throw new X.exception('Fatal: Invalid axis vector!');
+    throw new X.exception('Invalid axis vector!');
     
   }
   
   if (!goog.isNumber(angle)) {
     
-    throw new X.exception('Fatal: Invalid angle!');
+    throw new X.exception('Invalid angle!');
     
   }
   
@@ -248,7 +248,7 @@ X.matrix.prototype.multiplyByVector = function(vector) {
     
   } else {
     
-    throw new X.exception('Fatal: Multiplication by vector failed!');
+    throw new X.exception('Multiplication by vector failed!');
     
   }
   

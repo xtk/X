@@ -25,19 +25,19 @@ X.buffer = function(glBuffer, itemCount, itemSize) {
 
   if (!goog.isDefAndNotNull(glBuffer)) {
     
-    throw new X.exception('Fatal: Invalid GL Buffer!');
+    throw new X.exception('Invalid GL Buffer!');
     
   }
   
   if (!goog.isDefAndNotNull(itemCount)) {
     
-    throw new X.exception('Fatal: Invalid number of items!');
+    throw new X.exception('Invalid number of items!');
     
   }
   
   if (!goog.isDefAndNotNull(itemSize)) {
     
-    throw new X.exception('Fatal: Invalid item size!');
+    throw new X.exception('Invalid item size!');
     
   }
   

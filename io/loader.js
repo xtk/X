@@ -81,7 +81,7 @@ X.loader.prototype.loadTexture = function(object) {
 
   if (!goog.isDefAndNotNull(object.texture())) {
     
-    throw new X.exception('Fatal: Internal error during texture loading.');
+    throw new X.exception('Internal error during texture loading.');
     
   }
   
@@ -127,7 +127,7 @@ X.loader.prototype.loadFile = function(object) {
   if (!goog.isDefAndNotNull(object.file())) {
     
     // should not happen :)
-    throw new X.exception('Fatal: Internal error during file loading.');
+    throw new X.exception('Internal error during file loading.');
     
   }
   
@@ -136,16 +136,16 @@ X.loader.prototype.loadFile = function(object) {
   object.normals().clear();
   
   // get the associated file of the object
-  var file = object.file();
+  var filepath = object.file().path();
   
   // check if the file is supported
-  var fileExtension = file.split('.').pop();
+  var fileExtension = filepath.split('.').pop();
   fileExtension = fileExtension.toUpperCase();
   
   if (!(fileExtension in X.parser.extensions)) {
     
     // file format is not supported
-    throw new X.exception('Fatal: The ' + fileExtension +
+    throw new X.exception('The ' + fileExtension +
         ' file format is not supported!');
     
   }
@@ -171,7 +171,7 @@ X.loader.prototype.loadFile = function(object) {
       request, object));
   
   // configure the URL
-  request.open('GET', file, true);
+  request.open('GET', filepath, true);
   request.overrideMimeType("text/plain; charset=x-user-defined");
   request.setRequestHeader("Content-Type", "text/plain");
   
@@ -228,15 +228,15 @@ X.loader.prototype.progress = function() {
 
 X.loader.prototype.loadFileFailed = function(request, object) {
 
-  throw new X.exception('Fatal: Could not get the file.');
+  throw new X.exception('Could not get the file.');
   
 };
 
 X.loader.prototype.loadFileCompleted = function(request, object) {
 
-  var file = object.file();
+  var filepath = object.file().path();
   
-  var fileExtension = file.split('.').pop();
+  var fileExtension = filepath.split('.').pop();
   
   // setup a parser depending on the fileExtension
   // at this point, we already know that the file format is supported
@@ -279,7 +279,7 @@ X.loader.prototype.parseFileCompleted = function(event) {
   var object = event._object;
   
   // the parsing is done here..
-  object.setClean();
+  object.file().setClean();
   
   // fire the modified event
   object.modified();

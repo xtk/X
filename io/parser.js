@@ -61,7 +61,7 @@ X.parser.extensions = {
  */
 X.parser.prototype.parse = function(object, data) {
 
-  throw new X.exception('Fatal: The function parse() should be overloaded!');
+  throw new X.exception('The function parse() should be overloaded!');
   
 };
 

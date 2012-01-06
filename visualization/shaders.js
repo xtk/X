@@ -218,7 +218,7 @@ X.shaders.prototype.validate = function() {
   if (!attributesValid) {
     
     throw new X.exception(
-        'Fatal: Could not find all attributes in the shader sources!');
+        'Could not find all attributes in the shader sources!');
     
   }
   
@@ -234,8 +234,7 @@ X.shaders.prototype.validate = function() {
   
   if (!uniformsValid) {
     
-    throw new X.exception(
-        'Fatal: Could not find all uniforms in the shader sources!');
+    throw new X.exception('Could not find all uniforms in the shader sources!');
     
   }
   

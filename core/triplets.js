@@ -67,7 +67,7 @@ X.triplets.prototype.add = function(a, b, c) {
 
   if (!goog.isNumber(a) || !goog.isNumber(b) || !goog.isNumber(c)) {
     
-    throw new X.exception('Fatal: Invalid triplet.');
+    throw new X.exception('Invalid triplet.');
     
   }
   
@@ -92,6 +92,8 @@ X.triplets.prototype.add = function(a, b, c) {
   }
   
 
+  this._dirty = true;
+  
   return this._triplets_.push(a, b, c) / 3;
   
 };
@@ -109,7 +111,7 @@ X.triplets.prototype.get = function(id) {
 
   if (!goog.isNumber(id) || (id * 3 > this._triplets_.length)) {
     
-    throw new X.exception('Fatal: Invalid id.');
+    throw new X.exception('Invalid id.');
     
   }
   
@@ -132,11 +134,13 @@ X.triplets.prototype.remove = function(id) {
 
   if (!goog.isNumber(id) || (id * 3 > this._triplets_.length)) {
     
-    throw new X.exception('Fatal: Invalid id.');
+    throw new X.exception('Invalid id.');
     
   }
   
   this._triplets_.splice(id, 3);
+  
+  this._dirty = true;
   
 };
 
@@ -160,6 +164,8 @@ X.triplets.prototype.clear = function() {
 
   // delete all triplets
   this._triplets_ = new Array();
+  
+  this._dirty = true;
   
 };
 

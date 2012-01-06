@@ -22,7 +22,7 @@ X.texture = function(file) {
 
   if (!goog.isDefAndNotNull(file)) {
     
-    throw new X.exception('Fatal: Missing image file for the texture.');
+    throw new X.exception('Missing image file for the texture.');
     
   }
   

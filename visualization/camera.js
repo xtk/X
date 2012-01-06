@@ -30,8 +30,7 @@ X.camera = function(width, height) {
   // validate width and height
   if (!goog.isNumber(width) || !goog.isNumber(height)) {
     
-    throw new X.exception(
-        'Fatal: A camera needs valid width and height values.');
+    throw new X.exception('A camera needs valid width and height values.');
     
   }
   
@@ -121,7 +120,7 @@ X.camera.prototype.observe = function(interactor) {
   if (!goog.isDefAndNotNull(interactor) ||
       !(interactor instanceof X.interactor)) {
     
-    throw new X.exception('Fatal: Could not observe the interactor.');
+    throw new X.exception('Could not observe the interactor.');
     
   }
   
@@ -143,7 +142,7 @@ X.camera.prototype.onZoom = function(event) {
 
   if (!(event instanceof X.event.ZoomEvent)) {
     
-    throw new X.exception('Fatal: Received no valid zoom event!');
+    throw new X.exception('Received no valid zoom event!');
     
   }
   
@@ -170,7 +169,7 @@ X.camera.prototype.onPan = function(event) {
 
   if (!(event instanceof X.event.PanEvent)) {
     
-    throw new X.exception('Fatal: Received no valid pan event!');
+    throw new X.exception('Received no valid pan event!');
     
   }
   
@@ -189,7 +188,7 @@ X.camera.prototype.onRotate = function(event) {
 
   if (!(event instanceof X.event.RotateEvent)) {
     
-    throw new X.exception('Fatal: Received no valid rotate event!');
+    throw new X.exception('Received no valid rotate event!');
     
   }
   
@@ -259,7 +258,7 @@ X.camera.prototype.setPosition = function(x, y, z) {
 
   if (!goog.isNumber(x) || !goog.isNumber(y) || !goog.isNumber(z)) {
     
-    throw new X.exception('Fatal: The position was invalid.');
+    throw new X.exception('The position was invalid.');
     
   }
   
@@ -306,7 +305,7 @@ X.camera.prototype.setFocus = function(x, y, z) {
 
   if (!goog.isNumber(x) || !goog.isNumber(y) || !goog.isNumber(z)) {
     
-    throw new X.exception('Fatal: The focus was invalid.');
+    throw new X.exception('The focus was invalid.');
     
   }
   
@@ -341,7 +340,7 @@ X.camera.prototype.setUp = function(x, y, z) {
 
   if (!goog.isNumber(x) || !goog.isNumber(y) || !goog.isNumber(z)) {
     
-    throw new X.exception('Fatal: The up-vector was invalid.');
+    throw new X.exception('The up-vector was invalid.');
     
   }
   
@@ -421,7 +420,7 @@ X.camera.prototype.pan = function(distance) {
 
   if (!(distance instanceof goog.math.Vec2)) {
     
-    throw new X.exception('Fatal: Invalid distance vector for pan operation.');
+    throw new X.exception('Invalid distance vector for pan operation.');
     
   }
   
@@ -450,8 +449,7 @@ X.camera.prototype.rotate = function(distance) {
 
   if (!(distance instanceof goog.math.Vec2)) {
     
-    throw new X.exception(
-        'Fatal: Invalid distance vector for rotate operation.');
+    throw new X.exception('Invalid distance vector for rotate operation.');
     
   }
   
@@ -562,8 +560,7 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
   if (!(cameraPosition instanceof goog.math.Vec3) ||
       !(targetPoint instanceof goog.math.Vec3)) {
     
-    throw new X.exception(
-        'Fatal: 3D vectors required for calculating the view.');
+    throw new X.exception('3D vectors required for calculating the view.');
     
   }
   

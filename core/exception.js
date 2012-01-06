@@ -47,7 +47,7 @@ X.exception = function(message) {
    * @type {!string}
    * @protected
    */
-  this._message = validMessage;
+  this._message = 'Fatal: ' + validMessage;
   
   /**
    * The associated error object of this exception.

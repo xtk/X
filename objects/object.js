@@ -8,6 +8,7 @@ goog.provide('X.object');
 // requires
 goog.require('X.base');
 goog.require('X.exception');
+goog.require('X.file');
 goog.require('X.triplets');
 goog.require('X.texture');
 goog.require('X.transform');
@@ -101,9 +102,9 @@ X.object = function() {
   this._textureCoordinateMap = null;
   
   /**
-   * The filename if this object represents an external file.
+   * The file of this object.
    * 
-   * @type {?string}
+   * @type {?X.file}
    * @protected
    */
   this._file = null;
@@ -259,7 +260,7 @@ X.object.prototype.setTexture = function(texture) {
 
   if (goog.isDefAndNotNull(texture) && !(texture instanceof X.texture)) {
     
-    throw new X.exception('Fatal: Invalid texture.');
+    throw new X.exception('Invalid texture.');
     
   }
   
@@ -295,7 +296,7 @@ X.object.prototype.setColor = function(r, g, b) {
       (!goog.isNumber(g) && g < 0.0 && g > 1.0) ||
       (!goog.isNumber(b) && b < 0.0 && b > 1.0)) {
     
-    throw new X.exception('Fatal: Invalid color.');
+    throw new X.exception('Invalid color.');
     
   }
   
@@ -317,6 +318,8 @@ X.object.prototype.setColor = function(r, g, b) {
   this._color[0] = r;
   this._color[1] = g;
   this._color[2] = b;
+  
+  this._dirty = true;
   
 };
 
@@ -358,6 +361,8 @@ X.object.prototype.setVisible = function(visible) {
   
   this._visible = visible;
   
+  this._dirty = true;
+  
 };
 
 
@@ -383,33 +388,49 @@ X.object.prototype.setOpacity = function(opacity) {
   // check if the given opacity is in the range 0..1
   if (!goog.isNumber(opacity) || opacity > 1.0 || opacity < 0.0) {
     
-    throw new X.exception('Fatal: Invalid opacity.');
+    throw new X.exception('Invalid opacity.');
     
   }
   
   this._opacity = opacity;
   
-};
-
-
-/**
- * Load this object from a file or reset the associated file.
- * 
- * @param {?string} file The file path/URL to load. If null, reset the
- *          associated file.
- */
-X.object.prototype.load = function(file) {
-
-  this._file = file;
   this._dirty = true;
   
 };
 
 
 /**
- * Get the associated file for this object.
+ * Load this object from a file path or reset the associated file path.
  * 
- * @return {?string} The associated file or null if no file is associated.
+ * @param {?string} filepath The file path/URL to load. If null, reset the
+ *          associated file.
+ */
+X.object.prototype.load = function(filepath) {
+
+  if (!goog.isDefAndNotNull(filepath)) {
+    
+    // if path is null, we reset the associated X.file object
+    
+    this._file = null;
+    return;
+    
+  }
+  
+  if (!this._file) {
+    
+    this._file = new X.file();
+    
+  }
+  
+  this._file.setPath(filepath);
+  
+};
+
+
+/**
+ * Get the associated X.file for this object.
+ * 
+ * @return {?X.file} The associated X.file or null if no file is associated.
  */
 X.object.prototype.file = function() {
 
@@ -478,11 +499,13 @@ X.object.prototype.setLineWidth = function(width) {
 
   if (!goog.isNumber(width)) {
     
-    throw new X.exception('Fatal: Invalid line width!');
+    throw new X.exception('Invalid line width!');
     
   }
   
   this._lineWidth = width;
+  
+  this._dirty = true;
   
 };
 
