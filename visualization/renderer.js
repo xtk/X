@@ -148,6 +148,15 @@ X.renderer = function(container) {
    */
   this._objects = new Array();
   
+  /**
+   * An array containing the topLevel objects (which do not have parents) of
+   * this renderer.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._topLevelObjects = new Array();
+  
   this._minX = null;
   this._maxX = null;
   this._minY = null;
@@ -783,6 +792,25 @@ X.renderer.prototype.addShaders = function(shaders) {
 
 
 /**
+ * Add a new object to this renderer. The renderer has to be initialized before
+ * doing so. A X.renderer.render() call has to be initiated to display added
+ * objects.
+ * 
+ * @param {!X.object} object The object to add to this renderer.
+ * @throws {X.exception} An exception if something goes wrong.
+ */
+X.renderer.prototype.add = function(object) {
+
+  // we know that objects which are directly added using this function are def.
+  // top-level objects, meaning that they do not have a parent
+  this._topLevelObjects.push(object);
+  
+  this.add_(object);
+  
+};
+
+
+/**
  * Add a new displayable object to this renderer. The renderer has to be
  * initialized before doing so. A X.renderer.render() call has to be initiated
  * to display added objects.
@@ -790,7 +818,7 @@ X.renderer.prototype.addShaders = function(shaders) {
  * @param {!X.object} object The displayable object to add to this renderer.
  * @throws {X.exception} An exception if something goes wrong.
  */
-X.renderer.prototype.add = function(object) {
+X.renderer.prototype.add_ = function(object) {
 
   if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
       !goog.isDefAndNotNull(this._camera)) {
@@ -950,6 +978,7 @@ X.renderer.prototype.update_ = function(object) {
   }
   
   // check if this is an empty object, if yes, jump out
+  // empty objects can be used to group objects
   if (object.points().count() == 0) {
     
     return;
@@ -1240,8 +1269,51 @@ X.renderer.prototype.render = function() {
 };
 
 
+X.renderer.prototype.generateTree_ = function(object, level) {
+
+  var output = "";
+  
+  for ( var l = 0; l < level; l++) {
+    
+    output += ">";
+    
+  }
+  
+  output += object.id();
+  window.console.log(output);
+  
+  if (object.hasChildren()) {
+    
+    // loop through the children
+    var children = object.children();
+    var numberOfChildren = children.length;
+    var c = 0;
+    
+    for (c = 0; c < numberOfChildren; c++) {
+      
+      this.generateTree_(children[c], level + 1);
+      
+    }
+    
+  }
+  
+};
+
+
 X.renderer.prototype.render_ = function() {
 
+  for ( var y = 0; y < this._topLevelObjects.length; y++) {
+    
+    var topLevelObject = this._topLevelObjects[y];
+    
+    if (topLevelObject.hasChildren()) {
+      
+      this.generateTree_(topLevelObject, 0);
+      
+    }
+    
+  }
+  
   // clear the canvas
   this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
   
