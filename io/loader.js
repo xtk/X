@@ -107,18 +107,22 @@ X.loader.prototype.loadTexture = function(object) {
 
 X.loader.prototype.loadTextureCompleted = function(object) {
 
-  // at this point the image for the texture was loaded properly
-  object.texture().setClean();
-  
-  // fire the modified event
-  object.modified();
-  
-  // mark the loading job as completed
-  this.jobs_().set(object.id(), true);
-  
   // here we add the rest of the setup step 0.7 and a full progress tick for the
   // load completion
   this.addProgress(1.7);
+  
+  setTimeout(function() {
+
+    // at this point the image for the texture was loaded properly
+    object.texture().setClean();
+    
+    // fire the modified event
+    object.modified();
+    
+    // mark the loading job as completed
+    this.jobs_().set(object.id(), true);
+    
+  }.bind(this), 100);
   
 };
 
@@ -155,8 +159,8 @@ X.loader.prototype.loadFile = function(object) {
   var request = new XMLHttpRequest();
   
   // listen to progress events.. here, goog.events.listen did not work
-  request.addEventListener('progress',
-      this.loadFileProgress.bind(this, object), false);
+  // request.addEventListener('progress',
+  // this.loadFileProgress.bind(this, object), false);
   
   // listen to abort events
   goog.events.listen(request, 'abort', this.loadFileFailed.bind(this, request,
@@ -182,17 +186,24 @@ X.loader.prototype.loadFile = function(object) {
   this.jobs_().set(object.id(), false);
   
 };
-
-X.loader.prototype.loadFileProgress = function(object, event) {
-
-  if (event.lengthComputable) {
-    var progress = event.loaded / event.total;
-    
-    this.addProgress(progress);
-    
-  }
-  
-};
+//
+// X.loader.prototype.loadFileProgress = function(object, event) {
+//
+// if (event.lengthComputable) {
+// var progress = event.loaded / event.total;
+//    
+// if (progress > 1) {
+//      
+// // sometimes this gives values > 1, we don't want that
+// progress = 1;
+//      
+// }
+//    
+// this.addProgress(progress);
+//    
+// }
+//  
+// };
 
 X.loader.prototype.addProgress = function(value) {
 
@@ -204,6 +215,7 @@ X.loader.prototype.addProgress = function(value) {
   // stage 3: setting up in X.renderer
   //
   // each stage adds progress from 0..1 with a total of 1 at the end
+  // add a fake job to prevent the user starring at a full progress bar
   this._progress_ += value / (this.jobs_().getCount()) / 3;
   
   if (this._progress_ > 1) {
@@ -234,58 +246,77 @@ X.loader.prototype.loadFileFailed = function(request, object) {
 
 X.loader.prototype.loadFileCompleted = function(request, object) {
 
-  var filepath = object.file().path();
+  // loading completed, add progress
+  this.addProgress(1.0);
   
-  var fileExtension = filepath.split('.').pop();
+  // we use a timeout here to let the progress bar be able to breath and show
+  // something
+  setTimeout(function() {
+
+    var filepath = object.file().path();
+    
+    var fileExtension = filepath.split('.').pop();
+    
+    // setup a parser depending on the fileExtension
+    // at this point, we already know that the file format is supported
+    
+    if (fileExtension == 'stl') {
+      
+      var stlParser = new X.parserSTL();
+      
+      goog.events.listenOnce(stlParser, X.event.events.MODIFIED,
+          this.parseFileCompleted.bind(this));
+      
+      stlParser.parse(object, request.response);
+      
+    } else if (fileExtension == 'vtk') {
+      
+      var vtkParser = new X.parserVTK();
+      
+      goog.events.listenOnce(vtkParser, X.event.events.MODIFIED,
+          this.parseFileCompleted.bind(this));
+      
+      vtkParser.parse(object, request.response);
+      
+    } else if (fileExtension == 'trk') {
+      
+      var trkParser = new X.parserTRK();
+      
+      goog.events.listenOnce(trkParser, X.event.events.MODIFIED,
+          this.parseFileCompleted.bind(this));
+      
+      trkParser.parse(object, request.response);
+      
+    }
+    
+
+  }.bind(this), 100);
   
-  // setup a parser depending on the fileExtension
-  // at this point, we already know that the file format is supported
-  
-  if (fileExtension == 'stl') {
-    
-    var stlParser = new X.parserSTL();
-    
-    goog.events.listenOnce(stlParser, X.event.events.MODIFIED,
-        this.parseFileCompleted.bind(this));
-    
-    stlParser.parse(object, request.response);
-    
-  } else if (fileExtension == 'vtk') {
-    
-    var vtkParser = new X.parserVTK();
-    
-    goog.events.listenOnce(vtkParser, X.event.events.MODIFIED,
-        this.parseFileCompleted.bind(this));
-    
-    vtkParser.parse(object, request.response);
-    
-  } else if (fileExtension == 'trk') {
-    
-    var trkParser = new X.parserTRK();
-    
-    goog.events.listenOnce(trkParser, X.event.events.MODIFIED,
-        this.parseFileCompleted.bind(this));
-    
-    trkParser.parse(object, request.response);
-    
-  }
-  
+
 
 };
 
 
 X.loader.prototype.parseFileCompleted = function(event) {
 
-  var object = event._object;
+  this.addProgress(1.0);
   
-  // the parsing is done here..
-  object.file().setClean();
-  
-  // fire the modified event
-  object.modified();
-  
-  // mark the loading job as completed
-  this.jobs_().set(object.id(), true);
+  // we use a timeout here to let the progress bar be able to breath and show
+  // something
+  setTimeout(function() {
+
+    var object = event._object;
+    
+    // the parsing is done here..
+    object.file().setClean();
+    
+    // fire the modified event
+    object.modified();
+    
+    // mark the loading job as completed
+    this.jobs_().set(object.id(), true);
+    
+  }.bind(this), 100);
   
 };
 
