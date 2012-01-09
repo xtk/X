@@ -236,14 +236,6 @@ X.renderer = function(container) {
   this._loader = null;
   
   /**
-   * Flag to enable or disable the progress bar during loading.
-   * 
-   * @type {boolean}
-   * @protected
-   */
-  this._progressBarEnabled = true;
-  
-  /**
    * The progressBar of this renderer.
    * 
    * @type {?X.progressbar}
@@ -263,6 +255,16 @@ X.renderer = function(container) {
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
+
+
+/**
+ * The configuration of this renderer.
+ * 
+ * @enum {boolean}
+ */
+X.renderer.prototype.config = {
+  PROGRESSBAR_ENABLED: true
+};
 
 
 /**
@@ -411,7 +413,7 @@ X.renderer.prototype.onModified = function(event) {
 X.renderer.prototype.showProgressBar_ = function() {
 
   // only do the following if the progressBar was not turned off
-  if (this._progressBarEnabled) {
+  if (this.config.PROGRESSBAR_ENABLED) {
     
     // create a progress bar here if this is the first render request and the
     // loader is working
@@ -432,7 +434,7 @@ X.renderer.prototype.showProgressBar_ = function() {
 X.renderer.prototype.hideProgressBar_ = function() {
 
   // only do the following if the progressBar was not turned off
-  if (this._progressBarEnabled) {
+  if (this.config.PROGRESSBAR_ENABLED) {
     
     if (this._progressBar) {
       
@@ -567,11 +569,7 @@ X.renderer.prototype.init = function() {
   //
   // create a new interactor
   var interactor = new X.interactor(canvas);
-  // TODO flags to disable the interactor on X.renderer-base
-  interactor.observeKeyboard();
-  interactor.observeMouseWheel();
-  interactor.observeMouseClicks();
-  interactor.observeMouseMovement();
+  interactor.init();
   // .. listen to resetViewEvents
   goog.events.listen(interactor, X.event.events.RESETVIEW,
       this.resetViewAndRender.bind(this));
@@ -1442,6 +1440,7 @@ X.renderer.prototype.render_ = function() {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer', X.renderer);
+goog.exportSymbol('X.renderer.prototype.config', X.renderer.prototype.config);
 goog.exportSymbol('X.renderer.prototype.width', X.renderer.prototype.width);
 goog.exportSymbol('X.renderer.prototype.height', X.renderer.prototype.height);
 goog.exportSymbol('X.renderer.prototype.canvas', X.renderer.prototype.canvas);
@@ -1450,6 +1449,13 @@ goog.exportSymbol('X.renderer.prototype.container',
 goog.exportSymbol('X.renderer.prototype.camera', X.renderer.prototype.camera);
 goog.exportSymbol('X.renderer.prototype.interactor',
     X.renderer.prototype.interactor);
+goog.exportSymbol('X.renderer.prototype.loader', X.renderer.prototype.loader);
+goog.exportSymbol('X.renderer.prototype.onProgress',
+    X.renderer.prototype.onProgress);
+goog.exportSymbol('X.renderer.prototype.onModified',
+    X.renderer.prototype.onModified);
+goog.exportSymbol('X.renderer.prototype.resetViewAndRender',
+    X.renderer.prototype.resetViewAndRender);
 goog.exportSymbol('X.renderer.prototype.init', X.renderer.prototype.init);
 goog.exportSymbol('X.renderer.prototype.addShaders',
     X.renderer.prototype.addShaders);

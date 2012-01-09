@@ -160,7 +160,11 @@ X.progressbar.prototype.init_ = function() {
  */
 X.progressbar.prototype.done = function() {
 
-  // destroy the original progress bar
+  // save the position of the original progress bar
+  var top = this.getElement().style.top;
+  var left = this.getElement().style.left;
+  
+  // .. destroy the original progress bar (on the DOM side)
   goog.dom.removeNode(this.getElement());
   
   // create a 'fake' new progress bar in place of the original one
@@ -170,11 +174,11 @@ X.progressbar.prototype.done = function() {
   // place the progressBar in the center
   var pbElement = pb.getElement();
   pbElement.style.position = 'absolute';
-  pbElement.style.top = (this._parent.clientHeight - 5) / 2;
-  pbElement.style.left = (this._parent.clientWidth - 100) / 2;
+  pbElement.style.top = top;
+  pbElement.style.left = left;
   
   // get the actual progress element of the progressBar
-  var pbBar = goog.dom.getFirstElementChild(pb.getElement());
+  var pbBar = goog.dom.getFirstElementChild(pbElement);
   
   // .. change the color to green
   pbBar.classList.add('progress-bar-thumb-done');

@@ -61,20 +61,44 @@ X.interactor = function(element) {
   this._element = element;
   
   /**
-   * The browser independent mousewheel handler.
+   * The listener id for mouse down observation.
+   * 
+   * @type {?number}
+   * @protected
+   */
+  this._mouseDownListener = null;
+  
+  /**
+   * The listener id for mouse up observation.
+   * 
+   * @type {?number}
+   * @protected
+   */
+  this._mouseUpListener = null;
+  
+  /**
+   * The listener id for mouse move observation.
+   * 
+   * @type {?number}
+   * @protected
+   */
+  this._mouseMoveListener = null;
+  
+  /**
+   * The listener id for mouse out observation.
+   * 
+   * @type {?number}
+   * @protected
+   */
+  this._mouseOutListener = null;
+  
+  /**
+   * The browser independent mouse wheel handler.
    * 
    * @type {?goog.events.MouseWheelHandler}
    * @protected
    */
   this._mouseWheelHandler = null;
-  
-  /**
-   * Indicates if the keyboard should be observed.
-   * 
-   * @type {!boolean}
-   * @protected
-   */
-  this._observeKeyboard = false;
   
   /**
    * Indicates if the mouse is inside the element.
@@ -122,74 +146,109 @@ goog.inherits(X.interactor, X.base);
 
 
 /**
+ * The configuration of this interactor.
+ * 
+ * @enum {boolean}
+ */
+X.interactor.prototype.config = {
+  MOUSEWHEEL_ENABLED: true,
+  MOUSECLICKS_ENABLED: true,
+  KEYBOARD_ENABLED: true,
+  CONTEXTMENU_ENABLED: false
+};
+
+
+/**
  * Observe mouse wheel interaction on the associated DOM element.
  */
-X.interactor.prototype.observeMouseWheel = function() {
+X.interactor.prototype.init = function() {
 
-  // we use the goog.events.MouseWheelHandler for a browser-independent
-  // implementation
-  this._mouseWheelHandler = new goog.events.MouseWheelHandler(this._element);
-  
-  goog.events.listen(this._mouseWheelHandler,
-      goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.onMouseWheel
-          .bind(this));
-  
-};
-
-
-/**
- * Observe mouse clicks on the associated DOM element. This function also blocks
- * the context menu on right clicks in a browser independent fashion.
- */
-X.interactor.prototype.observeMouseClicks = function() {
-
-  // mouse down
-  goog.events.listen(this._element, goog.events.EventType.MOUSEDOWN,
-      this.onMouseDown.bind(this));
-  
-  // mouse up
-  goog.events.listen(this._element, goog.events.EventType.MOUSEUP,
-      this.onMouseUp.bind(this));
-  
-  // deactivate right-click context menu
-  // found no way to use goog.events for that? tried everything..
-  // according to http://help.dottoro.com/ljhwjsss.php, this method is
-  // compatible with all browsers but opera
-  this._element.oncontextmenu = function() {
-
-    return false;
+  if (this.config.MOUSEWHEEL_ENABLED) {
     
-  };
+    // we use the goog.events.MouseWheelHandler for a browser-independent
+    // implementation
+    this._mouseWheelHandler = new goog.events.MouseWheelHandler(this._element);
+    
+    goog.events.listen(this._mouseWheelHandler,
+        goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.onMouseWheel
+            .bind(this));
+    
+  } else {
+    
+    // remove all mouse wheel observers, if they exist..
+    this._mouseWheelHandler.dispose();
+    
+  }
   
-};
+  if (this.config.MOUSECLICKS_ENABLED) {
+    
+    // mouse down
+    this._mouseDownListener = goog.events.listen(this._element,
+        goog.events.EventType.MOUSEDOWN, this.onMouseDown.bind(this));
+    
+    // mouse up
+    this._mouseUpListener = goog.events.listen(this._element,
+        goog.events.EventType.MOUSEUP, this.onMouseUp.bind(this));
+    
+  } else {
+    
+    // remove the observer, if it exists..
+    // goog.events.unlisten(this._element, goog.events.EventType.MOUSEDOWN);
+    goog.events.unlistenByKey(this._mouseDownListener);
+    
+    // remove the observer, if it exists..
+    goog.events.unlistenByKey(this._mouseUpListener);
+    
+  }
+  
+  if (!this.config.CONTEXTMENU_ENABLED) {
+    
+    // deactivate right-click context menu
+    // found no way to use goog.events for that? tried everything..
+    // according to http://help.dottoro.com/ljhwjsss.php, this method is
+    // compatible with all browsers but opera
+    this._element.oncontextmenu = function() {
 
-
-/**
- * Observe mouse movement on the associated DOM element.
- */
-X.interactor.prototype.observeMouseMovement = function() {
-
+      return false;
+      
+    };
+    
+  } else {
+    
+    // re-activate right-click context menu
+    this._element.oncontextmenu = null;
+  }
+  
+  if (this.config.KEYBOARD_ENABLED) {
+    
+    // the google closure way did not work, so let's do it this way..
+    window.onkeydown = this.onKey.bind(this);
+    
+  } else {
+    
+    // remove the keyboard observer
+    window.onkeydown = null;
+    
+  }
+  
+  //
+  // we always listen to mouse move events since they are essential for the
+  // other events
+  // we do make sure, we add them only once
+  
+  // remove the observer, if it exists..
+  goog.events.unlistenByKey(this._mouseMoveListener);
+  
+  // remove the observer, if it exists..
+  goog.events.unlistenByKey(this._mouseOutListener);
+  
   // mouse movement inside the element
-  goog.events.listen(this._element, goog.events.EventType.MOUSEMOVE,
-      this.onMouseMovementInside.bind(this));
+  this._mouseMoveListener = goog.events.listen(this._element,
+      goog.events.EventType.MOUSEMOVE, this.onMouseMovementInside.bind(this));
   
   // mouse movement outside the element
-  goog.events.listen(this._element, goog.events.EventType.MOUSEOUT,
-      this.onMouseMovementOutside.bind(this));
-  
-};
-
-
-/**
- * Observe the keyboard on the associated DOM element.
- */
-X.interactor.prototype.observeKeyboard = function() {
-
-  // set the flag
-  this._observeKeyboard = true;
-  
-  // the google closure way did not work, so let's do it this way..
-  window.onkeydown = this.onKey.bind(this);
+  this._mouseOutListener = goog.events.listen(this._element,
+      goog.events.EventType.MOUSEOUT, this.onMouseMovementOutside.bind(this));
   
 };
 
@@ -264,7 +323,7 @@ X.interactor.prototype.onMouseMovementOutside = function(event) {
 
   // reset the click flags
   this._mouseInside = false;
-  if (this._observeKeyboard) {
+  if (this.config.KEYBOARD_ENABLED) {
     
     // if we observe the keyboard, remove the observer here
     // this is necessary if there are more than one renderer in the document
@@ -275,8 +334,7 @@ X.interactor.prototype.onMouseMovementOutside = function(event) {
   this._leftButtonDown = false;
   this._middleButtonDown = false;
   this._rightButtonDown = false;
-  this._lastMousePosition.x = 0;
-  this._lastMousePosition.y = 0;
+  this._lastMousePosition = new goog.math.Vec2(0, 0);
   
   // prevent further handling by the browser
   event.preventDefault();
@@ -298,9 +356,10 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
   
   this._mouseInside = true;
   
-  if (this._observeKeyboard && window.onkeydown == null) {
+  if (this.config.KEYBOARD_ENABLED && window.onkeydown == null) {
     
-    this.observeKeyboard();
+    // we re-gained the focus, enable the keyboard observer again!
+    window.onkeydown = this.onKey.bind(this);
     
   }
   
@@ -577,12 +636,9 @@ X.interactor.prototype.onKey = function(event) {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.interactor', X.interactor);
-goog.exportSymbol('X.interactor.prototype.observeMouseWheel',
-    X.interactor.prototype.observeMouseWheel);
-goog.exportSymbol('X.interactor.prototype.observeMouseClicks',
-    X.interactor.prototype.observeMouseClicks);
-goog.exportSymbol('X.interactor.prototype.observeMouseMovement',
-    X.interactor.prototype.observeMouseMovement);
+goog.exportSymbol('X.interactor.prototype.config',
+    X.interactor.prototype.config);
+goog.exportSymbol('X.interactor.prototype.init', X.interactor.prototype.init);
 goog.exportSymbol('X.interactor.prototype.onMouseDown',
     X.interactor.prototype.onMouseDown);
 goog.exportSymbol('X.interactor.prototype.onMouseUp',
@@ -593,3 +649,4 @@ goog.exportSymbol('X.interactor.prototype.onMouseMovementInside',
     X.interactor.prototype.onMouseMovementInside);
 goog.exportSymbol('X.interactor.prototype.onMouseWheel',
     X.interactor.prototype.onMouseWheel);
+goog.exportSymbol('X.interactor.prototype.onKey', X.interactor.prototype.onKey);
