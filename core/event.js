@@ -11,6 +11,7 @@ goog.provide('X.event.ZoomEvent');
 goog.provide('X.event.RotateEvent');
 goog.provide('X.event.PanEvent');
 goog.provide('X.event.RenderEvent');
+goog.provide('X.event.PickEvent');
 goog.provide('X.event.ResetViewEvent');
 goog.provide('X.event.ModifiedEvent');
 
@@ -79,6 +80,9 @@ X.event.events = {
   
   // the render event
   RENDER: X.event.uniqueId('render'),
+  
+  // the pick event
+  PICK: X.event.uniqueId('pick'),
   
   // the reset view event
   RESETVIEW: X.event.uniqueId('resetview'),
@@ -202,6 +206,23 @@ X.event.RenderEvent = function() {
 // inherit from goog.events.Event
 goog.inherits(X.event.RenderEvent, X.event);
 
+
+/**
+ * The pick event to query the renderer.
+ * 
+ * @constructor
+ * @extends X.event
+ */
+X.event.PickEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.event.events.PICK);
+  
+  this._x = 0;
+  this._y = 0;
+};
+// inherit from goog.events.Event
+goog.inherits(X.event.PickEvent, X.event);
 
 
 /**

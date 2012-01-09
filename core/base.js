@@ -40,10 +40,10 @@ X.base = function() {
   /**
    * The uniqueId of this object. Each instance in XTK has a uniqueId.
    * 
-   * @type {string}
+   * @type {number}
    * @protected
    */
-  this._id = X.uniqueId('X');
+  this._id = parseInt(X.uniqueId(''));
   
   /**
    * The 'dirty' flag of this object.

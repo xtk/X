@@ -89,6 +89,7 @@ X.shaders = function() {
   // android only guarantees medium precision
   t2 += 'precision mediump float;\n';
   t2 += '\n';
+  t2 += 'uniform bool usePicking;\n';
   t2 += 'uniform bool useTexture;\n';
   t2 += 'uniform sampler2D textureSampler;\n';
   t2 += 'uniform float objectOpacity;\n';
@@ -99,7 +100,10 @@ X.shaders = function() {
   t2 += 'varying vec3 fTransformedVertexNormal;\n';
   t2 += '\n';
   t2 += 'void main(void) {\n';
-  t2 += ' if (useTexture) {\n';
+  // in picking mode, we don't want any extras but just the plain color
+  t2 += ' if (usePicking) {\n';
+  t2 += '   gl_FragColor = vec4(fragmentColor, 1.0);\n';
+  t2 += ' } else if (useTexture) {\n';
   t2 += '   gl_FragColor = texture2D(textureSampler,';
   t2 += '   vec2(fragmentTexturePos.s,fragmentTexturePos.t));\n';
   t2 += ' } else {\n';
@@ -162,6 +166,7 @@ X.shaders.uniforms = {
   OBJECTCOLOR: 'objectColor',
   OBJECTOPACITY: 'objectOpacity',
   NORMAL: 'normal',
+  USEPICKING: 'usePicking',
   USETEXTURE: 'useTexture',
   TEXTURESAMPLER: 'textureSampler'
 };

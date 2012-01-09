@@ -280,6 +280,13 @@ X.interactor.prototype.onMouseDown = function(event) {
   // prevent further handling by the browser
   event.preventDefault();
   
+  var e = new X.event.PickEvent();
+  
+  e._x = event.clientX;
+  e._y = event.clientY;
+  
+  this.dispatchEvent(e);
+  
 };
 
 
