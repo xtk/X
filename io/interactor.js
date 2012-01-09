@@ -8,6 +8,7 @@ goog.provide('X.interactor');
 // requires
 goog.require('X.base');
 goog.require('X.event');
+goog.require('X.event.HoverEvent');
 goog.require('X.event.RotateEvent');
 goog.require('X.event.PanEvent');
 goog.require('X.event.ResetViewEvent');
@@ -59,6 +60,14 @@ X.interactor = function(element) {
    * @protected
    */
   this._element = element;
+  
+  /**
+   * The listener id for mouse wheel observation.
+   * 
+   * @type {?number}
+   * @protected
+   */
+  this._mouseWheelListener = null;
   
   /**
    * The listener id for mouse down observation.
@@ -154,6 +163,7 @@ X.interactor.prototype.config = {
   MOUSEWHEEL_ENABLED: true,
   MOUSECLICKS_ENABLED: true,
   KEYBOARD_ENABLED: true,
+  HOVERING_ENABLED: true,
   CONTEXTMENU_ENABLED: false
 };
 
@@ -169,14 +179,16 @@ X.interactor.prototype.init = function() {
     // implementation
     this._mouseWheelHandler = new goog.events.MouseWheelHandler(this._element);
     
-    goog.events.listen(this._mouseWheelHandler,
+    this._mouseWheelListener = goog.events.listen(this._mouseWheelHandler,
         goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.onMouseWheel
             .bind(this));
     
   } else {
     
     // remove all mouse wheel observers, if they exist..
-    this._mouseWheelHandler.dispose();
+    goog.events.unlistenByKey(this._mouseWheelListener);
+    
+    this._mouseWheelHandler = null;
     
   }
   
@@ -280,13 +292,6 @@ X.interactor.prototype.onMouseDown = function(event) {
   // prevent further handling by the browser
   event.preventDefault();
   
-  var e = new X.event.PickEvent();
-  
-  e._x = event.clientX;
-  e._y = event.clientY;
-  
-  this.dispatchEvent(e);
-  
 };
 
 
@@ -341,6 +346,8 @@ X.interactor.prototype.onMouseMovementOutside = function(event) {
   this._leftButtonDown = false;
   this._middleButtonDown = false;
   this._rightButtonDown = false;
+  // remove the hover trigger
+  clearTimeout(this._hoverTrigger);
   this._lastMousePosition = new goog.math.Vec2(0, 0);
   
   // prevent further handling by the browser
@@ -384,6 +391,39 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
   
   // save the current mouse position as the last one
   this._lastMousePosition = currentMousePosition.clone();
+  
+  // 
+  // hovering, if enabled..
+  //
+  if (this.config.HOVERING_ENABLED) {
+    
+    if (Math.abs(distance.x) > 0 || Math.abs(distance.y) > 0 ||
+        this._middleButtonDown || this._leftButtonDown || this._rightButtonDown) {
+      
+      // there was some mouse movement, let's cancel the hovering countdown
+      if (this._hoverTrigger) {
+        clearTimeout(this._hoverTrigger);
+      }
+      
+    }
+    
+    // start the hovering countdown
+    // if the mouse does not move for 2 secs, fire the HoverEvent to initiate
+    // picking etc.
+    this._hoverTrigger = setTimeout(function() {
+
+      var e = new X.event.HoverEvent();
+      e._x = currentMousePosition.x;
+      e._y = currentMousePosition.y;
+      
+      this.dispatchEvent(e);
+      
+      // reset the trigger
+      this._hoverTrigger = null;
+      
+    }.bind(this), 1000);
+    
+  }
   
   // threshold the distance to avoid 'irregular' movement
   if (Math.abs(distance.x) < 2) {
@@ -495,6 +535,9 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
  */
 X.interactor.prototype.onMouseWheel = function(event) {
 
+  // remove the hover trigger
+  clearTimeout(this._hoverTrigger);
+  
   // prevent any other action (like scrolling..)
   event.preventDefault();
   

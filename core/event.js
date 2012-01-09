@@ -11,7 +11,7 @@ goog.provide('X.event.ZoomEvent');
 goog.provide('X.event.RotateEvent');
 goog.provide('X.event.PanEvent');
 goog.provide('X.event.RenderEvent');
-goog.provide('X.event.PickEvent');
+goog.provide('X.event.HoverEvent');
 goog.provide('X.event.ResetViewEvent');
 goog.provide('X.event.ModifiedEvent');
 
@@ -81,9 +81,6 @@ X.event.events = {
   // the render event
   RENDER: X.event.uniqueId('render'),
   
-  // the pick event
-  PICK: X.event.uniqueId('pick'),
-  
   // the reset view event
   RESETVIEW: X.event.uniqueId('resetview'),
   
@@ -91,7 +88,11 @@ X.event.events = {
   MODIFIED: X.event.uniqueId('modified'),
   
   // the loading progress event
-  PROGRESS: X.event.uniqueId('progress')
+  PROGRESS: X.event.uniqueId('progress'),
+  
+  // the hover event
+  HOVER: X.event.uniqueId('hover')
+
 };
 
 
@@ -208,21 +209,22 @@ goog.inherits(X.event.RenderEvent, X.event);
 
 
 /**
- * The pick event to query the renderer.
+ * The hover event, indicating mouse-over on an X.object.
  * 
  * @constructor
  * @extends X.event
  */
-X.event.PickEvent = function() {
+X.event.HoverEvent = function() {
 
   // call the default event constructor
-  goog.base(this, X.event.events.PICK);
+  goog.base(this, X.event.events.HOVER);
   
   this._x = 0;
   this._y = 0;
+  
 };
 // inherit from goog.events.Event
-goog.inherits(X.event.PickEvent, X.event);
+goog.inherits(X.event.HoverEvent, X.event);
 
 
 /**
@@ -302,4 +304,5 @@ goog.exportSymbol('X.event.ZoomEvent', X.event.ZoomEvent);
 goog.exportSymbol('X.event.RenderEvent', X.event.RenderEvent);
 goog.exportSymbol('X.event.ResetViewEvent', X.event.ResetViewEvent);
 goog.exportSymbol('X.event.ModifiedEvent', X.event.ModifiedEvent);
+goog.exportSymbol('X.event.HoverEvent', X.event.HoverEvent);
 goog.exportSymbol('X.event.ProgressEvent', X.event.ProgressEvent);

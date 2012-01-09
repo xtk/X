@@ -403,21 +403,30 @@ X.renderer.prototype.onProgress = function(event) {
  */
 X.renderer.prototype.onModified = function(event) {
 
-  var object = event._object;
-  
-  this.update_(object);
+  if (goog.isDefAndNotNull(event) && event instanceof X.event.ModifiedEvent) {
+    
+    this.update_(event._object);
+    
+  }
   
 };
 
 
-X.renderer.prototype.onPick = function(event) {
+/**
+ * The callback for X.event.events.HOVER events which indicates a hovering over
+ * an X.object. This triggers picking and therefor a re-rendering to an
+ * invisible framebuffer.
+ * 
+ * @param {!X.event.HoverEvent} event The hover event pointing to the relevant
+ *          screen coordinates.
+ */
+X.renderer.prototype.onHover = function(event) {
 
-  console.log('onPick');
-  console.log(event);
-  console.log(this.pick(event._x, event._y));
-  // var object = event._object;
-  
-  // this.update_(object);
+  if (goog.isDefAndNotNull(event) && event instanceof X.event.HoverEvent) {
+    
+    this.showCaption_(event._x, event._y);
+    
+  }
   
 };
 
@@ -526,7 +535,9 @@ X.renderer.prototype.init = function() {
   //
   try {
     
-    var gl = canvas.getContext('experimental-webgl');
+    var gl = canvas.getContext('experimental-webgl', {
+      preserveDrawingBuffer: true
+    });
     
   } catch (e) {
     
@@ -621,7 +632,8 @@ X.renderer.prototype.init = function() {
   // .. listen to resetViewEvents
   goog.events.listen(interactor, X.event.events.RESETVIEW,
       this.resetViewAndRender.bind(this));
-  goog.events.listen(interactor, X.event.events.PICK, this.onPick.bind(this));
+  // .. listen to hoverEvents
+  goog.events.listen(interactor, X.event.events.HOVER, this.onHover.bind(this));
   
 
   //
@@ -1265,26 +1277,62 @@ X.renderer.prototype.generateTree_ = function(object, level) {
 };
 
 
-X.renderer.prototype.pick = function(x, y) {
+X.renderer.prototype.get = function(id) {
 
-  this.render_(true);
+  // TODO we can store the objects ordered and do a binary search here
   
-  var data = new Uint8Array(this._width * this._height * 3); // w * h * 4
-  this._gl.readPixels(0, 0, this._width, this._height, this._gl.RGB,
-      this._gl.UNSIGNED_BYTE, data);
-  
-  for ( var k = 0; k < data.length; k++) {
+  if (!goog.isDefAndNotNull(id)) {
     
-    if (data[k] != 0) {
+    throw new X.exception('Invalid object id.');
+    
+  }
+  
+  var k = 0;
+  var numberOfObjects = this._objects.length;
+  
+  for (k = 0; k < numberOfObjects; k++) {
+    
+    if (this._objects[k].id() == id) {
       
-      console.log(data[k]);
+      return this._objects[k];
       
     }
     
   }
   
-  // console.log(data);
-  // return (data[0] + data[1] + data[2]);
+  // not found
+  return null;
+  
+};
+
+
+X.renderer.prototype.showCaption_ = function(x, y) {
+
+  var pickedId = this.pick(x, y);
+  
+  var object = this.get(pickedId);
+  
+  if (object && object.caption()) {
+    
+    console.log(object.caption());
+    
+  }
+  
+};
+
+
+X.renderer.prototype.pick = function(x, y) {
+
+  // render again with picking turned on which renders the scene in a
+  // framebuffer
+  this.render_(true);
+  
+  // grab the content of the framebuffer
+  var data = new Uint8Array(1 * 1 * 4);
+  this._gl.readPixels(x, this._height - y, 1, 1, this._gl.RGBA,
+      this._gl.UNSIGNED_BYTE, data);
+  
+  return (data[0] + data[1] + data[2]);
   
 };
 
@@ -1426,7 +1474,7 @@ X.renderer.prototype.render_ = function(picking) {
           
           var r = 0;
           var g = 0;
-          var b = id;
+          var b = id / 256;
           
           if (id >= 256) {
             
@@ -1436,8 +1484,8 @@ X.renderer.prototype.render_ = function(picking) {
               
             }
             
-            g = id - 255;
-            b = 255;
+            g = (id - 255) / 256;
+            b = 255 / 256;
             
           }
           
