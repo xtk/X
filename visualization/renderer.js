@@ -1267,9 +1267,23 @@ X.renderer.prototype.generateTree_ = function(object, level) {
 
 X.renderer.prototype.pick = function(x, y) {
 
-  var data = new Uint8Array(10 * 10 * 4); // w * h * 4
-  this._gl.readPixels(x, y, 10, 10, this._gl.RGB, this._gl.UNSIGNED_BYTE, data);
-  console.log(data);
+  this.render_(true);
+  
+  var data = new Uint8Array(this._width * this._height * 3); // w * h * 4
+  this._gl.readPixels(0, 0, this._width, this._height, this._gl.RGB,
+      this._gl.UNSIGNED_BYTE, data);
+  
+  for ( var k = 0; k < data.length; k++) {
+    
+    if (data[k] != 0) {
+      
+      console.log(data[k]);
+      
+    }
+    
+  }
+  
+  // console.log(data);
   // return (data[0] + data[1] + data[2]);
   
 };
@@ -1545,13 +1559,6 @@ X.renderer.prototype.render_ = function(picking) {
     }
     
   } // loop through objects
-  
-
-  if (!picking) {
-    
-    this.render_(true);
-    
-  }
   
 };
 
