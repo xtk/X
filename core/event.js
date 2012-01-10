@@ -11,6 +11,8 @@ goog.provide('X.event.ZoomEvent');
 goog.provide('X.event.RotateEvent');
 goog.provide('X.event.PanEvent');
 goog.provide('X.event.RenderEvent');
+goog.provide('X.event.HoverEvent');
+goog.provide('X.event.HoverEndEvent');
 goog.provide('X.event.ResetViewEvent');
 goog.provide('X.event.ModifiedEvent');
 
@@ -87,7 +89,14 @@ X.event.events = {
   MODIFIED: X.event.uniqueId('modified'),
   
   // the loading progress event
-  PROGRESS: X.event.uniqueId('progress')
+  PROGRESS: X.event.uniqueId('progress'),
+  
+  // the hover event
+  HOVER: X.event.uniqueId('hover'),
+  
+  // the hover end event
+  HOVER_END: X.event.uniqueId('hover_end')
+
 };
 
 
@@ -203,6 +212,40 @@ X.event.RenderEvent = function() {
 goog.inherits(X.event.RenderEvent, X.event);
 
 
+/**
+ * The hover event, indicating mouse-over on an X.object.
+ * 
+ * @constructor
+ * @extends X.event
+ */
+X.event.HoverEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.event.events.HOVER);
+  
+  this._x = 0;
+  this._y = 0;
+  
+};
+// inherit from goog.events.Event
+goog.inherits(X.event.HoverEvent, X.event);
+
+
+/**
+ * The hover end event, indicating the end of the hovering state.
+ * 
+ * @constructor
+ * @extends X.event
+ */
+X.event.HoverEndEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.event.events.HOVER_END);
+  
+};
+// inherit from goog.events.Event
+goog.inherits(X.event.HoverEndEvent, X.event);
+
 
 /**
  * The render event to update renderer.
@@ -281,4 +324,5 @@ goog.exportSymbol('X.event.ZoomEvent', X.event.ZoomEvent);
 goog.exportSymbol('X.event.RenderEvent', X.event.RenderEvent);
 goog.exportSymbol('X.event.ResetViewEvent', X.event.ResetViewEvent);
 goog.exportSymbol('X.event.ModifiedEvent', X.event.ModifiedEvent);
+goog.exportSymbol('X.event.HoverEvent', X.event.HoverEvent);
 goog.exportSymbol('X.event.ProgressEvent', X.event.ProgressEvent);

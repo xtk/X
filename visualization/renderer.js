@@ -9,6 +9,7 @@ goog.provide('X.renderer');
 goog.require('X.base');
 goog.require('X.buffer');
 goog.require('X.camera');
+goog.require('X.caption');
 goog.require('X.event');
 goog.require('X.exception');
 goog.require('X.interactor');
@@ -158,6 +159,7 @@ X.renderer = function(container) {
    */
   this._topLevelObjects = new Array();
   
+  // TODO jsdoc
   this._minX = null;
   this._maxX = null;
   this._minY = null;
@@ -165,6 +167,8 @@ X.renderer = function(container) {
   this._minZ = null;
   this._maxZ = null;
   this._center = [0, 0, 0];
+  
+  this._pickFrameBuffer = null;
   
   /**
    * A hash map of shader attribute pointers.
@@ -400,9 +404,30 @@ X.renderer.prototype.onProgress = function(event) {
  */
 X.renderer.prototype.onModified = function(event) {
 
-  var object = event._object;
+  if (goog.isDefAndNotNull(event) && event instanceof X.event.ModifiedEvent) {
+    
+    this.update_(event._object);
+    
+  }
   
-  this.update_(object);
+};
+
+
+/**
+ * The callback for X.event.events.HOVER events which indicates a hovering over
+ * an X.object. This triggers picking and therefor a re-rendering to an
+ * invisible framebuffer.
+ * 
+ * @param {!X.event.HoverEvent} event The hover event pointing to the relevant
+ *          screen coordinates.
+ */
+X.renderer.prototype.onHover = function(event) {
+
+  if (goog.isDefAndNotNull(event) && event instanceof X.event.HoverEvent) {
+    
+    this.showCaption_(event._x, event._y);
+    
+  }
   
 };
 
@@ -474,7 +499,7 @@ X.renderer.prototype.hideProgressBar_ = function() {
 X.renderer.prototype.resetViewAndRender = function() {
 
   this._camera.reset();
-  this.render_();
+  this.render_(false);
   
 };
 
@@ -534,11 +559,11 @@ X.renderer.prototype.init = function() {
   //
   try {
     
-    gl.viewport(0, 0, this.width(), this.height());
+    // gl.viewport(0, 0, this.width(), this.height());
     
     // configure opacity to 0.0 to overwrite the viewport background-color by
     // the container color
-    gl.clearColor(0.0, 0.0, 0.0, 0.0);
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
     
     // enable transparency
     gl.enable(gl.BLEND);
@@ -551,6 +576,38 @@ X.renderer.prototype.init = function() {
     
     // clear color and depth buffer
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    
+    //
+    // create a frame buffer for the picking functionality
+    //
+    // inspired by JAX https://github.com/sinisterchipmunk/jax/ and
+    // http://dl.dropbox.com/u/5095342/WebGL/webgldemo3.js
+    //
+    // we basically render into an invisible framebuffer and use a unique object
+    // color to check which object is where (a simulated Z buffer since we can
+    // not directly access the one from WebGL)
+    var pickFrameBuffer = gl.createFramebuffer();
+    var pickRenderBuffer = gl.createRenderbuffer();
+    var pickTexture = gl.createTexture();
+    
+    gl.bindTexture(gl.TEXTURE_2D, pickTexture);
+    
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, this.width(), this.height(), 0,
+        gl.RGB, gl.UNSIGNED_BYTE, null);
+    
+    gl.bindFramebuffer(gl.FRAMEBUFFER, pickFrameBuffer);
+    gl.bindRenderbuffer(gl.RENDERBUFFER, pickRenderBuffer);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.width(),
+        this.height());
+    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+    
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
+        gl.TEXTURE_2D, pickTexture, 0);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT,
+        gl.RENDERBUFFER, pickRenderBuffer);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    
+    this._pickFrameBuffer = pickFrameBuffer;
     
   } catch (e) {
     
@@ -573,7 +630,10 @@ X.renderer.prototype.init = function() {
   // .. listen to resetViewEvents
   goog.events.listen(interactor, X.event.events.RESETVIEW,
       this.resetViewAndRender.bind(this));
+  // .. listen to hoverEvents
+  goog.events.listen(interactor, X.event.events.HOVER, this.onHover.bind(this));
   
+
   //
   // create a new camera
   // width and height are required to calculate the perspective
@@ -583,7 +643,8 @@ X.renderer.prototype.init = function() {
   // ..listen to render requests from the camera
   // these get fired after user-interaction and camera re-positioning to re-draw
   // all objects
-  goog.events.listen(camera, X.event.events.RENDER, this.render_.bind(this));
+  goog.events.listen(camera, X.event.events.RENDER, this.render_.bind(this,
+      false));
   
   //
   // attach all created objects as class attributes
@@ -1178,7 +1239,7 @@ X.renderer.prototype.render = function() {
   // CURTAIN UP! LET THE SHOW BEGIN..
   //
   
-  this.render_();
+  this.render_(false);
   
 };
 
@@ -1214,17 +1275,96 @@ X.renderer.prototype.generateTree_ = function(object, level) {
 };
 
 
-X.renderer.prototype.render_ = function() {
+X.renderer.prototype.get = function(id) {
 
+  // TODO we can store the objects ordered and do a binary search here
+  
+  if (!goog.isDefAndNotNull(id)) {
+    
+    throw new X.exception('Invalid object id.');
+    
+  }
+  
+  var k = 0;
+  var numberOfObjects = this._objects.length;
+  
+  for (k = 0; k < numberOfObjects; k++) {
+    
+    if (this._objects[k].id() == id) {
+      
+      return this._objects[k];
+      
+    }
+    
+  }
+  
+  // not found
+  return null;
+  
+};
+
+
+X.renderer.prototype.showCaption_ = function(x, y) {
+
+  var pickedId = this.pick(x, y);
+  
+  var object = this.get(pickedId);
+  
+  if (object && object.caption()) {
+    
+    var t = new X.caption(this.container(), x + 10, y + 10, this.interactor());
+    t.setHtml(object.caption());
+    
+  }
+  
+};
+
+
+X.renderer.prototype.pick = function(x, y) {
+
+  // render again with picking turned on which renders the scene in a
+  // framebuffer
+  this.render_(true);
+  
+  // grab the content of the framebuffer
+  var data = new Uint8Array(4);
+  this._gl.readPixels(x, this._height - y, 1, 1, this._gl.RGBA,
+      this._gl.UNSIGNED_BYTE, data);
+  
+  // grab the id
+  var r = Math.round(data[0] / 255 * 10);
+  var g = Math.round(data[1] / 255 * 10);
+  var b = Math.round(data[2] / 255 * 10);
+  
+  return (r * 100 + g * 10 + b);
+  
+};
+
+
+X.renderer.prototype.render_ = function(picking) {
+
+  // picking = false;
   for ( var y = 0; y < this._topLevelObjects.length; y++) {
     
     var topLevelObject = this._topLevelObjects[y];
     
     if (topLevelObject.hasChildren()) {
       
-      this.generateTree_(topLevelObject, 0);
+      // this.generateTree_(topLevelObject, 0);
       
     }
+    
+  }
+  
+  if (picking) {
+    
+    // we are in picking mode, so use the framebuffer rather than the canvas
+    this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, this._pickFrameBuffer);
+    
+  } else {
+    
+    // disable teh framebuffer
+    this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
     
   }
   
@@ -1296,8 +1436,22 @@ X.renderer.prototype.render_ = function() {
           .get(X.shaders.attributes.VERTEXNORMAL), normalBuffer.itemSize(),
           this._gl.FLOAT, false, 0, 0);
       
+      if (picking) {
+        
+        // in picking mode, we use a color based on the id of this object
+        this._gl.uniform1i(this._uniformLocations
+            .get(X.shaders.uniforms.USEPICKING), true);
+        
+      } else {
+        
+        // in picking mode, we use a color based on the id of this object
+        this._gl.uniform1i(this._uniformLocations
+            .get(X.shaders.uniforms.USEPICKING), false);
+        
+      }
+      
       // COLORS
-      if (goog.isDefAndNotNull(colorBuffer)) {
+      if (goog.isDefAndNotNull(colorBuffer) && !picking) {
         
         // point colors are defined for this object
         
@@ -1313,13 +1467,35 @@ X.renderer.prototype.render_ = function() {
         
       } else {
         
-        // we have a fixed object color
+        // we have a fixed object color or this is 'picking' mode
         
         // activate the useObjectColor flag on the shader
         this._gl.uniform1i(this._uniformLocations
             .get(X.shaders.uniforms.USEOBJECTCOLOR), true);
         
         var objectColor = object.color();
+        
+        if (picking) {
+          
+          if (id > 999) {
+            
+            throw new X.exception('Id out of bounds.');
+            
+          }
+          
+          // split the id
+          // f.e. 15:
+          // r = 0 / 10
+          // g = 1 / 10
+          // b = 5 / 10
+          var r = Math.floor(id * 0.01);
+          var g = Math.floor(id * 0.1) - r * 10;
+          var b = id - r * 100 - g * 10;
+          
+          // and set it as the color
+          objectColor = [r / 10, g / 10, b / 10];
+          
+        }
         
         this._gl.uniform3f(this._uniformLocations
             .get(X.shaders.uniforms.OBJECTCOLOR), parseFloat(objectColor[0]),
@@ -1339,7 +1515,7 @@ X.renderer.prototype.render_ = function() {
       
       // TEXTURE
       if (goog.isDefAndNotNull(object.texture()) &&
-          goog.isDefAndNotNull(texturePositionBuffer)) {
+          goog.isDefAndNotNull(texturePositionBuffer) && !picking) {
         //
         // texture associated to this object
         //
@@ -1369,7 +1545,8 @@ X.renderer.prototype.render_ = function() {
             .itemSize(), this._gl.FLOAT, false, 0, 0);
         
       } else {
-        // no texture for this object
+        
+        // no texture for this object or 'picking' mode
         this._gl.uniform1i(this._uniformLocations
             .get(X.shaders.uniforms.USETEXTURE), false);
         

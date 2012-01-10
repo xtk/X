@@ -117,6 +117,12 @@ X.object = function() {
    */
   this._opacity = 1.0;
   
+  /**
+   * The children of this object.
+   * 
+   * @type {?Array}
+   * @protected
+   */
   this._children = null;
   
   /**
@@ -134,6 +140,14 @@ X.object = function() {
    * @protected
    */
   this._lineWidth = 1;
+  
+  /**
+   * The caption of this object.
+   * 
+   * @type {?string}
+   * @protected
+   */
+  this._caption = null;
   
 };
 // inherit from X.base
@@ -333,6 +347,32 @@ X.object.prototype.setColor = function(r, g, b) {
 X.object.prototype.opacity = function() {
 
   return this._opacity;
+  
+};
+
+
+/**
+ * Get the caption of this object.
+ * 
+ * @return {?string} The caption of this object.
+ */
+X.object.prototype.caption = function() {
+
+  return this._caption;
+  
+};
+
+
+/**
+ * Set the caption for this object.
+ * 
+ * @param {?string} caption The caption for this object.
+ */
+X.object.prototype.setCaption = function(caption) {
+
+  this._caption = caption;
+  
+  this._dirty = true;
   
 };
 

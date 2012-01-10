@@ -56,7 +56,7 @@ X.shaders = function() {
   t += 'uniform vec3 objectColor;\n';
   t += '\n';
   t += 'varying vec4 fVertexPosition;\n';
-  t += 'varying lowp vec3 fragmentColor;\n';
+  t += 'varying vec3 fragmentColor;\n';
   t += 'varying vec2 fragmentTexturePos;\n';
   t += 'varying vec3 fTransformedVertexNormal;\n';
   t += '\n';
@@ -89,17 +89,21 @@ X.shaders = function() {
   // android only guarantees medium precision
   t2 += 'precision mediump float;\n';
   t2 += '\n';
+  t2 += 'uniform bool usePicking;\n';
   t2 += 'uniform bool useTexture;\n';
   t2 += 'uniform sampler2D textureSampler;\n';
   t2 += 'uniform float objectOpacity;\n';
   t2 += '\n';
   t2 += 'varying vec4 fVertexPosition;\n';
-  t2 += 'varying lowp vec3 fragmentColor;\n';
+  t2 += 'varying vec3 fragmentColor;\n';
   t2 += 'varying vec2 fragmentTexturePos;\n';
   t2 += 'varying vec3 fTransformedVertexNormal;\n';
   t2 += '\n';
   t2 += 'void main(void) {\n';
-  t2 += ' if (useTexture) {\n';
+  // in picking mode, we don't want any extras but just the plain color
+  t2 += ' if (usePicking) {\n';
+  t2 += '   gl_FragColor = vec4(fragmentColor, 1.0);\n';
+  t2 += ' } else if (useTexture) {\n';
   t2 += '   gl_FragColor = texture2D(textureSampler,';
   t2 += '   vec2(fragmentTexturePos.s,fragmentTexturePos.t));\n';
   t2 += ' } else {\n';
@@ -162,6 +166,7 @@ X.shaders.uniforms = {
   OBJECTCOLOR: 'objectColor',
   OBJECTOPACITY: 'objectOpacity',
   NORMAL: 'normal',
+  USEPICKING: 'usePicking',
   USETEXTURE: 'useTexture',
   TEXTURESAMPLER: 'textureSampler'
 };
