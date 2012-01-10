@@ -62,7 +62,10 @@ X.shaders = function() {
   t += '\n';
   t += 'void main(void) {\n';
   // setup varying -> fragment shader
-  t += '  fTransformedVertexNormal = mat3(view) * mat3(objectTransform) * vertexNormal;\n';
+  // use the old mat3 constructor to be compatible with mac/safari
+  t += '  fTransformedVertexNormal = mat3(view[0].xyz,view[1].xyz,view[2].xyz) * ';
+  t += 'mat3(objectTransform[0].xyz,objectTransform[1].xyz,objectTransform[2].xyz) * ';
+  t += 'vertexNormal;\n';
   // t += ' vec4 gVertexPosition = vec4(fVertexPosition.xyz - focus, 1.0);\n';
   t += '  vec3 vertexPosition2 = vertexPosition - center;\n';
   t += '  fVertexPosition = view * objectTransform * vec4(vertexPosition2, 1.0);\n';

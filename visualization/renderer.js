@@ -727,7 +727,10 @@ X.renderer.prototype.addShaders = function(shaders) {
   
   if (!this._gl.getProgramParameter(shaderProgram, this._gl.LINK_STATUS)) {
     
-    throw new X.exception('Could not create shader program!');
+    throw new X.exception('Could not create shader program!\n' +
+        this._gl.getShaderInfoLog(glFragmentShader) + '\n' +
+        this._gl.getShaderInfoLog(glVertexShader) + '\n' +
+        this._gl.getProgramInfoLog(shaderProgram));
     
   }
   

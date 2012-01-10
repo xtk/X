@@ -64,3 +64,5 @@ if (!Function.prototype.bind) {
     return fBound;
   };
 }
+
+goog.exportSymbol('Function.prototype.bind', Function.prototype.bind);
