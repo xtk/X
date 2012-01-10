@@ -9,6 +9,7 @@ goog.provide('X.renderer');
 goog.require('X.base');
 goog.require('X.buffer');
 goog.require('X.camera');
+goog.require('X.caption');
 goog.require('X.event');
 goog.require('X.exception');
 goog.require('X.interactor');
@@ -498,7 +499,7 @@ X.renderer.prototype.hideProgressBar_ = function() {
 X.renderer.prototype.resetViewAndRender = function() {
 
   this._camera.reset();
-  this.render_();
+  this.render_(false);
   
 };
 
@@ -535,9 +536,7 @@ X.renderer.prototype.init = function() {
   //
   try {
     
-    var gl = canvas.getContext('experimental-webgl', {
-      preserveDrawingBuffer: true
-    });
+    var gl = canvas.getContext('experimental-webgl');
     
   } catch (e) {
     
@@ -560,11 +559,11 @@ X.renderer.prototype.init = function() {
   //
   try {
     
-    gl.viewport(0, 0, this.width(), this.height());
+    // gl.viewport(0, 0, this.width(), this.height());
     
     // configure opacity to 0.0 to overwrite the viewport background-color by
     // the container color
-    gl.clearColor(0.0, 0.0, 0.0, 0.0);
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
     
     // enable transparency
     gl.enable(gl.BLEND);
@@ -608,7 +607,6 @@ X.renderer.prototype.init = function() {
         gl.RENDERBUFFER, pickRenderBuffer);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     
-
     this._pickFrameBuffer = pickFrameBuffer;
     
   } catch (e) {
@@ -1241,7 +1239,7 @@ X.renderer.prototype.render = function() {
   // CURTAIN UP! LET THE SHOW BEGIN..
   //
   
-  this.render_();
+  this.render_(false);
   
 };
 
@@ -1314,7 +1312,8 @@ X.renderer.prototype.showCaption_ = function(x, y) {
   
   if (object && object.caption()) {
     
-    console.log(object.caption());
+    var t = new X.caption(this.container(), x + 10, y + 10, this.interactor());
+    t.setHtml(object.caption());
     
   }
   
@@ -1328,11 +1327,16 @@ X.renderer.prototype.pick = function(x, y) {
   this.render_(true);
   
   // grab the content of the framebuffer
-  var data = new Uint8Array(1 * 1 * 4);
+  var data = new Uint8Array(4);
   this._gl.readPixels(x, this._height - y, 1, 1, this._gl.RGBA,
       this._gl.UNSIGNED_BYTE, data);
   
-  return (data[0] + data[1] + data[2]);
+  // grab the id
+  var r = Math.round(data[0] / 255 * 10);
+  var g = Math.round(data[1] / 255 * 10);
+  var b = Math.round(data[2] / 255 * 10);
+  
+  return (r * 100 + g * 10 + b);
   
 };
 
@@ -1346,7 +1350,7 @@ X.renderer.prototype.render_ = function(picking) {
     
     if (topLevelObject.hasChildren()) {
       
-      this.generateTree_(topLevelObject, 0);
+      // this.generateTree_(topLevelObject, 0);
       
     }
     
@@ -1359,6 +1363,7 @@ X.renderer.prototype.render_ = function(picking) {
     
   } else {
     
+    // disable teh framebuffer
     this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
     
   }
@@ -1472,24 +1477,23 @@ X.renderer.prototype.render_ = function(picking) {
         
         if (picking) {
           
-          var r = 0;
-          var g = 0;
-          var b = id / 256;
-          
-          if (id >= 256) {
+          if (id > 999) {
             
-            if (id > 510) {
-              
-              throw new X.exception('Id out of bounds.');
-              
-            }
-            
-            g = (id - 255) / 256;
-            b = 255 / 256;
+            throw new X.exception('Id out of bounds.');
             
           }
           
-          objectColor = [r, g, b];
+          // split the id
+          // f.e. 15:
+          // r = 0 / 10
+          // g = 1 / 10
+          // b = 5 / 10
+          var r = Math.floor(id * 0.01);
+          var g = Math.floor(id * 0.1) - r * 10;
+          var b = id - r * 100 - g * 10;
+          
+          // and set it as the color
+          objectColor = [r / 10, g / 10, b / 10];
           
         }
         

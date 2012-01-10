@@ -12,6 +12,7 @@ goog.provide('X.event.RotateEvent');
 goog.provide('X.event.PanEvent');
 goog.provide('X.event.RenderEvent');
 goog.provide('X.event.HoverEvent');
+goog.provide('X.event.HoverEndEvent');
 goog.provide('X.event.ResetViewEvent');
 goog.provide('X.event.ModifiedEvent');
 
@@ -91,7 +92,10 @@ X.event.events = {
   PROGRESS: X.event.uniqueId('progress'),
   
   // the hover event
-  HOVER: X.event.uniqueId('hover')
+  HOVER: X.event.uniqueId('hover'),
+  
+  // the hover end event
+  HOVER_END: X.event.uniqueId('hover_end')
 
 };
 
@@ -225,6 +229,22 @@ X.event.HoverEvent = function() {
 };
 // inherit from goog.events.Event
 goog.inherits(X.event.HoverEvent, X.event);
+
+
+/**
+ * The hover end event, indicating the end of the hovering state.
+ * 
+ * @constructor
+ * @extends X.event
+ */
+X.event.HoverEndEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.event.events.HOVER_END);
+  
+};
+// inherit from goog.events.Event
+goog.inherits(X.event.HoverEndEvent, X.event);
 
 
 /**

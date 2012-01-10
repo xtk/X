@@ -144,7 +144,7 @@ X.object = function() {
   /**
    * The caption of this object.
    * 
-   * @type {string}
+   * @type {?string}
    * @protected
    */
   this._caption = null;
@@ -366,7 +366,7 @@ X.object.prototype.caption = function() {
 /**
  * Set the caption for this object.
  * 
- * @param {?string} The caption for this object.
+ * @param {?string} caption The caption for this object.
  */
 X.object.prototype.setCaption = function(caption) {
 

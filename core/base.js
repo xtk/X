@@ -43,7 +43,7 @@ X.base = function() {
    * @type {number}
    * @protected
    */
-  this._id = parseInt(X.uniqueId(''));
+  this._id = parseInt(X.uniqueId(''), 10);
   
   /**
    * The 'dirty' flag of this object.
@@ -72,7 +72,7 @@ X.base.prototype.className = function() {
 /**
  * Return the unique id of the current X.base-object.
  * 
- * @return {string} The unique id of the current X.object.
+ * @return {number} The unique id of the current X.object.
  */
 X.base.prototype.id = function() {
 

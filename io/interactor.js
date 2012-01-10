@@ -9,6 +9,7 @@ goog.provide('X.interactor');
 goog.require('X.base');
 goog.require('X.event');
 goog.require('X.event.HoverEvent');
+goog.require('X.event.HoverEndEvent');
 goog.require('X.event.RotateEvent');
 goog.require('X.event.PanEvent');
 goog.require('X.event.ResetViewEvent');
@@ -289,6 +290,10 @@ X.interactor.prototype.onMouseDown = function(event) {
     
   }
   
+  // end all hovering since the scene can change and a caption might be
+  // misplaced etc.
+  this.hoverEnd_();
+  
   // prevent further handling by the browser
   event.preventDefault();
   
@@ -319,6 +324,10 @@ X.interactor.prototype.onMouseUp = function(event) {
     
   }
   
+  // end all hovering since the scene can change and a caption might be
+  // misplaced etc.
+  this.hoverEnd_();
+  
   // prevent further handling by the browser
   event.preventDefault();
   
@@ -346,8 +355,9 @@ X.interactor.prototype.onMouseMovementOutside = function(event) {
   this._leftButtonDown = false;
   this._middleButtonDown = false;
   this._rightButtonDown = false;
-  // remove the hover trigger
-  clearTimeout(this._hoverTrigger);
+  // end all hovering since the scene can change and a caption might be
+  // misplaced etc.
+  this.hoverEnd_();
   this._lastMousePosition = new goog.math.Vec2(0, 0);
   
   // prevent further handling by the browser
@@ -384,7 +394,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
   var shiftDown = event.shiftKey;
   
   // grab the current mouse position
-  var currentMousePosition = new goog.math.Vec2(event.clientX, event.clientY);
+  var currentMousePosition = new goog.math.Vec2(event.offsetX, event.offsetY);
   
   // get the distance in terms of the last mouse move event
   var distance = this._lastMousePosition.subtract(currentMousePosition);
@@ -401,9 +411,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
         this._middleButtonDown || this._leftButtonDown || this._rightButtonDown) {
       
       // there was some mouse movement, let's cancel the hovering countdown
-      if (this._hoverTrigger) {
-        clearTimeout(this._hoverTrigger);
-      }
+      this.hoverEnd_();
       
     }
     
@@ -412,6 +420,8 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
     // picking etc.
     this._hoverTrigger = setTimeout(function() {
 
+      this.hoverEnd_();
+      
       var e = new X.event.HoverEvent();
       e._x = currentMousePosition.x;
       e._y = currentMousePosition.y;
@@ -528,6 +538,21 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
 
 
 /**
+ * Stop the hover countdown and fire a X.event.HoverEndEvent.
+ */
+X.interactor.prototype.hoverEnd_ = function() {
+
+  if (this._hoverTrigger) {
+    clearTimeout(this._hoverTrigger);
+  }
+  
+  var e = new X.event.HoverEndEvent();
+  this.dispatchEvent(e);
+  
+};
+
+
+/**
  * Callback for mouse wheel events on the associated DOM element. This fires
  * proper X.event events.
  * 
@@ -535,8 +560,9 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
  */
 X.interactor.prototype.onMouseWheel = function(event) {
 
-  // remove the hover trigger
-  clearTimeout(this._hoverTrigger);
+  // end all hovering since the scene can change and a caption might be
+  // misplaced etc.
+  this.hoverEnd_();
   
   // prevent any other action (like scrolling..)
   event.preventDefault();
@@ -579,6 +605,10 @@ X.interactor.prototype.onKey = function(event) {
     return;
     
   }
+  
+  // end all hovering since the scene can change and a caption might be
+  // misplaced etc.
+  this.hoverEnd_();
   
   // observe the control keys (shift, alt, ..)
   var alt = event.altKey;
