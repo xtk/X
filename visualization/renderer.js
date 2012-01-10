@@ -26,6 +26,7 @@ goog.require('goog.iter.Iterator');
 goog.require('goog.math.Vec3');
 goog.require('goog.structs.Map');
 goog.require('goog.Timer');
+goog.require('goog.ui.Dialog');
 
 
 
@@ -538,24 +539,28 @@ X.renderer.prototype.init = function() {
     
     var gl = canvas.getContext('experimental-webgl');
     
+    if (!gl) {
+      
+      throw new Exception();
+      
+    }
+    
   } catch (e) {
     
-    // TODO show dialog
-    throw new X.exception('Exception while getting GL Context!\n' + e);
-    
-  }
-  
-  //
-  // Step2: Check if we got the context, if not, WebGL is not supported
-  //
-  if (!gl) {
+    // WebGL is not supported with this browser/machine/gpu
+    var errorDialog = new goog.ui.Popup(this.container());
+    // errorDialog.setContent('mmm');
+    // errorDialog.setTitle('Ooops..');
+    // errorDialog.setHasTitleCloseButton(false);
+    // errorDialog.setButtonSet(null);
+    errorDialog.setVisible(true);
     
     throw new X.exception('WebGL not supported!');
     
   }
   
   //
-  // Step3: Configure the context
+  // Step2: Configure the context
   //
   try {
     
