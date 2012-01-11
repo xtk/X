@@ -169,11 +169,6 @@ X.object.types = {
 };
 
 
-X.object.prototype.toCSG = function() {
-
-  
-
-};
 
 function Indexer() {
 
@@ -199,6 +194,53 @@ Indexer.prototype = {
 };
 
 
+X.object.prototype.toCSG = function() {
+
+  var numberOfPoints = this._points.count();
+  
+  var polygons = [];
+  
+  var p = 0;
+  for (p = 0; p < numberOfPoints; p = p + 3) {
+    
+    var point1 = this._points.get(p);
+    var point2 = this._points.get(p + 1);
+    var point3 = this._points.get(p + 2);
+    
+    var normal1 = this._normals.get(p);
+    var normal2 = this._normals.get(p + 1);
+    var normal3 = this._normals.get(p + 2);
+    
+    // get the object color
+    var color = this._color;
+    
+    // if point colors are defined on this X.object, use'em
+    if ((this._colors.length() > 0)) {
+      
+      // we only grab the color of the first point since CSG only supports
+      // colors per triangle not per point
+      color = this._colors.get(p);
+      
+    }
+    
+    //
+    // create a new CSG.Polygon
+    //
+    
+    var vertices = [];
+    vertices.push(new CSG.Vertex(point1, normal1));
+    vertices.push(new CSG.Vertex(point2, normal2));
+    vertices.push(new CSG.Vertex(point3, normal3));
+    
+    polygons.push(new CSG.Polygon(vertices, color));
+    
+  }
+  
+  return CSG.fromPolygons(polygons);
+  
+};
+
+
 X.object.prototype.fromCSG = function(csg) {
 
   if (!goog.isDefAndNotNull(csg) || !(csg instanceof CSG)) {
@@ -207,8 +249,13 @@ X.object.prototype.fromCSG = function(csg) {
     
   }
   
+  this._points.clear();
+  this._normals.clear();
+  this._colors.clear();
+  
   var indexer = new Indexer();
-  var ppp = new Array();
+  var triangles = new Array();
+  
   // grab points, normals and colors
   csg.toPolygons().map(function(p) {
 
@@ -219,7 +266,7 @@ X.object.prototype.fromCSG = function(csg) {
     });
     
     for ( var i = 2; i < indices.length; i++) {
-      ppp.push([indices[0], indices[i - 1], indices[i]]);
+      triangles.push([indices[0], indices[i - 1], indices[i]]);
     }
     
   }.bind(this));
@@ -235,12 +282,18 @@ X.object.prototype.fromCSG = function(csg) {
   });
   colors = indexer.unique.map(function(v) {
 
+    if (!v.color) {
+      
+      return null;
+      
+    }
     return [v.color[0], v.color[1], v.color[2]];
   });
   
+  //
   // setup the points, normals and colors for this X.object
-  // here, we already have triangles
-  ppp.map(function(i) {
+  // by converting the triangles to the X.object API
+  triangles.map(function(i) {
 
     // grab the three vertices of this triangle
     var i0 = i[0];
@@ -257,35 +310,20 @@ X.object.prototype.fromCSG = function(csg) {
     this._normals.add(normals[i1][0], normals[i1][1], normals[i1][2]);
     this._normals.add(normals[i2][0], normals[i2][1], normals[i2][2]);
     
-    // if colors are set for this triangle, add'em too else add the object color
-    var objectColor = this._color;
-    
+    // if colors are set for this triangle, add'em
     if (colors[i0]) {
       this._colors.add(colors[i0][0], colors[i0][1], colors[i0][2]);
-    } else {
-      
-      this._colors.add(objectColor[0], objectColor[1], objectColor[2]);
-      
     }
     if (colors[i1]) {
       this._colors.add(colors[i1][0], colors[i1][1], colors[i1][2]);
-    } else {
-      
-      this._colors.add(objectColor[0], objectColor[1], objectColor[2]);
-      
     }
     if (colors[i2]) {
       this._colors.add(colors[i2][0], colors[i2][1], colors[i2][2]);
-    } else {
-      
-      this._colors.add(objectColor[0], objectColor[1], objectColor[2]);
-      
     }
     
   }.bind(this));
   
-
-  // we only support CGS in TRIANGLES rendering mode
+  // we only support CSG in TRIANGLES rendering mode
   this.setType(X.object.types.TRIANGLES);
   
 };
@@ -458,6 +496,110 @@ X.object.prototype.setColor = function(r, g, b) {
   this._color[2] = b;
   
   this._dirty = true;
+  
+};
+
+
+X.object.prototype.union = function(object) {
+
+  if (!goog.isDefAndNotNull(object) ||
+      (!(object instanceof CSG) && !(object instanceof X.object))) {
+    
+    throw new X.exception('Invalid object.');
+    
+  }
+  
+  var csg = object;
+  
+  // if we operate on another X.object, we gotta convert
+  if (object instanceof X.object) {
+    
+    csg = csg.toCSG();
+    
+  }
+  
+  var result = new X.object();
+  result.fromCSG(this.toCSG().union(csg));
+  
+  return result;
+  
+};
+
+
+X.object.prototype.subtract = function(object) {
+
+  if (!goog.isDefAndNotNull(object) ||
+      (!(object instanceof CSG) && !(object instanceof X.object))) {
+    
+    throw new X.exception('Invalid object.');
+    
+  }
+  
+  var csg = object;
+  
+  // if we operate on another X.object, we gotta convert
+  if (object instanceof X.object) {
+    
+    csg = csg.toCSG();
+    
+  }
+  
+  var result = new X.object();
+  result.fromCSG(this.toCSG().subtract(csg));
+  
+  return result;
+  
+};
+
+
+X.object.prototype.intersect = function(object) {
+
+  if (!goog.isDefAndNotNull(object) ||
+      (!(object instanceof CSG) && !(object instanceof X.object))) {
+    
+    throw new X.exception('Invalid object.');
+    
+  }
+  
+  var csg = object;
+  
+  // if we operate on another X.object, we gotta convert
+  if (object instanceof X.object) {
+    
+    csg = csg.toCSG();
+    
+  }
+  
+  var result = new X.object();
+  result.fromCSG(this.toCSG().intersect(csg));
+  
+  return result;
+  
+};
+
+
+X.object.prototype.inverse = function(object) {
+
+  if (!goog.isDefAndNotNull(object) ||
+      (!(object instanceof CSG) && !(object instanceof X.object))) {
+    
+    throw new X.exception('Invalid object.');
+    
+  }
+  
+  var csg = object;
+  
+  // if we operate on another X.object, we gotta convert
+  if (object instanceof X.object) {
+    
+    csg = csg.toCSG();
+    
+  }
+  
+  var result = new X.object();
+  result.fromCSG(this.toCSG().inverse(csg));
+  
+  return result;
   
 };
 
