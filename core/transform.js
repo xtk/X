@@ -55,6 +55,15 @@ X.transform = function() {
 // inherit from X.base
 goog.inherits(X.transform, X.base);
 
+/**
+ * Reset the tansformation matrix.
+ */
+X.transform.prototype.reset = function() {
+  this._matrix = goog.math.Matrix.createIdentityMatrix(4);
+  this._glMatrix = new Float32Array(this._matrix.flatten());
+};
+
+
 
 /**
  * Rotate around the X-axis.
@@ -214,6 +223,8 @@ X.transform.prototype.glMatrix = function() {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.transform', X.transform);
+goog.exportSymbol('X.transform.prototype.reset',
+    X.transform.prototype.reset);
 goog.exportSymbol('X.transform.prototype.rotateX',
     X.transform.prototype.rotateX);
 goog.exportSymbol('X.transform.prototype.rotateY',

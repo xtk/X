@@ -277,7 +277,7 @@ X.renderer = function(container) {
   // create a box with textures for now....
   // get width and height to choose position and height
   this._enableOrientationBox = false;
-  this._orientationBox = new X.box([0, 0, 0], 5, 5, 5);
+  this._orientationBox = new X.box([0, 0, 0], 10, 10, 10);
   /*this.orientationBox.setColors([255, 0, 0],
                                 [0, 255, 0],
                                 [0, 0, 255],
@@ -1490,27 +1490,25 @@ X.renderer.prototype.render_ = function() {
       var oldView = this._camera.view();
       var oldGL   = this._camera.glView();
       var oldGL2  = this._camera.glViewInvertedTransposed();
-
+///////////////////////
     
-      // reset view
-     // this.resetView();
-
+    gl.viewport(150, -150, this.width(), this.height());
     
-    var focusX = (-this._width/10);
-    var focusY = (this._height/10);
+    var focusX = (0);
+    var focusY = (0);
+    // modify it to change the size of the orientation widget
     var focusZ = (100);
     
-    this._camera.setFocus(focusX, focusY, focusZ);
     this._camera.setPosition(focusX, focusY, focusZ + 100);
-  
-    //this._camera.setFocus(focus.x, focus.y, focus.z);
-    //this._camera.setPosition(position.x, position.y, position.z);
-  
-    var rotation = this._camera.rotation();
+    this._camera.setFocus(focusX, focusY, focusZ);
+
+  var rotation = this._camera.rotation();
     if(rotation)
       {
       this._camera.rotate(rotation, false);
       }
+/////////////////////
+
     // grab the current perspective from the camera
     var newperspectiveMatrix = this._camera.perspective();
   
@@ -1567,7 +1565,6 @@ X.renderer.prototype.render_ = function() {
       this._gl.vertexAttribPointer(this._vertexPositionAttribute, vertexBuffer
           .itemSize(), this._gl.FLOAT, false, 0, 0);
       
-
       // .. and draw with the object's draw mode
       ///////////////////////////////////////
       var drawMode = -1;
@@ -1607,7 +1604,10 @@ X.renderer.prototype.render_ = function() {
     this._camera.setView(oldView);
     this._camera.setGLView(oldGL);
     this._camera.setGLViewInverted(oldGL2);
-    }  
+  
+    gl.viewport(0, 0, this.width(), this.height());
+
+  }  
 };
 
 /**
