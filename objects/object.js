@@ -6,6 +6,7 @@
 goog.provide('X.object');
 
 // requires
+goog.require('CSG');
 goog.require('X.base');
 goog.require('X.exception');
 goog.require('X.file');
@@ -166,6 +167,129 @@ X.object.types = {
   LINES: 'LINES',
   POLYGONS: 'POLYGONS'
 };
+
+
+X.object.prototype.toCSG = function() {
+
+  
+
+};
+
+function Indexer() {
+
+  this.unique = [];
+  this.indices = [];
+  this.map = {};
+}
+
+Indexer.prototype = {
+  // ### .add(v)
+  // 
+  // Adds the object `obj` to `unique` if it hasn't already been added. Returns
+  // the index of `obj` in `unique`.
+  add: function(obj) {
+
+    var key = JSON.stringify(obj);
+    if (!(key in this.map)) {
+      this.map[key] = this.unique.length;
+      this.unique.push(obj);
+    }
+    return this.map[key];
+  }
+};
+
+
+X.object.prototype.fromCSG = function(csg) {
+
+  if (!goog.isDefAndNotNull(csg) || !(csg instanceof CSG)) {
+    
+    throw new X.exception('Invalid CSG object.');
+    
+  }
+  
+  var indexer = new Indexer();
+  var ppp = new Array();
+  // grab points, normals and colors
+  csg.toPolygons().map(function(p) {
+
+    var indices = p.vertices.map(function(vertex) {
+
+      vertex.color = p.shared;
+      return indexer.add(vertex);
+    });
+    
+    for ( var i = 2; i < indices.length; i++) {
+      ppp.push([indices[0], indices[i - 1], indices[i]]);
+    }
+    
+  }.bind(this));
+  
+
+  vertices = indexer.unique.map(function(v) {
+
+    return [v.pos.x, v.pos.y, v.pos.z];
+  });
+  normals = indexer.unique.map(function(v) {
+
+    return [v.normal.x, v.normal.y, v.normal.z];
+  });
+  colors = indexer.unique.map(function(v) {
+
+    return [v.color[0], v.color[1], v.color[2]];
+  });
+  
+  // setup the points, normals and colors for this X.object
+  // here, we already have triangles
+  ppp.map(function(i) {
+
+    // grab the three vertices of this triangle
+    var i0 = i[0];
+    var i1 = i[1];
+    var i2 = i[2];
+    
+    // add the points
+    this._points.add(vertices[i0][0], vertices[i0][1], vertices[i0][2]);
+    this._points.add(vertices[i1][0], vertices[i1][1], vertices[i1][2]);
+    this._points.add(vertices[i2][0], vertices[i2][1], vertices[i2][2]);
+    
+    // add the normals
+    this._normals.add(normals[i0][0], normals[i0][1], normals[i0][2]);
+    this._normals.add(normals[i1][0], normals[i1][1], normals[i1][2]);
+    this._normals.add(normals[i2][0], normals[i2][1], normals[i2][2]);
+    
+    // if colors are set for this triangle, add'em too else add the object color
+    var objectColor = this._color;
+    
+    if (colors[i0]) {
+      this._colors.add(colors[i0][0], colors[i0][1], colors[i0][2]);
+    } else {
+      
+      this._colors.add(objectColor[0], objectColor[1], objectColor[2]);
+      
+    }
+    if (colors[i1]) {
+      this._colors.add(colors[i1][0], colors[i1][1], colors[i1][2]);
+    } else {
+      
+      this._colors.add(objectColor[0], objectColor[1], objectColor[2]);
+      
+    }
+    if (colors[i2]) {
+      this._colors.add(colors[i2][0], colors[i2][1], colors[i2][2]);
+    } else {
+      
+      this._colors.add(objectColor[0], objectColor[1], objectColor[2]);
+      
+    }
+    
+  }.bind(this));
+  
+
+  // we only support CGS in TRIANGLES rendering mode
+  this.setType(X.object.types.TRIANGLES);
+  
+};
+
 
 
 /**

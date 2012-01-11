@@ -599,7 +599,7 @@ X.parserVTK.prototype.configurePolygons = function(unorderedPoints,
     var currentGeometryLength = currentGeometry.length;
     
     // in the sub-loop we loop through the indices of the current geometry
-    // since this is TRIANGLE_STRIPS rendering mode, we just add the point to
+    // since this is POLYGONS rendering mode, we just add the point to
     // the object's points
     var k;
     for (k = 0; k < currentGeometryLength; k++) {
