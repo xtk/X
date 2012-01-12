@@ -10,11 +10,11 @@ xtk.js
 ### Why XTK? ####
 <p>3 words: simple, lightweight, fast.</p>
 <p>SIMPLE: very simplified api</p>
-<p>
+
 ```html
 <script src="js/xtk.js"></script>
-...
-```</p>
+```
+
 <p>LIGHTWEIGHT: compilation - power of the closure compiler </p>
 <p>FAST: power of webgl - power of the closure compiler </p>
 <p>DOCUMENTED: all classes and methods are documented. Documentation is available <a href="https://github.com/xtk/X/blob/master/doc/index.html">here</a> </p>
