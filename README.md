@@ -13,7 +13,14 @@ Current release: <a href="https://github.com/xtk/X/downloads">download</a>
 
 ### Usage ###
 ```html
-<script src="js/xtk.js"></script>
+    var r = new X.renderer('r');
+    r.init();
+    
+    var cube = new X.cube([0,0,0],10,10,10);
+    
+    r.add(cube);
+    
+    r.render();
 ```
 
 #### Demos ####
