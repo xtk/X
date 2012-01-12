@@ -1,15 +1,17 @@
 xtk.js
 ======
 
+A webgl toolkit for scientific visualization
+
 #### 3D visualization toolkit ####
 
 What is XTK?
 
 Why XTK?
-Simple
+Simple, lightweight, fast
 
 #### Demos ####
-<a href="http://demos.goxtk.com/knee_atlas/"><img src="http://xtk.github.com/demos/knee_atlas/caption.png" width="109" height="82" alt="knee atlas"></a>
+<a href="http://demos.goxtk.com/knee_atlas/"><img src="http://xtk.github.com/demos/knee_atlas/caption.png" width="160" height="120" alt="knee atlas"></a>
 
 #### Lessons ####
 
