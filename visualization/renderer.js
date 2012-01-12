@@ -1474,40 +1474,32 @@ X.renderer.prototype.render_ = function() {
   } // loop through objects
 
   // deal with the orientation widget
-      //do sth for the visibility (should be able to disable it)
+   //do sth for the visibility (should be able to disable it)
+  if(this._enableOrientationBox)
+    {
 
-      // no zoom
-      // pan to corner
-      // rotate
-      // undo it after! ->  store temp matrices
-      if(this._enableOrientationBox)
-      {
-
-      var canvas = this.canvas();
-      var gl = canvas.getContext('experimental-webgl');
-      gl.disable(gl.DEPTH_TEST);
+    var canvas = this.canvas();
+    var gl = canvas.getContext('experimental-webgl');
+    gl.disable(gl.DEPTH_TEST);
       
-      var oldView = this._camera.view();
-      var oldGL   = this._camera.glView();
-      var oldGL2  = this._camera.glViewInvertedTransposed();
-///////////////////////
+    var oldView = this._camera.view();
+    var oldGL   = this._camera.glView();
+    var oldGL2  = this._camera.glViewInvertedTransposed();
     
-    gl.viewport(150, -150, this.width(), this.height());
+    gl.viewport(this.width()*3/4, 0, this.width()/4, this.height()/4);
     
     var focusX = (0);
     var focusY = (0);
-    // modify it to change the size of the orientation widget
-    var focusZ = (100);
+    var focusZ = (0);
     
     this._camera.setPosition(focusX, focusY, focusZ + 100);
     this._camera.setFocus(focusX, focusY, focusZ);
 
-  var rotation = this._camera.rotation();
+    var rotation = this._camera.rotation();
     if(rotation)
-      {
-      this._camera.rotate(rotation, false);
-      }
-/////////////////////
+     {
+     this._camera.rotate(rotation, false);
+     }
 
     // grab the current perspective from the camera
     var newperspectiveMatrix = this._camera.perspective();
@@ -1538,8 +1530,6 @@ X.renderer.prototype.render_ = function() {
       newviewMatrixInverseTransposed);
       
     // store rotation matrices
-    window.console.log('Orientation Box activated');
-      
     var object = this._orientationBox;
     var id = object.id();
       
@@ -1606,7 +1596,6 @@ X.renderer.prototype.render_ = function() {
     this._camera.setGLViewInverted(oldGL2);
   
     gl.viewport(0, 0, this.width(), this.height());
-
   }  
 };
 
