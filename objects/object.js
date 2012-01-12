@@ -65,6 +65,14 @@ X.object = function() {
   this._className = 'object';
   
   /**
+   * The uniqueId of this object. Each object in XTK has a uniqueId.
+   * 
+   * @type {number}
+   * @protected
+   */
+  this._id = parseInt(X.uniqueId(''), 10);
+  
+  /**
    * The rendering type of this object, default is {X.object.types.TRIANGLES}.
    * 
    * @type {X.object.types}
@@ -176,6 +184,14 @@ X.object = function() {
    */
   this._caption = null;
   
+  /**
+   * The flag for the magic mode.
+   * 
+   * @type {!boolean}
+   * @protected
+   */
+  this._magicMode = false;
+  
 };
 // inherit from X.base
 goog.inherits(X.object, X.base);
@@ -192,6 +208,18 @@ X.object.types = {
   TRIANGLE_STRIPS: 'TRIANGLE_STRIPS',
   LINES: 'LINES',
   POLYGONS: 'POLYGONS'
+};
+
+
+/**
+ * Return the unique id of the current X.object.
+ * 
+ * @return {number} The unique id of the current X.object.
+ */
+X.object.prototype.id = function() {
+
+  return this._id;
+  
 };
 
 
@@ -854,8 +882,40 @@ X.object.prototype.lineWidth = function() {
   
 };
 
+
+/**
+ * Get the magic mode flag.
+ * 
+ * @return {!boolean} The magic mode flag.
+ */
+X.object.prototype.magicMode = function() {
+
+  return this._magicMode;
+  
+};
+
+
+/**
+ * Set the magic mode flag.
+ * 
+ * @param {!boolean} magicMode The magic mode flag.
+ */
+X.object.prototype.setMagicMode = function(magicMode) {
+
+  if (!goog.isBoolean(magicMode)) {
+    
+    throw new X.exception('Invalid magicMode setting.');
+    
+  }
+  
+  this._magicMode = magicMode;
+  
+};
+
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.object', X.object);
+goog.exportSymbol('X.object.prototype.id', X.object.prototype.id);
 goog.exportSymbol('X.object.prototype.type', X.object.prototype.type);
 goog.exportSymbol('X.object.prototype.transform', X.object.prototype.transform);
 goog.exportSymbol('X.object.prototype.points', X.object.prototype.points);

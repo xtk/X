@@ -1174,7 +1174,8 @@ X.renderer.prototype.update_ = function(object) {
   // TEXTURE
   //
   
-  if (existed && object.texture().dirty()) {
+  if (existed && goog.isDefAndNotNull(object.texture()) &&
+      object.texture().dirty()) {
     
     // this means the object already existed and the texture is dirty
     // therefore, we delete the old gl buffers
@@ -1496,7 +1497,7 @@ X.renderer.prototype.render_ = function(picking) {
     
   } else {
     
-    // disable teh framebuffer
+    // disable the framebuffer
     this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
     
   }
@@ -1546,8 +1547,8 @@ X.renderer.prototype.render_ = function(picking) {
       }
       
       var id = object.id();
+      var magicMode = object.magicMode();
       
-
       var vertexBuffer = this._vertexBuffers.get(id);
       var normalBuffer = this._normalBuffers.get(id);
       var colorBuffer = this._colorBuffers.get(id);
@@ -1584,9 +1585,10 @@ X.renderer.prototype.render_ = function(picking) {
       }
       
       // COLORS
-      if (goog.isDefAndNotNull(colorBuffer) && !picking) {
+      if (goog.isDefAndNotNull(colorBuffer) && !picking && !magicMode) {
         
-        // point colors are defined for this object
+        // point colors are defined for this object and there is not picking
+        // request and no magicMode active
         
         // de-activate the useObjectColor flag on the shader
         this._gl.uniform1i(this._uniformLocations
@@ -1603,8 +1605,9 @@ X.renderer.prototype.render_ = function(picking) {
         // we have a fixed object color or this is 'picking' mode
         
         // activate the useObjectColor flag on the shader
+        // in magicMode, this is always false!
         this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.USEOBJECTCOLOR), true);
+            .get(X.shaders.uniforms.USEOBJECTCOLOR), (!magicMode || picking));
         
         var objectColor = object.color();
         

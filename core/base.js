@@ -63,14 +63,6 @@ X.base = function() {
   this._className = 'base';
   
   /**
-   * The uniqueId of this object. Each instance in XTK has a uniqueId.
-   * 
-   * @type {number}
-   * @protected
-   */
-  this._id = parseInt(X.uniqueId(''), 10);
-  
-  /**
    * The 'dirty' flag of this object.
    * 
    * @type {boolean}
@@ -166,7 +158,6 @@ X.base.prototype.setClean = function() {
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.base', X.base);
 goog.exportSymbol('X.base.prototype.className', X.base.prototype.className);
-goog.exportSymbol('X.base.prototype.id', X.base.prototype.id);
 goog.exportSymbol('X.base.prototype.print', X.base.prototype.print);
 goog.exportSymbol('X.base.prototype.dirty', X.base.prototype.dirty);
 goog.exportSymbol('X.base.prototype.setClean', X.base.prototype.setClean);
