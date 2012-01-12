@@ -70,4 +70,39 @@ os.system( 'echo ' + str( processingTime ) + ' >> xtk_build.log' )
 os.system( 'cat temp_build.log >> xtk_build.log' )
 
 if os.path.exists( 'temp_build.log' ): os.remove( 'temp_build.log' )
+
+license = '''/*
+ * 
+ *                  xxxxxxx      xxxxxxx
+ *                   x:::::x    x:::::x 
+ *                    x:::::x  x:::::x  
+ *                     x:::::xx:::::x   
+ *                      x::::::::::x    
+ *                       x::::::::x     
+ *                       x::::::::x     
+ *                      x::::::::::x    
+ *                     x:::::xx:::::x   
+ *                    x:::::x  x:::::x  
+ *                   x:::::x    x:::::x 
+ *              THE xxxxxxx      xxxxxxx TOOLKIT
+ *                    
+ *                  http://www.goXTK.com
+ *                   
+ * Copyright (c) 2012 The X Toolkit Developers <dev@goXTK.com>
+ *                   
+ *    The X Toolkit (XTK) is licensed under the MIT License:
+ *      http://www.opensource.org/licenses/mit-license.php
+ * 
+ *      "Free software" is a matter of liberty, not price.
+ *      "Free" as in "free speech", not as in "free beer".
+ *                                         - Richard M. Stallman
+ * 
+ * 
+ */'''
+
+with open( "xtk.js", "r+" ) as f:
+     old = f.read() # read everything in the file
+     f.seek( 0 ) # rewind
+     f.write( license + '\n' + old ) # write the new line before
+
 print '>> OUTPUT: xtk.js'

@@ -251,9 +251,27 @@ ul.inheritsList
 	
   
 	
+  
+	
+  
+	
+  
+	
+  
+	
+  
+	
+  
+	
+  
+	
+  
+	
+  
+	
 </ul>
 <ul class="classList">
-	<h2>CORE</h2><li><a href="../symbols/X.base.html">X.base</a></li><li><a href="../symbols/X.event.html">X.event</a></li><li><a href="../symbols/X.event.ModifiedEvent.html">X.event.ModifiedEvent</a></li><li><a href="../symbols/X.event.PanEvent.html">X.event.PanEvent</a></li><li><a href="../symbols/X.event.ProgressEvent.html">X.event.ProgressEvent</a></li><li><a href="../symbols/X.event.RenderEvent.html">X.event.RenderEvent</a></li><li><a href="../symbols/X.event.ResetViewEvent.html">X.event.ResetViewEvent</a></li><li><a href="../symbols/X.event.RotateEvent.html">X.event.RotateEvent</a></li><li><a href="../symbols/X.event.ZoomEvent.html">X.event.ZoomEvent</a></li><li><a href="../symbols/X.exception.html">X.exception</a></li><li><a href="../symbols/X.texture.html">X.texture</a></li><li><a href="../symbols/X.transform.html">X.transform</a></li><li><a href="../symbols/X.triplets.html">X.triplets</a></li><h2>IO</h2><li><a href="../symbols/X.interactor.html">X.interactor</a></li><li><a href="../symbols/X.loader.html">X.loader</a></li><li><a href="../symbols/X.parser.html">X.parser</a></li><li><a href="../symbols/X.parserSTL.html">X.parserSTL</a></li><li><a href="../symbols/X.parserTRK.html">X.parserTRK</a></li><li><a href="../symbols/X.parserVTK.html">X.parserVTK</a></li><h2>MATH</h2><li><a href="../symbols/X.matrix.html">X.matrix</a></li><h2>OBJECTS</h2><li><a href="../symbols/X.box.html">X.box</a></li><li><a href="../symbols/X.object.html">X.object</a></li><h2>VISUALIZATION</h2><li><a href="../symbols/X.buffer.html">X.buffer</a></li><li><a href="../symbols/X.camera.html">X.camera</a></li><li><a href="../symbols/X.renderer.html">X.renderer</a></li><li><a href="../symbols/X.shaders.html">X.shaders</a></li>
+	<h2>CORE</h2><li><a href="../symbols/X.base.html">X.base</a></li><li><a href="../symbols/X.event.html">X.event</a></li><li><a href="../symbols/X.event.HoverEndEvent.html">X.event.HoverEndEvent</a></li><li><a href="../symbols/X.event.HoverEvent.html">X.event.HoverEvent</a></li><li><a href="../symbols/X.event.ModifiedEvent.html">X.event.ModifiedEvent</a></li><li><a href="../symbols/X.event.PanEvent.html">X.event.PanEvent</a></li><li><a href="../symbols/X.event.ProgressEvent.html">X.event.ProgressEvent</a></li><li><a href="../symbols/X.event.RenderEvent.html">X.event.RenderEvent</a></li><li><a href="../symbols/X.event.ResetViewEvent.html">X.event.ResetViewEvent</a></li><li><a href="../symbols/X.event.RotateEvent.html">X.event.RotateEvent</a></li><li><a href="../symbols/X.event.ZoomEvent.html">X.event.ZoomEvent</a></li><li><a href="../symbols/X.exception.html">X.exception</a></li><li><a href="../symbols/X.file.html">X.file</a></li><li><a href="../symbols/X.texture.html">X.texture</a></li><li><a href="../symbols/X.transform.html">X.transform</a></li><li><a href="../symbols/X.triplets.html">X.triplets</a></li><h2>IO</h2><li><a href="../symbols/X.interactor.html">X.interactor</a></li><li><a href="../symbols/X.loader.html">X.loader</a></li><li><a href="../symbols/X.parser.html">X.parser</a></li><li><a href="../symbols/X.parserSTL.html">X.parserSTL</a></li><li><a href="../symbols/X.parserTRK.html">X.parserTRK</a></li><li><a href="../symbols/X.parserVTK.html">X.parserVTK</a></li><h2>MATH</h2><li><a href="../symbols/X.matrix.html">X.matrix</a></li><h2>OBJECTS</h2><li><a href="../symbols/X.cube.html">X.cube</a></li><li><a href="../symbols/X.cylinder.html">X.cylinder</a></li><li><a href="../symbols/X.object.html">X.object</a></li><li><a href="../symbols/X.sphere.html">X.sphere</a></li><h2>UI</h2><li><a href="../symbols/X.caption.html">X.caption</a></li><li><a href="../symbols/X.progressbar.html">X.progressbar</a></li><h2>VISUALIZATION</h2><li><a href="../symbols/X.buffer.html">X.buffer</a></li><li><a href="../symbols/X.camera.html">X.camera</a></li><li><a href="../symbols/X.indexer.html">X.indexer</a></li><li><a href="../symbols/X.renderer.html">X.renderer</a></li><li><a href="../symbols/X.shaders.html">X.shaders</a></li>
 
 </ul>
 <hr />
@@ -358,9 +376,18 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/X.object.html#caption">caption</a></b>()
+								</div>
+								<div class="description">Get the caption of this object.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/X.object.html#children">children</a></b>()
 								</div>
-								<div class="description"></div>
+								<div class="description">Get the children of this object.</div>
 							</td>
 						</tr>
 					
@@ -387,7 +414,16 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/X.object.html#file">file</a></b>()
 								</div>
-								<div class="description">Get the associated file for this object.</div>
+								<div class="description">Get the associated X.file for this object.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/X.object.html#fromCSG">fromCSG</a></b>(csg)
+								</div>
+								<div class="description"></div>
 							</td>
 						</tr>
 					
@@ -395,6 +431,24 @@ ul.inheritsList
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/X.object.html#hasChildren">hasChildren</a></b>()
+								</div>
+								<div class="description">Check if this object has children.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/X.object.html#intersect">intersect</a></b>(object)
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/X.object.html#inverse">inverse</a></b>(object)
 								</div>
 								<div class="description"></div>
 							</td>
@@ -405,16 +459,16 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/X.object.html#lineWidth">lineWidth</a></b>()
 								</div>
-								<div class="description"></div>
+								<div class="description">Get the line width of this object.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/X.object.html#load">load</a></b>(file)
+								<div class="fixedFont"><b><a href="../symbols/X.object.html#load">load</a></b>(filepath)
 								</div>
-								<div class="description">Load this object from a file or reset the associated file.</div>
+								<div class="description">Load this object from a file path or reset the associated file path.</div>
 							</td>
 						</tr>
 					
@@ -457,6 +511,15 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/X.object.html#setCaption">setCaption</a></b>(caption)
+								</div>
+								<div class="description">Set the caption for this object.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/X.object.html#setColor">setColor</a></b>(r, g, b)
 								</div>
 								<div class="description">Set the object color.</div>
@@ -468,7 +531,7 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/X.object.html#setLineWidth">setLineWidth</a></b>(width)
 								</div>
-								<div class="description"></div>
+								<div class="description">Set the line width for this object.</div>
 							</td>
 						</tr>
 					
@@ -511,6 +574,15 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/X.object.html#subtract">subtract</a></b>(object)
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/X.object.html#texture">texture</a></b>()
 								</div>
 								<div class="description">Get the object texture.</div>
@@ -529,6 +601,15 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/X.object.html#toCSG">toCSG</a></b>()
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/X.object.html#transform">transform</a></b>()
 								</div>
 								<div class="description">Get the transform of this object.</div>
@@ -541,6 +622,15 @@ ul.inheritsList
 								<div class="fixedFont"><b><a href="../symbols/X.object.html#type">type</a></b>()
 								</div>
 								<div class="description">Get the rendering type of this object.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/X.object.html#union">union</a></b>(object)
+								</div>
+								<div class="description"></div>
 							</td>
 						</tr>
 					
@@ -633,15 +723,48 @@ may be loaded from a file in addition to opacity and visibility settings.
 					Method Detail
 				</div>
 				
+					<a name="caption"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{?string}</span>
+					<b>caption</b>()
+					
+					</div>
+					<div class="description">
+						Get the caption of this object.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{?string}</span> The caption of this object.</dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
 					<a name="children"> </a>
 					<div class="fixedFont">
 					
-					
+					<span class="light">{!Array}</span>
 					<b>children</b>()
 					
 					</div>
 					<div class="description">
-						
+						Get the children of this object. Each object can have N children which get
+automatically rendered when the top level object gets rendered.
 						
 						
 					</div>
@@ -652,6 +775,13 @@ may be loaded from a file in addition to opacity and visibility settings.
 						
 						
 						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{!Array}</span> The children of this object which are again objects.</dd>
+							
+							</dl>
 						
 						
 						
@@ -661,7 +791,7 @@ may be loaded from a file in addition to opacity and visibility settings.
 					<a name="color"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{X.color}</span>
+					<span class="light">{!Array}</span>
 					<b>color</b>()
 					
 					</div>
@@ -681,7 +811,7 @@ may be loaded from a file in addition to opacity and visibility settings.
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{X.color}</span> The object color.</dd>
+								<dd><span class="light fixedFont">{!Array}</span> The object color.</dd>
 							
 							</dl>
 						
@@ -693,7 +823,7 @@ may be loaded from a file in addition to opacity and visibility settings.
 					<a name="colors"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{<a href="../symbols/X.triplets.html">X.triplets</a>}</span>
+					<span class="light">{!<a href="../symbols/X.triplets.html">X.triplets</a>}</span>
 					<b>colors</b>()
 					
 					</div>
@@ -713,7 +843,7 @@ may be loaded from a file in addition to opacity and visibility settings.
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{<a href="../symbols/X.triplets.html">X.triplets</a>}</span> The point colors.</dd>
+								<dd><span class="light fixedFont">{!<a href="../symbols/X.triplets.html">X.triplets</a>}</span> The point colors.</dd>
 							
 							</dl>
 						
@@ -725,12 +855,12 @@ may be loaded from a file in addition to opacity and visibility settings.
 					<a name="file"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{?String}</span>
+					<span class="light">{?<a href="../symbols/X.file.html">X.file</a>}</span>
 					<b>file</b>()
 					
 					</div>
 					<div class="description">
-						Get the associated file for this object.
+						Get the associated X.file for this object.
 						
 						
 					</div>
@@ -745,7 +875,7 @@ may be loaded from a file in addition to opacity and visibility settings.
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{?String}</span> The associated file or null if no file is associated.</dd>
+								<dd><span class="light fixedFont">{?<a href="../symbols/X.file.html">X.file</a>}</span> The associated X.file or null if no file is associated.</dd>
 							
 							</dl>
 						
@@ -754,11 +884,11 @@ may be loaded from a file in addition to opacity and visibility settings.
 
 					<hr />
 				
-					<a name="hasChildren"> </a>
+					<a name="fromCSG"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>hasChildren</b>()
+					<b>fromCSG</b>(csg)
 					
 					</div>
 					<div class="description">
@@ -769,6 +899,121 @@ may be loaded from a file in addition to opacity and visibility settings.
 					
 					
 					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>csg</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="hasChildren"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{boolean}</span>
+					<b>hasChildren</b>()
+					
+					</div>
+					<div class="description">
+						Check if this object has children.
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{boolean}</span> TRUE if this object has children, if not FALSE.</dd>
+							
+							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="intersect"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>intersect</b>(object)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>object</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="inverse"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>inverse</b>(object)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>object</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
 						
 						
 						
@@ -782,12 +1027,13 @@ may be loaded from a file in addition to opacity and visibility settings.
 					<a name="lineWidth"> </a>
 					<div class="fixedFont">
 					
-					
+					<span class="light">{!number}</span>
 					<b>lineWidth</b>()
 					
 					</div>
 					<div class="description">
-						
+						Get the line width of this object. The line width is only used in
+X.object.types.LINES rendering mode.
 						
 						
 					</div>
@@ -798,6 +1044,13 @@ may be loaded from a file in addition to opacity and visibility settings.
 						
 						
 						
+						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{!number}</span> The line width.</dd>
+							
+							</dl>
 						
 						
 						
@@ -808,11 +1061,11 @@ may be loaded from a file in addition to opacity and visibility settings.
 					<div class="fixedFont">
 					
 					
-					<b>load</b>(file)
+					<b>load</b>(filepath)
 					
 					</div>
 					<div class="description">
-						Load this object from a file or reset the associated file.
+						Load this object from a file path or reset the associated file path.
 						
 						
 					</div>
@@ -824,7 +1077,7 @@ may be loaded from a file in addition to opacity and visibility settings.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{?String}</span> <b>file</b>
+									<span class="light fixedFont">{?string}</span> <b>filepath</b>
 									
 								</dt>
 								<dd>The file path/URL to load. If null, reset the
@@ -869,7 +1122,7 @@ may be loaded from a file in addition to opacity and visibility settings.
 					<a name="normals"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{<a href="../symbols/X.triplets.html">X.triplets</a>}</span>
+					<span class="light">{!<a href="../symbols/X.triplets.html">X.triplets</a>}</span>
 					<b>normals</b>()
 					
 					</div>
@@ -889,7 +1142,7 @@ may be loaded from a file in addition to opacity and visibility settings.
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{<a href="../symbols/X.triplets.html">X.triplets</a>}</span> The normals.</dd>
+								<dd><span class="light fixedFont">{!<a href="../symbols/X.triplets.html">X.triplets</a>}</span> The normals.</dd>
 							
 							</dl>
 						
@@ -901,7 +1154,7 @@ may be loaded from a file in addition to opacity and visibility settings.
 					<a name="opacity"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{Number}</span>
+					<span class="light">{number}</span>
 					<b>opacity</b>()
 					
 					</div>
@@ -922,7 +1175,7 @@ may be loaded from a file in addition to opacity and visibility settings.
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{Number}</span> The opacity in the range 0..1.</dd>
+								<dd><span class="light fixedFont">{number}</span> The opacity in the range 0..1.</dd>
 							
 							</dl>
 						
@@ -934,7 +1187,7 @@ may be loaded from a file in addition to opacity and visibility settings.
 					<a name="points"> </a>
 					<div class="fixedFont">
 					
-					<span class="light">{<a href="../symbols/X.triplets.html">X.triplets</a>}</span>
+					<span class="light">{!<a href="../symbols/X.triplets.html">X.triplets</a>}</span>
 					<b>points</b>()
 					
 					</div>
@@ -954,9 +1207,45 @@ may be loaded from a file in addition to opacity and visibility settings.
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{<a href="../symbols/X.triplets.html">X.triplets</a>}</span> The points.</dd>
+								<dd><span class="light fixedFont">{!<a href="../symbols/X.triplets.html">X.triplets</a>}</span> The points.</dd>
 							
 							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="setCaption"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>setCaption</b>(caption)
+					
+					</div>
+					<div class="description">
+						Set the caption for this object.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{?string}</span> <b>caption</b>
+									
+								</dt>
+								<dd>The caption for this object.</dd>
+							
+							</dl>
+						
+						
+						
+						
 						
 						
 						
@@ -1029,7 +1318,8 @@ may be loaded from a file in addition to opacity and visibility settings.
 					
 					</div>
 					<div class="description">
-						
+						Set the line width for this object. The line width is only used in
+X.object.types.LINES rendering mode.
 						
 						
 					</div>
@@ -1041,15 +1331,25 @@ may be loaded from a file in addition to opacity and visibility settings.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>width</b>
+									<span class="light fixedFont">{!number}</span> <b>width</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>The line width.</dd>
 							
 							</dl>
 						
 						
 						
+						
+							<dl class="detailList">
+							<dt class="heading">Throws:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{<a href="../symbols/X.exception.html">X.exception</a>}</span>  <b></b>
+								</dt>
+								<dd>An exception if the given width is invalid.</dd>
+							
+							</dl>
 						
 						
 						
@@ -1077,7 +1377,7 @@ may be loaded from a file in addition to opacity and visibility settings.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{Number}</span> <b>opacity</b>
+									<span class="light fixedFont">{number}</span> <b>opacity</b>
 									
 								</dt>
 								<dd>The opacity value in the range 0..1.</dd>
@@ -1113,7 +1413,7 @@ may be loaded from a file in addition to opacity and visibility settings.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{?<a href="../symbols/X.texture.html">X.texture</a>}</span> <b>texture</b>
+									<span class="light fixedFont">{?<a href="../symbols/X.texture.html">X.texture</a>|string}</span> <b>texture</b>
 									
 								</dt>
 								<dd>The new texture.</dd>
@@ -1211,6 +1511,42 @@ may be loaded from a file in addition to opacity and visibility settings.
 
 					<hr />
 				
+					<a name="subtract"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>subtract</b>(object)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>object</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
 					<a name="texture"> </a>
 					<div class="fixedFont">
 					
@@ -1269,6 +1605,31 @@ may be loaded from a file in addition to opacity and visibility settings.
 								<dd><span class="light fixedFont">{?Array}</span> The texture coordinate map.</dd>
 							
 							</dl>
+						
+						
+						
+
+					<hr />
+				
+					<a name="toCSG"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>toCSG</b>()
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
 						
 						
 						
@@ -1339,6 +1700,42 @@ may be loaded from a file in addition to opacity and visibility settings.
 
 					<hr />
 				
+					<a name="union"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>union</b>(object)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>object</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
 					<a name="visible"> </a>
 					<div class="fixedFont">
 					
@@ -1383,7 +1780,7 @@ may be loaded from a file in addition to opacity and visibility settings.
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Dec 30 2011 18:04:08 GMT+0100 (CET)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Jan 12 2012 01:40:53 GMT-0500 (EST)
 		</div>
 	</body>
 </html>

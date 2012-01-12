@@ -6,75 +6,100 @@
 	.REGX {color: #339;}
 	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
 	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/*
-<span class='line'>  2</span>  * ${HEADER}
-<span class='line'>  3</span>  */</span><span class="WHIT">
-<span class='line'>  4</span> 
-<span class='line'>  5</span> </span><span class="COMM">// provides</span><span class="WHIT">
-<span class='line'>  6</span> </span><span class="NAME">goog.provide</span><span class="PUNC">(</span><span class="STRN">'X.exception'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>  7</span> 
-<span class='line'>  8</span> </span><span class="COMM">// requires</span><span class="WHIT">
-<span class='line'>  9</span> </span><span class="NAME">goog.require</span><span class="PUNC">(</span><span class="STRN">'X.base'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 10</span> 
-<span class='line'> 11</span> 
-<span class='line'> 12</span> 
-<span class='line'> 13</span> </span><span class="COMM">/**
-<span class='line'> 14</span>  * The general XTK exception.
-<span class='line'> 15</span>  * 
-<span class='line'> 16</span>  * @param {?string} message An error message.
-<span class='line'> 17</span>  * @constructor
-<span class='line'> 18</span>  * @extends X.base
-<span class='line'> 19</span>  */</span><span class="WHIT">
-<span class='line'> 20</span> </span><span class="NAME">X.exception</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">message</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 21</span> 
-<span class='line'> 22</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">validMessage</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'Unknown error!'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 23</span> </span><span class="WHIT">  
-<span class='line'> 24</span>   </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">goog.isDefAndNotNull</span><span class="PUNC">(</span><span class="NAME">message</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 25</span> </span><span class="WHIT">    
-<span class='line'> 26</span>     </span><span class="COMM">// use the given message</span><span class="WHIT">
-<span class='line'> 27</span> </span><span class="WHIT">    </span><span class="NAME">validMessage</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">message</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 28</span> </span><span class="WHIT">    
-<span class='line'> 29</span>   </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'> 30</span> </span><span class="WHIT">  
-<span class='line'> 31</span>   </span><span class="COMM">//</span><span class="WHIT">
-<span class='line'> 32</span> </span><span class="WHIT">  </span><span class="COMM">// call the standard constructor of X.base</span><span class="WHIT">
-<span class='line'> 33</span> </span><span class="WHIT">  </span><span class="NAME">goog.base</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 34</span> </span><span class="WHIT">  
-<span class='line'> 35</span>   </span><span class="COMM">//</span><span class="WHIT">
-<span class='line'> 36</span> </span><span class="WHIT">  </span><span class="COMM">// class attributes</span><span class="WHIT">
-<span class='line'> 37</span> </span><span class="WHIT">  
-<span class='line'> 38</span>   </span><span class="COMM">/**
-<span class='line'> 39</span>    * @inheritDoc
-<span class='line'> 40</span>    * @const
-<span class='line'> 41</span>    */</span><span class="WHIT">
-<span class='line'> 42</span> </span><span class="WHIT">  </span><span class="NAME">this._className</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'exception'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 43</span> </span><span class="WHIT">  
-<span class='line'> 44</span>   </span><span class="COMM">/**
-<span class='line'> 45</span>    * The message of this exception.
-<span class='line'> 46</span>    * 
-<span class='line'> 47</span>    * @type {!string}
-<span class='line'> 48</span>    * @protected
-<span class='line'> 49</span>    */</span><span class="WHIT">
-<span class='line'> 50</span> </span><span class="WHIT">  </span><span class="NAME">this._message</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">validMessage</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 51</span> </span><span class="WHIT">  
-<span class='line'> 52</span>   </span><span class="COMM">/**
-<span class='line'> 53</span>    * The associated error object of this exception.
-<span class='line'> 54</span>    * 
-<span class='line'> 55</span>    * @type {Error}
-<span class='line'> 56</span>    * @private
-<span class='line'> 57</span>    */</span><span class="WHIT">
-<span class='line'> 58</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_err</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Error</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>  2</span>  * 
+<span class='line'>  3</span>  *                  xxxxxxx      xxxxxxx
+<span class='line'>  4</span>  *                   x:::::x    x:::::x 
+<span class='line'>  5</span>  *                    x:::::x  x:::::x  
+<span class='line'>  6</span>  *                     x:::::xx:::::x   
+<span class='line'>  7</span>  *                      x::::::::::x    
+<span class='line'>  8</span>  *                       x::::::::x     
+<span class='line'>  9</span>  *                       x::::::::x     
+<span class='line'> 10</span>  *                      x::::::::::x    
+<span class='line'> 11</span>  *                     x:::::xx:::::x   
+<span class='line'> 12</span>  *                    x:::::x  x:::::x  
+<span class='line'> 13</span>  *                   x:::::x    x:::::x 
+<span class='line'> 14</span>  *              THE xxxxxxx      xxxxxxx TOOLKIT
+<span class='line'> 15</span>  *                    
+<span class='line'> 16</span>  *                  http://www.goXTK.com
+<span class='line'> 17</span>  *                   
+<span class='line'> 18</span>  * Copyright (c) 2012 The X Toolkit Developers &lt;dev@goXTK.com>
+<span class='line'> 19</span>  *                   
+<span class='line'> 20</span>  *    The X Toolkit (XTK) is licensed under the MIT License:
+<span class='line'> 21</span>  *      http://www.opensource.org/licenses/mit-license.php
+<span class='line'> 22</span>  * 
+<span class='line'> 23</span>  *      "Free software" is a matter of liberty, not price.
+<span class='line'> 24</span>  *      "Free" as in "free speech", not as in "free beer".
+<span class='line'> 25</span>  *                                         - Richard M. Stallman
+<span class='line'> 26</span>  * 
+<span class='line'> 27</span>  * 
+<span class='line'> 28</span>  */</span><span class="WHIT">
+<span class='line'> 29</span> 
+<span class='line'> 30</span> </span><span class="COMM">// provides</span><span class="WHIT">
+<span class='line'> 31</span> </span><span class="NAME">goog.provide</span><span class="PUNC">(</span><span class="STRN">'X.exception'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 32</span> 
+<span class='line'> 33</span> </span><span class="COMM">// requires</span><span class="WHIT">
+<span class='line'> 34</span> </span><span class="NAME">goog.require</span><span class="PUNC">(</span><span class="STRN">'X.base'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 35</span> 
+<span class='line'> 36</span> 
+<span class='line'> 37</span> 
+<span class='line'> 38</span> </span><span class="COMM">/**
+<span class='line'> 39</span>  * The general XTK exception.
+<span class='line'> 40</span>  * 
+<span class='line'> 41</span>  * @param {?string} message An error message.
+<span class='line'> 42</span>  * @constructor
+<span class='line'> 43</span>  * @extends X.base
+<span class='line'> 44</span>  */</span><span class="WHIT">
+<span class='line'> 45</span> </span><span class="NAME">X.exception</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">message</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 46</span> 
+<span class='line'> 47</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">validMessage</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'Unknown error!'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="WHIT">  
+<span class='line'> 49</span>   </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">goog.isDefAndNotNull</span><span class="PUNC">(</span><span class="NAME">message</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 50</span> </span><span class="WHIT">    
+<span class='line'> 51</span>     </span><span class="COMM">// use the given message</span><span class="WHIT">
+<span class='line'> 52</span> </span><span class="WHIT">    </span><span class="NAME">validMessage</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">message</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 53</span> </span><span class="WHIT">    
+<span class='line'> 54</span>   </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 55</span> </span><span class="WHIT">  
+<span class='line'> 56</span>   </span><span class="COMM">//</span><span class="WHIT">
+<span class='line'> 57</span> </span><span class="WHIT">  </span><span class="COMM">// call the standard constructor of X.base</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">  </span><span class="NAME">goog.base</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 59</span> </span><span class="WHIT">  
-<span class='line'> 60</span>   </span><span class="COMM">/**
-<span class='line'> 61</span>    * The stack trace of this exception.
-<span class='line'> 62</span>    * 
-<span class='line'> 63</span>    * @type {!string}
-<span class='line'> 64</span>    * @private
-<span class='line'> 65</span>    */</span><span class="WHIT">
-<span class='line'> 66</span> </span><span class="WHIT">  </span><span class="NAME">this._stackTrace_</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">_err.stack</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 67</span> </span><span class="WHIT">  
-<span class='line'> 68</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 69</span> </span><span class="NAME">goog.inherits</span><span class="PUNC">(</span><span class="NAME">X.exception</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.base</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 70</span> 
-<span class='line'> 71</span> </span><span class="COMM">// export symbols (required for advanced compilation)</span><span class="WHIT">
-<span class='line'> 72</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.exception'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.exception</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 73</span> </span></pre></body></html>
+<span class='line'> 60</span>   </span><span class="COMM">//</span><span class="WHIT">
+<span class='line'> 61</span> </span><span class="WHIT">  </span><span class="COMM">// class attributes</span><span class="WHIT">
+<span class='line'> 62</span> </span><span class="WHIT">  
+<span class='line'> 63</span>   </span><span class="COMM">/**
+<span class='line'> 64</span>    * @inheritDoc
+<span class='line'> 65</span>    * @const
+<span class='line'> 66</span>    */</span><span class="WHIT">
+<span class='line'> 67</span> </span><span class="WHIT">  </span><span class="NAME">this._className</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'exception'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="WHIT">  
+<span class='line'> 69</span>   </span><span class="COMM">/**
+<span class='line'> 70</span>    * The message of this exception.
+<span class='line'> 71</span>    * 
+<span class='line'> 72</span>    * @type {!string}
+<span class='line'> 73</span>    * @protected
+<span class='line'> 74</span>    */</span><span class="WHIT">
+<span class='line'> 75</span> </span><span class="WHIT">  </span><span class="NAME">this._message</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'Fatal: '</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">validMessage</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 76</span> </span><span class="WHIT">  
+<span class='line'> 77</span>   </span><span class="COMM">/**
+<span class='line'> 78</span>    * The associated error object of this exception.
+<span class='line'> 79</span>    * 
+<span class='line'> 80</span>    * @type {Error}
+<span class='line'> 81</span>    * @private
+<span class='line'> 82</span>    */</span><span class="WHIT">
+<span class='line'> 83</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_err</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Error</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 84</span> </span><span class="WHIT">  
+<span class='line'> 85</span>   </span><span class="COMM">/**
+<span class='line'> 86</span>    * The stack trace of this exception.
+<span class='line'> 87</span>    * 
+<span class='line'> 88</span>    * @type {!string}
+<span class='line'> 89</span>    * @private
+<span class='line'> 90</span>    */</span><span class="WHIT">
+<span class='line'> 91</span> </span><span class="WHIT">  </span><span class="NAME">this._stackTrace_</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">_err.stack</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 92</span> </span><span class="WHIT">  
+<span class='line'> 93</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="NAME">goog.inherits</span><span class="PUNC">(</span><span class="NAME">X.exception</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.base</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 95</span> 
+<span class='line'> 96</span> </span><span class="COMM">// export symbols (required for advanced compilation)</span><span class="WHIT">
+<span class='line'> 97</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.exception'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.exception</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 98</span> </span></pre></body></html>

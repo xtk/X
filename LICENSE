@@ -1,0 +1,69 @@
+/*
+ * 
+ *                  xxxxxxx      xxxxxxx
+ *                   x:::::x    x:::::x 
+ *                    x:::::x  x:::::x  
+ *                     x:::::xx:::::x   
+ *                      x::::::::::x    
+ *                       x::::::::x     
+ *                       x::::::::x     
+ *                      x::::::::::x    
+ *                     x:::::xx:::::x   
+ *                    x:::::x  x:::::x  
+ *                   x:::::x    x:::::x 
+ *              THE xxxxxxx      xxxxxxx TOOLKIT
+ *                    
+ *                  http://www.goXTK.com
+ *                   
+ * Copyright (c) 2012 The X Toolkit Developers <dev@goXTK.com>
+ *                   
+ *    The X Toolkit (XTK) is licensed under the MIT License:
+ *      http://www.opensource.org/licenses/mit-license.php
+ *
+ *     Permission is hereby granted, free of charge, to any person obtaining 
+ *     a copy of this software and associated documentation files (the "Software"),
+ *     to deal in the Software without restriction, including without limitation
+ *     the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ *     and/or sell copies of the Software, and to permit persons to whom the 
+ *     Software is furnished to do so, subject to the following conditions:
+ *     
+ *     The above copyright notice and this permission notice shall be included in
+ *     all copies or substantial portions of the Software.
+ *     
+ *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ *     OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ *     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ *
+ * 
+ *      "Free software" is a matter of liberty, not price.
+ *      "Free" as in "free speech", not as in "free beer".
+ *                                         - Richard M. Stallman
+ * 
+ * 
+ * CREDITS
+ *
+ *   - the wonderful Constructive Solid Geometry library was created by Evan Wallace (http://madebyevan.com)
+ *     (see lib/csg/LICENSE)
+ *
+ *   - the idea for the X.indexer class was borrowed from lightGL, also by Evan Wallace (https://github.com/evanw/lightgl.js/)
+ *
+ *   - the X.parserTRK is based on a version of Dan Ginsburg (http://www.upsamplesoftware.com/)
+ *
+ *   - the VTK Fileformat and VTK are developed by Kitware Inc. (http://www.kitware.com)
+ *
+ *   - special shoutouts to the following WebGL gurus:
+ *        - mr.doob and the THREE.js crew (https://github.com/mrdoob/three.js/)
+ *        - Lindsay Kay with Scene.js
+ *        - Giles' WebGL Lessons (http://learningwebgl.com/blog/): awesome stuff dude!
+ *
+ *   - the Closure Library by Google is the base of XTK (http://code.google.com/p/closure-library/)
+ *
+ *   THANK YOU ALL!
+ *
+ */
+ 
+ 
