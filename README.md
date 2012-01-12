@@ -17,9 +17,6 @@ xtk.js
 
 <p>LIGHTWEIGHT: compilation - power of the closure compiler </p>
 <p>FAST: power of webgl - power of the closure compiler </p>
-<p>DOCUMENTED: all classes and methods are documented. Documentation is available <a href="https://github.com/xtk/X/blob/master/doc/index.html">here</a> </p>
-<p>OPENSOURCE: MIT Licence </p>
-<p>QUALITY CONTROL: Nightly and experimental builds visible <a href="http://cdash.goxtk.com/index.php?project=XTK">here</a>.</p>
 
 #### Demos ####
 <a href="http://demos.goxtk.com/knee_atlas/"><img src="http://xtk.github.com/demos/knee_atlas/caption.png" width="160" height="120" alt="knee_atlas"></a>
@@ -33,6 +30,9 @@ xtk.js
 <p>vtk support....</p>
 <p>utilies to compile and </p>
 <p>MIT Licence</p>
+<p>DOCUMENTED: all classes and methods are documented. Documentation is available <a href="https://github.com/xtk/X/blob/master/doc/index.html">here</a> </p>
+<p>OPENSOURCE: MIT Licence </p>
+<p>QUALITY CONTROL: Nightly and experimental builds visible <a href="http://cdash.goxtk.com/index.php?project=XTK">here</a>.</p>
 #### Contribute ####
 Not yet but feedback needed?
 
