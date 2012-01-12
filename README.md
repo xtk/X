@@ -11,7 +11,7 @@ Why XTK?
 Simple, lightweight, fast
 
 #### Demos ####
-<a href="http://demos.goxtk.com/knee_atlas/"><img src="http://xtk.github.com/demos/knee_atlas/caption.png" width="160" height="120" alt="knee_atlas">Knee atlas, courtesy of the SPL</a>
+<a href="http://demos.goxtk.com/knee_atlas/"><img src="http://xtk.github.com/demos/knee_atlas/caption.png" width="160" height="120" alt="knee_atlas"></a>
 
 #### Lessons ####
 
