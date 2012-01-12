@@ -9,7 +9,7 @@ Why XTK?
 Simple
 
 #### Demos ####
-<a href="http://demos.goxtk.com/knee_atlas/"><img src="http://demos.goxtk.com/knee_atlas/caption.png" width="109" height="82" alt="equirectangular"></a>
+<a href="http://demos.goxtk.com/knee_atlas/"><img src="http://demos.goxtk.com/knee_atlas/caption.png" width="657" height="570" alt="knee atlas"></a>
 
 #### Lessons ####
 
