@@ -10,7 +10,6 @@ goog.require('CSG');
 goog.require('X.base');
 goog.require('X.exception');
 goog.require('X.object');
-goog.require('goog.math.Vec3');
 
 
 
@@ -85,4 +84,4 @@ X.cube.prototype.create_ = function() {
 };
 
 // export symbols (required for advanced compilation)
-goog.exportSymbol('X.sphere', X.sphere);
+goog.exportSymbol('X.cube', X.cube);

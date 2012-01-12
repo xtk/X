@@ -290,6 +290,8 @@ X.object.prototype.fromCSG = function(csg) {
     return [v.color[0], v.color[1], v.color[2]];
   });
   
+  console.log(triangles.length);
+  
   //
   // setup the points, normals and colors for this X.object
   // by converting the triangles to the X.object API

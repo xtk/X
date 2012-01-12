@@ -10,7 +10,6 @@ goog.require('CSG');
 goog.require('X.base');
 goog.require('X.exception');
 goog.require('X.object');
-goog.require('goog.math.Vec3');
 
 
 
