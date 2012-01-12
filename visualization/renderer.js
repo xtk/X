@@ -281,7 +281,7 @@ X.renderer = function(container) {
    */
   this._locked = false;
   
-  window.console.log('XTK Release 0 -- http://www.goXTK.com');
+  window.console.log('XTK Release 1 -- 1/12/12 -- http://www.goXTK.com');
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
