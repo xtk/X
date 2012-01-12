@@ -41,10 +41,11 @@ goog.require('goog.structs.Map');
 /**
  * Create an ordered container for triplets (3D tuples).
  * 
+ * @param {Array=} data Initial data as an array.
  * @constructor
  * @extends X.base
  */
-X.triplets = function() {
+X.triplets = function(data) {
 
   //
   // call the standard constructor of X.base
@@ -73,6 +74,13 @@ X.triplets = function() {
    * @private
    */
   this._triplets_ = new Array();
+  
+  // if we have initial data, use it!
+  if (goog.isDefAndNotNull(data)) {
+    
+    this._triplets_ = data;
+    
+  }
   
 };
 // inherit from X.base
