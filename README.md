@@ -29,6 +29,7 @@ Current release: <a href="https://github.com/xtk/X/downloads">download</a>
 <a href="http://demos.goxtk.com/aneurysm/"><img src="http://xtk.github.com/demos/aneurysm/caption.png" width="160" height="120" alt="aneurysm"></a>
 
 #### Lessons ####
+<a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/lessons/00/caption.png" width="160" height="120" alt="lesson00"></a>
 
 #### Features ####
 <ul>
