@@ -236,6 +236,8 @@ X.object.prototype.toCSG = function() {
     
   }
   
+  //
+  // create and return a new CSG object
   return CSG.fromPolygons(polygons);
   
 };
@@ -249,11 +251,14 @@ X.object.prototype.fromCSG = function(csg) {
     
   }
   
+  // remove all previous points
   this._points.clear();
   this._normals.clear();
   this._colors.clear();
   
   var indexer = new Indexer();
+  
+  // .. a temp. array to store the triangles using vertex indices
   var triangles = new Array();
   
   // grab points, normals and colors
@@ -265,13 +270,14 @@ X.object.prototype.fromCSG = function(csg) {
       return indexer.add(vertex);
     });
     
-    for ( var i = 2; i < indices.length; i++) {
+    var i = 2;
+    for (i = 2; i < indices.length; i++) {
       triangles.push([indices[0], indices[i - 1], indices[i]]);
     }
     
   }.bind(this));
   
-
+  // re-map the vertices, normals and colors
   vertices = indexer.unique.map(function(v) {
 
     return [v.pos.x, v.pos.y, v.pos.z];
