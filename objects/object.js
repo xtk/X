@@ -290,8 +290,6 @@ X.object.prototype.fromCSG = function(csg) {
     return [v.color[0], v.color[1], v.color[2]];
   });
   
-  console.log(triangles.length);
-  
   //
   // setup the points, normals and colors for this X.object
   // by converting the triangles to the X.object API
@@ -431,12 +429,27 @@ X.object.prototype.texture = function() {
 /**
  * Set the object texture. If null is passed, the object will have no texture.
  * 
- * @param {?X.texture} texture The new texture.
+ * @param {?X.texture|string} texture The new texture.
  * @throws {X.exception} An exception if the given texture is invalid.
  */
 X.object.prototype.setTexture = function(texture) {
 
-  if (goog.isDefAndNotNull(texture) && !(texture instanceof X.texture)) {
+  if (!goog.isDefAndNotNull(texture)) {
+    
+    // null textures are allowed
+    this._texture = null;
+    return;
+    
+  }
+  
+  if (goog.isString(texture)) {
+    
+    // a string has to be converted to a new X.texture
+    texture = new X.texture(texture);
+    
+  }
+  
+  if (!(texture instanceof X.texture)) {
     
     throw new X.exception('Invalid texture.');
     

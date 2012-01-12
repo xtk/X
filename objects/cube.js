@@ -62,6 +62,32 @@ X.cube = function(center, radiusX, radiusY, radiusZ) {
   
   this._radiusZ = radiusZ;
   
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._textureCoordinateMap = [
+
+  // Right face
+  0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0,
+
+  // Left face
+  1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1,
+
+  // Bottom face
+  0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0,
+
+  // Top face
+  0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0,
+
+  // Back face
+  1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1,
+
+  // Front face
+  0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0,
+
+  ];
+  
   this.create_();
   
 };
