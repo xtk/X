@@ -902,70 +902,15 @@ X.renderer.prototype.update_ = function(object) {
   }
   
   // check if object already existed..
-  // if (this._objects.contains(object)) {
+  var existed = false;
   
-  // TODO after deleting the tree, this has to be adopted to the array
-  if (1 == 2) {
-    // .. it did
+  if (this.get(object.id())) {
     
-    // remove it from the tree
-    // this._objects.remove(object); NOW ARRAY!
-    
-    // clear all glBuffers by reading the X.buffer
-    
-
-    // VERTICES
-    var oldVertexBuffer = this._vertexBuffers.get(object.id());
-    if (goog.isDefAndNotNull(oldVertexBuffer)) {
-      
-      if (this._gl.isBuffer(oldVertexBuffer.glBuffer())) {
-        
-        this._gl.deleteBuffer(oldVertexBuffer.glBuffer());
-        
-      }
-      
-    }
-    
-    // NORMALS
-    var oldNormalBuffer = this._vertexBuffers.get(object.id());
-    if (goog.isDefAndNotNull(oldNormalBuffer)) {
-      
-      if (this._gl.isBuffer(oldNormalBuffer.glBuffer())) {
-        
-        this._gl.deleteBuffer(oldNormalBuffer.glBuffer());
-        
-      }
-      
-    }
-    
-    // COLORS
-    var oldColorBuffer = this._colorBuffers.get(object.id());
-    if (goog.isDefAndNotNull(oldColorBuffer)) {
-      
-      if (this._gl.isBuffer(oldColorBuffer.glBuffer())) {
-        
-        this._gl.deleteBuffer(oldColorBuffer.glBuffer());
-        
-      }
-      
-    }
-    
-    // TEXTURE
-    var oldTexturePositionBuffer = this._texturePositionBuffers
-        .get(object.id());
-    if (goog.isDefAndNotNull(oldTexturePositionBuffer)) {
-      
-      if (this._gl.isBuffer(oldTexturePositionBuffer.glBuffer())) {
-        
-        this._gl.deleteBuffer(oldTexturePositionBuffer.glBuffer());
-        
-      }
-      
-    }
+    // this means, we are updating
+    existed = true;
     
   }
   
-
   // here we check if additional loading is necessary
   // this would be the case if
   // a) the object has an external texture
@@ -1015,71 +960,145 @@ X.renderer.prototype.update_ = function(object) {
   //
   // VERTICES
   //
-  var glVertexBuffer = this._gl.createBuffer();
   
-  var points = object.points();
+  if (existed && object.points().dirty()) {
+    
+    // this means the object already existed and the points are dirty
+    // therefore, we delete the old gl buffers
+    
+    // remove old vertex buffer
+    var oldVertexBuffer = this._vertexBuffers.get(object.id());
+    if (goog.isDefAndNotNull(oldVertexBuffer)) {
+      
+      if (this._gl.isBuffer(oldVertexBuffer.glBuffer())) {
+        
+        this._gl.deleteBuffer(oldVertexBuffer.glBuffer());
+        
+      }
+      
+    }
+    
+  }
   
-  // bind and fill with vertices of current object
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
+  var vertexBuffer = null;
   
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(points.all()),
-      this._gl.STATIC_DRAW);
-  
-  // create an X.buffer to store the vertices
-  // every vertex consists of 3 items (x,y,z)
-  var vertexBuffer = new X.buffer(glVertexBuffer, points.count(), 3);
+  if (!existed || object.points().dirty()) {
+    
+    // the object either did not exist or the points are dirty, so we re-create
+    // the gl buffers and reset the bounding box
+    
+    var glVertexBuffer = this._gl.createBuffer();
+    
+    var points = object.points();
+    
+    // bind and fill with vertices of current object
+    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
+    
+    this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(points.all()),
+        this._gl.STATIC_DRAW);
+    
+    // create an X.buffer to store the vertices
+    // every vertex consists of 3 items (x,y,z)
+    vertexBuffer = new X.buffer(glVertexBuffer, points.count(), 3);
+    
+    //
+    // BOUNDING BOX
+    //
+    // The global bounding incorporates all individual bounding boxes of the
+    // objects
+    
+    var transformationMatrix = object.transform().matrix();
+    
+    var tMin = transformationMatrix.multiplyByVector(new goog.math.Vec3(points
+        .minA(), points.minB(), points.minC()));
+    var tMax = transformationMatrix.multiplyByVector(new goog.math.Vec3(points
+        .maxA(), points.maxB(), points.maxC()));
+    
+    if (goog.isNull(this._minX) || tMin.x < this._minX) {
+      this._minX = tMin.x;
+    }
+    if (goog.isNull(this._maxX) || tMax.x > this._maxX) {
+      this._maxX = tMax.x;
+    }
+    if (goog.isNull(this._minY) || tMin.y < this._minY) {
+      this._minY = tMin.y;
+    }
+    if (goog.isNull(this._maxY) || tMax.y > this._maxY) {
+      this._maxY = tMax.y;
+    }
+    if (goog.isNull(this._minZ) || tMin.z < this._minZ) {
+      this._minZ = tMin.z;
+    }
+    if (goog.isNull(this._maxZ) || tMax.z > this._maxZ) {
+      this._maxZ = tMax.z;
+    }
+    // we always keep track of the current center position
+    this._center = [(this._minX + this._maxX) / 2,
+                    (this._minY + this._maxY) / 2,
+                    (this._minZ + this._maxZ) / 2];
+    
+  } else {
+    
+    // the points are not dirty and the object already existed, so use the old
+    // buffer
+    vertexBuffer = this._vertexBuffers.get(object.id());
+    
+  }
   
   this.loader().addProgress(0.3);
   
-  //
-  // BOUNDING BOX
-  //
-  // The global bounding incorporates all individual bounding boxes of the
-  // objects
-  
-  var transformationMatrix = object.transform().matrix();
-  
-  var tMin = transformationMatrix.multiplyByVector(new goog.math.Vec3(points
-      .minA(), points.minB(), points.minC()));
-  var tMax = transformationMatrix.multiplyByVector(new goog.math.Vec3(points
-      .maxA(), points.maxB(), points.maxC()));
-  
-  if (goog.isNull(this._minX) || tMin.x < this._minX) {
-    this._minX = tMin.x;
-  }
-  if (goog.isNull(this._maxX) || tMax.x > this._maxX) {
-    this._maxX = tMax.x;
-  }
-  if (goog.isNull(this._minY) || tMin.y < this._minY) {
-    this._minY = tMin.y;
-  }
-  if (goog.isNull(this._maxY) || tMax.y > this._maxY) {
-    this._maxY = tMax.y;
-  }
-  if (goog.isNull(this._minZ) || tMin.z < this._minZ) {
-    this._minZ = tMin.z;
-  }
-  if (goog.isNull(this._maxZ) || tMax.z > this._maxZ) {
-    this._maxZ = tMax.z;
-  }
-  // we always keep track of the current center position
-  this._center = [(this._minX + this._maxX) / 2, (this._minY + this._maxY) / 2,
-                  (this._minZ + this._maxZ) / 2];
-  
+
   //
   // NORMALS
   //
-  var glNormalBuffer = this._gl.createBuffer();
   
-  // bind and fill with normals of current object
-  this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glNormalBuffer);
-  this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.normals()
-      .all()), this._gl.STATIC_DRAW);
+  if (existed && object.normals().dirty()) {
+    
+    // this means the object already existed and the points are dirty
+    // therefore, we delete the old gl buffers
+    
+    // remove old normals buffer
+    var oldNormalBuffer = this._vertexBuffers.get(object.id());
+    if (goog.isDefAndNotNull(oldNormalBuffer)) {
+      
+      if (this._gl.isBuffer(oldNormalBuffer.glBuffer())) {
+        
+        this._gl.deleteBuffer(oldNormalBuffer.glBuffer());
+        
+      }
+      
+    }
+    
+  }
   
-  // create an X.buffer to store the normals
-  // every normal consists of 3 items (x,y,z)
-  var normalBuffer = new X.buffer(glNormalBuffer, object.normals().count(), 3);
+  var normalBuffer = null;
   
+  if (!existed || object.normals().dirty()) {
+    
+    // the object either did not exist or the normals are dirty, so we re-create
+    // the gl buffers
+    
+    var glNormalBuffer = this._gl.createBuffer();
+    
+    // bind and fill with normals of current object
+    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glNormalBuffer);
+    this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object
+        .normals().all()), this._gl.STATIC_DRAW);
+    
+    // create an X.buffer to store the normals
+    // every normal consists of 3 items (x,y,z)
+    normalBuffer = new X.buffer(glNormalBuffer, object.normals().count(), 3);
+    
+  } else {
+    
+    // the normals are not dirty and the object already existed, so use the old
+    // buffer
+    normalBuffer = this._normalBuffers.get(object.id());
+    
+  }
+  
+
+
   // update progress
   this.loader().addProgress(0.3);
   
@@ -1089,6 +1108,23 @@ X.renderer.prototype.update_ = function(object) {
   // Objects can have point colors which can be different for each fragment.
   // If no point colors are defined, the object has a solid color.
   
+  if (existed && object.colors().dirty()) {
+    
+    // this means the object already existed and the colors are dirty
+    // therefore, we delete the old gl buffers
+    
+    var oldColorBuffer = this._colorBuffers.get(object.id());
+    if (goog.isDefAndNotNull(oldColorBuffer)) {
+      
+      if (this._gl.isBuffer(oldColorBuffer.glBuffer())) {
+        
+        this._gl.deleteBuffer(oldColorBuffer.glBuffer());
+        
+      }
+      
+    }
+  }
+  
   // check if we have point colors, then we need to setup the glBuffer and the
   // X.buffer
   var colorBuffer = null;
@@ -1097,24 +1133,38 @@ X.renderer.prototype.update_ = function(object) {
     
     // yes, there are point colors setup
     
-    // check if the point colors are valid, note that we use the length for this
-    // check which is slightly faster!
-    if (object.colors().length() != object.points().length()) {
+    if (!existed || object.colors().dirty()) {
       
-      // mismatch, this can not work
-      throw new X.exception('Mismatch between points and point colors!');
+      // the object either did not exist or the colors are dirty, so we
+      // re-create the gl buffers
+      
+      // check if the point colors are valid, note that we use the length for
+      // this
+      // check which is slightly faster!
+      if (object.colors().length() != object.points().length()) {
+        
+        // mismatch, this can not work
+        throw new X.exception('Mismatch between points and point colors!');
+        
+      }
+      var glColorBuffer = this._gl.createBuffer();
+      
+      // bind and fill with colors defined above
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glColorBuffer);
+      this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object
+          .colors().all()), this._gl.STATIC_DRAW);
+      
+      // create an X.buffer to store the colors
+      // every color consists of 3 items (r,g,b)
+      colorBuffer = new X.buffer(glColorBuffer, object.colors().count(), 3);
+      
+    } else {
+      
+      // the colors are not dirty and the object already existed, so use the old
+      // buffer
+      colorBuffer = this._colorBuffers.get(object.id());
       
     }
-    var glColorBuffer = this._gl.createBuffer();
-    
-    // bind and fill with colors defined above
-    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glColorBuffer);
-    this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object.colors()
-        .all()), this._gl.STATIC_DRAW);
-    
-    // create an X.buffer to store the colors
-    // every color consists of 3 items (r,g,b)
-    colorBuffer = new X.buffer(glColorBuffer, object.colors().count(), 3);
     
   }
   
@@ -1123,56 +1173,91 @@ X.renderer.prototype.update_ = function(object) {
   //
   // TEXTURE
   //
+  
+  if (existed && object.texture().dirty()) {
+    
+    // this means the object already existed and the texture is dirty
+    // therefore, we delete the old gl buffers
+    
+    var oldTexturePositionBuffer = this._texturePositionBuffers
+        .get(object.id());
+    if (goog.isDefAndNotNull(oldTexturePositionBuffer)) {
+      
+      if (this._gl.isBuffer(oldTexturePositionBuffer.glBuffer())) {
+        
+        this._gl.deleteBuffer(oldTexturePositionBuffer.glBuffer());
+        
+      }
+      
+    }
+  }
+  
   var texturePositionBuffer = null;
   if (goog.isDefAndNotNull(object.texture())) {
     // texture associated to this object
     
-    // check if we have a valid texture-to-object's-coordinate map
-    if (!goog.isDefAndNotNull(object.textureCoordinateMap())) {
+    if (!existed || object.texture().dirty()) {
       
-      var m = 'Can not add an object and texture ';
-      m += 'without valid coordinate mapping! Set the textureCoordinateMap!';
-      throw new X.exception(m);
+      // the object either did not exist or the texture is dirty, so we
+      // re-create the gl buffers
+      
+      // check if we have a valid texture-to-object's-coordinate map
+      if (!goog.isDefAndNotNull(object.textureCoordinateMap())) {
+        
+        var m = 'Can not add an object and texture ';
+        m += 'without valid coordinate mapping! Set the textureCoordinateMap!';
+        throw new X.exception(m);
+        
+      }
+      
+      // setup the glTexture, at this point the image for the texture was
+      // already
+      // loaded thanks to X.loader
+      var texture = this._gl.createTexture();
+      
+      // connect the image and the glTexture
+      texture.image = object.texture().image();
+      
+      //
+      // activate the texture on the WebGL side
+      this._textures.set(object.texture().file(), texture);
+      
+      this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
+      
+      this._gl.bindTexture(this._gl.TEXTURE_2D, texture);
+      this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, this._gl.RGBA,
+          this._gl.UNSIGNED_BYTE, texture.image);
+      
+      // TODO different filters?
+      this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER,
+          this._gl.LINEAR);
+      this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER,
+          this._gl.LINEAR);
+      
+      // release the texture binding to clear things
+      this._gl.bindTexture(this._gl.TEXTURE_2D, null);
+      
+      // create texture buffer
+      var glTexturePositionBuffer = this._gl.createBuffer();
+      
+      // bind and fill with colors defined above
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTexturePositionBuffer);
+      this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object
+          .textureCoordinateMap()), this._gl.STATIC_DRAW);
+      
+      // create an X.buffer to store the texture-coordinate map
+      texturePositionBuffer = new X.buffer(glTexturePositionBuffer, object
+          .textureCoordinateMap().length, 2);
+      
+    } else {
+      
+      // the texture is not dirty and the object already existed, so use the old
+      // buffer
+      texturePositionBuffer = this._texturePositionBuffers.get(object.id());
       
     }
     
-    // setup the glTexture, at this point the image for the texture was already
-    // loaded thanks to X.loader
-    var texture = this._gl.createTexture();
-    
-    // connect the image and the glTexture
-    texture.image = object.texture().image();
-    
-    //
-    // activate the texture on the WebGL side
-    this._textures.set(object.texture().file(), texture);
-    
-    this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
-    
-    this._gl.bindTexture(this._gl.TEXTURE_2D, texture);
-    this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, this._gl.RGBA,
-        this._gl.UNSIGNED_BYTE, texture.image);
-    
-    // TODO different filters?
-    this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER,
-        this._gl.LINEAR);
-    this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER,
-        this._gl.LINEAR);
-    
-    // release the texture binding to clear things
-    this._gl.bindTexture(this._gl.TEXTURE_2D, null);
-    
-    // create texture buffer
-    var glTexturePositionBuffer = this._gl.createBuffer();
-    
-    // bind and fill with colors defined above
-    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTexturePositionBuffer);
-    this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(object
-        .textureCoordinateMap()), this._gl.STATIC_DRAW);
-    
-    // create an X.buffer to store the texture-coordinate map
-    texturePositionBuffer = new X.buffer(glTexturePositionBuffer, object
-        .textureCoordinateMap().length, 2);
+    // dirty check
     
   } // check if object has a texture
   
@@ -1191,6 +1276,8 @@ X.renderer.prototype.update_ = function(object) {
   }
   
   // add the buffers for the object to the internal hash maps
+  // at this point the buffers are: either null (if possible), a newly generated
+  // one or an old one
   this._vertexBuffers.set(object.id(), vertexBuffer);
   this._normalBuffers.set(object.id(), normalBuffer);
   this._colorBuffers.set(object.id(), colorBuffer);
