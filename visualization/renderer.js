@@ -268,7 +268,8 @@ goog.inherits(X.renderer, X.base);
  * @enum {boolean}
  */
 X.renderer.prototype.config = {
-  PROGRESSBAR_ENABLED: true
+  PROGRESSBAR_ENABLED: true,
+  PICKING_ENABLED: true
 };
 
 
@@ -582,37 +583,41 @@ X.renderer.prototype.init = function() {
     // clear color and depth buffer
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     
-    //
-    // create a frame buffer for the picking functionality
-    //
-    // inspired by JAX https://github.com/sinisterchipmunk/jax/ and
-    // http://dl.dropbox.com/u/5095342/WebGL/webgldemo3.js
-    //
-    // we basically render into an invisible framebuffer and use a unique object
-    // color to check which object is where (a simulated Z buffer since we can
-    // not directly access the one from WebGL)
-    var pickFrameBuffer = gl.createFramebuffer();
-    var pickRenderBuffer = gl.createRenderbuffer();
-    var pickTexture = gl.createTexture();
-    
-    gl.bindTexture(gl.TEXTURE_2D, pickTexture);
-    
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, this.width(), this.height(), 0,
-        gl.RGB, gl.UNSIGNED_BYTE, null);
-    
-    gl.bindFramebuffer(gl.FRAMEBUFFER, pickFrameBuffer);
-    gl.bindRenderbuffer(gl.RENDERBUFFER, pickRenderBuffer);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.width(),
-        this.height());
-    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-    
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
-        gl.TEXTURE_2D, pickTexture, 0);
-    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT,
-        gl.RENDERBUFFER, pickRenderBuffer);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    
-    this._pickFrameBuffer = pickFrameBuffer;
+    if (this.config.PICKING_ENABLED) {
+      //
+      // create a frame buffer for the picking functionality
+      //
+      // inspired by JAX https://github.com/sinisterchipmunk/jax/ and
+      // http://dl.dropbox.com/u/5095342/WebGL/webgldemo3.js
+      //
+      // we basically render into an invisible framebuffer and use a unique
+      // object
+      // color to check which object is where (a simulated Z buffer since we can
+      // not directly access the one from WebGL)
+      var pickFrameBuffer = gl.createFramebuffer();
+      var pickRenderBuffer = gl.createRenderbuffer();
+      var pickTexture = gl.createTexture();
+      
+      gl.bindTexture(gl.TEXTURE_2D, pickTexture);
+      
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, this.width(), this.height(), 0,
+          gl.RGB, gl.UNSIGNED_BYTE, null);
+      
+      gl.bindFramebuffer(gl.FRAMEBUFFER, pickFrameBuffer);
+      gl.bindRenderbuffer(gl.RENDERBUFFER, pickRenderBuffer);
+      gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this
+          .width(), this.height());
+      gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+      
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
+          gl.TEXTURE_2D, pickTexture, 0);
+      gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT,
+          gl.RENDERBUFFER, pickRenderBuffer);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      
+      this._pickFrameBuffer = pickFrameBuffer;
+      
+    }
     
   } catch (e) {
     
@@ -1330,21 +1335,29 @@ X.renderer.prototype.showCaption_ = function(x, y) {
 
 X.renderer.prototype.pick = function(x, y) {
 
-  // render again with picking turned on which renders the scene in a
-  // framebuffer
-  this.render_(true);
-  
-  // grab the content of the framebuffer
-  var data = new Uint8Array(4);
-  this._gl.readPixels(x, this._height - y, 1, 1, this._gl.RGBA,
-      this._gl.UNSIGNED_BYTE, data);
-  
-  // grab the id
-  var r = Math.round(data[0] / 255 * 10);
-  var g = Math.round(data[1] / 255 * 10);
-  var b = Math.round(data[2] / 255 * 10);
-  
-  return (r * 100 + g * 10 + b);
+  if (this.config.PICKING_ENABLED) {
+    
+    // render again with picking turned on which renders the scene in a
+    // framebuffer
+    this.render_(true);
+    
+    // grab the content of the framebuffer
+    var data = new Uint8Array(4);
+    this._gl.readPixels(x, this._height - y, 1, 1, this._gl.RGBA,
+        this._gl.UNSIGNED_BYTE, data);
+    
+    // grab the id
+    var r = Math.round(data[0] / 255 * 10);
+    var g = Math.round(data[1] / 255 * 10);
+    var b = Math.round(data[2] / 255 * 10);
+    
+    return (r * 100 + g * 10 + b);
+    
+  } else {
+    
+    return -1;
+    
+  }
   
 };
 
