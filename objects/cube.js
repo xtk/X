@@ -17,7 +17,6 @@ goog.require('X.object');
  * Create a displayable cube.
  * 
  * @constructor
- * @inheritDoc
  * @param {!Array} center The center position in 3D space as a 1-D Array with
  *          length 3.
  * @param {!number} radiusX The radius of the box in X-direction.
@@ -84,14 +83,14 @@ X.cube = function(center, radiusX, radiusY, radiusZ) {
   1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1,
 
   // Front face
-  0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0,
+  0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0
 
   ];
   
   this.create_();
   
 };
-// inherit from X.base
+// inherit from X.object
 goog.inherits(X.cube, X.object);
 
 

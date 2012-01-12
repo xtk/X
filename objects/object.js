@@ -10,6 +10,7 @@ goog.require('CSG');
 goog.require('X.base');
 goog.require('X.exception');
 goog.require('X.file');
+goog.require('X.indexer');
 goog.require('X.triplets');
 goog.require('X.texture');
 goog.require('X.transform');
@@ -169,31 +170,6 @@ X.object.types = {
 };
 
 
-
-function Indexer() {
-
-  this.unique = [];
-  this.indices = [];
-  this.map = {};
-}
-
-Indexer.prototype = {
-  // ### .add(v)
-  // 
-  // Adds the object `obj` to `unique` if it hasn't already been added. Returns
-  // the index of `obj` in `unique`.
-  add: function(obj) {
-
-    var key = JSON.stringify(obj);
-    if (!(key in this.map)) {
-      this.map[key] = this.unique.length;
-      this.unique.push(obj);
-    }
-    return this.map[key];
-  }
-};
-
-
 X.object.prototype.toCSG = function() {
 
   var numberOfPoints = this._points.count();
@@ -256,7 +232,7 @@ X.object.prototype.fromCSG = function(csg) {
   this._normals.clear();
   this._colors.clear();
   
-  var indexer = new Indexer();
+  var indexer = new X.indexer();
   
   // .. a temp. array to store the triangles using vertex indices
   var triangles = new Array();
@@ -278,15 +254,15 @@ X.object.prototype.fromCSG = function(csg) {
   }.bind(this));
   
   // re-map the vertices, normals and colors
-  vertices = indexer.unique.map(function(v) {
+  this.__vertices = indexer.unique().map(function(v) {
 
     return [v.pos.x, v.pos.y, v.pos.z];
   });
-  normals = indexer.unique.map(function(v) {
+  this.__normals = indexer.unique().map(function(v) {
 
     return [v.normal.x, v.normal.y, v.normal.z];
   });
-  colors = indexer.unique.map(function(v) {
+  this.__colors = indexer.unique().map(function(v) {
 
     if (!v.color) {
       
@@ -305,6 +281,10 @@ X.object.prototype.fromCSG = function(csg) {
     var i0 = i[0];
     var i1 = i[1];
     var i2 = i[2];
+    
+    var vertices = this.__vertices;
+    var normals = this.__normals;
+    var colors = this.__colors;
     
     // add the points
     this._points.add(vertices[i0][0], vertices[i0][1], vertices[i0][2]);

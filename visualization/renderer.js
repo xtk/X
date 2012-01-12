@@ -542,7 +542,7 @@ X.renderer.prototype.init = function() {
     
     if (!gl) {
       
-      throw new Exception();
+      throw new Error();
       
     }
     

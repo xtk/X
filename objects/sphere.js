@@ -17,7 +17,6 @@ goog.require('X.object');
  * Create a displayable sphere.
  * 
  * @constructor
- * @inheritDoc
  * @param {!Array} center The center position in 3D space as a 1-D Array with
  *          length 3.
  * @param {!number} radius The radius of the sphere.
@@ -62,7 +61,7 @@ X.sphere = function(center, radius) {
   this.create_();
   
 };
-// inherit from X.base
+// inherit from X.object
 goog.inherits(X.sphere, X.object);
 
 

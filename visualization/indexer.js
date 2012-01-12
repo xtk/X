@@ -1,0 +1,108 @@
+/*
+ * ${HEADER}
+ */
+
+// provides
+goog.provide('X.indexer');
+
+// requires
+goog.require('X.base');
+goog.require('X.exception');
+goog.require('goog.json');
+
+
+/**
+ * Create an indexer which maps indices to objects while dropping duplicates.
+ * 
+ * @constructor
+ * @extends X.base
+ */
+X.indexer = function() {
+
+  // this was 'borrowed' from lightGl
+  //
+  // https://github.com/evanw/lightgl.js/
+  //
+  // Thanks!
+  
+  //
+  // call the standard constructor of X.base
+  goog.base(this);
+  
+  //
+  // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'indexer';
+  
+  /**
+   * The unique objects.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._unique = [];
+  
+  /**
+   * The indices of the objects.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._indices = [];
+  
+  /**
+   * The mapping between indices and objects.
+   * 
+   * @type {!Object}
+   * @protected
+   */
+  this._map = {};
+  
+};
+// inherit from X.base
+goog.inherits(X.indexer, X.base);
+
+/**
+ * Add an object if it has not been added.
+ * 
+ * @param {!Object} object The object to add.
+ * @return The index of the object after it was added.
+ * @throws {X.exception} An exception if the object is invalid.
+ */
+X.indexer.prototype.add = function(object) {
+
+  if (!goog.isDefAndNotNull(object)) {
+    
+    throw new X.exception('Invalid object.');
+    
+  }
+  
+  var key = goog.json.serialize(object);
+  if (!(key in this._map)) {
+    this._map[key] = this._unique.length;
+    this._unique.push(object);
+  }
+  return this._map[key];
+  
+};
+
+
+/**
+ * Get the unique objects.
+ * 
+ * @return {!Array}
+ */
+X.indexer.prototype.unique = function() {
+
+  return this._unique;
+  
+};
+
+// export symbols (required for advanced compilation)
+goog.exportSymbol('X.indexer', X.indexer);
+goog.exportSymbol('X.indexer.prototype.add', X.indexer.prototype.add);
+goog.exportSymbol('X.indexer.prototype.unique', X.indexer.prototype.unique);

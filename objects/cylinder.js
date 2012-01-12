@@ -17,7 +17,6 @@ goog.require('X.object');
  * Create a displayable cylinder.
  * 
  * @constructor
- * @inheritDoc
  * @param {!Array} start The start position in 3D space as a 1-D Array with
  *          length 3.
  * @param {!Array} end The end position in 3D space as a 1-D Array with length
@@ -71,7 +70,7 @@ X.cylinder = function(start, end, radius) {
   this.create_();
   
 };
-// inherit from X.base
+// inherit from X.object
 goog.inherits(X.cylinder, X.object);
 
 
