@@ -569,7 +569,7 @@ X.renderer.prototype.init = function() {
     
     // configure opacity to 0.0 to overwrite the viewport background-color by
     // the container color
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clearColor(0.0, 0.0, 0.0, 0.0);
     
     // enable transparency
     gl.enable(gl.BLEND);
