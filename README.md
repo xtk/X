@@ -10,7 +10,7 @@
 </ul>
 
 #### Demos ####
-<a href="http://demos.goxtk.com/knee_atlas/"><img src="http://xtk.github.com/demos/knee_atlas/_caption.png" width="33%" alt="knee_atlas" title="Click me!"></a>
+<a href="http://demos.goxtk.com/knee_atlas/"><img src="http://xtk.github.com/demos/knee_atlas/_caption.png" alt="knee_atlas" title="Click me!"></a>
 <a href="http://demos.goxtk.com/brainfibers/"><img src="http://xtk.github.com/demos/brainfibers/_caption.png" alt="brainfibers" title="Click me!"></a>
 <a href="http://demos.goxtk.com/aneurysm/"><img src="http://xtk.github.com/demos/aneurysm/_caption.png" alt="aneurysm" title="Click me!"></a>
 
