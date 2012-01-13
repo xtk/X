@@ -4,7 +4,7 @@
 
 <ul>
 <li>Native reading of <i>.vtk</i>, <i>.stl</i> and <i>.trk</i> files (more coming soon)</li>
-<li>Integration of the <i>Constructive Solid Geometry</i>-library supporting Boolean operations like union and intersection on meshes</li>
+<li>Integration of the <i><a href="http://evanw.github.com/csg.js/" target="_blank">Constructive Solid Geometry</a></i>-library supporting Boolean operations like union and intersection on meshes</li>
 <li>Javascript and HTML5 based: suppport of all major browsers (Chrome, Firefox, Safari and Opera)</li>
 <li>CDash based <a href="http://cdash.goxtk.com/index.php?project=XTK" target="_blank">build system</a></li>
 </ul>
