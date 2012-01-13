@@ -488,7 +488,7 @@ X.renderer.prototype.hideProgressBar_ = function() {
   // only do the following if the progressBar was not turned off
   if (this.config.PROGRESSBAR_ENABLED) {
     
-    if (this._progressBar) {
+    if (this._progressBar && !this._readyCheckTimer2) {
       
       // show a green, full progress bar
       this._progressBar.done();
@@ -574,14 +574,23 @@ X.renderer.prototype.init = function() {
   } catch (e) {
     
     // WebGL is not supported with this browser/machine/gpu
-    var errorDialog = new goog.ui.Popup(this.container());
-    // errorDialog.setContent('mmm');
-    // errorDialog.setTitle('Ooops..');
-    // errorDialog.setHasTitleCloseButton(false);
-    // errorDialog.setButtonSet(null);
-    errorDialog.setVisible(true);
     
-    throw new X.exception('WebGL not supported!');
+    // TODO replace by nicer popup
+    
+    //    
+    // 
+    // var errorDialog = new goog.ui.Popup(this.container());
+    // // errorDialog.setContent('mmm');
+    // // errorDialog.setTitle('Ooops..');
+    // // errorDialog.setHasTitleCloseButton(false);
+    // // errorDialog.setButtonSet(null);
+    // errorDialog.setVisible(true);
+    
+    var msg = 'WebGL not supported! See http://wiki.goXTK.com/index.php/X:Browsers for instructions..';
+    
+    alert(msg);
+    
+    throw new Error(msg);
     
   }
   
@@ -1603,11 +1612,19 @@ X.renderer.prototype.render_ = function(picking) {
       } else {
         
         // we have a fixed object color or this is 'picking' mode
+        var useObjectColor = true;
+        
+        // some magic mode support
+        if (magicMode && !picking) {
+          
+          useObjectColor = false;
+          
+        }
         
         // activate the useObjectColor flag on the shader
         // in magicMode, this is always false!
         this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.USEOBJECTCOLOR), (!magicMode || picking));
+            .get(X.shaders.uniforms.USEOBJECTCOLOR), useObjectColor);
         
         var objectColor = object.color();
         

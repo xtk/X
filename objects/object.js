@@ -70,7 +70,7 @@ X.object = function() {
    * @type {number}
    * @protected
    */
-  this._id = parseInt(X.uniqueId(''), 10);
+  this._id = X.uniqueId();
   
   /**
    * The rendering type of this object, default is {X.object.types.TRIANGLES}.

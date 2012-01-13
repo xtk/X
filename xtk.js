@@ -42,14 +42,13 @@ var __uniqueIdCounter = 0;
 var X = X || {};
 
 /**
- * Return a uniqueId with the given prefix.
+ * Return a uniqueId.
  * 
- * @param {string} prefix A prefix for the unique id.
- * @return {string} A uniqueId.
+ * @return {!number} A uniqueId.
  */
-X.uniqueId = function(prefix) {
+X.uniqueId = function() {
 
-  return prefix + __uniqueIdCounter++;
+  return ++__uniqueIdCounter;
   
 };
 
