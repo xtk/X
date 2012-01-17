@@ -51,6 +51,9 @@ The full documentation of the API is available <a href="http://api.goXTK.com" ta
 ### More information... ###
 ...is available at <a href="http://wiki.goxtk.com" target="_blank"><b>Project X</b></a>, the X Toolkit wiki system.
 
+### Contribute? ###
+Yes, please! See the <a href="http://wiki.goxtk.com/index.php/X:DevelopersHeadsUp" target="_blank">Developer's Heads Up</a> and the <a href="http://wiki.goxtk.com/index.php/X:Future" target="_blank">X:Future page</a>.
+
 ### License ###
 Copyright (c) 2012 The X Toolkit Developers <dev@goXTK.com>
 
