@@ -71,7 +71,8 @@ X.parser.extensions = {
   // support for the following extensions
   STL: 'STL',
   VTK: 'VTK',
-  TRK: 'TRK'
+  TRK: 'TRK',
+  FSM: 'FSM'
 };
 
 
