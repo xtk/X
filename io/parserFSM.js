@@ -103,8 +103,10 @@ X.parserFSM.prototype.parse = function(object, data) {
   var numberOfTriangles = this.parseUInt32EndianSwapped(data, currentOffset);
   currentOffset += 4;
   
-  var normalsCounter = [];
+  // we count the appearance of indices to be able to average the normals
+  var indexCounter = [];
   
+  // parse the coordinates from the data
   var v = 0;
   for (v = 0; v < numberOfVertices; v++) {
     
@@ -116,18 +118,25 @@ X.parserFSM.prototype.parse = function(object, data) {
     var z = this.parseFloat32EndianSwapped(data, currentOffset);
     currentOffset += 4;
     
-    normalsCounter[v] = 0;
+    // initialize the index counter with 0
+    indexCounter[v] = 0;
     
+    // store the points unordered
     unorderedPoints.add(x, y, z);
     
   }
   
+  // a list of triangles composed by indices
+  var triangles = [];
+  
+  // a list of normals stored by index
   var normals = [];
   
-  var t = 0;
-  // numberOfTriangles = 100;
+  // parse the indices from the data
+  var t;
   for (t = 0; t < numberOfTriangles; t++) {
     
+    // grab the three indices which define a triangle
     var index1 = this.parseUInt32EndianSwapped(data, currentOffset);
     currentOffset += 4;
     var index2 = this.parseUInt32EndianSwapped(data, currentOffset);
@@ -135,11 +144,52 @@ X.parserFSM.prototype.parse = function(object, data) {
     var index3 = this.parseUInt32EndianSwapped(data, currentOffset);
     currentOffset += 4;
     
-    normalsCounter[index1] += 1;
-    normalsCounter[index2] += 1;
-    normalsCounter[index3] += 1;
+    // we count the appearance of the indices
+    indexCounter[index1] += 1;
+    indexCounter[index2] += 1;
+    indexCounter[index3] += 1;
     
-    // create a triangle with 3 vertices
+    triangles.push([index1, index2, index3]);
+    normals.push(new goog.math.Vec3(0, 0, 0));
+  }
+  
+  // compute the triangle normals using the indices
+  for (t = 0; t < numberOfTriangles; t++) {
+    
+    var index1 = triangles[t][0];
+    var index2 = triangles[t][1];
+    var index3 = triangles[t][2];
+    
+    // create a triangle with the 3 vertices
+    var v1 = unorderedPoints.get(index1);
+    var v2 = unorderedPoints.get(index2);
+    var v3 = unorderedPoints.get(index3);
+    
+    //
+    // compute the normals
+    var v1v = new goog.math.Vec3(v1[0], v1[1], v1[2]);
+    var v2v = new goog.math.Vec3(v2[0], v2[1], v2[2]);
+    var v3v = new goog.math.Vec3(v3[0], v3[1], v3[2]);
+    
+    var n1 = v2v.clone().subtract(v1v);
+    var n2 = v3v.clone().subtract(v1v);
+    
+    var normal = goog.math.Vec3.cross(n1, n2).normalize();
+    
+    normals[index1] = normals[index1].add(normal);
+    normals[index2] = normals[index2].add(normal);
+    normals[index3] = normals[index3].add(normal);
+    
+  }
+  
+  // configure the points and normals for the X.object
+  for (t = 0; t < numberOfTriangles; t++) {
+    
+    var index1 = triangles[t][0];
+    var index2 = triangles[t][1];
+    var index3 = triangles[t][2];
+    
+    // create a triangle with the 3 vertices
     var v1 = unorderedPoints.get(index1);
     var v2 = unorderedPoints.get(index2);
     var v3 = unorderedPoints.get(index3);
@@ -149,50 +199,17 @@ X.parserFSM.prototype.parse = function(object, data) {
     p.add(v2[0], v2[1], v2[2]);
     p.add(v3[0], v3[1], v3[2]);
     
-    //
-    // compute the normals
-    var v1v = new goog.math.Vec3(v1[0], v1[1], v1[2]);
-    var v2v = new goog.math.Vec3(v2[0], v2[1], v2[2]);
-    var v3v = new goog.math.Vec3(v3[0], v3[1], v3[2]);
+    // transform triangle normals to vertex normals
+    normal1 = normals[index1].scale(1 / indexCounter[index1]).normalize();
+    normal2 = normals[index2].scale(1 / indexCounter[index2]).normalize();
+    normal3 = normals[index3].scale(1 / indexCounter[index3]).normalize();
     
-    var n1 = v2v.clone().subtract(v1v);
-    var n2 = v3v.clone().subtract(v2v);
-    
-    // store'em
-    var normal = goog.math.Vec3.cross(n1, n2).normalize();
-    
-    // normals.push(normal);
-    // normals.push(normal);
-    // normals.push(normal);
-    n.add(normal.x, normal.y, normal.z);
-    n.add(normal.x, normal.y, normal.z);
-    n.add(normal.x, normal.y, normal.z);
+    // .. add'em
+    n.add(normal1.x, normal1.y, normal1.z);
+    n.add(normal2.x, normal2.y, normal2.z);
+    n.add(normal3.x, normal3.y, normal3.z);
     
   }
-  
-  // var x;
-  // for (x = 0; x < normals.length; x++) {
-  //    
-  // normals[x][0] /= normalsCounter[x];
-  // normals[x][1] /= normalsCounter[x];
-  // normals[x][2] /= normalsCounter[x];
-  //    
-  // n.add(normals[x][0], normals[x][1], normals[x][2]);
-  // }
-  //  
-  // for (v = 0; v < numberOfVertices; v++) {
-  //    
-  // var normalsCount = normalsCounter[v];
-  // var normal = normals[v];
-  //    
-  // n.add(normal.x / normalsCount, normal.y / normalsCount, normal.z /
-  // normalsCount);
-  //    
-  //
-  // }
-  
-  console.log(n.length());
-  console.log(p.length());
   
   // .. and set the objectType to triangles
   object.setType(X.object.types.TRIANGLES);
