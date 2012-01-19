@@ -24,7 +24,10 @@
  *      "Free" as in "free speech", not as in "free beer".
  *                                         - Richard M. Stallman
  * 
+ * CREDITS
  * 
+ *   - the .FSM Fileparser is based on a version of Dan Ginsburg, Children's Hospital Boston (see LICENSE)
+ *   
  */
 
 // provides
