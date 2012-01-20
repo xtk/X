@@ -752,6 +752,21 @@ X.object.prototype.setOpacity = function(opacity) {
     
   }
   
+  if (this.hasChildren()) {
+    
+    // loop through the children and propagate the new opacity
+    var children = this.children();
+    var numberOfChildren = children.length;
+    var c = 0;
+    
+    for (c = 0; c < numberOfChildren; c++) {
+      
+      children[c].setOpacity(opacity);
+      
+    }
+    
+  }
+
   this._opacity = opacity;
   
   this._dirty = true;
