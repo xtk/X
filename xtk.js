@@ -32,7 +32,7 @@
 goog.provide('X');
 
 // uniqueId mechanism
-var __uniqueIdCounter = 0;
+window[" __uniqueIdCounter"] = 0;
 
 /**
  * The XTK namespace.
@@ -48,7 +48,7 @@ var X = X || {};
  */
 X.uniqueId = function() {
 
-  return ++__uniqueIdCounter;
+  return ++ window["__uniqueIdCounter"];
   
 };
 

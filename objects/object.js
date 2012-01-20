@@ -289,33 +289,73 @@ X.object.prototype.fromCSG = function(csg) {
   
   // .. a temp. array to store the triangles using vertex indices
   var triangles = new Array();
+  /*
+    
+  var arLen=csg.toPolygons().length;
+  for ( var i=0, len=arLen; i<len; ++i ){
+    var arLen2=csg.toPolygons()[i].vertices.length;
+    for ( var j=0, len2=arLen2; j<len2; ++j){
+      csg.toPolygons()[i].vertices.color = csg.toPolygons()[i].shared;
+      indexer.add(csg.toPolygons()[i].vertices);  
+    }
   
+    var k = 2;
+    for( k=2; k<arLen2; ++k){
+      alert("test: " + csg.toPolygons()[i].vertices[0]);
+      triangles.push([csg.toPolygons()[i].vertices[0], csg.toPolygons()[i].vertices[k - 1], csg.toPolygons()[i].vertices[k]]);
+    }
+
+  } */
+
   // grab points, normals and colors
-  csg.toPolygons().map(function(p) {
+  var csg2poly = csg.toPolygons();
+  alert("csg length: " + csg2poly.length);
+  goog.array.map(csg2poly, function(p) {
 
-    var indices = p.vertices.map(function(vertex) {
-
-      vertex.color = p.shared;
+    var indices = new Array();
+    var ver = p.vertices;
+    var shared = p.shared;
+     alert("p.length: " + p.length); 
+    for(var l=0; l<p.length; l++)
+      {
+      p[l].color = shared;
+      var index = indexer.add(p[l]);
+      indices.push(index);
+      }
+ /*   var indices = goog.array.map(ver, function(vertex) {
+      vertex.color = shared;
       return indexer.add(vertex);
     });
-    
+ */
     var i = 2;
     for (i = 2; i < indices.length; i++) {
-      triangles.push([indices[0], indices[i - 1], indices[i]]);
+     alert("indices: " + indices); 
+     triangles.push([indices[0], indices[i - 1], indices[i]]);
     }
     
   }.bind(this));
   
+/*
   // re-map the vertices, normals and colors
-  this.__vertices = indexer.unique().map(function(v) {
+  var arLen3=indexer.unique().length;
+  for ( var l=0, len3=arLen3; l<len3; ++l ){
+    indexer.unique()[l] = [indexer.unique()[l].pos.x, indexer.unique()[l].pos.y, indexer.unique()[l].pos.z];
+  }
+  this.__vertices = indexer.unique();
+
+*/
+alert("triangles1: " + triangles);
+
+this.__vertices = goog.array.map(indexer.unique(), function(v) {
 
     return [v.pos.x, v.pos.y, v.pos.z];
   });
-  this.__normals = indexer.unique().map(function(v) {
+
+  this.__normals = goog.array.map(indexer.unique(), function(v) {
 
     return [v.normal.x, v.normal.y, v.normal.z];
   });
-  this.__colors = indexer.unique().map(function(v) {
+  this.__colors = goog.array.map(indexer.unique(), function(v) {
 
     if (!v.color) {
       
@@ -324,11 +364,12 @@ X.object.prototype.fromCSG = function(csg) {
     }
     return [v.color[0], v.color[1], v.color[2]];
   });
-  
+ 
+  alert("triangles: " + triangles);
   //
   // setup the points, normals and colors for this X.object
   // by converting the triangles to the X.object API
-  triangles.map(function(i) {
+  goog.array.map(triangles, function(i) {
 
     // grab the three vertices of this triangle
     var i0 = i[0];
