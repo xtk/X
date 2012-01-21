@@ -203,9 +203,9 @@ X.parserFSM.prototype.parse = function(object, data) {
     p.add(v3[0], v3[1], v3[2]);
     
     // transform triangle normals to vertex normals
-    normal1 = normals[index1].scale(1 / indexCounter[index1]).normalize();
-    normal2 = normals[index2].scale(1 / indexCounter[index2]).normalize();
-    normal3 = normals[index3].scale(1 / indexCounter[index3]).normalize();
+    var normal1 = normals[index1].scale(1 / indexCounter[index1]).normalize();
+    var normal2 = normals[index2].scale(1 / indexCounter[index2]).normalize();
+    var normal3 = normals[index3].scale(1 / indexCounter[index3]).normalize();
     
     // .. add'em
     n.add(normal1.x, normal1.y, normal1.z);

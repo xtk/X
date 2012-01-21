@@ -49,6 +49,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.iter.Iterator');
 goog.require('goog.math.Vec3');
+goog.require('goog.structs.AvlTree');
 goog.require('goog.structs.Map');
 goog.require('goog.Timer');
 goog.require('goog.ui.Dialog');
@@ -168,13 +169,22 @@ X.renderer = function(container) {
    */
   this._interactor = null;
   
+  // /**
+  // * An array containing the displayable objects of this renderer.
+  // *
+  // * @type {!Array}
+  // * @protected
+  // */
+  // this._objects = new Array();
+  
   /**
-   * An array containing the displayable objects of this renderer.
+   * An AVL tree containing the displayable objects of this renderer. The tree
+   * reflects the rendering order for the associated objects.
    * 
-   * @type {!Array}
+   * @type {!goog.structs.AvlTree}
    * @protected
    */
-  this._objects = new Array();
+  this._objects = new goog.structs.AvlTree(X.object.OPACITY_COMPARATOR);
   
   /**
    * An array containing the topLevel objects (which do not have parents) of
@@ -608,12 +618,15 @@ X.renderer.prototype.init = function() {
     // enable transparency
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    // enable depth testing
+    // // enable depth testing
     gl.enable(gl.DEPTH_TEST);
-    // gl.polygonOffset(1.0, 1.0);
-    // .. with perspective rendering
+    // // gl.polygonOffset(1.0, 1.0);
+    // // .. with perspective rendering
     gl.depthFunc(gl.LEQUAL);
+    //    
     
+
+
     // clear color and depth buffer
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     
@@ -913,7 +926,7 @@ X.renderer.prototype.update_ = function(object) {
   // check if object already existed..
   var existed = false;
   
-  if (this.get(object.id())) {
+  if (this._objects.contains(object)) {
     
     // this means, we are updating
     existed = true;
@@ -1279,7 +1292,7 @@ X.renderer.prototype.update_ = function(object) {
   
   // add the object to the internal tree which reflects the rendering order
   // (based on opacity)
-  if (!this._objects.push(object)) {
+  if (!this._objects.add(object)) {
     
     throw new X.exception('Could not add object to this renderer.');
     
@@ -1420,14 +1433,15 @@ X.renderer.prototype.get = function(id) {
     
   }
   
+  var objects = this._objects.getValues();
   var k = 0;
-  var numberOfObjects = this._objects.length;
+  var numberOfObjects = objects.length;
   
   for (k = 0; k < numberOfObjects; k++) {
     
-    if (this._objects[k].id() == id) {
+    if (objects[k].id() == id) {
       
-      return this._objects[k];
+      return objects[k];
       
     }
     
@@ -1486,18 +1500,20 @@ X.renderer.prototype.pick = function(x, y) {
 
 X.renderer.prototype.render_ = function(picking) {
 
+  console.log(this._objects.getValues());
+  
   // picking = false;
-  for ( var y = 0; y < this._topLevelObjects.length; y++) {
-    
-    var topLevelObject = this._topLevelObjects[y];
-    
-    if (topLevelObject.hasChildren()) {
-      
-      // this.generateTree_(topLevelObject, 0);
-      
-    }
-    
-  }
+  // for ( var y = 0; y < this._topLevelObjects.length; y++) {
+  //    
+  // var topLevelObject = this._topLevelObjects[y];
+  //    
+  // if (topLevelObject.hasChildren()) {
+  //      
+  // // this.generateTree_(topLevelObject, 0);
+  //      
+  // }
+  //    
+  // }
   
   if (picking) {
     
@@ -1536,7 +1552,7 @@ X.renderer.prototype.render_ = function(picking) {
   
   //
   // loop through all objects and (re-)draw them
-  var objects = this._objects;
+  var objects = this._objects.getValues();
   var numberOfObjects = objects.length;
   
   var i;
@@ -1552,6 +1568,16 @@ X.renderer.prototype.render_ = function(picking) {
         
         // not visible, continue to the next one..
         continue;
+        
+      }
+      
+      if (object.opacity() != 1) {
+        
+        this._gl.disable(this._gl.DEPTH_TEST);
+        
+      } else {
+        
+        this._gl.enable(this._gl.DEPTH_TEST);
         
       }
       
