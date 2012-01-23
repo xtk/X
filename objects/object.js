@@ -309,18 +309,20 @@ X.object.prototype.fromCSG = function(csg) {
 
   // grab points, normals and colors
   var csg2poly = csg.toPolygons();
-  alert("csg length: " + csg2poly.length);
   goog.array.map(csg2poly, function(p) {
 
     var indices = new Array();
     var ver = p.vertices;
+    alert("ver.length: " + ver.length);
     var shared = p.shared;
-     alert("p.length: " + p.length); 
-    for(var l=0; l<p.length; l++)
+    for(var l=0; l<ver.length; l++)
       {
-      p[l].color = shared;
-      var index = indexer.add(p[l]);
+      ver[l].color = shared;
+      alert("ver[l].pos: " + ver[l].pos);
+      alert("ver[l].pos.length: " + ver[l].pos.length);
+      var index = indexer.add(ver[l]);
       indices.push(index);
+      alert("index: " + index);
       }
  /*   var indices = goog.array.map(ver, function(vertex) {
       vertex.color = shared;
@@ -329,7 +331,6 @@ X.object.prototype.fromCSG = function(csg) {
  */
     var i = 2;
     for (i = 2; i < indices.length; i++) {
-     alert("indices: " + indices); 
      triangles.push([indices[0], indices[i - 1], indices[i]]);
     }
     

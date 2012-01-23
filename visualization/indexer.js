@@ -111,9 +111,9 @@ X.indexer.prototype.add = function(object) {
     this._map[key] = this._unique.length;
     this._unique.push(object);
   }
+  alert("object: " + object.pos.x);
   alert("key: " + key);
-  alert("this._map: " + this._map);
-  alert("this._map[key]: " + this._map[key]);
+  //alert("this._map[key]: " + this._map[key]);
   return this._map[key];
   
 };
