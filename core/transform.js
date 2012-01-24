@@ -41,11 +41,19 @@ goog.require('goog.math.Vec3');
 /**
  * Create a transform.
  * 
+ * @param {!Array} centroid The centroid for local rotations.
  * @constructor
  * @extends X.base
  */
-X.transform = function() {
+X.transform = function(centroid) {
 
+  if (!goog.isDefAndNotNull(centroid) || !(centroid instanceof Array) ||
+      centroid.length != 3) {
+    
+    throw new X.exception('A valid centroid is required.');
+    
+  }
+  
   //
   // call the standard constructor of X.base
   goog.base(this);
@@ -75,18 +83,78 @@ X.transform = function() {
    */
   this._glMatrix = new Float32Array(this._matrix.flatten());
   
+  /**
+   * The centroid for local rotations.
+   * 
+   * @type {Array}
+   * @protected
+   */
+  this._centroid = centroid;
+  
 };
 // inherit from X.base
 goog.inherits(X.transform, X.base);
 
 
+
 /**
- * Rotate around the X-axis.
+ * Rotate around the local X-axis.
  * 
  * @param {number} angle The angle to rotate in degrees.
  * @throws {X.exception} An exception, if the given angle is invalid.
  */
 X.transform.prototype.rotateX = function(angle) {
+
+  if (!goog.isNumber(angle) || angle < -360 || angle > 360) {
+    
+    throw new X.exception('Invalid angle!');
+    
+  }
+  
+  // 'fake' translate to 0,0,0
+  var centroidVector = new goog.math.Vec3(this._centroid[0], this._centroid[1],
+      this._centroid[2]);
+  console.log(centroidVector);
+  console.log(this._matrix);
+  // this._matrix = this._matrix.translate(centroidVector.clone().invert());
+  console.log(this._matrix);
+  
+  var angleInRadii = angle * Math.PI / 180;
+  this._matrix = this._matrix.rotate(angleInRadii, new goog.math.Vec3(0, 1, 0));
+  
+  this._matrix = this._matrix.translate(new goog.math.Vec3(0, centroidVector
+      .invert().y, 0));
+  // this._matrix.setValueAt(0, 3, 0);
+  // this._matrix.setValueAt(1, 3, 0);
+  // this._matrix.setValueAt(2, 3, 0);
+  console.log(this._matrix);
+  this._glMatrix = new Float32Array(this._matrix.flatten());
+  
+  // this.translateX(this._centroid[0] * -1);
+  // this.translateY(this._centroid[1] * -1);
+  // this.translateZ(this._centroid[2] * -1);
+  //  
+  // now world rotate
+  // this.worldRotateX(angle);
+  
+  // and translate back to the original position
+  // this.translateX(this._centroid[0]);
+  // this.translateY(this._centroid[1]);
+  // this.translateZ(this._centroid[2]);
+  
+  this._dirty = true;
+  
+};
+
+
+
+/**
+ * Rotate around the global X-axis.
+ * 
+ * @param {number} angle The angle to rotate in degrees.
+ * @throws {X.exception} An exception, if the given angle is invalid.
+ */
+X.transform.prototype.worldRotateX = function(angle) {
 
   if (!goog.isNumber(angle) || angle < -360 || angle > 360) {
     
@@ -105,12 +173,12 @@ X.transform.prototype.rotateX = function(angle) {
 
 
 /**
- * Rotate around the Y-axis.
+ * Rotate around the global Y-axis.
  * 
  * @param {number} angle The angle to rotate in degrees.
  * @throws {X.exception} An exception, if the given angle is invalid.
  */
-X.transform.prototype.rotateY = function(angle) {
+X.transform.prototype.worldRotateY = function(angle) {
 
   if (!goog.isNumber(angle) || angle < -360 || angle > 360) {
     
@@ -129,12 +197,12 @@ X.transform.prototype.rotateY = function(angle) {
 
 
 /**
- * Rotate around the Z-axis.
+ * Rotate around the global Z-axis.
  * 
  * @param {number} angle The angle to rotate in degrees.
  * @throws {X.exception} An exception, if the given angle is invalid.
  */
-X.transform.prototype.rotateZ = function(angle) {
+X.transform.prototype.worldRotateZ = function(angle) {
 
   if (!goog.isNumber(angle) || angle < -360 || angle > 360) {
     

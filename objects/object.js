@@ -83,10 +83,10 @@ X.object = function() {
   /**
    * The transform of this object.
    * 
-   * @type {!X.transform}
+   * @type {?X.transform}
    * @protected
    */
-  this._transform = new X.transform();
+  this._transform = null;
   
   /**
    * The object color. By default, this is white.
@@ -396,10 +396,16 @@ X.object.prototype.setType = function(type) {
 /**
  * Get the transform of this object.
  * 
- * @return {!X.transform} The transform.
+ * @return {?X.transform} The transform.
  */
 X.object.prototype.transform = function() {
 
+  if (!this._transform) {
+    
+    this._transform = new X.transform(this._points.centroid());
+    
+  }
+  
   return this._transform;
   
 };
@@ -766,7 +772,7 @@ X.object.prototype.setOpacity = function(opacity) {
     }
     
   }
-
+  
   this._opacity = opacity;
   
   this._dirty = true;
