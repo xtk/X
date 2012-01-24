@@ -928,6 +928,78 @@ X.object.prototype.setMagicMode = function(magicMode) {
 };
 
 
+/**
+ * Compare two X.objects by their opacity values.
+ * 
+ * @param {X.object} object1 Object1 to compare against Object2.
+ * @param {X.object} object2 Object2 to compare against Object1.
+ * @return {!number} 1, if Object1 is less or equal opaque in comparison to
+ *         Object2. -1, if Object1 is more opaque than Object2.
+ */
+X.object.OPACITY_COMPARATOR = function(object1, object2) {
+
+  // check if we have two valid objects to compare
+  if (!goog.isDefAndNotNull(object1) || !goog.isDefAndNotNull(object2) ||
+      !(object1 instanceof X.object) || !(object2 instanceof X.object)) {
+    
+    throw new X.exception(
+        'Fatal: Two valid X.objects are required for comparison.');
+    
+  }
+  // full opaque objects
+  if (object1.opacity() == 1) {
+    
+    // always put object1 before object2
+    return -1;
+    
+  }
+  if (object2.opacity() == 1) {
+    
+    // always put object2 before object1
+    return 1;
+    
+  }
+  
+  if (goog.isDefAndNotNull(object1.distance) &&
+      goog.isDefAndNotNull(object2.distance)) {
+    
+    if (object1.distance > object2.distance) {
+      
+      // object2 is closer
+      return -1;
+      
+    } else if (object1.distance <= object2.distance) {
+      
+      return 1;
+      
+    }
+    
+
+  }
+  
+  return 1;
+  
+  //  
+  // if (object1.opacity() <= object2.opacity()) {
+  //    
+  //
+  //
+  // // return a positive value to indicate object1 is less or equal opaque in
+  // // comparison to object2
+  // // this means object1 should be ordered after object2
+  // return 1;
+  //    
+  // } else if (object1.opacity() > object2.opacity()) {
+  //    
+  // // return a negative value to indicate object1 is more opaque than object2
+  // // this means object1 should be ordered before object2
+  // return -1;
+  //    
+  // }
+  
+};
+
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.object', X.object);
 goog.exportSymbol('X.object.prototype.id', X.object.prototype.id);
@@ -946,3 +1018,4 @@ goog.exportSymbol('X.object.prototype.setOpacity',
     X.object.prototype.setOpacity);
 goog.exportSymbol('X.object.prototype.load', X.object.prototype.load);
 goog.exportSymbol('X.object.prototype.file', X.object.prototype.file);
+goog.exportSymbol('X.object.OPACITY_COMPARATOR', X.object.OPACITY_COMPARATOR);

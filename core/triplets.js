@@ -66,6 +66,7 @@ X.triplets = function(data) {
   this._maxB = null;
   this._minC = null;
   this._maxC = null;
+  this._centroid = [0, 0, 0];
   
   /**
    * The one dimensional array storing all triplets.
@@ -124,7 +125,10 @@ X.triplets.prototype.add = function(a, b, c) {
     this._maxC = c;
   }
   
-
+  this._centroid = [(this._minA + this._maxA) / 2,
+                    (this._minB + this._maxB) / 2,
+                    (this._minC + this._maxC) / 2];
+  
   this._dirty = true;
   
   return this._triplets_.push(a, b, c) / 3;
@@ -266,6 +270,13 @@ X.triplets.prototype.maxC = function() {
   return this._maxC;
   
 };
+
+X.triplets.prototype.centroid = function() {
+
+  return this._centroid;
+  
+};
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.triplets', X.triplets);
 goog.exportSymbol('X.triplets.prototype.add', X.triplets.prototype.add);

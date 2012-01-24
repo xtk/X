@@ -34,6 +34,7 @@ goog.require('X.base');
 goog.require('X.event');
 goog.require('X.exception');
 goog.require('X.object');
+goog.require('X.parserFSM');
 goog.require('X.parserSTL');
 goog.require('X.parserTRK');
 goog.require('X.parserVTK');
@@ -279,7 +280,7 @@ X.loader.prototype.loadFileCompleted = function(request, object) {
 
     var filepath = object.file().path();
     
-    var fileExtension = filepath.split('.').pop();
+    var fileExtension = filepath.split('.').pop().toLowerCase();
     
     // setup a parser depending on the fileExtension
     // at this point, we already know that the file format is supported
@@ -310,6 +311,15 @@ X.loader.prototype.loadFileCompleted = function(request, object) {
           this.parseFileCompleted.bind(this));
       
       trkParser.parse(object, request.response);
+      
+    } else if (fileExtension == 'fsm') {
+      
+      var fsmParser = new X.parserFSM();
+      
+      goog.events.listenOnce(fsmParser, X.event.events.MODIFIED,
+          this.parseFileCompleted.bind(this));
+      
+      fsmParser.parse(object, request.response);
       
     }
     
