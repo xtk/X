@@ -233,13 +233,12 @@ X.matrix.prototype.rotate = function(angle, iaxis) {
 
 
 /**
- * Multiply 3x3 or 4x4 matrix by a vector. In the 3x3 case, the vector has to be
- * at least 2 dimensional. In the 4x4 case, the vector has to be at least 3
+ * Multiply 3x3 or 4x4 matrix by a vector. The vector has to be at least 3
  * dimensional.
  * 
  * @this {X.matrix}
- * @param {!goog.math.Vec2|!goog.math.Vec3} vector The multiplication vector.
- * @return {!goog.math.Vec2|!goog.math.Vec3} The result of this multiplication.
+ * @param {!goog.math.Vec3} vector The multiplication vector.
+ * @return {!goog.math.Vec3} The result of this multiplication.
  * @throws {X.exception} An exception if the multiplication fails.
  */
 X.matrix.prototype.multiplyByVector = function(vector) {
@@ -250,7 +249,6 @@ X.matrix.prototype.multiplyByVector = function(vector) {
   //
   var vectorAsArray = new Array(dimensions.width);
   
-  // set all values to one TODO: is zero better?
   var i;
   for (i = 0; i < vectorAsArray.length; i++) {
     
@@ -259,12 +257,7 @@ X.matrix.prototype.multiplyByVector = function(vector) {
     
   }
   
-  if (vector instanceof goog.math.Vec2 && dimensions.width >= 2) {
-    
-    vectorAsArray[0][0] = vector.x;
-    vectorAsArray[1][0] = vector.y;
-    
-  } else if (vector instanceof goog.math.Vec3 && dimensions.width >= 3) {
+  if (vector instanceof goog.math.Vec3 && dimensions.width >= 3) {
     
     vectorAsArray[0][0] = vector.x;
     vectorAsArray[1][0] = vector.y;
@@ -281,28 +274,10 @@ X.matrix.prototype.multiplyByVector = function(vector) {
   
   // ...and multiply it
   var resultMatrix = this.multiply(vectorAsMatrix);
-  var resultDimensions = resultMatrix.getSize();
   
-  var resultVector;
-  
-  // .. convert to vector and return it
-  if (resultDimensions.height >= 3) {
-    
-    // 3d vector
-    resultVector = new goog.math.Vec3(
-        parseFloat(resultMatrix.getValueAt(0, 0)), parseFloat(resultMatrix
-            .getValueAt(1, 0)), parseFloat(resultMatrix.getValueAt(2, 0)));
-    
-  } else {
-    
-    // 2d vector
-    resultVector = new goog.math.Vec2(
-        parseFloat(resultMatrix.getValueAt(0, 0)), parseFloat(resultMatrix
-            .getValueAt(1, 0)));
-    
-  }
-  
-  return resultVector;
+  return new goog.math.Vec3(parseFloat(resultMatrix.getValueAt(0, 0)),
+      parseFloat(resultMatrix.getValueAt(1, 0)), parseFloat(resultMatrix
+          .getValueAt(2, 0)));
   
 };
 

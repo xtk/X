@@ -304,7 +304,8 @@ goog.inherits(X.renderer, X.base);
  */
 X.renderer.prototype.config = {
   PROGRESSBAR_ENABLED: true,
-  PICKING_ENABLED: true
+  PICKING_ENABLED: true,
+  ORDERING_ENABLED: true
 };
 
 
@@ -617,7 +618,10 @@ X.renderer.prototype.init = function() {
     
     // enable transparency
     gl.enable(gl.BLEND);
+    gl.blendEquation(gl.FUNC_ADD);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    // gl.blendFunc(gl.DST_COLOR, gl.ZERO);
+    // gl.blendFunc(gl.ONE_MINUS_SRC_ALPHA, gl.SRC_ALPHA);
     // // enable depth testing
     gl.enable(gl.DEPTH_TEST);
     // // gl.polygonOffset(1.0, 1.0);
@@ -1403,7 +1407,7 @@ X.renderer.prototype.generateTree_ = function(object, level) {
   }
   
   output += object.id();
-  window.console.log(output);
+  // window.console.log(output);
   
   if (object.hasChildren()) {
     
@@ -1469,6 +1473,52 @@ X.renderer.prototype.showCaption_ = function(x, y) {
 };
 
 
+/**
+ * Calculates the distance for each associated X.object and orders the AVL tree
+ * accordingly from back-to-front while fully opaque objects are drawn first.
+ */
+X.renderer.prototype.order_ = function() {
+
+  var objects = this._objects.getValues();
+  var numberOfObjects = objects.length;
+  
+  var i;
+  for (i = 0; i < numberOfObjects; ++i) {
+    
+    var object = objects[i];
+    
+    var centroid = object.points().centroid();
+    var centroidVector = new goog.math.Vec3(centroid[0], centroid[1],
+        centroid[2]);
+    var transformedCentroidVector = object.transform().matrix()
+        .multiplyByVector(centroidVector);
+    var realCentroidVector = this._camera.view().multiplyByVector(
+        transformedCentroidVector);
+    var distanceFromEye = goog.math.Vec3.distance(this._camera.focus(),
+        realCentroidVector);
+    objects[i].distance = distanceFromEye;
+    
+  }
+  
+  this._objects.clear();
+  
+  for (i = 0; i < numberOfObjects; ++i) {
+    
+    this._objects.add(objects[i]);
+    
+  }
+  
+};
+
+
+/**
+ * Picks an object at a position defined by display coordinates. If
+ * X.renderer.config.PICKING_ENABLED is FALSE, this function always returns -1.
+ * 
+ * @param {!number} x The X-value of the display coordinates.
+ * @param {!number} y The Y-value of the display coordinates.
+ * @return {number} The ID of the found X.object or -1 if no X.object was found.
+ */
 X.renderer.prototype.pick = function(x, y) {
 
   if (this.config.PICKING_ENABLED) {
@@ -1500,8 +1550,6 @@ X.renderer.prototype.pick = function(x, y) {
 
 X.renderer.prototype.render_ = function(picking) {
 
-  console.log(this._objects.getValues());
-  
   // picking = false;
   // for ( var y = 0; y < this._topLevelObjects.length; y++) {
   //    
@@ -1551,6 +1599,16 @@ X.renderer.prototype.render_ = function(picking) {
       parseFloat(center[0]), parseFloat(center[1]), parseFloat(center[2]));
   
   //
+  // re-order the objects, but only if enabled.
+  // this ordering should be disabled if the objects' opacity settings are not
+  // used or if a large number of objects are associated
+  if (this.config.ORDERING_ENABLED) {
+    
+    this.order_();
+    
+  }
+  
+  //
   // loop through all objects and (re-)draw them
   var objects = this._objects.getValues();
   var numberOfObjects = objects.length;
@@ -1568,16 +1626,6 @@ X.renderer.prototype.render_ = function(picking) {
         
         // not visible, continue to the next one..
         continue;
-        
-      }
-      
-      if (object.opacity() != 1) {
-        
-        this._gl.disable(this._gl.DEPTH_TEST);
-        
-      } else {
-        
-        this._gl.enable(this._gl.DEPTH_TEST);
         
       }
       

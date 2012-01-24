@@ -931,25 +931,56 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
         'Fatal: Two valid X.objects are required for comparison.');
     
   }
-  
-  if (object1.opacity() <= object2.opacity()) {
+  // full opaque objects
+  if (object1.opacity() == 1) {
     
-
-
-    // return a positive value to indicate object1 is less or equal opaque in
-    // comparison to object2
-    // this means object1 should be ordered after object2
-    return 1;
-    
-  } else if (object1.opacity() > object2.opacity()) {
-    
-    // return a negative value to indicate object1 is more opaque than object2
-    // this means object1 should be ordered before object2
+    // always put object1 before object2
     return -1;
     
   }
+  if (object2.opacity() == 1) {
+    
+    // always put object2 before object1
+    return 1;
+    
+  }
   
-  return 0;
+  if (goog.isDefAndNotNull(object1.distance) &&
+      goog.isDefAndNotNull(object2.distance)) {
+    
+    if (object1.distance > object2.distance) {
+      
+      // object2 is closer
+      return -1;
+      
+    } else if (object1.distance <= object2.distance) {
+      
+      return 1;
+      
+    }
+    
+
+  }
+  
+  return 1;
+  
+  //  
+  // if (object1.opacity() <= object2.opacity()) {
+  //    
+  //
+  //
+  // // return a positive value to indicate object1 is less or equal opaque in
+  // // comparison to object2
+  // // this means object1 should be ordered after object2
+  // return 1;
+  //    
+  // } else if (object1.opacity() > object2.opacity()) {
+  //    
+  // // return a negative value to indicate object1 is more opaque than object2
+  // // this means object1 should be ordered before object2
+  // return -1;
+  //    
+  // }
   
 };
 
