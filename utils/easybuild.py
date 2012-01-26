@@ -56,7 +56,7 @@ command += ' -f "--debug"'
 #command += ' -f "--create_source_map=./mymap"'
 command += ' -f "--warning_level=VERBOSE"'
 command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
-command += ' -f "--externs=externs.js"'
+#command += ' -f "--externs=externs.js"'
 command += ' -f "--formatting=PRETTY_PRINT"'
 command += ' > xtk.js'
 
