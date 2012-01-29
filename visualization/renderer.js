@@ -1390,9 +1390,15 @@ X.renderer.prototype.render = function() {
   //
   // CURTAIN UP! LET THE SHOW BEGIN..
   //
+  this.onShowtime();
   
   this.render_(false);
   
+};
+
+
+X.renderer.prototype.onShowtime = function() {
+
 };
 
 
