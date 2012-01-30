@@ -1812,6 +1812,10 @@ X.renderer.prototype.render_ = function(picking) {
         
         drawMode = this._gl.LINES;
         
+      } else if (object.type() == X.object.types.POINTS) {
+        
+        drawMode = this._gl.POINTS;
+        
       } else if (object.type() == X.object.types.TRIANGLE_STRIPS) {
         
         drawMode = this._gl.TRIANGLE_STRIP;

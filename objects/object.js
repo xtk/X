@@ -207,6 +207,7 @@ X.object.types = {
   TRIANGLES: 'TRIANGLES',
   TRIANGLE_STRIPS: 'TRIANGLE_STRIPS',
   LINES: 'LINES',
+  POINTS: 'POINTS',
   POLYGONS: 'POLYGONS'
 };
 
@@ -766,7 +767,7 @@ X.object.prototype.setOpacity = function(opacity) {
     }
     
   }
-
+  
   this._opacity = opacity;
   
   this._dirty = true;

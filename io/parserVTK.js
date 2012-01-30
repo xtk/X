@@ -155,6 +155,10 @@ X.parserVTK.prototype.parse = function(object, data) {
     
     this.configureLines(unorderedPoints, unorderedNormals, p, n);
     
+  } else if (this._objectType == X.object.types.POINTS) {
+    
+    this.configurePoints(unorderedPoints, unorderedNormals, p, n);
+    
   } else if (this._objectType == X.object.types.POLYGONS) {
     
     this.configurePolygons(unorderedPoints, unorderedNormals, p, n);
@@ -251,6 +255,22 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     this._pointsMode = false;
     this._pointDataMode = false;
     this._objectType = X.object.types.LINES;
+    
+    // reset all former geometries since we only support 1 geometry type per
+    // file (the last one specified)
+    this._geometries = [];
+    
+    // go to next line
+    return;
+    
+  } else if (firstLineField == 'POINTSX') {
+    
+    // this means that lines are coming
+    
+    this._geometryMode = true;
+    this._pointsMode = false;
+    this._pointDataMode = false;
+    this._objectType = X.object.types.POINTS;
     
     // reset all former geometries since we only support 1 geometry type per
     // file (the last one specified)
@@ -526,6 +546,64 @@ X.parserVTK.prototype.configureTriangleStrips = function(unorderedPoints,
         }
         
       } // end of normals
+      
+    } // for loop through the currentGeometry
+    
+    i--;
+    
+  } while (i > 0);
+  
+};
+
+
+/**
+ * @param unorderedPoints
+ * @param unorderedNormals
+ * @param p
+ * @param n
+ */
+X.parserVTK.prototype.configurePoints = function(unorderedPoints,
+    unorderedNormals, p, n) {
+
+  // cache often used values for fast access
+  var numberOfUnorderedNormals = unorderedNormals.length();
+  
+  var numberOfGeometries = this._geometries.length;
+  var i = numberOfGeometries;
+  // we use this loop here since it's slightly faster than the for loop
+  do {
+    
+    // we want to loop through the geometries in the range 0..(N - 1)
+    var currentGeometry = this._geometries[numberOfGeometries - i];
+    var currentGeometryLength = currentGeometry.length;
+    
+    // in the sub-loop we loop through the indices of the current geometry
+    var k;
+    for (k = 0; k < currentGeometryLength; k++) {
+      //      
+      var currentIndex = parseInt(currentGeometry[k], 10);
+      
+      // grab the point with the currentIndex
+      var currentPoint = unorderedPoints.get(currentIndex);
+      
+      // .. and add it
+      p.add(currentPoint[0], currentPoint[1], currentPoint[2]);
+      
+
+      if (currentIndex < numberOfUnorderedNormals) {
+        
+        // grab the normal with the currentIndex, if it exists
+        var currentNormals = unorderedNormals.get(currentIndex);
+        
+        // .. and add both
+        n.add(currentNormals[0], currentNormals[1], currentNormals[2]);
+        
+      } else {
+        
+        // add an artificial normal
+        n.add(1, 1, 1);
+        
+      }
       
     } // for loop through the currentGeometry
     
