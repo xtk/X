@@ -169,6 +169,14 @@ X.object = function() {
   this._visible = true;
   
   /**
+   * The point size, only used in X.object.types.POINTS mode.
+   * 
+   * @type {number}
+   * @protected
+   */
+  this._pointSize = 1;
+  
+  /**
    * The line width, only used in X.object.types.LINES mode.
    * 
    * @type {number}
@@ -207,6 +215,7 @@ X.object.types = {
   TRIANGLES: 'TRIANGLES',
   TRIANGLE_STRIPS: 'TRIANGLE_STRIPS',
   LINES: 'LINES',
+  POINTS: 'POINTS',
   POLYGONS: 'POLYGONS'
 };
 
@@ -766,7 +775,7 @@ X.object.prototype.setOpacity = function(opacity) {
     }
     
   }
-
+  
   this._opacity = opacity;
   
   this._dirty = true;
@@ -899,6 +908,41 @@ X.object.prototype.lineWidth = function() {
 
 
 /**
+ * Set the point size for this object. The point size is only used in
+ * X.object.types.POINTS rendering mode.
+ * 
+ * @param {!number} size The point size.
+ * @throws {X.exception} An exception if the given size is invalid.
+ */
+X.object.prototype.setPointSize = function(size) {
+
+  if (!goog.isNumber(size)) {
+    
+    throw new X.exception('Invalid point size.');
+    
+  }
+  
+  this._pointSize = size;
+  
+  this._dirty = true;
+  
+};
+
+
+/**
+ * Get the point size of this object. The point size is only used in
+ * X.object.types.POINTS rendering mode.
+ * 
+ * @return {!number} The point size.
+ */
+X.object.prototype.pointSize = function() {
+
+  return this._pointSize;
+  
+};
+
+
+/**
  * Get the magic mode flag.
  * 
  * @return {!boolean} The magic mode flag.
@@ -1016,6 +1060,12 @@ goog.exportSymbol('X.object.prototype.setColor', X.object.prototype.setColor);
 goog.exportSymbol('X.object.prototype.opacity', X.object.prototype.opacity);
 goog.exportSymbol('X.object.prototype.setOpacity',
     X.object.prototype.setOpacity);
+goog.exportSymbol('X.object.prototype.lineWidth', X.object.prototype.lineWidth);
+goog.exportSymbol('X.object.prototype.setLineWidth',
+    X.object.prototype.setLineWidth);
+goog.exportSymbol('X.object.prototype.pointSize', X.object.prototype.pointSize);
+goog.exportSymbol('X.object.prototype.setPointSize',
+    X.object.prototype.setPointSize);
 goog.exportSymbol('X.object.prototype.load', X.object.prototype.load);
 goog.exportSymbol('X.object.prototype.file', X.object.prototype.file);
 goog.exportSymbol('X.object.OPACITY_COMPARATOR', X.object.OPACITY_COMPARATOR);

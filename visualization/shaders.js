@@ -79,6 +79,7 @@ X.shaders = function() {
   t += 'uniform mat4 objectTransform;\n';
   t += 'uniform bool useObjectColor;\n';
   t += 'uniform vec3 objectColor;\n';
+  t += 'uniform float pointSize;\n';
   t += '\n';
   t += 'varying vec4 fVertexPosition;\n';
   t += 'varying vec3 fragmentColor;\n';
@@ -100,7 +101,8 @@ X.shaders = function() {
   t += '  } else {\n';
   t += '    fragmentColor = vertexColor;\n';
   t += '  }\n';
-  // setup vertex Position in the GL context
+  // setup vertex Point Size and Position in the GL context
+  t += '  gl_PointSize = pointSize;\n';
   t += '  gl_Position = perspective * fVertexPosition;\n';
   t += '}\n';
   this._vertexshaderSource = t;
@@ -192,6 +194,7 @@ X.shaders.uniforms = {
   OBJECTTRANSFORM: 'objectTransform',
   USEOBJECTCOLOR: 'useObjectColor',
   OBJECTCOLOR: 'objectColor',
+  POINTSIZE: 'pointSize',
   OBJECTOPACITY: 'objectOpacity',
   NORMAL: 'normal',
   USEPICKING: 'usePicking',

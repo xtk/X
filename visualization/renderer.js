@@ -1798,6 +1798,14 @@ X.renderer.prototype.render_ = function(picking) {
           .get(X.shaders.uniforms.OBJECTTRANSFORM), false, object.transform()
           .glMatrix());
       
+      // POINT SIZE
+      var pointSize = 1;
+      if (object.type() == X.object.types.POINTS) {
+        pointSize = object.pointSize();
+      }
+      this._gl.uniform1f(this._uniformLocations
+          .get(X.shaders.uniforms.POINTSIZE), pointSize);
+      
       //
       // .. and draw with the object's DRAW MODE
       //
@@ -1812,6 +1820,10 @@ X.renderer.prototype.render_ = function(picking) {
         
         drawMode = this._gl.LINES;
         
+      } else if (object.type() == X.object.types.POINTS) {
+        
+        drawMode = this._gl.POINTS;
+        
       } else if (object.type() == X.object.types.TRIANGLE_STRIPS) {
         
         drawMode = this._gl.TRIANGLE_STRIP;
@@ -1821,6 +1833,8 @@ X.renderer.prototype.render_ = function(picking) {
         // TODO right now, this is hacked.. we need to use the Van Gogh
         // triangulation algorithm or something faster to properly convert
         // POLYGONS to TRIANGLES.
+        // Remark: The Van Gogh algorithm is implemented in the
+        // X.object.toCSG/fromCSG functions but not used here.
         if (vertexBuffer.itemCount() % 3 == 0) {
           
           drawMode = this._gl.TRIANGLES;
