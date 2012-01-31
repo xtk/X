@@ -217,12 +217,21 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     
   } else if (firstLineField == 'VERTICES') {
     
-    // this means that triangles are coming
+    // this means that triangles or points are coming
     
     this._geometryMode = true;
     this._pointsMode = false;
     this._pointDataMode = false;
-    this._objectType = X.object.types.TRIANGLES;
+    
+    if (lineFields[1] == '3') {
+      this._objectType = X.object.types.TRIANGLES;
+    } else if (lineFields[1] == '1') {
+      this._objectType = X.object.types.POINTS;
+    } else {
+      
+      throw new X.exception('Unsupported VTK file.');
+      
+    }
     
     // reset all former geometries since we only support 1 geometry type per
     // file (the last one specified)
@@ -255,22 +264,6 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     this._pointsMode = false;
     this._pointDataMode = false;
     this._objectType = X.object.types.LINES;
-    
-    // reset all former geometries since we only support 1 geometry type per
-    // file (the last one specified)
-    this._geometries = [];
-    
-    // go to next line
-    return;
-    
-  } else if (firstLineField == 'POINTSX') {
-    
-    // this means that lines are coming
-    
-    this._geometryMode = true;
-    this._pointsMode = false;
-    this._pointDataMode = false;
-    this._objectType = X.object.types.POINTS;
     
     // reset all former geometries since we only support 1 geometry type per
     // file (the last one specified)
@@ -464,8 +457,12 @@ X.parserVTK.prototype.configureTriangles = function(unorderedPoints,
         
       } else {
         
-        // add an aritficial normal
-        n.add(1, 1, 1);
+        // add an artificial normal
+        // add an artificial normal
+        var artificialNormal = new goog.math.Vec3(currentPoint[0],
+            currentPoint[1], currentPoint[2]);
+        artificialNormal.normalize();
+        n.add(artificialNormal.x, artificialNormal.y, artificialNormal.z);
         
       }
       
@@ -535,13 +532,17 @@ X.parserVTK.prototype.configureTriangleStrips = function(unorderedPoints,
       } else {
         
         // add an artificial normal
-        n.add(1, 1, 1);
+        // add an artificial normal
+        var artificialNormal = new goog.math.Vec3(currentPoint[0],
+            currentPoint[1], currentPoint[2]);
+        artificialNormal.normalize();
+        n.add(artificialNormal.x, artificialNormal.y, artificialNormal.z);
         
         if (k == 0 || k == currentGeometryLength - 1) {
           
           // if this is the first or last point of the triangle strip, add it
           // again
-          n.add(1, 1, 1);
+          n.add(artificialNormal.x, artificialNormal.y, artificialNormal.z);
           
         }
         
@@ -601,7 +602,10 @@ X.parserVTK.prototype.configurePoints = function(unorderedPoints,
       } else {
         
         // add an artificial normal
-        n.add(1, 1, 1);
+        var artificialNormal = new goog.math.Vec3(currentPoint[0],
+            currentPoint[1], currentPoint[2]);
+        artificialNormal.normalize();
+        n.add(artificialNormal.x, artificialNormal.y, artificialNormal.z);
         
       }
       
@@ -672,8 +676,14 @@ X.parserVTK.prototype.configureLines = function(unorderedPoints,
       } else {
         
         // add an artificial normal
-        n.add(1, 1, 1);
-        n.add(1, 1, 1);
+        var artificialNormal = new goog.math.Vec3(currentPoint[0],
+            currentPoint[1], currentPoint[2]);
+        artificialNormal.normalize();
+        n.add(artificialNormal.x, artificialNormal.y, artificialNormal.z);
+        var artificialNormal2 = new goog.math.Vec3(nextPoint[0], nextPoint[1],
+            nextPoint[2]);
+        artificialNormal2.normalize();
+        n.add(artificialNormal2.x, artificialNormal2.y, artificialNormal2.z);
         
       }
       
@@ -726,7 +736,11 @@ X.parserVTK.prototype.configurePolygons = function(unorderedPoints,
       } else {
         
         // add an artificial normal
-        n.add(1, 1, 1);
+        // add an artificial normal
+        var artificialNormal = new goog.math.Vec3(currentPoint[0],
+            currentPoint[1], currentPoint[2]);
+        artificialNormal.normalize();
+        n.add(artificialNormal.x, artificialNormal.y, artificialNormal.z);
         
       }
       
