@@ -1296,10 +1296,12 @@ X.renderer.prototype.update_ = function(object) {
   
   // add the object to the internal tree which reflects the rendering order
   // (based on opacity)
-  if (!this._objects.add(object)) {
-    
-    throw new X.exception('Could not add object to this renderer.');
-    
+  if (!existed) {
+    if (!this._objects.add(object)) {
+      
+      throw new X.exception('Could not add object to this renderer.');
+      
+    }
   }
   
   // add the buffers for the object to the internal hash maps
@@ -1482,9 +1484,13 @@ X.renderer.prototype.showCaption_ = function(x, y) {
 /**
  * Calculates the distance for each associated X.object and orders the AVL tree
  * accordingly from back-to-front while fully opaque objects are drawn first.
+ * Jumps out as early as possible if all objects are fully opaque.
  */
 X.renderer.prototype.order_ = function() {
 
+  // by default we do not want to update the tree
+  var reSortTreeRequired = false;
+  
   var objects = this._objects.getValues();
   var numberOfObjects = objects.length;
   
@@ -1492,6 +1498,13 @@ X.renderer.prototype.order_ = function() {
   for (i = 0; i < numberOfObjects; ++i) {
     
     var object = objects[i];
+    
+    if (object.opacity() == 1) {
+      
+      // this object is fully opaque, we do not need to calculate the distance
+      continue;
+      
+    }
     
     var centroid = object.points().centroid();
     var centroidVector = new goog.math.Vec3(centroid[0], centroid[1],
@@ -1504,13 +1517,23 @@ X.renderer.prototype.order_ = function() {
         realCentroidVector);
     objects[i].distance = distanceFromEye;
     
+    // we need to update the tree
+    reSortTreeRequired = true;
+    
   }
   
-  this._objects.clear();
-  
-  for (i = 0; i < numberOfObjects; ++i) {
+  // only re-sort the tree if required
+  if (reSortTreeRequired) {
     
-    this._objects.add(objects[i]);
+    // re-sort the tree by clearing and re-adding all objects
+    // should be fast..
+    this._objects.clear();
+    
+    for (i = 0; i < numberOfObjects; ++i) {
+      
+      this._objects.add(objects[i]);
+      
+    }
     
   }
   

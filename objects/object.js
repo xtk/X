@@ -973,12 +973,15 @@ X.object.prototype.setMagicMode = function(magicMode) {
 
 
 /**
- * Compare two X.objects by their opacity values.
+ * Compare two X.objects by their opacity values and their distance to the
+ * viewer's eye. Fully opaque objects should be always ordered before
+ * transparent ones, and the transparent ones should be ordered back-to-front in
+ * terms of the distance to the viewer's eye.
  * 
  * @param {X.object} object1 Object1 to compare against Object2.
  * @param {X.object} object2 Object2 to compare against Object1.
- * @return {!number} 1, if Object1 is less or equal opaque in comparison to
- *         Object2. -1, if Object1 is more opaque than Object2.
+ * @return {!number} 1, if Object1 should be ordered after Object2 Object2. -1,
+ *         if Object1 should be ordered before Object2
  */
 X.object.OPACITY_COMPARATOR = function(object1, object2) {
 
@@ -990,7 +993,8 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
         'Fatal: Two valid X.objects are required for comparison.');
     
   }
-  // full opaque objects
+  
+  // full opaque objects should always be rendered first
   if (object1.opacity() == 1) {
     
     // always put object1 before object2
@@ -1007,13 +1011,16 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
   if (goog.isDefAndNotNull(object1.distance) &&
       goog.isDefAndNotNull(object2.distance)) {
     
+    // order back-to-front from the viewer's eye
+    
     if (object1.distance > object2.distance) {
       
-      // object2 is closer
+      // object2 is closer so object1 should be ordered (drawn) before object2
       return -1;
       
     } else if (object1.distance <= object2.distance) {
       
+      // object 1 is closer so object1 should be ordered (drawn) after object2
       return 1;
       
     }
@@ -1022,24 +1029,6 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
   }
   
   return 1;
-  
-  //  
-  // if (object1.opacity() <= object2.opacity()) {
-  //    
-  //
-  //
-  // // return a positive value to indicate object1 is less or equal opaque in
-  // // comparison to object2
-  // // this means object1 should be ordered after object2
-  // return 1;
-  //    
-  // } else if (object1.opacity() > object2.opacity()) {
-  //    
-  // // return a negative value to indicate object1 is more opaque than object2
-  // // this means object1 should be ordered before object2
-  // return -1;
-  //    
-  // }
   
 };
 
