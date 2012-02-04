@@ -31,7 +31,6 @@
 goog.provide('X.parserVTK');
 
 // requires
-goog.require('X.exception');
 goog.require('X.event');
 goog.require('X.object');
 goog.require('X.parser');
@@ -229,7 +228,7 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
       this._objectType = X.object.types.POINTS;
     } else {
       
-      throw new X.exception('Unsupported VTK file.');
+      throw new Error('Unsupported VTK file.');
       
     }
     

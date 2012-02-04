@@ -32,7 +32,6 @@ goog.provide('X.loader');
 // requires
 goog.require('X.base');
 goog.require('X.event');
-goog.require('X.exception');
 goog.require('X.object');
 goog.require('X.parserFSM');
 goog.require('X.parserSTL');
@@ -106,7 +105,7 @@ X.loader.prototype.loadTexture = function(object) {
 
   if (!goog.isDefAndNotNull(object.texture())) {
     
-    throw new X.exception('Internal error during texture loading.');
+    throw new Error('Internal error during texture loading.');
     
   }
   
@@ -156,7 +155,7 @@ X.loader.prototype.loadFile = function(object) {
   if (!goog.isDefAndNotNull(object.file())) {
     
     // should not happen :)
-    throw new X.exception('Internal error during file loading.');
+    throw new Error('Internal error during file loading.');
     
   }
   
@@ -174,8 +173,7 @@ X.loader.prototype.loadFile = function(object) {
   if (!(fileExtension in X.parser.extensions)) {
     
     // file format is not supported
-    throw new X.exception('The ' + fileExtension +
-        ' file format is not supported!');
+    throw new Error('The ' + fileExtension + ' file format is not supported.');
     
   }
   
@@ -265,7 +263,7 @@ X.loader.prototype.progress = function() {
 
 X.loader.prototype.loadFileFailed = function(request, object) {
 
-  throw new X.exception('Could not get the file.');
+  throw new Error('Could not get the file.');
   
 };
 

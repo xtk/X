@@ -30,7 +30,6 @@
 goog.provide('X.matrix');
 
 // requires
-goog.require('X.exception');
 goog.require('goog.math.Matrix');
 goog.require('goog.math.Vec2');
 goog.require('goog.math.Vec3');
@@ -133,13 +132,13 @@ X.matrix.prototype.flatten = function() {
  * @this {X.matrix}
  * @param {!goog.math.Vec2|!goog.math.Vec3} vector The translation vector.
  * @return {!X.matrix} The result of this translation.
- * @throws {X.exception} An exception if the translation fails.
+ * @throws {Error} An exception if the translation fails.
  */
 X.matrix.prototype.translate = function(vector) {
 
   if (!this.isSquare()) {
     
-    throw new X.exception('Can not translate non-square matrix!');
+    throw new Error('Can not translate non-square matrix.');
     
   }
   
@@ -161,7 +160,7 @@ X.matrix.prototype.translate = function(vector) {
     
   } else {
     
-    throw new X.exception('Translation failed!');
+    throw new Error('Translation failed.');
     
   }
   
@@ -178,7 +177,7 @@ X.matrix.prototype.translate = function(vector) {
  * @param {!number} angle The rotation angle.
  * @param {!goog.math.Vec3} iaxis The axis to rotate around.
  * @return {!X.matrix} The result of this rotation.
- * @throws {X.exception} An exception if the rotation fails.
+ * @throws {Error} An exception if the rotation fails.
  */
 X.matrix.prototype.rotate = function(angle, iaxis) {
 
@@ -186,19 +185,19 @@ X.matrix.prototype.rotate = function(angle, iaxis) {
   
   if (dimensions.height != 4 || !this.isSquare()) {
     
-    throw new X.exception('Only 4x4 matrices can be rotated!');
+    throw new Error('Only 4x4 matrices can be rotated.');
     
   }
   
   if (!goog.isDefAndNotNull(iaxis) || !(iaxis instanceof goog.math.Vec3)) {
     
-    throw new X.exception('Invalid axis vector!');
+    throw new Error('Invalid axis vector.');
     
   }
   
   if (!goog.isNumber(angle)) {
     
-    throw new X.exception('Invalid angle!');
+    throw new Error('Invalid angle.');
     
   }
   
@@ -239,7 +238,7 @@ X.matrix.prototype.rotate = function(angle, iaxis) {
  * @this {X.matrix}
  * @param {!goog.math.Vec3} vector The multiplication vector.
  * @return {!goog.math.Vec3} The result of this multiplication.
- * @throws {X.exception} An exception if the multiplication fails.
+ * @throws {Error} An exception if the multiplication fails.
  */
 X.matrix.prototype.multiplyByVector = function(vector) {
 
@@ -265,7 +264,7 @@ X.matrix.prototype.multiplyByVector = function(vector) {
     
   } else {
     
-    throw new X.exception('Multiplication by vector failed!');
+    throw new Error('Multiplication by vector failed.');
     
   }
   

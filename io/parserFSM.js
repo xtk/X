@@ -34,7 +34,6 @@
 goog.provide('X.parserFSM');
 
 // requires
-goog.require('X.exception');
 goog.require('X.event');
 goog.require('X.object');
 goog.require('X.parser');

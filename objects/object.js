@@ -33,7 +33,6 @@ goog.provide('X.object');
 // requires
 goog.require('CSG');
 goog.require('X.base');
-goog.require('X.exception');
 goog.require('X.file');
 goog.require('X.indexer');
 goog.require('X.triplets');
@@ -285,7 +284,7 @@ X.object.prototype.fromCSG = function(csg) {
 
   if (!goog.isDefAndNotNull(csg) || !(csg instanceof CSG)) {
     
-    throw new X.exception('Invalid CSG object.');
+    throw new Error('Invalid CSG object.');
     
   }
   
@@ -478,7 +477,7 @@ X.object.prototype.texture = function() {
  * Set the object texture. If null is passed, the object will have no texture.
  * 
  * @param {?X.texture|string} texture The new texture.
- * @throws {X.exception} An exception if the given texture is invalid.
+ * @throws {Error} An exception if the given texture is invalid.
  */
 X.object.prototype.setTexture = function(texture) {
 
@@ -499,7 +498,7 @@ X.object.prototype.setTexture = function(texture) {
   
   if (!(texture instanceof X.texture)) {
     
-    throw new X.exception('Invalid texture.');
+    throw new Error('Invalid texture.');
     
   }
   
@@ -526,7 +525,7 @@ X.object.prototype.textureCoordinateMap = function() {
  * @param {!number} r The Red value in the range of 0..1
  * @param {!number} g The Green value in the range of 0..1
  * @param {!number} b The Blue value in the range of 0..1
- * @throws {X.exception} An exception if the given color values are invalid.
+ * @throws {Error} An exception if the given color values are invalid.
  */
 X.object.prototype.setColor = function(r, g, b) {
 
@@ -535,7 +534,7 @@ X.object.prototype.setColor = function(r, g, b) {
       (!goog.isNumber(g) && g < 0.0 && g > 1.0) ||
       (!goog.isNumber(b) && b < 0.0 && b > 1.0)) {
     
-    throw new X.exception('Invalid color.');
+    throw new Error('Invalid color.');
     
   }
   
@@ -568,7 +567,7 @@ X.object.prototype.union = function(object) {
   if (!goog.isDefAndNotNull(object) ||
       (!(object instanceof CSG) && !(object instanceof X.object))) {
     
-    throw new X.exception('Invalid object.');
+    throw new Error('Invalid object.');
     
   }
   
@@ -594,7 +593,7 @@ X.object.prototype.subtract = function(object) {
   if (!goog.isDefAndNotNull(object) ||
       (!(object instanceof CSG) && !(object instanceof X.object))) {
     
-    throw new X.exception('Invalid object.');
+    throw new Error('Invalid object.');
     
   }
   
@@ -620,7 +619,7 @@ X.object.prototype.intersect = function(object) {
   if (!goog.isDefAndNotNull(object) ||
       (!(object instanceof CSG) && !(object instanceof X.object))) {
     
-    throw new X.exception('Invalid object.');
+    throw new Error('Invalid object.');
     
   }
   
@@ -646,7 +645,7 @@ X.object.prototype.inverse = function(object) {
   if (!goog.isDefAndNotNull(object) ||
       (!(object instanceof CSG) && !(object instanceof X.object))) {
     
-    throw new X.exception('Invalid object.');
+    throw new Error('Invalid object.');
     
   }
   
@@ -757,7 +756,7 @@ X.object.prototype.setOpacity = function(opacity) {
   // check if the given opacity is in the range 0..1
   if (!goog.isNumber(opacity) || opacity > 1.0 || opacity < 0.0) {
     
-    throw new X.exception('Invalid opacity.');
+    throw new Error('Invalid opacity.');
     
   }
   
@@ -877,13 +876,13 @@ X.object.prototype.hasChildren = function() {
  * X.object.types.LINES rendering mode.
  * 
  * @param {!number} width The line width.
- * @throws {X.exception} An exception if the given width is invalid.
+ * @throws {Error} An exception if the given width is invalid.
  */
 X.object.prototype.setLineWidth = function(width) {
 
   if (!goog.isNumber(width)) {
     
-    throw new X.exception('Invalid line width!');
+    throw new Error('Invalid line width.');
     
   }
   
@@ -912,13 +911,13 @@ X.object.prototype.lineWidth = function() {
  * X.object.types.POINTS rendering mode.
  * 
  * @param {!number} size The point size.
- * @throws {X.exception} An exception if the given size is invalid.
+ * @throws {Error} An exception if the given size is invalid.
  */
 X.object.prototype.setPointSize = function(size) {
 
   if (!goog.isNumber(size)) {
     
-    throw new X.exception('Invalid point size.');
+    throw new Error('Invalid point size.');
     
   }
   
@@ -963,7 +962,7 @@ X.object.prototype.setMagicMode = function(magicMode) {
 
   if (!goog.isBoolean(magicMode)) {
     
-    throw new X.exception('Invalid magicMode setting.');
+    throw new Error('Invalid magicMode setting.');
     
   }
   
@@ -989,8 +988,7 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
   if (!goog.isDefAndNotNull(object1) || !goog.isDefAndNotNull(object2) ||
       !(object1 instanceof X.object) || !(object2 instanceof X.object)) {
     
-    throw new X.exception(
-        'Fatal: Two valid X.objects are required for comparison.');
+    throw new Error('Fatal: Two valid X.objects are required for comparison.');
     
   }
   

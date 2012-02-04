@@ -32,7 +32,6 @@ goog.provide('X.parser');
 // requires
 goog.require('X.base');
 goog.require('X.event');
-goog.require('X.exception');
 
 
 
@@ -82,11 +81,11 @@ X.parser.extensions = {
  * 
  * @param {!X.object} object The object to configure.
  * @param {!String} data The data to parse.
- * @throws {X.exception} An exception if something goes wrong.
+ * @throws {Error} An exception if something goes wrong.
  */
 X.parser.prototype.parse = function(object, data) {
 
-  throw new X.exception('The function parse() should be overloaded!');
+  throw new Error('The function parse() should be overloaded.');
   
 };
 
