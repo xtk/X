@@ -36,7 +36,6 @@ goog.require('X.buffer');
 goog.require('X.camera');
 goog.require('X.caption');
 goog.require('X.event');
-goog.require('X.exception');
 goog.require('X.interactor');
 goog.require('X.loader');
 goog.require('X.matrix');
@@ -69,7 +68,7 @@ X.renderer = function(container) {
   // check if a container is passed
   if (!goog.isDefAndNotNull(container)) {
     
-    throw new X.exception('An ID to a valid container (<div>..) is required!');
+    throw new Error('An ID to a valid container (<div>..) is required.');
     
   }
   
@@ -79,8 +78,8 @@ X.renderer = function(container) {
   if (!goog.dom.isElement(_container) || _container.clientWidth == 0 ||
       _container.clientHeight == 0) {
     
-    throw new X.exception(
-        'Could not find the given container or it has an undefined size!');
+    throw new Error(
+        'Could not find the given container or it has an undefined size.');
     
   }
   
@@ -548,8 +547,7 @@ X.renderer.prototype.resetViewAndRender = function() {
  * attach all necessary objects (e.g. camera, shaders..). Finally, initialize
  * the event listeners.
  * 
- * @throws {X.exception} An exception if there were problems during
- *           initialization.
+ * @throws {Error} An exception if there were problems during initialization.
  */
 X.renderer.prototype.init = function() {
 
@@ -673,7 +671,7 @@ X.renderer.prototype.init = function() {
   } catch (e) {
     
     // this exception indicates if the browser supports WebGL
-    throw new X.exception('Exception while accessing GL Context!\n' + e);
+    throw new Error('Exception while accessing GL Context!\n' + e);
     
   }
   
@@ -739,14 +737,14 @@ X.renderer.prototype.addShaders = function(shaders) {
   if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
       !goog.isDefAndNotNull(this._camera)) {
     
-    throw new X.exception('Renderer was not initialized properly!');
+    throw new Error('Renderer was not initialized properly.');
     
   }
   
   // check if the given shaders are valid
   if (!goog.isDefAndNotNull(shaders) || !(shaders instanceof X.shaders)) {
     
-    throw new X.exception('Could not add shaders!');
+    throw new Error('Could not add shaders.');
     
   }
   
@@ -768,14 +766,14 @@ X.renderer.prototype.addShaders = function(shaders) {
   
   if (!this._gl.getShaderParameter(glFragmentShader, this._gl.COMPILE_STATUS)) {
     
-    throw new X.exception('Fragement Shader compilation failed!\n' +
+    throw new Error('Fragement Shader compilation failed!\n' +
         this._gl.getShaderInfoLog(glFragmentShader));
     
   }
   
   if (!this._gl.getShaderParameter(glVertexShader, this._gl.COMPILE_STATUS)) {
     
-    throw new X.exception('Vertex Shader compilation failed!\n' +
+    throw new Error('Vertex Shader compilation failed!\n' +
         this._gl.getShaderInfoLog(glVertexShader));
     
   }
@@ -788,7 +786,7 @@ X.renderer.prototype.addShaders = function(shaders) {
   
   if (!this._gl.getProgramParameter(shaderProgram, this._gl.LINK_STATUS)) {
     
-    throw new X.exception('Could not create shader program!\n' +
+    throw new Error('Could not create shader program!\n' +
         this._gl.getShaderInfoLog(glFragmentShader) + '\n' +
         this._gl.getShaderInfoLog(glVertexShader) + '\n' +
         this._gl.getProgramInfoLog(shaderProgram));
@@ -836,7 +834,7 @@ X.renderer.prototype.addShaders = function(shaders) {
  * objects.
  * 
  * @param {!X.object} object The object to add to this renderer.
- * @throws {X.exception} An exception if something goes wrong.
+ * @throws {Error} An exception if something goes wrong.
  */
 X.renderer.prototype.add = function(object) {
 
@@ -855,20 +853,20 @@ X.renderer.prototype.add = function(object) {
  * to display added objects.
  * 
  * @param {!X.object} object The displayable object to add to this renderer.
- * @throws {X.exception} An exception if something goes wrong.
+ * @throws {Error} An exception if something goes wrong.
  */
 X.renderer.prototype.add_ = function(object) {
 
   if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
       !goog.isDefAndNotNull(this._camera)) {
     
-    throw new X.exception('Renderer was not initialized properly!');
+    throw new Error('Renderer was not initialized properly.');
     
   }
   
   if (!goog.isDefAndNotNull(object) || !(object instanceof X.object)) {
     
-    throw new X.exception('Illegal object!');
+    throw new Error('Illegal object.');
     
   }
   
@@ -909,7 +907,7 @@ X.renderer.prototype.add_ = function(object) {
  * 
  * @param {!X.object} object The displayable object to setup within this
  *          renderer.
- * @throws {X.exception} An exception if something goes wrong.
+ * @throws {Error} An exception if something goes wrong.
  * @private
  */
 X.renderer.prototype.update_ = function(object) {
@@ -917,13 +915,13 @@ X.renderer.prototype.update_ = function(object) {
   if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
       !goog.isDefAndNotNull(this._camera)) {
     
-    throw new X.exception('Renderer was not initialized properly!');
+    throw new Error('Renderer was not initialized properly.');
     
   }
   
   if (!goog.isDefAndNotNull(object) || !(object instanceof X.object)) {
     
-    throw new X.exception('Illegal object!');
+    throw new Error('Illegal object.');
     
   }
   
@@ -1170,7 +1168,7 @@ X.renderer.prototype.update_ = function(object) {
       if (object.colors().length() != object.points().length()) {
         
         // mismatch, this can not work
-        throw new X.exception('Mismatch between points and point colors!');
+        throw new Error('Mismatch between points and point colors.');
         
       }
       var glColorBuffer = this._gl.createBuffer();
@@ -1233,7 +1231,7 @@ X.renderer.prototype.update_ = function(object) {
         
         var m = 'Can not add an object and texture ';
         m += 'without valid coordinate mapping! Set the textureCoordinateMap!';
-        throw new X.exception(m);
+        throw new Error(m);
         
       }
       
@@ -1299,7 +1297,7 @@ X.renderer.prototype.update_ = function(object) {
   if (!existed) {
     if (!this._objects.add(object)) {
       
-      throw new X.exception('Could not add object to this renderer.');
+      throw new Error('Could not add object to this renderer.');
       
     }
   }
@@ -1328,7 +1326,7 @@ X.renderer.prototype.render = function() {
 
   if (!this._canvas || !this._gl || !this._camera) {
     
-    throw new X.exception('The renderer was not initialized properly!');
+    throw new Error('The renderer was not initialized properly.');
     
   }
   
@@ -1441,7 +1439,7 @@ X.renderer.prototype.get = function(id) {
   
   if (!goog.isDefAndNotNull(id)) {
     
-    throw new X.exception('Invalid object id.');
+    throw new Error('Invalid object id.');
     
   }
   
@@ -1735,7 +1733,7 @@ X.renderer.prototype.render_ = function(picking) {
           
           if (id > 999) {
             
-            throw new X.exception('Id out of bounds.');
+            throw new Error('Id out of bounds.');
             
           }
           
@@ -1876,7 +1874,7 @@ X.renderer.prototype.render_ = function(picking) {
     } else {
       
       var message = 'Could not retrieve object for (re-)drawing!';
-      throw new X.exception(message);
+      throw new Error(message);
       
     }
     

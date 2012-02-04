@@ -31,7 +31,6 @@ goog.provide('X.texture');
 
 // requires
 goog.require('X.base');
-goog.require('X.exception');
 
 
 
@@ -46,7 +45,7 @@ X.texture = function(file) {
 
   if (!goog.isDefAndNotNull(file)) {
     
-    throw new X.exception('Missing image file for the texture.');
+    throw new Error('Missing image file for the texture.');
     
   }
   

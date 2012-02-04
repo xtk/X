@@ -32,7 +32,6 @@ goog.provide('X.triplets');
 
 // requires
 goog.require('X.base');
-goog.require('X.exception');
 goog.require('goog.math.Coordinate3');
 goog.require('goog.structs.Map');
 
@@ -95,13 +94,13 @@ goog.inherits(X.triplets, X.base);
  * @param {!number} b The second value of the triplet.
  * @param {!number} c The third value of the triplet.
  * @return {!number} The id of the added triplet.
- * @throws {X.exception} An exception if the passed coordinates are invalid.
+ * @throws {Error} An exception if the passed coordinates are invalid.
  */
 X.triplets.prototype.add = function(a, b, c) {
 
   if (!goog.isNumber(a) || !goog.isNumber(b) || !goog.isNumber(c)) {
     
-    throw new X.exception('Invalid triplet.');
+    throw new Error('Invalid triplet.');
     
   }
   
@@ -141,14 +140,13 @@ X.triplets.prototype.add = function(a, b, c) {
  * 
  * @param {!number} id The id of the requested triplet.
  * @return {!Array} The triplet with the given id as a 1D Array with length 3.
- * @throws {X.exception} An exception if the passed id is invalid or does not
- *           exist.
+ * @throws {Error} An exception if the passed id is invalid or does not exist.
  */
 X.triplets.prototype.get = function(id) {
 
   if (!goog.isNumber(id) || (id * 3 > this._triplets_.length)) {
     
-    throw new X.exception('Invalid id.');
+    throw new Error('Invalid id.');
     
   }
   
@@ -164,14 +162,13 @@ X.triplets.prototype.get = function(id) {
  * Remove a given triplet from this container.
  * 
  * @param {!number} id The id of the to be removed triplet.
- * @throws {X.exception} An exception if the passed id is invalid or does not
- *           exist.
+ * @throws {Error} An exception if the passed id is invalid or does not exist.
  */
 X.triplets.prototype.remove = function(id) {
 
   if (!goog.isNumber(id) || (id * 3 > this._triplets_.length)) {
     
-    throw new X.exception('Invalid id.');
+    throw new Error('Invalid id.');
     
   }
   

@@ -32,7 +32,6 @@ goog.provide('X.shaders');
 
 // requires
 goog.require('X.base');
-goog.require('X.exception');
 
 
 
@@ -232,7 +231,7 @@ X.shaders.prototype.fragment = function() {
  * defined attributes and uniforms.
  * 
  * @return {boolean} TRUE or FALSE depending on success.
- * @throws {X.exception} An exception if the shader is invalid.
+ * @throws {Error} An exception if the shader is invalid.
  */
 X.shaders.prototype.validate = function() {
 
@@ -253,8 +252,7 @@ X.shaders.prototype.validate = function() {
   
   if (!attributesValid) {
     
-    throw new X.exception(
-        'Could not find all attributes in the shader sources!');
+    throw new Error('Could not find all attributes in the shader sources.');
     
   }
   
@@ -270,7 +268,7 @@ X.shaders.prototype.validate = function() {
   
   if (!uniformsValid) {
     
-    throw new X.exception('Could not find all uniforms in the shader sources!');
+    throw new Error('Could not find all uniforms in the shader sources.');
     
   }
   

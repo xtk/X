@@ -38,7 +38,6 @@ goog.require('X.event.RotateEvent');
 goog.require('X.event.PanEvent');
 goog.require('X.event.ResetViewEvent');
 goog.require('X.event.ZoomEvent');
-goog.require('X.exception');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent.MouseButton');
@@ -61,7 +60,7 @@ X.interactor = function(element) {
   // check if we have a valid element
   if (!goog.isDefAndNotNull(element) || !(element instanceof Element)) {
     
-    throw new X.exception('Could not add interactor to the given element.');
+    throw new Error('Could not add interactor to the given element.');
     
   }
   

@@ -32,7 +32,6 @@ goog.provide('X.file');
 
 // requires
 goog.require('X.base');
-goog.require('X.exception');
 
 
 

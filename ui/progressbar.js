@@ -32,7 +32,6 @@ goog.provide('X.progressbar');
 
 // requires
 goog.require('X.base');
-goog.require('X.exception');
 goog.require('goog.dom');
 goog.require('goog.ui.ProgressBar');
 
@@ -51,14 +50,14 @@ X.progressbar = function(parent, initialvalue) {
   // check if we have a valid parent
   if (!goog.isDefAndNotNull(parent)) {
     
-    throw new X.exception('No valid parent element!');
+    throw new Error('No valid parent element.');
     
   }
   
   // check if we have an initial value
   if (!goog.isDefAndNotNull(initialvalue)) {
     
-    throw new X.exception('Invalid initial value!');
+    throw new Error('Invalid initial value.');
     
   }
   

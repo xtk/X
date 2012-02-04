@@ -32,7 +32,6 @@ goog.provide('X.transform');
 
 // requires
 goog.require('X.base');
-goog.require('X.exception');
 goog.require('X.matrix');
 goog.require('goog.math.Vec3');
 
@@ -84,13 +83,13 @@ goog.inherits(X.transform, X.base);
  * Rotate around the X-axis.
  * 
  * @param {number} angle The angle to rotate in degrees.
- * @throws {X.exception} An exception, if the given angle is invalid.
+ * @throws {Error} An exception, if the given angle is invalid.
  */
 X.transform.prototype.rotateX = function(angle) {
 
   if (!goog.isNumber(angle) || angle < -360 || angle > 360) {
     
-    throw new X.exception('Invalid angle!');
+    throw new Error('Invalid angle.');
     
   }
   
@@ -108,13 +107,13 @@ X.transform.prototype.rotateX = function(angle) {
  * Rotate around the Y-axis.
  * 
  * @param {number} angle The angle to rotate in degrees.
- * @throws {X.exception} An exception, if the given angle is invalid.
+ * @throws {Error} An exception, if the given angle is invalid.
  */
 X.transform.prototype.rotateY = function(angle) {
 
   if (!goog.isNumber(angle) || angle < -360 || angle > 360) {
     
-    throw new X.exception('Invalid angle!');
+    throw new Error('Invalid angle.');
     
   }
   
@@ -132,13 +131,13 @@ X.transform.prototype.rotateY = function(angle) {
  * Rotate around the Z-axis.
  * 
  * @param {number} angle The angle to rotate in degrees.
- * @throws {X.exception} An exception, if the given angle is invalid.
+ * @throws {Error} An exception, if the given angle is invalid.
  */
 X.transform.prototype.rotateZ = function(angle) {
 
   if (!goog.isNumber(angle) || angle < -360 || angle > 360) {
     
-    throw new X.exception('Invalid angle!');
+    throw new Error('Invalid angle.');
     
   }
   
@@ -156,13 +155,13 @@ X.transform.prototype.rotateZ = function(angle) {
  * Translate on the X-axis.
  * 
  * @param {number} distance The distance to move.
- * @throws {X.exception} An exception, if the given distance is invalid.
+ * @throws {Error} An exception, if the given distance is invalid.
  */
 X.transform.prototype.translateX = function(distance) {
 
   if (!goog.isNumber(distance)) {
     
-    throw new X.exception('Invalid distance!');
+    throw new Error('Invalid distance.');
     
   }
   
@@ -180,13 +179,13 @@ X.transform.prototype.translateX = function(distance) {
  * Translate on the Y-axis.
  * 
  * @param {number} distance The distance to move.
- * @throws {X.exception} An exception, if the given distance is invalid.
+ * @throws {Error} An exception, if the given distance is invalid.
  */
 X.transform.prototype.translateY = function(distance) {
 
   if (!goog.isNumber(distance)) {
     
-    throw new X.exception('Invalid distance!');
+    throw new Error('Invalid distance.');
     
   }
   
@@ -204,13 +203,13 @@ X.transform.prototype.translateY = function(distance) {
  * Translate on the Z-axis.
  * 
  * @param {number} distance The distance to move.
- * @throws {X.exception} An exception, if the given distance is invalid.
+ * @throws {Error} An exception, if the given distance is invalid.
  */
 X.transform.prototype.translateZ = function(distance) {
 
   if (!goog.isNumber(distance)) {
     
-    throw new X.exception('Invalid distance!');
+    throw new Error('Invalid distance.');
     
   }
   

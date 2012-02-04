@@ -33,7 +33,6 @@ goog.provide('X.cylinder');
 // requires
 goog.require('CSG');
 goog.require('X.base');
-goog.require('X.exception');
 goog.require('X.object');
 
 
@@ -54,20 +53,20 @@ X.cylinder = function(start, end, radius) {
   if (!goog.isDefAndNotNull(start) || !(start instanceof Array) ||
       (start.length != 3)) {
     
-    throw new X.exception('Invalid start position.');
+    throw new Error('Invalid start position.');
     
   }
   
   if (!goog.isDefAndNotNull(end) || !(end instanceof Array) ||
       (end.length != 3)) {
     
-    throw new X.exception('Invalid end position.');
+    throw new Error('Invalid end position.');
     
   }
   
   if (!goog.isNumber(radius)) {
     
-    throw new X.exception('Invalid radius.');
+    throw new Error('Invalid radius.');
     
   }
   
