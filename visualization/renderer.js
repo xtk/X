@@ -1378,6 +1378,9 @@ X.renderer.prototype.render = function() {
     // this means the X.loader is done..
     this.hideProgressBar_();
     
+    // call the onShowtime function which can be overloaded
+    this.onShowtime();
+    
     // .. we exit here since the hiding takes some time and automatically
     // triggers the rendering when done
     return;
@@ -1390,8 +1393,6 @@ X.renderer.prototype.render = function() {
   //
   // CURTAIN UP! LET THE SHOW BEGIN..
   //
-  this.onShowtime();
-  
   this.render_(false);
   
 };
