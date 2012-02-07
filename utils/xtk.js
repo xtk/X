@@ -1668,22 +1668,22 @@ $goog$exportSymbol$$("X.parserSTL.prototype.parse", $X$parserSTL$$.prototype.par
 $goog$exportSymbol$$("X.parserSTL.prototype.parseLine", $X$parserSTL$$.prototype.$parseLine$);
 function $csgVector$$($ix$$, $iy$$, $iz$$) {
   this.$z_$ = this.$y_$ = this.$x_$ = 0;
-  3 == arguments.length ? (this.$x_$ = Number($ix$$), this.$y_$ = Number($iy$$), this.$z_$ = Number($iz$$)) : "x" in $ix$$ && "y" in $ix$$ && "z" in $ix$$ ? (this.$x_$ = Number($ix$$.x()), this.$y_$ = Number($ix$$.y()), this.$z_$ = Number($ix$$.$z$())) : (this.$x_$ = Number($ix$$[0]), this.$y_$ = Number($ix$$[1]), this.$z_$ = Number($ix$$[2]))
+  3 == arguments.length ? (this.$x_$ = Number($ix$$), this.$y_$ = Number($iy$$), this.$z_$ = Number($iz$$)) : "x" in $ix$$ && "y" in $ix$$ && "z" in $ix$$ ? (this.$x_$ = Number($ix$$.x()), this.$y_$ = Number($ix$$.y()), this.$z_$ = Number($ix$$.$z$())) : (this.$x_$ = Number($ix$$[0]), window.console.log("x: " + this.$x_$), this.$y_$ = Number($ix$$[1]), this.$z_$ = Number($ix$$[2]))
 }
 $csgVector$$.prototype = {$clone$:function $$csgVector$$$$$clone$$() {
   return new $csgVector$$(this.$x_$, this.$y_$, this.$z_$)
 }, $negated$:function $$csgVector$$$$$negated$$() {
   return new $csgVector$$(-this.$x_$, -this.$y_$, -this.$z_$)
 }, $plus$:function $$csgVector$$$$$plus$$($a$$25$$) {
-  return new $csgVector$$(this.$x_$ + $a$$25$$.x, this.$y_$ + $a$$25$$.y, this.$z_$ + $a$$25$$.$z$)
+  return new $csgVector$$(this.$x_$ + $a$$25$$.x(), this.$y_$ + $a$$25$$.y(), this.$z_$ + $a$$25$$.$z$())
 }, $minus$:function $$csgVector$$$$$minus$$($a$$26$$) {
-  return new $csgVector$$(this.$x_$ - $a$$26$$.x, this.$y_$ - $a$$26$$.y, this.$z_$ - $a$$26$$.$z$)
+  return new $csgVector$$(this.$x_$ - $a$$26$$.x(), this.$y_$ - $a$$26$$.y(), this.$z_$ - $a$$26$$.$z$())
 }, $times$:function $$csgVector$$$$$times$$($a$$27$$) {
   return new $csgVector$$(this.$x_$ * $a$$27$$, this.$y_$ * $a$$27$$, this.$z_$ * $a$$27$$)
 }, $dividedBy$:function $$csgVector$$$$$dividedBy$$($a$$28$$) {
   return new $csgVector$$(this.$x_$ / $a$$28$$, this.$y_$ / $a$$28$$, this.$z_$ / $a$$28$$)
 }, $dot$:function $$csgVector$$$$$dot$$($a$$29$$) {
-  return this.$x_$ * $a$$29$$.x + this.$y_$ * $a$$29$$.y + this.$z_$ * $a$$29$$.$z$
+  return this.$x_$ * $a$$29$$.x() + this.$y_$ * $a$$29$$.y() + this.$z_$ * $a$$29$$.$z$()
 }, $lerp$:function $$csgVector$$$$$lerp$$($a$$30$$, $t$$) {
   return this.$plus$($a$$30$$.$minus$(this).$times$($t$$))
 }, length:function $$csgVector$$$$length$() {
@@ -1691,7 +1691,7 @@ $csgVector$$.prototype = {$clone$:function $$csgVector$$$$$clone$$() {
 }, $unit$:function $$csgVector$$$$$unit$$() {
   return this.$dividedBy$(this.length())
 }, $cross$:function $$csgVector$$$$$cross$$($a$$31$$) {
-  return new $csgVector$$(this.$y_$ * $a$$31$$.$z$ - this.$z_$ * $a$$31$$.y, this.$z_$ * $a$$31$$.x - this.$x_$ * $a$$31$$.$z$, this.$x_$ * $a$$31$$.y - this.$y_$ * $a$$31$$.x)
+  return new $csgVector$$(this.$y_$ * $a$$31$$.$z$() - this.$z_$ * $a$$31$$.y(), this.$z_$ * $a$$31$$.x() - this.$x_$ * $a$$31$$.$z$(), this.$x_$ * $a$$31$$.y() - this.$y_$ * $a$$31$$.x())
 }, x:$JSCompiler_get$$("$x_$"), y:$JSCompiler_get$$("$y_$"), $z$:$JSCompiler_get$$("$z_$")};
 $goog$exportSymbol$$("csgVector", $csgVector$$);
 $goog$exportSymbol$$("csgVector.prototype.clone", $csgVector$$.prototype.$clone$);
@@ -1797,7 +1797,7 @@ $csgVertex$$.prototype = {$clone$:function $$csgVertex$$$$$clone$$() {
 }, $flip$:function $$csgVertex$$$$$flip$$() {
   this.$normal_$ = this.$normal_$.$negated$()
 }, $interpolate$:function $$csgVertex$$$$$interpolate$$($other$$4$$, $t$$1$$) {
-  return new $csgVertex$$(this.$pos_$.$lerp$($other$$4$$.$pos$, $t$$1$$), this.$normal_$.$lerp$($other$$4$$.$normal$, $t$$1$$))
+  return new $csgVertex$$(this.$pos_$.$lerp$($other$$4$$.$pos_$, $t$$1$$), this.$normal_$.$lerp$($other$$4$$.$normal_$, $t$$1$$))
 }, $pos$:$JSCompiler_get$$("$pos_$"), $normal$:$JSCompiler_get$$("$normal_$")};
 $goog$exportSymbol$$("csgVertex", $csgVertex$$);
 $goog$exportSymbol$$("csgVertex.prototype.clone", $csgVertex$$.prototype.$clone$);
@@ -1836,6 +1836,8 @@ $csgPlane$$.prototype = {$clone$:function $$csgPlane$$$$$clone$$() {
         $j$$7_polygonType_vj$$ = ($i$$101$$ + 1) % $polygon$$.$vertices$.length, $t$$2_ti_type$$75_v$$2$$ = $types$$[$i$$101$$], $back_tj$$ = $types$$[$j$$7_polygonType_vj$$], $front_vi$$ = $polygon$$.$vertices$[$i$$101$$], $j$$7_polygonType_vj$$ = $polygon$$.$vertices$[$j$$7_polygonType_vj$$], 2 != $t$$2_ti_type$$75_v$$2$$ && $coplanarFront_f$$39$$.push($front_vi$$), 1 != $t$$2_ti_type$$75_v$$2$$ && $b$$25_coplanarBack$$.push(2 != $t$$2_ti_type$$75_v$$2$$ ? $front_vi$$.$clone$() : $front_vi$$), 
         3 == ($t$$2_ti_type$$75_v$$2$$ | $back_tj$$) && ($t$$2_ti_type$$75_v$$2$$ = (this.$w$ - this.$normal_$.$dot$($front_vi$$.$pos$)) / this.$normal_$.$dot$($j$$7_polygonType_vj$$.$pos$.$minus$($front_vi$$.$pos$)), $t$$2_ti_type$$75_v$$2$$ = $front_vi$$.$interpolate$($j$$7_polygonType_vj$$, $t$$2_ti_type$$75_v$$2$$), $coplanarFront_f$$39$$.push($t$$2_ti_type$$75_v$$2$$), $b$$25_coplanarBack$$.push($t$$2_ti_type$$75_v$$2$$.$clone$()))
       }
+      3 <= $coplanarFront_f$$39$$.length && window.console.log("FFFFF");
+      3 <= $b$$25_coplanarBack$$.length && window.console.log("BBBBBB")
   }
 }};
 function $csgPolygon$$($vertices$$, $shared$$) {
@@ -1939,11 +1941,7 @@ $CSG$$.prototype = {$clone$:function $$CSG$$$$$clone$$() {
     return $p$$4$$.$clone$()
   }));
   return $csg$$1$$
-}, $toPolygons$:function $$CSG$$$$$toPolygons$$() {
-  window.console.log("polygons: " + this.$polygons_$);
-  window.console.log("polygons.vertices().pos().x(): " + this.$polygons_$[0].$vertices_$[0].$pos_$.x());
-  return this.$polygons_$
-}, $union$:function $$CSG$$$$$union$$($b$$26_csg$$2$$) {
+}, $toPolygons$:$JSCompiler_get$$("$polygons_$"), $union$:function $$CSG$$$$$union$$($b$$26_csg$$2$$) {
   var $a$$33$$ = new $csgNode$$(this.$clone$().$polygons$()), $b$$26_csg$$2$$ = new $csgNode$$($b$$26_csg$$2$$.$clone$().$polygons$());
   $a$$33$$.$clipTo$($b$$26_csg$$2$$);
   $b$$26_csg$$2$$.$clipTo$($a$$33$$);
@@ -2407,19 +2405,15 @@ function $JSCompiler_StaticMethods_fromCSG$$($JSCompiler_StaticMethods_fromCSG$s
   $JSCompiler_StaticMethods_fromCSG$self$$.$_points$.clear();
   $JSCompiler_StaticMethods_fromCSG$self$$.$_normals$.clear();
   $JSCompiler_StaticMethods_fromCSG$self$$.$_colors$.clear();
-  var $indexer$$ = new $X$indexer$$, $triangles$$ = [], $csg2poly$$ = $csg$$6$$.$toPolygons$();
-  $goog$array$map$$($csg2poly$$, function($p$$7_shared$$1$$) {
-    for(var $indices$$ = [], $i$$131_ver$$ = $p$$7_shared$$1$$.$vertices_$, $p$$7_shared$$1$$ = $p$$7_shared$$1$$.$shared_$, $l$$22$$ = 0;$l$$22$$ < $i$$131_ver$$.length;$l$$22$$++) {
-      $i$$131_ver$$[$l$$22$$].color = $p$$7_shared$$1$$;
-      var $index$$58$$ = $indexer$$.add($i$$131_ver$$[$l$$22$$]);
-      $indices$$.push($index$$58$$);
-      window.console.log("index: " + $index$$58$$)
-    }
-    for($i$$131_ver$$ = $i$$131_ver$$ = 2;$i$$131_ver$$ < $indices$$.length;$i$$131_ver$$++) {
-      $triangles$$.push([$indices$$[0], $indices$$[$i$$131_ver$$ - 1], $indices$$[$i$$131_ver$$]])
+  var $indexer$$ = new $X$indexer$$, $triangles$$ = [];
+  $goog$array$map$$($csg$$6$$.$polygons_$, function($i$$131_p$$7$$) {
+    for(var $indices$$ = [], $shared$$1$$ = $i$$131_p$$7$$.$shared_$, $indices$$ = $goog$array$map$$($i$$131_p$$7$$.$vertices_$, function($vertex$$) {
+      $vertex$$.color = $shared$$1$$;
+      return $indexer$$.add($vertex$$)
+    }), $i$$131_p$$7$$ = $i$$131_p$$7$$ = 2;$i$$131_p$$7$$ < $indices$$.length;$i$$131_p$$7$$++) {
+      $triangles$$.push([$indices$$[0], $indices$$[$i$$131_p$$7$$ - 1], $indices$$[$i$$131_p$$7$$]])
     }
   }.bind($JSCompiler_StaticMethods_fromCSG$self$$));
-  window.console.log("triangles: " + $triangles$$);
   $JSCompiler_StaticMethods_fromCSG$self$$.$__vertices$ = $goog$array$map$$($indexer$$.unique(), function($v$$6$$) {
     return[$v$$6$$.$pos_$.x(), $v$$6$$.$pos_$.y(), $v$$6$$.$pos_$.$z$()]
   });
@@ -4709,7 +4703,13 @@ $JSCompiler_prototypeAlias$$.$render_$ = function $$JSCompiler_prototypeAlias$$$
     if($object$$30$$) {
       if($object$$30$$.$_visible$) {
         var $drawMode_id$$13$$ = $object$$30$$.id();
-        window.console.log("id: " + $drawMode_id$$13$$);
+        window.console.log("==================");
+        window.console.log("id: " + $object$$30$$.id());
+        window.console.log("color: " + $object$$30$$.color());
+        window.console.log("visible: " + $object$$30$$.$_visible$);
+        window.console.log("opacity: " + $object$$30$$.opacity());
+        window.console.log("points: " + $object$$30$$.$_points$.get(1));
+        window.console.log("normals: " + $object$$30$$.$_normals$.get(1));
         var $magicMode$$1_objectColor_r$$3$$ = $object$$30$$.$_magicMode$, $vertexBuffer$$1$$ = this.$_vertexBuffers$.get($drawMode_id$$13$$), $g$$2_normalBuffer$$1_useObjectColor$$ = this.$_normalBuffers$.get($drawMode_id$$13$$), $colorBuffer$$1$$ = this.$_colorBuffers$.get($drawMode_id$$13$$), $texturePositionBuffer$$1$$ = this.$_texturePositionBuffers$.get($drawMode_id$$13$$);
         this.$_gl$.bindBuffer(this.$_gl$.ARRAY_BUFFER, $vertexBuffer$$1$$.$_glBuffer$);
         this.$_gl$.vertexAttribPointer(this.$_attributePointers$.get("vertexPosition"), $vertexBuffer$$1$$.$_itemSize$, this.$_gl$.FLOAT, $JSCompiler_alias_FALSE$$, 0, 0);
@@ -4750,14 +4750,14 @@ $goog$exportSymbol$$("X.renderer.prototype.addShaders", $X$renderer$$.prototype.
 $goog$exportSymbol$$("X.renderer.prototype.add", $X$renderer$$.prototype.add);
 $goog$exportSymbol$$("X.renderer.prototype.render", $X$renderer$$.prototype.$render$);
 function $CSG$sphere$$($options$$2_stacks$$) {
-  function $vertex$$($theta$$1$$, $phi$$1$$) {
+  function $vertex$$1$$($theta$$1$$, $phi$$1$$) {
     var $theta$$1$$ = $theta$$1$$ * 2 * Math.PI, $phi$$1$$ = $phi$$1$$ * Math.PI, $dir$$ = new $csgVector$$(Math.cos($theta$$1$$) * Math.sin($phi$$1$$), Math.cos($phi$$1$$), Math.sin($theta$$1$$) * Math.sin($phi$$1$$));
     $vertices$$4$$.push(new $csgVertex$$($c$$10$$.$plus$($dir$$.$times$($r$$4$$)), $dir$$))
   }
   this.$polygons_$ = [];
   for(var $options$$2_stacks$$ = $options$$2_stacks$$ || {}, $c$$10$$ = new $csgVector$$($options$$2_stacks$$.$center$ || [0, 0, 0]), $r$$4$$ = $options$$2_stacks$$.$radius$ || 1, $slices$$ = $options$$2_stacks$$.$slices$ || 16, $options$$2_stacks$$ = $options$$2_stacks$$.$stacks$ || 8, $polygons$$7$$ = [], $vertices$$4$$, $i$$164$$ = 0;$i$$164$$ < $slices$$;$i$$164$$++) {
     for(var $j$$33$$ = 0;$j$$33$$ < $options$$2_stacks$$;$j$$33$$++) {
-      $vertices$$4$$ = [], $vertex$$($i$$164$$ / $slices$$, $j$$33$$ / $options$$2_stacks$$), 0 < $j$$33$$ && $vertex$$(($i$$164$$ + 1) / $slices$$, $j$$33$$ / $options$$2_stacks$$), $j$$33$$ < $options$$2_stacks$$ - 1 && $vertex$$(($i$$164$$ + 1) / $slices$$, ($j$$33$$ + 1) / $options$$2_stacks$$), $vertex$$($i$$164$$ / $slices$$, ($j$$33$$ + 1) / $options$$2_stacks$$), $polygons$$7$$.push(new $csgPolygon$$($vertices$$4$$))
+      $vertices$$4$$ = [], $vertex$$1$$($i$$164$$ / $slices$$, $j$$33$$ / $options$$2_stacks$$), 0 < $j$$33$$ && $vertex$$1$$(($i$$164$$ + 1) / $slices$$, $j$$33$$ / $options$$2_stacks$$), $j$$33$$ < $options$$2_stacks$$ - 1 && $vertex$$1$$(($i$$164$$ + 1) / $slices$$, ($j$$33$$ + 1) / $options$$2_stacks$$), $vertex$$1$$($i$$164$$ / $slices$$, ($j$$33$$ + 1) / $options$$2_stacks$$), $polygons$$7$$.push(new $csgPolygon$$($vertices$$4$$))
     }
   }
   return $CSG$fromPolygons$$($polygons$$7$$)

@@ -295,57 +295,24 @@ X.object.prototype.fromCSG = function(csg) {
   
   // .. a temp. array to store the triangles using vertex indices
   var triangles = new Array();
-  /*
-    
-  var arLen=csg.toPolygons().length;
-  for ( var i=0, len=arLen; i<len; ++i ){
-    var arLen2=csg.toPolygons()[i].vertices.length;
-    for ( var j=0, len2=arLen2; j<len2; ++j){
-      csg.toPolygons()[i].vertices.color = csg.toPolygons()[i].shared;
-      indexer.add(csg.toPolygons()[i].vertices);  
-    }
-  
-    var k = 2;
-    for( k=2; k<arLen2; ++k){
-      window.console.log("test: " + csg.toPolygons()[i].vertices[0]);
-      triangles.push([csg.toPolygons()[i].vertices[0], csg.toPolygons()[i].vertices[k - 1], csg.toPolygons()[i].vertices[k]]);
-    }
-
-  } */
-
   // grab points, normals and colors
   var csg2poly = csg.toPolygons();
   goog.array.map(csg2poly, function(p) {
 
     var indices = new Array();
     var ver = p.vertices();
- //   window.console.log("ver.length: " + ver.length);
     var shared = p.shared();
-    for(var l=0; l<ver.length; l++)
-      {
-      ver[l].color = shared;
-   //   window.console.log("ver[l].pos: " + ver[l].pos());
-   //   window.console.log("ver[l].pos.z: " + ver[l].pos().z());
-  //    window.console.log("ver[l].pos.x: " + ver[l].pos().x());
-  //    window.console.log("ver[l].pos.y: " + ver[l].pos().y());
-  //    window.console.log("ver[l].pos.length: " + ver[l].pos().length);
-      var index = indexer.add(ver[l]);
-      indices.push(index);
-      window.console.log("index: " + index);
-      }
- /*   var indices = goog.array.map(ver, function(vertex) {
+    indices = goog.array.map(ver, function(vertex) {
       vertex.color = shared;
       return indexer.add(vertex);
     });
- */
+ 
     var i = 2;
     for (i = 2; i < indices.length; i++) {
      triangles.push([indices[0], indices[i - 1], indices[i]]);
     }
     
   }.bind(this));
-
-window.console.log("triangles: " + triangles);
 
 this.__vertices = goog.array.map(indexer.unique(), function(v) {
 
@@ -384,7 +351,7 @@ this.__vertices = goog.array.map(indexer.unique(), function(v) {
     this._points.add(vertices[i0][0], vertices[i0][1], vertices[i0][2]);
     this._points.add(vertices[i1][0], vertices[i1][1], vertices[i1][2]);
     this._points.add(vertices[i2][0], vertices[i2][1], vertices[i2][2]);
-    
+
     // add the normals
     this._normals.add(normals[i0][0], normals[i0][1], normals[i0][2]);
     this._normals.add(normals[i1][0], normals[i1][1], normals[i1][2]);

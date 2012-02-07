@@ -126,7 +126,6 @@ X.triplets.prototype.add = function(a, b, c) {
   
 
   this._dirty = true;
-  
   return this._triplets_.push(a, b, c) / 3;
   
 };

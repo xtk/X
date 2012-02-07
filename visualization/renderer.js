@@ -1559,11 +1559,22 @@ X.renderer.prototype.render_ = function(picking) {
       }
       
       var id = object.id();
-      window.console.log("id: " + id);
+      window.console.log("==================");
+      window.console.log("id: " + object.id());
+      window.console.log("color: " + object.color());
+      window.console.log("visible: " + object.visible());
+      window.console.log("opacity: " + object.opacity());
+      window.console.log("points: " + object.points().get(1));
+      window.console.log("normals: " + object.normals().get(1));
+     
       var magicMode = object.magicMode();
       
       var vertexBuffer = this._vertexBuffers.get(id);
       var normalBuffer = this._normalBuffers.get(id);
+
+//      window.console.log("vertexB: " + vertexBuffer);
+//      window.console.log("normalB: " + normalBuffer);
+
       var colorBuffer = this._colorBuffers.get(id);
       var texturePositionBuffer = this._texturePositionBuffers.get(id);
       
@@ -1651,7 +1662,6 @@ X.renderer.prototype.render_ = function(picking) {
           
           // and set it as the color
           objectColor = [r / 10, g / 10, b / 10];
-          
         }
         
         this._gl.uniform3f(this._uniformLocations
