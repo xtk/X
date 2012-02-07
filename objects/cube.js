@@ -31,7 +31,7 @@
 goog.provide('X.cube');
 
 // requires
-goog.require('CSG');
+goog.require('CSG.cube');
 goog.require('X.base');
 goog.require('X.exception');
 goog.require('X.object');

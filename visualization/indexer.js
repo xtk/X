@@ -105,15 +105,12 @@ X.indexer.prototype.add = function(object) {
     throw new X.exception('Invalid object.');
     
   }
-  
+ 
   var key = goog.json.serialize(object);
   if (!(key in this._map)) {
     this._map[key] = this._unique.length;
     this._unique.push(object);
   }
-  alert("object: " + object.pos.x);
-  alert("key: " + key);
-  //alert("this._map[key]: " + this._map[key]);
   return this._map[key];
   
 };

@@ -32,6 +32,10 @@ goog.provide('X.object');
 
 // requires
 goog.require('CSG');
+goog.require('csgVector');
+goog.require('csgVertex');
+goog.require('csgPolygon');
+
 goog.require('X.base');
 goog.require('X.exception');
 goog.require('X.file');
@@ -64,13 +68,15 @@ X.object = function() {
    */
   this._className = 'object';
   
+  var counter = window["X.Counter"];
+  counter.increment();
   /**
    * The uniqueId of this object. Each object in XTK has a uniqueId.
    * 
    * @type {number}
    * @protected
    */
-  this._id = X.uniqueId();
+  this._id = counter.value();
   
   /**
    * The rendering type of this object, default is {X.object.types.TRIANGLES}.
@@ -257,11 +263,11 @@ X.object.prototype.toCSG = function() {
     //
     
     var vertices = [];
-    vertices.push(new CSG.Vertex(point1, normal1));
-    vertices.push(new CSG.Vertex(point2, normal2));
-    vertices.push(new CSG.Vertex(point3, normal3));
+    vertices.push(new csgVertex(point1, normal1));
+    vertices.push(new csgVertex(point2, normal2));
+    vertices.push(new csgVertex(point3, normal3));
     
-    polygons.push(new CSG.Polygon(vertices, color));
+    polygons.push(new csgPolygon(vertices, color));
     
   }
   
@@ -301,7 +307,7 @@ X.object.prototype.fromCSG = function(csg) {
   
     var k = 2;
     for( k=2; k<arLen2; ++k){
-      alert("test: " + csg.toPolygons()[i].vertices[0]);
+      window.console.log("test: " + csg.toPolygons()[i].vertices[0]);
       triangles.push([csg.toPolygons()[i].vertices[0], csg.toPolygons()[i].vertices[k - 1], csg.toPolygons()[i].vertices[k]]);
     }
 
@@ -312,17 +318,20 @@ X.object.prototype.fromCSG = function(csg) {
   goog.array.map(csg2poly, function(p) {
 
     var indices = new Array();
-    var ver = p.vertices;
-    alert("ver.length: " + ver.length);
-    var shared = p.shared;
+    var ver = p.vertices();
+ //   window.console.log("ver.length: " + ver.length);
+    var shared = p.shared();
     for(var l=0; l<ver.length; l++)
       {
       ver[l].color = shared;
-      alert("ver[l].pos: " + ver[l].pos);
-      alert("ver[l].pos.length: " + ver[l].pos.length);
+   //   window.console.log("ver[l].pos: " + ver[l].pos());
+   //   window.console.log("ver[l].pos.z: " + ver[l].pos().z());
+  //    window.console.log("ver[l].pos.x: " + ver[l].pos().x());
+  //    window.console.log("ver[l].pos.y: " + ver[l].pos().y());
+  //    window.console.log("ver[l].pos.length: " + ver[l].pos().length);
       var index = indexer.add(ver[l]);
       indices.push(index);
-      alert("index: " + index);
+      window.console.log("index: " + index);
       }
  /*   var indices = goog.array.map(ver, function(vertex) {
       vertex.color = shared;
@@ -335,26 +344,17 @@ X.object.prototype.fromCSG = function(csg) {
     }
     
   }.bind(this));
-  
-/*
-  // re-map the vertices, normals and colors
-  var arLen3=indexer.unique().length;
-  for ( var l=0, len3=arLen3; l<len3; ++l ){
-    indexer.unique()[l] = [indexer.unique()[l].pos.x, indexer.unique()[l].pos.y, indexer.unique()[l].pos.z];
-  }
-  this.__vertices = indexer.unique();
 
-*/
-alert("triangles1: " + triangles);
+window.console.log("triangles: " + triangles);
 
 this.__vertices = goog.array.map(indexer.unique(), function(v) {
 
-    return [v.pos.x, v.pos.y, v.pos.z];
+    return [v.pos().x(), v.pos().y(), v.pos().z()];
   });
 
   this.__normals = goog.array.map(indexer.unique(), function(v) {
 
-    return [v.normal.x, v.normal.y, v.normal.z];
+    return [v.normal().x(), v.normal().y(), v.normal().z()];
   });
   this.__colors = goog.array.map(indexer.unique(), function(v) {
 
@@ -366,7 +366,6 @@ this.__vertices = goog.array.map(indexer.unique(), function(v) {
     return [v.color[0], v.color[1], v.color[2]];
   });
  
-  alert("triangles: " + triangles);
   //
   // setup the points, normals and colors for this X.object
   // by converting the triangles to the X.object API
@@ -973,3 +972,7 @@ goog.exportSymbol('X.object.prototype.setOpacity',
     X.object.prototype.setOpacity);
 goog.exportSymbol('X.object.prototype.load', X.object.prototype.load);
 goog.exportSymbol('X.object.prototype.file', X.object.prototype.file);
+goog.exportSymbol('X.object.prototype.setCaption', X.object.prototype.setCaption);
+goog.exportSymbol('X.object.prototype.setVisible', X.object.prototype.setVisible);
+goog.exportSymbol('X.object.prototype.magicMode', X.object.prototype.magicMode);
+goog.exportSymbol('X.object.prototype.setMagicMode', X.object.prototype.setMagicMode);

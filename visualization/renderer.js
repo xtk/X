@@ -1540,6 +1540,9 @@ X.renderer.prototype.render_ = function(picking) {
   var numberOfObjects = objects.length;
   
   var i;
+
+  window.console.log("number of objects: " + numberOfObjects);
+
   for (i = 0; i < numberOfObjects; ++i) {
     
     var object = objects[i];
@@ -1556,6 +1559,7 @@ X.renderer.prototype.render_ = function(picking) {
       }
       
       var id = object.id();
+      window.console.log("id: " + id);
       var magicMode = object.magicMode();
       
       var vertexBuffer = this._vertexBuffers.get(id);
