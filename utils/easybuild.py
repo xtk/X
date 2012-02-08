@@ -52,14 +52,11 @@ command += ' --output_mode=compiled'
 command += ' --compiler_jar ' + compilerJar
 command += ' -f "--debug"'
 #command += ' -f "--output_wrapper=(function() {%output%})();"'
-#command += ' -f "--source_map_format=V2"'
-#command += ' -f "--create_source_map=./mymap"'
 command += ' -f "--warning_level=VERBOSE"'
 command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
 command += ' -f "--jscomp_warning=missingProperties"'
 command += ' -f "--jscomp_warning=checkTypes"'
-#command += ' -f "--externs=externs.js"'
-command += ' -f "--formatting=PRETTY_PRINT"'
+#command += ' -f "--formatting=PRETTY_PRINT"'
 command += ' > xtk.js'
 
 os.system( command + ' 2> temp' )

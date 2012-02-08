@@ -1541,7 +1541,7 @@ X.renderer.prototype.render_ = function(picking) {
   
   var i;
 
-  window.console.log("number of objects: " + numberOfObjects);
+  //window.console.log("number of objects: " + numberOfObjects);
 
   for (i = 0; i < numberOfObjects; ++i) {
     
@@ -1559,14 +1559,14 @@ X.renderer.prototype.render_ = function(picking) {
       }
       
       var id = object.id();
-      window.console.log("==================");
+    /*  window.console.log("==================");
       window.console.log("id: " + object.id());
       window.console.log("color: " + object.color());
       window.console.log("visible: " + object.visible());
       window.console.log("opacity: " + object.opacity());
       window.console.log("points: " + object.points().get(1));
       window.console.log("normals: " + object.normals().get(1));
-     
+     */
       var magicMode = object.magicMode();
       
       var vertexBuffer = this._vertexBuffers.get(id);
