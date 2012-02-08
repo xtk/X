@@ -32,7 +32,6 @@ goog.provide('X.caption');
 
 // requires
 goog.require('X.base');
-goog.require('X.exception');
 goog.require('X.interactor');
 goog.require('goog.dom');
 goog.require('goog.positioning.ViewportPosition');
@@ -55,14 +54,14 @@ X.caption = function(parent, x, y, interactor) {
   // check if we have a valid parent
   if (!goog.isDefAndNotNull(parent)) {
     
-    throw new X.exception('No valid parent element!');
+    throw new Error('No valid parent element.');
     
   }
   
   // check if we have valid coordinates
   if (!goog.isNumber(x) || !goog.isNumber(y)) {
     
-    throw new X.exception('Invalid coordinates.');
+    throw new Error('Invalid coordinates.');
     
   }
   
@@ -70,7 +69,7 @@ X.caption = function(parent, x, y, interactor) {
   if (!goog.isDefAndNotNull(interactor) ||
       !(interactor instanceof X.interactor)) {
     
-    throw new X.exception('Invalid interactor.');
+    throw new Error('Invalid interactor.');
     
   }
   

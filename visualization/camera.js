@@ -36,7 +36,6 @@ goog.require('X.event.RotateEvent');
 goog.require('X.event.PanEvent');
 goog.require('X.event.RenderEvent');
 goog.require('X.base');
-goog.require('X.exception');
 goog.require('X.matrix');
 goog.require('goog.math.Vec3');
 
@@ -55,7 +54,7 @@ X.camera = function(width, height) {
   // validate width and height
   if (!goog.isNumber(width) || !goog.isNumber(height)) {
     
-    throw new X.exception('A camera needs valid width and height values.');
+    throw new Error('A camera needs valid width and height values.');
     
   }
   
@@ -145,7 +144,7 @@ X.camera.prototype.observe = function(interactor) {
   if (!goog.isDefAndNotNull(interactor) ||
       !(interactor instanceof X.interactor)) {
     
-    throw new X.exception('Could not observe the interactor.');
+    throw new Error('Could not observe the interactor.');
     
   }
   
@@ -161,13 +160,13 @@ X.camera.prototype.observe = function(interactor) {
  * The callback for a ZOOM event.
  * 
  * @param {!X.event.ZoomEvent} event The event.
- * @throws {X.exception} An exception if the event is invalid.
+ * @throws {Error} An exception if the event is invalid.
  */
 X.camera.prototype.onZoom = function(event) {
 
   if (!(event instanceof X.event.ZoomEvent)) {
     
-    throw new X.exception('Received no valid zoom event!');
+    throw new Error('Received no valid zoom event.');
     
   }
   
@@ -188,13 +187,13 @@ X.camera.prototype.onZoom = function(event) {
  * The callback for a PAN event.
  * 
  * @param {!X.event.PanEvent} event The event.
- * @throws {X.exception} An exception if the event is invalid.
+ * @throws {Error} An exception if the event is invalid.
  */
 X.camera.prototype.onPan = function(event) {
 
   if (!(event instanceof X.event.PanEvent)) {
     
-    throw new X.exception('Received no valid pan event!');
+    throw new Error('Received no valid pan event.');
     
   }
   
@@ -207,13 +206,13 @@ X.camera.prototype.onPan = function(event) {
  * The callback for a ROTATE event.
  * 
  * @param {!X.event.RotateEvent} event The event.
- * @throws {X.exception} An exception if the event is invalid.
+ * @throws {Error} An exception if the event is invalid.
  */
 X.camera.prototype.onRotate = function(event) {
 
   if (!(event instanceof X.event.RotateEvent)) {
     
-    throw new X.exception('Received no valid rotate event!');
+    throw new Error('Received no valid rotate event.');
     
   }
   
@@ -283,7 +282,7 @@ X.camera.prototype.setPosition = function(x, y, z) {
 
   if (!goog.isNumber(x) || !goog.isNumber(y) || !goog.isNumber(z)) {
     
-    throw new X.exception('The position was invalid.');
+    throw new Error('The position was invalid.');
     
   }
   
@@ -330,7 +329,7 @@ X.camera.prototype.setFocus = function(x, y, z) {
 
   if (!goog.isNumber(x) || !goog.isNumber(y) || !goog.isNumber(z)) {
     
-    throw new X.exception('The focus was invalid.');
+    throw new Error('The focus was invalid.');
     
   }
   
@@ -365,7 +364,7 @@ X.camera.prototype.setUp = function(x, y, z) {
 
   if (!goog.isNumber(x) || !goog.isNumber(y) || !goog.isNumber(z)) {
     
-    throw new X.exception('The up-vector was invalid.');
+    throw new Error('The up-vector was invalid.');
     
   }
   
@@ -445,7 +444,7 @@ X.camera.prototype.pan = function(distance) {
 
   if (!(distance instanceof goog.math.Vec2)) {
     
-    throw new X.exception('Invalid distance vector for pan operation.');
+    throw new Error('Invalid distance vector for pan operation.');
     
   }
   
@@ -474,7 +473,7 @@ X.camera.prototype.rotate = function(distance) {
 
   if (!(distance instanceof goog.math.Vec2)) {
     
-    throw new X.exception('Invalid distance vector for rotate operation.');
+    throw new Error('Invalid distance vector for rotate operation.');
     
   }
   
@@ -585,7 +584,7 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
   if (!(cameraPosition instanceof goog.math.Vec3) ||
       !(targetPoint instanceof goog.math.Vec3)) {
     
-    throw new X.exception('3D vectors required for calculating the view.');
+    throw new Error('3D vectors required for calculating the view.');
     
   }
   

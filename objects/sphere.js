@@ -33,7 +33,6 @@ goog.provide('X.sphere');
 // requires
 goog.require('CSG.sphere');
 goog.require('X.base');
-goog.require('X.exception');
 goog.require('X.object');
 
 
@@ -52,13 +51,13 @@ X.sphere = function(center, radius) {
   if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
       (center.length != 3)) {
     
-    throw new X.exception('Invalid center.');
+    throw new Error('Invalid center.');
     
   }
   
   if (!goog.isNumber(radius)) {
     
-    throw new X.exception('Invalid radius.');
+    throw new Error('Invalid radius.');
     
   }
   

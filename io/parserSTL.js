@@ -31,7 +31,6 @@
 goog.provide('X.parserSTL');
 
 // requires
-goog.require('X.exception');
 goog.require('X.event');
 goog.require('X.parser');
 goog.require('X.triplets');

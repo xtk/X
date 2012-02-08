@@ -51,7 +51,7 @@
  *
  *   - the idea for the X.indexer class was borrowed from lightGL, also by Evan Wallace (https://github.com/evanw/lightgl.js/)
  *
- *   - the X.parserTRK is based on a version of Dan Ginsburg (http://www.upsamplesoftware.com/)
+ *   - the X.parserTRK and the X.parserFSM are based on versions of Dan Ginsburg (http://www.upsamplesoftware.com/)
  *
  *   - the VTK Fileformat and VTK are developed by Kitware Inc. (http://www.kitware.com)
  *

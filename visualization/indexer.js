@@ -32,7 +32,6 @@ goog.provide('X.indexer');
 
 // requires
 goog.require('X.base');
-goog.require('X.exception');
 goog.require('goog.json');
 
 
@@ -96,13 +95,13 @@ goog.inherits(X.indexer, X.base);
  * 
  * @param {!Object} object The object to add.
  * @return The index of the object after it was added.
- * @throws {X.exception} An exception if the object is invalid.
+ * @throws {Error} An exception if the object is invalid.
  */
 X.indexer.prototype.add = function(object) {
 
   if (!goog.isDefAndNotNull(object)) {
     
-    throw new X.exception('Invalid object.');
+    throw new Error('Invalid object.');
     
   }
   

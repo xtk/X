@@ -33,7 +33,6 @@ goog.provide('X.cube');
 // requires
 goog.require('CSG.cube');
 goog.require('X.base');
-goog.require('X.exception');
 goog.require('X.object');
 
 
@@ -54,14 +53,14 @@ X.cube = function(center, radiusX, radiusY, radiusZ) {
   if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
       (center.length != 3)) {
     
-    throw new X.exception('Invalid center.');
+    throw new Error('Invalid center.');
     
   }
   
   if (!goog.isNumber(radiusX) || !goog.isNumber(radiusY) ||
       !goog.isNumber(radiusZ)) {
     
-    throw new X.exception('Invalid radii.');
+    throw new Error('Invalid radii.');
     
   }
   

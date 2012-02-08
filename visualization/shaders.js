@@ -32,7 +32,6 @@ goog.provide('X.shaders');
 
 // requires
 goog.require('X.base');
-goog.require('X.exception');
 
 
 
@@ -79,6 +78,7 @@ X.shaders = function() {
   t += 'uniform mat4 objectTransform;\n';
   t += 'uniform bool useObjectColor;\n';
   t += 'uniform vec3 objectColor;\n';
+  t += 'uniform float pointSize;\n';
   t += '\n';
   t += 'varying vec4 fVertexPosition;\n';
   t += 'varying vec3 fragmentColor;\n';
@@ -100,7 +100,8 @@ X.shaders = function() {
   t += '  } else {\n';
   t += '    fragmentColor = vertexColor;\n';
   t += '  }\n';
-  // setup vertex Position in the GL context
+  // setup vertex Point Size and Position in the GL context
+  t += '  gl_PointSize = pointSize;\n';
   t += '  gl_Position = perspective * fVertexPosition;\n';
   t += '}\n';
   this._vertexshaderSource = t;
@@ -192,6 +193,7 @@ X.shaders.uniforms = {
   OBJECTTRANSFORM: 'objectTransform',
   USEOBJECTCOLOR: 'useObjectColor',
   OBJECTCOLOR: 'objectColor',
+  POINTSIZE: 'pointSize',
   OBJECTOPACITY: 'objectOpacity',
   NORMAL: 'normal',
   USEPICKING: 'usePicking',
@@ -229,7 +231,7 @@ X.shaders.prototype.fragment = function() {
  * defined attributes and uniforms.
  * 
  * @return {boolean} TRUE or FALSE depending on success.
- * @throws {X.exception} An exception if the shader is invalid.
+ * @throws {Error} An exception if the shader is invalid.
  */
 X.shaders.prototype.validate = function() {
 
@@ -250,8 +252,7 @@ X.shaders.prototype.validate = function() {
   
   if (!attributesValid) {
     
-    throw new X.exception(
-        'Could not find all attributes in the shader sources!');
+    throw new Error('Could not find all attributes in the shader sources.');
     
   }
   
@@ -267,7 +268,7 @@ X.shaders.prototype.validate = function() {
   
   if (!uniformsValid) {
     
-    throw new X.exception('Could not find all uniforms in the shader sources!');
+    throw new Error('Could not find all uniforms in the shader sources.');
     
   }
   

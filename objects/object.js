@@ -37,7 +37,6 @@ goog.require('csgVertex');
 goog.require('csgPolygon');
 
 goog.require('X.base');
-goog.require('X.exception');
 goog.require('X.file');
 goog.require('X.indexer');
 goog.require('X.triplets');
@@ -48,12 +47,15 @@ goog.require('X.transform');
 
 /**
  * Create a displayable object. Objects may have points, colors, a texture, or
- * may be loaded from a file in addition to opacity and visibility settings.
+ * may be loaded from a file in addition to opacity and visibility settings. If
+ * another X.object is passed to this constructor, the properties from this
+ * X.object are used to configure the new one.
  * 
  * @constructor
+ * @param {X.object=} object Another X.object to use as a template.
  * @extends X.base
  */
-X.object = function() {
+X.object = function(object) {
 
   //
   // call the standard constructor of X.base
@@ -175,6 +177,14 @@ X.object = function() {
   this._visible = true;
   
   /**
+   * The point size, only used in X.object.types.POINTS mode.
+   * 
+   * @type {number}
+   * @protected
+   */
+  this._pointSize = 1;
+  
+  /**
    * The line width, only used in X.object.types.LINES mode.
    * 
    * @type {number}
@@ -198,6 +208,13 @@ X.object = function() {
    */
   this._magicMode = false;
   
+  if (goog.isDefAndNotNull(object)) {
+    
+    // copy the properties of the given object over
+    this.copy_(object);
+    
+  }
+  
 };
 // inherit from X.base
 goog.inherits(X.object, X.base);
@@ -213,7 +230,60 @@ X.object.types = {
   TRIANGLES: 'TRIANGLES',
   TRIANGLE_STRIPS: 'TRIANGLE_STRIPS',
   LINES: 'LINES',
+  POINTS: 'POINTS',
   POLYGONS: 'POLYGONS'
+};
+
+
+/**
+ * Copies the properties from a given object to this object. The texture,
+ * textureCoordinateMap and the children are not copied but linked.
+ * 
+ * @param {!X.object} object The given object.
+ * @private
+ */
+X.object.prototype.copy_ = function(object) {
+
+  this._type = object.type();
+  
+  this._transform.setMatrix(new X.matrix(object.transform().matrix()));
+  
+  this._color = new Array(object.color());
+  
+  this._points = new X.triplets(object.points());
+  
+  this._normals = new X.triplets(object.normals());
+  
+  this._colors = new X.triplets(object.colors());
+  
+  // do we need to copy this? maybe not
+  this._texture = object.texture();
+  this._textureCoordinateMap = object.textureCoordinateMap();
+  
+  if (object.file()) {
+    // only if a file is configured
+    this._file = new X.file();
+    this._file.setPath(new String(object.file().path()).toString());
+  }
+  
+  this._opacity = object.opacity();
+  
+  // note: children are not copied
+  this._children = object.children();
+  
+  this._visible = object.visible();
+  
+  this._pointSize = object.pointSize();
+  
+  this._lineWidth = object.lineWidth();
+  
+  if (object.caption()) {
+    // only if a caption is configured
+    this._caption = new String(object.caption()).toString();
+  }
+  
+  this._magicMode = object.magicMode();
+  
 };
 
 
@@ -282,7 +352,7 @@ X.object.prototype.fromCSG = function(csg) {
 
   if (!goog.isDefAndNotNull(csg) || !(csg instanceof CSG)) {
     
-    throw new X.exception('Invalid CSG object.');
+    throw new Error('Invalid CSG object.');
     
   }
   
@@ -477,7 +547,7 @@ X.object.prototype.texture = function() {
  * Set the object texture. If null is passed, the object will have no texture.
  * 
  * @param {?X.texture|string} texture The new texture.
- * @throws {X.exception} An exception if the given texture is invalid.
+ * @throws {Error} An exception if the given texture is invalid.
  */
 X.object.prototype.setTexture = function(texture) {
 
@@ -498,7 +568,7 @@ X.object.prototype.setTexture = function(texture) {
   
   if (!(texture instanceof X.texture)) {
     
-    throw new X.exception('Invalid texture.');
+    throw new Error('Invalid texture.');
     
   }
   
@@ -525,7 +595,7 @@ X.object.prototype.textureCoordinateMap = function() {
  * @param {!number} r The Red value in the range of 0..1
  * @param {!number} g The Green value in the range of 0..1
  * @param {!number} b The Blue value in the range of 0..1
- * @throws {X.exception} An exception if the given color values are invalid.
+ * @throws {Error} An exception if the given color values are invalid.
  */
 X.object.prototype.setColor = function(r, g, b) {
 
@@ -534,7 +604,7 @@ X.object.prototype.setColor = function(r, g, b) {
       (!goog.isNumber(g) && g < 0.0 && g > 1.0) ||
       (!goog.isNumber(b) && b < 0.0 && b > 1.0)) {
     
-    throw new X.exception('Invalid color.');
+    throw new Error('Invalid color.');
     
   }
   
@@ -567,7 +637,7 @@ X.object.prototype.union = function(object) {
   if (!goog.isDefAndNotNull(object) ||
       (!(object instanceof CSG) && !(object instanceof X.object))) {
     
-    throw new X.exception('Invalid object.');
+    throw new Error('Invalid object.');
     
   }
   
@@ -593,7 +663,7 @@ X.object.prototype.subtract = function(object) {
   if (!goog.isDefAndNotNull(object) ||
       (!(object instanceof CSG) && !(object instanceof X.object))) {
     
-    throw new X.exception('Invalid object.');
+    throw new Error('Invalid object.');
     
   }
   
@@ -619,7 +689,7 @@ X.object.prototype.intersect = function(object) {
   if (!goog.isDefAndNotNull(object) ||
       (!(object instanceof CSG) && !(object instanceof X.object))) {
     
-    throw new X.exception('Invalid object.');
+    throw new Error('Invalid object.');
     
   }
   
@@ -645,7 +715,7 @@ X.object.prototype.inverse = function(object) {
   if (!goog.isDefAndNotNull(object) ||
       (!(object instanceof CSG) && !(object instanceof X.object))) {
     
-    throw new X.exception('Invalid object.');
+    throw new Error('Invalid object.');
     
   }
   
@@ -756,7 +826,22 @@ X.object.prototype.setOpacity = function(opacity) {
   // check if the given opacity is in the range 0..1
   if (!goog.isNumber(opacity) || opacity > 1.0 || opacity < 0.0) {
     
-    throw new X.exception('Invalid opacity.');
+    throw new Error('Invalid opacity.');
+    
+  }
+  
+  if (this.hasChildren()) {
+    
+    // loop through the children and propagate the new opacity
+    var children = this.children();
+    var numberOfChildren = children.length;
+    var c = 0;
+    
+    for (c = 0; c < numberOfChildren; c++) {
+      
+      children[c].setOpacity(opacity);
+      
+    }
     
   }
   
@@ -861,13 +946,13 @@ X.object.prototype.hasChildren = function() {
  * X.object.types.LINES rendering mode.
  * 
  * @param {!number} width The line width.
- * @throws {X.exception} An exception if the given width is invalid.
+ * @throws {Error} An exception if the given width is invalid.
  */
 X.object.prototype.setLineWidth = function(width) {
 
   if (!goog.isNumber(width)) {
     
-    throw new X.exception('Invalid line width!');
+    throw new Error('Invalid line width.');
     
   }
   
@@ -887,6 +972,41 @@ X.object.prototype.setLineWidth = function(width) {
 X.object.prototype.lineWidth = function() {
 
   return this._lineWidth;
+  
+};
+
+
+/**
+ * Set the point size for this object. The point size is only used in
+ * X.object.types.POINTS rendering mode.
+ * 
+ * @param {!number} size The point size.
+ * @throws {Error} An exception if the given size is invalid.
+ */
+X.object.prototype.setPointSize = function(size) {
+
+  if (!goog.isNumber(size)) {
+    
+    throw new Error('Invalid point size.');
+    
+  }
+  
+  this._pointSize = size;
+  
+  this._dirty = true;
+  
+};
+
+
+/**
+ * Get the point size of this object. The point size is only used in
+ * X.object.types.POINTS rendering mode.
+ * 
+ * @return {!number} The point size.
+ */
+X.object.prototype.pointSize = function() {
+
+  return this._pointSize;
   
 };
 
@@ -912,11 +1032,71 @@ X.object.prototype.setMagicMode = function(magicMode) {
 
   if (!goog.isBoolean(magicMode)) {
     
-    throw new X.exception('Invalid magicMode setting.');
+    throw new Error('Invalid magicMode setting.');
     
   }
   
   this._magicMode = magicMode;
+  
+};
+
+
+/**
+ * Compare two X.objects by their opacity values and their distance to the
+ * viewer's eye. Fully opaque objects should be always ordered before
+ * transparent ones, and the transparent ones should be ordered back-to-front in
+ * terms of the distance to the viewer's eye.
+ * 
+ * @param {X.object} object1 Object1 to compare against Object2.
+ * @param {X.object} object2 Object2 to compare against Object1.
+ * @return {!number} 1, if Object1 should be ordered after Object2 Object2. -1,
+ *         if Object1 should be ordered before Object2
+ */
+X.object.OPACITY_COMPARATOR = function(object1, object2) {
+
+  // check if we have two valid objects to compare
+  if (!goog.isDefAndNotNull(object1) || !goog.isDefAndNotNull(object2) ||
+      !(object1 instanceof X.object) || !(object2 instanceof X.object)) {
+    
+    throw new Error('Fatal: Two valid X.objects are required for comparison.');
+    
+  }
+  
+  // full opaque objects should always be rendered first
+  if (object1.opacity() == 1) {
+    
+    // always put object1 before object2
+    return -1;
+    
+  }
+  if (object2.opacity() == 1) {
+    
+    // always put object2 before object1
+    return 1;
+    
+  }
+  
+  if (goog.isDefAndNotNull(object1.distance) &&
+      goog.isDefAndNotNull(object2.distance)) {
+    
+    // order back-to-front from the viewer's eye
+    
+    if (object1.distance > object2.distance) {
+      
+      // object2 is closer so object1 should be ordered (drawn) before object2
+      return -1;
+      
+    } else if (object1.distance <= object2.distance) {
+      
+      // object 1 is closer so object1 should be ordered (drawn) after object2
+      return 1;
+      
+    }
+    
+
+  }
+  
+  return 1;
   
 };
 
@@ -937,6 +1117,12 @@ goog.exportSymbol('X.object.prototype.setColor', X.object.prototype.setColor);
 goog.exportSymbol('X.object.prototype.opacity', X.object.prototype.opacity);
 goog.exportSymbol('X.object.prototype.setOpacity',
     X.object.prototype.setOpacity);
+goog.exportSymbol('X.object.prototype.lineWidth', X.object.prototype.lineWidth);
+goog.exportSymbol('X.object.prototype.setLineWidth',
+    X.object.prototype.setLineWidth);
+goog.exportSymbol('X.object.prototype.pointSize', X.object.prototype.pointSize);
+goog.exportSymbol('X.object.prototype.setPointSize',
+    X.object.prototype.setPointSize);
 goog.exportSymbol('X.object.prototype.load', X.object.prototype.load);
 goog.exportSymbol('X.object.prototype.file', X.object.prototype.file);
 goog.exportSymbol('X.object.prototype.setCaption', X.object.prototype.setCaption);
@@ -947,3 +1133,4 @@ goog.exportSymbol('X.object.prototype.intersect', X.object.prototype.intersect);
 goog.exportSymbol('X.object.prototype.inverse', X.object.prototype.inverse);
 goog.exportSymbol('X.object.prototype.subtract', X.object.prototype.subtract);
 goog.exportSymbol('X.object.prototype.union', X.object.prototype.union);
+goog.exportSymbol('X.object.OPACITY_COMPARATOR', X.object.OPACITY_COMPARATOR);
