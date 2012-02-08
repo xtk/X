@@ -30,6 +30,11 @@ function $JSCompiler_alias_THROW$$($jscomp_throw_param$$) {
   throw $jscomp_throw_param$$;
 }
 var $JSCompiler_alias_VOID$$ = void 0, $JSCompiler_alias_TRUE$$ = !0, $JSCompiler_alias_NULL$$ = null, $JSCompiler_alias_FALSE$$ = !1;
+function $JSCompiler_set$$($JSCompiler_set_name$$) {
+  return function($JSCompiler_set_value$$) {
+    this[$JSCompiler_set_name$$] = $JSCompiler_set_value$$
+  }
+}
 function $JSCompiler_get$$($JSCompiler_get_name$$) {
   return function() {
     return this[$JSCompiler_get_name$$]
@@ -1380,9 +1385,7 @@ $goog$inherits$$($goog$events$EventTarget$$, $goog$Disposable$$);
 $JSCompiler_prototypeAlias$$ = $goog$events$EventTarget$$.prototype;
 $JSCompiler_prototypeAlias$$.$customEvent_$ = $JSCompiler_alias_TRUE$$;
 $JSCompiler_prototypeAlias$$.$parentEventTarget_$ = $JSCompiler_alias_NULL$$;
-$JSCompiler_prototypeAlias$$.$setParentEventTarget$ = function $$JSCompiler_prototypeAlias$$$$setParentEventTarget$$($parent$$5$$) {
-  this.$parentEventTarget_$ = $parent$$5$$
-};
+$JSCompiler_prototypeAlias$$.$setParentEventTarget$ = $JSCompiler_set$$("$parentEventTarget_$");
 $JSCompiler_prototypeAlias$$.addEventListener = function $$JSCompiler_prototypeAlias$$$addEventListener$($type$$73$$, $handler$$8$$, $opt_capture$$1$$, $opt_handlerScope$$) {
   $goog$events$listen$$(this, $type$$73$$, $handler$$8$$, $opt_capture$$1$$, $opt_handlerScope$$)
 };
@@ -1814,30 +1817,23 @@ $csgPlane$$.prototype = {$clone$:function $$csgPlane$$$$$clone$$() {
 }, $flip$:function $$csgPlane$$$$$flip$$() {
   this.$normal_$ = this.$normal_$.$negated$();
   this.$w$ = -this.$w$
-}, $splitPolygon$:function $$csgPlane$$$$$splitPolygon$$($polygon$$, $coplanarFront_f$$39$$, $b$$25_coplanarBack$$, $front_vi$$, $back_tj$$) {
-  for(var $j$$7_polygonType_vj$$ = 0, $types$$ = [], $i$$101$$ = 0;$i$$101$$ < $polygon$$.$vertices$.length;$i$$101$$++) {
-    var $t$$2_ti_type$$75_v$$2$$ = this.$normal_$.$dot$($polygon$$.$vertices$[$i$$101$$].$pos$) - this.$w$, $t$$2_ti_type$$75_v$$2$$ = -1.0E-5 > $t$$2_ti_type$$75_v$$2$$ ? 2 : 1.0E-5 < $t$$2_ti_type$$75_v$$2$$ ? 1 : 0, $j$$7_polygonType_vj$$ = $j$$7_polygonType_vj$$ | $t$$2_ti_type$$75_v$$2$$;
-    $types$$.push($t$$2_ti_type$$75_v$$2$$)
+}, $splitPolygon$:function $$csgPlane$$$$$splitPolygon$$($polygon$$, $coplanarFront_polygonType$$, $coplanarBack_types$$, $front$$, $back$$) {
+  for(var $coplanarFront_polygonType$$ = 0, $coplanarBack_types$$ = [], $i$$101$$ = 0;$i$$101$$ < $polygon$$.$vertices$.length;$i$$101$$++) {
+    var $t$$2_type$$75$$ = this.$normal_$.$dot$($polygon$$.$vertices$[$i$$101$$].$pos$) - this.$w$, $t$$2_type$$75$$ = -1.0E-5 > $t$$2_type$$75$$ ? 2 : 1.0E-5 < $t$$2_type$$75$$ ? 1 : 0, $coplanarFront_polygonType$$ = $coplanarFront_polygonType$$ | $t$$2_type$$75$$;
+    $coplanarBack_types$$.push($t$$2_type$$75$$)
   }
-  switch($j$$7_polygonType_vj$$) {
+  switch($coplanarFront_polygonType$$) {
     case 0:
-      (0 < this.$normal_$.$dot$($polygon$$.$plane$.$normal$) ? $coplanarFront_f$$39$$ : $b$$25_coplanarBack$$).push($polygon$$);
+      window.console.log("COPLANAR");
       break;
     case 1:
-      $front_vi$$.push($polygon$$);
+      $front$$.push($polygon$$);
       break;
     case 2:
-      $back_tj$$.push($polygon$$);
+      $back$$.push($polygon$$);
       break;
     case 3:
-      $coplanarFront_f$$39$$ = [];
-      $b$$25_coplanarBack$$ = [];
-      for($i$$101$$ = 0;$i$$101$$ < $polygon$$.$vertices$.length;$i$$101$$++) {
-        $j$$7_polygonType_vj$$ = ($i$$101$$ + 1) % $polygon$$.$vertices$.length, $t$$2_ti_type$$75_v$$2$$ = $types$$[$i$$101$$], $back_tj$$ = $types$$[$j$$7_polygonType_vj$$], $front_vi$$ = $polygon$$.$vertices$[$i$$101$$], $j$$7_polygonType_vj$$ = $polygon$$.$vertices$[$j$$7_polygonType_vj$$], 2 != $t$$2_ti_type$$75_v$$2$$ && $coplanarFront_f$$39$$.push($front_vi$$), 1 != $t$$2_ti_type$$75_v$$2$$ && $b$$25_coplanarBack$$.push(2 != $t$$2_ti_type$$75_v$$2$$ ? $front_vi$$.$clone$() : $front_vi$$), 
-        3 == ($t$$2_ti_type$$75_v$$2$$ | $back_tj$$) && ($t$$2_ti_type$$75_v$$2$$ = (this.$w$ - this.$normal_$.$dot$($front_vi$$.$pos$)) / this.$normal_$.$dot$($j$$7_polygonType_vj$$.$pos$.$minus$($front_vi$$.$pos$)), $t$$2_ti_type$$75_v$$2$$ = $front_vi$$.$interpolate$($j$$7_polygonType_vj$$, $t$$2_ti_type$$75_v$$2$$), $coplanarFront_f$$39$$.push($t$$2_ti_type$$75_v$$2$$), $b$$25_coplanarBack$$.push($t$$2_ti_type$$75_v$$2$$.$clone$()))
-      }
-      3 <= $coplanarFront_f$$39$$.length && window.console.log("FFFFF");
-      3 <= $b$$25_coplanarBack$$.length && window.console.log("BBBBBB")
+      window.console.log("SPANNING")
   }
 }};
 function $csgPolygon$$($vertices$$, $shared$$) {
@@ -1847,13 +1843,13 @@ function $csgPolygon$$($vertices$$, $shared$$) {
   this.$plane_$ = new $csgPlane$$($c$$inline_164_n$$inline_165$$, $c$$inline_164_n$$inline_165$$.$dot$($a$$inline_162$$))
 }
 $csgPolygon$$.prototype = {$clone$:function $$csgPolygon$$$$$clone$$() {
-  var $vertices$$1$$ = this.$vertices_$.map(function($v$$3$$) {
-    return $v$$3$$.$clone$()
+  var $vertices$$1$$ = this.$vertices_$.map(function($v$$2$$) {
+    return $v$$2$$.$clone$()
   });
   return new $csgPolygon$$($vertices$$1$$, this.$shared_$)
 }, $flip$:function $$csgPolygon$$$$$flip$$() {
-  this.$vertices_$.reverse().map(function($v$$4$$) {
-    $v$$4$$.$flip$()
+  this.$vertices_$.reverse().map(function($v$$3$$) {
+    $v$$3$$.$flip$()
   });
   this.$plane_$.$flip$()
 }, $vertices$:$JSCompiler_get$$("$vertices_$"), $shared$:$JSCompiler_get$$("$shared_$")};
@@ -1863,70 +1859,70 @@ $goog$exportSymbol$$("csgPolygon.prototype.flip", $csgPolygon$$.prototype.$flip$
 $goog$exportSymbol$$("csgPolygon.prototype.vertices", $csgPolygon$$.prototype.$vertices$);
 $goog$exportSymbol$$("csgPolygon.prototype.shared", $csgPolygon$$.prototype.$shared$);
 function $csgNode$$($polygons$$) {
-  this.back = this.$front$ = this.$plane$ = $JSCompiler_alias_NULL$$;
-  this.$polygons$ = [];
+  this.$back_$ = this.$front_$ = this.$plane_$ = $JSCompiler_alias_NULL$$;
+  this.$polygons_$ = [];
   $polygons$$ && this.$build$($polygons$$)
 }
 $csgNode$$.prototype = {$clone$:function $$csgNode$$$$$clone$$() {
   var $node$$2$$ = new $csgNode$$;
-  $node$$2$$.$plane$ = this.$plane$ && this.$plane$.$clone$();
-  $node$$2$$.$front$ = this.$front$ && this.$front$.$clone$();
-  $node$$2$$.back = this.back && this.back.$clone$();
-  $node$$2$$.$polygons$ = this.$polygons$.map(function($p$$3$$) {
+  $node$$2$$.$setPlane$(this.$plane_$ && this.$plane_$.$clone$());
+  $node$$2$$.$setFront$(this.$front_$ && this.$front_$.$clone$());
+  $node$$2$$.$setBack$(this.$back_$ && this.$back_$.$clone$());
+  $node$$2$$.$setPolygons$(this.$polygons_$.map(function($p$$3$$) {
     return $p$$3$$.$clone$()
-  });
+  }));
   return $node$$2$$
 }, $invert$:function $$csgNode$$$$$invert$$() {
-  for(var $i$$102_temp$$ = 0;$i$$102_temp$$ < this.$polygons$.length;$i$$102_temp$$++) {
-    this.$polygons$[$i$$102_temp$$].$flip$()
+  for(var $i$$102_temp$$ = 0;$i$$102_temp$$ < this.$polygons_$.length;$i$$102_temp$$++) {
+    this.$polygons_$[$i$$102_temp$$].$flip$()
   }
-  this.$plane$.$flip$();
-  this.$front$ && this.$front$.$invert$();
-  this.back && this.back.$invert$();
-  $i$$102_temp$$ = this.$front$;
-  this.$front$ = this.back;
-  this.back = $i$$102_temp$$
+  this.$plane_$.$flip$();
+  this.$front_$ && this.$front_$.$invert$();
+  this.$back_$ && this.$back_$.$invert$();
+  $i$$102_temp$$ = this.$front_$;
+  this.$front_$ = this.$back_$;
+  this.$back_$ = $i$$102_temp$$
 }, $clipPolygons$:function $$csgNode$$$$$clipPolygons$$($polygons$$1$$) {
-  if(!this.$plane$) {
+  if(!this.$plane_$) {
     return $polygons$$1$$.slice()
   }
   for(var $front$$1$$ = [], $back$$1$$ = [], $i$$103$$ = 0;$i$$103$$ < $polygons$$1$$.length;$i$$103$$++) {
-    this.$plane$.$splitPolygon$($polygons$$1$$[$i$$103$$], $front$$1$$, $back$$1$$, $front$$1$$, $back$$1$$)
+    this.$plane_$.$splitPolygon$($polygons$$1$$[$i$$103$$], $front$$1$$, $back$$1$$, $front$$1$$, $back$$1$$)
   }
-  this.$front$ && ($front$$1$$ = this.$front$.$clipPolygons$($front$$1$$));
-  $back$$1$$ = this.back ? this.back.$clipPolygons$($back$$1$$) : [];
+  this.$front_$ && ($front$$1$$ = this.$front_$.$clipPolygons$($front$$1$$));
+  $back$$1$$ = this.$back_$ ? this.$back_$.$clipPolygons$($back$$1$$) : [];
   return $front$$1$$.concat($back$$1$$)
 }, $clipTo$:function $$csgNode$$$$$clipTo$$($bsp$$) {
-  this.$polygons$ = $bsp$$.$clipPolygons$(this.$polygons$);
-  this.$front$ && this.$front$.$clipTo$($bsp$$);
-  this.back && this.back.$clipTo$($bsp$$)
+  this.$polygons_$ = $bsp$$.$clipPolygons$(this.$polygons_$);
+  this.$front_$ && this.$front_$.$clipTo$($bsp$$);
+  this.$back_$ && this.$back_$.$clipTo$($bsp$$)
 }, $allPolygons$:function $$csgNode$$$$$allPolygons$$() {
-  var $polygons$$2$$ = this.$polygons$.slice();
-  this.$front$ && ($polygons$$2$$ = $polygons$$2$$.concat(this.$front$.$allPolygons$()));
-  this.back && ($polygons$$2$$ = $polygons$$2$$.concat(this.back.$allPolygons$()));
+  var $polygons$$2$$ = this.$polygons_$.slice();
+  this.$front_$ && ($polygons$$2$$ = $polygons$$2$$.concat(this.$front_$.$allPolygons$()));
+  this.$back_$ && ($polygons$$2$$ = $polygons$$2$$.concat(this.$back_$.$allPolygons$()));
   return $polygons$$2$$
 }, $build$:function $$csgNode$$$$$build$$($polygons$$3$$) {
   if($polygons$$3$$.length) {
-    if(!this.$plane$) {
-      this.$plane$ = $polygons$$3$$[0].$plane$.$clone$()
+    if(!this.$plane_$) {
+      this.$plane_$ = $polygons$$3$$[0].$plane_$.$clone$()
     }
     for(var $front$$2$$ = [], $back$$2$$ = [], $i$$104$$ = 0;$i$$104$$ < $polygons$$3$$.length;$i$$104$$++) {
-      this.$plane$.$splitPolygon$($polygons$$3$$[$i$$104$$], this.$polygons$, this.$polygons$, $front$$2$$, $back$$2$$)
+      this.$plane_$.$splitPolygon$($polygons$$3$$[$i$$104$$], this.$polygons_$, this.$polygons_$, $front$$2$$, $back$$2$$)
     }
     if($front$$2$$.length) {
-      if(!this.$front$) {
-        this.$front$ = new $csgNode$$
+      if(!this.$front_$) {
+        this.$front_$ = new $csgNode$$
       }
-      this.$front$.$build$($front$$2$$)
+      this.$front_$.$build$($front$$2$$)
     }
     if($back$$2$$.length) {
-      if(!this.back) {
-        this.back = new $csgNode$$
+      if(!this.$back_$) {
+        this.$back_$ = new $csgNode$$
       }
-      this.back.$build$($back$$2$$)
+      this.$back_$.$build$($back$$2$$)
     }
   }
-}};
+}, $setPlane$:$JSCompiler_set$$("$plane_$"), $setFront$:$JSCompiler_set$$("$front_$"), $setBack$:$JSCompiler_set$$("$back_$"), $polygons$:$JSCompiler_get$$("$polygons_$"), $setPolygons$:$JSCompiler_set$$("$polygons_$")};
 function $CSG$$() {
   this.$polygons_$ = []
 }
@@ -1941,45 +1937,47 @@ $CSG$$.prototype = {$clone$:function $$CSG$$$$$clone$$() {
     return $p$$4$$.$clone$()
   }));
   return $csg$$1$$
-}, $toPolygons$:$JSCompiler_get$$("$polygons_$"), $union$:function $$CSG$$$$$union$$($b$$26_csg$$2$$) {
-  var $a$$33$$ = new $csgNode$$(this.$clone$().$polygons$()), $b$$26_csg$$2$$ = new $csgNode$$($b$$26_csg$$2$$.$clone$().$polygons$());
-  $a$$33$$.$clipTo$($b$$26_csg$$2$$);
-  $b$$26_csg$$2$$.$clipTo$($a$$33$$);
-  $b$$26_csg$$2$$.$invert$();
-  $b$$26_csg$$2$$.$clipTo$($a$$33$$);
-  $b$$26_csg$$2$$.$invert$();
-  $a$$33$$.$build$($b$$26_csg$$2$$.$allPolygons$());
+}, $toPolygons$:$JSCompiler_get$$("$polygons_$"), $union$:function $$CSG$$$$$union$$($b$$25_csg$$2$$) {
+  var $a$$33$$ = new $csgNode$$(this.$clone$().$polygons_$), $b$$25_csg$$2$$ = new $csgNode$$($b$$25_csg$$2$$.$clone$().$polygons_$);
+  $a$$33$$.$clipTo$($b$$25_csg$$2$$);
+  $b$$25_csg$$2$$.$clipTo$($a$$33$$);
+  $b$$25_csg$$2$$.$invert$();
+  $b$$25_csg$$2$$.$clipTo$($a$$33$$);
+  $b$$25_csg$$2$$.$invert$();
+  $a$$33$$.$build$($b$$25_csg$$2$$.$allPolygons$());
   return $CSG$fromPolygons$$($a$$33$$.$allPolygons$())
-}, $subtract$:function $$CSG$$$$$subtract$$($b$$27_csg$$3$$) {
-  var $a$$34$$ = new $csgNode$$(this.$clone$().$polygons$()), $b$$27_csg$$3$$ = new $csgNode$$($b$$27_csg$$3$$.$clone$().$polygons$());
+}, $subtract$:function $$CSG$$$$$subtract$$($b$$26_csg$$3$$) {
+  var $a$$34$$ = new $csgNode$$(this.$clone$().$polygons_$), $b$$26_csg$$3$$ = new $csgNode$$($b$$26_csg$$3$$.$clone$().$polygons_$);
   $a$$34$$.$invert$();
-  $a$$34$$.$clipTo$($b$$27_csg$$3$$);
-  $b$$27_csg$$3$$.$clipTo$($a$$34$$);
-  $b$$27_csg$$3$$.$invert$();
-  $b$$27_csg$$3$$.$clipTo$($a$$34$$);
-  $b$$27_csg$$3$$.$invert$();
-  $a$$34$$.$build$($b$$27_csg$$3$$.$allPolygons$());
+  $a$$34$$.$clipTo$($b$$26_csg$$3$$);
+  $b$$26_csg$$3$$.$clipTo$($a$$34$$);
+  $b$$26_csg$$3$$.$invert$();
+  $b$$26_csg$$3$$.$clipTo$($a$$34$$);
+  $b$$26_csg$$3$$.$invert$();
+  $a$$34$$.$build$($b$$26_csg$$3$$.$allPolygons$());
   $a$$34$$.$invert$();
   return $CSG$fromPolygons$$($a$$34$$.$allPolygons$())
-}, $intersect$:function $$CSG$$$$$intersect$$($b$$28_csg$$4$$) {
-  var $a$$35$$ = new $csgNode$$(this.$clone$().$polygons$()), $b$$28_csg$$4$$ = new $csgNode$$($b$$28_csg$$4$$.$clone$().$polygons$());
+}, $intersect$:function $$CSG$$$$$intersect$$($b$$27_csg$$4$$) {
+  window.console.log("first clone");
+  var $a$$35$$ = new $csgNode$$(this.$clone$().$polygons_$);
+  window.console.log("second clone");
+  $b$$27_csg$$4$$ = new $csgNode$$($b$$27_csg$$4$$.$clone$().$polygons_$);
   $a$$35$$.$invert$();
-  $b$$28_csg$$4$$.$clipTo$($a$$35$$);
-  $b$$28_csg$$4$$.$invert$();
-  $a$$35$$.$clipTo$($b$$28_csg$$4$$);
-  $b$$28_csg$$4$$.$clipTo$($a$$35$$);
-  $a$$35$$.$build$($b$$28_csg$$4$$.$allPolygons$());
+  $b$$27_csg$$4$$.$clipTo$($a$$35$$);
+  $b$$27_csg$$4$$.$invert$();
+  $a$$35$$.$clipTo$($b$$27_csg$$4$$);
+  $b$$27_csg$$4$$.$clipTo$($a$$35$$);
+  $a$$35$$.$build$($b$$27_csg$$4$$.$allPolygons$());
   $a$$35$$.$invert$();
+  window.console.log("return");
   return $CSG$fromPolygons$$($a$$35$$.$allPolygons$())
 }, inverse:function $$CSG$$$$inverse$() {
   var $csg$$5$$ = this.$clone$();
-  $csg$$5$$.$polygons$().map(function($p$$5$$) {
+  $csg$$5$$.$polygons_$.map(function($p$$5$$) {
     $p$$5$$.$flip$()
   });
   return $csg$$5$$
-}, $polygons$:$JSCompiler_get$$("$polygons_$"), $setPolygons$:function $$CSG$$$$$setPolygons$$($polygons$$5$$) {
-  this.$polygons_$ = $polygons$$5$$
-}};
+}, $polygons$:$JSCompiler_get$$("$polygons_$"), $setPolygons$:$JSCompiler_set$$("$polygons_$")};
 $goog$exportSymbol$$("CSG", $CSG$$);
 $goog$exportSymbol$$("CSG.fromPolygons", $CSG$fromPolygons$$);
 $goog$exportSymbol$$("CSG.prototype.toPolygons", $CSG$$.prototype.$toPolygons$);
@@ -1999,8 +1997,8 @@ $goog$math$Coordinate$$.prototype.$clone$ = function $$goog$math$Coordinate$$$$$
 $goog$math$Coordinate$$.prototype.toString = function $$goog$math$Coordinate$$$$toString$() {
   return"(" + this.x + ", " + this.y + ")"
 };
-function $goog$math$Coordinate$difference$$($a$$39$$, $b$$32$$) {
-  return new $goog$math$Coordinate$$($a$$39$$.x - $b$$32$$.x, $a$$39$$.y - $b$$32$$.y)
+function $goog$math$Coordinate$difference$$($a$$39$$, $b$$31$$) {
+  return new $goog$math$Coordinate$$($a$$39$$.x - $b$$31$$.x, $a$$39$$.y - $b$$31$$.y)
 }
 ;function $goog$math$Vec2$$($x$$62$$, $y$$36$$) {
   this.x = $x$$62$$;
@@ -2027,14 +2025,14 @@ $JSCompiler_prototypeAlias$$.$invert$ = function $$JSCompiler_prototypeAlias$$$$
 $JSCompiler_prototypeAlias$$.normalize = function $$JSCompiler_prototypeAlias$$$normalize$() {
   return this.scale(1 / this.$magnitude$())
 };
-$JSCompiler_prototypeAlias$$.add = function $$JSCompiler_prototypeAlias$$$add$($b$$34$$) {
-  this.x += $b$$34$$.x;
-  this.y += $b$$34$$.y;
+$JSCompiler_prototypeAlias$$.add = function $$JSCompiler_prototypeAlias$$$add$($b$$33$$) {
+  this.x += $b$$33$$.x;
+  this.y += $b$$33$$.y;
   return this
 };
-$JSCompiler_prototypeAlias$$.$subtract$ = function $$JSCompiler_prototypeAlias$$$$subtract$$($b$$35$$) {
-  this.x -= $b$$35$$.x;
-  this.y -= $b$$35$$.y;
+$JSCompiler_prototypeAlias$$.$subtract$ = function $$JSCompiler_prototypeAlias$$$$subtract$$($b$$34$$) {
+  this.x -= $b$$34$$.x;
+  this.y -= $b$$34$$.y;
   return this
 };
 $JSCompiler_prototypeAlias$$.rotate = function $$JSCompiler_prototypeAlias$$$rotate$($angle$$5_sin$$) {
@@ -2043,15 +2041,15 @@ $JSCompiler_prototypeAlias$$.rotate = function $$JSCompiler_prototypeAlias$$$rot
   this.y = $newY$$;
   return this
 };
-$JSCompiler_prototypeAlias$$.$equals$ = function $$JSCompiler_prototypeAlias$$$$equals$$($b$$36$$) {
-  return this == $b$$36$$ || !!$b$$36$$ && this.x == $b$$36$$.x && this.y == $b$$36$$.y
+$JSCompiler_prototypeAlias$$.$equals$ = function $$JSCompiler_prototypeAlias$$$$equals$$($b$$35$$) {
+  return this == $b$$35$$ || !!$b$$35$$ && this.x == $b$$35$$.x && this.y == $b$$35$$.y
 };
 function $goog$math$Size$$($width$$10$$, $height$$9$$) {
   this.width = $width$$10$$;
   this.height = $height$$9$$
 }
-function $goog$math$Size$equals$$($a$$46$$, $b$$41$$) {
-  return $a$$46$$ == $b$$41$$ ? $JSCompiler_alias_TRUE$$ : !$a$$46$$ || !$b$$41$$ ? $JSCompiler_alias_FALSE$$ : $a$$46$$.width == $b$$41$$.width && $a$$46$$.height == $b$$41$$.height
+function $goog$math$Size$equals$$($a$$46$$, $b$$40$$) {
+  return $a$$46$$ == $b$$40$$ ? $JSCompiler_alias_TRUE$$ : !$a$$46$$ || !$b$$40$$ ? $JSCompiler_alias_FALSE$$ : $a$$46$$.width == $b$$40$$.width && $a$$46$$.height == $b$$40$$.height
 }
 $JSCompiler_prototypeAlias$$ = $goog$math$Size$$.prototype;
 $JSCompiler_prototypeAlias$$.$clone$ = function $$JSCompiler_prototypeAlias$$$$clone$$() {
@@ -2107,31 +2105,31 @@ function $goog$math$Matrix$$($m$$, $opt_n$$) {
 function $goog$math$Matrix$createIdentityMatrix$$($n$$10$$) {
   for(var $rv$$17$$ = [], $i$$105$$ = 0;$i$$105$$ < $n$$10$$;$i$$105$$++) {
     $rv$$17$$[$i$$105$$] = [];
-    for(var $j$$8$$ = 0;$j$$8$$ < $n$$10$$;$j$$8$$++) {
-      $rv$$17$$[$i$$105$$][$j$$8$$] = $i$$105$$ == $j$$8$$ ? 1 : 0
+    for(var $j$$7$$ = 0;$j$$7$$ < $n$$10$$;$j$$7$$++) {
+      $rv$$17$$[$i$$105$$][$j$$7$$] = $i$$105$$ == $j$$7$$ ? 1 : 0
     }
   }
   return new $goog$math$Matrix$$($rv$$17$$)
 }
 function $goog$math$Matrix$forEach$$($matrix$$2$$, $fn$$14$$, $opt_obj$$39$$) {
   for(var $i$$106$$ = 0;$i$$106$$ < $matrix$$2$$.$getSize$().height;$i$$106$$++) {
-    for(var $j$$9$$ = 0;$j$$9$$ < $matrix$$2$$.$getSize$().width;$j$$9$$++) {
-      $fn$$14$$.call($opt_obj$$39$$, $matrix$$2$$.$array_$[$i$$106$$][$j$$9$$], $i$$106$$, $j$$9$$, $matrix$$2$$)
+    for(var $j$$8$$ = 0;$j$$8$$ < $matrix$$2$$.$getSize$().width;$j$$8$$++) {
+      $fn$$14$$.call($opt_obj$$39$$, $matrix$$2$$.$array_$[$i$$106$$][$j$$8$$], $i$$106$$, $j$$8$$, $matrix$$2$$)
     }
   }
 }
 function $goog$math$Matrix$map$$($matrix$$3$$, $fn$$15$$) {
   var $m$$1$$ = new $goog$math$Matrix$$($matrix$$3$$.$getSize$());
-  $goog$math$Matrix$forEach$$($matrix$$3$$, function($value$$65$$, $i$$108$$, $j$$11$$) {
-    $m$$1$$.$array_$[$i$$108$$][$j$$11$$] = $fn$$15$$.call($JSCompiler_alias_VOID$$, $value$$65$$, $i$$108$$, $j$$11$$, $matrix$$3$$)
+  $goog$math$Matrix$forEach$$($matrix$$3$$, function($value$$65$$, $i$$108$$, $j$$10$$) {
+    $m$$1$$.$array_$[$i$$108$$][$j$$10$$] = $fn$$15$$.call($JSCompiler_alias_VOID$$, $value$$65$$, $i$$108$$, $j$$10$$, $matrix$$3$$)
   });
   return $m$$1$$
 }
 function $goog$math$Matrix$createZeroPaddedArray_$$($m$$2$$, $n$$11$$) {
   for(var $rv$$18$$ = [], $i$$109$$ = 0;$i$$109$$ < $m$$2$$;$i$$109$$++) {
     $rv$$18$$[$i$$109$$] = [];
-    for(var $j$$12$$ = 0;$j$$12$$ < $n$$11$$;$j$$12$$++) {
-      $rv$$18$$[$i$$109$$][$j$$12$$] = 0
+    for(var $j$$11$$ = 0;$j$$11$$ < $n$$11$$;$j$$11$$++) {
+      $rv$$18$$[$i$$109$$][$j$$11$$] = 0
     }
   }
   return $rv$$18$$
@@ -2139,8 +2137,8 @@ function $goog$math$Matrix$createZeroPaddedArray_$$($m$$2$$, $n$$11$$) {
 $JSCompiler_prototypeAlias$$ = $goog$math$Matrix$$.prototype;
 $JSCompiler_prototypeAlias$$.add = function $$JSCompiler_prototypeAlias$$$add$($m$$3$$) {
   $goog$math$Size$equals$$(this.$size_$, $m$$3$$.$getSize$()) || $JSCompiler_alias_THROW$$(Error("Matrix summation is only supported on arrays of equal size"));
-  return $goog$math$Matrix$map$$(this, function($val$$33$$, $i$$110$$, $j$$13$$) {
-    return $val$$33$$ + $m$$3$$.$array_$[$i$$110$$][$j$$13$$]
+  return $goog$math$Matrix$map$$(this, function($val$$33$$, $i$$110$$, $j$$12$$) {
+    return $val$$33$$ + $m$$3$$.$array_$[$i$$110$$][$j$$12$$]
   })
 };
 $JSCompiler_prototypeAlias$$.$equals$ = function $$JSCompiler_prototypeAlias$$$$equals$$($m$$6$$, $opt_tolerance$$1$$) {
@@ -2148,8 +2146,8 @@ $JSCompiler_prototypeAlias$$.$equals$ = function $$JSCompiler_prototypeAlias$$$$
     return $JSCompiler_alias_FALSE$$
   }
   for(var $tolerance$$ = $opt_tolerance$$1$$ || 0, $i$$115$$ = 0;$i$$115$$ < this.$size_$.height;$i$$115$$++) {
-    for(var $j$$18$$ = 0;$j$$18$$ < this.$size_$.width;$j$$18$$++) {
-      if(!(Math.abs(this.$array_$[$i$$115$$][$j$$18$$] - $m$$6$$.$array_$[$i$$115$$][$j$$18$$]) <= ($tolerance$$ || 1.0E-6))) {
+    for(var $j$$17$$ = 0;$j$$17$$ < this.$size_$.width;$j$$17$$++) {
+      if(!(Math.abs(this.$array_$[$i$$115$$][$j$$17$$] - $m$$6$$.$array_$[$i$$115$$][$j$$17$$]) <= ($tolerance$$ || 1.0E-6))) {
         return $JSCompiler_alias_FALSE$$
       }
     }
@@ -2157,12 +2155,12 @@ $JSCompiler_prototypeAlias$$.$equals$ = function $$JSCompiler_prototypeAlias$$$$
   return $JSCompiler_alias_TRUE$$
 };
 $JSCompiler_prototypeAlias$$.$getSize$ = $JSCompiler_get$$("$size_$");
-function $JSCompiler_StaticMethods_getValueAt$$($JSCompiler_StaticMethods_getValueAt$self$$, $i$$119$$, $j$$21$$) {
-  return!(0 <= $i$$119$$ && $i$$119$$ < $JSCompiler_StaticMethods_getValueAt$self$$.$size_$.height && 0 <= $j$$21$$ && $j$$21$$ < $JSCompiler_StaticMethods_getValueAt$self$$.$size_$.width) ? $JSCompiler_alias_NULL$$ : $JSCompiler_StaticMethods_getValueAt$self$$.$array_$[$i$$119$$][$j$$21$$]
+function $JSCompiler_StaticMethods_getValueAt$$($JSCompiler_StaticMethods_getValueAt$self$$, $i$$119$$, $j$$20$$) {
+  return!(0 <= $i$$119$$ && $i$$119$$ < $JSCompiler_StaticMethods_getValueAt$self$$.$size_$.height && 0 <= $j$$20$$ && $j$$20$$ < $JSCompiler_StaticMethods_getValueAt$self$$.$size_$.width) ? $JSCompiler_alias_NULL$$ : $JSCompiler_StaticMethods_getValueAt$self$$.$array_$[$i$$119$$][$j$$20$$]
 }
-function $JSCompiler_StaticMethods_setValueAt$$($JSCompiler_StaticMethods_setValueAt$self$$, $i$$120$$, $j$$22$$, $value$$71$$) {
-  0 <= $i$$120$$ && $i$$120$$ < $JSCompiler_StaticMethods_setValueAt$self$$.$size_$.height && 0 <= $j$$22$$ && $j$$22$$ < $JSCompiler_StaticMethods_setValueAt$self$$.$size_$.width || $JSCompiler_alias_THROW$$(Error("Index out of bounds when setting matrix value, (" + $i$$120$$ + "," + $j$$22$$ + ") in size (" + $JSCompiler_StaticMethods_setValueAt$self$$.$size_$.height + "," + $JSCompiler_StaticMethods_setValueAt$self$$.$size_$.width + ")"));
-  $JSCompiler_StaticMethods_setValueAt$self$$.$array_$[$i$$120$$][$j$$22$$] = $value$$71$$
+function $JSCompiler_StaticMethods_setValueAt$$($JSCompiler_StaticMethods_setValueAt$self$$, $i$$120$$, $j$$21$$, $value$$71$$) {
+  0 <= $i$$120$$ && $i$$120$$ < $JSCompiler_StaticMethods_setValueAt$self$$.$size_$.height && 0 <= $j$$21$$ && $j$$21$$ < $JSCompiler_StaticMethods_setValueAt$self$$.$size_$.width || $JSCompiler_alias_THROW$$(Error("Index out of bounds when setting matrix value, (" + $i$$120$$ + "," + $j$$21$$ + ") in size (" + $JSCompiler_StaticMethods_setValueAt$self$$.$size_$.height + "," + $JSCompiler_StaticMethods_setValueAt$self$$.$size_$.width + ")"));
+  $JSCompiler_StaticMethods_setValueAt$self$$.$array_$[$i$$120$$][$j$$21$$] = $value$$71$$
 }
 $JSCompiler_prototypeAlias$$.multiply = function $$JSCompiler_prototypeAlias$$$multiply$($m$$8$$) {
   if($m$$8$$ instanceof $goog$math$Matrix$$) {
@@ -2175,8 +2173,8 @@ $JSCompiler_prototypeAlias$$.multiply = function $$JSCompiler_prototypeAlias$$$m
 };
 $JSCompiler_prototypeAlias$$.$subtract$ = function $$JSCompiler_prototypeAlias$$$$subtract$$($m$$9$$) {
   $goog$math$Size$equals$$(this.$size_$, $m$$9$$.$getSize$()) || $JSCompiler_alias_THROW$$(Error("Matrix subtraction is only supported on arrays of equal size."));
-  return $goog$math$Matrix$map$$(this, function($val$$34$$, $i$$121$$, $j$$23$$) {
-    return $val$$34$$ - $m$$9$$.$array_$[$i$$121$$][$j$$23$$]
+  return $goog$math$Matrix$map$$(this, function($val$$34$$, $i$$121$$, $j$$22$$) {
+    return $val$$34$$ - $m$$9$$.$array_$[$i$$121$$][$j$$22$$]
   })
 };
 $JSCompiler_prototypeAlias$$.$toArray$ = $JSCompiler_get$$("$array_$");
@@ -2220,8 +2218,8 @@ $goog$inherits$$($X$matrix$$, $goog$math$Matrix$$);
 function $X$matrix$createIdentityMatrix$$($n$$12$$) {
   for(var $rv$$19$$ = [], $i$$128$$ = 0;$i$$128$$ < $n$$12$$;$i$$128$$++) {
     $rv$$19$$[$i$$128$$] = [];
-    for(var $j$$30$$ = 0;$j$$30$$ < $n$$12$$;$j$$30$$++) {
-      $rv$$19$$[$i$$128$$][$j$$30$$] = $i$$128$$ == $j$$30$$ ? 1 : 0
+    for(var $j$$29$$ = 0;$j$$29$$ < $n$$12$$;$j$$29$$++) {
+      $rv$$19$$[$i$$128$$][$j$$29$$] = $i$$128$$ == $j$$29$$ ? 1 : 0
     }
   }
   return new $X$matrix$$($rv$$19$$)
@@ -2231,10 +2229,10 @@ $X$matrix$$.prototype.$flatten$ = function $$X$matrix$$$$$flatten$$() {
   if(0 == $dimensions$$.height || 0 == $dimensions$$.width) {
     return[]
   }
-  var $i$$129$$, $j$$31$$;
-  for($j$$31$$ = 0;$j$$31$$ < $dimensions$$.height;$j$$31$$++) {
+  var $i$$129$$, $j$$30$$;
+  for($j$$30$$ = 0;$j$$30$$ < $dimensions$$.height;$j$$30$$++) {
     for($i$$129$$ = 0;$i$$129$$ < $dimensions$$.width;$i$$129$$++) {
-      $result$$13$$.push($JSCompiler_StaticMethods_getValueAt$$(this, $i$$129$$, $j$$31$$))
+      $result$$13$$.push($JSCompiler_StaticMethods_getValueAt$$(this, $i$$129$$, $j$$30$$))
     }
   }
   return $result$$13$$
@@ -2414,14 +2412,14 @@ function $JSCompiler_StaticMethods_fromCSG$$($JSCompiler_StaticMethods_fromCSG$s
       $triangles$$.push([$indices$$[0], $indices$$[$i$$131_p$$7$$ - 1], $indices$$[$i$$131_p$$7$$]])
     }
   }.bind($JSCompiler_StaticMethods_fromCSG$self$$));
-  $JSCompiler_StaticMethods_fromCSG$self$$.$__vertices$ = $goog$array$map$$($indexer$$.unique(), function($v$$6$$) {
-    return[$v$$6$$.$pos_$.x(), $v$$6$$.$pos_$.y(), $v$$6$$.$pos_$.$z$()]
+  $JSCompiler_StaticMethods_fromCSG$self$$.$__vertices$ = $goog$array$map$$($indexer$$.unique(), function($v$$5$$) {
+    return[$v$$5$$.$pos_$.x(), $v$$5$$.$pos_$.y(), $v$$5$$.$pos_$.$z$()]
   });
-  $JSCompiler_StaticMethods_fromCSG$self$$.$__normals$ = $goog$array$map$$($indexer$$.unique(), function($v$$7$$) {
-    return[$v$$7$$.$normal_$.x(), $v$$7$$.$normal_$.y(), $v$$7$$.$normal_$.$z$()]
+  $JSCompiler_StaticMethods_fromCSG$self$$.$__normals$ = $goog$array$map$$($indexer$$.unique(), function($v$$6$$) {
+    return[$v$$6$$.$normal_$.x(), $v$$6$$.$normal_$.y(), $v$$6$$.$normal_$.$z$()]
   });
-  $JSCompiler_StaticMethods_fromCSG$self$$.$__colors$ = $goog$array$map$$($indexer$$.unique(), function($v$$8$$) {
-    return!$v$$8$$.color ? $JSCompiler_alias_NULL$$ : [$v$$8$$.color[0], $v$$8$$.color[1], $v$$8$$.color[2]]
+  $JSCompiler_StaticMethods_fromCSG$self$$.$__colors$ = $goog$array$map$$($indexer$$.unique(), function($v$$7$$) {
+    return!$v$$7$$.color ? $JSCompiler_alias_NULL$$ : [$v$$7$$.color[0], $v$$7$$.color[1], $v$$7$$.color[2]]
   });
   $goog$array$map$$($triangles$$, function($i$$132_i2$$3$$) {
     var $i0$$ = $i$$132_i2$$3$$[0], $i1$$3$$ = $i$$132_i2$$3$$[1], $i$$132_i2$$3$$ = $i$$132_i2$$3$$[2], $vertices$$3$$ = this.$__vertices$, $normals$$ = this.$__normals$, $colors$$ = this.$__colors$;
@@ -2438,9 +2436,7 @@ function $JSCompiler_StaticMethods_fromCSG$$($JSCompiler_StaticMethods_fromCSG$s
   $JSCompiler_StaticMethods_fromCSG$self$$.$setType$($X$object$types$TRIANGLES$$)
 }
 $JSCompiler_prototypeAlias$$.type = $JSCompiler_get$$("$_type$");
-$JSCompiler_prototypeAlias$$.$setType$ = function $$JSCompiler_prototypeAlias$$$$setType$$($type$$76$$) {
-  this.$_type$ = $type$$76$$
-};
+$JSCompiler_prototypeAlias$$.$setType$ = $JSCompiler_set$$("$_type$");
 $JSCompiler_prototypeAlias$$.transform = $JSCompiler_get$$("$_transform$");
 $JSCompiler_prototypeAlias$$.$points$ = $JSCompiler_get$$("$_points$");
 $JSCompiler_prototypeAlias$$.$normals$ = $JSCompiler_get$$("$_normals$");
@@ -2450,16 +2446,16 @@ $JSCompiler_prototypeAlias$$.$texture$ = $JSCompiler_get$$("$_texture$");
 $JSCompiler_prototypeAlias$$.$setTexture$ = function $$JSCompiler_prototypeAlias$$$$setTexture$$($texture$$5$$) {
   $goog$isDefAndNotNull$$($texture$$5$$) ? ($goog$isString$$($texture$$5$$) && ($texture$$5$$ = new $X$texture$$($texture$$5$$)), $texture$$5$$ instanceof $X$texture$$ || $JSCompiler_alias_THROW$$(new $X$exception$$("Invalid texture.")), this.$_texture$ = $texture$$5$$) : this.$_texture$ = $JSCompiler_alias_NULL$$
 };
-$JSCompiler_prototypeAlias$$.$setColor$ = function $$JSCompiler_prototypeAlias$$$$setColor$$($r$$1$$, $g$$, $b$$42$$) {
-  (!$goog$isNumber$$($r$$1$$) && 0 > $r$$1$$ && 1 < $r$$1$$ || !$goog$isNumber$$($g$$) && 0 > $g$$ && 1 < $g$$ || !$goog$isNumber$$($b$$42$$) && 0 > $b$$42$$ && 1 < $b$$42$$) && $JSCompiler_alias_THROW$$(new $X$exception$$("Invalid color."));
+$JSCompiler_prototypeAlias$$.$setColor$ = function $$JSCompiler_prototypeAlias$$$$setColor$$($r$$1$$, $g$$, $b$$41$$) {
+  (!$goog$isNumber$$($r$$1$$) && 0 > $r$$1$$ && 1 < $r$$1$$ || !$goog$isNumber$$($g$$) && 0 > $g$$ && 1 < $g$$ || !$goog$isNumber$$($b$$41$$) && 0 > $b$$41$$ && 1 < $b$$41$$) && $JSCompiler_alias_THROW$$(new $X$exception$$("Invalid color."));
   if(this.$hasChildren$()) {
     for(var $children$$ = this.children(), $numberOfChildren$$ = $children$$.length, $c$$5$$ = 0, $c$$5$$ = 0;$c$$5$$ < $numberOfChildren$$;$c$$5$$++) {
-      $children$$[$c$$5$$].$setColor$($r$$1$$, $g$$, $b$$42$$)
+      $children$$[$c$$5$$].$setColor$($r$$1$$, $g$$, $b$$41$$)
     }
   }
   this.$_color$[0] = $r$$1$$;
   this.$_color$[1] = $g$$;
-  this.$_color$[2] = $b$$42$$;
+  this.$_color$[2] = $b$$41$$;
   this.$_dirty$ = $JSCompiler_alias_TRUE$$
 };
 $JSCompiler_prototypeAlias$$.$union$ = function $$JSCompiler_prototypeAlias$$$$union$$($object$$13_result$$14$$) {
@@ -2564,6 +2560,10 @@ $goog$exportSymbol$$("X.object.prototype.setCaption", $X$object$$.prototype.$set
 $goog$exportSymbol$$("X.object.prototype.setVisible", $X$object$$.prototype.$setVisible$);
 $goog$exportSymbol$$("X.object.prototype.magicMode", $X$object$$.prototype.$magicMode$);
 $goog$exportSymbol$$("X.object.prototype.setMagicMode", $X$object$$.prototype.$setMagicMode$);
+$goog$exportSymbol$$("X.object.prototype.intersect", $X$object$$.prototype.$intersect$);
+$goog$exportSymbol$$("X.object.prototype.inverse", $X$object$$.prototype.inverse);
+$goog$exportSymbol$$("X.object.prototype.subtract", $X$object$$.prototype.$subtract$);
+$goog$exportSymbol$$("X.object.prototype.union", $X$object$$.prototype.$union$);
 function $X$parserVTK$$() {
   $X$parser$$.call(this);
   this.$_className$ = "parserVTK"
@@ -2873,14 +2873,14 @@ var $goog$dom$defaultDomHelper_$$;
 function $goog$dom$classes$add$$($element$$13$$, $var_args$$50$$) {
   var $className$$inline_239_classes$$;
   $className$$inline_239_classes$$ = ($className$$inline_239_classes$$ = $element$$13$$.className) && "function" == typeof $className$$inline_239_classes$$.split ? $className$$inline_239_classes$$.split(/\s+/) : [];
-  var $args$$5_args$$inline_242$$ = $goog$array$slice$$(arguments, 1), $b$$51_classes$$inline_241$$;
-  $b$$51_classes$$inline_241$$ = $className$$inline_239_classes$$;
+  var $args$$5_args$$inline_242$$ = $goog$array$slice$$(arguments, 1), $b$$50_classes$$inline_241$$;
+  $b$$50_classes$$inline_241$$ = $className$$inline_239_classes$$;
   for(var $rv$$inline_243$$ = 0, $i$$inline_244$$ = 0;$i$$inline_244$$ < $args$$5_args$$inline_242$$.length;$i$$inline_244$$++) {
-    0 <= $goog$array$indexOf$$($b$$51_classes$$inline_241$$, $args$$5_args$$inline_242$$[$i$$inline_244$$]) || ($b$$51_classes$$inline_241$$.push($args$$5_args$$inline_242$$[$i$$inline_244$$]), $rv$$inline_243$$++)
+    0 <= $goog$array$indexOf$$($b$$50_classes$$inline_241$$, $args$$5_args$$inline_242$$[$i$$inline_244$$]) || ($b$$50_classes$$inline_241$$.push($args$$5_args$$inline_242$$[$i$$inline_244$$]), $rv$$inline_243$$++)
   }
-  $b$$51_classes$$inline_241$$ = $rv$$inline_243$$ == $args$$5_args$$inline_242$$.length;
+  $b$$50_classes$$inline_241$$ = $rv$$inline_243$$ == $args$$5_args$$inline_242$$.length;
   $element$$13$$.className = $className$$inline_239_classes$$.join(" ");
-  return $b$$51_classes$$inline_241$$
+  return $b$$50_classes$$inline_241$$
 }
 ;var $goog$dom$BrowserFeature$CAN_ADD_NAME_OR_TYPE_ATTRIBUTES$$ = !$goog$userAgent$IE$$ || $goog$userAgent$isDocumentMode$$(9);
 !$goog$userAgent$GECKO$$ && !$goog$userAgent$IE$$ || $goog$userAgent$IE$$ && $goog$userAgent$isDocumentMode$$(9) || $goog$userAgent$GECKO$$ && $goog$userAgent$isVersion$$("1.9.1");
@@ -3219,8 +3219,8 @@ $JSCompiler_prototypeAlias$$.$disposeInternal$ = function $$JSCompiler_prototype
 $JSCompiler_prototypeAlias$$.$hasChildren$ = function $$JSCompiler_prototypeAlias$$$$hasChildren$$() {
   return!!this.$children_$ && 0 != this.$children_$.length
 };
-function $JSCompiler_StaticMethods_forEachChild$$($JSCompiler_StaticMethods_forEachChild$self$$, $f$$40$$) {
-  $JSCompiler_StaticMethods_forEachChild$self$$.$children_$ && $goog$array$forEach$$($JSCompiler_StaticMethods_forEachChild$self$$.$children_$, $f$$40$$, $JSCompiler_alias_VOID$$)
+function $JSCompiler_StaticMethods_forEachChild$$($JSCompiler_StaticMethods_forEachChild$self$$, $f$$39$$) {
+  $JSCompiler_StaticMethods_forEachChild$self$$.$children_$ && $goog$array$forEach$$($JSCompiler_StaticMethods_forEachChild$self$$.$children_$, $f$$39$$, $JSCompiler_alias_VOID$$)
 }
 $JSCompiler_prototypeAlias$$.removeChild = function $$JSCompiler_prototypeAlias$$$removeChild$($child$$15$$, $opt_unrender$$) {
   if($child$$15$$) {
@@ -3262,9 +3262,7 @@ $JSCompiler_prototypeAlias$$.$lastHideTime_$ = -1;
 $JSCompiler_prototypeAlias$$.$hideOnEscape_$ = $JSCompiler_alias_FALSE$$;
 $JSCompiler_prototypeAlias$$.$enableCrossIframeDismissal_$ = $JSCompiler_alias_TRUE$$;
 $JSCompiler_prototypeAlias$$.$type_$ = "toggle_display";
-$JSCompiler_prototypeAlias$$.$setType$ = function $$JSCompiler_prototypeAlias$$$$setType$$($type$$82$$) {
-  this.$type_$ = $type$$82$$
-};
+$JSCompiler_prototypeAlias$$.$setType$ = $JSCompiler_set$$("$type_$");
 $JSCompiler_prototypeAlias$$.$getElement$ = $JSCompiler_get$$("$element_$");
 $JSCompiler_prototypeAlias$$.$setElement$ = function $$JSCompiler_prototypeAlias$$$$setElement$$($elt$$2$$) {
   this.$isVisible_$ && $JSCompiler_alias_THROW$$(Error("Can not change this state of the popup while showing."));
@@ -3481,8 +3479,8 @@ function $JSCompiler_StaticMethods_detachEvents_$$($JSCompiler_StaticMethods_det
 $JSCompiler_prototypeAlias$$.$getValue$ = function $$JSCompiler_prototypeAlias$$$$getValue$$() {
   return this.$rangeModel_$.$getValue$()
 };
-$JSCompiler_prototypeAlias$$.$setValue$ = function $$JSCompiler_prototypeAlias$$$$setValue$$($v$$9$$) {
-  this.$rangeModel_$.$setValue$($v$$9$$);
+$JSCompiler_prototypeAlias$$.$setValue$ = function $$JSCompiler_prototypeAlias$$$$setValue$$($v$$8$$) {
+  this.$rangeModel_$.$setValue$($v$$8$$);
   this.$getElement$() && $JSCompiler_StaticMethods_setValueState_$$(this)
 };
 function $JSCompiler_StaticMethods_setValueState_$$($JSCompiler_StaticMethods_setValueState_$self$$) {
@@ -4677,12 +4675,12 @@ $JSCompiler_prototypeAlias$$.get = function $$JSCompiler_prototypeAlias$$$get$($
 function $JSCompiler_StaticMethods_pick$$($JSCompiler_StaticMethods_pick$self_r$$2$$, $g$$1_x$$84$$, $y$$56$$) {
   if($JSCompiler_StaticMethods_pick$self_r$$2$$.$config$.$PICKING_ENABLED$) {
     $JSCompiler_StaticMethods_pick$self_r$$2$$.$render_$($JSCompiler_alias_TRUE$$);
-    var $b$$59_data$$35$$ = new Uint8Array(4);
-    $JSCompiler_StaticMethods_pick$self_r$$2$$.$_gl$.readPixels($g$$1_x$$84$$, $JSCompiler_StaticMethods_pick$self_r$$2$$.$_height$ - $y$$56$$, 1, 1, $JSCompiler_StaticMethods_pick$self_r$$2$$.$_gl$.RGBA, $JSCompiler_StaticMethods_pick$self_r$$2$$.$_gl$.UNSIGNED_BYTE, $b$$59_data$$35$$);
-    $JSCompiler_StaticMethods_pick$self_r$$2$$ = Math.round(10 * ($b$$59_data$$35$$[0] / 255));
-    $g$$1_x$$84$$ = Math.round(10 * ($b$$59_data$$35$$[1] / 255));
-    $b$$59_data$$35$$ = Math.round(10 * ($b$$59_data$$35$$[2] / 255));
-    return 100 * $JSCompiler_StaticMethods_pick$self_r$$2$$ + 10 * $g$$1_x$$84$$ + $b$$59_data$$35$$
+    var $b$$58_data$$35$$ = new Uint8Array(4);
+    $JSCompiler_StaticMethods_pick$self_r$$2$$.$_gl$.readPixels($g$$1_x$$84$$, $JSCompiler_StaticMethods_pick$self_r$$2$$.$_height$ - $y$$56$$, 1, 1, $JSCompiler_StaticMethods_pick$self_r$$2$$.$_gl$.RGBA, $JSCompiler_StaticMethods_pick$self_r$$2$$.$_gl$.UNSIGNED_BYTE, $b$$58_data$$35$$);
+    $JSCompiler_StaticMethods_pick$self_r$$2$$ = Math.round(10 * ($b$$58_data$$35$$[0] / 255));
+    $g$$1_x$$84$$ = Math.round(10 * ($b$$58_data$$35$$[1] / 255));
+    $b$$58_data$$35$$ = Math.round(10 * ($b$$58_data$$35$$[2] / 255));
+    return 100 * $JSCompiler_StaticMethods_pick$self_r$$2$$ + 10 * $g$$1_x$$84$$ + $b$$58_data$$35$$
   }
   return-1
 }
@@ -4756,8 +4754,8 @@ function $CSG$sphere$$($options$$2_stacks$$) {
   }
   this.$polygons_$ = [];
   for(var $options$$2_stacks$$ = $options$$2_stacks$$ || {}, $c$$10$$ = new $csgVector$$($options$$2_stacks$$.$center$ || [0, 0, 0]), $r$$4$$ = $options$$2_stacks$$.$radius$ || 1, $slices$$ = $options$$2_stacks$$.$slices$ || 16, $options$$2_stacks$$ = $options$$2_stacks$$.$stacks$ || 8, $polygons$$7$$ = [], $vertices$$4$$, $i$$164$$ = 0;$i$$164$$ < $slices$$;$i$$164$$++) {
-    for(var $j$$33$$ = 0;$j$$33$$ < $options$$2_stacks$$;$j$$33$$++) {
-      $vertices$$4$$ = [], $vertex$$1$$($i$$164$$ / $slices$$, $j$$33$$ / $options$$2_stacks$$), 0 < $j$$33$$ && $vertex$$1$$(($i$$164$$ + 1) / $slices$$, $j$$33$$ / $options$$2_stacks$$), $j$$33$$ < $options$$2_stacks$$ - 1 && $vertex$$1$$(($i$$164$$ + 1) / $slices$$, ($j$$33$$ + 1) / $options$$2_stacks$$), $vertex$$1$$($i$$164$$ / $slices$$, ($j$$33$$ + 1) / $options$$2_stacks$$), $polygons$$7$$.push(new $csgPolygon$$($vertices$$4$$))
+    for(var $j$$32$$ = 0;$j$$32$$ < $options$$2_stacks$$;$j$$32$$++) {
+      $vertices$$4$$ = [], $vertex$$1$$($i$$164$$ / $slices$$, $j$$32$$ / $options$$2_stacks$$), 0 < $j$$32$$ && $vertex$$1$$(($i$$164$$ + 1) / $slices$$, $j$$32$$ / $options$$2_stacks$$), $j$$32$$ < $options$$2_stacks$$ - 1 && $vertex$$1$$(($i$$164$$ + 1) / $slices$$, ($j$$32$$ + 1) / $options$$2_stacks$$), $vertex$$1$$($i$$164$$ / $slices$$, ($j$$32$$ + 1) / $options$$2_stacks$$), $polygons$$7$$.push(new $csgPolygon$$($vertices$$4$$))
     }
   }
   return $CSG$fromPolygons$$($polygons$$7$$)

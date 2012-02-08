@@ -943,3 +943,7 @@ goog.exportSymbol('X.object.prototype.setCaption', X.object.prototype.setCaption
 goog.exportSymbol('X.object.prototype.setVisible', X.object.prototype.setVisible);
 goog.exportSymbol('X.object.prototype.magicMode', X.object.prototype.magicMode);
 goog.exportSymbol('X.object.prototype.setMagicMode', X.object.prototype.setMagicMode);
+goog.exportSymbol('X.object.prototype.intersect', X.object.prototype.intersect);
+goog.exportSymbol('X.object.prototype.inverse', X.object.prototype.inverse);
+goog.exportSymbol('X.object.prototype.subtract', X.object.prototype.subtract);
+goog.exportSymbol('X.object.prototype.union', X.object.prototype.union);
