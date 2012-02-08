@@ -236,6 +236,29 @@ X.transform.prototype.matrix = function() {
 
 
 /**
+ * Set the transformation matrix.
+ * 
+ * @param {!X.matrix} The transformation matrix.
+ */
+X.transform.prototype.setMatrix = function(matrix) {
+
+  var matrix_ = X.matrix.createIdentityMatrix(4);
+  
+  if (goog.isDefAndNotNull(matrix) && (matrix instanceof X.matrix)) {
+    
+    matrix_ = matrix;
+    
+  }
+  
+  this._matrix = matrix_;
+  this._glMatrix = new Float32Array(this._matrix.flatten());
+  
+  this._dirty = true;
+  
+};
+
+
+/**
  * Get the transformation matrix as a 'ready-to-use'-gl version.
  * 
  * @return {!Object} The transformation matrix as a Float32Array.
@@ -262,3 +285,5 @@ goog.exportSymbol('X.transform.prototype.translateY',
 goog.exportSymbol('X.transform.prototype.translateZ',
     X.transform.prototype.translateZ);
 goog.exportSymbol('X.transform.prototype.matrix', X.transform.prototype.matrix);
+goog.exportSymbol('X.transform.prototype.setMatrix',
+    X.transform.prototype.setMatrix);

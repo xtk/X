@@ -43,12 +43,15 @@ goog.require('X.transform');
 
 /**
  * Create a displayable object. Objects may have points, colors, a texture, or
- * may be loaded from a file in addition to opacity and visibility settings.
+ * may be loaded from a file in addition to opacity and visibility settings. If
+ * another X.object is passed to this constructor, the properties from this
+ * X.object are used to configure the new one.
  * 
  * @constructor
+ * @param {X.object=} object Another X.object to use as a template.
  * @extends X.base
  */
-X.object = function() {
+X.object = function(object) {
 
   //
   // call the standard constructor of X.base
@@ -199,6 +202,13 @@ X.object = function() {
    */
   this._magicMode = false;
   
+  if (goog.isDefAndNotNull(object)) {
+    
+    // copy the properties of the given object over
+    this.copy_(object);
+    
+  }
+  
 };
 // inherit from X.base
 goog.inherits(X.object, X.base);
@@ -216,6 +226,58 @@ X.object.types = {
   LINES: 'LINES',
   POINTS: 'POINTS',
   POLYGONS: 'POLYGONS'
+};
+
+
+/**
+ * Copies the properties from a given object to this object. The texture,
+ * textureCoordinateMap and the children are not copied but linked.
+ * 
+ * @param {!X.object} object The given object.
+ * @private
+ */
+X.object.prototype.copy_ = function(object) {
+
+  this._type = new String(object.type()).toString();
+  
+  this._transform.setMatrix(new X.matrix(object.transform().matrix()));
+  
+  this._color = new Array(object.color());
+  
+  this._points = new X.triplets(object.points());
+  
+  this._normals = new X.triplets(object.normals());
+  
+  this._colors = new X.triplets(object.colors());
+  
+  // do we need to copy this? maybe not
+  this._texture = object.texture();
+  this._textureCoordinateMap = object.textureCoordinateMap();
+  
+  if (object.file()) {
+    // only if a file is configured
+    this._file = new X.file();
+    this._file.setPath(new String(object.file().path()).toString());
+  }
+  
+  this._opacity = object.opacity();
+  
+  // note: children are not copied
+  this._children = object.children();
+  
+  this._visible = object.visible();
+  
+  this._pointSize = object.pointSize();
+  
+  this._lineWidth = object.lineWidth();
+  
+  if (object.caption()) {
+    // only if a caption is configured
+    this._caption = new String(object.caption().toString());
+  }
+  
+  this._magicMode = object.magicMode();
+  
 };
 
 
