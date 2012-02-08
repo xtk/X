@@ -50,12 +50,12 @@ for j in jsFiles:
 command += ' --root=' + os.path.join( xtkDir )
 command += ' --output_mode=compiled'
 command += ' --compiler_jar ' + compilerJar
-command += ' -f "--debug"'
+#command += ' -f "--debug"'
 #command += ' -f "--output_wrapper=(function() {%output%})();"'
 command += ' -f "--warning_level=VERBOSE"'
 command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
-command += ' -f "--jscomp_warning=missingProperties"'
-command += ' -f "--jscomp_warning=checkTypes"'
+#command += ' -f "--jscomp_warning=missingProperties"'
+#command += ' -f "--jscomp_warning=checkTypes"'
 #command += ' -f "--formatting=PRETTY_PRINT"'
 command += ' > xtk.js'
 
