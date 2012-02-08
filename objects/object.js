@@ -238,7 +238,7 @@ X.object.types = {
  */
 X.object.prototype.copy_ = function(object) {
 
-  this._type = new String(object.type()).toString();
+  this._type = object.type();
   
   this._transform.setMatrix(new X.matrix(object.transform().matrix()));
   
@@ -273,7 +273,7 @@ X.object.prototype.copy_ = function(object) {
   
   if (object.caption()) {
     // only if a caption is configured
-    this._caption = new String(object.caption().toString());
+    this._caption = new String(object.caption()).toString();
   }
   
   this._magicMode = object.magicMode();

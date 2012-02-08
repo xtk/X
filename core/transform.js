@@ -238,7 +238,7 @@ X.transform.prototype.matrix = function() {
 /**
  * Set the transformation matrix.
  * 
- * @param {!X.matrix} The transformation matrix.
+ * @param {!X.matrix} matrix The transformation matrix.
  */
 X.transform.prototype.setMatrix = function(matrix) {
 
