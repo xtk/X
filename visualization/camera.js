@@ -466,12 +466,17 @@ X.camera.prototype.pan = function(distance) {
  * Perform a rotate operation. This method fires a X.camera.RenderEvent() after
  * the calculation is done.
  * 
- * @param {!goog.math.Vec2} distance The distance of the rotation in respect of
- *          the last camera position.
+ * @param {!goog.math.Vec2|!Array} distance The distance of the rotation in
+ *          respect of the last camera position as either a 2D Array or a
+ *          goog.math.Vec2 containing the X and Y distances for the rotation.
  */
 X.camera.prototype.rotate = function(distance) {
 
-  if (!(distance instanceof goog.math.Vec2)) {
+  if ((distance instanceof Array) && (distance.length == 2)) {
+    
+    distance = new goog.math.Vec2(distance[0], distance[1]);
+    
+  } else if (!(distance instanceof goog.math.Vec2)) {
     
     throw new Error('Invalid distance vector for rotate operation.');
     
