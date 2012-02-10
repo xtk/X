@@ -1134,3 +1134,4 @@ goog.exportSymbol('X.object.prototype.inverse', X.object.prototype.inverse);
 goog.exportSymbol('X.object.prototype.subtract', X.object.prototype.subtract);
 goog.exportSymbol('X.object.prototype.union', X.object.prototype.union);
 goog.exportSymbol('X.object.OPACITY_COMPARATOR', X.object.OPACITY_COMPARATOR);
+goog.exportSymbol('X.object.prototype.children', X.object.prototype.children);

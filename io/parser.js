@@ -60,21 +60,6 @@ X.parser = function() {
 // inherit from X.base
 goog.inherits(X.parser, X.base);
 
-
-/**
- * Supported data types by extension.
- * 
- * @enum {string}
- */
-X.parser.extensions = {
-  // support for the following extensions
-  STL: 'STL',
-  VTK: 'VTK',
-  TRK: 'TRK',
-  FSM: 'FSM'
-};
-
-
 /**
  * Parse data and configure the given object. When complete, a
  * X.parser.ModifiedEvent is fired.
@@ -211,5 +196,4 @@ X.parser.prototype.parseUChar8 = function(data, offset) {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.parser', X.parser);
-goog.exportSymbol('X.parser.extensions', X.parser.extensions);
 goog.exportSymbol('X.parser.prototype.parse', X.parser.prototype.parse);

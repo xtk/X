@@ -1397,9 +1397,11 @@ X.renderer.prototype.render = function() {
   
 };
 
-
+/**
+ * @ignore
+ */
 X.renderer.prototype.onShowtime = function() {
-
+  window.console.log("onShowtime not overloaded!");
 };
 
 
@@ -1920,4 +1922,5 @@ goog.exportSymbol('X.renderer.prototype.init', X.renderer.prototype.init);
 goog.exportSymbol('X.renderer.prototype.addShaders',
     X.renderer.prototype.addShaders);
 goog.exportSymbol('X.renderer.prototype.add', X.renderer.prototype.add);
+goog.exportSymbol('X.renderer.prototype.onShowtime', X.renderer.prototype.onShowtime);
 goog.exportSymbol('X.renderer.prototype.render', X.renderer.prototype.render);
