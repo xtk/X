@@ -56,8 +56,8 @@ command += ' -f "--warning_level=VERBOSE"'
 command += ' -f "--compilation_level=ADVANCED_OPTIMIZATIONS"'
 #command += ' -f "--jscomp_warning=missingProperties"'
 #command += ' -f "--jscomp_warning=checkTypes"'
-command += ' -f "--externs=externs.js"'
-command += ' -f "--formatting=PRETTY_PRINT"'
+#command += ' -f "--externs=externs.js"'
+#command += ' -f "--formatting=PRETTY_PRINT"'
 command += ' > xtk.js'
 
 os.system( command + ' 2> temp' )

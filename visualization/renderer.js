@@ -1379,7 +1379,7 @@ X.renderer.prototype.render = function() {
     this.hideProgressBar_();
     
     // call the onShowtime function which can be overloaded
-    this.onShowtime();
+    eval("this.onShowtime()");
     
     // .. we exit here since the hiding takes some time and automatically
     // triggers the rendering when done
@@ -1398,10 +1398,12 @@ X.renderer.prototype.render = function() {
 };
 
 /**
- * @ignore
+ * Overload this function to execute code after all initial loading (files,
+ * textures..) has completed and just before the first real rendering call.
  */
 X.renderer.prototype.onShowtime = function() {
-  window.console.log("onShowtime not overloaded!");
+
+  // do nothing
 };
 
 
@@ -1578,6 +1580,14 @@ X.renderer.prototype.pick = function(x, y) {
 };
 
 
+/**
+ * Internal function to perform the actual rendering by looping through all
+ * associated X.objects.
+ * 
+ * @param {boolean} picking If TRUE, render to a framebuffer to perform picking -
+ *          if FALSE render to the canvas viewport.
+ * @private
+ */
 X.renderer.prototype.render_ = function(picking) {
 
   // picking = false;
@@ -1644,9 +1654,9 @@ X.renderer.prototype.render_ = function(picking) {
   var numberOfObjects = objects.length;
   
   var i;
-
-  //window.console.log("number of objects: " + numberOfObjects);
-
+  
+  // window.console.log("number of objects: " + numberOfObjects);
+  
   for (i = 0; i < numberOfObjects; ++i) {
     
     var object = objects[i];
@@ -1663,22 +1673,22 @@ X.renderer.prototype.render_ = function(picking) {
       }
       
       var id = object.id();
-    /*  window.console.log("==================");
-      window.console.log("id: " + object.id());
-      window.console.log("color: " + object.color());
-      window.console.log("visible: " + object.visible());
-      window.console.log("opacity: " + object.opacity());
-      window.console.log("points: " + object.points().get(1));
-      window.console.log("normals: " + object.normals().get(1));
-     */
+      /*
+       * window.console.log("=================="); window.console.log("id: " +
+       * object.id()); window.console.log("color: " + object.color());
+       * window.console.log("visible: " + object.visible());
+       * window.console.log("opacity: " + object.opacity());
+       * window.console.log("points: " + object.points().get(1));
+       * window.console.log("normals: " + object.normals().get(1));
+       */
       var magicMode = object.magicMode();
       
       var vertexBuffer = this._vertexBuffers.get(id);
       var normalBuffer = this._normalBuffers.get(id);
-
-//      window.console.log("vertexB: " + vertexBuffer);
-//      window.console.log("normalB: " + normalBuffer);
-
+      
+      // window.console.log("vertexB: " + vertexBuffer);
+      // window.console.log("normalB: " + normalBuffer);
+      
       var colorBuffer = this._colorBuffers.get(id);
       var texturePositionBuffer = this._texturePositionBuffers.get(id);
       
@@ -1903,6 +1913,12 @@ X.renderer.prototype.render_ = function(picking) {
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer', X.renderer);
 goog.exportSymbol('X.renderer.prototype.config', X.renderer.prototype.config);
+goog.exportSymbol('X.renderer.prototype.config.PROGRESSBAR_ENABLED',
+    X.renderer.prototype.config.PROGRESSBAR_ENABLED);
+goog.exportSymbol('X.renderer.prototype.config.PICKING_ENABLED',
+    X.renderer.prototype.config.PICKING_ENABLED);
+goog.exportSymbol('X.renderer.prototype.config.ORDERING_ENABLED',
+    X.renderer.prototype.config.ORDERING_ENABLED);
 goog.exportSymbol('X.renderer.prototype.width', X.renderer.prototype.width);
 goog.exportSymbol('X.renderer.prototype.height', X.renderer.prototype.height);
 goog.exportSymbol('X.renderer.prototype.canvas', X.renderer.prototype.canvas);
@@ -1922,5 +1938,6 @@ goog.exportSymbol('X.renderer.prototype.init', X.renderer.prototype.init);
 goog.exportSymbol('X.renderer.prototype.addShaders',
     X.renderer.prototype.addShaders);
 goog.exportSymbol('X.renderer.prototype.add', X.renderer.prototype.add);
-goog.exportSymbol('X.renderer.prototype.onShowtime', X.renderer.prototype.onShowtime);
+goog.exportSymbol('X.renderer.prototype.onShowtime',
+    X.renderer.prototype.onShowtime);
 goog.exportSymbol('X.renderer.prototype.render', X.renderer.prototype.render);
