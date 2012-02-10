@@ -10,4 +10,4 @@ set(CTEST_SOURCE_DIRECTORY "/Users/nr52/projectX/xtk")
 set(CTEST_BINARY_DIRECTORY ".")
 set(CTEST_COMMAND "command")
 
-ctest_submit(FILES Build.xml)
+ctest_submit(FILES XTKBuild.xml)

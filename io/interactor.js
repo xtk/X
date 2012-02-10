@@ -741,6 +741,16 @@ X.interactor.prototype.onKey = function(event) {
 goog.exportSymbol('X.interactor', X.interactor);
 goog.exportSymbol('X.interactor.prototype.config',
     X.interactor.prototype.config);
+goog.exportSymbol('X.interactor.prototype.config.MOUSEWHEEL_ENABLED',
+    X.interactor.prototype.config.MOUSEWHEEL_ENABLED);
+goog.exportSymbol('X.interactor.prototype.config.MOUSECLICKS_ENABLED',
+    X.interactor.prototype.config.MOUSECLICKS_ENABLED);
+goog.exportSymbol('X.interactor.prototype.config.KEYBOARD_ENABLED',
+    X.interactor.prototype.config.KEYBOARD_ENABLED);
+goog.exportSymbol('X.interactor.prototype.config.HOVERING_ENABLED',
+    X.interactor.prototype.config.HOVERING_ENABLED);
+goog.exportSymbol('X.interactor.prototype.config.CONTEXTMENU_ENABLED',
+    X.interactor.prototype.config.CONTEXTMENU_ENABLED);
 goog.exportSymbol('X.interactor.prototype.init', X.interactor.prototype.init);
 goog.exportSymbol('X.interactor.prototype.onMouseDown',
     X.interactor.prototype.onMouseDown);

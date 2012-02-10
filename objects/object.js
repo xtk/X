@@ -373,22 +373,23 @@ X.object.prototype.fromCSG = function(csg) {
     var ver = p.vertices();
     var shared = p.shared();
     indices = goog.array.map(ver, function(vertex) {
+
       vertex.color = shared;
       return indexer.add(vertex);
     });
- 
+    
     var i = 2;
     for (i = 2; i < indices.length; i++) {
-     triangles.push([indices[0], indices[i - 1], indices[i]]);
+      triangles.push([indices[0], indices[i - 1], indices[i]]);
     }
     
   }.bind(this));
-
-this.__vertices = goog.array.map(indexer.unique(), function(v) {
+  
+  this.__vertices = goog.array.map(indexer.unique(), function(v) {
 
     return [v.pos().x(), v.pos().y(), v.pos().z()];
   });
-
+  
   this.__normals = goog.array.map(indexer.unique(), function(v) {
 
     return [v.normal().x(), v.normal().y(), v.normal().z()];
@@ -402,7 +403,7 @@ this.__vertices = goog.array.map(indexer.unique(), function(v) {
     }
     return [v.color[0], v.color[1], v.color[2]];
   });
- 
+  
   //
   // setup the points, normals and colors for this X.object
   // by converting the triangles to the X.object API
@@ -421,7 +422,7 @@ this.__vertices = goog.array.map(indexer.unique(), function(v) {
     this._points.add(vertices[i0][0], vertices[i0][1], vertices[i0][2]);
     this._points.add(vertices[i1][0], vertices[i1][1], vertices[i1][2]);
     this._points.add(vertices[i2][0], vertices[i2][1], vertices[i2][2]);
-
+    
     // add the normals
     this._normals.add(normals[i0][0], normals[i0][1], normals[i0][2]);
     this._normals.add(normals[i1][0], normals[i1][1], normals[i1][2]);
@@ -1125,10 +1126,13 @@ goog.exportSymbol('X.object.prototype.setPointSize',
     X.object.prototype.setPointSize);
 goog.exportSymbol('X.object.prototype.load', X.object.prototype.load);
 goog.exportSymbol('X.object.prototype.file', X.object.prototype.file);
-goog.exportSymbol('X.object.prototype.setCaption', X.object.prototype.setCaption);
-goog.exportSymbol('X.object.prototype.setVisible', X.object.prototype.setVisible);
+goog.exportSymbol('X.object.prototype.setCaption',
+    X.object.prototype.setCaption);
+goog.exportSymbol('X.object.prototype.setVisible',
+    X.object.prototype.setVisible);
 goog.exportSymbol('X.object.prototype.magicMode', X.object.prototype.magicMode);
-goog.exportSymbol('X.object.prototype.setMagicMode', X.object.prototype.setMagicMode);
+goog.exportSymbol('X.object.prototype.setMagicMode',
+    X.object.prototype.setMagicMode);
 goog.exportSymbol('X.object.prototype.intersect', X.object.prototype.intersect);
 goog.exportSymbol('X.object.prototype.inverse', X.object.prototype.inverse);
 goog.exportSymbol('X.object.prototype.subtract', X.object.prototype.subtract);

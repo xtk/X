@@ -4,8 +4,6 @@ XTK_DIR=$XTKUTILS_DIR/../
 
 cd $XTK_DIR
 git checkout master
-# reset the Build.xml file
-git checkout utils/Build.xml
 
 old_head=$(git rev-parse --verify HEAD)
 git pull -n
