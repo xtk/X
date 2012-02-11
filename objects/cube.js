@@ -75,7 +75,7 @@ X.cube = function(center, radiusX, radiusY, radiusZ) {
    * @inheritDoc
    * @const
    */
-  this._className = 'cube';
+  this['_className'] = 'cube';
   
   this._center = center;
   

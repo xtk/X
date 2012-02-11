@@ -57,7 +57,7 @@ X.parserVTK = function() {
    * @inheritDoc
    * @const
    */
-  this._className = 'parserVTK';
+  this['_className'] = 'parserVTK';
   
 };
 // inherit from X.parser

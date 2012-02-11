@@ -60,7 +60,7 @@ X.base = function() {
    * @type {string}
    * @protected
    */
-  this._className = 'base';
+  this['_className'] = 'base';
   
   /**
    * The 'dirty' flag of this object.
@@ -80,19 +80,7 @@ goog.inherits(X.base, goog.events.EventTarget);
  */
 X.base.prototype.className = function() {
 
-  return this._className;
-  
-};
-
-
-/**
- * Return the unique id of the current X.base-object.
- * 
- * @return {number} The unique id of the current X.object.
- */
-X.base.prototype.id = function() {
-
-  return this._id;
+  return this['_className'];
   
 };
 

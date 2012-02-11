@@ -81,7 +81,7 @@ X.cylinder = function(start, end, radius) {
    * @inheritDoc
    * @const
    */
-  this._className = 'cylinder';
+  this['_className'] = 'cylinder';
   
   this._start = start;
   

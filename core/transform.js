@@ -56,7 +56,7 @@ X.transform = function() {
    * @inheritDoc
    * @const
    */
-  this._className = 'transform';
+  this['_className'] = 'transform';
   
   /**
    * The transformation matrix.

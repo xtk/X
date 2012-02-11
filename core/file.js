@@ -54,7 +54,7 @@ X.file = function() {
    * @inheritDoc
    * @const
    */
-  this._className = 'file';
+  this['_className'] = 'file';
   
   /**
    * The file path.

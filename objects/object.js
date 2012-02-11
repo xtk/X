@@ -68,17 +68,20 @@ X.object = function(object) {
    * @inheritDoc
    * @const
    */
-  this._className = 'object';
+  this['_className'] = 'object';
   
+  // the global id counter
   var counter = window["X.Counter"];
+  // ..get a new unique id
   counter.increment();
+  
   /**
    * The uniqueId of this object. Each object in XTK has a uniqueId.
    * 
    * @type {number}
    * @protected
    */
-  this._id = counter.value();
+  this['_id'] = counter.value();
   
   /**
    * The rendering type of this object, default is {X.object.types.TRIANGLES}.
@@ -86,7 +89,7 @@ X.object = function(object) {
    * @type {X.object.types}
    * @protected
    */
-  this._type = X.object.types.TRIANGLES;
+  this['_type'] = X.object.types.TRIANGLES;
   
   /**
    * The transform of this object.
@@ -100,9 +103,9 @@ X.object = function(object) {
    * The object color. By default, this is white.
    * 
    * @type {!Array}
-   * @protected
+   * @public
    */
-  this._color = [1, 1, 1];
+  this['_color'] = [1, 1, 1];
   
   /**
    * The points of this object.
@@ -156,9 +159,9 @@ X.object = function(object) {
    * The opacity of this object.
    * 
    * @type {number}
-   * @protected
+   * @public
    */
-  this._opacity = 1.0;
+  this['_opacity'] = 1.0;
   
   /**
    * The children of this object.
@@ -172,9 +175,9 @@ X.object = function(object) {
    * The visibility of this object.
    * 
    * @type {boolean}
-   * @protected
+   * @public
    */
-  this._visible = true;
+  this['_visible'] = true;
   
   /**
    * The point size, only used in X.object.types.POINTS mode.
@@ -182,7 +185,7 @@ X.object = function(object) {
    * @type {number}
    * @protected
    */
-  this._pointSize = 1;
+  this['_pointSize'] = 1;
   
   /**
    * The line width, only used in X.object.types.LINES mode.
@@ -190,7 +193,7 @@ X.object = function(object) {
    * @type {number}
    * @protected
    */
-  this._lineWidth = 1;
+  this['_lineWidth'] = 1;
   
   /**
    * The caption of this object.
@@ -198,7 +201,7 @@ X.object = function(object) {
    * @type {?string}
    * @protected
    */
-  this._caption = null;
+  this['_caption'] = null;
   
   /**
    * The flag for the magic mode.
@@ -206,7 +209,7 @@ X.object = function(object) {
    * @type {!boolean}
    * @protected
    */
-  this._magicMode = false;
+  this['_magicMode'] = false;
   
   if (goog.isDefAndNotNull(object)) {
     
@@ -244,11 +247,11 @@ X.object.types = {
  */
 X.object.prototype.copy_ = function(object) {
 
-  this._type = object.type();
+  this['_type'] = object.type();
   
   this._transform.setMatrix(new X.matrix(object.transform().matrix()));
   
-  this._color = new Array(object.color());
+  this['_color'] = new Array(object.color());
   
   this._points = new X.triplets(object.points());
   
@@ -266,23 +269,23 @@ X.object.prototype.copy_ = function(object) {
     this._file.setPath(new String(object.file().path()).toString());
   }
   
-  this._opacity = object.opacity();
+  this['_opacity'] = object.opacity();
   
   // note: children are not copied
   this._children = object.children();
   
-  this._visible = object.visible();
+  this['_visible'] = object.visible();
   
-  this._pointSize = object.pointSize();
+  this['_pointSize'] = object.pointSize();
   
-  this._lineWidth = object.lineWidth();
+  this['_lineWidth'] = object.lineWidth();
   
   if (object.caption()) {
     // only if a caption is configured
-    this._caption = new String(object.caption()).toString();
+    this['_caption'] = new String(object.caption()).toString();
   }
   
-  this._magicMode = object.magicMode();
+  this['_magicMode'] = object.magicMode();
   
 };
 
@@ -294,7 +297,7 @@ X.object.prototype.copy_ = function(object) {
  */
 X.object.prototype.id = function() {
 
-  return this._id;
+  return this['_id'];
   
 };
 
@@ -317,7 +320,7 @@ X.object.prototype.toCSG = function() {
     var normal3 = this._normals.get(p + 2);
     
     // get the object color
-    var color = this._color;
+    var color = this['_color'];
     
     // if point colors are defined on this X.object, use'em
     if ((this._colors.length() > 0)) {
@@ -455,7 +458,7 @@ X.object.prototype.fromCSG = function(csg) {
  */
 X.object.prototype.type = function() {
 
-  return this._type;
+  return this['_type'];
   
 };
 
@@ -467,7 +470,7 @@ X.object.prototype.type = function() {
  */
 X.object.prototype.setType = function(type) {
 
-  this._type = type;
+  this['_type'] = type;
   
 };
 
@@ -527,7 +530,7 @@ X.object.prototype.colors = function() {
  */
 X.object.prototype.color = function() {
 
-  return this._color;
+  return this['_color'];
   
 };
 
@@ -624,9 +627,9 @@ X.object.prototype.setColor = function(r, g, b) {
     
   }
   
-  this._color[0] = r;
-  this._color[1] = g;
-  this._color[2] = b;
+  this['_color'][0] = r;
+  this['_color'][1] = g;
+  this['_color'][2] = b;
   
   this._dirty = true;
   
@@ -745,7 +748,7 @@ X.object.prototype.inverse = function(object) {
  */
 X.object.prototype.opacity = function() {
 
-  return this._opacity;
+  return this['_opacity'];
   
 };
 
@@ -757,7 +760,7 @@ X.object.prototype.opacity = function() {
  */
 X.object.prototype.caption = function() {
 
-  return this._caption;
+  return this['_caption'];
   
 };
 
@@ -769,7 +772,7 @@ X.object.prototype.caption = function() {
  */
 X.object.prototype.setCaption = function(caption) {
 
-  this._caption = caption;
+  this['_caption'] = caption;
   
   this._dirty = true;
   
@@ -798,7 +801,7 @@ X.object.prototype.setVisible = function(visible) {
     
   }
   
-  this._visible = visible;
+  this['_visible'] = visible;
   
   this._dirty = true;
   
@@ -812,7 +815,7 @@ X.object.prototype.setVisible = function(visible) {
  */
 X.object.prototype.visible = function() {
 
-  return this._visible;
+  return this['_visible'];
   
 };
 
@@ -846,7 +849,7 @@ X.object.prototype.setOpacity = function(opacity) {
     
   }
   
-  this._opacity = opacity;
+  this['_opacity'] = opacity;
   
   this._dirty = true;
   
@@ -957,7 +960,7 @@ X.object.prototype.setLineWidth = function(width) {
     
   }
   
-  this._lineWidth = width;
+  this['_lineWidth'] = width;
   
   this._dirty = true;
   
@@ -972,7 +975,7 @@ X.object.prototype.setLineWidth = function(width) {
  */
 X.object.prototype.lineWidth = function() {
 
-  return this._lineWidth;
+  return this['_lineWidth'];
   
 };
 
@@ -992,7 +995,7 @@ X.object.prototype.setPointSize = function(size) {
     
   }
   
-  this._pointSize = size;
+  this['_pointSize'] = size;
   
   this._dirty = true;
   
@@ -1007,7 +1010,7 @@ X.object.prototype.setPointSize = function(size) {
  */
 X.object.prototype.pointSize = function() {
 
-  return this._pointSize;
+  return this['_pointSize'];
   
 };
 
@@ -1019,7 +1022,7 @@ X.object.prototype.pointSize = function() {
  */
 X.object.prototype.magicMode = function() {
 
-  return this._magicMode;
+  return this['_magicMode'];
   
 };
 
@@ -1037,7 +1040,7 @@ X.object.prototype.setMagicMode = function(magicMode) {
     
   }
   
-  this._magicMode = magicMode;
+  this['_magicMode'] = magicMode;
   
 };
 

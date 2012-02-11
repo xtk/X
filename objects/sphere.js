@@ -72,7 +72,7 @@ X.sphere = function(center, radius) {
    * @inheritDoc
    * @const
    */
-  this._className = 'Sphere';
+  this['_className'] = 'Sphere';
   
   this._center = center;
   
