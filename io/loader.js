@@ -28,7 +28,6 @@
  */
 
 goog.provide('X.loader');
-
 // requires
 goog.require('X.base');
 goog.require('X.event');
@@ -169,8 +168,11 @@ X.loader.prototype.loadFile = function(object) {
   // check if the file is supported
   var fileExtension = filepath.split('.').pop();
   fileExtension = fileExtension.toUpperCase();
-  
-  if (!(fileExtension in X.parser.extensions)) {
+
+  if (!(fileExtension == X.loader.extensions.TRK ||
+        fileExtension == X.loader.extensions.STL ||
+        fileExtension == X.loader.extensions.FSM ||
+        fileExtension == X.loader.extensions.VTK)) {
     
     // file format is not supported
     throw new Error('The ' + fileExtension + ' file format is not supported.');
@@ -354,5 +356,17 @@ X.loader.prototype.parseFileCompleted = function(event) {
 
 
 
-// export symbols (required for advanced compilation)
+/**
+  * Supported data types by extension.
+  * 
+  * @enum {string}
+  */
+X.loader.extensions = {
+  // support for the following extensions
+  STL: 'STL',
+  VTK: 'VTK',
+  TRK: 'TRK',
+  FSM: 'FSM'
+};
+
 goog.exportSymbol('X.loader', X.loader);

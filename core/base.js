@@ -73,7 +73,6 @@ X.base = function() {
 // enable events
 goog.inherits(X.base, goog.events.EventTarget);
 
-
 /**
  * Print the className of the current X.base-object.
  * 

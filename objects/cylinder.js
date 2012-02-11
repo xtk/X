@@ -31,7 +31,7 @@
 goog.provide('X.cylinder');
 
 // requires
-goog.require('CSG');
+goog.require('CSG.cylinder');
 goog.require('X.base');
 goog.require('X.object');
 

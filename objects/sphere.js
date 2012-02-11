@@ -31,19 +31,19 @@
 goog.provide('X.sphere');
 
 // requires
-goog.require('CSG');
+goog.require('CSG.sphere');
 goog.require('X.base');
 goog.require('X.object');
 
 
 
 /**
- * Create a displayable sphere.
+ * Create a displayable Sphere.
  * 
  * @constructor
  * @param {!Array} center The center position in 3D space as a 1-D Array with
  *          length 3.
- * @param {!number} radius The radius of the sphere.
+ * @param {!number} radius The radius of the Sphere.
  * @extends X.object
  */
 X.sphere = function(center, radius) {
@@ -72,7 +72,7 @@ X.sphere = function(center, radius) {
    * @inheritDoc
    * @const
    */
-  this._className = 'sphere';
+  this._className = 'Sphere';
   
   this._center = center;
   
@@ -90,7 +90,7 @@ goog.inherits(X.sphere, X.object);
 
 
 /**
- * Create the sphere.
+ * Create the Sphere.
  * 
  * @private
  */

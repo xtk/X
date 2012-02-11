@@ -32,6 +32,10 @@ goog.provide('X.object');
 
 // requires
 goog.require('CSG');
+goog.require('csgVector');
+goog.require('csgVertex');
+goog.require('csgPolygon');
+
 goog.require('X.base');
 goog.require('X.file');
 goog.require('X.indexer');
@@ -66,13 +70,15 @@ X.object = function(object) {
    */
   this._className = 'object';
   
+  var counter = window["X.Counter"];
+  counter.increment();
   /**
    * The uniqueId of this object. Each object in XTK has a uniqueId.
    * 
    * @type {number}
    * @protected
    */
-  this._id = X.uniqueId();
+  this._id = counter.value();
   
   /**
    * The rendering type of this object, default is {X.object.types.TRIANGLES}.
@@ -327,11 +333,11 @@ X.object.prototype.toCSG = function() {
     //
     
     var vertices = [];
-    vertices.push(new CSG.Vertex(point1, normal1));
-    vertices.push(new CSG.Vertex(point2, normal2));
-    vertices.push(new CSG.Vertex(point3, normal3));
+    vertices.push(new csgVertex(point1, normal1));
+    vertices.push(new csgVertex(point2, normal2));
+    vertices.push(new csgVertex(point3, normal3));
     
-    polygons.push(new CSG.Polygon(vertices, color));
+    polygons.push(new csgPolygon(vertices, color));
     
   }
   
@@ -359,13 +365,16 @@ X.object.prototype.fromCSG = function(csg) {
   
   // .. a temp. array to store the triangles using vertex indices
   var triangles = new Array();
-  
   // grab points, normals and colors
-  csg.toPolygons().map(function(p) {
+  var csg2poly = csg.toPolygons();
+  goog.array.map(csg2poly, function(p) {
 
-    var indices = p.vertices.map(function(vertex) {
+    var indices = new Array();
+    var ver = p.vertices();
+    var shared = p.shared();
+    indices = goog.array.map(ver, function(vertex) {
 
-      vertex.color = p.shared;
+      vertex.color = shared;
       return indexer.add(vertex);
     });
     
@@ -376,16 +385,16 @@ X.object.prototype.fromCSG = function(csg) {
     
   }.bind(this));
   
-  // re-map the vertices, normals and colors
-  this.__vertices = indexer.unique().map(function(v) {
+  this.__vertices = goog.array.map(indexer.unique(), function(v) {
 
-    return [v.pos.x, v.pos.y, v.pos.z];
+    return [v.pos().x(), v.pos().y(), v.pos().z()];
   });
-  this.__normals = indexer.unique().map(function(v) {
+  
+  this.__normals = goog.array.map(indexer.unique(), function(v) {
 
-    return [v.normal.x, v.normal.y, v.normal.z];
+    return [v.normal().x(), v.normal().y(), v.normal().z()];
   });
-  this.__colors = indexer.unique().map(function(v) {
+  this.__colors = goog.array.map(indexer.unique(), function(v) {
 
     if (!v.color) {
       
@@ -398,7 +407,7 @@ X.object.prototype.fromCSG = function(csg) {
   //
   // setup the points, normals and colors for this X.object
   // by converting the triangles to the X.object API
-  triangles.map(function(i) {
+  goog.array.map(triangles, function(i) {
 
     // grab the three vertices of this triangle
     var i0 = i[0];
@@ -1117,4 +1126,16 @@ goog.exportSymbol('X.object.prototype.setPointSize',
     X.object.prototype.setPointSize);
 goog.exportSymbol('X.object.prototype.load', X.object.prototype.load);
 goog.exportSymbol('X.object.prototype.file', X.object.prototype.file);
+goog.exportSymbol('X.object.prototype.setCaption',
+    X.object.prototype.setCaption);
+goog.exportSymbol('X.object.prototype.setVisible',
+    X.object.prototype.setVisible);
+goog.exportSymbol('X.object.prototype.magicMode', X.object.prototype.magicMode);
+goog.exportSymbol('X.object.prototype.setMagicMode',
+    X.object.prototype.setMagicMode);
+goog.exportSymbol('X.object.prototype.intersect', X.object.prototype.intersect);
+goog.exportSymbol('X.object.prototype.inverse', X.object.prototype.inverse);
+goog.exportSymbol('X.object.prototype.subtract', X.object.prototype.subtract);
+goog.exportSymbol('X.object.prototype.union', X.object.prototype.union);
 goog.exportSymbol('X.object.OPACITY_COMPARATOR', X.object.OPACITY_COMPARATOR);
+goog.exportSymbol('X.object.prototype.children', X.object.prototype.children);

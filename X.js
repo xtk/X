@@ -31,8 +31,6 @@
 // namespace
 goog.provide('X');
 
-// uniqueId mechanism
-var __uniqueIdCounter = 0;
 
 /**
  * The XTK namespace.
@@ -41,17 +39,28 @@ var __uniqueIdCounter = 0;
  */
 var X = X || {};
 
-/**
- * Return a uniqueId.
- * 
- * @return {!number} A uniqueId.
- */
-X.uniqueId = function() {
+window["X.Counter"] = (function() {
 
-  return ++__uniqueIdCounter;
-  
-};
+  var privateCounter = 0;
+  function changeBy(val) {
 
+    privateCounter += val;
+  }
+  return {
+    increment: function() {
+
+      changeBy(1);
+    },
+    decrement: function() {
+
+      changeBy(-1);
+    },
+    value: function() {
+
+      return privateCounter;
+    }
+  };
+})();
 
 //
 // BROWSER COMPATIBILITY FIXES GO HERE
