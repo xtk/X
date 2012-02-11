@@ -1114,10 +1114,10 @@ goog.exportSymbol('X.object.prototype.setTexture',
     X.object.prototype.setTexture);
 goog.exportSymbol('X.object.prototype.colors', X.object.prototype.colors);
 goog.exportSymbol('X.object.prototype.color', X.object.prototype.color);
-goog.exportSymbol('X.object.prototype._color', X.object.prototype._color);
+goog.exportSymbol('X.object._color', X.object._color);
 goog.exportSymbol('X.object.prototype.setColor', X.object.prototype.setColor);
 goog.exportSymbol('X.object.prototype.opacity', X.object.prototype.opacity);
-goog.exportSymbol('X.object.prototype._opacity', X.object.prototype._opacity);
+goog.exportSymbol('X.object._opacity', X.object._opacity);
 goog.exportSymbol('X.object.prototype.setOpacity',
     X.object.prototype.setOpacity);
 goog.exportSymbol('X.object.prototype.lineWidth', X.object.prototype.lineWidth);
@@ -1130,7 +1130,7 @@ goog.exportSymbol('X.object.prototype.load', X.object.prototype.load);
 goog.exportSymbol('X.object.prototype.file', X.object.prototype.file);
 goog.exportSymbol('X.object.prototype.caption', X.object.prototype.caption);
 goog.exportSymbol('X.object.prototype.visible', X.object.prototype.visible);
-goog.exportSymbol('X.object.prototype._visible', X.object.prototype._visible);
+goog.exportSymbol('X.object._visible', X.object._visible);
 goog.exportSymbol('X.object.prototype.setCaption',
     X.object.prototype.setCaption);
 goog.exportSymbol('X.object.prototype.setVisible',
