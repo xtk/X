@@ -103,7 +103,15 @@ license = '''/*
  *      "Free" as in "free speech", not as in "free beer".
  *                                         - Richard M. Stallman
  * 
+ * FUELED BY:
+ *  - the wonderful Constructive Solid Geometry library by Evan Wallace (http://madebyevan.com)
+ *    LICENSE: https://raw.github.com/xtk/X/master/lib/csg/LICENSE
+ *
+ *  - parts of the Google Closure Library (http://code.google.com/closure/library)
+ *    LICENSE: https://raw.github.com/xtk/X/master/lib/closure-library/LICENSE
  * 
+ * MORE CREDITS: https://raw.github.com/xtk/X/master/LICENSE
+ *
  */'''
 
 with open( "xtk.js", "r+" ) as f:
