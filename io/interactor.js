@@ -454,7 +454,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
       // reset the trigger
       this._hoverTrigger = null;
       
-    }.bind(this), 700);
+    }.bind(this), 300);
     
   }
   
