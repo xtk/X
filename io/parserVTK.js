@@ -222,9 +222,9 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     this._pointsMode = false;
     this._pointDataMode = false;
     
-    var numberOfElements = parseInt(lineFields[1]);
+    var numberOfElements = parseInt(lineFields[1], 10);
     
-    if (numberOfElements >= 3 ) {
+    if (numberOfElements >= 3) {
       this._objectType = X.object.types.TRIANGLES;
     } else if (numberOfElements == 1) {
       this._objectType = X.object.types.POINTS;
@@ -471,9 +471,7 @@ X.parserVTK.prototype.configureTriangles = function(unorderedPoints,
     
     i--;
     
-  } while (i > 0) {
-    ;
-  }
+  } while (i > 0);
   
 };
 
@@ -555,9 +553,7 @@ X.parserVTK.prototype.configureTriangleStrips = function(unorderedPoints,
     
     i--;
     
-  } while (i > 0) {
-    ;
-  }
+  } while (i > 0);
   
 };
 
@@ -618,9 +614,7 @@ X.parserVTK.prototype.configurePoints = function(unorderedPoints,
     
     i--;
     
-  } while (i > 0) {
-    ;
-  }
+  } while (i > 0);
   
 };
 
@@ -698,9 +692,7 @@ X.parserVTK.prototype.configureLines = function(unorderedPoints,
     
     i--;
     
-  } while (i > 0) {
-    ;
-  }
+  } while (i > 0);
   
 };
 
@@ -757,9 +749,7 @@ X.parserVTK.prototype.configurePolygons = function(unorderedPoints,
     
     i--;
     
-  } while (i > 0) {
-    ;
-  }
+  } while (i > 0);
   
 };
 
