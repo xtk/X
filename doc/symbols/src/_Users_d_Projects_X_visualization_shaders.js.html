@@ -39,53 +39,53 @@
 <span class='line'> 32</span> 
 <span class='line'> 33</span> </span><span class="COMM">// requires</span><span class="WHIT">
 <span class='line'> 34</span> </span><span class="NAME">goog.require</span><span class="PUNC">(</span><span class="STRN">'X.base'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 35</span> </span><span class="NAME">goog.require</span><span class="PUNC">(</span><span class="STRN">'X.exception'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 35</span> 
 <span class='line'> 36</span> 
 <span class='line'> 37</span> 
-<span class='line'> 38</span> 
-<span class='line'> 39</span> </span><span class="COMM">/**
-<span class='line'> 40</span>  * Create a pair of shaders which consists of a vertex and a fragment shader.
-<span class='line'> 41</span>  * 
-<span class='line'> 42</span>  * @constructor
-<span class='line'> 43</span>  * @extends X.base
-<span class='line'> 44</span>  */</span><span class="WHIT">
-<span class='line'> 45</span> </span><span class="NAME">X.shaders</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 46</span> 
-<span class='line'> 47</span> </span><span class="WHIT">  </span><span class="COMM">//</span><span class="WHIT">
-<span class='line'> 48</span> </span><span class="WHIT">  </span><span class="COMM">// call the standard constructor of X.base</span><span class="WHIT">
-<span class='line'> 49</span> </span><span class="WHIT">  </span><span class="NAME">goog.base</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 50</span> </span><span class="WHIT">  
-<span class='line'> 51</span>   </span><span class="COMM">//</span><span class="WHIT">
-<span class='line'> 52</span> </span><span class="WHIT">  </span><span class="COMM">// class attributes</span><span class="WHIT">
-<span class='line'> 53</span> </span><span class="WHIT">  
-<span class='line'> 54</span>   </span><span class="COMM">/**
-<span class='line'> 55</span>    * @inheritDoc
-<span class='line'> 56</span>    * @const
-<span class='line'> 57</span>    */</span><span class="WHIT">
-<span class='line'> 58</span> </span><span class="WHIT">  </span><span class="NAME">this._className</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'shader'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 59</span> </span><span class="WHIT">  
-<span class='line'> 60</span>   </span><span class="COMM">/**
-<span class='line'> 61</span>    * The vertex shader source of this shader pair. By default, a basic shader
-<span class='line'> 62</span>    * supporting vertex positions and vertex colors is defined.
-<span class='line'> 63</span>    * 
-<span class='line'> 64</span>    * @type {!string}
-<span class='line'> 65</span>    * @protected
-<span class='line'> 66</span>    */</span><span class="WHIT">
-<span class='line'> 67</span> </span><span class="WHIT">  </span><span class="NAME">this._vertexshaderSource</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 68</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 69</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'precision mediump float;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 70</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 71</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'attribute vec3 vertexPosition;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 72</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'attribute vec3 vertexNormal;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 73</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'attribute vec3 vertexColor;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 74</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'attribute vec2 vertexTexturePos;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 75</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 76</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform mat4 view;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 77</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform mat4 perspective;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 78</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform vec3 center;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 79</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform mat4 objectTransform;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 80</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform bool useObjectColor;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 81</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform vec3 objectColor;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 38</span> </span><span class="COMM">/**
+<span class='line'> 39</span>  * Create a pair of shaders which consists of a vertex and a fragment shader.
+<span class='line'> 40</span>  * 
+<span class='line'> 41</span>  * @constructor
+<span class='line'> 42</span>  * @extends X.base
+<span class='line'> 43</span>  */</span><span class="WHIT">
+<span class='line'> 44</span> </span><span class="NAME">X.shaders</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 45</span> 
+<span class='line'> 46</span> </span><span class="WHIT">  </span><span class="COMM">//</span><span class="WHIT">
+<span class='line'> 47</span> </span><span class="WHIT">  </span><span class="COMM">// call the standard constructor of X.base</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="WHIT">  </span><span class="NAME">goog.base</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 49</span> </span><span class="WHIT">  
+<span class='line'> 50</span>   </span><span class="COMM">//</span><span class="WHIT">
+<span class='line'> 51</span> </span><span class="WHIT">  </span><span class="COMM">// class attributes</span><span class="WHIT">
+<span class='line'> 52</span> </span><span class="WHIT">  
+<span class='line'> 53</span>   </span><span class="COMM">/**
+<span class='line'> 54</span>    * @inheritDoc
+<span class='line'> 55</span>    * @const
+<span class='line'> 56</span>    */</span><span class="WHIT">
+<span class='line'> 57</span> </span><span class="WHIT">  </span><span class="KEYW">this</span><span class="PUNC">[</span><span class="STRN">'_className'</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'shader'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">  
+<span class='line'> 59</span>   </span><span class="COMM">/**
+<span class='line'> 60</span>    * The vertex shader source of this shader pair. By default, a basic shader
+<span class='line'> 61</span>    * supporting vertex positions and vertex colors is defined.
+<span class='line'> 62</span>    * 
+<span class='line'> 63</span>    * @type {!string}
+<span class='line'> 64</span>    * @protected
+<span class='line'> 65</span>    */</span><span class="WHIT">
+<span class='line'> 66</span> </span><span class="WHIT">  </span><span class="NAME">this._vertexshaderSource</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 67</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'precision mediump float;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 69</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 70</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'attribute vec3 vertexPosition;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 71</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'attribute vec3 vertexNormal;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 72</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'attribute vec3 vertexColor;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 73</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'attribute vec2 vertexTexturePos;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 74</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 75</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform mat4 view;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 76</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform mat4 perspective;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 77</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform vec3 center;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 78</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform mat4 objectTransform;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 79</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform bool useObjectColor;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 80</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform vec3 objectColor;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 81</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform float pointSize;\n'</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 82</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'\n'</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 83</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'varying vec4 fVertexPosition;\n'</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 84</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'varying vec3 fragmentColor;\n'</span><span class="PUNC">;</span><span class="WHIT">
@@ -107,186 +107,187 @@
 <span class='line'>100</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'  } else {\n'</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>101</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'    fragmentColor = vertexColor;\n'</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>102</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'  }\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>103</span> </span><span class="WHIT">  </span><span class="COMM">// setup vertex Position in the GL context</span><span class="WHIT">
-<span class='line'>104</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'  gl_Position = perspective * fVertexPosition;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>105</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'}\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>106</span> </span><span class="WHIT">  </span><span class="NAME">this._vertexshaderSource</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">t</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>107</span> </span><span class="WHIT">  
-<span class='line'>108</span>   </span><span class="COMM">/**
-<span class='line'>109</span>    * The fragment shader source of this shader pair. By default, a basic shader
-<span class='line'>110</span>    * supporting fragment colors is defined.
-<span class='line'>111</span>    * 
-<span class='line'>112</span>    * @type {!string}
-<span class='line'>113</span>    * @protected
-<span class='line'>114</span>    */</span><span class="WHIT">
-<span class='line'>115</span> </span><span class="WHIT">  </span><span class="NAME">this._fragmentshaderSource</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>116</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>117</span> </span><span class="WHIT">  </span><span class="COMM">// android only guarantees medium precision</span><span class="WHIT">
-<span class='line'>118</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'precision mediump float;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>119</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>120</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform bool usePicking;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>121</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform bool useTexture;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>122</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform sampler2D textureSampler;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>123</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform float objectOpacity;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>124</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>125</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'varying vec4 fVertexPosition;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>126</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'varying vec3 fragmentColor;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>127</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'varying vec2 fragmentTexturePos;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>128</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'varying vec3 fTransformedVertexNormal;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>129</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>130</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'void main(void) {\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>131</span> </span><span class="WHIT">  </span><span class="COMM">// in picking mode, we don't want any extras but just the plain color</span><span class="WHIT">
-<span class='line'>132</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">' if (usePicking) {\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>133</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   gl_FragColor = vec4(fragmentColor, 1.0);\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>134</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">' } else if (useTexture) {\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>135</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   gl_FragColor = texture2D(textureSampler,'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>136</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   vec2(fragmentTexturePos.s,fragmentTexturePos.t));\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>137</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">' } else {\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>138</span> </span><span class="WHIT">  </span><span class="COMM">// configure advanced lighting</span><span class="WHIT">
-<span class='line'>139</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   vec3 nNormal = normalize(fTransformedVertexNormal);\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>140</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   vec3 light = vec3(0.0, 0.0, 1.0);\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>141</span> </span><span class="WHIT">  </span><span class="COMM">// t2 += ' vec3 lightDirection = vec3(-10.0, 4.0, -20.0);\n';</span><span class="WHIT">
-<span class='line'>142</span> </span><span class="WHIT">  </span><span class="COMM">// I liked the following better</span><span class="WHIT">
-<span class='line'>143</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   vec3 lightDirection = vec3(0,0,-10);\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>144</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   lightDirection = normalize(lightDirection);\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>145</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   vec3 eyeDirection = normalize(-fVertexPosition.xyz);\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>146</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   vec3 reflectionDirection = reflect(-lightDirection, nNormal);\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>147</span> </span><span class="WHIT">  </span><span class="COMM">// t2 += ' vec3 reflectionDirection = nNormal;\n'; &lt;-- to disable reflection</span><span class="WHIT">
-<span class='line'>148</span> </span><span class="WHIT">  </span><span class="COMM">// configure specular (10.0 is material property), diffuse and ambient</span><span class="WHIT">
-<span class='line'>149</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 10.0);\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>150</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   float diffuse = 0.8 * max(dot(nNormal, light), 0.0);\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>151</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   float ambient = 0.3;\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>152</span> </span><span class="WHIT">  </span><span class="COMM">// .. and now setup the fragment color using these three values and the</span><span class="WHIT">
-<span class='line'>153</span> </span><span class="WHIT">  </span><span class="COMM">// opacity</span><span class="WHIT">
-<span class='line'>154</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   gl_FragColor = vec4(fragmentColor * ambient +\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>155</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'                       fragmentColor * diffuse +\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>156</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'                       vec3(0.2, 0.2, 0.2) * specular,\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>157</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'                       objectOpacity);\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>158</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">' }\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>159</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'}\n'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>160</span> </span><span class="WHIT">  </span><span class="NAME">this._fragmentshaderSource</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">t2</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>161</span> </span><span class="WHIT">  
-<span class='line'>162</span> 
-<span class='line'>163</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>164</span> </span><span class="COMM">// inherit from X.base</span><span class="WHIT">
-<span class='line'>165</span> </span><span class="NAME">goog.inherits</span><span class="PUNC">(</span><span class="NAME">X.shaders</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.base</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>166</span> 
+<span class='line'>103</span> </span><span class="WHIT">  </span><span class="COMM">// setup vertex Point Size and Position in the GL context</span><span class="WHIT">
+<span class='line'>104</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'  gl_PointSize = pointSize;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>105</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'  gl_Position = perspective * fVertexPosition;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>106</span> </span><span class="WHIT">  </span><span class="NAME">t</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'}\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>107</span> </span><span class="WHIT">  </span><span class="NAME">this._vertexshaderSource</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">t</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>108</span> </span><span class="WHIT">  
+<span class='line'>109</span>   </span><span class="COMM">/**
+<span class='line'>110</span>    * The fragment shader source of this shader pair. By default, a basic shader
+<span class='line'>111</span>    * supporting fragment colors is defined.
+<span class='line'>112</span>    * 
+<span class='line'>113</span>    * @type {!string}
+<span class='line'>114</span>    * @protected
+<span class='line'>115</span>    */</span><span class="WHIT">
+<span class='line'>116</span> </span><span class="WHIT">  </span><span class="NAME">this._fragmentshaderSource</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>117</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">''</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>118</span> </span><span class="WHIT">  </span><span class="COMM">// android only guarantees medium precision</span><span class="WHIT">
+<span class='line'>119</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'precision mediump float;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>120</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>121</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform bool usePicking;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>122</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform bool useTexture;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>123</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform sampler2D textureSampler;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>124</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'uniform float objectOpacity;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>125</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>126</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'varying vec4 fVertexPosition;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>127</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'varying vec3 fragmentColor;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>128</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'varying vec2 fragmentTexturePos;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>129</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'varying vec3 fTransformedVertexNormal;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>130</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>131</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'void main(void) {\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>132</span> </span><span class="WHIT">  </span><span class="COMM">// in picking mode, we don't want any extras but just the plain color</span><span class="WHIT">
+<span class='line'>133</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">' if (usePicking) {\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>134</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   gl_FragColor = vec4(fragmentColor, 1.0);\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>135</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">' } else if (useTexture) {\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>136</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   gl_FragColor = texture2D(textureSampler,'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>137</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   vec2(fragmentTexturePos.s,fragmentTexturePos.t));\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>138</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">' } else {\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>139</span> </span><span class="WHIT">  </span><span class="COMM">// configure advanced lighting</span><span class="WHIT">
+<span class='line'>140</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   vec3 nNormal = normalize(fTransformedVertexNormal);\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>141</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   vec3 light = vec3(0.0, 0.0, 1.0);\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>142</span> </span><span class="WHIT">  </span><span class="COMM">// t2 += ' vec3 lightDirection = vec3(-10.0, 4.0, -20.0);\n';</span><span class="WHIT">
+<span class='line'>143</span> </span><span class="WHIT">  </span><span class="COMM">// I liked the following better</span><span class="WHIT">
+<span class='line'>144</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   vec3 lightDirection = vec3(0,0,-10);\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>145</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   lightDirection = normalize(lightDirection);\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>146</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   vec3 eyeDirection = normalize(-fVertexPosition.xyz);\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>147</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   vec3 reflectionDirection = reflect(-lightDirection, nNormal);\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>148</span> </span><span class="WHIT">  </span><span class="COMM">// t2 += ' vec3 reflectionDirection = nNormal;\n'; &lt;-- to disable reflection</span><span class="WHIT">
+<span class='line'>149</span> </span><span class="WHIT">  </span><span class="COMM">// configure specular (10.0 is material property), diffuse and ambient</span><span class="WHIT">
+<span class='line'>150</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 10.0);\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>151</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   float diffuse = 0.8 * max(dot(nNormal, light), 0.0);\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>152</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   float ambient = 0.3;\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>153</span> </span><span class="WHIT">  </span><span class="COMM">// .. and now setup the fragment color using these three values and the</span><span class="WHIT">
+<span class='line'>154</span> </span><span class="WHIT">  </span><span class="COMM">// opacity</span><span class="WHIT">
+<span class='line'>155</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'   gl_FragColor = vec4(fragmentColor * ambient +\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>156</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'                       fragmentColor * diffuse +\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>157</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'                       vec3(0.2, 0.2, 0.2) * specular,\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>158</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'                       objectOpacity);\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>159</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">' }\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>160</span> </span><span class="WHIT">  </span><span class="NAME">t2</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'}\n'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>161</span> </span><span class="WHIT">  </span><span class="NAME">this._fragmentshaderSource</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">t2</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>162</span> </span><span class="WHIT">  
+<span class='line'>163</span> 
+<span class='line'>164</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>165</span> </span><span class="COMM">// inherit from X.base</span><span class="WHIT">
+<span class='line'>166</span> </span><span class="NAME">goog.inherits</span><span class="PUNC">(</span><span class="NAME">X.shaders</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.base</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>167</span> 
-<span class='line'>168</span> </span><span class="COMM">/**
-<span class='line'>169</span>  * The X.shaders' vertex attributes.
-<span class='line'>170</span>  * 
-<span class='line'>171</span>  * @enum {string}
-<span class='line'>172</span>  * @protected
-<span class='line'>173</span>  */</span><span class="WHIT">
-<span class='line'>174</span> </span><span class="NAME">X.shaders.attributes</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>175</span> </span><span class="WHIT">  </span><span class="NAME">VERTEXPOSITION</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'vertexPosition'</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>176</span> </span><span class="WHIT">  </span><span class="NAME">VERTEXNORMAL</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'vertexNormal'</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>177</span> </span><span class="WHIT">  </span><span class="NAME">VERTEXCOLOR</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'vertexColor'</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>178</span> </span><span class="WHIT">  </span><span class="NAME">VERTEXTEXTUREPOS</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'vertexTexturePos'</span><span class="WHIT">
-<span class='line'>179</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>180</span> 
+<span class='line'>168</span> 
+<span class='line'>169</span> </span><span class="COMM">/**
+<span class='line'>170</span>  * The X.shaders' vertex attributes.
+<span class='line'>171</span>  * 
+<span class='line'>172</span>  * @enum {string}
+<span class='line'>173</span>  * @protected
+<span class='line'>174</span>  */</span><span class="WHIT">
+<span class='line'>175</span> </span><span class="NAME">X.shaders.attributes</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>176</span> </span><span class="WHIT">  </span><span class="NAME">VERTEXPOSITION</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'vertexPosition'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>177</span> </span><span class="WHIT">  </span><span class="NAME">VERTEXNORMAL</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'vertexNormal'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>178</span> </span><span class="WHIT">  </span><span class="NAME">VERTEXCOLOR</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'vertexColor'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>179</span> </span><span class="WHIT">  </span><span class="NAME">VERTEXTEXTUREPOS</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'vertexTexturePos'</span><span class="WHIT">
+<span class='line'>180</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>181</span> 
-<span class='line'>182</span> </span><span class="COMM">/**
-<span class='line'>183</span>  * The X.shaders' uniforms.
-<span class='line'>184</span>  * 
-<span class='line'>185</span>  * @enum {string}
-<span class='line'>186</span>  * @protected
-<span class='line'>187</span>  */</span><span class="WHIT">
-<span class='line'>188</span> </span><span class="NAME">X.shaders.uniforms</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>189</span> </span><span class="WHIT">  </span><span class="NAME">VIEW</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'view'</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>190</span> </span><span class="WHIT">  </span><span class="NAME">PERSPECTIVE</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'perspective'</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>191</span> </span><span class="WHIT">  </span><span class="NAME">CENTER</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'center'</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>192</span> </span><span class="WHIT">  </span><span class="NAME">OBJECTTRANSFORM</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'objectTransform'</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>193</span> </span><span class="WHIT">  </span><span class="NAME">USEOBJECTCOLOR</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'useObjectColor'</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>194</span> </span><span class="WHIT">  </span><span class="NAME">OBJECTCOLOR</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'objectColor'</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>195</span> </span><span class="WHIT">  </span><span class="NAME">OBJECTOPACITY</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'objectOpacity'</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>196</span> </span><span class="WHIT">  </span><span class="NAME">NORMAL</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'normal'</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>197</span> </span><span class="WHIT">  </span><span class="NAME">USEPICKING</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'usePicking'</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>198</span> </span><span class="WHIT">  </span><span class="NAME">USETEXTURE</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'useTexture'</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>199</span> </span><span class="WHIT">  </span><span class="NAME">TEXTURESAMPLER</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'textureSampler'</span><span class="WHIT">
-<span class='line'>200</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>201</span> 
-<span class='line'>202</span> 
-<span class='line'>203</span> </span><span class="COMM">/**
-<span class='line'>204</span>  * Get the vertex shader source of this shader pair.
-<span class='line'>205</span>  * 
-<span class='line'>206</span>  * @return {!string} The vertex shader source.
-<span class='line'>207</span>  */</span><span class="WHIT">
-<span class='line'>208</span> </span><span class="NAME">X.shaders.prototype.vertex</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>209</span> 
-<span class='line'>210</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this._vertexshaderSource</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>211</span> </span><span class="WHIT">  
-<span class='line'>212</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>213</span> 
-<span class='line'>214</span> 
-<span class='line'>215</span> </span><span class="COMM">/**
-<span class='line'>216</span>  * Get the fragment shader source of this shader pair.
-<span class='line'>217</span>  * 
-<span class='line'>218</span>  * @return {!string} The fragment shader source.
-<span class='line'>219</span>  */</span><span class="WHIT">
-<span class='line'>220</span> </span><span class="NAME">X.shaders.prototype.fragment</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>221</span> 
-<span class='line'>222</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this._fragmentshaderSource</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>223</span> </span><span class="WHIT">  
-<span class='line'>224</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>225</span> 
-<span class='line'>226</span> 
-<span class='line'>227</span> </span><span class="COMM">/**
-<span class='line'>228</span>  * Checks if this configured shaders object is valid in terms of using the
-<span class='line'>229</span>  * defined attributes and uniforms.
-<span class='line'>230</span>  * 
-<span class='line'>231</span>  * @return {boolean} TRUE or FALSE depending on success.
-<span class='line'>232</span>  * @throws {X.exception} An exception if the shader is invalid.
-<span class='line'>233</span>  */</span><span class="WHIT">
-<span class='line'>234</span> </span><span class="NAME">X.shaders.prototype.validate</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>235</span> 
-<span class='line'>236</span> </span><span class="WHIT">  </span><span class="COMM">// check if the shader sources are compatible to the attributes and uniforms</span><span class="WHIT">
-<span class='line'>237</span> </span><span class="WHIT">  
-<span class='line'>238</span>   </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">attributes</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Object.keys</span><span class="PUNC">(</span><span class="NAME">X.shaders.attributes</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>239</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">uniforms</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Object.keys</span><span class="PUNC">(</span><span class="NAME">X.shaders.uniforms</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>240</span> </span><span class="WHIT">  
-<span class='line'>241</span>   </span><span class="COMM">// check if all attributes are used either in the vertex or the fragment</span><span class="WHIT">
-<span class='line'>242</span> </span><span class="WHIT">  </span><span class="COMM">// shader</span><span class="WHIT">
-<span class='line'>243</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">attributesValid</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">attributes.every</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">a</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>244</span> 
-<span class='line'>245</span> </span><span class="WHIT">    </span><span class="NAME">a</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">eval</span><span class="PUNC">(</span><span class="STRN">"X.shaders.attributes."</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">a</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>246</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this._vertexshaderSource.search</span><span class="PUNC">(</span><span class="NAME">a</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT">
-<span class='line'>247</span> </span><span class="WHIT">        </span><span class="PUNC">(</span><span class="NAME">this._fragmentshaderSource.search</span><span class="PUNC">(</span><span class="NAME">a</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>248</span> </span><span class="WHIT">    
-<span class='line'>249</span>   </span><span class="PUNC">}</span><span class="PUNC">.</span><span class="NAME">bind</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>250</span> </span><span class="WHIT">  
-<span class='line'>251</span>   </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">attributesValid</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>252</span> </span><span class="WHIT">    
-<span class='line'>253</span>     </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">X.exception</span><span class="PUNC">(</span><span class="WHIT">
-<span class='line'>254</span> </span><span class="WHIT">        </span><span class="STRN">'Could not find all attributes in the shader sources!'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>255</span> </span><span class="WHIT">    
-<span class='line'>256</span>   </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>257</span> </span><span class="WHIT">  
-<span class='line'>258</span>   </span><span class="COMM">// check if all attributes are used either in the vertex or the fragment</span><span class="WHIT">
-<span class='line'>259</span> </span><span class="WHIT">  </span><span class="COMM">// shader</span><span class="WHIT">
-<span class='line'>260</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">uniformsValid</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">uniforms.every</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">u</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>261</span> 
-<span class='line'>262</span> </span><span class="WHIT">    </span><span class="NAME">u</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">eval</span><span class="PUNC">(</span><span class="STRN">"X.shaders.uniforms."</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">u</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>263</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this._vertexshaderSource.search</span><span class="PUNC">(</span><span class="NAME">u</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT">
-<span class='line'>264</span> </span><span class="WHIT">        </span><span class="PUNC">(</span><span class="NAME">this._fragmentshaderSource.search</span><span class="PUNC">(</span><span class="NAME">u</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>265</span> </span><span class="WHIT">    
-<span class='line'>266</span>   </span><span class="PUNC">}</span><span class="PUNC">.</span><span class="NAME">bind</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>267</span> </span><span class="WHIT">  
-<span class='line'>268</span>   </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">uniformsValid</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>269</span> </span><span class="WHIT">    
-<span class='line'>270</span>     </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">X.exception</span><span class="PUNC">(</span><span class="STRN">'Could not find all uniforms in the shader sources!'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>271</span> </span><span class="WHIT">    
-<span class='line'>272</span>   </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>273</span> </span><span class="WHIT">  
-<span class='line'>274</span>   </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>275</span> </span><span class="WHIT">  
-<span class='line'>276</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>277</span> 
-<span class='line'>278</span> </span><span class="COMM">// export symbols (required for advanced compilation)</span><span class="WHIT">
-<span class='line'>279</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.shaders'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.shaders</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>280</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.shaders.attributes'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.shaders.attributes</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>281</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.shaders.uniforms'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.shaders.uniforms</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>282</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.shaders.prototype.vertex'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.shaders.prototype.vertex</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>283</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.shaders.prototype.fragment'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.shaders.prototype.fragment</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>284</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.shaders.prototype.validate'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.shaders.prototype.validate</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>285</span> </span></pre></body></html>
+<span class='line'>182</span> 
+<span class='line'>183</span> </span><span class="COMM">/**
+<span class='line'>184</span>  * The X.shaders' uniforms.
+<span class='line'>185</span>  * 
+<span class='line'>186</span>  * @enum {string}
+<span class='line'>187</span>  * @protected
+<span class='line'>188</span>  */</span><span class="WHIT">
+<span class='line'>189</span> </span><span class="NAME">X.shaders.uniforms</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>190</span> </span><span class="WHIT">  </span><span class="NAME">VIEW</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'view'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>191</span> </span><span class="WHIT">  </span><span class="NAME">PERSPECTIVE</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'perspective'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>192</span> </span><span class="WHIT">  </span><span class="NAME">CENTER</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'center'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>193</span> </span><span class="WHIT">  </span><span class="NAME">OBJECTTRANSFORM</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'objectTransform'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>194</span> </span><span class="WHIT">  </span><span class="NAME">USEOBJECTCOLOR</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'useObjectColor'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>195</span> </span><span class="WHIT">  </span><span class="NAME">OBJECTCOLOR</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'objectColor'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>196</span> </span><span class="WHIT">  </span><span class="NAME">POINTSIZE</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'pointSize'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>197</span> </span><span class="WHIT">  </span><span class="NAME">OBJECTOPACITY</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'objectOpacity'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>198</span> </span><span class="WHIT">  </span><span class="NAME">NORMAL</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'normal'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>199</span> </span><span class="WHIT">  </span><span class="NAME">USEPICKING</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'usePicking'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>200</span> </span><span class="WHIT">  </span><span class="NAME">USETEXTURE</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'useTexture'</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>201</span> </span><span class="WHIT">  </span><span class="NAME">TEXTURESAMPLER</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'textureSampler'</span><span class="WHIT">
+<span class='line'>202</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>203</span> 
+<span class='line'>204</span> 
+<span class='line'>205</span> </span><span class="COMM">/**
+<span class='line'>206</span>  * Get the vertex shader source of this shader pair.
+<span class='line'>207</span>  * 
+<span class='line'>208</span>  * @return {!string} The vertex shader source.
+<span class='line'>209</span>  */</span><span class="WHIT">
+<span class='line'>210</span> </span><span class="NAME">X.shaders.prototype.vertex</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>211</span> 
+<span class='line'>212</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this._vertexshaderSource</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>213</span> </span><span class="WHIT">  
+<span class='line'>214</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>215</span> 
+<span class='line'>216</span> 
+<span class='line'>217</span> </span><span class="COMM">/**
+<span class='line'>218</span>  * Get the fragment shader source of this shader pair.
+<span class='line'>219</span>  * 
+<span class='line'>220</span>  * @return {!string} The fragment shader source.
+<span class='line'>221</span>  */</span><span class="WHIT">
+<span class='line'>222</span> </span><span class="NAME">X.shaders.prototype.fragment</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>223</span> 
+<span class='line'>224</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this._fragmentshaderSource</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>225</span> </span><span class="WHIT">  
+<span class='line'>226</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>227</span> 
+<span class='line'>228</span> 
+<span class='line'>229</span> </span><span class="COMM">/**
+<span class='line'>230</span>  * Checks if this configured shaders object is valid in terms of using the
+<span class='line'>231</span>  * defined attributes and uniforms.
+<span class='line'>232</span>  * 
+<span class='line'>233</span>  * @return {boolean} TRUE or FALSE depending on success.
+<span class='line'>234</span>  * @throws {Error} An exception if the shader is invalid.
+<span class='line'>235</span>  */</span><span class="WHIT">
+<span class='line'>236</span> </span><span class="NAME">X.shaders.prototype.validate</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>237</span> 
+<span class='line'>238</span> </span><span class="WHIT">  </span><span class="COMM">// check if the shader sources are compatible to the attributes and uniforms</span><span class="WHIT">
+<span class='line'>239</span> </span><span class="WHIT">  
+<span class='line'>240</span>   </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">attributes</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Object.keys</span><span class="PUNC">(</span><span class="NAME">X.shaders.attributes</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>241</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">uniforms</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">Object.keys</span><span class="PUNC">(</span><span class="NAME">X.shaders.uniforms</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>242</span> </span><span class="WHIT">  
+<span class='line'>243</span>   </span><span class="COMM">// check if all attributes are used either in the vertex or the fragment</span><span class="WHIT">
+<span class='line'>244</span> </span><span class="WHIT">  </span><span class="COMM">// shader</span><span class="WHIT">
+<span class='line'>245</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">attributesValid</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">attributes.every</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">a</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>246</span> 
+<span class='line'>247</span> </span><span class="WHIT">    </span><span class="NAME">a</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">eval</span><span class="PUNC">(</span><span class="STRN">"X.shaders.attributes."</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">a</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>248</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this._vertexshaderSource.search</span><span class="PUNC">(</span><span class="NAME">a</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT">
+<span class='line'>249</span> </span><span class="WHIT">        </span><span class="PUNC">(</span><span class="NAME">this._fragmentshaderSource.search</span><span class="PUNC">(</span><span class="NAME">a</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>250</span> </span><span class="WHIT">    
+<span class='line'>251</span>   </span><span class="PUNC">}</span><span class="PUNC">.</span><span class="NAME">bind</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>252</span> </span><span class="WHIT">  
+<span class='line'>253</span>   </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">attributesValid</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>254</span> </span><span class="WHIT">    
+<span class='line'>255</span>     </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Error</span><span class="PUNC">(</span><span class="STRN">'Could not find all attributes in the shader sources.'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>256</span> </span><span class="WHIT">    
+<span class='line'>257</span>   </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>258</span> </span><span class="WHIT">  
+<span class='line'>259</span>   </span><span class="COMM">// check if all attributes are used either in the vertex or the fragment</span><span class="WHIT">
+<span class='line'>260</span> </span><span class="WHIT">  </span><span class="COMM">// shader</span><span class="WHIT">
+<span class='line'>261</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">uniformsValid</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">uniforms.every</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">u</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>262</span> 
+<span class='line'>263</span> </span><span class="WHIT">    </span><span class="NAME">u</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">eval</span><span class="PUNC">(</span><span class="STRN">"X.shaders.uniforms."</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">u</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>264</span> </span><span class="WHIT">    </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this._vertexshaderSource.search</span><span class="PUNC">(</span><span class="NAME">u</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT">
+<span class='line'>265</span> </span><span class="WHIT">        </span><span class="PUNC">(</span><span class="NAME">this._fragmentshaderSource.search</span><span class="PUNC">(</span><span class="NAME">u</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>266</span> </span><span class="WHIT">    
+<span class='line'>267</span>   </span><span class="PUNC">}</span><span class="PUNC">.</span><span class="NAME">bind</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>268</span> </span><span class="WHIT">  
+<span class='line'>269</span>   </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">uniformsValid</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>270</span> </span><span class="WHIT">    
+<span class='line'>271</span>     </span><span class="KEYW">throw</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Error</span><span class="PUNC">(</span><span class="STRN">'Could not find all uniforms in the shader sources.'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>272</span> </span><span class="WHIT">    
+<span class='line'>273</span>   </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>274</span> </span><span class="WHIT">  
+<span class='line'>275</span>   </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>276</span> </span><span class="WHIT">  
+<span class='line'>277</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>278</span> 
+<span class='line'>279</span> </span><span class="COMM">// export symbols (required for advanced compilation)</span><span class="WHIT">
+<span class='line'>280</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.shaders'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.shaders</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>281</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.shaders.attributes'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.shaders.attributes</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>282</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.shaders.uniforms'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.shaders.uniforms</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>283</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.shaders.prototype.vertex'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.shaders.prototype.vertex</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>284</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.shaders.prototype.fragment'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.shaders.prototype.fragment</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>285</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.shaders.prototype.validate'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.shaders.prototype.validate</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>286</span> </span></pre></body></html>

@@ -39,73 +39,72 @@
 <span class='line'> 32</span> 
 <span class='line'> 33</span> </span><span class="COMM">// requires</span><span class="WHIT">
 <span class='line'> 34</span> </span><span class="NAME">goog.require</span><span class="PUNC">(</span><span class="STRN">'X.base'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 35</span> </span><span class="NAME">goog.require</span><span class="PUNC">(</span><span class="STRN">'X.exception'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 35</span> 
 <span class='line'> 36</span> 
 <span class='line'> 37</span> 
-<span class='line'> 38</span> 
-<span class='line'> 39</span> </span><span class="COMM">/**
-<span class='line'> 40</span>  * Create a container for the object &lt;-> file mapping.
-<span class='line'> 41</span>  * 
-<span class='line'> 42</span>  * @constructor
-<span class='line'> 43</span>  * @extends X.base
-<span class='line'> 44</span>  */</span><span class="WHIT">
-<span class='line'> 45</span> </span><span class="NAME">X.file</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 46</span> 
-<span class='line'> 47</span> </span><span class="WHIT">  </span><span class="COMM">//</span><span class="WHIT">
-<span class='line'> 48</span> </span><span class="WHIT">  </span><span class="COMM">// call the standard constructor of X.base</span><span class="WHIT">
-<span class='line'> 49</span> </span><span class="WHIT">  </span><span class="NAME">goog.base</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 50</span> </span><span class="WHIT">  
-<span class='line'> 51</span>   </span><span class="COMM">//</span><span class="WHIT">
-<span class='line'> 52</span> </span><span class="WHIT">  </span><span class="COMM">// class attributes</span><span class="WHIT">
-<span class='line'> 53</span> </span><span class="WHIT">  
-<span class='line'> 54</span>   </span><span class="COMM">/**
-<span class='line'> 55</span>    * @inheritDoc
-<span class='line'> 56</span>    * @const
-<span class='line'> 57</span>    */</span><span class="WHIT">
-<span class='line'> 58</span> </span><span class="WHIT">  </span><span class="NAME">this._className</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'file'</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 59</span> </span><span class="WHIT">  
-<span class='line'> 60</span>   </span><span class="COMM">/**
-<span class='line'> 61</span>    * The file path.
-<span class='line'> 62</span>    * 
-<span class='line'> 63</span>    * @type {?string}
-<span class='line'> 64</span>    * @protected
-<span class='line'> 65</span>    */</span><span class="WHIT">
-<span class='line'> 66</span> </span><span class="WHIT">  </span><span class="NAME">this._path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 67</span> </span><span class="WHIT">  
-<span class='line'> 68</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 69</span> </span><span class="COMM">// inherit from X.base</span><span class="WHIT">
-<span class='line'> 70</span> </span><span class="NAME">goog.inherits</span><span class="PUNC">(</span><span class="NAME">X.file</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.base</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 38</span> </span><span class="COMM">/**
+<span class='line'> 39</span>  * Create a container for the object &lt;-> file mapping.
+<span class='line'> 40</span>  * 
+<span class='line'> 41</span>  * @constructor
+<span class='line'> 42</span>  * @extends X.base
+<span class='line'> 43</span>  */</span><span class="WHIT">
+<span class='line'> 44</span> </span><span class="NAME">X.file</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 45</span> 
+<span class='line'> 46</span> </span><span class="WHIT">  </span><span class="COMM">//</span><span class="WHIT">
+<span class='line'> 47</span> </span><span class="WHIT">  </span><span class="COMM">// call the standard constructor of X.base</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="WHIT">  </span><span class="NAME">goog.base</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 49</span> </span><span class="WHIT">  
+<span class='line'> 50</span>   </span><span class="COMM">//</span><span class="WHIT">
+<span class='line'> 51</span> </span><span class="WHIT">  </span><span class="COMM">// class attributes</span><span class="WHIT">
+<span class='line'> 52</span> </span><span class="WHIT">  
+<span class='line'> 53</span>   </span><span class="COMM">/**
+<span class='line'> 54</span>    * @inheritDoc
+<span class='line'> 55</span>    * @const
+<span class='line'> 56</span>    */</span><span class="WHIT">
+<span class='line'> 57</span> </span><span class="WHIT">  </span><span class="KEYW">this</span><span class="PUNC">[</span><span class="STRN">'_className'</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'file'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">  
+<span class='line'> 59</span>   </span><span class="COMM">/**
+<span class='line'> 60</span>    * The file path.
+<span class='line'> 61</span>    * 
+<span class='line'> 62</span>    * @type {?string}
+<span class='line'> 63</span>    * @protected
+<span class='line'> 64</span>    */</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="WHIT">  </span><span class="NAME">this._path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 66</span> </span><span class="WHIT">  
+<span class='line'> 67</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="COMM">// inherit from X.base</span><span class="WHIT">
+<span class='line'> 69</span> </span><span class="NAME">goog.inherits</span><span class="PUNC">(</span><span class="NAME">X.file</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.base</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 70</span> 
 <span class='line'> 71</span> 
-<span class='line'> 72</span> 
-<span class='line'> 73</span> </span><span class="COMM">/**
-<span class='line'> 74</span>  * Get the file path.
-<span class='line'> 75</span>  * 
-<span class='line'> 76</span>  * @return {?string} The file path.
-<span class='line'> 77</span>  */</span><span class="WHIT">
-<span class='line'> 78</span> </span><span class="NAME">X.file.prototype.path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 79</span> 
-<span class='line'> 80</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this._path</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 81</span> </span><span class="WHIT">  
-<span class='line'> 82</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 72</span> </span><span class="COMM">/**
+<span class='line'> 73</span>  * Get the file path.
+<span class='line'> 74</span>  * 
+<span class='line'> 75</span>  * @return {?string} The file path.
+<span class='line'> 76</span>  */</span><span class="WHIT">
+<span class='line'> 77</span> </span><span class="NAME">X.file.prototype.path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 78</span> 
+<span class='line'> 79</span> </span><span class="WHIT">  </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this._path</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 80</span> </span><span class="WHIT">  
+<span class='line'> 81</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 82</span> 
 <span class='line'> 83</span> 
-<span class='line'> 84</span> 
-<span class='line'> 85</span> </span><span class="COMM">/**
-<span class='line'> 86</span>  * Set the file path.
-<span class='line'> 87</span>  * 
-<span class='line'> 88</span>  * @param {?string} path The file path.
-<span class='line'> 89</span>  */</span><span class="WHIT">
-<span class='line'> 90</span> </span><span class="NAME">X.file.prototype.setPath</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">path</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 91</span> 
-<span class='line'> 92</span> </span><span class="WHIT">  </span><span class="NAME">this._path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 93</span> </span><span class="WHIT">  
-<span class='line'> 94</span>   </span><span class="COMM">// mark as dirty</span><span class="WHIT">
-<span class='line'> 95</span> </span><span class="WHIT">  </span><span class="NAME">this._dirty</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'> 96</span> </span><span class="WHIT">  
-<span class='line'> 97</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 84</span> </span><span class="COMM">/**
+<span class='line'> 85</span>  * Set the file path.
+<span class='line'> 86</span>  * 
+<span class='line'> 87</span>  * @param {?string} path The file path.
+<span class='line'> 88</span>  */</span><span class="WHIT">
+<span class='line'> 89</span> </span><span class="NAME">X.file.prototype.setPath</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">path</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 90</span> 
+<span class='line'> 91</span> </span><span class="WHIT">  </span><span class="NAME">this._path</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">path</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 92</span> </span><span class="WHIT">  
+<span class='line'> 93</span>   </span><span class="COMM">// mark as dirty</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="WHIT">  </span><span class="NAME">this._dirty</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 95</span> </span><span class="WHIT">  
+<span class='line'> 96</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 97</span> 
 <span class='line'> 98</span> 
-<span class='line'> 99</span> 
-<span class='line'>100</span> </span><span class="COMM">// export symbols (required for advanced compilation)</span><span class="WHIT">
-<span class='line'>101</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.file'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.file</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>102</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.file.prototype.path'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.file.prototype.path</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>103</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.file.prototype.setPath'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.file.prototype.setPath</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>104</span> </span></pre></body></html>
+<span class='line'> 99</span> </span><span class="COMM">// export symbols (required for advanced compilation)</span><span class="WHIT">
+<span class='line'>100</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.file'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.file</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>101</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.file.prototype.path'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.file.prototype.path</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>102</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.file.prototype.setPath'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.file.prototype.setPath</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>103</span> </span></pre></body></html>
