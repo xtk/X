@@ -67,7 +67,7 @@ X.slice = function(center, front, up, size) {
   
   if (!goog.isDefAndNotNull(up) || !(up instanceof Array) || (up.length != 3)) {
     
-    throw new Error('Invalid front direction.');
+    throw new Error('Invalid up direction.');
     
   }
   
@@ -116,7 +116,7 @@ goog.inherits(X.slice, X.object);
 
 
 /**
- * Create the sphere.
+ * Create the slice.
  * 
  * @private
  */
@@ -131,10 +131,12 @@ X.slice.prototype.create_ = function() {
   var rightVector = goog.math.Vec3.cross(upVector, frontVector);
   var centerVector = new goog.math.Vec3(this._center[0], this._center[1],
       this._center[2]);
-  var sizeVector = new goog.math.Vec3(1, 1, 1).subtract(frontVector).scale(
-      this._size);
-  sizeVector.add(centerVector);
+  // var sizeVector = new goog.math.Vec3(1, 1, 1).subtract(frontVector).scale(
+  // this._size);
+  var sizeVector = new goog.math.Vec3(1, 1, 1).scale(this._size);
+  // sizeVector.add(centerVector);
   
+
   //
   // create the points like this:
   //
@@ -145,22 +147,27 @@ X.slice.prototype.create_ = function() {
   // 0---2,3
   var point0 = goog.math.Vec3.sum(rightVector.clone().invert(), upVector
       .clone().invert());
+  console.log(point0);
   point0 = new goog.math.Vec3(point0.x * sizeVector.x, point0.y * sizeVector.y,
       point0.z * sizeVector.z);
+  point0.add(centerVector);
   
   var point1 = goog.math.Vec3.sum(rightVector.clone().invert(), upVector);
   point1 = new goog.math.Vec3(point1.x * sizeVector.x, point1.y * sizeVector.y,
       point1.z * sizeVector.z);
+  point1.add(centerVector);
   
   var point2 = goog.math.Vec3.sum(rightVector, upVector.clone().invert());
   point2 = new goog.math.Vec3(point2.x * sizeVector.x, point2.y * sizeVector.y,
       point2.z * sizeVector.z);
+  point2.add(centerVector);
   
   var point3 = point2;
   
   var point4 = goog.math.Vec3.sum(rightVector, upVector);
   point4 = new goog.math.Vec3(point4.x * sizeVector.x, point4.y * sizeVector.y,
       point4.z * sizeVector.z);
+  point4.add(centerVector);
   
   var point5 = point1;
   
