@@ -147,7 +147,6 @@ X.slice.prototype.create_ = function() {
   // 0---2,3
   var point0 = goog.math.Vec3.sum(rightVector.clone().invert(), upVector
       .clone().invert());
-  console.log(point0);
   point0 = new goog.math.Vec3(point0.x * sizeVector.x, point0.y * sizeVector.y,
       point0.z * sizeVector.z);
   point0.add(centerVector);
