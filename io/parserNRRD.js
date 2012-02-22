@@ -39,7 +39,7 @@ goog.require('X.object');
 goog.require('X.parser');
 goog.require('X.triplets');
 goog.require('goog.math.Vec3');
-
+goog.require('JXG');
 
 
 /**
@@ -73,16 +73,19 @@ goog.inherits(X.parserNRRD, X.parser);
  */
 X.parserNRRD.prototype.parse = function(object, data) {
 
+  
   // the position in the file
   var position = 0;
   
   // grab the header
   var headerRegexMatch = data.match(/^([\s\S]*?)\r?\n\r?\n/);
-  position = headerRegexMatch[0]; // the one _with_ the blank line
+  position = headerRegexMatch[0].length; // the one _with_ the blank line
   var header = headerRegexMatch[1]; // the one without the blank line
   
   // parse the header
   this.parseHeader(header);
+  
+  console.log(new JXG.Util.Unzip(data.substr(position)));
   
   // now we have all kinds of things attached to this reader..
   // this was done by M. Lauer
