@@ -40,7 +40,7 @@ goog.require('X.object');
 goog.require('X.parser');
 goog.require('X.triplets');
 goog.require('goog.math.Vec3');
-goog.require('JXG');
+goog.require('JXG.Util.Unzip');
 
 
 /**
@@ -103,9 +103,9 @@ X.parserNRRD.prototype.parse = function(object, data) {
 
   var numberOfPixels = this.sizes[0] * this.sizes[1] * this.sizes[2];
   
-  a = this.parseFloat32Array(_data, 0, numberOfPixels);
+  var a = this.parseFloat32Array(_data, 0, numberOfPixels);
   
-  console.log('done', a[a.length - 2]);
+  window.console.log('done', a[a.length - 2]);
   
 
 
@@ -139,12 +139,13 @@ X.parserNRRD.prototype.parseHeader = function(header) {
     throw new Error('Only raw or gz/gzip encoding is allowed');
   }
   if (!(this.vectors != null)) {
-    this.vectors = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+    this.vectors = [new goog.math.Vec3(1, 0, 0), new goog.math.Vec3(0, 1, 0),
+                    new goog.math.Vec3(0, 0, 1)];
     if (this.spacings) {
       _results = [];
       for (i = 0; i <= 2; i++) {
-        _results.push(!isNaN(this.spacings[i]) ? vec3.scale(this.vectors[i],
-            this.spacings[i]) : void 0);
+        _results.push(!isNaN(this.spacings[i]) ? this.vectors[i]
+            .scale(this.spacings[i]) : void 0);
       }
       return _results;
     }
@@ -186,7 +187,7 @@ X.parserNRRD.prototype.fieldFunctions = {
   },
   'dimension': function(data) {
 
-    return this.dim = parseInt(data);
+    return this.dim = parseInt(data, 10);
   },
   'sizes': function(data) {
 
@@ -198,7 +199,7 @@ X.parserNRRD.prototype.fieldFunctions = {
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         i = _ref[_i];
-        _results.push(parseInt(i));
+        _results.push(parseInt(i, 10));
       }
       return _results;
     })();

@@ -104,7 +104,7 @@ X.texture.filters = {
 
 X.texture.prototype.id = function() {
 
-  return this._id;
+  return this['_id'];
   
 };
 
@@ -193,7 +193,6 @@ X.texture.prototype.setRawDataHeight = function(rawDataHeight) {
 X.texture.prototype.rawDataWidth = function() {
 
   return this._rawDataWidth;
-  this._dirty = true;
   
 };
 
@@ -201,6 +200,7 @@ X.texture.prototype.rawDataWidth = function() {
 X.texture.prototype.setRawDataWidth = function(rawDataWidth) {
 
   this._rawDataWidth = rawDataWidth;
+  this._dirty = true;
   
 };
 

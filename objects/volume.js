@@ -189,9 +189,10 @@ X.volume.prototype.modified = function() {
     }
     
     // hide the old slice
-    this.children()[xyz].children()[parseInt(oldIndex)].setVisible(false);
+    this.children()[xyz].children()[parseInt(oldIndex, 10)].setVisible(false);
     // show the current slice
-    this.children()[xyz].children()[parseInt(currentIndex)].setVisible(true);
+    this.children()[xyz].children()[parseInt(currentIndex, 10)]
+        .setVisible(true);
     
   }
   
