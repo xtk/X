@@ -108,10 +108,9 @@ X.loader.prototype.loadTexture = function(object) {
     throw new Error('Internal error during texture loading.');
     
   }
-  
   // setup the image object
   var image = new Image();
-  var currentTextureFilename = object.texture().file();
+  var currentTextureFilename = object.texture().file().path();
   image.src = currentTextureFilename;
   
   // we let the object point to this image
@@ -138,7 +137,7 @@ X.loader.prototype.loadTextureCompleted = function(object) {
   setTimeout(function() {
 
     // at this point the image for the texture was loaded properly
-    object.texture().setClean();
+    object.texture().file().setClean();
     
     // fire the modified event
     object.modified();

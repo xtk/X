@@ -1020,8 +1020,9 @@ X.renderer.prototype.update_ = function(object) {
   // b) the object is based on an external file (vtk, stl...)
   // in these cases, we do not directly update the object but activate the
   // X.loader to get the externals and then let it call the update method
-  if (goog.isDefAndNotNull(texture) && texture.dirty()) {
-    // texture associated to this object and it is dirty..
+  if (goog.isDefAndNotNull(texture) && goog.isDefAndNotNull(texture.file()) &&
+      texture.file().dirty()) {
+    // a texture file is associated to this object and it is dirty..
     
     // start loading..
     this.loader().loadTexture(object);
@@ -1333,13 +1334,25 @@ X.renderer.prototype.update_ = function(object) {
       
       //
       // activate the texture on the WebGL side
-      this._textures.set(texture.file(), glTexture);
+      this._textures.set(texture.id(), glTexture);
       
       this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
       
       this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
-      this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, this._gl.RGBA,
-          this._gl.UNSIGNED_BYTE, glTexture.image);
+      if (texture.rawData()) {
+        
+        // use rawData rather than loading an imagefile
+        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, texture
+            .rawDataWidth(), texture.rawDataHeight(), 0, this._gl.RGBA,
+            this._gl.UNSIGNED_BYTE, texture.rawData());
+        
+      } else {
+        
+        // use an imageFile for the texture
+        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA,
+            this._gl.RGBA, this._gl.UNSIGNED_BYTE, glTexture.image);
+        
+      }
       
       // TODO different filters?
       this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER,
@@ -1903,7 +1916,7 @@ X.renderer.prototype.render_ = function(picking) {
         // grab the texture from the internal hash map using the filename as the
         // key
         this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures.get(object
-            .texture().file()));
+            .texture().id()));
         this._gl.uniform1i(this._uniformLocations
             .get(X.shaders.uniforms.TEXTURESAMPLER), 0);
         

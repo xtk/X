@@ -36,12 +36,13 @@ goog.require('X.base');
 
 
 /**
- * Create a container for the object <-> file mapping.
+ * Create a container for a files path mapping.
  * 
+ * @param {?string} path The file path for the file.
  * @constructor
  * @extends X.base
  */
-X.file = function() {
+X.file = function(path) {
 
   //
   // call the standard constructor of X.base
@@ -62,8 +63,10 @@ X.file = function() {
    * @type {?string}
    * @protected
    */
-  this._path = null;
+  this._path = path;
   
+  // mark as dirty since we configure a path here
+  this._dirty = true;
 };
 // inherit from X.base
 goog.inherits(X.file, X.base);

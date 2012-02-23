@@ -550,7 +550,7 @@ X.object.prototype.texture = function() {
 /**
  * Set the object texture. If null is passed, the object will have no texture.
  * 
- * @param {?X.texture|string} texture The new texture.
+ * @param {?X.texture|string} texture The new texture or an image file path.
  * @throws {Error} An exception if the given texture is invalid.
  */
 X.object.prototype.setTexture = function(texture) {
@@ -566,7 +566,9 @@ X.object.prototype.setTexture = function(texture) {
   if (goog.isString(texture)) {
     
     // a string has to be converted to a new X.texture
-    texture = new X.texture(texture);
+    var textureFile = texture;
+    texture = new X.texture();
+    texture.setFile(textureFile);
     
   }
   
@@ -873,14 +875,9 @@ X.object.prototype.load = function(filepath) {
     
   }
   
-  if (!this._file) {
-    
-    this._file = new X.file();
-    
-  }
+  this._file = new X.file(filepath);
   
-  this._file.setPath(filepath);
-  
+
 };
 
 
