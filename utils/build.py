@@ -233,7 +233,7 @@ if( options.jsdoc or options.jsdoc_only ):
 if( options.test_only ):
     print '*-----------------------*'
     print 'Testing WITHOUT compilation...'
-    scripts.test.calculate( paths.xtkDir, paths.xtkLibDir )
+    scripts.test.calculate( paths.xtkDir, paths.xtkLibDir)
     print 'Testing done.'
     print '*-----------------------*'
     print 'Enjoy XTK'
@@ -252,7 +252,7 @@ if( options.test ):
     print '*-----------------------*'
     print 'Testing WITH compilation...'
     print 'Should give path to xtb-build and update log file'
-    scripts.test.calculate( paths.xtkDir, paths.xtkLibDir )
+    scripts.test.calculate( paths.xtkDir, paths.xtkLibDir)
     print 'Testing done.'
     print '*-----------------------*'
     print 'Enjoy XTK'
