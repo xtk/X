@@ -27,6 +27,7 @@
  * CREDITS
  * 
  *   - the .NRRD Fileparser is based on a version of Michael Lauer (https://github.com/mrlauer/webgl-sandbox)
+ *     which did not support gzip/gz encoding or other types than int/short, so we added that :)
  *   
  */
 
@@ -85,11 +86,26 @@ X.parserNRRD.prototype.parse = function(object, data) {
   // parse the header
   this.parseHeader(header);
   
-  console.log(new JXG.Util.Unzip(data.substr(position)));
-  
   // now we have all kinds of things attached to this reader..
   // this was done by M. Lauer
   // I don't really like it but it works..
+  
+  var _data = 0; // the data without header
+  
+  if (this.encoding == 'gzip' || this.encoding == 'gz') {
+    // we need to decompress the datastream
+    _data = new JXG.Util.Unzip(data.substr(position)).unzip()[0][0];
+  } else {
+    // we can use the data directly
+    _data = data.substr(position);
+  }
+  
+
+  var numberOfPixels = this.sizes[0] * this.sizes[1] * this.sizes[2];
+  
+  a = this.parseFloat32Array(_data, 0, numberOfPixels);
+  
+  console.log('done', a[a.length - 2]);
   
 
 
