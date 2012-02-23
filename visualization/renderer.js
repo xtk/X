@@ -1346,6 +1346,11 @@ X.renderer.prototype.update_ = function(object) {
             .rawDataWidth(), texture.rawDataHeight(), 0, this._gl.RGBA,
             this._gl.UNSIGNED_BYTE, texture.rawData());
         
+        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S,
+            this._gl.CLAMP_TO_EDGE);
+        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T,
+            this._gl.CLAMP_TO_EDGE);
+        
       } else {
         
         // use an imageFile for the texture

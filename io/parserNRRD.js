@@ -100,15 +100,50 @@ X.parserNRRD.prototype.parse = function(object, data) {
     _data = data.substr(position);
   }
   
-
+  console.log(this.sizes);
+  
   var numberOfPixels = this.sizes[0] * this.sizes[1] * this.sizes[2];
   
-  var a = this.parseFloat32Array(_data, 0, numberOfPixels);
+  var a = this.parseUInt16Array(_data, 0, numberOfPixels);
+  max = a[1];
+  min = a[2];
+  a = a[0];
   
   window.console.log('done', a[a.length - 2]);
   
+  for (j = 0; j < this.sizes[2]; j++) {
+    
+    var xymul = this.sizes[0] * this.sizes[1];
+    currentSlice = a.slice(j * (xymul), (j + 1) * xymul);
+    copyCurrentSlice = [];
+    
+    for (c in currentSlice) {
+      
+      c_val = currentSlice[c];
+      c_val = c_val / max;
+      c_val = c_val * 255;
+      copyCurrentSlice.push(c_val);
+      copyCurrentSlice.push(c_val);
+      copyCurrentSlice.push(c_val);
+      copyCurrentSlice.push(255);
+      
+    }
+    
 
+    var currentSlicePixels = new X.texture();
+    currentSlicePixels.setRawData(new Uint8Array(copyCurrentSlice));
+    currentSlicePixels.setRawDataWidth(this.sizes[0]);
+    currentSlicePixels.setRawDataHeight(this.sizes[1]);
+    object._slicesX.children()[j].setTexture(currentSlicePixels);
+    object._slicesX.children()[j].modified();
+    
+  }
+  
 
+  var modifiedEvent = new X.event.ModifiedEvent();
+  modifiedEvent._object = object;
+  this.dispatchEvent(modifiedEvent);
+  
 };
 
 X.parserNRRD.prototype.parseHeader = function(header) {
@@ -164,6 +199,7 @@ X.parserNRRD.prototype.fieldFunctions = {
       break;
     case 'short':
     case 'signed short':
+    case 'unsigned short':
     case 'short int':
     case 'int16':
       break;
@@ -173,7 +209,7 @@ X.parserNRRD.prototype.fieldFunctions = {
     case 'float':
       break;
     default:
-      throw new Error('Only short/int/int8 data is allowed');
+      throw new Error('Only short/int/int8 data is allowed and not: ' + data);
     }
     return this.type = data;
   },
