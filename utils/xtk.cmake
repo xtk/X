@@ -11,3 +11,4 @@ set(CTEST_BINARY_DIRECTORY ".")
 set(CTEST_COMMAND "command")
 
 ctest_submit(FILES XTKBuild.xml)
+ctest_submit(FILES XTKTest.xml)

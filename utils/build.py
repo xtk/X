@@ -10,6 +10,7 @@ import os, sys, argparse
 # to be renamed...?
 import paths
 import xbuild_parser
+import xtest_parser
 
 import scripts.deps
 import scripts.style
@@ -261,16 +262,19 @@ if( options.test ):
 # need timing info
 if( options.experimental):
     xbuild_parser.calculate('Experimental', 'xtk_build.log')
+    xtest_parser.calculate('Experimental', 'xtk_build.log')
     command = "ctest -S xtk.cmake -V"
     os.system(command)
 
 if(options.nightly):
     xbuild_parser.calculate('Nightly', 'xtk_build.log')
+    xtest_parser.calculate('Nightly', 'xtk_build.log')
     command = "ctest -S xtk.cmake -V"
     os.system(command)
 
 if(options.continuous):
     xbuild_parser.calculate('Continuous', 'xtk_build.log')
+    xtest_parser.calculate('Continuous', 'xtk_build.log')
     command = "ctest -S xtk.cmake -V"
     os.system(command)
 

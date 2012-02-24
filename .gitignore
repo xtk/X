@@ -29,4 +29,4 @@ xtk.js
 
 # the build system CDash XML file
 XTKBuild.xml
-
+XTKTest.xml
