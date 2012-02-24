@@ -285,42 +285,47 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
   }
   
 
-
-  //  
-  //  
-  // for (z = 0; z < size0; z++) {
-  //    
-  // var textureForCurrentSlice = new Uint8Array(4 * sliceDimensions);
-  //    
-  // for (r = 0; r < slices; r++) {
-  //      
-  // for (c = 0; c < size1; c++) {
-  //        
-  // p = c + r * slices;
-  //        
-  // pixelValue = image[z][c][r];
-  //        
-  // var textureStartIndex = p * 4;
-  // textureForCurrentSlice[textureStartIndex] = pixelValue;
-  // textureForCurrentSlice[++textureStartIndex] = pixelValue;
-  // textureForCurrentSlice[++textureStartIndex] = pixelValue;
-  // textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
-  //        
-  // }
-  //      
-  //
-  //
-  // }
-  //    
-  // // create the texture
-  // var pixelTexture = new X.texture();
-  // pixelTexture.setRawData(textureForCurrentSlice);
-  // pixelTexture.setRawDataWidth(size0);
-  // pixelTexture.setRawDataHeight(size1);
-  // object._slicesY.children()[r].setTexture(pixelTexture);
+  // for Y
+  // all slices are along the rows of the image
+  // all rows are along the slices of the image
+  // all cols are along the cols of the image
   
 
-  // }
+  for (z = 0; z < size0; z++) {
+    
+    var textureForCurrentSlice = new Uint8Array(4 * sliceDimensions);
+    
+    for (r = 0; r < slices; r++) {
+      
+      for (c = 0; c < size1; c++) {
+        
+        p = c + r * slices;
+        
+        pixelValue = image[r][z][c];
+        
+        // console.log(pixelValue);
+        
+        var textureStartIndex = p * 4;
+        textureForCurrentSlice[textureStartIndex] = pixelValue;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue;
+        textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
+        
+      }
+      
+
+
+    }
+    
+    // create the texture
+    var pixelTexture = new X.texture();
+    pixelTexture.setRawData(textureForCurrentSlice);
+    pixelTexture.setRawDataWidth(size0);
+    pixelTexture.setRawDataHeight(size1);
+    object._slicesY.children()[r].setTexture(pixelTexture);
+    
+
+  }
   
 
 
