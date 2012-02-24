@@ -944,8 +944,6 @@ X.renderer.prototype.update_ = function(object) {
     
   }
   
-  console.log('update...');
-  
   // check if object already existed..
   var existed = false;
   
@@ -1002,13 +1000,7 @@ X.renderer.prototype.update_ = function(object) {
   // so on
   //
   // check if this object has children
-  console.log(object.id() + ':update');
-  console.log(object.id() + ':dirty' + object.dirty());
-  console.log(object.id() + ':children' + object.children());
   if (object.dirty() && object.hasChildren()) {
-    
-    console.log(object.id() + ':has childs');
-    console.log(object);
     
     // loop through the children and recursively setup the object
     var children = object.children();
@@ -1021,7 +1013,6 @@ X.renderer.prototype.update_ = function(object) {
       
     }
     
-    console.log(object.id() + ':setClean');
     object.setClean();
     
   }

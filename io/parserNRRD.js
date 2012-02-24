@@ -108,57 +108,241 @@ X.parserNRRD.prototype.parse = function(object, data) {
   console.log("after gzip: " + new Date());
   
 
-
+  // we know enough to create the object
   object._dimensions = [this.sizes[2], this.sizes[1], this.sizes[0]];
   object.create_();
   
   var numberOfPixels = this.sizes[0] * this.sizes[1] * this.sizes[2];
   
-  var a = this.parseUInt16Array(_data, 0, numberOfPixels);
-  max = a[1];
-  min = a[2];
-  a = a[0];
+  // var a = this.parseUInt16Array(_data, 0, numberOfPixels);
+  // max = a[1];
+  // min = a[2];
+  // a = a[0];
   
-  window.console.log('done parsing.. ', new Date());
-  
-  var xymul = this.sizes[0] * this.sizes[1];
-  var xzmul = this.sizes[0] * this.sizes[2];
-  
-  var j;
-  for (j = 0; j < this.sizes[2]; j++) {
-    
-    currentSlice = a.slice(j * (xymul), (j + 1) * xymul);
-    copyCurrentSlice = [];
-    
-    for (c in currentSlice) {
-      
-      c_val = currentSlice[c];
-      c_val = c_val / max;
-      c_val = c_val * 255;
-      copyCurrentSlice.push(c_val);
-      copyCurrentSlice.push(c_val);
-      copyCurrentSlice.push(c_val);
-      copyCurrentSlice.push(255);
-      
-    }
-    
 
-    var currentSlicePixels = new X.texture();
-    currentSlicePixels.setRawData(new Uint8Array(copyCurrentSlice));
-    currentSlicePixels.setRawDataWidth(this.sizes[0]);
-    currentSlicePixels.setRawDataHeight(this.sizes[1]);
-    object._slicesX.children()[j].setTexture(currentSlicePixels);
-    // object._slicesX.children()[j].modified();
-    
+
+  //
+  //
+  //
+  var datastream = new Array(numberOfPixels);
+  
+  var max = -Infinity;
+  var min = Infinity;
+  
+  var i;
+  for (i = 0; i < numberOfPixels; i++) {
+    var pixelValue = this.parseFunc(_data, 0 + (i * this.parseBytes));
+    datastream[i] = pixelValue;
+    max = Math.max(max, pixelValue);
+    min = Math.min(min, pixelValue);
   }
   
 
+  window.console.log('done parsing.. ', new Date());
+  
+  this.reslice(object, datastream, this.sizes, min, max);
+  
   window.console.log('create slices done.. ', new Date());
   
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
   this.dispatchEvent(modifiedEvent);
   
+};
+
+X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
+
+  // number of slices in scan direction
+  var slices = sizes[2];
+  var size0 = sizes[0];
+  var size1 = sizes[1];
+  
+  // slice dimensions in scan direction
+  var sliceDimensions = size0 * size1;
+  // var tmp = new Array(size0 * slices);
+  // var tmp2 = [];
+  
+  // allocate 3d image array
+  var image = new Array(slices);
+  for ( var iS = 0; iS < slices; iS++) {
+    image[iS] = new Array(size0);
+    for ( var iR = 0; iR < size0; iR++) {
+      image[iS][iR] = new Uint8Array(size1);
+    }
+  }
+  
+  console.log(image);
+  console.log(image.length * image[0].length * image[0][0].length);
+  console.log(slices * size0 * size1);
+  console.log(slices, size0, size1);
+  
+  // loop through all slices in scan direction
+  var z = 0;
+  for (z = 0; z < slices; z++) {
+    
+    // grab the pixels for the current slice z
+    var currentSlice = datastream.slice(z * (sliceDimensions), (z + 1) *
+        sliceDimensions);
+    // the texture has 3 times the pixel value + 1 opacity value for all pixels
+    var textureForCurrentSlice = new Uint8Array(4 * sliceDimensions);
+    
+    // loop through all pixels of the current slice
+    var row = 0;
+    var col = 0;
+    // var i = 1;
+    // var j = 1;
+    var p = 0;
+    
+    for (r = 0; r < size0; r++) {
+      
+      for (c = 0; c < size1; c++) {
+        
+        p = c + r * size1;
+        
+        var pixelValue = currentSlice[p];
+        pixelValue = 255 * (pixelValue / max);
+        var textureStartIndex = p * 4;
+        textureForCurrentSlice[textureStartIndex] = pixelValue;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue;
+        textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
+        
+        image[z][r][c] = pixelValue;
+        
+      }
+      
+    }
+    
+    // for (p = 0; p < sliceDimensions; p++) {
+    
+    // var pixelValue = currentSlice[p];
+    // pixelValue = 255 * (pixelValue / max);
+    // var textureStartIndex = p * 4;
+    // textureForCurrentSlice[textureStartIndex] = pixelValue;
+    // textureForCurrentSlice[++textureStartIndex] = pixelValue;
+    // textureForCurrentSlice[++textureStartIndex] = pixelValue;
+    // textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
+    // //
+    // if (col >= size0) {
+    // // one row completed
+    // row++;
+    // col = 0;
+    // } else {
+    // col++;
+    // }
+    
+    // console.log('setting ', z, row, col);
+    // console.log(p);
+    // image[z][row][col] = pixelValue;
+    
+
+
+    // if (row == 5) {
+    //        
+    // tmp.push(pixelValue);
+    // tmp.push(pixelValue);
+    // tmp.push(pixelValue);
+    // tmp.push(255);
+    //        
+    // }
+    //      
+    // if (col == 5) {
+    // console.log('55:' + pixelValue);
+    // tmp2.push(pixelValue);
+    // tmp2.push(pixelValue);
+    // tmp2.push(pixelValue);
+    // tmp2.push(255);
+    //        
+    // }
+    //      
+    //
+    // if ((p >= size0 * 81) && (p <= size0 * 82)) {
+    // tmp.push(pixelValue);
+    // tmp.push(pixelValue);
+    // tmp.push(pixelValue);
+    // tmp.push(255);
+    // }
+    //      
+    // if (p % 144) {
+    // tmp2.push(pixelValue);
+    // tmp2.push(pixelValue);
+    // tmp2.push(pixelValue);
+    // tmp2.push(255);
+    //        
+    // }
+    
+    // }
+    
+    // console.log('slice: ' + z + ' row: ' + row + ' col: ' + col);
+    
+    // create the texture
+    var pixelTexture = new X.texture();
+    pixelTexture.setRawData(textureForCurrentSlice);
+    pixelTexture.setRawDataWidth(size0);
+    pixelTexture.setRawDataHeight(size1);
+    object._slicesX.children()[z].setTexture(pixelTexture);
+    
+  }
+  
+
+
+  //  
+  //  
+  // for (z = 0; z < size0; z++) {
+  //    
+  // var textureForCurrentSlice = new Uint8Array(4 * sliceDimensions);
+  //    
+  // for (r = 0; r < slices; r++) {
+  //      
+  // for (c = 0; c < size1; c++) {
+  //        
+  // p = c + r * slices;
+  //        
+  // pixelValue = image[z][c][r];
+  //        
+  // var textureStartIndex = p * 4;
+  // textureForCurrentSlice[textureStartIndex] = pixelValue;
+  // textureForCurrentSlice[++textureStartIndex] = pixelValue;
+  // textureForCurrentSlice[++textureStartIndex] = pixelValue;
+  // textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
+  //        
+  // }
+  //      
+  //
+  //
+  // }
+  //    
+  // // create the texture
+  // var pixelTexture = new X.texture();
+  // pixelTexture.setRawData(textureForCurrentSlice);
+  // pixelTexture.setRawDataWidth(size0);
+  // pixelTexture.setRawDataHeight(size1);
+  // object._slicesY.children()[r].setTexture(pixelTexture);
+  
+
+  // }
+  
+
+
+  // //
+  // console.log(tmp.length);
+  // console.log(tmp2.length);
+  // //
+  // // create the texture
+  // var pixelTexture2 = new X.texture();
+  // pixelTexture2.setRawData(new Uint8Array(tmp));
+  // pixelTexture2.setRawDataWidth(size0);
+  // pixelTexture2.setRawDataHeight(slices);
+  // object._slicesZ.children()[5].setTexture(pixelTexture2);
+  //  
+  // // create the texture
+  // var pixelTexture3 = new X.texture();
+  // pixelTexture3.setRawData(new Uint8Array(tmp2));
+  // pixelTexture3.setRawDataWidth(size0);
+  // pixelTexture3.setRawDataHeight(slices);
+  // object._slicesY.children()[5].setTexture(pixelTexture3);
+  
+
 };
 
 X.parserNRRD.prototype.parseHeader = function(header) {
@@ -208,20 +392,28 @@ X.parserNRRD.prototype.fieldFunctions = {
     switch (data) {
     case 'unsigned char':
     case 'uint8':
+      this.parseFunc = this.parseUChar8;
+      this.parseBytes = 1;
       break;
     case 'signed char':
     case 'int8':
+      this.parseFunc = this.parseSChar8;
+      this.parseBytes = 1;
       break;
     case 'short':
     case 'signed short':
     case 'unsigned short':
     case 'short int':
     case 'int16':
+      this.parseFunc = this.parseUInt16;
+      this.parseBytes = 2;
       break;
     case 'int':
     case 'int32':
       break;
     case 'float':
+      this.parseFunc = this.parseFloat32;
+      this.parseBytes = 4;
       break;
     default:
       throw new Error('Only short/int/int8 data is allowed and not: ' + data);
