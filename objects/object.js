@@ -218,6 +218,8 @@ X.object = function(object) {
     
   }
   
+  this._dirty = true;
+  
 };
 // inherit from X.base
 goog.inherits(X.object, X.base);
@@ -285,6 +287,8 @@ X.object.prototype.copy_ = function(object) {
   }
   
   this['_magicMode'] = object.magicMode();
+  
+  this._dirty = true;
   
 };
 

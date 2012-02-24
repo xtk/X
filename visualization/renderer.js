@@ -914,59 +914,6 @@ X.renderer.prototype.add = function(object) {
   // top-level objects, meaning that they do not have a parent
   this._topLevelObjects.push(object);
   
-  this.add_(object);
-  
-};
-
-
-/**
- * Add a new displayable object to this renderer. The renderer has to be
- * initialized before doing so. A X.renderer.render() call has to be initiated
- * to display added objects.
- * 
- * @param {!X.object} object The displayable object to add to this renderer.
- * @throws {Error} An exception if something goes wrong.
- */
-X.renderer.prototype.add_ = function(object) {
-
-  if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
-      !goog.isDefAndNotNull(this._camera)) {
-    
-    throw new Error('Renderer was not initialized properly.');
-    
-  }
-  
-  if (!goog.isDefAndNotNull(object) || !(object instanceof X.object)) {
-    
-    throw new Error('Illegal object.');
-    
-  }
-  
-  // MULTI OBJECTS
-  //
-  // objects can have N child objects which again can have M child objects and
-  // so on
-  //
-  // check if this object has children
-  if (object.hasChildren()) {
-    
-    // loop through the children and recursively setup the object
-    var children = object.children();
-    var numberOfChildren = children.length;
-    var c = 0;
-    
-    for (c = 0; c < numberOfChildren; c++) {
-      
-      this.add(children[c]);
-      
-    }
-    
-  }
-  
-  // listen to modified events of this object
-  goog.events.listen(object, X.event.events.MODIFIED, this.onModified
-      .bind(this));
-  
   this.update_(object);
   
 };
@@ -997,12 +944,22 @@ X.renderer.prototype.update_ = function(object) {
     
   }
   
+  console.log('update...');
+  
   // check if object already existed..
   var existed = false;
   
   if (this.get(object.id())) {
     // this means, we are updating
     existed = true;
+    
+  }
+  
+  // listen to modified events of this object, if we didn't do that before
+  if (!goog.events.hasListener(object, X.event.events.MODIFIED)) {
+    
+    goog.events.listen(object, X.event.events.MODIFIED, this.onModified
+        .bind(this));
     
   }
   
@@ -1036,6 +993,36 @@ X.renderer.prototype.update_ = function(object) {
     this.loader().loadFile(object);
     
     return;
+    
+  }
+  
+  // MULTI OBJECTS
+  //
+  // objects can have N child objects which again can have M child objects and
+  // so on
+  //
+  // check if this object has children
+  console.log(object.id() + ':update');
+  console.log(object.id() + ':dirty' + object.dirty());
+  console.log(object.id() + ':children' + object.children());
+  if (object.dirty() && object.hasChildren()) {
+    
+    console.log(object.id() + ':has childs');
+    console.log(object);
+    
+    // loop through the children and recursively setup the object
+    var children = object.children();
+    var numberOfChildren = children.length;
+    var c = 0;
+    
+    for (c = 0; c < numberOfChildren; c++) {
+      
+      this.update_(children[c]);
+      
+    }
+    
+    console.log(object.id() + ':setClean');
+    object.setClean();
     
   }
   

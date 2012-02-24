@@ -95,8 +95,6 @@ X.volume = function(center, size) {
   
   this._slicesZ = new X.object();
   
-  this.create_();
-  
 };
 // inherit from X.object
 goog.inherits(X.volume, X.object);
@@ -125,7 +123,7 @@ X.volume.prototype.create_ = function() {
     var _indexCenter = Math.floor(this._dimensions[xyz] / 2);
     
     var i = 0;
-    for (i = 0; i <= this._dimensions[xyz]; i++) {
+    for (i = 0; i < this._dimensions[xyz]; i++) {
       
       var _position = -this._size + (i * spacing);
       
@@ -145,7 +143,7 @@ X.volume.prototype.create_ = function() {
       // only show the middle slice, hide everything else
       _slice.setVisible(i == _indexCenter);
       
-      // attach to all _slicesX with the correct slice index
+      // attach to all _slices with the correct slice index
       slices.push(_slice);
       
     }
@@ -162,6 +160,8 @@ X.volume.prototype.create_ = function() {
       this._indexZold = _indexCenter;
     }
   }
+  
+  this._dirty = true;
   
 };
 

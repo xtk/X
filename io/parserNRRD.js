@@ -92,6 +92,11 @@ X.parserNRRD.prototype.parse = function(object, data) {
   
   var _data = 0; // the data without header
   
+  console.log(new Date());
+  
+  console.log(this);
+  
+
   if (this.encoding == 'gzip' || this.encoding == 'gz') {
     // we need to decompress the datastream
     _data = new JXG.Util.Unzip(data.substr(position)).unzip()[0][0];
@@ -100,7 +105,12 @@ X.parserNRRD.prototype.parse = function(object, data) {
     _data = data.substr(position);
   }
   
-  console.log(this.sizes);
+  console.log("after gzip: " + new Date());
+  
+
+
+  object._dimensions = [this.sizes[2], this.sizes[1], this.sizes[0]];
+  object.create_();
   
   var numberOfPixels = this.sizes[0] * this.sizes[1] * this.sizes[2];
   
@@ -109,11 +119,14 @@ X.parserNRRD.prototype.parse = function(object, data) {
   min = a[2];
   a = a[0];
   
-  window.console.log('done', a[a.length - 2]);
+  window.console.log('done parsing.. ', new Date());
   
+  var xymul = this.sizes[0] * this.sizes[1];
+  var xzmul = this.sizes[0] * this.sizes[2];
+  
+  var j;
   for (j = 0; j < this.sizes[2]; j++) {
     
-    var xymul = this.sizes[0] * this.sizes[1];
     currentSlice = a.slice(j * (xymul), (j + 1) * xymul);
     copyCurrentSlice = [];
     
@@ -135,11 +148,13 @@ X.parserNRRD.prototype.parse = function(object, data) {
     currentSlicePixels.setRawDataWidth(this.sizes[0]);
     currentSlicePixels.setRawDataHeight(this.sizes[1]);
     object._slicesX.children()[j].setTexture(currentSlicePixels);
-    object._slicesX.children()[j].modified();
+    // object._slicesX.children()[j].modified();
     
   }
   
 
+  window.console.log('create slices done.. ', new Date());
+  
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
   this.dispatchEvent(modifiedEvent);
