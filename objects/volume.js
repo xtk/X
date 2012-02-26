@@ -230,13 +230,13 @@ X.volume.prototype.create_ = function() {
     
     // by default, all the 'middle' slices are shown
     if (xyz == 0) {
-      this._indexX = _indexCenter;
+      this['_indexX'] = _indexCenter;
       this._indexXold = _indexCenter;
     } else if (xyz == 1) {
-      this._indexY = _indexCenter;
+      this['_indexY'] = _indexCenter;
       this._indexYold = _indexCenter;
     } else if (xyz == 2) {
-      this._indexZ = _indexCenter;
+      this['_indexZ'] = _indexCenter;
       this._indexZold = _indexCenter;
     }
   }
@@ -261,17 +261,17 @@ X.volume.prototype.modified = function() {
     var oldIndex = 0;
     
     if (xyz == 0) {
-      currentIndex = this._indexX;
+      currentIndex = this['_indexX'];
       oldIndex = this._indexXold;
-      this._indexXold = this._indexX;
+      this._indexXold = this['_indexX'];
     } else if (xyz == 1) {
-      currentIndex = this._indexY;
+      currentIndex = this['_indexY'];
       oldIndex = this._indexYold;
-      this._indexYold = this._indexY;
+      this._indexYold = this['_indexY'];
     } else if (xyz == 2) {
-      currentIndex = this._indexZ;
+      currentIndex = this['_indexZ'];
       oldIndex = this._indexZold;
-      this._indexZold = this._indexZ;
+      this._indexZold = this['_indexZ'];
     }
     
     // hide the old slice
