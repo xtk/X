@@ -1,0 +1,212 @@
+/*
+ * 
+ *                  xxxxxxx      xxxxxxx
+ *                   x:::::x    x:::::x 
+ *                    x:::::x  x:::::x  
+ *                     x:::::xx:::::x   
+ *                      x::::::::::x    
+ *                       x::::::::x     
+ *                       x::::::::x     
+ *                      x::::::::::x    
+ *                     x:::::xx:::::x   
+ *                    x:::::x  x:::::x  
+ *                   x:::::x    x:::::x 
+ *              THE xxxxxxx      xxxxxxx TOOLKIT
+ *                    
+ *                  http://www.goXTK.com
+ *                   
+ * Copyright (c) 2012 The X Toolkit Developers <dev@goXTK.com>
+ *                   
+ *    The X Toolkit (XTK) is licensed under the MIT License:
+ *      http://www.opensource.org/licenses/mit-license.php
+ * 
+ *      "Free software" is a matter of liberty, not price.
+ *      "Free" as in "free speech", not as in "free beer".
+ *                                         - Richard M. Stallman
+ * 
+ * 
+ */
+
+// provides
+goog.provide('X.volume');
+
+// requires
+goog.require('X.object');
+goog.require('X.slice');
+
+
+
+/**
+ * Create a displayable volume which consists of X.slices in X,Y and Z
+ * direction.
+ * 
+ * @constructor
+ * @extends X.object
+ */
+X.volume = function() {
+
+  //
+  // call the standard constructor of X.base
+  goog.base(this);
+  
+  //
+  // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this['_className'] = 'volume';
+  
+  this._center = [0, 0, 0];
+  
+  this._dimensions = [10, 10, 10];
+  this._spacing = [1, 1, 1];
+  
+  this['_indexX'] = 0;
+  this._indexXold = 0;
+  
+  this['_indexY'] = 0;
+  this._indexYold = 0;
+  
+  this['_indexZ'] = 0;
+  this._indexZold = 0;
+  
+  this._slicesX = new X.object();
+  
+  this._slicesY = new X.object();
+  
+  this._slicesZ = new X.object();
+  
+};
+// inherit from X.object
+goog.inherits(X.volume, X.object);
+
+
+/**
+ * Create the volume.
+ * 
+ * @private
+ */
+X.volume.prototype.create_ = function() {
+
+  // remove all old children
+  this.children().length = 0;
+  
+  // add the new children
+  this.children().push(this._slicesX);
+  this.children().push(this._slicesY);
+  this.children().push(this._slicesZ);
+  
+  //
+  // create the slices
+  var xyz = 0; // 0 for x, 1 for y, 2 for z
+  for (xyz = 0; xyz < 3; xyz++) {
+    
+    var halfDimension = (this._dimensions[xyz] - 1) / 2;
+    
+    var _indexCenter = halfDimension;
+    
+    var i = 0;
+    for (i = 0; i < this._dimensions[xyz]; i++) {
+      
+      var _position = (-halfDimension * this._spacing[xyz]) +
+          (i * this._spacing[xyz]);
+      
+      var _center = new Array([_position, this._center[1], this._center[2]],
+          [this._center[0], _position, this._center[2]], [this._center[0],
+                                                          this._center[1],
+                                                          _position]);
+      
+      var _front = new Array([1, 0, 0], [0, 1, 0], [0, 0, 1]);
+      var _up = new Array([0, 1, 0], [0, 0, -1], [0, 1, 0]);
+      
+      // the container and indices
+      var slices = this.children()[xyz].children();
+      
+      // dimensions
+      var width = 0;
+      var height = 0;
+      if (xyz == 0) {
+        // for x slices
+        width = this._dimensions[2] * this._spacing[2] - this._spacing[2];
+        height = this._dimensions[1] * this._spacing[1] - this._spacing[1];
+      } else if (xyz == 1) {
+        // for y slices
+        width = this._dimensions[0] * this._spacing[0] - this._spacing[0];
+        height = this._dimensions[2] * this._spacing[2] - this._spacing[2];
+      } else if (xyz == 2) {
+        width = this._dimensions[0] * this._spacing[0] - this._spacing[0];
+        height = this._dimensions[1] * this._spacing[1] - this._spacing[1];
+      }
+      
+      // .. new slice
+      var _slice = new X.slice(_center[xyz], _front[xyz], _up[xyz], width,
+          height);
+      
+      // only show the middle slice, hide everything else
+      _slice.setVisible(i == _indexCenter);
+      
+      // attach to all _slices with the correct slice index
+      slices.push(_slice);
+      
+    }
+    
+    // by default, all the 'middle' slices are shown
+    if (xyz == 0) {
+      this._indexX = _indexCenter;
+      this._indexXold = _indexCenter;
+    } else if (xyz == 1) {
+      this._indexY = _indexCenter;
+      this._indexYold = _indexCenter;
+    } else if (xyz == 2) {
+      this._indexZ = _indexCenter;
+      this._indexZold = _indexCenter;
+    }
+  }
+  
+  this._dirty = true;
+  
+};
+
+/**
+ * @inheritDoc
+ */
+X.volume.prototype.modified = function() {
+
+  // display the current slices in X,Y and Z direction
+  var xyz = 0; // 0 for x, 1 for y, 2 for z
+  for (xyz = 0; xyz < 3; xyz++) {
+    
+    var currentIndex = 0;
+    var oldIndex = 0;
+    
+    if (xyz == 0) {
+      currentIndex = this._indexX;
+      oldIndex = this._indexXold;
+      this._indexXold = this._indexX;
+    } else if (xyz == 1) {
+      currentIndex = this._indexY;
+      oldIndex = this._indexYold;
+      this._indexYold = this._indexY;
+    } else if (xyz == 2) {
+      currentIndex = this._indexZ;
+      oldIndex = this._indexZold;
+      this._indexZold = this._indexZ;
+    }
+    
+    // hide the old slice
+    this.children()[xyz].children()[parseInt(oldIndex, 10)].setVisible(false);
+    // show the current slice
+    this.children()[xyz].children()[parseInt(currentIndex, 10)]
+        .setVisible(true);
+    
+  }
+  
+  // call the superclass' modified method
+  X.volume.superClass_.modified.call(this);
+  
+};
+
+// export symbols (required for advanced compilation)
+goog.exportSymbol('X.volume', X.volume);

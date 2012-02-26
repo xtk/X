@@ -31,24 +31,18 @@ goog.provide('X.texture');
 
 // requires
 goog.require('X.base');
+goog.require('X.file');
 
 
 
 /**
- * Create a texture using a two-dimensional image file.
+ * Create a texture using a two-dimensional image file or using raw-data.
  * 
  * @constructor
- * @param {string} file The filename of the image.
  * @extends X.base
  */
-X.texture = function(file) {
+X.texture = function() {
 
-  if (!goog.isDefAndNotNull(file)) {
-    
-    throw new Error('Missing image file for the texture.');
-    
-  }
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
@@ -62,14 +56,33 @@ X.texture = function(file) {
    */
   this['_className'] = 'texture';
   
-  this._file = file;
+  // the global id counter
+  var counter = window["X.Counter"];
+  // ..get a new unique id
+  counter.increment();
+  
+  /**
+   * The uniqueId of this texture. Each texture in XTK has a uniqueId.
+   * 
+   * @type {number}
+   * @protected
+   */
+  this['_id'] = counter.value();
+  
+  /**
+   * @type {X.file}
+   */
+  this._file = null;
   
   this._filter = X.texture.filters.SHARP;
   
   this._image = null;
   
-  // since we pass a new texture file in the constructor, directly mark this
-  // object as dirty
+  this._rawData = null;
+  this._rawDataWidth = 0;
+  this._rawDataHeight = 0;
+  
+  // mark as dirty by default
   this._dirty = true;
   
 };
@@ -89,14 +102,48 @@ X.texture.filters = {
 };
 
 
+X.texture.prototype.id = function() {
+
+  return this['_id'];
+  
+};
+
+
 /**
  * Get the image file of this texture.
  * 
- * @return {!string} The image file of this texture.
+ * @return {?X.file} The image file of this texture.
  */
 X.texture.prototype.file = function() {
 
   return this._file;
+  
+};
+
+
+/**
+ * Set the image file for this texture.
+ * 
+ * @param {?X.file|string} file The image file path or an X.file object
+ *          containing the path.
+ */
+X.texture.prototype.setFile = function(file) {
+
+  if (!goog.isDefAndNotNull(file)) {
+    
+    // null files are allowed
+    this._file = null;
+    return;
+    
+  }
+  
+  if (goog.isString(file)) {
+    
+    file = new X.file(file);
+    
+  }
+  
+  this._file = file;
   
 };
 
@@ -111,6 +158,49 @@ X.texture.prototype.image = function() {
 X.texture.prototype.setImage = function(image) {
 
   this._image = image;
+  
+};
+
+
+X.texture.prototype.rawData = function() {
+
+  return this._rawData;
+  
+};
+
+
+X.texture.prototype.setRawData = function(rawData) {
+
+  this._rawData = rawData;
+  this._dirty = true;
+  
+};
+
+X.texture.prototype.rawDataHeight = function() {
+
+  return this._rawDataHeight;
+  
+};
+
+
+X.texture.prototype.setRawDataHeight = function(rawDataHeight) {
+
+  this._rawDataHeight = rawDataHeight;
+  this._dirty = true;
+  
+};
+
+X.texture.prototype.rawDataWidth = function() {
+
+  return this._rawDataWidth;
+  
+};
+
+
+X.texture.prototype.setRawDataWidth = function(rawDataWidth) {
+
+  this._rawDataWidth = rawDataWidth;
+  this._dirty = true;
   
 };
 

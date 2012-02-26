@@ -33,6 +33,7 @@ goog.require('X.base');
 goog.require('X.event');
 goog.require('X.object');
 goog.require('X.parserFSM');
+goog.require('X.parserNRRD');
 goog.require('X.parserSTL');
 goog.require('X.parserTRK');
 goog.require('X.parserVTK');
@@ -107,10 +108,9 @@ X.loader.prototype.loadTexture = function(object) {
     throw new Error('Internal error during texture loading.');
     
   }
-  
   // setup the image object
   var image = new Image();
-  var currentTextureFilename = object.texture().file();
+  var currentTextureFilename = object.texture().file().path();
   image.src = currentTextureFilename;
   
   // we let the object point to this image
@@ -137,7 +137,7 @@ X.loader.prototype.loadTextureCompleted = function(object) {
   setTimeout(function() {
 
     // at this point the image for the texture was loaded properly
-    object.texture().setClean();
+    object.texture().file().setClean();
     
     // fire the modified event
     object.modified();
@@ -168,11 +168,11 @@ X.loader.prototype.loadFile = function(object) {
   // check if the file is supported
   var fileExtension = filepath.split('.').pop();
   fileExtension = fileExtension.toUpperCase();
-
+  
   if (!(fileExtension == X.loader.extensions.TRK ||
-        fileExtension == X.loader.extensions.STL ||
-        fileExtension == X.loader.extensions.FSM ||
-        fileExtension == X.loader.extensions.VTK)) {
+      fileExtension == X.loader.extensions.STL ||
+      fileExtension == X.loader.extensions.FSM ||
+      fileExtension == X.loader.extensions.VTK || fileExtension == X.loader.extensions.NRRD)) {
     
     // file format is not supported
     throw new Error('The ' + fileExtension + ' file format is not supported.');
@@ -321,6 +321,15 @@ X.loader.prototype.loadFileCompleted = function(request, object) {
       
       fsmParser.parse(object, request.response);
       
+    } else if (fileExtension == 'nrrd') {
+      
+      var nrrdParser = new X.parserNRRD();
+      
+      goog.events.listenOnce(nrrdParser, X.event.events.MODIFIED,
+          this.parseFileCompleted.bind(this));
+      
+      nrrdParser.parse(object, request.response);
+      
     }
     
 
@@ -357,16 +366,17 @@ X.loader.prototype.parseFileCompleted = function(event) {
 
 
 /**
-  * Supported data types by extension.
-  * 
-  * @enum {string}
-  */
+ * Supported data types by extension.
+ * 
+ * @enum {string}
+ */
 X.loader.extensions = {
   // support for the following extensions
   STL: 'STL',
   VTK: 'VTK',
   TRK: 'TRK',
-  FSM: 'FSM'
+  FSM: 'FSM',
+  NRRD: 'NRRD'
 };
 
 goog.exportSymbol('X.loader', X.loader);

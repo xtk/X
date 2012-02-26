@@ -914,59 +914,6 @@ X.renderer.prototype.add = function(object) {
   // top-level objects, meaning that they do not have a parent
   this._topLevelObjects.push(object);
   
-  this.add_(object);
-  
-};
-
-
-/**
- * Add a new displayable object to this renderer. The renderer has to be
- * initialized before doing so. A X.renderer.render() call has to be initiated
- * to display added objects.
- * 
- * @param {!X.object} object The displayable object to add to this renderer.
- * @throws {Error} An exception if something goes wrong.
- */
-X.renderer.prototype.add_ = function(object) {
-
-  if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
-      !goog.isDefAndNotNull(this._camera)) {
-    
-    throw new Error('Renderer was not initialized properly.');
-    
-  }
-  
-  if (!goog.isDefAndNotNull(object) || !(object instanceof X.object)) {
-    
-    throw new Error('Illegal object.');
-    
-  }
-  
-  // MULTI OBJECTS
-  //
-  // objects can have N child objects which again can have M child objects and
-  // so on
-  //
-  // check if this object has children
-  if (object.hasChildren()) {
-    
-    // loop through the children and recursively setup the object
-    var children = object.children();
-    var numberOfChildren = children.length;
-    var c = 0;
-    
-    for (c = 0; c < numberOfChildren; c++) {
-      
-      this.add(children[c]);
-      
-    }
-    
-  }
-  
-  // listen to modified events of this object
-  goog.events.listen(object, X.event.events.MODIFIED, this.onModified
-      .bind(this));
-  
   this.update_(object);
   
 };
@@ -1006,6 +953,14 @@ X.renderer.prototype.update_ = function(object) {
     
   }
   
+  // listen to modified events of this object, if we didn't do that before
+  if (!goog.events.hasListener(object, X.event.events.MODIFIED)) {
+    
+    goog.events.listen(object, X.event.events.MODIFIED, this.onModified
+        .bind(this));
+    
+  }
+  
   var id = object.id();
   var points = object.points();
   var normals = object.normals();
@@ -1020,8 +975,9 @@ X.renderer.prototype.update_ = function(object) {
   // b) the object is based on an external file (vtk, stl...)
   // in these cases, we do not directly update the object but activate the
   // X.loader to get the externals and then let it call the update method
-  if (goog.isDefAndNotNull(texture) && texture.dirty()) {
-    // texture associated to this object and it is dirty..
+  if (goog.isDefAndNotNull(texture) && goog.isDefAndNotNull(texture.file()) &&
+      texture.file().dirty()) {
+    // a texture file is associated to this object and it is dirty..
     
     // start loading..
     this.loader().loadTexture(object);
@@ -1035,6 +991,29 @@ X.renderer.prototype.update_ = function(object) {
     this.loader().loadFile(object);
     
     return;
+    
+  }
+  
+  // MULTI OBJECTS
+  //
+  // objects can have N child objects which again can have M child objects and
+  // so on
+  //
+  // check if this object has children
+  if (object.dirty() && object.hasChildren()) {
+    
+    // loop through the children and recursively setup the object
+    var children = object.children();
+    var numberOfChildren = children.length;
+    var c = 0;
+    
+    for (c = 0; c < numberOfChildren; c++) {
+      
+      this.update_(children[c]);
+      
+    }
+    
+    object.setClean();
     
   }
   
@@ -1333,13 +1312,30 @@ X.renderer.prototype.update_ = function(object) {
       
       //
       // activate the texture on the WebGL side
-      this._textures.set(texture.file(), glTexture);
+      this._textures.set(texture.id(), glTexture);
       
       this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
       
       this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
-      this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, this._gl.RGBA,
-          this._gl.UNSIGNED_BYTE, glTexture.image);
+      if (texture.rawData()) {
+        
+        // use rawData rather than loading an imagefile
+        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, texture
+            .rawDataWidth(), texture.rawDataHeight(), 0, this._gl.RGBA,
+            this._gl.UNSIGNED_BYTE, texture.rawData());
+        
+        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S,
+            this._gl.CLAMP_TO_EDGE);
+        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T,
+            this._gl.CLAMP_TO_EDGE);
+        
+      } else {
+        
+        // use an imageFile for the texture
+        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA,
+            this._gl.RGBA, this._gl.UNSIGNED_BYTE, glTexture.image);
+        
+      }
       
       // TODO different filters?
       this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER,
@@ -1903,7 +1899,7 @@ X.renderer.prototype.render_ = function(picking) {
         // grab the texture from the internal hash map using the filename as the
         // key
         this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures.get(object
-            .texture().file()));
+            .texture().id()));
         this._gl.uniform1i(this._uniformLocations
             .get(X.shaders.uniforms.TEXTURESAMPLER), 0);
         
