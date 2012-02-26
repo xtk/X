@@ -37,7 +37,7 @@ goog.require('goog.math.Vec3');
 
 
 /**
- * Create a displayable quadratic slice/plane.
+ * Create a displayable 2D slice/plane.
  * 
  * @constructor
  * @param {!Array} center The center position in 3D space as a 1-D Array with
@@ -46,10 +46,11 @@ goog.require('goog.math.Vec3');
  *          3D space as a 1-D Array with length 3.
  * @param {!Array} up A vector pointing in the up direction in 3D space as a 1-D
  *          Array with length 3.
- * @param {!number} size The width and height of the slice.
+ * @param {!number} width The width of the slice.
+ * @param {!number} height The height of the slice.
  * @extends X.object
  */
-X.slice = function(center, front, up, size) {
+X.slice = function(center, front, up, width, height) {
 
   if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
       (center.length != 3)) {
@@ -71,9 +72,15 @@ X.slice = function(center, front, up, size) {
     
   }
   
-  if (!goog.isNumber(size)) {
+  if (!goog.isNumber(width)) {
     
-    throw new Error('Invalid size.');
+    throw new Error('Invalid width.');
+    
+  }
+  
+  if (!goog.isNumber(height)) {
+    
+    throw new Error('Invalid height.');
     
   }
   
@@ -96,7 +103,8 @@ X.slice = function(center, front, up, size) {
   
   this._up = up;
   
-  this._size = size;
+  this._width = width;
+  this._height = height;
   
   /**
    * @inheritDoc
@@ -131,12 +139,30 @@ X.slice.prototype.create_ = function() {
   var rightVector = goog.math.Vec3.cross(upVector, frontVector);
   var centerVector = new goog.math.Vec3(this._center[0], this._center[1],
       this._center[2]);
-  // var sizeVector = new goog.math.Vec3(1, 1, 1).subtract(frontVector).scale(
-  // this._size);
-  var sizeVector = new goog.math.Vec3(1, 1, 1).scale(this._size);
-  // sizeVector.add(centerVector);
   
+  // TODO generalize for arbitary slicing
+  var sizeVector = new goog.math.Vec3(1, 1, 1);
+  if (frontVector.x == 1) {
+    sizeVector = new goog.math.Vec3(this._center[2], this._height / 2,
+        this._width / 2);
+  } else if (frontVector.y == 1) {
+    sizeVector = new goog.math.Vec3(this._width / 2, this._center[2],
+        this._height / 2);
+    this._textureCoordinateMap = [
 
+    0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0
+
+    ];
+  } else if (frontVector.z == 1) {
+    sizeVector = new goog.math.Vec3(this._width / 2, this._height / 2,
+        this._center[2]);
+    this._textureCoordinateMap = [
+
+    1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0
+
+    ];
+  }
+  
   //
   // create the points like this:
   //
@@ -180,7 +206,8 @@ X.slice.prototype.create_ = function() {
   this.points().add(point4.x, point4.y, point4.z); // 4
   this.points().add(point5.x, point5.y, point5.z); // 5
   
-  // add the normals based on the orientation
+  // add the normals based on the orientation (we don't really need them since
+  // we assume each Slice has a texture)
   this.normals().add(frontVector.x, frontVector.y, frontVector.z);
   this.normals().add(frontVector.x, frontVector.y, frontVector.z);
   this.normals().add(frontVector.x, frontVector.y, frontVector.z);

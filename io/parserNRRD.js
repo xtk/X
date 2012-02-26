@@ -74,7 +74,6 @@ goog.inherits(X.parserNRRD, X.parser);
  */
 X.parserNRRD.prototype.parse = function(object, data) {
 
-  
   // the position in the file
   var position = 0;
   
@@ -92,11 +91,6 @@ X.parserNRRD.prototype.parse = function(object, data) {
   
   var _data = 0; // the data without header
   
-  console.log(new Date());
-  
-  console.log(this);
-  
-
   if (this.encoding == 'gzip' || this.encoding == 'gz') {
     // we need to decompress the datastream
     _data = new JXG.Util.Unzip(data.substr(position)).unzip()[0][0];
@@ -105,45 +99,36 @@ X.parserNRRD.prototype.parse = function(object, data) {
     _data = data.substr(position);
   }
   
-  console.log("after gzip: " + new Date());
-  
-
   // we know enough to create the object
   object._dimensions = [this.sizes[2], this.sizes[1], this.sizes[0]];
   object.create_();
   
   var numberOfPixels = this.sizes[0] * this.sizes[1] * this.sizes[2];
   
-  // var a = this.parseUInt16Array(_data, 0, numberOfPixels);
-  // max = a[1];
-  // min = a[2];
-  // a = a[0];
-  
-
-
   //
-  //
+  // parse the (unzipped) data to a datastream of the correct type
   //
   var datastream = new Array(numberOfPixels);
   
+  // we store the min and max values to be able to convert the values to uint8
+  // later
   var max = -Infinity;
   var min = Infinity;
   
   var i;
   for (i = 0; i < numberOfPixels; i++) {
+    // parseFunc was defined by analyzing the nrrd header
     var pixelValue = this.parseFunc(_data, 0 + (i * this.parseBytes));
     datastream[i] = pixelValue;
     max = Math.max(max, pixelValue);
     min = Math.min(min, pixelValue);
   }
   
-
-  window.console.log('done parsing.. ', new Date());
-  
+  // now we have the values and need to reslice in the 3 orthogonal directions
+  // and create the textures for each slice
   this.reslice(object, datastream, this.sizes, min, max);
   
-  window.console.log('create slices done.. ', new Date());
-  
+  // all done..
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
   this.dispatchEvent(modifiedEvent);
@@ -154,156 +139,90 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
 
   // number of slices in scan direction
   var slices = sizes[2];
-  var size0 = sizes[0];
-  var size1 = sizes[1];
+  // number of rows in each slice in scan direction
+  var rowsCount = sizes[1];
+  // number of cols in each slice in scan direction
+  var colsCount = sizes[0];
   
   // slice dimensions in scan direction
-  var sliceDimensions = size0 * size1;
-  // var tmp = new Array(size0 * slices);
-  // var tmp2 = [];
+  var numberPixelsPerSlice = rowsCount * colsCount;
   
-  // allocate 3d image array
+  // allocate 3d image array [slices][rows][cols]
   var image = new Array(slices);
   for ( var iS = 0; iS < slices; iS++) {
-    image[iS] = new Array(size0);
-    for ( var iR = 0; iR < size0; iR++) {
-      image[iS][iR] = new Uint8Array(size1);
+    image[iS] = new Array(rowsCount);
+    for ( var iR = 0; iR < rowsCount; iR++) {
+      image[iS][iR] = new Uint8Array(colsCount);
     }
   }
   
-  console.log(image);
-  console.log(image.length * image[0].length * image[0][0].length);
-  console.log(slices * size0 * size1);
-  console.log(slices, size0, size1);
-  
   // loop through all slices in scan direction
+  //
+  // this step creates the slices in X-direction and fills the 3d image array at
+  // the same time
+  // combining the two operations saves some time..
   var z = 0;
   for (z = 0; z < slices; z++) {
     
     // grab the pixels for the current slice z
-    var currentSlice = datastream.slice(z * (sliceDimensions), (z + 1) *
-        sliceDimensions);
+    var currentSlice = datastream.slice(z * (numberPixelsPerSlice), (z + 1) *
+        numberPixelsPerSlice);
     // the texture has 3 times the pixel value + 1 opacity value for all pixels
-    var textureForCurrentSlice = new Uint8Array(4 * sliceDimensions);
+    var textureForCurrentSlice = new Uint8Array(4 * numberPixelsPerSlice);
     
-    // loop through all pixels of the current slice
+    // now loop through all pixels of the current slice
     var row = 0;
     var col = 0;
-    // var i = 1;
-    // var j = 1;
-    var p = 0;
+    var p = 0; // just a counter
     
-    for (r = 0; r < size0; r++) {
-      
-      for (c = 0; c < size1; c++) {
+    for (row = 0; row < rowsCount; row++) {
+      for (col = 0; col < colsCount; col++) {
         
-        p = c + r * size1;
-        
+        // map pixel value to 1 byte
         var pixelValue = currentSlice[p];
         pixelValue = 255 * (pixelValue / max);
+        
         var textureStartIndex = p * 4;
         textureForCurrentSlice[textureStartIndex] = pixelValue;
         textureForCurrentSlice[++textureStartIndex] = pixelValue;
         textureForCurrentSlice[++textureStartIndex] = pixelValue;
         textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
         
-        image[z][r][c] = pixelValue;
+        // save the converted pixelValue in the 3d image data
+        image[z][row][col] = pixelValue;
+        
+        p++;
         
       }
       
     }
     
-    // for (p = 0; p < sliceDimensions; p++) {
-    
-    // var pixelValue = currentSlice[p];
-    // pixelValue = 255 * (pixelValue / max);
-    // var textureStartIndex = p * 4;
-    // textureForCurrentSlice[textureStartIndex] = pixelValue;
-    // textureForCurrentSlice[++textureStartIndex] = pixelValue;
-    // textureForCurrentSlice[++textureStartIndex] = pixelValue;
-    // textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
-    // //
-    // if (col >= size0) {
-    // // one row completed
-    // row++;
-    // col = 0;
-    // } else {
-    // col++;
-    // }
-    
-    // console.log('setting ', z, row, col);
-    // console.log(p);
-    // image[z][row][col] = pixelValue;
-    
-
-
-    // if (row == 5) {
-    //        
-    // tmp.push(pixelValue);
-    // tmp.push(pixelValue);
-    // tmp.push(pixelValue);
-    // tmp.push(255);
-    //        
-    // }
-    //      
-    // if (col == 5) {
-    // console.log('55:' + pixelValue);
-    // tmp2.push(pixelValue);
-    // tmp2.push(pixelValue);
-    // tmp2.push(pixelValue);
-    // tmp2.push(255);
-    //        
-    // }
-    //      
-    //
-    // if ((p >= size0 * 81) && (p <= size0 * 82)) {
-    // tmp.push(pixelValue);
-    // tmp.push(pixelValue);
-    // tmp.push(pixelValue);
-    // tmp.push(255);
-    // }
-    //      
-    // if (p % 144) {
-    // tmp2.push(pixelValue);
-    // tmp2.push(pixelValue);
-    // tmp2.push(pixelValue);
-    // tmp2.push(255);
-    //        
-    // }
-    
-    // }
-    
-    // console.log('slice: ' + z + ' row: ' + row + ' col: ' + col);
-    
-    // create the texture
+    // create the texture for slices in X-direction
     var pixelTexture = new X.texture();
     pixelTexture.setRawData(textureForCurrentSlice);
-    pixelTexture.setRawDataWidth(size0);
-    pixelTexture.setRawDataHeight(size1);
+    pixelTexture.setRawDataWidth(colsCount);
+    pixelTexture.setRawDataHeight(rowsCount);
     object._slicesX.children()[z].setTexture(pixelTexture);
     
   }
   
-
-  // for Y
+  // the following parses the 3d image array according to the Y- and the
+  // Z-direction of the slices
+  // this was unrolled for more performance
+  
+  // for Y-direction
   // all slices are along the rows of the image
   // all rows are along the slices of the image
   // all cols are along the cols of the image
-  
-
-  for (z = 0; z < size0; z++) {
+  //  
+  for (row = 0; row < rowsCount; row++) {
     
-    var textureForCurrentSlice = new Uint8Array(4 * sliceDimensions);
-    
-    for (r = 0; r < slices; r++) {
-      
-      for (c = 0; c < size1; c++) {
+    var textureForCurrentSlice = new Uint8Array(4 * slices * colsCount);
+    var p = 0; // just a counter
+    for (z = 0; z < slices; z++) {
+      for (col = 0; col < colsCount; col++) {
         
-        p = c + r * slices;
-        
-        pixelValue = image[r][z][c];
-        
-        // console.log(pixelValue);
+        pixelValue = image[z][row][col];
         
         var textureStartIndex = p * 4;
         textureForCurrentSlice[textureStartIndex] = pixelValue;
@@ -311,43 +230,52 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
         textureForCurrentSlice[++textureStartIndex] = pixelValue;
         textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
         
+        p++;
+        
       }
-      
-
-
     }
     
-    // create the texture
     var pixelTexture = new X.texture();
     pixelTexture.setRawData(textureForCurrentSlice);
-    pixelTexture.setRawDataWidth(size0);
-    pixelTexture.setRawDataHeight(size1);
-    object._slicesY.children()[r].setTexture(pixelTexture);
+    pixelTexture.setRawDataWidth(colsCount);
+    pixelTexture.setRawDataHeight(slices);
+    object._slicesY.children()[(rowsCount - 1) - row].setTexture(pixelTexture);
     
-
   }
   
 
-
-  // //
-  // console.log(tmp.length);
-  // console.log(tmp2.length);
-  // //
-  // // create the texture
-  // var pixelTexture2 = new X.texture();
-  // pixelTexture2.setRawData(new Uint8Array(tmp));
-  // pixelTexture2.setRawDataWidth(size0);
-  // pixelTexture2.setRawDataHeight(slices);
-  // object._slicesZ.children()[5].setTexture(pixelTexture2);
+  // for Z
+  // all slices are along the cols of the image
+  // all rows are along the slices of the image
+  // all cols are along the rows of the image
   //  
-  // // create the texture
-  // var pixelTexture3 = new X.texture();
-  // pixelTexture3.setRawData(new Uint8Array(tmp2));
-  // pixelTexture3.setRawDataWidth(size0);
-  // pixelTexture3.setRawDataHeight(slices);
-  // object._slicesY.children()[5].setTexture(pixelTexture3);
+  for (col = 0; col < colsCount; col++) {
+    var textureForCurrentSlice = new Uint8Array(4 * slices * rowsCount);
+    var p = 0; // just a counter
+    for (z = 0; z < slices; z++) {
+      for (row = 0; row < rowsCount; row++) {
+        
+        pixelValue = image[z][row][col];
+        
+        var textureStartIndex = p * 4;
+        textureForCurrentSlice[textureStartIndex] = pixelValue;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue;
+        textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
+        
+        p++;
+        
+      }
+    }
+    
+    var pixelTexture = new X.texture();
+    pixelTexture.setRawData(textureForCurrentSlice);
+    pixelTexture.setRawDataWidth(rowsCount);
+    pixelTexture.setRawDataHeight(slices);
+    object._slicesZ.children()[(colsCount - 1) - col].setTexture(pixelTexture);
+    
+  }
   
-
 };
 
 X.parserNRRD.prototype.parseHeader = function(header) {
@@ -377,7 +305,7 @@ X.parserNRRD.prototype.parseHeader = function(header) {
       this.encoding !== 'gz') {
     throw new Error('Only raw or gz/gzip encoding is allowed');
   }
-  if (!(this.vectors != null)) {
+  if (!this.vectors) {
     this.vectors = [new goog.math.Vec3(1, 0, 0), new goog.math.Vec3(0, 1, 0),
                     new goog.math.Vec3(0, 0, 1)];
     if (this.spacings) {
@@ -421,7 +349,8 @@ X.parserNRRD.prototype.fieldFunctions = {
       this.parseBytes = 4;
       break;
     default:
-      throw new Error('Only short/int/int8 data is allowed and not: ' + data);
+      throw new Error('Only short/int/int8/float data is allowed. Found ' +
+          data);
     }
     return this.type = data;
   },

@@ -353,8 +353,6 @@ X.loader.prototype.parseFileCompleted = function(event) {
     // the parsing is done here..
     object.file().setClean();
     
-    console.log('parsing done');
-    
     // fire the modified event
     object.modified();
     

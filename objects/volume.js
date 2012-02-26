@@ -41,26 +41,10 @@ goog.require('X.slice');
  * direction.
  * 
  * @constructor
- * @param {!Array} center The center position in 3D space as a 1-D Array with
- *          length 3.
- * @param {!number} size The width and height of one side of the volume.
  * @extends X.object
  */
-X.volume = function(center, size) {
+X.volume = function() {
 
-  if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
-      (center.length != 3)) {
-    
-    throw new Error('Invalid center.');
-    
-  }
-  
-  if (!goog.isNumber(size)) {
-    
-    throw new Error('Invalid size.');
-    
-  }
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
@@ -74,11 +58,10 @@ X.volume = function(center, size) {
    */
   this['_className'] = 'volume';
   
-  this._center = center;
+  this._center = [0, 0, 0];
   
-  this._size = size;
-  
-  this._dimensions = [3 * size, 3 * size, 3 * size];
+  this._dimensions = [10, 10, 10];
+  this._spacing = [1, 1, 1];
   
   this['_indexX'] = 0;
   this._indexXold = 0;
@@ -119,17 +102,21 @@ X.volume.prototype.create_ = function() {
   // create the slices
   var xyz = 0; // 0 for x, 1 for y, 2 for z
   for (xyz = 0; xyz < 3; xyz++) {
-    var spacing = 2 * this._size / this._dimensions[xyz];
-    var _indexCenter = Math.floor(this._dimensions[xyz] / 2);
+    
+    var halfDimension = (this._dimensions[xyz] - 1) / 2;
+    
+    var _indexCenter = halfDimension;
     
     var i = 0;
     for (i = 0; i < this._dimensions[xyz]; i++) {
       
-      var _position = -this._size + (i * spacing);
+      var _position = (-halfDimension * this._spacing[xyz]) +
+          (i * this._spacing[xyz]);
       
-      var _center = [[_position, this._center[1], this._center[2]],
-                     [this._center[0], _position, this._center[2]],
-                     [this._center[0], this._center[1], _position]];
+      var _center = new Array([_position, this._center[1], this._center[2]],
+          [this._center[0], _position, this._center[2]], [this._center[0],
+                                                          this._center[1],
+                                                          _position]);
       
       var _front = new Array([1, 0, 0], [0, 1, 0], [0, 0, 1]);
       var _up = new Array([0, 1, 0], [0, 0, -1], [0, 1, 0]);
@@ -137,8 +124,25 @@ X.volume.prototype.create_ = function() {
       // the container and indices
       var slices = this.children()[xyz].children();
       
+      // dimensions
+      var width = 0;
+      var height = 0;
+      if (xyz == 0) {
+        // for x slices
+        width = this._dimensions[2] * this._spacing[2] - this._spacing[2];
+        height = this._dimensions[1] * this._spacing[1] - this._spacing[1];
+      } else if (xyz == 1) {
+        // for y slices
+        width = this._dimensions[0] * this._spacing[0] - this._spacing[0];
+        height = this._dimensions[2] * this._spacing[2] - this._spacing[2];
+      } else if (xyz == 2) {
+        width = this._dimensions[0] * this._spacing[0] - this._spacing[0];
+        height = this._dimensions[1] * this._spacing[1] - this._spacing[1];
+      }
+      
       // .. new slice
-      var _slice = new X.slice(_center[xyz], _front[xyz], _up[xyz], this._size);
+      var _slice = new X.slice(_center[xyz], _front[xyz], _up[xyz], width,
+          height);
       
       // only show the middle slice, hide everything else
       _slice.setVisible(i == _indexCenter);
@@ -165,6 +169,9 @@ X.volume.prototype.create_ = function() {
   
 };
 
+/**
+ * @inheritDoc
+ */
 X.volume.prototype.modified = function() {
 
   // display the current slices in X,Y and Z direction
