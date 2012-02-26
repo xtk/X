@@ -246,6 +246,9 @@ X.volume.prototype.create_ = function() {
 };
 
 /**
+ * Show the current slices which are set by this._indexX, this._indexY and
+ * this._indexZ and hide all others.
+ * 
  * @inheritDoc
  */
 X.volume.prototype.modified = function() {
@@ -300,3 +303,4 @@ X.volume.prototype.dimensions = function() {
 goog.exportSymbol('X.volume', X.volume);
 goog.exportSymbol('X.volume.prototype.dimensions',
     X.volume.prototype.dimensions);
+goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);
