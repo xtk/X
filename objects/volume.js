@@ -58,24 +58,100 @@ X.volume = function() {
    */
   this['_className'] = 'volume';
   
+  /**
+   * The center of this volume.
+   * 
+   * @type {!Array}
+   * @protected
+   */
   this._center = [0, 0, 0];
   
+  /**
+   * The dimensions of this volume.
+   * 
+   * @type {!Array}
+   * @protected
+   */
   this._dimensions = [10, 10, 10];
+  
+  /**
+   * The spacing of this volume.
+   * 
+   * @type {!Array}
+   * @protected
+   */
   this._spacing = [1, 1, 1];
   
+  /**
+   * The index of the currently shown slice in X-direction.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this['_indexX'] = 0;
+  
+  /**
+   * The index of the formerly shown slice in X-direction.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._indexXold = 0;
   
+  /**
+   * The index of the currently shown slice in Y-direction.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this['_indexY'] = 0;
+  
+  /**
+   * The index of the formerly shown slice in Y-direction.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._indexYold = 0;
   
+  /**
+   * The index of the currently shown slice in Z-direction.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this['_indexZ'] = 0;
+  
+  /**
+   * The index of the formerly shown slice in Z-direction.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._indexZold = 0;
   
+  /**
+   * The X.object holding the slices in X-direction.
+   * 
+   * @type {!X.object}
+   * @protected
+   */
   this._slicesX = new X.object();
   
+  /**
+   * The X.object holding the slices in Y-direction.
+   * 
+   * @type {!X.object}
+   * @protected
+   */
   this._slicesY = new X.object();
   
+  /**
+   * The X.object holding the slices in Z-direction.
+   * 
+   * @type {!X.object}
+   * @protected
+   */
   this._slicesZ = new X.object();
   
 };
@@ -208,5 +284,19 @@ X.volume.prototype.modified = function() {
   
 };
 
+
+/**
+ * Get the dimensions of this volume.
+ * 
+ * @return {!Array} dimensions The dimensions of this volume.
+ */
+X.volume.prototype.dimensions = function() {
+
+  return this._dimensions;
+  
+};
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.volume', X.volume);
+goog.exportSymbol('X.volume.prototype.dimensions',
+    X.volume.prototype.dimensions);
