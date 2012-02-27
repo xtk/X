@@ -1926,10 +1926,6 @@ X.renderer.prototype.render_ = function(picking, invoked) {
             .get(X.shaders.attributes.VERTEXTEXTUREPOS), texturePositionBuffer
             .itemSize(), this._gl.FLOAT, false, 0, 0);
         
-        if (statisticsEnabled) {
-          textureCounter++;
-        }
-        
       } else {
         
         // no texture for this object or 'picking' mode
@@ -2038,10 +2034,10 @@ X.renderer.prototype.render_ = function(picking, invoked) {
     
     var statistics = "Objects: " + numberOfObjects + " | ";
     statistics += "Vertices: " + verticesCounter + " | ";
-    statistics += "Triangles: " + trianglesCounter + " | ";
+    statistics += "Triangles: " + Math.round(trianglesCounter) + " | ";
     statistics += "Lines: " + linesCounter + " | ";
     statistics += "Points: " + pointsCounter + " | ";
-    statistics += "Textures: " + textureCounter;
+    statistics += "Textures: " + this._textures.getCount();
     window.console.log(statistics);
     
   }
