@@ -173,23 +173,22 @@ X.interactor = function(element) {
    */
   this._lastMousePosition = new goog.math.Vec2(0, 0);
   
+  /**
+   * The configuration of this interactor.
+   * 
+   * @enum {boolean}
+   */
+  this['config'] = {
+    'MOUSEWHEEL_ENABLED': true,
+    'MOUSECLICKS_ENABLED': true,
+    'KEYBOARD_ENABLED': true,
+    'HOVERING_ENABLED': true,
+    'CONTEXTMENU_ENABLED': false
+  };
+  
 };
 // inherit from X.base
 goog.inherits(X.interactor, X.base);
-
-
-/**
- * The configuration of this interactor.
- * 
- * @enum {boolean}
- */
-X.interactor.prototype.config = {
-  MOUSEWHEEL_ENABLED: true,
-  MOUSECLICKS_ENABLED: true,
-  KEYBOARD_ENABLED: true,
-  HOVERING_ENABLED: true,
-  CONTEXTMENU_ENABLED: false
-};
 
 
 /**
@@ -197,7 +196,7 @@ X.interactor.prototype.config = {
  */
 X.interactor.prototype.init = function() {
 
-  if (this.config.MOUSEWHEEL_ENABLED) {
+  if (this['config']['MOUSEWHEEL_ENABLED']) {
     
     // we use the goog.events.MouseWheelHandler for a browser-independent
     // implementation
@@ -216,7 +215,7 @@ X.interactor.prototype.init = function() {
     
   }
   
-  if (this.config.MOUSECLICKS_ENABLED) {
+  if (this['config']['MOUSEWHEEL_ENABLED']) {
     
     // mouse down
     this._mouseDownListener = goog.events.listen(this._element,
@@ -237,7 +236,7 @@ X.interactor.prototype.init = function() {
     
   }
   
-  if (!this.config.CONTEXTMENU_ENABLED) {
+  if (!this['config']['CONTEXTMENU_ENABLED']) {
     
     // deactivate right-click context menu
     // found no way to use goog.events for that? tried everything..
@@ -255,7 +254,7 @@ X.interactor.prototype.init = function() {
     this._element.oncontextmenu = null;
   }
   
-  if (this.config.KEYBOARD_ENABLED) {
+  if (this['config']['KEYBOARD_ENABLED']) {
     
     // the google closure way did not work, so let's do it this way..
     window.onkeydown = this.onKey.bind(this);
@@ -367,7 +366,7 @@ X.interactor.prototype.onMouseMovementOutside = function(event) {
 
   // reset the click flags
   this._mouseInside = false;
-  if (this.config.KEYBOARD_ENABLED) {
+  if (this['config']['KEYBOARD_ENABLED']) {
     
     // if we observe the keyboard, remove the observer here
     // this is necessary if there are more than one renderer in the document
@@ -403,7 +402,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
   
   this._mouseInside = true;
   
-  if (this.config.KEYBOARD_ENABLED && window.onkeydown == null) {
+  if (this['config']['KEYBOARD_ENABLED'] && window.onkeydown == null) {
     
     // we re-gained the focus, enable the keyboard observer again!
     window.onkeydown = this.onKey.bind(this);
@@ -428,7 +427,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
   // 
   // hovering, if enabled..
   //
-  if (this.config.HOVERING_ENABLED) {
+  if (this['config']['HOVERING_ENABLED']) {
     
     if (Math.abs(distance.x) > 0 || Math.abs(distance.y) > 0 ||
         this._middleButtonDown || this._leftButtonDown || this._rightButtonDown) {
@@ -739,18 +738,6 @@ X.interactor.prototype.onKey = function(event) {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.interactor', X.interactor);
-goog.exportSymbol('X.interactor.prototype.config',
-    X.interactor.prototype.config);
-goog.exportSymbol('X.interactor.prototype.config.MOUSEWHEEL_ENABLED',
-    X.interactor.prototype.config.MOUSEWHEEL_ENABLED);
-goog.exportSymbol('X.interactor.prototype.config.MOUSECLICKS_ENABLED',
-    X.interactor.prototype.config.MOUSECLICKS_ENABLED);
-goog.exportSymbol('X.interactor.prototype.config.KEYBOARD_ENABLED',
-    X.interactor.prototype.config.KEYBOARD_ENABLED);
-goog.exportSymbol('X.interactor.prototype.config.HOVERING_ENABLED',
-    X.interactor.prototype.config.HOVERING_ENABLED);
-goog.exportSymbol('X.interactor.prototype.config.CONTEXTMENU_ENABLED',
-    X.interactor.prototype.config.CONTEXTMENU_ENABLED);
 goog.exportSymbol('X.interactor.prototype.init', X.interactor.prototype.init);
 goog.exportSymbol('X.interactor.prototype.onMouseDown',
     X.interactor.prototype.onMouseDown);

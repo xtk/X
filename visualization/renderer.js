@@ -343,22 +343,22 @@ X.renderer = function(container) {
    */
   this._locked = false;
   
+  /**
+   * The configuration of this renderer.
+   * 
+   * @enum {boolean}
+   */
+  this['config'] = {
+    'PROGRESSBAR_ENABLED': true,
+    'PICKING_ENABLED': true,
+    'ORDERING_ENABLED': true,
+    'STATISTICS_ENABLED': false
+  };
+  
   window.console.log('XTK Release 2 -- 2/12/12 -- http://www.goXTK.com');
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
-
-
-/**
- * The configuration of this renderer.
- * 
- * @enum {boolean}
- */
-X.renderer.prototype.config = {
-  PROGRESSBAR_ENABLED: true,
-  PICKING_ENABLED: true,
-  ORDERING_ENABLED: true
-};
 
 
 /**
@@ -547,7 +547,7 @@ X.renderer.prototype.resetBoundingBox = function() {
 X.renderer.prototype.showProgressBar_ = function() {
 
   // only do the following if the progressBar was not turned off
-  if (this.config.PROGRESSBAR_ENABLED) {
+  if (this['config']['PROGRESSBAR_ENABLED']) {
     
     // create a progress bar here if this is the first render request and the
     // loader is working
@@ -568,7 +568,7 @@ X.renderer.prototype.showProgressBar_ = function() {
 X.renderer.prototype.hideProgressBar_ = function() {
 
   // only do the following if the progressBar was not turned off
-  if (this.config.PROGRESSBAR_ENABLED) {
+  if (this['config']['PROGRESSBAR_ENABLED']) {
     
     if (this._progressBar && !this._readyCheckTimer2) {
       
@@ -608,7 +608,7 @@ X.renderer.prototype.hideProgressBar_ = function() {
 X.renderer.prototype.resetViewAndRender = function() {
 
   this._camera.reset();
-  this.render_(false);
+  this.render_(false, false);
   
 };
 
@@ -704,7 +704,7 @@ X.renderer.prototype.init = function() {
     // clear color and depth buffer
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     
-    if (this.config.PICKING_ENABLED) {
+    if (this['config']['PICKING_ENABLED']) {
       //
       // create a frame buffer for the picking functionality
       //
@@ -775,7 +775,7 @@ X.renderer.prototype.init = function() {
   // these get fired after user-interaction and camera re-positioning to re-draw
   // all objects
   goog.events.listen(camera, X.event.events.RENDER, this.render_.bind(this,
-      false));
+      false, false));
   
   //
   // attach all created objects as class attributes
@@ -1479,7 +1479,7 @@ X.renderer.prototype.render = function() {
   //
   // CURTAIN UP! LET THE SHOW BEGIN..
   //
-  this.render_(false);
+  this.render_(false, true);
   
 };
 
@@ -1631,7 +1631,8 @@ X.renderer.prototype.order_ = function() {
 
 /**
  * Picks an object at a position defined by display coordinates. If
- * X.renderer.config.PICKING_ENABLED is FALSE, this function always returns -1.
+ * X.renderer.config['PICKING_ENABLED'] is FALSE, this function always returns
+ * -1.
  * 
  * @param {!number} x The X-value of the display coordinates.
  * @param {!number} y The Y-value of the display coordinates.
@@ -1639,11 +1640,11 @@ X.renderer.prototype.order_ = function() {
  */
 X.renderer.prototype.pick = function(x, y) {
 
-  if (this.config.PICKING_ENABLED) {
+  if (this['config']['PICKING_ENABLED']) {
     
     // render again with picking turned on which renders the scene in a
     // framebuffer
-    this.render_(true);
+    this.render_(true, false);
     
     // grab the content of the framebuffer
     var data = new Uint8Array(4);
@@ -1672,9 +1673,11 @@ X.renderer.prototype.pick = function(x, y) {
  * 
  * @param {boolean} picking If TRUE, render to a framebuffer to perform picking -
  *          if FALSE render to the canvas viewport.
+ * @param {?boolean=} invoked If TRUE, the render counts as invoked and f.e.
+ *          statistics are generated.
  * @private
  */
-X.renderer.prototype.render_ = function(picking) {
+X.renderer.prototype.render_ = function(picking, invoked) {
 
   // picking = false;
   // for ( var y = 0; y < this._topLevelObjects.length; y++) {
@@ -1728,9 +1731,21 @@ X.renderer.prototype.render_ = function(picking) {
   // re-order the objects, but only if enabled.
   // this ordering should be disabled if the objects' opacity settings are not
   // used or if a large number of objects are associated
-  if (this.config.ORDERING_ENABLED) {
+  if (this['config']['ORDERING_ENABLED']) {
     
     this.order_();
+    
+  }
+  
+  var statisticsEnabled = (!picking && goog.isDefAndNotNull(invoked) && invoked && this['config']['STATISTICS_ENABLED']);
+  if (statisticsEnabled) {
+    
+    // for statistics
+    var verticesCounter = 0;
+    var trianglesCounter = 0;
+    var linesCounter = 0;
+    var pointsCounter = 0;
+    var textureCounter = 0;
     
   }
   
@@ -1911,6 +1926,10 @@ X.renderer.prototype.render_ = function(picking) {
             .get(X.shaders.attributes.VERTEXTEXTUREPOS), texturePositionBuffer
             .itemSize(), this._gl.FLOAT, false, 0, 0);
         
+        if (statisticsEnabled) {
+          textureCounter++;
+        }
+        
       } else {
         
         // no texture for this object or 'picking' mode
@@ -1947,16 +1966,25 @@ X.renderer.prototype.render_ = function(picking) {
       if (object.type() == X.object.types.TRIANGLES) {
         
         drawMode = this._gl.TRIANGLES;
+        if (statisticsEnabled) {
+          trianglesCounter += (vertexBuffer.itemCount() / 3);
+        }
         
       } else if (object.type() == X.object.types.LINES) {
         
         this._gl.lineWidth(object.lineWidth());
         
         drawMode = this._gl.LINES;
+        if (statisticsEnabled) {
+          linesCounter += (vertexBuffer.itemCount() / 2);
+        }
         
       } else if (object.type() == X.object.types.POINTS) {
         
         drawMode = this._gl.POINTS;
+        if (statisticsEnabled) {
+          pointsCounter += vertexBuffer.itemCount();
+        }
         
       } else if (object.type() == X.object.types.TRIANGLE_STRIPS) {
         
@@ -1981,6 +2009,12 @@ X.renderer.prototype.render_ = function(picking) {
         
       }
       
+      if (statisticsEnabled) {
+        
+        verticesCounter += vertexBuffer.itemCount();
+        
+      }
+      
       // push it to the GPU, baby..
       this._gl.drawArrays(drawMode, 0, vertexBuffer.itemCount());
       
@@ -1993,18 +2027,23 @@ X.renderer.prototype.render_ = function(picking) {
     
   } // loop through objects
   
+  if (statisticsEnabled) {
+    
+    var statistics = "Objects: " + numberOfObjects + " | ";
+    statistics += "Vertices: " + verticesCounter + " | ";
+    statistics += "Triangles: " + trianglesCounter + " | ";
+    statistics += "Lines: " + linesCounter + " | ";
+    statistics += "Points: " + pointsCounter + " | ";
+    statistics += "Textures: " + textureCounter;
+    window.console.log(statistics);
+    
+  }
+  
 };
 
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer', X.renderer);
-goog.exportSymbol('X.renderer.prototype.config', X.renderer.prototype.config);
-goog.exportSymbol('X.renderer.prototype.config.PROGRESSBAR_ENABLED',
-    X.renderer.prototype.config.PROGRESSBAR_ENABLED);
-goog.exportSymbol('X.renderer.prototype.config.PICKING_ENABLED',
-    X.renderer.prototype.config.PICKING_ENABLED);
-goog.exportSymbol('X.renderer.prototype.config.ORDERING_ENABLED',
-    X.renderer.prototype.config.ORDERING_ENABLED);
 goog.exportSymbol('X.renderer.prototype.width', X.renderer.prototype.width);
 goog.exportSymbol('X.renderer.prototype.height', X.renderer.prototype.height);
 goog.exportSymbol('X.renderer.prototype.canvas', X.renderer.prototype.canvas);
