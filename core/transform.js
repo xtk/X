@@ -270,6 +270,58 @@ X.transform.prototype.glMatrix = function() {
 };
 
 
+/**
+ * Flip the matrix value at the given index.
+ * 
+ * @param {number} i The row index.
+ * @param {number} j The column index.
+ * @private
+ */
+X.transform.prototype.flip_ = function(i, j) {
+
+  var oldValue = this._matrix.getValueAt(i, j);
+  if (!oldValue) {
+    oldValue = 0;
+  }
+  
+  this._matrix.setValueAt(i, j, oldValue * -1);
+  this._glMatrix = new Float32Array(this._matrix.flatten());
+  
+  this._dirty = true;
+  
+};
+
+
+/**
+ * Flip in X direction.
+ */
+X.transform.prototype.flipX = function() {
+
+  this.flip_(0, 0);
+  
+};
+
+
+/**
+ * Flip in Y direction.
+ */
+X.transform.prototype.flipY = function() {
+
+  this.flip_(1, 1);
+  
+};
+
+
+/**
+ * Flip in Z direction.
+ */
+X.transform.prototype.flipZ = function() {
+
+  this.flip_(2, 2);
+  
+};
+
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.transform', X.transform);
 goog.exportSymbol('X.transform.prototype.rotateX',
@@ -287,3 +339,6 @@ goog.exportSymbol('X.transform.prototype.translateZ',
 goog.exportSymbol('X.transform.prototype.matrix', X.transform.prototype.matrix);
 goog.exportSymbol('X.transform.prototype.setMatrix',
     X.transform.prototype.setMatrix);
+goog.exportSymbol('X.transform.prototype.flipX', X.transform.prototype.flipX);
+goog.exportSymbol('X.transform.prototype.flipY', X.transform.prototype.flipY);
+goog.exportSymbol('X.transform.prototype.flipZ', X.transform.prototype.flipZ);

@@ -281,6 +281,50 @@ X.matrix.prototype.multiplyByVector = function(vector) {
 };
 
 
+/**
+ * Swap two rows.
+ * 
+ * @param {number} row1 Index of the first row.
+ * @param {number} row2 Index of the second row.
+ */
+X.matrix.prototype.swapRows = function(row1, row2) {
+
+  this.swapRows_(row1, row2);
+  
+};
+
+
+/**
+ * Swap two columns.
+ * 
+ * @param {number} col1 Index of the first column.
+ * @param {number} col2 Index of the second column.
+ */
+X.matrix.prototype.swapCols = function(col1, col2) {
+
+  var dimensions = this.getSize();
+  
+  var h = 0;
+  for (h = 0; h < dimensions.height; h++) {
+    
+    var tmpValue = this.getValueAt(h, col1);
+    if (!tmpValue) {
+      tmpValue = 0;
+    }
+    
+    var tmpValue2 = this.getValueAt(h, col2);
+    if (!tmpValue2) {
+      tmpValue2 = 0;
+    }
+    
+    this.setValueAt(h, col1, tmpValue2);
+    this.setValueAt(h, col2, tmpValue);
+    
+  }
+  
+};
+
+
 goog.exportSymbol('X.matrix', X.matrix);
 goog.exportSymbol('X.matrix.createIdentityMatrix',
     X.matrix.createIdentityMatrix);
@@ -289,3 +333,5 @@ goog.exportSymbol('X.matrix.prototype.translate', X.matrix.prototype.translate);
 goog.exportSymbol('X.matrix.prototype.rotate', X.matrix.prototype.rotate);
 goog.exportSymbol('X.matrix.prototype.multiplyByVector',
     X.matrix.prototype.multiplyByVector);
+goog.exportSymbol('X.matrix.prototype.swapRows', X.matrix.prototype.swapRows);
+goog.exportSymbol('X.matrix.prototype.swapCols', X.matrix.prototype.swapCols);
