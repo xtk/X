@@ -1989,6 +1989,9 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       } else if (object.type() == X.object.types.TRIANGLE_STRIPS) {
         
         drawMode = this._gl.TRIANGLE_STRIP;
+        if (statisticsEnabled) {
+          trianglesCounter += (vertexBuffer.itemCount() / 3);
+        }
         
       } else if (object.type() == X.object.types.POLYGONS) {
         
@@ -2005,6 +2008,10 @@ X.renderer.prototype.render_ = function(picking, invoked) {
           
           drawMode = this._gl.TRIANGLE_FAN;
           
+        }
+        
+        if (statisticsEnabled) {
+          trianglesCounter += (vertexBuffer.itemCount() / 3);
         }
         
       }
