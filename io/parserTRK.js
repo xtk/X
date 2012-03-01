@@ -82,18 +82,18 @@ X.parserTRK.prototype.parse = function(object, data) {
   // Documented here: http://trackvis.org/docs/?subsect=fileformat
   var header = {
     'id_string': this.parseString(data, offset, 6),
-    'dim': this.parseUInt16Array(data, offset + 6, 3),
-    'voxel_size': this.parseFloat32Array(data, offset + 12, 3),
-    'origin': this.parseFloat32Array(data, offset + 24, 3),
+    'dim': this.parseUInt16Array(data, offset + 6, 3)[0],
+    'voxel_size': this.parseFloat32Array(data, offset + 12, 3)[0],
+    'origin': this.parseFloat32Array(data, offset + 24, 3)[0],
     'n_scalars': this.parseUInt16(data, offset + 36),
     'scalar_name': this.parseString(data, offset + 38, 200),
     'n_properties': this.parseUInt16(data, offset + 238),
     'property_name': this.parseString(data, offset + 240, 200),
-    'vox_to_ras': this.parseFloat32Array(data, offset + 440, 16),
+    'vox_to_ras': this.parseFloat32Array(data, offset + 440, 16)[0],
     'reserved': this.parseString(data, offset + 504, 444),
     'voxel_order': this.parseString(data, offset + 948, 4),
     'pad2': this.parseString(data, offset + 952, 4),
-    'image_orientation_patient': this.parseFloat32Array(data, offset + 956, 6),
+    'image_orientation_patient': this.parseFloat32Array(data, offset + 956, 6)[0],
     'pad1': this.parseString(data, offset + 980, 2),
     'invert_x': this.parseUChar8(data, offset + 982),
     'invert_y': this.parseUChar8(data, offset + 983),
@@ -146,7 +146,7 @@ X.parserTRK.prototype.parse = function(object, data) {
       // read scalars
       var scalars = null;
       if (header.n_scalars > 0) {
-        scalars = this.parseFloat32Array(data, offset, header.n_scalars);
+        scalars = this.parseFloat32Array(data, offset, header.n_scalars)[0];
         offset += (header.n_scalars * 4);
       }
       
