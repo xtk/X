@@ -389,6 +389,16 @@ X.interactor.prototype.onMouseMovementOutside = function(event) {
 
 
 /**
+ * Overload this function to execute code after on mouse movement.
+ */
+X.interactor.prototype.onMouseMove = function() {
+
+  // do nothing
+  
+};
+
+
+/**
  * Callback for mouse movement events inside the associated DOM element. This
  * distinguishes by pressed mouse buttons, key accelerators etc. and fires
  * proper X.event events.
@@ -398,7 +408,9 @@ X.interactor.prototype.onMouseMovementOutside = function(event) {
 X.interactor.prototype.onMouseMovementInside = function(event) {
 
   // TODO this needs to be more generalized
-  this.dispatchEvent('mouseup');
+  // this.dispatchEvent('mouseup');
+  
+  eval("this.onMouseMove(event)");
   
   this._mouseInside = true;
   
@@ -743,6 +755,8 @@ goog.exportSymbol('X.interactor.prototype.onMouseDown',
     X.interactor.prototype.onMouseDown);
 goog.exportSymbol('X.interactor.prototype.onMouseUp',
     X.interactor.prototype.onMouseUp);
+goog.exportSymbol('X.interactor.prototype.onMouseMove',
+    X.interactor.prototype.onMouseMove);
 goog.exportSymbol('X.interactor.prototype.onMouseMovementOutside',
     X.interactor.prototype.onMouseMovementOutside);
 goog.exportSymbol('X.interactor.prototype.onMouseMovementInside',
