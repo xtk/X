@@ -1842,17 +1842,14 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       } else {
         
         // we have a fixed object color or this is 'picking' mode
-        var useObjectColor = true;
+        var useObjectColor = 1;
         
         // some magic mode support
         if (magicMode && !picking) {
           
-          window.console.log('magicmode');
-          useObjectColor = false;
+          useObjectColor = 0;
           
         }
-        
-        // window.console.log('useObjectColor:', useObjectColor);
         
         // activate the useObjectColor flag on the shader
         // in magicMode, this is always false!
@@ -1860,8 +1857,6 @@ X.renderer.prototype.render_ = function(picking, invoked) {
             .get(X.shaders.uniforms.USEOBJECTCOLOR), useObjectColor);
         
         var objectColor = object.color();
-        
-        // window.console.log('objectColor:', objectColor);
         
         if (picking) {
           
