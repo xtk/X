@@ -334,20 +334,3 @@ X.event.ProgressEvent = function() {
 };
 // inherit from goog.events.Event
 goog.inherits(X.event.ProgressEvent, X.event);
-
-
-
-// export symbols (required for advanced compilation)
-goog.exportSymbol('X.event', X.event);
-goog.exportSymbol('X.event.events', X.event.events);
-goog.exportSymbol('X.event.uniqueId', X.event.uniqueId);
-
-// events
-goog.exportSymbol('X.event.PanEvent', X.event.PanEvent);
-goog.exportSymbol('X.event.RotateEvent', X.event.RotateEvent);
-goog.exportSymbol('X.event.ZoomEvent', X.event.ZoomEvent);
-goog.exportSymbol('X.event.RenderEvent', X.event.RenderEvent);
-goog.exportSymbol('X.event.ResetViewEvent', X.event.ResetViewEvent);
-goog.exportSymbol('X.event.ModifiedEvent', X.event.ModifiedEvent);
-goog.exportSymbol('X.event.HoverEvent', X.event.HoverEvent);
-goog.exportSymbol('X.event.ProgressEvent', X.event.ProgressEvent);
