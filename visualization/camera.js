@@ -148,10 +148,10 @@ X.camera.prototype.observe = function(interactor) {
     
   }
   
-  goog.events.listen(interactor, X.event.events.PAN, this.onPan.bind(this));
-  goog.events.listen(interactor, X.event.events.ROTATE, this.onRotate
+  goog.events.listen(interactor, X.event.events.PAN, this.onPan_.bind(this));
+  goog.events.listen(interactor, X.event.events.ROTATE, this.onRotate_
       .bind(this));
-  goog.events.listen(interactor, X.event.events.ZOOM, this.onZoom.bind(this));
+  goog.events.listen(interactor, X.event.events.ZOOM, this.onZoom_.bind(this));
   
 };
 
@@ -161,8 +161,9 @@ X.camera.prototype.observe = function(interactor) {
  * 
  * @param {!X.event.ZoomEvent} event The event.
  * @throws {Error} An exception if the event is invalid.
+ * @private
  */
-X.camera.prototype.onZoom = function(event) {
+X.camera.prototype.onZoom_ = function(event) {
 
   if (!(event instanceof X.event.ZoomEvent)) {
     
@@ -188,8 +189,9 @@ X.camera.prototype.onZoom = function(event) {
  * 
  * @param {!X.event.PanEvent} event The event.
  * @throws {Error} An exception if the event is invalid.
+ * @private
  */
-X.camera.prototype.onPan = function(event) {
+X.camera.prototype.onPan_ = function(event) {
 
   if (!(event instanceof X.event.PanEvent)) {
     
@@ -207,8 +209,9 @@ X.camera.prototype.onPan = function(event) {
  * 
  * @param {!X.event.RotateEvent} event The event.
  * @throws {Error} An exception if the event is invalid.
+ * @private
  */
-X.camera.prototype.onRotate = function(event) {
+X.camera.prototype.onRotate_ = function(event) {
 
   if (!(event instanceof X.event.RotateEvent)) {
     
@@ -242,6 +245,25 @@ X.camera.prototype.perspective = function() {
 X.camera.prototype.view = function() {
 
   return this._view;
+  
+};
+
+
+/**
+ * Set the view matrix for the three-dimensional space.
+ * 
+ * @param {!X.matrix} view The view matrix.
+ * @throws {Error} An exception if the view matrix is invalid.
+ */
+X.camera.prototype.setView = function(view) {
+
+  if (!goog.isDefAndNotNull(view) || !(view instanceof X.matrix)) {
+    
+    throw new Error('Invalid view matrix.');
+    
+  }
+  
+  this._view = view;
   
 };
 
@@ -657,14 +679,8 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
 
 
 // export symbols (required for advanced compilation)
-goog.exportSymbol('X.camera', X.camera);
-goog.exportSymbol('X.camera.prototype.observe', X.camera.prototype.observe);
-goog.exportSymbol('X.camera.prototype.onZoom', X.camera.prototype.onZoom);
-goog.exportSymbol('X.camera.prototype.onPan', X.camera.prototype.onPan);
-goog.exportSymbol('X.camera.prototype.onRotate', X.camera.prototype.onRotate);
-goog.exportSymbol('X.camera.prototype.perspective',
-    X.camera.prototype.perspective);
 goog.exportSymbol('X.camera.prototype.view', X.camera.prototype.view);
+goog.exportSymbol('X.camera.prototype.setView', X.camera.prototype.setView);
 goog.exportSymbol('X.camera.prototype.position', X.camera.prototype.position);
 goog.exportSymbol('X.camera.prototype.setPosition',
     X.camera.prototype.setPosition);
@@ -676,4 +692,3 @@ goog.exportSymbol('X.camera.prototype.pan', X.camera.prototype.pan);
 goog.exportSymbol('X.camera.prototype.rotate', X.camera.prototype.rotate);
 goog.exportSymbol('X.camera.prototype.zoomIn', X.camera.prototype.zoomIn);
 goog.exportSymbol('X.camera.prototype.zoomOut', X.camera.prototype.zoomOut);
-goog.exportSymbol('X.camera.prototype.observe', X.camera.prototype.observe);
