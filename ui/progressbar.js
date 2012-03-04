@@ -232,9 +232,3 @@ X.progressbar.prototype.kill = function() {
   this._doneProgressBar = null;
   
 };
-
-
-// export symbols (required for advanced compilation)
-goog.exportSymbol('X.progressbar', X.progressbar);
-goog.exportSymbol('X.progressbar.prototype.done', X.progressbar.prototype.done);
-goog.exportSymbol('X.progressbar.prototype.kill', X.progressbar.prototype.kill);
