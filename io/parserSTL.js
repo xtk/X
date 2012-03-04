@@ -176,5 +176,3 @@ X.parserSTL.prototype.parseLine = function(p, n, line) {
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.parserSTL', X.parserSTL);
 goog.exportSymbol('X.parserSTL.prototype.parse', X.parserSTL.prototype.parse);
-goog.exportSymbol('X.parserSTL.prototype.parseLine',
-    X.parserSTL.prototype.parseLine);

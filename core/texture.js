@@ -203,11 +203,3 @@ X.texture.prototype.setRawDataWidth = function(rawDataWidth) {
   this._dirty = true;
   
 };
-
-
-// export symbols (required for advanced compilation)
-goog.exportSymbol('X.texture', X.texture);
-goog.exportSymbol('X.texture.filters', X.texture.filters);
-goog.exportSymbol('X.texture.prototype.file', X.texture.prototype.file);
-
-// TODO setFile, setFilter

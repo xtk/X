@@ -125,8 +125,3 @@ X.indexer.prototype.unique = function() {
   return this._unique;
   
 };
-
-// export symbols (required for advanced compilation)
-//goog.exportSymbol('X.indexer', X.indexer);
-goog.exportSymbol('X.indexer.prototype.add', X.indexer.prototype.add);
-goog.exportSymbol('X.indexer.prototype.unique', X.indexer.prototype.unique);

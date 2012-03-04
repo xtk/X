@@ -147,4 +147,3 @@ goog.exportSymbol('X.base', X.base);
 goog.exportSymbol('X.base.prototype.className', X.base.prototype.className);
 goog.exportSymbol('X.base.prototype.print', X.base.prototype.print);
 goog.exportSymbol('X.base.prototype.dirty', X.base.prototype.dirty);
-goog.exportSymbol('X.base.prototype.setClean', X.base.prototype.setClean);

@@ -680,6 +680,7 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
 
 
 // export symbols (required for advanced compilation)
+goog.exportSymbol('X.camera', X.camera);
 goog.exportSymbol('X.camera.prototype.view', X.camera.prototype.view);
 goog.exportSymbol('X.camera.prototype.setView', X.camera.prototype.setView);
 goog.exportSymbol('X.camera.prototype.position', X.camera.prototype.position);

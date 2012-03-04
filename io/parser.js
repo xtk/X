@@ -204,9 +204,3 @@ X.parser.prototype.parseUChar8 = function(data, offset) {
 
   return data.charCodeAt(offset) & 0xff;
 };
-
-
-
-// export symbols (required for advanced compilation)
-goog.exportSymbol('X.parser', X.parser);
-goog.exportSymbol('X.parser.prototype.parse', X.parser.prototype.parse);

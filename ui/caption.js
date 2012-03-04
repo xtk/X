@@ -215,8 +215,3 @@ X.caption.prototype.kill = function() {
   this._style = null;
   
 };
-
-
-// export symbols (required for advanced compilation)
-goog.exportSymbol('X.caption', X.caption);
-goog.exportSymbol('X.caption.prototype.kill', X.caption.prototype.kill);

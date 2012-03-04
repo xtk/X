@@ -51,7 +51,6 @@ goog.require('goog.math.Vec3');
 goog.require('goog.structs.AvlTree');
 goog.require('goog.structs.Map');
 goog.require('goog.Timer');
-goog.require('goog.ui.Dialog');
 
 
 
@@ -1524,6 +1523,12 @@ X.renderer.prototype.generateTree_ = function(object, level) {
 };
 
 
+/**
+ * Get the added X.object with the given id.
+ * 
+ * @param {!number} id The object's id.
+ * @return {?X.object} The requested X.object or null if it was not found.
+ */
 X.renderer.prototype.get = function(id) {
 
   // TODO we can store the objects ordered and do a binary search here
@@ -1560,10 +1565,16 @@ X.renderer.prototype.showCaption_ = function(x, y) {
   
   var object = this.get(pickedId);
   
-  if (object && object.caption()) {
+  if (object) {
     
-    var t = new X.caption(this.container(), x + 10, y + 10, this.interactor());
-    t.setHtml(object.caption());
+    var caption = object.caption();
+    
+    if (caption) {
+      
+      var t = new X.caption(this.container(), x + 10, y + 10, this.interactor());
+      t.setHtml(caption);
+      
+    }
     
   }
   
@@ -2055,19 +2066,11 @@ goog.exportSymbol('X.renderer.prototype.container',
 goog.exportSymbol('X.renderer.prototype.camera', X.renderer.prototype.camera);
 goog.exportSymbol('X.renderer.prototype.interactor',
     X.renderer.prototype.interactor);
-goog.exportSymbol('X.renderer.prototype.loader', X.renderer.prototype.loader);
-goog.exportSymbol('X.renderer.prototype.onProgress',
-    X.renderer.prototype.onProgress);
-goog.exportSymbol('X.renderer.prototype.onModified',
-    X.renderer.prototype.onModified);
-goog.exportSymbol('X.renderer.prototype.onHover', X.renderer.prototype.onHover);
 goog.exportSymbol('X.renderer.prototype.resetBoundingBox',
     X.renderer.prototype.resetBoundingBox);
 goog.exportSymbol('X.renderer.prototype.resetViewAndRender',
     X.renderer.prototype.resetViewAndRender);
 goog.exportSymbol('X.renderer.prototype.init', X.renderer.prototype.init);
-goog.exportSymbol('X.renderer.prototype.addShaders',
-    X.renderer.prototype.addShaders);
 goog.exportSymbol('X.renderer.prototype.add', X.renderer.prototype.add);
 goog.exportSymbol('X.renderer.prototype.onShowtime',
     X.renderer.prototype.onShowtime);

@@ -821,7 +821,6 @@ X.interactor.prototype.onKey_ = function(event) {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.interactor', X.interactor);
-goog.exportSymbol('X.interactor.prototype.init', X.interactor.prototype.init);
 goog.exportSymbol('X.interactor.prototype.onMouseDown',
     X.interactor.prototype.onMouseDown);
 goog.exportSymbol('X.interactor.prototype.onMouseUp',

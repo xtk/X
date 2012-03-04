@@ -97,9 +97,3 @@ X.file.prototype.setPath = function(path) {
   this._dirty = true;
   
 };
-
-
-// export symbols (required for advanced compilation)
-goog.exportSymbol('X.file', X.file);
-goog.exportSymbol('X.file.prototype.path', X.file.prototype.path);
-goog.exportSymbol('X.file.prototype.setPath', X.file.prototype.setPath);
