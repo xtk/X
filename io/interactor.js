@@ -540,7 +540,7 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
     var e = new X.event.RotateEvent();
     
     // attach the distance vector
-    e['distance'] = distance;
+    e._distance = distance;
     
     // attach the angle in degrees
     e._angle = 0;

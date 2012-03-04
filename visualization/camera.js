@@ -264,6 +264,7 @@ X.camera.prototype.setView = function(view) {
   }
   
   this._view = view;
+  this._glView = new Float32Array(this._view.flatten());
   
 };
 
