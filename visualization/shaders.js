@@ -275,3 +275,6 @@ X.shaders.prototype.validate = function() {
   return true;
   
 };
+
+goog.exportSymbol('X.shaders.attributes', X.shaders.attributes);
+goog.exportSymbol('X.shaders.uniforms', X.shaders.uniforms);
