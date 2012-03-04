@@ -1565,10 +1565,16 @@ X.renderer.prototype.showCaption_ = function(x, y) {
   
   var object = this.get(pickedId);
   
-  if (object && object.caption()) {
+  if (object) {
     
-    var t = new X.caption(this.container(), x + 10, y + 10, this.interactor());
-    t.setHtml(object.caption());
+    var caption = object.caption();
+    
+    if (caption) {
+      
+      var t = new X.caption(this.container(), x + 10, y + 10, this.interactor());
+      t.setHtml(caption);
+      
+    }
     
   }
   
