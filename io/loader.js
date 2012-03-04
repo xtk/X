@@ -378,5 +378,3 @@ X.loader.extensions = {
   FSM: 'FSM',
   NRRD: 'NRRD'
 };
-
-goog.exportSymbol('X.loader', X.loader);
