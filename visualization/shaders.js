@@ -275,11 +275,3 @@ X.shaders.prototype.validate = function() {
   return true;
   
 };
-
-// export symbols (required for advanced compilation)
-goog.exportSymbol('X.shaders', X.shaders);
-goog.exportSymbol('X.shaders.attributes', X.shaders.attributes);
-goog.exportSymbol('X.shaders.uniforms', X.shaders.uniforms);
-goog.exportSymbol('X.shaders.prototype.vertex', X.shaders.prototype.vertex);
-goog.exportSymbol('X.shaders.prototype.fragment', X.shaders.prototype.fragment);
-goog.exportSymbol('X.shaders.prototype.validate', X.shaders.prototype.validate);

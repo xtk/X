@@ -140,9 +140,3 @@ X.buffer.prototype.itemSize = function() {
   return this._itemSize;
   
 };
-
-// export symbols (required for advanced compilation)
-goog.exportSymbol('X.buffer', X.buffer);
-goog.exportSymbol('X.buffer.prototype.glBuffer', X.buffer.prototype.glBuffer);
-goog.exportSymbol('X.buffer.prototype.itemCount', X.buffer.prototype.itemCount);
-goog.exportSymbol('X.buffer.prototype.itemSize', X.buffer.prototype.itemSize);
