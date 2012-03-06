@@ -135,6 +135,9 @@ X.shaders = function() {
   t2 += ' } else if (useTexture) {\n';
   t2 += '   gl_FragColor = texture2D(textureSampler,';
   t2 += '   vec2(fragmentTexturePos.s,fragmentTexturePos.t));\n';
+  t2 += '   if (gl_FragColor.r < 0.1) {';
+  t2 += '   discard;}';
+  t2 += '   gl_FragColor.a = 0.2;\n';
   t2 += ' } else {\n';
   // configure advanced lighting
   t2 += '   vec3 nNormal = normalize(fTransformedVertexNormal);\n';

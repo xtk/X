@@ -299,6 +299,39 @@ X.volume.prototype.dimensions = function() {
   
 };
 
+X.volume.prototype.volumeRenderingOn = function() {
+
+  var xyz = 0; // 0 for x, 1 for y, 2 for z
+  for (xyz = 0; xyz < 3; xyz++) {
+    
+
+    if (xyz == 0) {
+      currentIndex = this['_indexX'];
+    } else if (xyz == 1) {
+      currentIndex = this['_indexY'];
+    } else if (xyz == 2) {
+      currentIndex = this['_indexZ'];
+    }
+    
+    this.children()[xyz].children()[parseInt(currentIndex, 10)]
+        .setVisible(false);
+    
+  }
+  
+
+  var xChildren = this.children()[2].children();
+  // var xChildrenLength = this.children()[0].children().length;
+  
+  for (xC in xChildren) {
+    
+    xC = xChildren[xC];
+    xC.setVisible(true);
+    xC.setOpacity(0.3);
+    
+  }
+  
+};
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.volume', X.volume);
 goog.exportSymbol('X.volume.prototype.dimensions',
