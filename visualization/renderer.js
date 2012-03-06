@@ -1571,7 +1571,8 @@ X.renderer.prototype.showCaption_ = function(x, y) {
     
     if (caption) {
       
-      var t = new X.caption(this.container(), x + 10, y + 10, this.interactor());
+      var t = new X.caption(this.container(), this.container().offsetLeft + x +
+          10, this.container().offsetTop + y + 10, this.interactor());
       t.setHtml(caption);
       
     }
