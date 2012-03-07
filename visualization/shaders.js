@@ -122,6 +122,10 @@ X.shaders = function() {
   t2 += 'uniform bool useTexture;\n';
   t2 += 'uniform sampler2D textureSampler;\n';
   t2 += 'uniform float objectOpacity;\n';
+  t2 += 'uniform float volumeLowerThreshold;\n';
+  t2 += 'uniform float volumeUpperThreshold;\n';
+  t2 += 'uniform float volumeScalarMin;\n';
+  t2 += 'uniform float volumeScalarMax;\n';
   t2 += '\n';
   t2 += 'varying vec4 fVertexPosition;\n';
   t2 += 'varying vec3 fragmentColor;\n';
@@ -135,9 +139,14 @@ X.shaders = function() {
   t2 += ' } else if (useTexture) {\n';
   t2 += '   gl_FragColor = texture2D(textureSampler,';
   t2 += '   vec2(fragmentTexturePos.s,fragmentTexturePos.t));\n';
-  t2 += '   if (gl_FragColor.r < 0.1) {';
-  t2 += '   discard;}';
-  t2 += '   gl_FragColor.a = 0.2;\n';
+  // threshold functionality for 1-channel volumes
+  t2 += '   float _volumeLowerThreshold = (volumeLowerThreshold / volumeScalarMax);\n';
+  t2 += '   float _volumeUpperThreshold = (volumeUpperThreshold / volumeScalarMax);\n';
+  t2 += '   if (gl_FragColor.r < _volumeLowerThreshold ||\n';
+  t2 += '       gl_FragColor.r > _volumeUpperThreshold) {\n';
+  t2 += '     discard;\n';
+  t2 += '   };\n';
+  // t2 += ' gl_FragColor.a = 0.2;\n';
   t2 += ' } else {\n';
   // configure advanced lighting
   t2 += '   vec3 nNormal = normalize(fTransformedVertexNormal);\n';
@@ -201,7 +210,11 @@ X.shaders.uniforms = {
   NORMAL: 'normal',
   USEPICKING: 'usePicking',
   USETEXTURE: 'useTexture',
-  TEXTURESAMPLER: 'textureSampler'
+  TEXTURESAMPLER: 'textureSampler',
+  VOLUMELOWERTHRESHOLD: 'volumeLowerThreshold',
+  VOLUMEUPPERTHRESHOLD: 'volumeUpperThreshold',
+  VOLUMESCALARMIN: 'volumeScalarMin',
+  VOLUMESCALARMAX: 'volumeScalarMax'
 };
 
 

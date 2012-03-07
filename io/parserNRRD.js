@@ -99,10 +99,6 @@ X.parserNRRD.prototype.parse = function(object, data) {
     _data = data.substr(position);
   }
   
-  // we know enough to create the object
-  object._dimensions = [this.sizes[2], this.sizes[1], this.sizes[0]];
-  object.create_();
-  
   var numberOfPixels = this.sizes[0] * this.sizes[1] * this.sizes[2];
   
   //
@@ -123,6 +119,17 @@ X.parserNRRD.prototype.parse = function(object, data) {
     max = Math.max(max, pixelValue);
     min = Math.min(min, pixelValue);
   }
+  
+  // we know enough to create the object
+  object._dimensions = [this.sizes[2], this.sizes[1], this.sizes[0]];
+  
+  // attach the scalar range to the volume
+  object._scalarRange = [min, max];
+  // .. and set the default threshold
+  object.threshold(min, max);
+  
+  // create the object
+  object.create_();
   
   // now we have the values and need to reslice in the 3 orthogonal directions
   // and create the textures for each slice

@@ -154,6 +154,30 @@ X.volume = function() {
    */
   this._slicesZ = new X.object();
   
+  /**
+   * The upper threshold for this volume.
+   * 
+   * @type {number}
+   * @public
+   */
+  this['_lowerThreshold'] = 0;
+  
+  /**
+   * The upper threshold for this volume.
+   * 
+   * @type {number}
+   * @public
+   */
+  this['_upperThreshold'] = 1000;
+  
+  /**
+   * The scalar range of this volume.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._scalarRange = [0, 1000];
+  
 };
 // inherit from X.object
 goog.inherits(X.volume, X.object);
@@ -219,6 +243,7 @@ X.volume.prototype.create_ = function() {
       // .. new slice
       var _slice = new X.slice(_center[xyz], _front[xyz], _up[xyz], width,
           height);
+      _slice._volume = this;
       
       // only show the middle slice, hide everything else
       _slice.setVisible(i == _indexCenter);
@@ -291,7 +316,7 @@ X.volume.prototype.modified = function() {
 /**
  * Get the dimensions of this volume.
  * 
- * @return {!Array} dimensions The dimensions of this volume.
+ * @return {!Array} The dimensions of this volume.
  */
 X.volume.prototype.dimensions = function() {
 
@@ -299,12 +324,50 @@ X.volume.prototype.dimensions = function() {
   
 };
 
+
+/**
+ * Get the scalar range of this volume.
+ * 
+ * @return {!Array} The scalar range of this volume.
+ */
+X.volume.prototype.scalarRange = function() {
+
+  return this._scalarRange;
+  
+};
+
+
+/**
+ * Threshold this volume. All pixel values smaller than lower or larger than
+ * upper are ignored during rendering.
+ * 
+ * @param {!number} lower The lower threshold value.
+ * @param {!number} upper The upper threshold value.
+ * @throws {Error} If the specified range is invalid.
+ */
+X.volume.prototype.threshold = function(lower, upper) {
+
+  if (!goog.isDefAndNotNull(lower) || !goog.isNumber(lower) ||
+      !goog.isDefAndNotNull(upper) || !goog.isNumber(upper) ||
+      (lower > upper) || (lower < this._scalarRange[0]) ||
+      (upper > this._scalarRange[1])) {
+    
+    throw new Error('Invalid threshold range.');
+    
+  }
+  
+  this._lowerThreshold = lower;
+  this._upperThreshold = upper;
+  
+};
+
+
 X.volume.prototype.volumeRenderingOn = function() {
 
   var xyz = 0; // 0 for x, 1 for y, 2 for z
   for (xyz = 0; xyz < 3; xyz++) {
     
-
+    var currentIndex;
     if (xyz == 0) {
       currentIndex = this['_indexX'];
     } else if (xyz == 1) {
@@ -322,8 +385,10 @@ X.volume.prototype.volumeRenderingOn = function() {
   var xChildren = this.children()[2].children();
   // var xChildrenLength = this.children()[0].children().length;
   
+  var xC;
   for (xC in xChildren) {
     
+
     xC = xChildren[xC];
     xC.setVisible(true);
     xC.setOpacity(0.3);
@@ -336,4 +401,6 @@ X.volume.prototype.volumeRenderingOn = function() {
 goog.exportSymbol('X.volume', X.volume);
 goog.exportSymbol('X.volume.prototype.dimensions',
     X.volume.prototype.dimensions);
+goog.exportSymbol('X.volume.prototype.scalarRange',
+    X.volume.prototype.scalarRange);
 goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);

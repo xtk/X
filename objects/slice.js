@@ -116,6 +116,8 @@ X.slice = function(center, front, up, width, height) {
 
   ];
   
+  this._volume = null;
+  
   this.create_();
   
 };
