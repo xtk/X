@@ -100,10 +100,21 @@ def parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml 
         
       else:
         element.setAttribute('Status', 'failed')
+        fillxml( xml, element, 'Name', name[2])
         nexttest = f3.readline();
-        nexttest = f3.readline();
-        nexttest = f3.readline();
-        nexttest = f3.readline();
+      
+        error1 = f3.readline();
+        error2 = f3.readline();
+        error3 = f3.readline();
+ 
+        resultsElement = xml.createElement( 'Results' )
+        element.appendChild( resultsElement )
+
+        measurementElement = xml.createElement( 'Measurement' )
+        resultsElement.appendChild( measurementElement )
+        
+        fillxml(xml, measurementElement, 'Value', error1 + error2 + error3)
+
         nexttest = f3.readline();
         count3 += 6;
 
