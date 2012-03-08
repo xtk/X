@@ -689,6 +689,7 @@ X.renderer.prototype.init = function() {
     gl.enable(gl.BLEND);
     gl.blendEquation(gl.FUNC_ADD);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    
     // gl.blendFunc(gl.DST_COLOR, gl.ZERO);
     // gl.blendFunc(gl.ONE_MINUS_SRC_ALPHA, gl.SRC_ALPHA);
     // // enable depth testing
@@ -1758,6 +1759,31 @@ X.renderer.prototype.render_ = function(picking, invoked) {
     var linesCounter = 0;
     var pointsCounter = 0;
     
+  }
+  
+  // test
+  
+  var centroidVector = new goog.math.Vec3(1, 0, 0);
+  var realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  var distanceFromEyeX = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  centroidVector = new goog.math.Vec3(0, 1, 0);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  distanceFromEyeY = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  centroidVector = new goog.math.Vec3(0, 0, 1);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  distanceFromEyeZ = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  
+  lnu = Math.max(distanceFromEyeX, distanceFromEyeY, distanceFromEyeZ);
+  
+  if (lnu == distanceFromEyeX) {
+    console.log('X');
+  } else if (lnu == distanceFromEyeY) {
+    console.log('Y');
+  } else if (lnu == distanceFromEyeZ) {
+    console.log('Z');
   }
   
   //

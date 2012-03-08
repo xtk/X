@@ -146,7 +146,7 @@ X.shaders = function() {
   t2 += '       gl_FragColor.r > _volumeUpperThreshold) {\n';
   t2 += '     discard;\n';
   t2 += '   };\n';
-  // t2 += ' gl_FragColor.a = 0.2;\n';
+  t2 += ' gl_FragColor.a = 0.2;\n';
   t2 += ' } else {\n';
   // configure advanced lighting
   t2 += '   vec3 nNormal = normalize(fTransformedVertexNormal);\n';

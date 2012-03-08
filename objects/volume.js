@@ -367,7 +367,7 @@ X.volume.prototype.volumeRenderingOn = function() {
   var xyz = 0; // 0 for x, 1 for y, 2 for z
   for (xyz = 0; xyz < 3; xyz++) {
     
-    var currentIndex;
+    var currentIndex = 0;
     if (xyz == 0) {
       currentIndex = this['_indexX'];
     } else if (xyz == 1) {
@@ -379,19 +379,18 @@ X.volume.prototype.volumeRenderingOn = function() {
     this.children()[xyz].children()[parseInt(currentIndex, 10)]
         .setVisible(false);
     
-  }
-  
 
-  var xChildren = this.children()[2].children();
+
+  }
+  var xChildren = this.children()[0].children();
   // var xChildrenLength = this.children()[0].children().length;
   
-  var xC;
+  var xC = null;
   for (xC in xChildren) {
     
-
     xC = xChildren[xC];
     xC.setVisible(true);
-    xC.setOpacity(0.3);
+    xC.setOpacity(0.2);
     
   }
   
