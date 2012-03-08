@@ -689,7 +689,8 @@ X.renderer.prototype.init = function() {
     gl.enable(gl.BLEND);
     gl.blendEquation(gl.FUNC_ADD);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    
+    // gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE,
+    // gl.ZERO);
     // gl.blendFunc(gl.DST_COLOR, gl.ZERO);
     // gl.blendFunc(gl.ONE_MINUS_SRC_ALPHA, gl.SRC_ALPHA);
     // // enable depth testing
@@ -1013,14 +1014,13 @@ X.renderer.prototype.update_ = function(object) {
       
     }
     
-    object.setClean();
-    
   }
   
   // check if this is an empty object, if yes, jump out
   // empty objects can be used to group objects
   if (points.count() == 0) {
     
+    object.setClean();
     return;
     
   }
@@ -1396,6 +1396,9 @@ X.renderer.prototype.update_ = function(object) {
   this._colorBuffers.set(id, colorBuffer);
   this._texturePositionBuffers.set(id, texturePositionBuffer);
   
+  // clean the object
+  object.setClean();
+  
   // unlock
   this._locked = false;
   
@@ -1504,7 +1507,6 @@ X.renderer.prototype.generateTree_ = function(object, level) {
   }
   
   output += object.id();
-  // window.console.log(output);
   
   if (object.hasChildren()) {
     
@@ -1583,6 +1585,51 @@ X.renderer.prototype.showCaption_ = function(x, y) {
 };
 
 
+X.renderer.prototype.orientVolume_ = function(volume) {
+
+  // TODO once we have arbitary sliced volumes, we need to modify the vectors
+  // here
+  var centroidVector = new goog.math.Vec3(1, 0, 0);
+  var realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  var distanceFromEyeX = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  centroidVector = new goog.math.Vec3(-1, 0, 0);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  distanceFromEyeX2 = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  
+  centroidVector = new goog.math.Vec3(0, 1, 0);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  distanceFromEyeY = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  centroidVector = new goog.math.Vec3(0, -1, 0);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  distanceFromEyeY2 = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  
+  centroidVector = new goog.math.Vec3(0, 0, 1);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  distanceFromEyeZ = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  centroidVector = new goog.math.Vec3(0, 0, -1);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  distanceFromEyeZ2 = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  
+  lnu = Math.max(distanceFromEyeX, distanceFromEyeY, distanceFromEyeZ,
+      distanceFromEyeX2, distanceFromEyeY2, distanceFromEyeZ2);
+  
+  if (lnu == distanceFromEyeX || lnu == distanceFromEyeX2) {
+    volume.volumeRendering_(0);
+  } else if (lnu == distanceFromEyeY || lnu == distanceFromEyeY2) {
+    volume.volumeRendering_(1);
+  } else if (lnu == distanceFromEyeZ || lnu == distanceFromEyeZ2) {
+    volume.volumeRendering_(2);
+  }
+  
+};
+
+
 /**
  * Calculates the distance for each associated X.object and orders the AVL tree
  * accordingly from back-to-front while fully opaque objects are drawn first.
@@ -1639,6 +1686,7 @@ X.renderer.prototype.order_ = function() {
     
   }
   
+
 };
 
 
@@ -1761,37 +1809,26 @@ X.renderer.prototype.render_ = function(picking, invoked) {
     
   }
   
-  // test
-  
-  var centroidVector = new goog.math.Vec3(1, 0, 0);
-  var realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  var distanceFromEyeX = goog.math.Vec3.distance(this._camera.focus(),
-      realCentroidVector);
-  centroidVector = new goog.math.Vec3(0, 1, 0);
-  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  distanceFromEyeY = goog.math.Vec3.distance(this._camera.focus(),
-      realCentroidVector);
-  centroidVector = new goog.math.Vec3(0, 0, 1);
-  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  distanceFromEyeZ = goog.math.Vec3.distance(this._camera.focus(),
-      realCentroidVector);
-  
-  lnu = Math.max(distanceFromEyeX, distanceFromEyeY, distanceFromEyeZ);
-  
-  if (lnu == distanceFromEyeX) {
-    console.log('X');
-  } else if (lnu == distanceFromEyeY) {
-    console.log('Y');
-  } else if (lnu == distanceFromEyeZ) {
-    console.log('Z');
+  //
+  // orient volumes for proper volume rendering - if they are any
+  // this means, depending on the direction of the eye, we use the slice stack
+  // of a specific axis to create the tiled texture
+  var i;
+  var topLevelObjectsLength = this._topLevelObjects.length;
+  for (i = 0; i < topLevelObjectsLength; ++i) {
+    var topLevelObject = this._topLevelObjects[i];
+    if (topLevelObject instanceof X.volume) {
+      console.log('found vol');
+      this.orientVolume_(volume);
+    }
   }
   
+
   //
   // loop through all objects and (re-)draw them
   var objects = this._objects.getValues();
   var numberOfObjects = objects.length;
   
-  var i;
   for (i = 0; i < numberOfObjects; ++i) {
     
     var object = objects[i];
@@ -1988,6 +2025,16 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         this._gl.uniform1f(this._uniformLocations
             .get(X.shaders.uniforms.VOLUMESCALARMAX), scalarRange[1]);
         
+        // opacity, only if volume rendering is active
+        if (volume['_volumeRendering']) {
+          
+          this._gl.uniform1f(this._uniformLocations
+              .get(X.shaders.uniforms.OBJECTOPACITY), parseFloat(volume
+              .opacity()));
+          
+        }
+        
+
       }
       
       // TRANSFORMS

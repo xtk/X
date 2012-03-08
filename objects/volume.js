@@ -178,6 +178,9 @@ X.volume = function() {
    */
   this._scalarRange = [0, 1000];
   
+  this['_volumeRendering'] = false;
+  this['_volumeRenderingDirection'] = 0;
+  
 };
 // inherit from X.object
 goog.inherits(X.volume, X.object);
@@ -271,17 +274,54 @@ X.volume.prototype.create_ = function() {
 };
 
 /**
- * Show the current slices which are set by this._indexX, this._indexY and
- * this._indexZ and hide all others.
- * 
  * @inheritDoc
  */
 X.volume.prototype.modified = function() {
 
+  this._dirty = true;
+  
+  if (this['_volumeRendering']) {
+    
+    // prepare volume rendering
+    this.volumeRendering_(this['_volumeRenderingDirection']);
+    
+  } else {
+    
+    // prepare slicing
+    this.slicing_();
+    
+  }
+  
+
+  // call the superclass' modified method
+  X.volume.superClass_.modified.call(this);
+  
+};
+
+/**
+ * Show the current slices which are set by this._indexX, this._indexY and
+ * this._indexZ and hide all others.
+ */
+X.volume.prototype.slicing_ = function() {
+
+  if (this._dirty) {
+    
+    // hide all slices
+    var xyz = 0; // 0 for x, 1 for y, 2 for z
+    for (xyz = 0; xyz < 3; xyz++) {
+      
+      var _child = this.children()[xyz];
+      _child.setVisible(false);
+      _child.setOpacity(1);
+      
+    }
+  }
+  
   // display the current slices in X,Y and Z direction
   var xyz = 0; // 0 for x, 1 for y, 2 for z
   for (xyz = 0; xyz < 3; xyz++) {
     
+    var _child = this.children()[xyz];
     var currentIndex = 0;
     var oldIndex = 0;
     
@@ -300,15 +340,11 @@ X.volume.prototype.modified = function() {
     }
     
     // hide the old slice
-    this.children()[xyz].children()[parseInt(oldIndex, 10)].setVisible(false);
+    _child.children()[parseInt(oldIndex, 10)].setVisible(false);
     // show the current slice
-    this.children()[xyz].children()[parseInt(currentIndex, 10)]
-        .setVisible(true);
+    _child.children()[parseInt(currentIndex, 10)].setVisible(true);
     
   }
-  
-  // call the superclass' modified method
-  X.volume.superClass_.modified.call(this);
   
 };
 
@@ -362,37 +398,35 @@ X.volume.prototype.threshold = function(lower, upper) {
 };
 
 
-X.volume.prototype.volumeRenderingOn = function() {
+X.volume.prototype.volumeRendering_ = function(direction) {
 
+  if ((!this._dirty && !this['_volumeRendering']) ||
+      (!this._dirty && direction == this['_volumeRenderingDirection'])) {
+    
+    // we do not have to do anything
+    return;
+    
+  }
+  
   var xyz = 0; // 0 for x, 1 for y, 2 for z
   for (xyz = 0; xyz < 3; xyz++) {
     
-    var currentIndex = 0;
-    if (xyz == 0) {
-      currentIndex = this['_indexX'];
-    } else if (xyz == 1) {
-      currentIndex = this['_indexY'];
-    } else if (xyz == 2) {
-      currentIndex = this['_indexZ'];
+    var _child = this.children()[xyz];
+    var _visibility = false;
+    
+    if (xyz == direction) {
+      // this is the actual direction of the volume rendering so we show the
+      // slices
+      _visibility = true;
     }
     
-    this.children()[xyz].children()[parseInt(currentIndex, 10)]
-        .setVisible(false);
+    _child.setVisible(_visibility);
+    _child.setOpacity(this._opacity);
     
-
-
   }
-  var xChildren = this.children()[0].children();
-  // var xChildrenLength = this.children()[0].children().length;
   
-  var xC = null;
-  for (xC in xChildren) {
-    
-    xC = xChildren[xC];
-    xC.setVisible(true);
-    xC.setOpacity(0.2);
-    
-  }
+  // store the direction
+  this['_volumeRenderingDirection'] = direction;
   
 };
 

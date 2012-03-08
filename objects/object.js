@@ -793,7 +793,7 @@ X.object.prototype.setVisible = function(visible) {
 
   if (this.hasChildren()) {
     
-    // loop through the children and propagate the new color
+    // loop through the children and propagate the new visibility
     var children = this.children();
     var numberOfChildren = children.length;
     var c = 0;
