@@ -457,8 +457,8 @@ X.volume.prototype.volumeRendering_ = function(direction) {
     }
     
     _child.setVisible(_visibility);
-    _child.setOpacity(this._opacity); // propagate the opacity to all slices
-                                      // since we use it for depth ordering
+    _child.setOpacity(this['_opacity']); // propagate the opacity to all slices
+    // since we use it for depth ordering
     
   }
   

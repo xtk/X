@@ -1613,35 +1613,38 @@ X.renderer.prototype.orientVolume_ = function(volume) {
       realCentroidVector);
   centroidVector = new goog.math.Vec3(-1, 0, 0);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  distanceFromEyeX2 = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeX2 = goog.math.Vec3.distance(this._camera.focus(),
       realCentroidVector);
   
   centroidVector = new goog.math.Vec3(0, 1, 0);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  distanceFromEyeY = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeY = goog.math.Vec3.distance(this._camera.focus(),
       realCentroidVector);
   centroidVector = new goog.math.Vec3(0, -1, 0);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  distanceFromEyeY2 = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeY2 = goog.math.Vec3.distance(this._camera.focus(),
       realCentroidVector);
   
   centroidVector = new goog.math.Vec3(0, 0, 1);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  distanceFromEyeZ = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeZ = goog.math.Vec3.distance(this._camera.focus(),
       realCentroidVector);
   centroidVector = new goog.math.Vec3(0, 0, -1);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  distanceFromEyeZ2 = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeZ2 = goog.math.Vec3.distance(this._camera.focus(),
       realCentroidVector);
   
-  lnu = Math.max(distanceFromEyeX, distanceFromEyeY, distanceFromEyeZ,
-      distanceFromEyeX2, distanceFromEyeY2, distanceFromEyeZ2);
+  var maxDistance = Math
+      .max(distanceFromEyeX, distanceFromEyeY, distanceFromEyeZ,
+          distanceFromEyeX2, distanceFromEyeY2, distanceFromEyeZ2);
   
-  if (lnu == distanceFromEyeX || lnu == distanceFromEyeX2) {
+  if (maxDistance == distanceFromEyeX || maxDistance == distanceFromEyeX2) {
     volume.volumeRendering_(0);
-  } else if (lnu == distanceFromEyeY || lnu == distanceFromEyeY2) {
+  } else if (maxDistance == distanceFromEyeY ||
+      maxDistance == distanceFromEyeY2) {
     volume.volumeRendering_(1);
-  } else if (lnu == distanceFromEyeZ || lnu == distanceFromEyeZ2) {
+  } else if (maxDistance == distanceFromEyeZ ||
+      maxDistance == distanceFromEyeZ2) {
     volume.volumeRendering_(2);
   }
   
