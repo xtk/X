@@ -121,7 +121,7 @@ X.parserNRRD.prototype.parse = function(object, data) {
   }
   
   // we know enough to create the object
-  object._dimensions = [this.sizes[2], this.sizes[1], this.sizes[0]];
+  object._dimensions = [this.sizes[0], this.sizes[1], this.sizes[2]];
   
   // attach the scalar range to the volume
   object._scalarRange = [min, max];
@@ -209,7 +209,7 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture.setRawData(textureForCurrentSlice);
     pixelTexture.setRawDataWidth(colsCount);
     pixelTexture.setRawDataHeight(rowsCount);
-    object._slicesX.children()[z].setTexture(pixelTexture);
+    object._slicesZ.children()[z].setTexture(pixelTexture);
     
   }
   
@@ -246,7 +246,7 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture.setRawData(textureForCurrentSlice);
     pixelTexture.setRawDataWidth(colsCount);
     pixelTexture.setRawDataHeight(slices);
-    object._slicesY.children()[(rowsCount - 1) - row].setTexture(pixelTexture);
+    object._slicesY.children()[row].setTexture(pixelTexture);
     
   }
   
@@ -279,7 +279,7 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture.setRawData(textureForCurrentSlice);
     pixelTexture.setRawDataWidth(rowsCount);
     pixelTexture.setRawDataHeight(slices);
-    object._slicesZ.children()[(colsCount - 1) - col].setTexture(pixelTexture);
+    object._slicesX.children()[col].setTexture(pixelTexture);
     
   }
   

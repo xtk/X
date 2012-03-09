@@ -1314,8 +1314,6 @@ X.renderer.prototype.update_ = function(object) {
       // activate the texture on the WebGL side
       this._textures.set(texture.id(), glTexture);
       
-      this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
-      
       this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
       if (texture.rawData()) {
         
@@ -1329,11 +1327,16 @@ X.renderer.prototype.update_ = function(object) {
         this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T,
             this._gl.CLAMP_TO_EDGE);
         
+        // we do not want to flip here
+        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, true);
+        
       } else {
         
         // use an imageFile for the texture
         this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA,
             this._gl.RGBA, this._gl.UNSIGNED_BYTE, glTexture.image);
+        
+        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
         
       }
       
