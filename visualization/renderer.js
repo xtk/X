@@ -1818,8 +1818,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   for (i = 0; i < topLevelObjectsLength; ++i) {
     var topLevelObject = this._topLevelObjects[i];
     if (topLevelObject instanceof X.volume) {
-      console.log('found vol');
-      this.orientVolume_(volume);
+      this.orientVolume_(topLevelObject);
     }
   }
   
