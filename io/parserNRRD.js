@@ -120,6 +120,15 @@ X.parserNRRD.prototype.parse = function(object, data) {
     min = Math.min(min, pixelValue);
   }
   
+  // spacing
+  var spacingX = new goog.math.Vec3(this.vectors[0][0], this.vectors[0][1],
+      this.vectors[0][2]).magnitude();
+  var spacingY = new goog.math.Vec3(this.vectors[1][0], this.vectors[1][1],
+      this.vectors[1][2]).magnitude();
+  var spacingZ = new goog.math.Vec3(this.vectors[2][0], this.vectors[2][1],
+      this.vectors[2][2]).magnitude();
+  object._spacing = [spacingX, spacingY, spacingZ];
+  
   // we know enough to create the object
   object._dimensions = [this.sizes[0], this.sizes[1], this.sizes[2]];
   
