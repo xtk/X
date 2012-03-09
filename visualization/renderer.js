@@ -1565,6 +1565,14 @@ X.renderer.prototype.get = function(id) {
 };
 
 
+/**
+ * Show the caption of the X.object at viewport position x,y. This performs
+ * object picking and shows a tooltip if an object with a caption exists at this
+ * position.
+ * 
+ * @param {number} x
+ * @param {number} y
+ */
 X.renderer.prototype.showCaption_ = function(x, y) {
 
   var pickedId = this.pick(x, y);
@@ -1588,6 +1596,13 @@ X.renderer.prototype.showCaption_ = function(x, y) {
 };
 
 
+/**
+ * (Re-)configure the volume rendering orientation based on the current view
+ * matrix of the camera. We always use the slices which are best oriented to
+ * create the tiled textures of X.volumes.
+ * 
+ * @param {X.volume} volume The X.volume to configure
+ */
 X.renderer.prototype.orientVolume_ = function(volume) {
 
   // TODO once we have arbitary sliced volumes, we need to modify the vectors
@@ -1813,7 +1828,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   }
   
   //
-  // orient volumes for proper volume rendering - if they are any
+  // orient volumes for proper volume rendering - if they are any,
   // this means, depending on the direction of the eye, we use the slice stack
   // of a specific axis to create the tiled texture
   var i;

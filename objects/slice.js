@@ -97,13 +97,44 @@ X.slice = function(center, front, up, width, height) {
    */
   this['_className'] = 'slice';
   
+  /**
+   * The center of this slice as a 3d vector.
+   * 
+   * @type {!Array}
+   * @protected
+   */
   this._center = center;
   
+  /**
+   * The front of this slice as a 3d vector.
+   * 
+   * @type {!Array}
+   * @protected
+   */
   this._front = front;
   
+  /**
+   * The up direction of this slice as a 3d vector.
+   * 
+   * @type {!Array}
+   * @protected
+   */
   this._up = up;
   
+  /**
+   * The width of this slice.
+   * 
+   * @type {number}
+   * @protected
+   */
   this._width = width;
+  
+  /**
+   * The height of this slice.
+   * 
+   * @type {number}
+   * @protected
+   */
   this._height = height;
   
   /**
@@ -116,8 +147,15 @@ X.slice = function(center, front, up, width, height) {
 
   ];
   
+  /**
+   * A pointer to the parent volume of this slice.
+   * 
+   * @type {?X.volume}
+   * @protected
+   */
   this._volume = null;
   
+  // create the slice
   this.create_();
   
 };
