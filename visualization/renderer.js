@@ -1790,10 +1790,10 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
   
   // grab the current perspective from the camera
-  var perspectiveMatrix = this._camera.perspective();
+  var perspectiveMatrix = this._camera._perspective;
   
   // grab the current view from the camera
-  var viewMatrix = this._camera.glView();
+  var viewMatrix = this._camera._glView;
   
   // propagate perspective and view matrices to the uniforms of
   // the shader
@@ -1843,7 +1843,31 @@ X.renderer.prototype.render_ = function(picking, invoked) {
     }
   }
   
-
+  //
+  // caching for multiple objects
+  //
+  var aPointers = this._attributePointers;
+  var aPosition = aPointers.get(X.shaders.attributes.VERTEXPOSITION);
+  var aNormal = aPointers.get(X.shaders.attributes.VERTEXNORMAL);
+  var aColor = aPointers.get(X.shaders.attributes.VERTEXCOLOR);
+  var aTexturePosition = aPointers.get(X.shaders.attributes.VERTEXTEXTUREPOS);
+  
+  var uLocations = this._uniformLocations;
+  var uUsePicking = uLocations.get(X.shaders.uniforms.USEPICKING);
+  var uUseObjectColor = uLocations.get(X.shaders.uniforms.USEOBJECTCOLOR);
+  var uObjectColor = uLocations.get(X.shaders.uniforms.OBJECTCOLOR);
+  var uObjectOpacity = uLocations.get(X.shaders.uniforms.OBJECTOPACITY);
+  var uUseTexture = uLocations.get(X.shaders.uniforms.USETEXTURE);
+  var uTextureSampler = uLocations.get(X.shaders.uniforms.TEXTURESAMPLER);
+  var uVolumeLowerThreshold = uLocations
+      .get(X.shaders.uniforms.VOLUMELOWERTHRESHOLD);
+  var uVolumeUpperThreshold = uLocations
+      .get(X.shaders.uniforms.VOLUMEUPPERTHRESHOLD);
+  var uVolumeScalarMin = uLocations.get(X.shaders.uniforms.VOLUMESCALARMIN);
+  var uVolumeScalarMax = uLocations.get(X.shaders.uniforms.VOLUMESCALARMAX);
+  var uObjectTransform = uLocations.get(X.shaders.uniforms.OBJECTTRANSFORM);
+  var uPointSize = uLocations.get(X.shaders.uniforms.POINTSIZE);
+  
   //
   // loop through all objects and (re-)draw them
   var objects = this._objects.getValues();
@@ -1857,16 +1881,16 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       // we have a valid object
       
       // check visibility
-      if (!object.visible()) {
+      if (!object['_visible']) {
         
         // not visible, continue to the next one..
         continue;
         
       }
       
-      var id = object.id();
+      var id = object['_id'];
       
-      var magicMode = object.magicMode();
+      var magicMode = object['_magicMode'];
       
       var vertexBuffer = this._vertexBuffers.get(id);
       var normalBuffer = this._normalBuffers.get(id);
@@ -1879,45 +1903,39 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       // VERTICES
       this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
       
-      this._gl.vertexAttribPointer(this._attributePointers
-          .get(X.shaders.attributes.VERTEXPOSITION), vertexBuffer.itemSize(),
+      this._gl.vertexAttribPointer(aPosition, vertexBuffer.itemSize(),
           this._gl.FLOAT, false, 0, 0);
       
       // NORMALS
       this._gl.bindBuffer(this._gl.ARRAY_BUFFER, normalBuffer.glBuffer());
       
-      this._gl.vertexAttribPointer(this._attributePointers
-          .get(X.shaders.attributes.VERTEXNORMAL), normalBuffer.itemSize(),
+      this._gl.vertexAttribPointer(aNormal, normalBuffer.itemSize(),
           this._gl.FLOAT, false, 0, 0);
       
       if (picking) {
         
         // in picking mode, we use a color based on the id of this object
-        this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.USEPICKING), true);
+        this._gl.uniform1i(uUsePicking, true);
         
       } else {
         
         // in picking mode, we use a color based on the id of this object
-        this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.USEPICKING), false);
+        this._gl.uniform1i(uUsePicking, false);
         
       }
       
       // COLORS
-      if (goog.isDefAndNotNull(colorBuffer) && !picking && !magicMode) {
+      if (colorBuffer && !picking && !magicMode) {
         
         // point colors are defined for this object and there is not picking
         // request and no magicMode active
         
         // de-activate the useObjectColor flag on the shader
-        this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.USEOBJECTCOLOR), false);
+        this._gl.uniform1i(uUseObjectColor, false);
         
         this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());
         
-        this._gl.vertexAttribPointer(this._attributePointers
-            .get(X.shaders.attributes.VERTEXCOLOR), colorBuffer.itemSize(),
+        this._gl.vertexAttribPointer(aColor, colorBuffer.itemSize(),
             this._gl.FLOAT, false, 0, 0);
         
       } else {
@@ -1934,10 +1952,9 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         
         // activate the useObjectColor flag on the shader
         // in magicMode, this is always false!
-        this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.USEOBJECTCOLOR), useObjectColor);
+        this._gl.uniform1i(uUseObjectColor, useObjectColor);
         
-        var objectColor = object.color();
+        var objectColor = object['_color'];
         
         if (picking) {
           
@@ -1960,32 +1977,27 @@ X.renderer.prototype.render_ = function(picking, invoked) {
           objectColor = [r / 10, g / 10, b / 10];
         }
         
-        this._gl.uniform3f(this._uniformLocations
-            .get(X.shaders.uniforms.OBJECTCOLOR), parseFloat(objectColor[0]),
+        this._gl.uniform3f(uObjectColor, parseFloat(objectColor[0]),
             parseFloat(objectColor[1]), parseFloat(objectColor[2]));
         
         // we always have to configure the attribute of the point colors
         // even if no point colors are in use
-        this._gl.vertexAttribPointer(this._attributePointers
-            .get(X.shaders.attributes.VERTEXCOLOR), vertexBuffer.itemSize(),
+        this._gl.vertexAttribPointer(aColor, vertexBuffer.itemSize(),
             this._gl.FLOAT, false, 0, 0);
         
       }
       
       // OPACITY
-      this._gl.uniform1f(this._uniformLocations
-          .get(X.shaders.uniforms.OBJECTOPACITY), parseFloat(object.opacity()));
+      this._gl.uniform1f(uObjectOpacity, parseFloat(object['_opacity']));
       
       // TEXTURE
-      if (goog.isDefAndNotNull(object.texture()) &&
-          goog.isDefAndNotNull(texturePositionBuffer) && !picking) {
+      if (object._texture && texturePositionBuffer && !picking) {
         //
         // texture associated to this object
         //
         
         // activate the texture flag on the shader
-        this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.USETEXTURE), true);
+        this._gl.uniform1i(uUseTexture, true);
         
         // setup the sampler
         
@@ -1994,82 +2006,70 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         
         // grab the texture from the internal hash map using the filename as the
         // key
-        this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures.get(object
-            .texture().id()));
-        this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.TEXTURESAMPLER), 0);
+        this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures
+            .get(object._texture['_id']));
+        this._gl.uniform1i(uTextureSampler, 0);
         
         // propagate the current texture-coordinate-map to WebGL
         this._gl.bindBuffer(this._gl.ARRAY_BUFFER, texturePositionBuffer
             .glBuffer());
         
-        this._gl.vertexAttribPointer(this._attributePointers
-            .get(X.shaders.attributes.VERTEXTEXTUREPOS), texturePositionBuffer
+        this._gl.vertexAttribPointer(aTexturePosition, texturePositionBuffer
             .itemSize(), this._gl.FLOAT, false, 0, 0);
         
       } else {
         
         // no texture for this object or 'picking' mode
-        this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.USETEXTURE), false);
+        this._gl.uniform1i(uUseTexture, false);
         
         // we always have to configure the attribute of the texture positions
         // even if no textures are in use
-        this._gl.vertexAttribPointer(this._attributePointers
-            .get(X.shaders.attributes.VERTEXTEXTUREPOS), vertexBuffer
-            .itemSize(), this._gl.FLOAT, false, 0, 0);
+        this._gl.vertexAttribPointer(aTexturePosition, vertexBuffer.itemSize(),
+            this._gl.FLOAT, false, 0, 0);
         
       }
       
       // VOLUMES
       // several special values need to be passed to the shaders if the object
       // is a X.slice (part of an X.volume)
-      if (object instanceof X.slice && goog.isDefAndNotNull(object._volume)) {
+      if (object instanceof X.slice && object._volume) {
         
         // we got a volume
         var volume = object._volume;
         
         // pass the lower threshold
-        this._gl.uniform1f(this._uniformLocations
-            .get(X.shaders.uniforms.VOLUMELOWERTHRESHOLD),
-            volume['_lowerThreshold']);
+        this._gl.uniform1f(uVolumeLowerThreshold, volume['_lowerThreshold']);
         // pass the upper threshold
-        this._gl.uniform1f(this._uniformLocations
-            .get(X.shaders.uniforms.VOLUMEUPPERTHRESHOLD),
-            volume['_upperThreshold']);
+        this._gl.uniform1f(uVolumeUpperThreshold, volume['_upperThreshold']);
         
         // pass the scalar range
         var scalarRange = volume._scalarRange;
-        this._gl.uniform1f(this._uniformLocations
-            .get(X.shaders.uniforms.VOLUMESCALARMIN), scalarRange[0]);
-        this._gl.uniform1f(this._uniformLocations
-            .get(X.shaders.uniforms.VOLUMESCALARMAX), scalarRange[1]);
+        this._gl.uniform1f(uVolumeScalarMin, scalarRange[0]);
+        this._gl.uniform1f(uVolumeScalarMax, scalarRange[1]);
         
-        // opacity, only if volume rendering is active
-        if (volume['_volumeRendering']) {
-          
-          this._gl.uniform1f(this._uniformLocations
-              .get(X.shaders.uniforms.OBJECTOPACITY), parseFloat(volume
-              .opacity()));
-          
-        }
+        // // opacity, only if volume rendering is active
+        // if (volume['_volumeRendering']) {
+        //          
+        // this._gl.uniform1f(this._uniformLocations
+        // .get(X.shaders.uniforms.OBJECTOPACITY), parseFloat(volume
+        // .opacity()));
+        //          
+        // }
         
 
       }
       
       // TRANSFORMS
       // propagate transform to the uniform matrices of the shader
-      this._gl.uniformMatrix4fv(this._uniformLocations
-          .get(X.shaders.uniforms.OBJECTTRANSFORM), false, object.transform()
-          .glMatrix());
+      this._gl.uniformMatrix4fv(uObjectTransform, false,
+          object._transform._glMatrix);
       
       // POINT SIZE
       var pointSize = 1;
-      if (object.type() == X.object.types.POINTS) {
-        pointSize = object.pointSize();
+      if (object['_type'] == X.object.types.POINTS) {
+        pointSize = object['_pointSize'];
       }
-      this._gl.uniform1f(this._uniformLocations
-          .get(X.shaders.uniforms.POINTSIZE), pointSize);
+      this._gl.uniform1f(uPointSize, pointSize);
       
       //
       // .. and draw with the object's DRAW MODE
