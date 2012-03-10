@@ -185,7 +185,9 @@ X.volume = function() {
    * @public
    */
   this['_volumeRendering'] = false;
+  this._volumeRenderingOld = false;
   
+
   /**
    * The direction for the volume rendering. This is used for caching.
    * 
@@ -293,7 +295,13 @@ X.volume.prototype.create_ = function() {
  */
 X.volume.prototype.modified = function() {
 
-  this._dirty = true;
+  if (this['_volumeRendering'] != this._volumeRenderingOld) {
+    
+    // switch from slicing to volume rendering or vice versa
+    this._dirty = true;
+    this._volumeRenderingOld = this['_volumeRendering'];
+    
+  }
   
   if (this['_volumeRendering']) {
     
