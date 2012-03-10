@@ -1831,7 +1831,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   }
   
   //
-  // orient volumes for proper volume rendering - if they are any,
+  // orient volumes for proper volume rendering - if there are any,
   // this means, depending on the direction of the eye, we use the slice stack
   // of a specific axis to create the tiled texture
   var i;
@@ -2032,11 +2032,11 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         // pass the lower threshold
         this._gl.uniform1f(this._uniformLocations
             .get(X.shaders.uniforms.VOLUMELOWERTHRESHOLD),
-            volume._lowerThreshold);
+            volume['_lowerThreshold']);
         // pass the upper threshold
         this._gl.uniform1f(this._uniformLocations
             .get(X.shaders.uniforms.VOLUMEUPPERTHRESHOLD),
-            volume._upperThreshold);
+            volume['_upperThreshold']);
         
         // pass the scalar range
         var scalarRange = volume._scalarRange;

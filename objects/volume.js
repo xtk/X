@@ -407,8 +407,8 @@ X.volume.prototype.threshold = function(lower, upper) {
     
   }
   
-  this._lowerThreshold = lower;
-  this._upperThreshold = upper;
+  this['_lowerThreshold'] = lower;
+  this['_upperThreshold'] = upper;
   
 };
 
