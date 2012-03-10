@@ -552,7 +552,7 @@ X.renderer.prototype.showProgressBar_ = function() {
     // loader is working
     if (!this._progressBar) {
       
-      this._progressBar = new X.progressbar(this.container(), 0);
+      this._progressBar = new X.progressbar(this.container(), 3);
       
     }
     
@@ -1665,32 +1665,53 @@ X.renderer.prototype.order_ = function() {
   var numberOfObjects = objects.length;
   
   var i;
-  for (i = 0; i < numberOfObjects; ++i) {
+  i = numberOfObjects - 1;
+  do {
     
     var object = objects[i];
+    var opacity = object['_opacity'];
     
-    if (object.opacity() == 1) {
+    // if we order X.slice-s of an X.volume, we want to use the opacity of the
+    // parent volume but only in volume rendering mode
+    var volume = object._volume;
+    if (object instanceof X.slice) {
+      
+      if (volume && volume['_volumeRendering']) {
+        
+        // X.slices are only transparent in volume rendering mode
+        opacity = object['_opacity'] = object._volume['_opacity'];
+        
+      } else {
+        
+        // no volume rendering, so the X.slice is fully opaque
+        opacity = object['_opacity'] = 1.0;
+        
+      }
+      
+    }
+    
+    if (opacity == 1) {
       
       // this object is fully opaque, we do not need to calculate the distance
       continue;
       
     }
     
-    var centroid = object.points().centroid();
+    var centroid = object._points._centroid;
     var centroidVector = new goog.math.Vec3(centroid[0], centroid[1],
         centroid[2]);
-    var transformedCentroidVector = object.transform().matrix()
+    var transformedCentroidVector = object._transform._matrix
         .multiplyByVector(centroidVector);
-    var realCentroidVector = this._camera.view().multiplyByVector(
-        transformedCentroidVector);
-    var distanceFromEye = goog.math.Vec3.distance(this._camera.focus(),
+    var realCentroidVector = this._camera._view
+        .multiplyByVector(transformedCentroidVector);
+    var distanceFromEye = goog.math.Vec3.distance(this._camera._focus,
         realCentroidVector);
     objects[i].distance = distanceFromEye;
     
     // we need to update the tree
     reSortTreeRequired = true;
     
-  }
+  } while (i--);
   
   // only re-sort the tree if required
   if (reSortTreeRequired) {
@@ -1699,15 +1720,15 @@ X.renderer.prototype.order_ = function() {
     // should be fast..
     this._objects.clear();
     
-    for (i = 0; i < numberOfObjects; ++i) {
+    i = numberOfObjects - 1;
+    do {
       
       this._objects.add(objects[i]);
       
-    }
+    } while (i--);
     
   }
   
-
 };
 
 
@@ -1872,11 +1893,12 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   // loop through all objects and (re-)draw them
   var objects = this._objects.getValues();
   var numberOfObjects = objects.length;
-  
-  for (i = 0; i < numberOfObjects; ++i) {
+  i = numberOfObjects;
+  do {
     
-    var object = objects[i];
+    var object = objects[numberOfObjects - i];
     
+
     if (object) {
       // we have a valid object
       
@@ -2047,16 +2069,13 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         this._gl.uniform1f(uVolumeScalarMin, scalarRange[0]);
         this._gl.uniform1f(uVolumeScalarMax, scalarRange[1]);
         
-        // // opacity, only if volume rendering is active
-        // if (volume['_volumeRendering']) {
-        //          
-        // this._gl.uniform1f(this._uniformLocations
-        // .get(X.shaders.uniforms.OBJECTOPACITY), parseFloat(volume
-        // .opacity()));
-        //          
-        // }
+        // opacity, only if volume rendering is active
+        if (volume['_volumeRendering']) {
+          
+          this._gl.uniform1f(uObjectOpacity, parseFloat(volume['_opacity']));
+          
+        }
         
-
       }
       
       // TRANSFORMS
@@ -2144,7 +2163,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       
     }
     
-  } // loop through objects
+  } while (--i); // loop through objects
   
   if (statisticsEnabled) {
     

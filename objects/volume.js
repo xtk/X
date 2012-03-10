@@ -329,15 +329,10 @@ X.volume.prototype.slicing_ = function() {
 
   if (this._dirty) {
     
-    // hide all slices
-    var xyz = 0; // 0 for x, 1 for y, 2 for z
-    for (xyz = 0; xyz < 3; xyz++) {
-      
-      var _child = this.children()[xyz];
-      _child.setVisible(false);
-      _child.setOpacity(1);
-      
-    }
+    // hide the volume rendering slices
+    var _child = this.children()[this._volumeRenderingDirection];
+    _child.setVisible(false);
+    
   }
   
   // display the current slices in X,Y and Z direction
@@ -452,23 +447,21 @@ X.volume.prototype.volumeRendering_ = function(direction) {
     
   }
   
-  var xyz = 0; // 0 for x, 1 for y, 2 for z
-  for (xyz = 0; xyz < 3; xyz++) {
-    
-    var _child = this.children()[xyz];
-    var _visibility = false;
-    
-    if (xyz == direction) {
-      // this is the actual direction of the volume rendering so we show the
-      // slices
-      _visibility = true;
-    }
-    
-    _child.setVisible(_visibility);
-    _child.setOpacity(this['_opacity']); // propagate the opacity to all slices
-    // since we use it for depth ordering
-    
-  }
+  // first, hide possible slicing slices
+  this.children()[0].children()[parseInt(this['_indexX'], 10)]
+      .setVisible(false);
+  this.children()[1].children()[parseInt(this['_indexY'], 10)]
+      .setVisible(false);
+  this.children()[2].children()[parseInt(this['_indexZ'], 10)]
+      .setVisible(false);
+  
+  // hide old volume rendering slices
+  var _child = this.children()[this._volumeRenderingDirection];
+  _child.setVisible(false);
+  
+  // show new volume rendering slices
+  _child = this.children()[direction];
+  _child.setVisible(true);
   
   // store the direction
   this._volumeRenderingDirection = direction;
