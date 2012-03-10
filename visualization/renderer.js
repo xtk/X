@@ -689,6 +689,8 @@ X.renderer.prototype.init = function() {
     gl.enable(gl.BLEND);
     gl.blendEquation(gl.FUNC_ADD);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    // gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE,
+    // gl.ZERO);
     // gl.blendFunc(gl.DST_COLOR, gl.ZERO);
     // gl.blendFunc(gl.ONE_MINUS_SRC_ALPHA, gl.SRC_ALPHA);
     // // enable depth testing
@@ -1012,14 +1014,13 @@ X.renderer.prototype.update_ = function(object) {
       
     }
     
-    object.setClean();
-    
   }
   
   // check if this is an empty object, if yes, jump out
   // empty objects can be used to group objects
   if (points.count() == 0) {
     
+    object.setClean();
     return;
     
   }
@@ -1313,8 +1314,6 @@ X.renderer.prototype.update_ = function(object) {
       // activate the texture on the WebGL side
       this._textures.set(texture.id(), glTexture);
       
-      this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
-      
       this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
       if (texture.rawData()) {
         
@@ -1328,11 +1327,16 @@ X.renderer.prototype.update_ = function(object) {
         this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T,
             this._gl.CLAMP_TO_EDGE);
         
+        // we do not want to flip here
+        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, true);
+        
       } else {
         
         // use an imageFile for the texture
         this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA,
             this._gl.RGBA, this._gl.UNSIGNED_BYTE, glTexture.image);
+        
+        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
         
       }
       
@@ -1394,6 +1398,9 @@ X.renderer.prototype.update_ = function(object) {
   this._normalBuffers.set(id, normalBuffer);
   this._colorBuffers.set(id, colorBuffer);
   this._texturePositionBuffers.set(id, texturePositionBuffer);
+  
+  // clean the object
+  object.setClean();
   
   // unlock
   this._locked = false;
@@ -1503,7 +1510,6 @@ X.renderer.prototype.generateTree_ = function(object, level) {
   }
   
   output += object.id();
-  // window.console.log(output);
   
   if (object.hasChildren()) {
     
@@ -1559,6 +1565,14 @@ X.renderer.prototype.get = function(id) {
 };
 
 
+/**
+ * Show the caption of the X.object at viewport position x,y. This performs
+ * object picking and shows a tooltip if an object with a caption exists at this
+ * position.
+ * 
+ * @param {number} x
+ * @param {number} y
+ */
 X.renderer.prototype.showCaption_ = function(x, y) {
 
   var pickedId = this.pick(x, y);
@@ -1577,6 +1591,61 @@ X.renderer.prototype.showCaption_ = function(x, y) {
       
     }
     
+  }
+  
+};
+
+
+/**
+ * (Re-)configure the volume rendering orientation based on the current view
+ * matrix of the camera. We always use the slices which are best oriented to
+ * create the tiled textures of X.volumes.
+ * 
+ * @param {X.volume} volume The X.volume to configure
+ */
+X.renderer.prototype.orientVolume_ = function(volume) {
+
+  // TODO once we have arbitary sliced volumes, we need to modify the vectors
+  // here
+  var centroidVector = new goog.math.Vec3(1, 0, 0);
+  var realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  var distanceFromEyeX = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  centroidVector = new goog.math.Vec3(-1, 0, 0);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  var distanceFromEyeX2 = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  
+  centroidVector = new goog.math.Vec3(0, 1, 0);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  var distanceFromEyeY = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  centroidVector = new goog.math.Vec3(0, -1, 0);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  var distanceFromEyeY2 = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  
+  centroidVector = new goog.math.Vec3(0, 0, 1);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  var distanceFromEyeZ = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  centroidVector = new goog.math.Vec3(0, 0, -1);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  var distanceFromEyeZ2 = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  
+  var maxDistance = Math
+      .max(distanceFromEyeX, distanceFromEyeY, distanceFromEyeZ,
+          distanceFromEyeX2, distanceFromEyeY2, distanceFromEyeZ2);
+  
+  if (maxDistance == distanceFromEyeX || maxDistance == distanceFromEyeX2) {
+    volume.volumeRendering_(0);
+  } else if (maxDistance == distanceFromEyeY ||
+      maxDistance == distanceFromEyeY2) {
+    volume.volumeRendering_(1);
+  } else if (maxDistance == distanceFromEyeZ ||
+      maxDistance == distanceFromEyeZ2) {
+    volume.volumeRendering_(2);
   }
   
 };
@@ -1638,6 +1707,7 @@ X.renderer.prototype.order_ = function() {
     
   }
   
+
 };
 
 
@@ -1757,18 +1827,27 @@ X.renderer.prototype.render_ = function(picking, invoked) {
     var trianglesCounter = 0;
     var linesCounter = 0;
     var pointsCounter = 0;
-    var textureCounter = 0;
     
   }
   
   //
+  // orient volumes for proper volume rendering - if there are any,
+  // this means, depending on the direction of the eye, we use the slice stack
+  // of a specific axis to create the tiled texture
+  var i;
+  var topLevelObjectsLength = this._topLevelObjects.length;
+  for (i = 0; i < topLevelObjectsLength; ++i) {
+    var topLevelObject = this._topLevelObjects[i];
+    if (topLevelObject instanceof X.volume) {
+      this.orientVolume_(topLevelObject);
+    }
+  }
+  
+
+  //
   // loop through all objects and (re-)draw them
   var objects = this._objects.getValues();
   var numberOfObjects = objects.length;
-  
-  var i;
-  
-  // window.console.log("number of objects: " + numberOfObjects);
   
   for (i = 0; i < numberOfObjects; ++i) {
     
@@ -1786,21 +1865,11 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       }
       
       var id = object.id();
-      /*
-       * window.console.log("=================="); window.console.log("id: " +
-       * object.id()); window.console.log("color: " + object.color());
-       * window.console.log("visible: " + object.visible());
-       * window.console.log("opacity: " + object.opacity());
-       * window.console.log("points: " + object.points().get(1));
-       * window.console.log("normals: " + object.normals().get(1));
-       */
+      
       var magicMode = object.magicMode();
       
       var vertexBuffer = this._vertexBuffers.get(id);
       var normalBuffer = this._normalBuffers.get(id);
-      
-      // window.console.log("vertexB: " + vertexBuffer);
-      // window.console.log("normalB: " + normalBuffer);
       
       var colorBuffer = this._colorBuffers.get(id);
       var texturePositionBuffer = this._texturePositionBuffers.get(id);
@@ -1952,8 +2021,43 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         
       }
       
-      // TRANSFORMS
+      // VOLUMES
+      // several special values need to be passed to the shaders if the object
+      // is a X.slice (part of an X.volume)
+      if (object instanceof X.slice && goog.isDefAndNotNull(object._volume)) {
+        
+        // we got a volume
+        var volume = object._volume;
+        
+        // pass the lower threshold
+        this._gl.uniform1f(this._uniformLocations
+            .get(X.shaders.uniforms.VOLUMELOWERTHRESHOLD),
+            volume['_lowerThreshold']);
+        // pass the upper threshold
+        this._gl.uniform1f(this._uniformLocations
+            .get(X.shaders.uniforms.VOLUMEUPPERTHRESHOLD),
+            volume['_upperThreshold']);
+        
+        // pass the scalar range
+        var scalarRange = volume._scalarRange;
+        this._gl.uniform1f(this._uniformLocations
+            .get(X.shaders.uniforms.VOLUMESCALARMIN), scalarRange[0]);
+        this._gl.uniform1f(this._uniformLocations
+            .get(X.shaders.uniforms.VOLUMESCALARMAX), scalarRange[1]);
+        
+        // opacity, only if volume rendering is active
+        if (volume['_volumeRendering']) {
+          
+          this._gl.uniform1f(this._uniformLocations
+              .get(X.shaders.uniforms.OBJECTOPACITY), parseFloat(volume
+              .opacity()));
+          
+        }
+        
+
+      }
       
+      // TRANSFORMS
       // propagate transform to the uniform matrices of the shader
       this._gl.uniformMatrix4fv(this._uniformLocations
           .get(X.shaders.uniforms.OBJECTTRANSFORM), false, object.transform()

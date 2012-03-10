@@ -99,10 +99,6 @@ X.parserNRRD.prototype.parse = function(object, data) {
     _data = data.substr(position);
   }
   
-  // we know enough to create the object
-  object._dimensions = [this.sizes[2], this.sizes[1], this.sizes[0]];
-  object.create_();
-  
   var numberOfPixels = this.sizes[0] * this.sizes[1] * this.sizes[2];
   
   //
@@ -123,6 +119,26 @@ X.parserNRRD.prototype.parse = function(object, data) {
     max = Math.max(max, pixelValue);
     min = Math.min(min, pixelValue);
   }
+  
+  // spacing
+  var spacingX = new goog.math.Vec3(this.vectors[0][0], this.vectors[0][1],
+      this.vectors[0][2]).magnitude();
+  var spacingY = new goog.math.Vec3(this.vectors[1][0], this.vectors[1][1],
+      this.vectors[1][2]).magnitude();
+  var spacingZ = new goog.math.Vec3(this.vectors[2][0], this.vectors[2][1],
+      this.vectors[2][2]).magnitude();
+  object._spacing = [spacingX, spacingY, spacingZ];
+  
+  // we know enough to create the object
+  object._dimensions = [this.sizes[0], this.sizes[1], this.sizes[2]];
+  
+  // attach the scalar range to the volume
+  object._scalarRange = [min, max];
+  // .. and set the default threshold
+  object.threshold(min, max);
+  
+  // create the object
+  object.create_();
   
   // now we have the values and need to reslice in the 3 orthogonal directions
   // and create the textures for each slice
@@ -202,7 +218,7 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture.setRawData(textureForCurrentSlice);
     pixelTexture.setRawDataWidth(colsCount);
     pixelTexture.setRawDataHeight(rowsCount);
-    object._slicesX.children()[z].setTexture(pixelTexture);
+    object._slicesZ.children()[z].setTexture(pixelTexture);
     
   }
   
@@ -239,7 +255,7 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture.setRawData(textureForCurrentSlice);
     pixelTexture.setRawDataWidth(colsCount);
     pixelTexture.setRawDataHeight(slices);
-    object._slicesY.children()[(rowsCount - 1) - row].setTexture(pixelTexture);
+    object._slicesY.children()[row].setTexture(pixelTexture);
     
   }
   
@@ -272,7 +288,7 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture.setRawData(textureForCurrentSlice);
     pixelTexture.setRawDataWidth(rowsCount);
     pixelTexture.setRawDataHeight(slices);
-    object._slicesZ.children()[(colsCount - 1) - col].setTexture(pixelTexture);
+    object._slicesX.children()[col].setTexture(pixelTexture);
     
   }
   

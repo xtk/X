@@ -37,8 +37,8 @@ goog.require('X.slice');
 
 
 /**
- * Create a displayable volume which consists of X.slices in X,Y and Z
- * direction.
+ * Create a displayable volume which consists of X.slices in X,Y and Z direction
+ * and can also be volume rendered.
  * 
  * @constructor
  * @extends X.object
@@ -86,7 +86,7 @@ X.volume = function() {
    * The index of the currently shown slice in X-direction.
    * 
    * @type {!number}
-   * @protected
+   * @public
    */
   this['_indexX'] = 0;
   
@@ -102,7 +102,7 @@ X.volume = function() {
    * The index of the currently shown slice in Y-direction.
    * 
    * @type {!number}
-   * @protected
+   * @public
    */
   this['_indexY'] = 0;
   
@@ -118,7 +118,7 @@ X.volume = function() {
    * The index of the currently shown slice in Z-direction.
    * 
    * @type {!number}
-   * @protected
+   * @public
    */
   this['_indexZ'] = 0;
   
@@ -153,6 +153,46 @@ X.volume = function() {
    * @protected
    */
   this._slicesZ = new X.object();
+  
+  /**
+   * The upper threshold for this volume.
+   * 
+   * @type {number}
+   * @public
+   */
+  this['_lowerThreshold'] = 0;
+  
+  /**
+   * The upper threshold for this volume.
+   * 
+   * @type {number}
+   * @public
+   */
+  this['_upperThreshold'] = 1000;
+  
+  /**
+   * The scalar range of this volume.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._scalarRange = [0, 1000];
+  
+  /**
+   * The toggle for volume rendering or cross-sectional slicing.
+   * 
+   * @type {boolean}
+   * @public
+   */
+  this['_volumeRendering'] = false;
+  
+  /**
+   * The direction for the volume rendering. This is used for caching.
+   * 
+   * @type {!number}
+   * @private
+   */
+  this._volumeRenderingDirection = 0;
   
 };
 // inherit from X.object
@@ -219,6 +259,7 @@ X.volume.prototype.create_ = function() {
       // .. new slice
       var _slice = new X.slice(_center[xyz], _front[xyz], _up[xyz], width,
           height);
+      _slice._volume = this;
       
       // only show the middle slice, hide everything else
       _slice.setVisible(i == _indexCenter);
@@ -246,17 +287,56 @@ X.volume.prototype.create_ = function() {
 };
 
 /**
- * Show the current slices which are set by this._indexX, this._indexY and
- * this._indexZ and hide all others.
+ * Re-show the slices or re-activate the volume rendering for this volume.
  * 
  * @inheritDoc
  */
 X.volume.prototype.modified = function() {
 
+  this._dirty = true;
+  
+  if (this['_volumeRendering']) {
+    
+    // prepare volume rendering
+    this.volumeRendering_(this._volumeRenderingDirection);
+    
+  } else {
+    
+    // prepare slicing
+    this.slicing_();
+    
+  }
+  
+
+  // call the superclass' modified method
+  X.volume.superClass_.modified.call(this);
+  
+};
+
+/**
+ * Show the current slices which are set by this._indexX, this._indexY and
+ * this._indexZ and hide all others.
+ */
+X.volume.prototype.slicing_ = function() {
+
+  if (this._dirty) {
+    
+    // hide all slices
+    var xyz = 0; // 0 for x, 1 for y, 2 for z
+    for (xyz = 0; xyz < 3; xyz++) {
+      
+      var _child = this.children()[xyz];
+      _child.setVisible(false);
+      _child.setOpacity(1);
+      
+    }
+  }
+  
   // display the current slices in X,Y and Z direction
   var xyz = 0; // 0 for x, 1 for y, 2 for z
   for (xyz = 0; xyz < 3; xyz++) {
     
+    var _child = this.children()[xyz];
     var currentIndex = 0;
     var oldIndex = 0;
     
@@ -275,15 +355,11 @@ X.volume.prototype.modified = function() {
     }
     
     // hide the old slice
-    this.children()[xyz].children()[parseInt(oldIndex, 10)].setVisible(false);
+    _child.children()[parseInt(oldIndex, 10)].setVisible(false);
     // show the current slice
-    this.children()[xyz].children()[parseInt(currentIndex, 10)]
-        .setVisible(true);
+    _child.children()[parseInt(currentIndex, 10)].setVisible(true);
     
   }
-  
-  // call the superclass' modified method
-  X.volume.superClass_.modified.call(this);
   
 };
 
@@ -291,7 +367,7 @@ X.volume.prototype.modified = function() {
 /**
  * Get the dimensions of this volume.
  * 
- * @return {!Array} dimensions The dimensions of this volume.
+ * @return {!Array} The dimensions of this volume.
  */
 X.volume.prototype.dimensions = function() {
 
@@ -299,8 +375,105 @@ X.volume.prototype.dimensions = function() {
   
 };
 
+
+/**
+ * Get the scalar range of this volume.
+ * 
+ * @return {!Array} The scalar range of this volume.
+ */
+X.volume.prototype.scalarRange = function() {
+
+  return this._scalarRange;
+  
+};
+
+
+/**
+ * Threshold this volume. All pixel values smaller than lower or larger than
+ * upper are ignored during rendering.
+ * 
+ * @param {!number} lower The lower threshold value.
+ * @param {!number} upper The upper threshold value.
+ * @throws {Error} If the specified range is invalid.
+ */
+X.volume.prototype.threshold = function(lower, upper) {
+
+  if (!goog.isDefAndNotNull(lower) || !goog.isNumber(lower) ||
+      !goog.isDefAndNotNull(upper) || !goog.isNumber(upper) ||
+      (lower > upper) || (lower < this._scalarRange[0]) ||
+      (upper > this._scalarRange[1])) {
+    
+    throw new Error('Invalid threshold range.');
+    
+  }
+  
+  this['_lowerThreshold'] = lower;
+  this['_upperThreshold'] = upper;
+  
+};
+
+
+/**
+ * Toggle volume rendering or cross-sectional slicing of this X.volume.
+ * 
+ * @param {boolean} volumeRendering If TRUE, display volume rendering, if FALSE
+ *          display cross-sectional slices.
+ */
+X.volume.prototype.setVolumeRendering = function(volumeRendering) {
+
+  this._volumeRendering = volumeRendering;
+  
+};
+
+
+/**
+ * Perform volume rendering of this volume along a specific direction. The
+ * direction is important since we show tiled 2d textures along the direction
+ * for a clean rendering experience.
+ * 
+ * @param {number} direction The direction of the volume rendering
+ *          (0==x,1==y,2==z).
+ */
+X.volume.prototype.volumeRendering_ = function(direction) {
+
+  if ((!this._dirty && !this['_volumeRendering']) ||
+      (!this._dirty && direction == this._volumeRenderingDirection)) {
+    
+    // we do not have to do anything
+    return;
+    
+  }
+  
+  var xyz = 0; // 0 for x, 1 for y, 2 for z
+  for (xyz = 0; xyz < 3; xyz++) {
+    
+    var _child = this.children()[xyz];
+    var _visibility = false;
+    
+    if (xyz == direction) {
+      // this is the actual direction of the volume rendering so we show the
+      // slices
+      _visibility = true;
+    }
+    
+    _child.setVisible(_visibility);
+    _child.setOpacity(this['_opacity']); // propagate the opacity to all slices
+    // since we use it for depth ordering
+    
+  }
+  
+  // store the direction
+  this._volumeRenderingDirection = direction;
+  
+};
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.volume', X.volume);
 goog.exportSymbol('X.volume.prototype.dimensions',
     X.volume.prototype.dimensions);
+goog.exportSymbol('X.volume.prototype.scalarRange',
+    X.volume.prototype.scalarRange);
+goog.exportSymbol('X.volume.prototype.setVolumeRendering',
+    X.volume.prototype.setVolumeRendering);
+goog.exportSymbol('X.volume.prototype.threshold', X.volume.prototype.threshold);
 goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);
