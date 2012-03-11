@@ -104,39 +104,3 @@ X.buffer = function(glBuffer, itemCount, itemSize) {
 };
 // inherit from X.base
 goog.inherits(X.buffer, X.base);
-
-
-/**
- * Get the actual GL buffer.
- * 
- * @return {Object} The GL buffer.
- */
-X.buffer.prototype.glBuffer = function() {
-
-  return this._glBuffer;
-  
-};
-
-
-/**
- * Get the number of the items in this buffer.
- * 
- * @return {number} The number of the items.
- */
-X.buffer.prototype.itemCount = function() {
-
-  return this._itemCount;
-  
-};
-
-
-/**
- * Get the size of the items in this buffer.
- * 
- * @return {number} The size of the items.
- */
-X.buffer.prototype.itemSize = function() {
-
-  return this._itemSize;
-  
-};

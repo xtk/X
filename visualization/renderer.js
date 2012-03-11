@@ -1094,9 +1094,9 @@ X.renderer.prototype.update_ = function(object) {
     var oldVertexBuffer = this._vertexBuffers.get(id);
     if (goog.isDefAndNotNull(oldVertexBuffer)) {
       
-      if (this._gl.isBuffer(oldVertexBuffer.glBuffer())) {
+      if (this._gl.isBuffer(oldVertexBuffer._glBuffer)) {
         
-        this._gl.deleteBuffer(oldVertexBuffer.glBuffer());
+        this._gl.deleteBuffer(oldVertexBuffer._glBuffer);
         
       }
       
@@ -1149,9 +1149,9 @@ X.renderer.prototype.update_ = function(object) {
     var oldNormalBuffer = this._vertexBuffers.get(id);
     if (goog.isDefAndNotNull(oldNormalBuffer)) {
       
-      if (this._gl.isBuffer(oldNormalBuffer.glBuffer())) {
+      if (this._gl.isBuffer(oldNormalBuffer._glBuffer)) {
         
-        this._gl.deleteBuffer(oldNormalBuffer.glBuffer());
+        this._gl.deleteBuffer(oldNormalBuffer._glBuffer);
         
       }
       
@@ -1205,9 +1205,9 @@ X.renderer.prototype.update_ = function(object) {
     var oldColorBuffer = this._colorBuffers.get(id);
     if (goog.isDefAndNotNull(oldColorBuffer)) {
       
-      if (this._gl.isBuffer(oldColorBuffer.glBuffer())) {
+      if (this._gl.isBuffer(oldColorBuffer._glBuffer)) {
         
-        this._gl.deleteBuffer(oldColorBuffer.glBuffer());
+        this._gl.deleteBuffer(oldColorBuffer._glBuffer);
         
       }
       
@@ -1273,9 +1273,9 @@ X.renderer.prototype.update_ = function(object) {
     var oldTexturePositionBuffer = this._texturePositionBuffers.get(id);
     if (goog.isDefAndNotNull(oldTexturePositionBuffer)) {
       
-      if (this._gl.isBuffer(oldTexturePositionBuffer.glBuffer())) {
+      if (this._gl.isBuffer(oldTexturePositionBuffer._glBuffer)) {
         
-        this._gl.deleteBuffer(oldTexturePositionBuffer.glBuffer());
+        this._gl.deleteBuffer(oldTexturePositionBuffer._glBuffer);
         
       }
       
@@ -1923,15 +1923,15 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       // ..bind the glBuffers
       
       // VERTICES
-      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer._glBuffer);
       
-      this._gl.vertexAttribPointer(aPosition, vertexBuffer.itemSize(),
+      this._gl.vertexAttribPointer(aPosition, vertexBuffer._itemSize,
           this._gl.FLOAT, false, 0, 0);
       
       // NORMALS
-      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, normalBuffer.glBuffer());
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, normalBuffer._glBuffer);
       
-      this._gl.vertexAttribPointer(aNormal, normalBuffer.itemSize(),
+      this._gl.vertexAttribPointer(aNormal, normalBuffer._itemSize,
           this._gl.FLOAT, false, 0, 0);
       
       if (picking) {
@@ -1955,9 +1955,9 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         // de-activate the useObjectColor flag on the shader
         this._gl.uniform1i(uUseObjectColor, false);
         
-        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());
+        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer._glBuffer);
         
-        this._gl.vertexAttribPointer(aColor, colorBuffer.itemSize(),
+        this._gl.vertexAttribPointer(aColor, colorBuffer._itemSize,
             this._gl.FLOAT, false, 0, 0);
         
       } else {
@@ -2004,7 +2004,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         
         // we always have to configure the attribute of the point colors
         // even if no point colors are in use
-        this._gl.vertexAttribPointer(aColor, vertexBuffer.itemSize(),
+        this._gl.vertexAttribPointer(aColor, vertexBuffer._itemSize,
             this._gl.FLOAT, false, 0, 0);
         
       }
@@ -2033,11 +2033,11 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         this._gl.uniform1i(uTextureSampler, 0);
         
         // propagate the current texture-coordinate-map to WebGL
-        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, texturePositionBuffer
-            .glBuffer());
+        this._gl.bindBuffer(this._gl.ARRAY_BUFFER,
+            texturePositionBuffer._glBuffer);
         
-        this._gl.vertexAttribPointer(aTexturePosition, texturePositionBuffer
-            .itemSize(), this._gl.FLOAT, false, 0, 0);
+        this._gl.vertexAttribPointer(aTexturePosition,
+            texturePositionBuffer._itemSize, this._gl.FLOAT, false, 0, 0);
         
       } else {
         
@@ -2046,7 +2046,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         
         // we always have to configure the attribute of the texture positions
         // even if no textures are in use
-        this._gl.vertexAttribPointer(aTexturePosition, vertexBuffer.itemSize(),
+        this._gl.vertexAttribPointer(aTexturePosition, vertexBuffer._itemSize,
             this._gl.FLOAT, false, 0, 0);
         
       }
@@ -2098,7 +2098,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         
         drawMode = this._gl.TRIANGLES;
         if (statisticsEnabled) {
-          trianglesCounter += (vertexBuffer.itemCount() / 3);
+          trianglesCounter += (vertexBuffer._itemCount / 3);
         }
         
       } else if (object.type() == X.object.types.LINES) {
@@ -2107,21 +2107,21 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         
         drawMode = this._gl.LINES;
         if (statisticsEnabled) {
-          linesCounter += (vertexBuffer.itemCount() / 2);
+          linesCounter += (vertexBuffer._itemCount / 2);
         }
         
       } else if (object.type() == X.object.types.POINTS) {
         
         drawMode = this._gl.POINTS;
         if (statisticsEnabled) {
-          pointsCounter += vertexBuffer.itemCount();
+          pointsCounter += vertexBuffer._itemCount;
         }
         
       } else if (object.type() == X.object.types.TRIANGLE_STRIPS) {
         
         drawMode = this._gl.TRIANGLE_STRIP;
         if (statisticsEnabled) {
-          trianglesCounter += (vertexBuffer.itemCount() / 3);
+          trianglesCounter += (vertexBuffer._itemCount / 3);
         }
         
       } else if (object.type() == X.object.types.POLYGONS) {
@@ -2131,7 +2131,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         // POLYGONS to TRIANGLES.
         // Remark: The Van Gogh algorithm is implemented in the
         // X.object.toCSG/fromCSG functions but not used here.
-        if (vertexBuffer.itemCount() % 3 == 0) {
+        if (vertexBuffer._itemCount % 3 == 0) {
           
           drawMode = this._gl.TRIANGLES;
           
@@ -2142,19 +2142,19 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         }
         
         if (statisticsEnabled) {
-          trianglesCounter += (vertexBuffer.itemCount() / 3);
+          trianglesCounter += (vertexBuffer._itemCount / 3);
         }
         
       }
       
       if (statisticsEnabled) {
         
-        verticesCounter += vertexBuffer.itemCount();
+        verticesCounter += vertexBuffer._itemCount;
         
       }
       
       // push it to the GPU, baby..
-      this._gl.drawArrays(drawMode, 0, vertexBuffer.itemCount());
+      this._gl.drawArrays(drawMode, 0, vertexBuffer._itemCount);
       
     } else {
       
