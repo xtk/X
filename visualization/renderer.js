@@ -1669,6 +1669,10 @@ X.renderer.prototype.order_ = function() {
   do {
     
     var object = objects[i];
+    if (!object) {
+      return;
+    }
+    
     var opacity = object['_opacity'];
     
     // if we order X.slice-s of an X.volume, we want to use the opacity of the

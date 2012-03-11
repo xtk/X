@@ -183,11 +183,11 @@ X.slice.prototype.create_ = function() {
   // TODO generalize for arbitary slicing
   var sizeVector = new goog.math.Vec3(1, 1, 1);
   if (frontVector.x == 1) {
-    sizeVector = new goog.math.Vec3(this._center[2], this._height / 2,
+    sizeVector = new goog.math.Vec3(this._center[0], this._height / 2,
         this._width / 2);
     this._textureCoordinateMap = [0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0];
   } else if (frontVector.y == 1) {
-    sizeVector = new goog.math.Vec3(this._width / 2, this._center[2],
+    sizeVector = new goog.math.Vec3(this._width / 2, this._center[1],
         this._height / 2);
     this._textureCoordinateMap = [0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1];
   } else if (frontVector.z == 1) {

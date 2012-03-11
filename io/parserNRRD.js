@@ -120,6 +120,19 @@ X.parserNRRD.prototype.parse = function(object, data) {
     min = Math.min(min, pixelValue);
   }
   
+  //
+  // we know enough to create the object
+  
+  // origin
+  // var _origin = this['space origin'];
+  // _origin = _origin.slice(1, _origin.length).split(',');
+  // object._center[0] = parseFloat(_origin[0]) - this.sizes[0] / 2;
+  // object._center[1] = parseFloat(_origin[1]) - this.sizes[1] / 2;
+  // object._center[2] = parseFloat(_origin[2]) - this.sizes[2] / 2;
+  
+  // dimensions
+  object._dimensions = [this.sizes[0], this.sizes[1], this.sizes[2]];
+  
   // spacing
   var spacingX = new goog.math.Vec3(this.vectors[0][0], this.vectors[0][1],
       this.vectors[0][2]).magnitude();
@@ -129,9 +142,7 @@ X.parserNRRD.prototype.parse = function(object, data) {
       this.vectors[2][2]).magnitude();
   object._spacing = [spacingX, spacingY, spacingZ];
   
-  // we know enough to create the object
-  object._dimensions = [this.sizes[0], this.sizes[1], this.sizes[2]];
-  
+
   // attach the scalar range to the volume
   object._scalarRange = [min, max];
   // .. and set the default threshold

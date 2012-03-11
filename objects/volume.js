@@ -231,10 +231,11 @@ X.volume.prototype.create_ = function() {
       var _position = (-halfDimension * this._spacing[xyz]) +
           (i * this._spacing[xyz]);
       
-      var _center = new Array([_position, this._center[1], this._center[2]],
-          [this._center[0], _position, this._center[2]], [this._center[0],
-                                                          this._center[1],
-                                                          _position]);
+      var _center = new Array([this._center[0] + _position, this._center[1],
+                               this._center[2]], [this._center[0],
+                                                  this._center[1] + _position,
+                                                  this._center[2]],
+          [this._center[0], this._center[1], this._center[2] + _position]);
       
       var _front = new Array([1, 0, 0], [0, 1, 0], [0, 0, 1]);
       var _up = new Array([0, 1, 0], [0, 0, -1], [0, 1, 0]);
