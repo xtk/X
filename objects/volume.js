@@ -431,6 +431,27 @@ X.volume.prototype.setVolumeRendering = function(volumeRendering) {
 
 
 /**
+ * Set the center of this X.volume. This has to be called (for now) before a
+ * volume data gets loaded aka. before the first X.renderer.render() call.
+ * 
+ * @param {!Array} center The new center.
+ * @throws {Error} If the center is invalid.
+ */
+X.volume.prototype.setCenter = function(center) {
+
+  if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
+      !(center.length == 3)) {
+    
+    throw new Error('Invalid center.');
+    
+  }
+  
+  this._center = center;
+  
+};
+
+
+/**
  * Perform volume rendering of this volume along a specific direction. The
  * direction is important since we show tiled 2d textures along the direction
  * for a clean rendering experience.
@@ -475,6 +496,7 @@ goog.exportSymbol('X.volume.prototype.dimensions',
     X.volume.prototype.dimensions);
 goog.exportSymbol('X.volume.prototype.scalarRange',
     X.volume.prototype.scalarRange);
+goog.exportSymbol('X.volume.prototype.setCenter', X.volume.prototype.setCenter);
 goog.exportSymbol('X.volume.prototype.setVolumeRendering',
     X.volume.prototype.setVolumeRendering);
 goog.exportSymbol('X.volume.prototype.threshold', X.volume.prototype.threshold);
