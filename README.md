@@ -13,7 +13,7 @@
 #### Demos ####
 <a href="http://demos.goxtk.com/knee_atlas/"><img src="http://xtk.github.com/demos/knee_atlas/smallcaption2.png" alt="knee_atlas" title="Click me!"></a>
 <a href="http://demos.goxtk.com/brainfibers/"><img src="http://xtk.github.com/demos/brainfibers/smallcaption2.png" alt="brainfibers" title="Click me!"></a>
-<a href="http://demos.goxtk.com/aneurysm/"><img src="http://xtk.github.com/demos/aneurysm/smallcaption.png2" alt="aneurysm" title="Click me!"></a>
+<a href="http://demos.goxtk.com/aneurysm/"><img src="http://xtk.github.com/demos/aneurysm/smallcaption2.png" alt="aneurysm" title="Click me!"></a>
 <a href="http://demos.goxtk.com/brain_atlas/"><img src="http://xtk.github.com/demos/brain_atlas/smallcaption2.png" alt="brain_atlas" title="Click me!"></a>
 <br>
 <a href="http://www.mindboggle.info/"><img src="http://xtk.github.com/demos/mindboggle/smallcaption2.png" alt="mindboggle" title="Click me!"></a>
