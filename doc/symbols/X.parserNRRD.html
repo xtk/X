@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - X.event.RenderEvent</title>
+		<title>JsDoc Reference - X.parserNRRD</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -289,26 +289,26 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class X.event.RenderEvent
+				Class X.parserNRRD
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
 			<p class="description">
 				
 				<br />Extends
-					<a href="../symbols/X.event.html">X.event</a>.<br />
+					<a href="../symbols/X.parser.html">X.parser</a>.<br />
 				
 			
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_net_pretoria_local_mount_space_pretoria_2_chb_users_daniel.haehn_Projects_X_core_event.js.html">event.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_net_pretoria_local_mount_space_pretoria_2_chb_users_daniel.haehn_Projects_X_io_parserNRRD.js.html">parserNRRD.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class X.event.RenderEvent.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class X.parserNRRD.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -321,9 +321,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/X.event.RenderEvent.html#constructor">X.event.RenderEvent</a></b>()
+								<b><a href="../symbols/X.parserNRRD.html#constructor">X.parserNRRD</a></b>()
 							</div>
-							<div class="description">The render event to update renderer.</div>
+							<div class="description">Create a parser for .NRRD files.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -334,6 +334,55 @@ ul.inheritsList
 			
 
 <!-- ============================== methods summary ======================== -->
+			
+				
+				
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class X.parserNRRD.">
+					<caption>Method Summary</caption>
+					<thead>
+						<tr>
+							<th scope="col">Method Attributes</th>
+							<th scope="col">Method Name and Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/X.parserNRRD.html#parse">parse</a></b>(object, data)
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/X.parserNRRD.html#parseHeader">parseHeader</a></b>(header)
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/X.parserNRRD.html#reslice">reslice</a></b>(object, datastream, sizes, min, max)
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+					</tbody>
+				</table>
+				
+				
+				
+				<dl class="inheritsList">
+				<dt>Methods borrowed from class <a href="../symbols/X.parser.html">X.parser</a>: </dt><dd><a href="../symbols/X.parser.html#parseFloat32">parseFloat32</a>, <a href="../symbols/X.parser.html#parseFloat32Array">parseFloat32Array</a>, <a href="../symbols/X.parser.html#parseFloat32EndianSwapped">parseFloat32EndianSwapped</a>, <a href="../symbols/X.parser.html#parseSChar8">parseSChar8</a>, <a href="../symbols/X.parser.html#parseString">parseString</a>, <a href="../symbols/X.parser.html#parseUChar8">parseUChar8</a>, <a href="../symbols/X.parser.html#parseUInt16">parseUInt16</a>, <a href="../symbols/X.parser.html#parseUInt16Array">parseUInt16Array</a>, <a href="../symbols/X.parser.html#parseUInt24EndianSwapped">parseUInt24EndianSwapped</a>, <a href="../symbols/X.parser.html#parseUInt32">parseUInt32</a>, <a href="../symbols/X.parser.html#parseUInt32EndianSwapped">parseUInt32EndianSwapped</a></dd><dt>Methods borrowed from class <a href="../symbols/X.base.html">X.base</a>: </dt><dd><a href="../symbols/X.base.html#className">className</a>, <a href="../symbols/X.base.html#dirty">dirty</a>, <a href="../symbols/X.base.html#print">print</a>, <a href="../symbols/X.base.html#setClean">setClean</a></dd>
+				</dl>
+				
 			
 <!-- ============================== events summary ======================== -->
 			
@@ -346,11 +395,11 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>X.event.RenderEvent</b>()
+						<b>X.parserNRRD</b>()
 				</div>
 				
 				<div class="description">
-					The render event to update renderer.
+					Create a parser for .NRRD files.
 					
 				</div>
 				
@@ -373,6 +422,149 @@ ul.inheritsList
 
 <!-- ============================== method details ========================= -->		
 			
+				<div class="sectionTitle">
+					Method Detail
+				</div>
+				
+					<a name="parse"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>parse</b>(object, data)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>object</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>data</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="parseHeader"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>parseHeader</b>(header)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>header</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="reslice"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>reslice</b>(object, datastream, sizes, min, max)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>object</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>datastream</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>sizes</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>min</b>
+									
+								</dt>
+								<dd></dd>
+							
+								<dt>
+									<b>max</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					
+				
+			
 			
 <!-- ============================== event details ========================= -->		
 			
@@ -384,7 +576,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Mar 12 2012 11:13:54 GMT-0400 (EDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Mar 12 2012 11:13:55 GMT-0400 (EDT)
 		</div>
 	</body>
 </html>

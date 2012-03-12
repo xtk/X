@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - X.event.RenderEvent</title>
+		<title>JsDoc Reference - X.slice</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -289,26 +289,26 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class X.event.RenderEvent
+				Class X.slice
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
 			<p class="description">
 				
 				<br />Extends
-					<a href="../symbols/X.event.html">X.event</a>.<br />
+					<a href="../symbols/X.object.html">X.object</a>.<br />
 				
 			
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_net_pretoria_local_mount_space_pretoria_2_chb_users_daniel.haehn_Projects_X_core_event.js.html">event.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_net_pretoria_local_mount_space_pretoria_2_chb_users_daniel.haehn_Projects_X_objects_slice.js.html">slice.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class X.event.RenderEvent.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class X.slice.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -321,9 +321,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/X.event.RenderEvent.html#constructor">X.event.RenderEvent</a></b>()
+								<b><a href="../symbols/X.slice.html#constructor">X.slice</a></b>(center, front, up, width, height)
 							</div>
-							<div class="description">The render event to update renderer.</div>
+							<div class="description">Create a displayable 2D slice/plane.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -334,6 +334,15 @@ ul.inheritsList
 			
 
 <!-- ============================== methods summary ======================== -->
+			
+				
+				
+				
+				
+				<dl class="inheritsList">
+				<dt>Methods borrowed from class <a href="../symbols/X.object.html">X.object</a>: </dt><dd><a href="../symbols/X.object.html#caption">caption</a>, <a href="../symbols/X.object.html#children">children</a>, <a href="../symbols/X.object.html#color">color</a>, <a href="../symbols/X.object.html#colors">colors</a>, <a href="../symbols/X.object.html#file">file</a>, <a href="../symbols/X.object.html#fromCSG">fromCSG</a>, <a href="../symbols/X.object.html#hasChildren">hasChildren</a>, <a href="../symbols/X.object.html#id">id</a>, <a href="../symbols/X.object.html#intersect">intersect</a>, <a href="../symbols/X.object.html#inverse">inverse</a>, <a href="../symbols/X.object.html#lineWidth">lineWidth</a>, <a href="../symbols/X.object.html#load">load</a>, <a href="../symbols/X.object.html#magicMode">magicMode</a>, <a href="../symbols/X.object.html#modified">modified</a>, <a href="../symbols/X.object.html#normals">normals</a>, <a href="../symbols/X.object.html#opacity">opacity</a>, <a href="../symbols/X.object.html#points">points</a>, <a href="../symbols/X.object.html#pointSize">pointSize</a>, <a href="../symbols/X.object.html#setCaption">setCaption</a>, <a href="../symbols/X.object.html#setColor">setColor</a>, <a href="../symbols/X.object.html#setLineWidth">setLineWidth</a>, <a href="../symbols/X.object.html#setMagicMode">setMagicMode</a>, <a href="../symbols/X.object.html#setOpacity">setOpacity</a>, <a href="../symbols/X.object.html#setPointSize">setPointSize</a>, <a href="../symbols/X.object.html#setTexture">setTexture</a>, <a href="../symbols/X.object.html#setType">setType</a>, <a href="../symbols/X.object.html#setVisible">setVisible</a>, <a href="../symbols/X.object.html#subtract">subtract</a>, <a href="../symbols/X.object.html#texture">texture</a>, <a href="../symbols/X.object.html#textureCoordinateMap">textureCoordinateMap</a>, <a href="../symbols/X.object.html#toCSG">toCSG</a>, <a href="../symbols/X.object.html#transform">transform</a>, <a href="../symbols/X.object.html#type">type</a>, <a href="../symbols/X.object.html#union">union</a>, <a href="../symbols/X.object.html#visible">visible</a></dd><dt>Methods borrowed from class <a href="../symbols/X.base.html">X.base</a>: </dt><dd><a href="../symbols/X.base.html#className">className</a>, <a href="../symbols/X.base.html#dirty">dirty</a>, <a href="../symbols/X.base.html#print">print</a>, <a href="../symbols/X.base.html#setClean">setClean</a></dd>
+				</dl>
+				
 			
 <!-- ============================== events summary ======================== -->
 			
@@ -346,17 +355,55 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>X.event.RenderEvent</b>()
+						<b>X.slice</b>(center, front, up, width, height)
 				</div>
 				
 				<div class="description">
-					The render event to update renderer.
+					Create a displayable 2D slice/plane.
 					
 				</div>
 				
 				
 				
 				
+					
+						<dl class="detailList">
+						<dt class="heading">Parameters:</dt>
+						
+							<dt>
+								<span class="light fixedFont">{!Array}</span>  <b>center</b>
+								
+							</dt>
+								<dd>The center position in 3D space as a 1-D Array with
+         length 3.</dd>
+						
+							<dt>
+								<span class="light fixedFont">{!Array}</span>  <b>front</b>
+								
+							</dt>
+								<dd>A vector pointing in the direction of the front side in
+         3D space as a 1-D Array with length 3.</dd>
+						
+							<dt>
+								<span class="light fixedFont">{!Array}</span>  <b>up</b>
+								
+							</dt>
+								<dd>A vector pointing in the up direction in 3D space as a 1-D
+         Array with length 3.</dd>
+						
+							<dt>
+								<span class="light fixedFont">{!number}</span>  <b>width</b>
+								
+							</dt>
+								<dd>The width of the slice.</dd>
+						
+							<dt>
+								<span class="light fixedFont">{!number}</span>  <b>height</b>
+								
+							</dt>
+								<dd>The height of the slice.</dd>
+						
+						</dl>
 					
 					
 					
@@ -384,7 +431,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Mar 12 2012 11:13:54 GMT-0400 (EDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Mar 12 2012 11:13:55 GMT-0400 (EDT)
 		</div>
 	</body>
 </html>
