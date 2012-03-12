@@ -680,7 +680,7 @@ X.renderer.prototype.init = function() {
   //
   try {
     
-    // gl.viewport(0, 0, this.width(), this.height());
+    gl.viewport(0, 0, this.width(), this.height());
     
     // configure opacity to 0.0 to overwrite the viewport background-color by
     // the container color
