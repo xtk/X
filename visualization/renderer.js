@@ -2161,11 +2161,6 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       // push it to the GPU, baby..
       this._gl.drawArrays(drawMode, 0, vertexBuffer._itemCount);
       
-    } else {
-      
-      var message = 'Could not retrieve object for (re-)drawing!';
-      throw new Error(message);
-      
     }
     
   } while (--i); // loop through objects
