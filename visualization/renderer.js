@@ -43,6 +43,7 @@ goog.require('X.object');
 goog.require('X.progressbar');
 goog.require('X.shaders');
 goog.require('X.triplets');
+goog.require('X.volume');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
