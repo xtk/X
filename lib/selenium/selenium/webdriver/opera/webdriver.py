@@ -17,45 +17,37 @@
 
 import base64
 import httplib
-import warnings
+import os
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from service import Service
-from options import Options
 
 class WebDriver(RemoteWebDriver):
     """
-    Controls the ChromeDriver and allows you to drive the browser.
+    Controls the OperaDriver and allows you to drive the browser.
     
-    You will need to download the ChromeDriver executable from
-    http://code.google.com/p/chromedriver/downloads/list
     """
 
-    def __init__(self, executable_path="chromedriver", port=0,
-                 desired_capabilities=None, chrome_options=None):
+    def __init__(self, executable_path=None, port=0,
+                 desired_capabilities=DesiredCapabilities.OPERA):
         """
-        Creates a new instance of the chrome driver.
+        Creates a new instance of the Opera driver.
 
-        Starts the service and then creates new instance of chrome driver.
+        Starts the service and then creates new instance of Opera Driver.
 
         :Args:
-         - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
+         - executable_path - path to the executable. If the default is used it assumes the executable is in the
+           Environment Variable SELENIUM_SERVER_JAR
          - port - port you would like the service to run, if left as 0, a free port will be found.
-         - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various chrome
-           switches). This is being deprecated, please use chrome_options
-         - chrome_options: this takes an instance of ChromeOptions
+         - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Opera switches).
         """
-        if chrome_options is None:
-            options = Options()
-        else:
-            options = chrome_options
-
-        if desired_capabilities is not None:
-            warnings.warn("Desired Capabilities has been deprecated, please user chrome_options.", DeprecationWarning)
-            desired_capabilities.update(options.to_capabilities())
-        else:
-            desired_capabilities = options.to_capabilities()
-
+        if executable_path is None:
+            try:
+                executable_path = os.environ["SELENIUM_SERVER_JAR"]
+            except:
+                raise Exception("No executable path given, please add one to Environment Variable \
+                'SELENIUM_SERVER_JAR'")
         self.service = Service(executable_path, port=port)
         self.service.start()
 
@@ -65,8 +57,8 @@ class WebDriver(RemoteWebDriver):
 
     def quit(self):
         """
-        Closes the browser and shuts down the ChromeDriver executable
-        that is started when starting the ChromeDriver
+        Closes the browser and shuts down the OperaDriver executable
+        that is started when starting the OperaDriver
         """
         try:
             RemoteWebDriver.quit(self)
@@ -90,3 +82,4 @@ class WebDriver(RemoteWebDriver):
         finally:
             del png
         return True
+

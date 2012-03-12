@@ -58,25 +58,61 @@ class NoSuchAttributeException(WebDriverException):
     pass
 
 class StaleElementReferenceException(WebDriverException):
+    """Indicates that a reference to an element is now "stale" --- the
+    element no longer appears on the DOM of the page."""
     pass
 
 class InvalidElementStateException(WebDriverException):
     pass
 
+class NoAlertPresentException(WebDriverException):
+    pass
+
 class ElementNotVisibleException(InvalidElementStateException):
+    """Thrown to indicate that although an element is present on the
+    DOM, it is not visible, and so is not able to be interacted
+    with."""
     pass
 
 class ElementNotSelectableException(InvalidElementStateException):
     pass
 
 class InvalidCookieDomainException(WebDriverException):
+    """Thrown when attempting to add a cookie under a different domain
+    than the current URL."""
     pass
 
 class UnableToSetCookieException(WebDriverException):
+    """Thrown when a driver fails to set a cookie."""
     pass
 
 class RemoteDriverServerException(WebDriverException):
     pass
 
 class TimeoutException(WebDriverException):
+    """Thrown when a command does not complete in enough time."""
+    pass
+
+class UnexpectedTagNameException(WebDriverException):
+    """Thrown when a support class did not get an expected web element"""
+    pass
+
+class InvalidSelectiorException(NoSuchElementException):
+    """ Thrown when the selector which is used to find an element does not return
+    a WebElement. Currently this only happens when the selector is an xpath
+    expression is used which is either syntactically invalid (i.e. it is not a
+    xpath expression) or the expression does not select WebElements
+    (e.g. "count(//input)").
+    """
+    pass
+
+class ImeNotAvailableException(WebDriverException):
+    """
+    Indicates that IME support is not available. This exception is thrown for every IME-related
+    method call if IME support is not available on the machine.
+    """
+    pass
+
+class ImeActivationFailedException(WebDriverException):
+    """ Indicates that activating an IME engine has failed. """
     pass
