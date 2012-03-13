@@ -4,11 +4,14 @@
 #
 
 # system imports
-import os, sys, argparse
+import os, sys, argparse, datetime
 
 # xtk imports
 # to be renamed...?
 import paths
+
+import xupdate_parser
+import xconf_parser
 import xbuild_parser
 import xtest_parser
 
@@ -247,7 +250,7 @@ if( options.test_only ):
 print '*-----------------------*'
 print 'Compiling Code'
 
-os.system('python easybuild.py')
+#os.system('python easybuild.py')
 
 if( options.test ):
     print '*-----------------------*'
@@ -260,21 +263,31 @@ if( options.test ):
 
 # report to cdash
 # need timing info
+
+now = datetime.datetime.now()
+buildtime = str( now.year ) + str( now.month ) + str( now.day ) + "-" + str( now.minute ) + str( now.second )
+
 if( options.experimental):
-    xbuild_parser.calculate('Experimental', 'xtk_build.log')
-    xtest_parser.calculate('Experimental', 'xtk_build.log')
+    xupdate_parser.calculate('Experimental', '', buildtime);
+    xconf_parser.calculate('Experimental', '', buildtime);
+    xbuild_parser.calculate('Experimental', 'xtk_build.log', buildtime)
+    xtest_parser.calculate('Experimental', '', buildtime)
     command = "ctest -S xtk.cmake -V"
     os.system(command)
 
 if(options.nightly):
-    xbuild_parser.calculate('Nightly', 'xtk_build.log')
-    xtest_parser.calculate('Nightly', 'xtk_build.log')
+    xupdate_parser.calculate('Nightly', '', buildtime);
+    xconf_parser.calculate('Nightly', '', buildtime);
+    xbuild_parser.calculate('Nightly', 'xtk_build.log', buildtime)
+    xtest_parser.calculate('Nightly', '', buildtime)
     command = "ctest -S xtk.cmake -V"
     os.system(command)
 
 if(options.continuous):
-    xbuild_parser.calculate('Continuous', 'xtk_build.log')
-    xtest_parser.calculate('Continuous', 'xtk_build.log')
+    xupdate_parser.calculate('Continuous', '', buildtime);
+    xconf_parser.calculate('Continuous', '', buildtime);
+    xbuild_parser.calculate('Continuous', 'xtk_build.log', buildtime)
+    xtest_parser.calculate('Continuous', '', buildtime)
     command = "ctest -S xtk.cmake -V"
     os.system(command)
 

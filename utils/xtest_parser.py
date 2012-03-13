@@ -10,7 +10,7 @@ from time import time, gmtime, strftime
 import string
 
 # xtk-utils dir
-def calculate( buildtype, filename ):
+def calculate( buildtype, filename, buildtime ):
   xtkUtilsDir = os.path.abspath( os.path.dirname( sys.argv[0] ) )
 
   xml = minidom.Document()
@@ -23,8 +23,6 @@ def calculate( buildtype, filename ):
 
   hostname = getfqdn()
 
-  now = datetime.datetime.now()
-  buildtime = str( now.year ) + str( now.month ) + str( now.day ) + "-" + str( now.minute ) + str( now.second )
   buildtype = buildtype
   buildstamp = buildtime + '-' + buildtype
   siteElement.setAttribute( 'BuildStamp', buildstamp )
@@ -72,6 +70,7 @@ def parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml 
   count3 +=2;
 
   if(browserfound.find(browser) < 0):
+
     f3.readline();
     f3.readline();
     f3.readline();
@@ -80,6 +79,9 @@ def parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml 
     count3 += 5;
 
     start = f3.readline();
+
+    starttime = start.split(' ')[0];
+
     nexttest = f3.readline();
     count3 += 2;
 
@@ -87,25 +89,36 @@ def parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml 
     while(nexttest.find('Done') < 0):
       # get name
       name = nexttest.split(' ');
-      fillxml( xml, testListElement, 'Test', name[2])
-      
+      fillxml( xml, testListElement, 'Test', browser +'- '+ name[2])
+
+      endtime = name[0]
+
       # write content of error message if any
       element = xml.createElement( 'Test' )
       testingElement.appendChild( element )
          
       if(nexttest.find('FAILED') < 0):
         element.setAttribute('Status', 'passed')
-        fillxml( xml, element, 'Name', name[2])
+        fillxml( xml, element, 'Name', browser +'- '+ name[2])
+        
+        resultsElement = xml.createElement( 'Results' )
+        element.appendChild( resultsElement )
+          
+        nexttest = f3.readline();
+        
         count3 += 1;
         
       else:
         element.setAttribute('Status', 'failed')
-        fillxml( xml, element, 'Name', name[2])
+        fillxml( xml, element, 'Name', browser + '- ' + name[2])
         nexttest = f3.readline();
-      
-        error1 = f3.readline();
-        error2 = f3.readline();
-        error3 = f3.readline();
+        error = ''
+        error1 = 'still some log for the error'
+        
+        while(error1 != '\n'):
+          error1 = f3.readline();
+          error += error1;
+          count3 += 1;
  
         resultsElement = xml.createElement( 'Results' )
         element.appendChild( resultsElement )
@@ -113,15 +126,35 @@ def parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml 
         measurementElement = xml.createElement( 'Measurement' )
         resultsElement.appendChild( measurementElement )
         
-        fillxml(xml, measurementElement, 'Value', error1 + error2 + error3)
+        fillxml(xml, measurementElement, 'Value', error)
 
         nexttest = f3.readline();
-        count3 += 6;
+        count3 += 2;
 
-      nexttest = f3.readline();
+
+      # time
+      namedmeasurementElement = xml.createElement( 'NamedMeasurement' )
+      resultsElement.appendChild( namedmeasurementElement )
+        
+      year = datetime.date.today().year
+      month = datetime.date.today().month
+      day = datetime.date.today().day
+      enddatetime = datetime.datetime(int(year), int(month), int(day), int(endtime[0:2]), int(endtime[3:5]), int(endtime[6:8]), 1000*int(endtime[9:12]))
+      startdatetime = datetime.datetime(int(year), int(month), int(day), int(starttime[0:2]), int(starttime[3:5]), int(starttime[6:8]), 1000*int(starttime[9:12]))
+
+      namedmeasurementElement.setAttribute('name', 'Execution Time')
+
+      fillxml(xml, namedmeasurementElement, 'Value', str(enddatetime - startdatetime))
+
+      starttime = endtime;
+
+      # command
+
   else:
     print 'browser not found'
   # recursive call - should write error message in tests results
+  f3.readline();
+  count3 += 1
   parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml )
 
 def fillxml( xml, parent, elementname, content ):
