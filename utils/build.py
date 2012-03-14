@@ -36,7 +36,7 @@ parser.add_argument( '-v', '--verbose',
                     help='More verbose.' )
 
 # target project
-target_group.add_argument( '-a', '--all',
+parser.add_argument( '-a', '--all',
                           action='store_true',
                           dest='all',
                           default=False,
@@ -48,7 +48,7 @@ parser.add_argument( '-s', '--style',
                     default=False,
                     help='Check the style of the target projects.' )
 
-option_group.add_argument( '-so', '--style_only',
+parser.add_argument( '-so', '--style_only',
                     action='store_true',
                     dest='style_only',
                     default=False,
@@ -61,7 +61,7 @@ parser.add_argument( '-d', '--deps',
                     default=False,
                     help='Generate goog dependencies of the target projects.' )
 
-option_group.add_argument( '-do', '--deps_only',
+parser.add_argument( '-do', '--deps_only',
                     action='store_true',
                     dest='deps_only',
                     default=False,
@@ -74,40 +74,40 @@ parser.add_argument( '-j', '--jsdoc',
                     default=False,
                     help='Generate documentation of the target projects.' )
 
-option_group.add_argument( '-jo', '--jsdoc_only',
+parser.add_argument( '-jo', '--jsdoc_only',
                     action='store_true',
                     dest='jsdoc_only',
                     default=False,
                     help='Only generate documentation of the target projects.' )
 # testing
-option_group.add_argument( '-t', '--test',
+parser.add_argument( '-t', '--test',
                     action='store_true',
                     dest='test',
                     default=False,
                     help='Run all tests in Chrome and Firefox.' )
 
-option_group.add_argument( '-to', '--test_only',
+parser.add_argument( '-to', '--test_only',
                     action='store_true',
                     dest='test_only',
                     default=False,
                     help='Only run all tests in Chrome and Firefox.' )
 
 # experimental build
-option_group.add_argument( '-e', '--experimental',
+parser.add_argument( '-e', '--experimental',
                     action='store_true',
                     dest='experimental',
                     default=False,
                     help='Experimental build. Reports to cdash.xtk.org' )
 
 # nightly build
-option_group.add_argument( '-n', '--nightly',
+parser.add_argument( '-n', '--nightly',
                     action='store_true',
                     dest='nightly',
                     default=False,
                     help='Nightly build. Reports to cdash.xtk.org' )
 
 # continuous build
-option_group.add_argument( '-c', '--continuous',
+parser.add_argument( '-c', '--continuous',
                     action='store_true',
                     dest='continuous',
                     default=False,
