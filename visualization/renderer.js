@@ -2180,6 +2180,39 @@ X.renderer.prototype.render_ = function(picking, invoked) {
 };
 
 
+/**
+ * Destroy this renderer.
+ */
+X.renderer.prototype.destroy = function() {
+
+  // remove all objects
+  this._objects.clear();
+  delete this._objects;
+  this._topLevelObjects.length = 0;
+  delete this._topLevelObjects;
+  
+  // remove shaders, loader, camera and interactor
+  this._shaders = null;
+  delete this._shaders;
+  this._loader = null;
+  delete this._loader;
+  this._camera = null;
+  delete this._camera;
+  this._interactor = null;
+  delete this._interactor;
+  
+  // remove the gl context
+  this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
+  this._gl = null;
+  delete this._gl;
+  
+  // remove the canvas from the dom tree
+  goog.dom.removeNode(this._canvas);
+  delete this._canvas;
+  
+};
+
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer', X.renderer);
 goog.exportSymbol('X.renderer.prototype.width', X.renderer.prototype.width);
@@ -2201,3 +2234,4 @@ goog.exportSymbol('X.renderer.prototype.onShowtime',
 goog.exportSymbol('X.renderer.prototype.get', X.renderer.prototype.get);
 goog.exportSymbol('X.renderer.prototype.pick', X.renderer.prototype.pick);
 goog.exportSymbol('X.renderer.prototype.render', X.renderer.prototype.render);
+goog.exportSymbol('X.renderer.prototype.destroy', X.renderer.prototype.destroy);
