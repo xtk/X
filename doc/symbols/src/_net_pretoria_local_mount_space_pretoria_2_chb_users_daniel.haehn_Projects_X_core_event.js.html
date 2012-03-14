@@ -77,7 +77,7 @@
 <span class='line'> 70</span>    * @type {string}
 <span class='line'> 71</span>    * @protected
 <span class='line'> 72</span>    */</span><span class="WHIT">
-<span class='line'> 73</span> </span><span class="WHIT">  </span><span class="NAME">this._className</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'event'</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 73</span> </span><span class="WHIT">  </span><span class="KEYW">this</span><span class="PUNC">[</span><span class="STRN">'_className'</span><span class="PUNC">]</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">'event'</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 74</span> </span><span class="WHIT">  
 <span class='line'> 75</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 76</span> </span><span class="COMM">// inherit from goog.events.Event</span><span class="WHIT">
@@ -341,21 +341,4 @@
 <span class='line'>334</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>335</span> </span><span class="COMM">// inherit from goog.events.Event</span><span class="WHIT">
 <span class='line'>336</span> </span><span class="NAME">goog.inherits</span><span class="PUNC">(</span><span class="NAME">X.event.ProgressEvent</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.event</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>337</span> 
-<span class='line'>338</span> 
-<span class='line'>339</span> 
-<span class='line'>340</span> </span><span class="COMM">// export symbols (required for advanced compilation)</span><span class="WHIT">
-<span class='line'>341</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.event'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.event</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>342</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.event.events'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.event.events</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>343</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.event.uniqueId'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.event.uniqueId</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>344</span> 
-<span class='line'>345</span> </span><span class="COMM">// events</span><span class="WHIT">
-<span class='line'>346</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.event.PanEvent'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.event.PanEvent</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>347</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.event.RotateEvent'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.event.RotateEvent</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>348</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.event.ZoomEvent'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.event.ZoomEvent</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>349</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.event.RenderEvent'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.event.RenderEvent</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>350</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.event.ResetViewEvent'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.event.ResetViewEvent</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>351</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.event.ModifiedEvent'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.event.ModifiedEvent</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>352</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.event.HoverEvent'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.event.HoverEvent</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>353</span> </span><span class="NAME">goog.exportSymbol</span><span class="PUNC">(</span><span class="STRN">'X.event.ProgressEvent'</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">X.event.ProgressEvent</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>354</span> </span></pre></body></html>
+<span class='line'>337</span> </span></pre></body></html>

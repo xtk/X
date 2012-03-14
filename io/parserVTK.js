@@ -757,5 +757,3 @@ X.parserVTK.prototype.configurePolygons = function(unorderedPoints,
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.parserVTK', X.parserVTK);
 goog.exportSymbol('X.parserVTK.prototype.parse', X.parserVTK.prototype.parse);
-goog.exportSymbol('X.parserVTK.prototype.parseLine',
-    X.parserVTK.prototype.parseLine);

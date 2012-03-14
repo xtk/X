@@ -41,8 +41,7 @@ goog.require('goog.ui.ProgressBar');
  * 
  * @constructor
  * @param {!Element} parent The parent element in the DOM tree.
- * @param {!number} initialvalue An optional initial value for this progress
- *          bar.
+ * @param {!number} initialvalue An initial value for this progress bar.
  * @extends goog.ui.ProgressBar
  */
 X.progressbar = function(parent, initialvalue) {
@@ -232,9 +231,3 @@ X.progressbar.prototype.kill = function() {
   this._doneProgressBar = null;
   
 };
-
-
-// export symbols (required for advanced compilation)
-goog.exportSymbol('X.progressbar', X.progressbar);
-goog.exportSymbol('X.progressbar.prototype.done', X.progressbar.prototype.done);
-goog.exportSymbol('X.progressbar.prototype.kill', X.progressbar.prototype.kill);

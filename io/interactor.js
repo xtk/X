@@ -147,7 +147,7 @@ X.interactor = function(element) {
    * @type {boolean}
    * @protected
    */
-  this._leftButtonDown = false;
+  this['leftButtonDown'] = false;
   
   /**
    * Indicates if the middle mouse button is pressed.
@@ -155,7 +155,7 @@ X.interactor = function(element) {
    * @type {boolean}
    * @protected
    */
-  this._middleButtonDown = false;
+  this['middleButtonDown'] = false;
   
   /**
    * Indicates if the right mouse button is pressed.
@@ -163,7 +163,7 @@ X.interactor = function(element) {
    * @type {boolean}
    * @protected
    */
-  this._rightButtonDown = false;
+  this['rightButtonDown'] = false;
   
   /**
    * The previous mouse position.
@@ -173,23 +173,22 @@ X.interactor = function(element) {
    */
   this._lastMousePosition = new goog.math.Vec2(0, 0);
   
+  /**
+   * The configuration of this interactor.
+   * 
+   * @enum {boolean}
+   */
+  this['config'] = {
+    'MOUSEWHEEL_ENABLED': true,
+    'MOUSECLICKS_ENABLED': true,
+    'KEYBOARD_ENABLED': true,
+    'HOVERING_ENABLED': true,
+    'CONTEXTMENU_ENABLED': false
+  };
+  
 };
 // inherit from X.base
 goog.inherits(X.interactor, X.base);
-
-
-/**
- * The configuration of this interactor.
- * 
- * @enum {boolean}
- */
-X.interactor.prototype.config = {
-  MOUSEWHEEL_ENABLED: true,
-  MOUSECLICKS_ENABLED: true,
-  KEYBOARD_ENABLED: true,
-  HOVERING_ENABLED: true,
-  CONTEXTMENU_ENABLED: false
-};
 
 
 /**
@@ -197,14 +196,14 @@ X.interactor.prototype.config = {
  */
 X.interactor.prototype.init = function() {
 
-  if (this.config.MOUSEWHEEL_ENABLED) {
+  if (this['config']['MOUSEWHEEL_ENABLED']) {
     
     // we use the goog.events.MouseWheelHandler for a browser-independent
     // implementation
     this._mouseWheelHandler = new goog.events.MouseWheelHandler(this._element);
     
     this._mouseWheelListener = goog.events.listen(this._mouseWheelHandler,
-        goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.onMouseWheel
+        goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.onMouseWheel_
             .bind(this));
     
   } else {
@@ -216,15 +215,15 @@ X.interactor.prototype.init = function() {
     
   }
   
-  if (this.config.MOUSECLICKS_ENABLED) {
+  if (this['config']['MOUSEWHEEL_ENABLED']) {
     
     // mouse down
     this._mouseDownListener = goog.events.listen(this._element,
-        goog.events.EventType.MOUSEDOWN, this.onMouseDown.bind(this));
+        goog.events.EventType.MOUSEDOWN, this.onMouseDown_.bind(this));
     
     // mouse up
     this._mouseUpListener = goog.events.listen(this._element,
-        goog.events.EventType.MOUSEUP, this.onMouseUp.bind(this));
+        goog.events.EventType.MOUSEUP, this.onMouseUp_.bind(this));
     
   } else {
     
@@ -237,7 +236,7 @@ X.interactor.prototype.init = function() {
     
   }
   
-  if (!this.config.CONTEXTMENU_ENABLED) {
+  if (!this['config']['CONTEXTMENU_ENABLED']) {
     
     // deactivate right-click context menu
     // found no way to use goog.events for that? tried everything..
@@ -255,10 +254,10 @@ X.interactor.prototype.init = function() {
     this._element.oncontextmenu = null;
   }
   
-  if (this.config.KEYBOARD_ENABLED) {
+  if (this['config']['KEYBOARD_ENABLED']) {
     
     // the google closure way did not work, so let's do it this way..
-    window.onkeydown = this.onKey.bind(this);
+    window.onkeydown = this.onKey_.bind(this);
     
   } else {
     
@@ -280,11 +279,11 @@ X.interactor.prototype.init = function() {
   
   // mouse movement inside the element
   this._mouseMoveListener = goog.events.listen(this._element,
-      goog.events.EventType.MOUSEMOVE, this.onMouseMovementInside.bind(this));
+      goog.events.EventType.MOUSEMOVE, this.onMouseMovementInside_.bind(this));
   
   // mouse movement outside the element
   this._mouseOutListener = goog.events.listen(this._element,
-      goog.events.EventType.MOUSEOUT, this.onMouseMovementOutside.bind(this));
+      goog.events.EventType.MOUSEOUT, this.onMouseMovementOutside_.bind(this));
   
 };
 
@@ -293,25 +292,28 @@ X.interactor.prototype.init = function() {
  * Callback for mouse down events on the associated DOM element.
  * 
  * @param {Event} event The browser fired event.
+ * @private
  */
-X.interactor.prototype.onMouseDown = function(event) {
+X.interactor.prototype.onMouseDown_ = function(event) {
 
   if (event.button == goog.events.BrowserEvent.MouseButton.LEFT) {
     
     // left button click
-    this._leftButtonDown = true;
+    this['leftButtonDown'] = true;
     
   } else if (event.button == goog.events.BrowserEvent.MouseButton.MIDDLE) {
     
     // middle button click
-    this._middleButtonDown = true;
+    this['middleButtonDown'] = true;
     
   } else if (event.button == goog.events.BrowserEvent.MouseButton.RIGHT) {
     
     // right button click
-    this._rightButtonDown = true;
+    this['rightButtonDown'] = true;
     
   }
+  
+  eval("this.onMouseDown(this['leftButtonDown'],this['middleButtonDown'],this['rightButtonDown'])");
   
   // end all hovering since the scene can change and a caption might be
   // misplaced etc.
@@ -324,28 +326,45 @@ X.interactor.prototype.onMouseDown = function(event) {
 
 
 /**
+ * Overload this function to execute code on mouse down (button press).
+ * 
+ * @param {boolean} left TRUE if the left button triggered this event.
+ * @param {boolean} middle TRUE if the middle button triggered this event.
+ * @param {boolean} right TRUE if the right button triggered this event.
+ */
+X.interactor.prototype.onMouseDown = function(left, middle, right) {
+
+  // do nothing
+  
+};
+
+
+/**
  * Callback for mouse up events on the associated DOM element.
  * 
  * @param {Event} event The browser fired event.
+ * @private
  */
-X.interactor.prototype.onMouseUp = function(event) {
+X.interactor.prototype.onMouseUp_ = function(event) {
 
   if (event.button == goog.events.BrowserEvent.MouseButton.LEFT) {
     
     // left button click
-    this._leftButtonDown = false;
+    this['leftButtonDown'] = false;
     
   } else if (event.button == goog.events.BrowserEvent.MouseButton.MIDDLE) {
     
     // middle button click
-    this._middleButtonDown = false;
+    this['middleButtonDown'] = false;
     
   } else if (event.button == goog.events.BrowserEvent.MouseButton.RIGHT) {
     
     // right button click
-    this._rightButtonDown = false;
+    this['rightButtonDown'] = false;
     
   }
+  
+  eval("this.onMouseUp(this['leftButtonDown'],this['middleButtonDown'],this['rightButtonDown'])");
   
   // end all hovering since the scene can change and a caption might be
   // misplaced etc.
@@ -353,6 +372,20 @@ X.interactor.prototype.onMouseUp = function(event) {
   
   // prevent further handling by the browser
   event.preventDefault();
+  
+};
+
+
+/**
+ * /** Overload this function to execute code on mouse up (button release).
+ * 
+ * @param {boolean} left TRUE if the left button triggered this event.
+ * @param {boolean} middle TRUE if the middle button triggered this event.
+ * @param {boolean} right TRUE if the right button triggered this event.
+ */
+X.interactor.prototype.onMouseUp = function(left, middle, right) {
+
+  // do nothing
   
 };
 
@@ -362,12 +395,13 @@ X.interactor.prototype.onMouseUp = function(event) {
  * resets all internal interactor flags.
  * 
  * @param {Event} event The browser fired event.
+ * @private
  */
-X.interactor.prototype.onMouseMovementOutside = function(event) {
+X.interactor.prototype.onMouseMovementOutside_ = function(event) {
 
   // reset the click flags
   this._mouseInside = false;
-  if (this.config.KEYBOARD_ENABLED) {
+  if (this['config']['KEYBOARD_ENABLED']) {
     
     // if we observe the keyboard, remove the observer here
     // this is necessary if there are more than one renderer in the document
@@ -375,9 +409,9 @@ X.interactor.prototype.onMouseMovementOutside = function(event) {
     
   }
   
-  this._leftButtonDown = false;
-  this._middleButtonDown = false;
-  this._rightButtonDown = false;
+  this['leftButtonDown'] = false;
+  this['middleButtonDown'] = false;
+  this['rightButtonDown'] = false;
   // end all hovering since the scene can change and a caption might be
   // misplaced etc.
   this.hoverEnd_();
@@ -390,24 +424,39 @@ X.interactor.prototype.onMouseMovementOutside = function(event) {
 
 
 /**
+ * Overload this function to execute code on mouse movement.
+ * 
+ * @param {Event} event The browser fired mousemove event.
+ */
+X.interactor.prototype.onMouseMove = function(event) {
+
+  // do nothing
+  
+};
+
+
+/**
  * Callback for mouse movement events inside the associated DOM element. This
  * distinguishes by pressed mouse buttons, key accelerators etc. and fires
  * proper X.event events.
  * 
  * @param {Event} event The browser fired event.
+ * @private
  */
-X.interactor.prototype.onMouseMovementInside = function(event) {
+X.interactor.prototype.onMouseMovementInside_ = function(event) {
 
-  // TODO this needs to be more generalized
-  this.dispatchEvent('mouseup');
+  this['mousemoveEvent'] = event; // we need to buffer the event to run eval in
+  // advanced compilation
+  eval("this.onMouseMove(this['mousemoveEvent'])");
   
   this._mouseInside = true;
   
-  if (this.config.KEYBOARD_ENABLED && window.onkeydown == null) {
+  if (this['config']['KEYBOARD_ENABLED'] && window.onkeydown == null) {
     
     // we re-gained the focus, enable the keyboard observer again!
-    window.onkeydown = this.onKey.bind(this);
+    window.onkeydown = this.onKey_.bind(this);
     
+
   }
   
   // prevent any other actions by the browser (f.e. scrolling, selection..)
@@ -428,10 +477,11 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
   // 
   // hovering, if enabled..
   //
-  if (this.config.HOVERING_ENABLED) {
+  if (this['config']['HOVERING_ENABLED']) {
     
     if (Math.abs(distance.x) > 0 || Math.abs(distance.y) > 0 ||
-        this._middleButtonDown || this._leftButtonDown || this._rightButtonDown) {
+        this['middleButtonDown'] || this['leftButtonDown'] ||
+        this['rightButtonDown']) {
       
       // there was some mouse movement, let's cancel the hovering countdown
       this.hoverEnd_();
@@ -481,7 +531,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
   //
   // check which mouse buttons or keys are pressed
   //
-  if (this._leftButtonDown && !shiftDown) {
+  if (this['leftButtonDown'] && !shiftDown) {
     //
     // LEFT MOUSE BUTTON DOWN AND NOT SHIFT DOWN
     //
@@ -499,7 +549,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
     this.dispatchEvent(e);
     
 
-  } else if (this._middleButtonDown || (this._leftButtonDown && shiftDown)) {
+  } else if (this['middleButtonDown'] || (this['leftButtonDown'] && shiftDown)) {
     //
     // MIDDLE MOUSE BUTTON DOWN or LEFT MOUSE BUTTON AND SHIFT DOWN
     //
@@ -535,7 +585,7 @@ X.interactor.prototype.onMouseMovementInside = function(event) {
     this.dispatchEvent(e);
     
 
-  } else if (this._rightButtonDown) {
+  } else if (this['rightButtonDown']) {
     //
     // RIGHT MOUSE BUTTON DOWN
     //
@@ -576,13 +626,29 @@ X.interactor.prototype.hoverEnd_ = function() {
 
 
 /**
+ * Overload this function to execute code on mouse wheel events.
+ * 
+ * @param {Event} event The browser fired mousewheel event.
+ */
+X.interactor.prototype.onMouseWheel = function(event) {
+
+  // do nothing
+  
+};
+
+
+/**
  * Callback for mouse wheel events on the associated DOM element. This fires
  * proper X.event events.
  * 
  * @param {Event} event The browser fired event.
+ * @private
  */
-X.interactor.prototype.onMouseWheel = function(event) {
+X.interactor.prototype.onMouseWheel_ = function(event) {
 
+  this['mouseWheelEvent'] = event;
+  eval("this.onMouseWheel(this['mouseWheelEvent'])");
+  
   // end all hovering since the scene can change and a caption might be
   // misplaced etc.
   this.hoverEnd_();
@@ -614,12 +680,25 @@ X.interactor.prototype.onMouseWheel = function(event) {
 
 
 /**
+ * Overload this function to execute code on keyboard events.
+ * 
+ * @param {Event} event The browser fired keyboard event.
+ */
+X.interactor.prototype.onKey = function(event) {
+
+  // do nothing
+  
+};
+
+
+/**
  * Callback for keyboard events on the associated DOM element. This fires proper
  * X.event events.
  * 
  * @param {Event} event The browser fired event.
+ * @private
  */
-X.interactor.prototype.onKey = function(event) {
+X.interactor.prototype.onKey_ = function(event) {
 
   // only listen to key events if the mouse is inside our element
   // this f.e. enables key event listening for multiple renderers
@@ -628,6 +707,9 @@ X.interactor.prototype.onKey = function(event) {
     return;
     
   }
+  
+  this['keyEvent'] = event; // buffering..
+  eval("this.onKey(this['keyEvent'])");
   
   // end all hovering since the scene can change and a caption might be
   // misplaced etc.
@@ -739,27 +821,12 @@ X.interactor.prototype.onKey = function(event) {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.interactor', X.interactor);
-goog.exportSymbol('X.interactor.prototype.config',
-    X.interactor.prototype.config);
-goog.exportSymbol('X.interactor.prototype.config.MOUSEWHEEL_ENABLED',
-    X.interactor.prototype.config.MOUSEWHEEL_ENABLED);
-goog.exportSymbol('X.interactor.prototype.config.MOUSECLICKS_ENABLED',
-    X.interactor.prototype.config.MOUSECLICKS_ENABLED);
-goog.exportSymbol('X.interactor.prototype.config.KEYBOARD_ENABLED',
-    X.interactor.prototype.config.KEYBOARD_ENABLED);
-goog.exportSymbol('X.interactor.prototype.config.HOVERING_ENABLED',
-    X.interactor.prototype.config.HOVERING_ENABLED);
-goog.exportSymbol('X.interactor.prototype.config.CONTEXTMENU_ENABLED',
-    X.interactor.prototype.config.CONTEXTMENU_ENABLED);
-goog.exportSymbol('X.interactor.prototype.init', X.interactor.prototype.init);
 goog.exportSymbol('X.interactor.prototype.onMouseDown',
     X.interactor.prototype.onMouseDown);
 goog.exportSymbol('X.interactor.prototype.onMouseUp',
     X.interactor.prototype.onMouseUp);
-goog.exportSymbol('X.interactor.prototype.onMouseMovementOutside',
-    X.interactor.prototype.onMouseMovementOutside);
-goog.exportSymbol('X.interactor.prototype.onMouseMovementInside',
-    X.interactor.prototype.onMouseMovementInside);
+goog.exportSymbol('X.interactor.prototype.onMouseMove',
+    X.interactor.prototype.onMouseMove);
 goog.exportSymbol('X.interactor.prototype.onMouseWheel',
     X.interactor.prototype.onMouseWheel);
 goog.exportSymbol('X.interactor.prototype.onKey', X.interactor.prototype.onKey);

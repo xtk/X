@@ -121,13 +121,19 @@ X.parser.prototype.parseFloat32EndianSwapped = function(data, offset) {
 X.parser.prototype.parseFloat32Array = function(data, offset, elements) {
 
   var arr = new Array();
+  
+  var max = 0;
+  var min = Infinity;
+  
   var i;
   for (i = 0; i < elements; i++) {
     var val = this.parseFloat32(data, offset + (i * 4));
     arr[i] = val;
+    max = Math.max(max, val);
+    min = Math.min(min, val);
   }
   
-  return arr;
+  return [arr, max, min];
 };
 
 
@@ -171,13 +177,20 @@ X.parser.prototype.parseUInt16 = function(data, offset) {
 X.parser.prototype.parseUInt16Array = function(data, offset, elements) {
 
   var arr = new Array();
+  
+
+  var max = 0;
+  var min = Infinity;
+  
   var i;
   for (i = 0; i < elements; i++) {
     var val = this.parseUInt16(data, offset + (i * 2));
     arr[i] = val;
+    max = Math.max(max, val);
+    min = Math.min(min, val);
   }
   
-  return arr;
+  return [arr, max, min];
 };
 
 X.parser.prototype.parseSChar8 = function(data, offset) {
@@ -191,9 +204,3 @@ X.parser.prototype.parseUChar8 = function(data, offset) {
 
   return data.charCodeAt(offset) & 0xff;
 };
-
-
-
-// export symbols (required for advanced compilation)
-goog.exportSymbol('X.parser', X.parser);
-goog.exportSymbol('X.parser.prototype.parse', X.parser.prototype.parse);

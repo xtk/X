@@ -43,6 +43,7 @@ goog.require('X.object');
 goog.require('X.progressbar');
 goog.require('X.shaders');
 goog.require('X.triplets');
+goog.require('X.volume');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -51,7 +52,6 @@ goog.require('goog.math.Vec3');
 goog.require('goog.structs.AvlTree');
 goog.require('goog.structs.Map');
 goog.require('goog.Timer');
-goog.require('goog.ui.Dialog');
 
 
 
@@ -343,22 +343,22 @@ X.renderer = function(container) {
    */
   this._locked = false;
   
-  window.console.log('XTK Release 2 -- 2/12/12 -- http://www.goXTK.com');
+  /**
+   * The configuration of this renderer.
+   * 
+   * @enum {boolean}
+   */
+  this['config'] = {
+    'PROGRESSBAR_ENABLED': true,
+    'PICKING_ENABLED': true,
+    'ORDERING_ENABLED': true,
+    'STATISTICS_ENABLED': false
+  };
+  
+  window.console.log('XTK Release 3 -- 3/12/12 -- http://www.goXTK.com');
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
-
-
-/**
- * The configuration of this renderer.
- * 
- * @enum {boolean}
- */
-X.renderer.prototype.config = {
-  PROGRESSBAR_ENABLED: true,
-  PICKING_ENABLED: true,
-  ORDERING_ENABLED: true
-};
 
 
 /**
@@ -547,13 +547,13 @@ X.renderer.prototype.resetBoundingBox = function() {
 X.renderer.prototype.showProgressBar_ = function() {
 
   // only do the following if the progressBar was not turned off
-  if (this.config.PROGRESSBAR_ENABLED) {
+  if (this['config']['PROGRESSBAR_ENABLED']) {
     
     // create a progress bar here if this is the first render request and the
     // loader is working
     if (!this._progressBar) {
       
-      this._progressBar = new X.progressbar(this.container(), 0);
+      this._progressBar = new X.progressbar(this.container(), 3);
       
     }
     
@@ -568,7 +568,7 @@ X.renderer.prototype.showProgressBar_ = function() {
 X.renderer.prototype.hideProgressBar_ = function() {
 
   // only do the following if the progressBar was not turned off
-  if (this.config.PROGRESSBAR_ENABLED) {
+  if (this['config']['PROGRESSBAR_ENABLED']) {
     
     if (this._progressBar && !this._readyCheckTimer2) {
       
@@ -608,7 +608,7 @@ X.renderer.prototype.hideProgressBar_ = function() {
 X.renderer.prototype.resetViewAndRender = function() {
 
   this._camera.reset();
-  this.render_(false);
+  this.render_(false, false);
   
 };
 
@@ -680,7 +680,7 @@ X.renderer.prototype.init = function() {
   //
   try {
     
-    // gl.viewport(0, 0, this.width(), this.height());
+    gl.viewport(0, 0, this.width(), this.height());
     
     // configure opacity to 0.0 to overwrite the viewport background-color by
     // the container color
@@ -690,6 +690,8 @@ X.renderer.prototype.init = function() {
     gl.enable(gl.BLEND);
     gl.blendEquation(gl.FUNC_ADD);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    // gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE,
+    // gl.ZERO);
     // gl.blendFunc(gl.DST_COLOR, gl.ZERO);
     // gl.blendFunc(gl.ONE_MINUS_SRC_ALPHA, gl.SRC_ALPHA);
     // // enable depth testing
@@ -704,7 +706,7 @@ X.renderer.prototype.init = function() {
     // clear color and depth buffer
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     
-    if (this.config.PICKING_ENABLED) {
+    if (this['config']['PICKING_ENABLED']) {
       //
       // create a frame buffer for the picking functionality
       //
@@ -775,7 +777,7 @@ X.renderer.prototype.init = function() {
   // these get fired after user-interaction and camera re-positioning to re-draw
   // all objects
   goog.events.listen(camera, X.event.events.RENDER, this.render_.bind(this,
-      false));
+      false, false));
   
   //
   // attach all created objects as class attributes
@@ -914,59 +916,6 @@ X.renderer.prototype.add = function(object) {
   // top-level objects, meaning that they do not have a parent
   this._topLevelObjects.push(object);
   
-  this.add_(object);
-  
-};
-
-
-/**
- * Add a new displayable object to this renderer. The renderer has to be
- * initialized before doing so. A X.renderer.render() call has to be initiated
- * to display added objects.
- * 
- * @param {!X.object} object The displayable object to add to this renderer.
- * @throws {Error} An exception if something goes wrong.
- */
-X.renderer.prototype.add_ = function(object) {
-
-  if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
-      !goog.isDefAndNotNull(this._camera)) {
-    
-    throw new Error('Renderer was not initialized properly.');
-    
-  }
-  
-  if (!goog.isDefAndNotNull(object) || !(object instanceof X.object)) {
-    
-    throw new Error('Illegal object.');
-    
-  }
-  
-  // MULTI OBJECTS
-  //
-  // objects can have N child objects which again can have M child objects and
-  // so on
-  //
-  // check if this object has children
-  if (object.hasChildren()) {
-    
-    // loop through the children and recursively setup the object
-    var children = object.children();
-    var numberOfChildren = children.length;
-    var c = 0;
-    
-    for (c = 0; c < numberOfChildren; c++) {
-      
-      this.add(children[c]);
-      
-    }
-    
-  }
-  
-  // listen to modified events of this object
-  goog.events.listen(object, X.event.events.MODIFIED, this.onModified
-      .bind(this));
-  
   this.update_(object);
   
 };
@@ -1006,6 +955,14 @@ X.renderer.prototype.update_ = function(object) {
     
   }
   
+  // listen to modified events of this object, if we didn't do that before
+  if (!goog.events.hasListener(object, X.event.events.MODIFIED)) {
+    
+    goog.events.listen(object, X.event.events.MODIFIED, this.onModified
+        .bind(this));
+    
+  }
+  
   var id = object.id();
   var points = object.points();
   var normals = object.normals();
@@ -1020,8 +977,9 @@ X.renderer.prototype.update_ = function(object) {
   // b) the object is based on an external file (vtk, stl...)
   // in these cases, we do not directly update the object but activate the
   // X.loader to get the externals and then let it call the update method
-  if (goog.isDefAndNotNull(texture) && texture.dirty()) {
-    // texture associated to this object and it is dirty..
+  if (goog.isDefAndNotNull(texture) && goog.isDefAndNotNull(texture.file()) &&
+      texture.file().dirty()) {
+    // a texture file is associated to this object and it is dirty..
     
     // start loading..
     this.loader().loadTexture(object);
@@ -1038,10 +996,32 @@ X.renderer.prototype.update_ = function(object) {
     
   }
   
+  // MULTI OBJECTS
+  //
+  // objects can have N child objects which again can have M child objects and
+  // so on
+  //
+  // check if this object has children
+  if (object.dirty() && object.hasChildren()) {
+    
+    // loop through the children and recursively setup the object
+    var children = object.children();
+    var numberOfChildren = children.length;
+    var c = 0;
+    
+    for (c = 0; c < numberOfChildren; c++) {
+      
+      this.update_(children[c]);
+      
+    }
+    
+  }
+  
   // check if this is an empty object, if yes, jump out
   // empty objects can be used to group objects
   if (points.count() == 0) {
     
+    object.setClean();
     return;
     
   }
@@ -1115,9 +1095,9 @@ X.renderer.prototype.update_ = function(object) {
     var oldVertexBuffer = this._vertexBuffers.get(id);
     if (goog.isDefAndNotNull(oldVertexBuffer)) {
       
-      if (this._gl.isBuffer(oldVertexBuffer.glBuffer())) {
+      if (this._gl.isBuffer(oldVertexBuffer._glBuffer)) {
         
-        this._gl.deleteBuffer(oldVertexBuffer.glBuffer());
+        this._gl.deleteBuffer(oldVertexBuffer._glBuffer);
         
       }
       
@@ -1170,9 +1150,9 @@ X.renderer.prototype.update_ = function(object) {
     var oldNormalBuffer = this._vertexBuffers.get(id);
     if (goog.isDefAndNotNull(oldNormalBuffer)) {
       
-      if (this._gl.isBuffer(oldNormalBuffer.glBuffer())) {
+      if (this._gl.isBuffer(oldNormalBuffer._glBuffer)) {
         
-        this._gl.deleteBuffer(oldNormalBuffer.glBuffer());
+        this._gl.deleteBuffer(oldNormalBuffer._glBuffer);
         
       }
       
@@ -1226,9 +1206,9 @@ X.renderer.prototype.update_ = function(object) {
     var oldColorBuffer = this._colorBuffers.get(id);
     if (goog.isDefAndNotNull(oldColorBuffer)) {
       
-      if (this._gl.isBuffer(oldColorBuffer.glBuffer())) {
+      if (this._gl.isBuffer(oldColorBuffer._glBuffer)) {
         
-        this._gl.deleteBuffer(oldColorBuffer.glBuffer());
+        this._gl.deleteBuffer(oldColorBuffer._glBuffer);
         
       }
       
@@ -1294,9 +1274,9 @@ X.renderer.prototype.update_ = function(object) {
     var oldTexturePositionBuffer = this._texturePositionBuffers.get(id);
     if (goog.isDefAndNotNull(oldTexturePositionBuffer)) {
       
-      if (this._gl.isBuffer(oldTexturePositionBuffer.glBuffer())) {
+      if (this._gl.isBuffer(oldTexturePositionBuffer._glBuffer)) {
         
-        this._gl.deleteBuffer(oldTexturePositionBuffer.glBuffer());
+        this._gl.deleteBuffer(oldTexturePositionBuffer._glBuffer);
         
       }
       
@@ -1333,13 +1313,33 @@ X.renderer.prototype.update_ = function(object) {
       
       //
       // activate the texture on the WebGL side
-      this._textures.set(texture.file(), glTexture);
-      
-      this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
+      this._textures.set(texture.id(), glTexture);
       
       this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
-      this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, this._gl.RGBA,
-          this._gl.UNSIGNED_BYTE, glTexture.image);
+      if (texture.rawData()) {
+        
+        // use rawData rather than loading an imagefile
+        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, texture
+            .rawDataWidth(), texture.rawDataHeight(), 0, this._gl.RGBA,
+            this._gl.UNSIGNED_BYTE, texture.rawData());
+        
+        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S,
+            this._gl.CLAMP_TO_EDGE);
+        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T,
+            this._gl.CLAMP_TO_EDGE);
+        
+        // we do not want to flip here
+        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, true);
+        
+      } else {
+        
+        // use an imageFile for the texture
+        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA,
+            this._gl.RGBA, this._gl.UNSIGNED_BYTE, glTexture.image);
+        
+        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
+        
+      }
       
       // TODO different filters?
       this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER,
@@ -1399,6 +1399,9 @@ X.renderer.prototype.update_ = function(object) {
   this._normalBuffers.set(id, normalBuffer);
   this._colorBuffers.set(id, colorBuffer);
   this._texturePositionBuffers.set(id, texturePositionBuffer);
+  
+  // clean the object
+  object.setClean();
   
   // unlock
   this._locked = false;
@@ -1483,7 +1486,7 @@ X.renderer.prototype.render = function() {
   //
   // CURTAIN UP! LET THE SHOW BEGIN..
   //
-  this.render_(false);
+  this.render_(false, true);
   
 };
 
@@ -1508,7 +1511,6 @@ X.renderer.prototype.generateTree_ = function(object, level) {
   }
   
   output += object.id();
-  // window.console.log(output);
   
   if (object.hasChildren()) {
     
@@ -1528,6 +1530,12 @@ X.renderer.prototype.generateTree_ = function(object, level) {
 };
 
 
+/**
+ * Get the added X.object with the given id.
+ * 
+ * @param {!number} id The object's id.
+ * @return {?X.object} The requested X.object or null if it was not found.
+ */
 X.renderer.prototype.get = function(id) {
 
   // TODO we can store the objects ordered and do a binary search here
@@ -1558,17 +1566,87 @@ X.renderer.prototype.get = function(id) {
 };
 
 
+/**
+ * Show the caption of the X.object at viewport position x,y. This performs
+ * object picking and shows a tooltip if an object with a caption exists at this
+ * position.
+ * 
+ * @param {number} x
+ * @param {number} y
+ */
 X.renderer.prototype.showCaption_ = function(x, y) {
 
   var pickedId = this.pick(x, y);
   
   var object = this.get(pickedId);
   
-  if (object && object.caption()) {
+  if (object) {
     
-    var t = new X.caption(this.container(), x + 10, y + 10, this.interactor());
-    t.setHtml(object.caption());
+    var caption = object.caption();
     
+    if (caption) {
+      
+      var t = new X.caption(this.container(), this.container().offsetLeft + x +
+          10, this.container().offsetTop + y + 10, this.interactor());
+      t.setHtml(caption);
+      
+    }
+    
+  }
+  
+};
+
+
+/**
+ * (Re-)configure the volume rendering orientation based on the current view
+ * matrix of the camera. We always use the slices which are best oriented to
+ * create the tiled textures of X.volumes.
+ * 
+ * @param {X.volume} volume The X.volume to configure
+ */
+X.renderer.prototype.orientVolume_ = function(volume) {
+
+  // TODO once we have arbitary sliced volumes, we need to modify the vectors
+  // here
+  var centroidVector = new goog.math.Vec3(1, 0, 0);
+  var realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  var distanceFromEyeX = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  centroidVector = new goog.math.Vec3(-1, 0, 0);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  var distanceFromEyeX2 = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  
+  centroidVector = new goog.math.Vec3(0, 1, 0);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  var distanceFromEyeY = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  centroidVector = new goog.math.Vec3(0, -1, 0);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  var distanceFromEyeY2 = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  
+  centroidVector = new goog.math.Vec3(0, 0, 1);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  var distanceFromEyeZ = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  centroidVector = new goog.math.Vec3(0, 0, -1);
+  realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
+  var distanceFromEyeZ2 = goog.math.Vec3.distance(this._camera.focus(),
+      realCentroidVector);
+  
+  var maxDistance = Math
+      .max(distanceFromEyeX, distanceFromEyeY, distanceFromEyeZ,
+          distanceFromEyeX2, distanceFromEyeY2, distanceFromEyeZ2);
+  
+  if (maxDistance == distanceFromEyeX || maxDistance == distanceFromEyeX2) {
+    volume.volumeRendering_(0);
+  } else if (maxDistance == distanceFromEyeY ||
+      maxDistance == distanceFromEyeY2) {
+    volume.volumeRendering_(1);
+  } else if (maxDistance == distanceFromEyeZ ||
+      maxDistance == distanceFromEyeZ2) {
+    volume.volumeRendering_(2);
   }
   
 };
@@ -1588,32 +1666,57 @@ X.renderer.prototype.order_ = function() {
   var numberOfObjects = objects.length;
   
   var i;
-  for (i = 0; i < numberOfObjects; ++i) {
+  i = numberOfObjects - 1;
+  do {
     
     var object = objects[i];
+    if (!object) {
+      return;
+    }
     
-    if (object.opacity() == 1) {
+    var opacity = object['_opacity'];
+    
+    // if we order X.slice-s of an X.volume, we want to use the opacity of the
+    // parent volume but only in volume rendering mode
+    var volume = object._volume;
+    if (object instanceof X.slice) {
+      
+      if (volume && volume['_volumeRendering']) {
+        
+        // X.slices are only transparent in volume rendering mode
+        opacity = object['_opacity'] = object._volume['_opacity'];
+        
+      } else {
+        
+        // no volume rendering, so the X.slice is fully opaque
+        opacity = object['_opacity'] = 1.0;
+        
+      }
+      
+    }
+    
+    if (opacity == 1) {
       
       // this object is fully opaque, we do not need to calculate the distance
       continue;
       
     }
     
-    var centroid = object.points().centroid();
+    var centroid = object._points._centroid;
     var centroidVector = new goog.math.Vec3(centroid[0], centroid[1],
         centroid[2]);
-    var transformedCentroidVector = object.transform().matrix()
+    var transformedCentroidVector = object._transform._matrix
         .multiplyByVector(centroidVector);
-    var realCentroidVector = this._camera.view().multiplyByVector(
-        transformedCentroidVector);
-    var distanceFromEye = goog.math.Vec3.distance(this._camera.focus(),
+    var realCentroidVector = this._camera._view
+        .multiplyByVector(transformedCentroidVector);
+    var distanceFromEye = goog.math.Vec3.distance(this._camera._focus,
         realCentroidVector);
     objects[i].distance = distanceFromEye;
     
     // we need to update the tree
     reSortTreeRequired = true;
     
-  }
+  } while (i--);
   
   // only re-sort the tree if required
   if (reSortTreeRequired) {
@@ -1622,11 +1725,12 @@ X.renderer.prototype.order_ = function() {
     // should be fast..
     this._objects.clear();
     
-    for (i = 0; i < numberOfObjects; ++i) {
+    i = numberOfObjects - 1;
+    do {
       
       this._objects.add(objects[i]);
       
-    }
+    } while (i--);
     
   }
   
@@ -1635,7 +1739,8 @@ X.renderer.prototype.order_ = function() {
 
 /**
  * Picks an object at a position defined by display coordinates. If
- * X.renderer.config.PICKING_ENABLED is FALSE, this function always returns -1.
+ * X.renderer.config['PICKING_ENABLED'] is FALSE, this function always returns
+ * -1.
  * 
  * @param {!number} x The X-value of the display coordinates.
  * @param {!number} y The Y-value of the display coordinates.
@@ -1643,11 +1748,11 @@ X.renderer.prototype.order_ = function() {
  */
 X.renderer.prototype.pick = function(x, y) {
 
-  if (this.config.PICKING_ENABLED) {
+  if (this['config']['PICKING_ENABLED']) {
     
     // render again with picking turned on which renders the scene in a
     // framebuffer
-    this.render_(true);
+    this.render_(true, false);
     
     // grab the content of the framebuffer
     var data = new Uint8Array(4);
@@ -1676,9 +1781,11 @@ X.renderer.prototype.pick = function(x, y) {
  * 
  * @param {boolean} picking If TRUE, render to a framebuffer to perform picking -
  *          if FALSE render to the canvas viewport.
+ * @param {?boolean=} invoked If TRUE, the render counts as invoked and f.e.
+ *          statistics are generated.
  * @private
  */
-X.renderer.prototype.render_ = function(picking) {
+X.renderer.prototype.render_ = function(picking, invoked) {
 
   // picking = false;
   // for ( var y = 0; y < this._topLevelObjects.length; y++) {
@@ -1709,10 +1816,10 @@ X.renderer.prototype.render_ = function(picking) {
   this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
   
   // grab the current perspective from the camera
-  var perspectiveMatrix = this._camera.perspective();
+  var perspectiveMatrix = this._camera._perspective;
   
   // grab the current view from the camera
-  var viewMatrix = this._camera.glView();
+  var viewMatrix = this._camera._glView;
   
   // propagate perspective and view matrices to the uniforms of
   // the shader
@@ -1732,52 +1839,98 @@ X.renderer.prototype.render_ = function(picking) {
   // re-order the objects, but only if enabled.
   // this ordering should be disabled if the objects' opacity settings are not
   // used or if a large number of objects are associated
-  if (this.config.ORDERING_ENABLED) {
+  if (this['config']['ORDERING_ENABLED']) {
     
     this.order_();
     
   }
   
+  var statisticsEnabled = (!picking && goog.isDefAndNotNull(invoked) && invoked && this['config']['STATISTICS_ENABLED']);
+  if (statisticsEnabled) {
+    
+    // for statistics
+    var verticesCounter = 0;
+    var trianglesCounter = 0;
+    var linesCounter = 0;
+    var pointsCounter = 0;
+    
+  }
+  
+  //
+  // orient volumes for proper volume rendering - if there are any,
+  // this means, depending on the direction of the eye, we use the slice stack
+  // of a specific axis to create the tiled texture
+  var i;
+  var topLevelObjectsLength = this._topLevelObjects.length;
+  for (i = 0; i < topLevelObjectsLength; ++i) {
+    var topLevelObject = this._topLevelObjects[i];
+    if (topLevelObject instanceof X.volume) {
+      this.orientVolume_(topLevelObject);
+    }
+  }
+  
+  //
+  // caching for multiple objects
+  //
+  var aPointers = this._attributePointers;
+  var aPosition = aPointers.get(X.shaders.attributes.VERTEXPOSITION);
+  var aNormal = aPointers.get(X.shaders.attributes.VERTEXNORMAL);
+  var aColor = aPointers.get(X.shaders.attributes.VERTEXCOLOR);
+  var aTexturePosition = aPointers.get(X.shaders.attributes.VERTEXTEXTUREPOS);
+  
+  var uLocations = this._uniformLocations;
+  var uUsePicking = uLocations.get(X.shaders.uniforms.USEPICKING);
+  var uUseObjectColor = uLocations.get(X.shaders.uniforms.USEOBJECTCOLOR);
+  var uObjectColor = uLocations.get(X.shaders.uniforms.OBJECTCOLOR);
+  var uObjectOpacity = uLocations.get(X.shaders.uniforms.OBJECTOPACITY);
+  var uUseTexture = uLocations.get(X.shaders.uniforms.USETEXTURE);
+  var uTextureSampler = uLocations.get(X.shaders.uniforms.TEXTURESAMPLER);
+  var uVolumeLowerThreshold = uLocations
+      .get(X.shaders.uniforms.VOLUMELOWERTHRESHOLD);
+  var uVolumeUpperThreshold = uLocations
+      .get(X.shaders.uniforms.VOLUMEUPPERTHRESHOLD);
+  var uVolumeScalarMin = uLocations.get(X.shaders.uniforms.VOLUMESCALARMIN);
+  var uVolumeScalarMax = uLocations.get(X.shaders.uniforms.VOLUMESCALARMAX);
+  var uObjectTransform = uLocations.get(X.shaders.uniforms.OBJECTTRANSFORM);
+  var uPointSize = uLocations.get(X.shaders.uniforms.POINTSIZE);
+  
   //
   // loop through all objects and (re-)draw them
   var objects = this._objects.getValues();
   var numberOfObjects = objects.length;
-  
-  var i;
-  
-  // window.console.log("number of objects: " + numberOfObjects);
-  
-  for (i = 0; i < numberOfObjects; ++i) {
+  i = numberOfObjects;
+  do {
     
-    var object = objects[i];
+    var object = objects[numberOfObjects - i];
     
+
     if (object) {
       // we have a valid object
       
+      // special case for volumes
+      var volume = null;
+      
+      if (object instanceof X.slice && object._volume) {
+        
+        // we got a volume
+        volume = object._volume;
+        
+      }
+      
       // check visibility
-      if (!object.visible()) {
+      if (!object['_visible'] || (volume && !volume['visible'])) {
         
         // not visible, continue to the next one..
         continue;
         
       }
       
-      var id = object.id();
-      /*
-       * window.console.log("=================="); window.console.log("id: " +
-       * object.id()); window.console.log("color: " + object.color());
-       * window.console.log("visible: " + object.visible());
-       * window.console.log("opacity: " + object.opacity());
-       * window.console.log("points: " + object.points().get(1));
-       * window.console.log("normals: " + object.normals().get(1));
-       */
-      var magicMode = object.magicMode();
+      var id = object['_id'];
+      
+      var magicMode = object['_magicMode'];
       
       var vertexBuffer = this._vertexBuffers.get(id);
       var normalBuffer = this._normalBuffers.get(id);
-      
-      // window.console.log("vertexB: " + vertexBuffer);
-      // window.console.log("normalB: " + normalBuffer);
       
       var colorBuffer = this._colorBuffers.get(id);
       var texturePositionBuffer = this._texturePositionBuffers.get(id);
@@ -1785,67 +1938,60 @@ X.renderer.prototype.render_ = function(picking) {
       // ..bind the glBuffers
       
       // VERTICES
-      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer.glBuffer());
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer._glBuffer);
       
-      this._gl.vertexAttribPointer(this._attributePointers
-          .get(X.shaders.attributes.VERTEXPOSITION), vertexBuffer.itemSize(),
+      this._gl.vertexAttribPointer(aPosition, vertexBuffer._itemSize,
           this._gl.FLOAT, false, 0, 0);
       
       // NORMALS
-      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, normalBuffer.glBuffer());
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, normalBuffer._glBuffer);
       
-      this._gl.vertexAttribPointer(this._attributePointers
-          .get(X.shaders.attributes.VERTEXNORMAL), normalBuffer.itemSize(),
+      this._gl.vertexAttribPointer(aNormal, normalBuffer._itemSize,
           this._gl.FLOAT, false, 0, 0);
       
       if (picking) {
         
         // in picking mode, we use a color based on the id of this object
-        this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.USEPICKING), true);
+        this._gl.uniform1i(uUsePicking, true);
         
       } else {
         
         // in picking mode, we use a color based on the id of this object
-        this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.USEPICKING), false);
+        this._gl.uniform1i(uUsePicking, false);
         
       }
       
       // COLORS
-      if (goog.isDefAndNotNull(colorBuffer) && !picking && !magicMode) {
+      if (colorBuffer && !picking && !magicMode) {
         
         // point colors are defined for this object and there is not picking
         // request and no magicMode active
         
         // de-activate the useObjectColor flag on the shader
-        this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.USEOBJECTCOLOR), false);
+        this._gl.uniform1i(uUseObjectColor, false);
         
-        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer.glBuffer());
+        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer._glBuffer);
         
-        this._gl.vertexAttribPointer(this._attributePointers
-            .get(X.shaders.attributes.VERTEXCOLOR), colorBuffer.itemSize(),
+        this._gl.vertexAttribPointer(aColor, colorBuffer._itemSize,
             this._gl.FLOAT, false, 0, 0);
         
       } else {
         
         // we have a fixed object color or this is 'picking' mode
-        var useObjectColor = true;
+        var useObjectColor = 1;
         
         // some magic mode support
         if (magicMode && !picking) {
           
-          useObjectColor = false;
+          useObjectColor = 0;
           
         }
         
         // activate the useObjectColor flag on the shader
         // in magicMode, this is always false!
-        this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.USEOBJECTCOLOR), useObjectColor);
+        this._gl.uniform1i(uUseObjectColor, useObjectColor);
         
-        var objectColor = object.color();
+        var objectColor = object['_color'];
         
         if (picking) {
           
@@ -1868,32 +2014,27 @@ X.renderer.prototype.render_ = function(picking) {
           objectColor = [r / 10, g / 10, b / 10];
         }
         
-        this._gl.uniform3f(this._uniformLocations
-            .get(X.shaders.uniforms.OBJECTCOLOR), parseFloat(objectColor[0]),
+        this._gl.uniform3f(uObjectColor, parseFloat(objectColor[0]),
             parseFloat(objectColor[1]), parseFloat(objectColor[2]));
         
         // we always have to configure the attribute of the point colors
         // even if no point colors are in use
-        this._gl.vertexAttribPointer(this._attributePointers
-            .get(X.shaders.attributes.VERTEXCOLOR), vertexBuffer.itemSize(),
+        this._gl.vertexAttribPointer(aColor, vertexBuffer._itemSize,
             this._gl.FLOAT, false, 0, 0);
         
       }
       
       // OPACITY
-      this._gl.uniform1f(this._uniformLocations
-          .get(X.shaders.uniforms.OBJECTOPACITY), parseFloat(object.opacity()));
+      this._gl.uniform1f(uObjectOpacity, parseFloat(object['_opacity']));
       
       // TEXTURE
-      if (goog.isDefAndNotNull(object.texture()) &&
-          goog.isDefAndNotNull(texturePositionBuffer) && !picking) {
+      if (object._texture && texturePositionBuffer && !picking) {
         //
         // texture associated to this object
         //
         
         // activate the texture flag on the shader
-        this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.USETEXTURE), true);
+        this._gl.uniform1i(uUseTexture, true);
         
         // setup the sampler
         
@@ -1902,47 +2043,65 @@ X.renderer.prototype.render_ = function(picking) {
         
         // grab the texture from the internal hash map using the filename as the
         // key
-        this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures.get(object
-            .texture().file()));
-        this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.TEXTURESAMPLER), 0);
+        this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures
+            .get(object._texture['_id']));
+        this._gl.uniform1i(uTextureSampler, 0);
         
         // propagate the current texture-coordinate-map to WebGL
-        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, texturePositionBuffer
-            .glBuffer());
+        this._gl.bindBuffer(this._gl.ARRAY_BUFFER,
+            texturePositionBuffer._glBuffer);
         
-        this._gl.vertexAttribPointer(this._attributePointers
-            .get(X.shaders.attributes.VERTEXTEXTUREPOS), texturePositionBuffer
-            .itemSize(), this._gl.FLOAT, false, 0, 0);
+        this._gl.vertexAttribPointer(aTexturePosition,
+            texturePositionBuffer._itemSize, this._gl.FLOAT, false, 0, 0);
         
       } else {
         
         // no texture for this object or 'picking' mode
-        this._gl.uniform1i(this._uniformLocations
-            .get(X.shaders.uniforms.USETEXTURE), false);
+        this._gl.uniform1i(uUseTexture, false);
         
         // we always have to configure the attribute of the texture positions
         // even if no textures are in use
-        this._gl.vertexAttribPointer(this._attributePointers
-            .get(X.shaders.attributes.VERTEXTEXTUREPOS), vertexBuffer
-            .itemSize(), this._gl.FLOAT, false, 0, 0);
+        this._gl.vertexAttribPointer(aTexturePosition, vertexBuffer._itemSize,
+            this._gl.FLOAT, false, 0, 0);
+        
+      }
+      
+      // VOLUMES
+      // several special values need to be passed to the shaders if the object
+      // is a X.slice (part of an X.volume)
+      // this is the case if we have a volume here..
+      if (volume) {
+        
+        // pass the lower threshold
+        this._gl.uniform1f(uVolumeLowerThreshold, volume['_lowerThreshold']);
+        // pass the upper threshold
+        this._gl.uniform1f(uVolumeUpperThreshold, volume['_upperThreshold']);
+        
+        // pass the scalar range
+        var scalarRange = volume._scalarRange;
+        this._gl.uniform1f(uVolumeScalarMin, scalarRange[0]);
+        this._gl.uniform1f(uVolumeScalarMax, scalarRange[1]);
+        
+        // opacity, only if volume rendering is active
+        if (volume['_volumeRendering']) {
+          
+          this._gl.uniform1f(uObjectOpacity, parseFloat(volume['_opacity']));
+          
+        }
         
       }
       
       // TRANSFORMS
-      
       // propagate transform to the uniform matrices of the shader
-      this._gl.uniformMatrix4fv(this._uniformLocations
-          .get(X.shaders.uniforms.OBJECTTRANSFORM), false, object.transform()
-          .glMatrix());
+      this._gl.uniformMatrix4fv(uObjectTransform, false,
+          object._transform._glMatrix);
       
       // POINT SIZE
       var pointSize = 1;
-      if (object.type() == X.object.types.POINTS) {
-        pointSize = object.pointSize();
+      if (object['_type'] == X.object.types.POINTS) {
+        pointSize = object['_pointSize'];
       }
-      this._gl.uniform1f(this._uniformLocations
-          .get(X.shaders.uniforms.POINTSIZE), pointSize);
+      this._gl.uniform1f(uPointSize, pointSize);
       
       //
       // .. and draw with the object's DRAW MODE
@@ -1951,20 +2110,32 @@ X.renderer.prototype.render_ = function(picking) {
       if (object.type() == X.object.types.TRIANGLES) {
         
         drawMode = this._gl.TRIANGLES;
+        if (statisticsEnabled) {
+          trianglesCounter += (vertexBuffer._itemCount / 3);
+        }
         
       } else if (object.type() == X.object.types.LINES) {
         
         this._gl.lineWidth(object.lineWidth());
         
         drawMode = this._gl.LINES;
+        if (statisticsEnabled) {
+          linesCounter += (vertexBuffer._itemCount / 2);
+        }
         
       } else if (object.type() == X.object.types.POINTS) {
         
         drawMode = this._gl.POINTS;
+        if (statisticsEnabled) {
+          pointsCounter += vertexBuffer._itemCount;
+        }
         
       } else if (object.type() == X.object.types.TRIANGLE_STRIPS) {
         
         drawMode = this._gl.TRIANGLE_STRIP;
+        if (statisticsEnabled) {
+          trianglesCounter += (vertexBuffer._itemCount / 3);
+        }
         
       } else if (object.type() == X.object.types.POLYGONS) {
         
@@ -1973,7 +2144,7 @@ X.renderer.prototype.render_ = function(picking) {
         // POLYGONS to TRIANGLES.
         // Remark: The Van Gogh algorithm is implemented in the
         // X.object.toCSG/fromCSG functions but not used here.
-        if (vertexBuffer.itemCount() % 3 == 0) {
+        if (vertexBuffer._itemCount % 3 == 0) {
           
           drawMode = this._gl.TRIANGLES;
           
@@ -1983,32 +2154,75 @@ X.renderer.prototype.render_ = function(picking) {
           
         }
         
+        if (statisticsEnabled) {
+          trianglesCounter += (vertexBuffer._itemCount / 3);
+        }
+        
+      }
+      
+      if (statisticsEnabled) {
+        
+        verticesCounter += vertexBuffer._itemCount;
+        
       }
       
       // push it to the GPU, baby..
-      this._gl.drawArrays(drawMode, 0, vertexBuffer.itemCount());
-      
-    } else {
-      
-      var message = 'Could not retrieve object for (re-)drawing!';
-      throw new Error(message);
+      this._gl.drawArrays(drawMode, 0, vertexBuffer._itemCount);
       
     }
     
-  } // loop through objects
+  } while (--i); // loop through objects
+  
+  if (statisticsEnabled) {
+    
+    var statistics = "Objects: " + numberOfObjects + " | ";
+    statistics += "Vertices: " + verticesCounter + " | ";
+    statistics += "Triangles: " + Math.round(trianglesCounter) + " | ";
+    statistics += "Lines: " + linesCounter + " | ";
+    statistics += "Points: " + pointsCounter + " | ";
+    statistics += "Textures: " + this._textures.getCount();
+    window.console.log(statistics);
+    
+  }
+  
+};
+
+
+/**
+ * Destroy this renderer.
+ */
+X.renderer.prototype.destroy = function() {
+
+  // remove all objects
+  this._objects.clear();
+  delete this._objects;
+  this._topLevelObjects.length = 0;
+  delete this._topLevelObjects;
+  
+  // remove shaders, loader, camera and interactor
+  this._shaders = null;
+  delete this._shaders;
+  this._loader = null;
+  delete this._loader;
+  this._camera = null;
+  delete this._camera;
+  this._interactor = null;
+  delete this._interactor;
+  
+  // remove the gl context
+  this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
+  this._gl = null;
+  delete this._gl;
+  
+  // remove the canvas from the dom tree
+  goog.dom.removeNode(this._canvas);
+  delete this._canvas;
   
 };
 
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer', X.renderer);
-goog.exportSymbol('X.renderer.prototype.config', X.renderer.prototype.config);
-goog.exportSymbol('X.renderer.prototype.config.PROGRESSBAR_ENABLED',
-    X.renderer.prototype.config.PROGRESSBAR_ENABLED);
-goog.exportSymbol('X.renderer.prototype.config.PICKING_ENABLED',
-    X.renderer.prototype.config.PICKING_ENABLED);
-goog.exportSymbol('X.renderer.prototype.config.ORDERING_ENABLED',
-    X.renderer.prototype.config.ORDERING_ENABLED);
 goog.exportSymbol('X.renderer.prototype.width', X.renderer.prototype.width);
 goog.exportSymbol('X.renderer.prototype.height', X.renderer.prototype.height);
 goog.exportSymbol('X.renderer.prototype.canvas', X.renderer.prototype.canvas);
@@ -2017,22 +2231,15 @@ goog.exportSymbol('X.renderer.prototype.container',
 goog.exportSymbol('X.renderer.prototype.camera', X.renderer.prototype.camera);
 goog.exportSymbol('X.renderer.prototype.interactor',
     X.renderer.prototype.interactor);
-goog.exportSymbol('X.renderer.prototype.loader', X.renderer.prototype.loader);
-goog.exportSymbol('X.renderer.prototype.onProgress',
-    X.renderer.prototype.onProgress);
-goog.exportSymbol('X.renderer.prototype.onModified',
-    X.renderer.prototype.onModified);
-goog.exportSymbol('X.renderer.prototype.onHover', X.renderer.prototype.onHover);
 goog.exportSymbol('X.renderer.prototype.resetBoundingBox',
     X.renderer.prototype.resetBoundingBox);
 goog.exportSymbol('X.renderer.prototype.resetViewAndRender',
     X.renderer.prototype.resetViewAndRender);
 goog.exportSymbol('X.renderer.prototype.init', X.renderer.prototype.init);
-goog.exportSymbol('X.renderer.prototype.addShaders',
-    X.renderer.prototype.addShaders);
 goog.exportSymbol('X.renderer.prototype.add', X.renderer.prototype.add);
 goog.exportSymbol('X.renderer.prototype.onShowtime',
     X.renderer.prototype.onShowtime);
 goog.exportSymbol('X.renderer.prototype.get', X.renderer.prototype.get);
 goog.exportSymbol('X.renderer.prototype.pick', X.renderer.prototype.pick);
 goog.exportSymbol('X.renderer.prototype.render', X.renderer.prototype.render);
+goog.exportSymbol('X.renderer.prototype.destroy', X.renderer.prototype.destroy);

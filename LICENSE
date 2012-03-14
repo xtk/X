@@ -55,6 +55,12 @@
  *
  *   - the VTK Fileformat and VTK are developed by Kitware Inc. (http://www.kitware.com)
  *
+ *   - the insides of the X.parserNRRD are based on work from Michael Lauer (http://www.mrlauer.org)
+ *
+ *   - we use Michael Lauer's volume rendering concept and re-implemented it (http://babybrain.mrlauer.org)
+ *
+ *   - the superb JXG unzipping library was created by Matthias Ehmann, Michael Gerhaeuser, Carsten Miller, Bianca Valentin, Alfred Wassermann, Peter Wilfahrt and we modified it only a little (http://jsxgraph.uni-bayreuth.de/wp/jsxcompressor/)
+ *
  *   - special shoutouts to the following WebGL gurus:
  *        - mr.doob and the THREE.js crew (https://github.com/mrdoob/three.js/)
  *        - Lindsay Kay with Scene.js

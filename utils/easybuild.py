@@ -110,6 +110,9 @@ license = '''/*
  *  - parts of the Google Closure Library (http://code.google.com/closure/library)
  *    LICENSE: https://raw.github.com/xtk/X/master/lib/closure-library/LICENSE
  * 
+ *  - the JSXCompressor library (http://jsxgraph.uni-bayreuth.de/wp/jsxcompressor/)
+ *    LICENSE: https://raw.github.com/xtk/X/master/lib/JXG/LICENSE
+ *
  * MORE CREDITS: https://raw.github.com/xtk/X/master/LICENSE
  *
  */'''

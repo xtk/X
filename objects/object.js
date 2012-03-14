@@ -218,6 +218,8 @@ X.object = function(object) {
     
   }
   
+  this._dirty = true;
+  
 };
 // inherit from X.base
 goog.inherits(X.object, X.base);
@@ -265,8 +267,7 @@ X.object.prototype.copy_ = function(object) {
   
   if (object.file()) {
     // only if a file is configured
-    this._file = new X.file();
-    this._file.setPath(new String(object.file().path()).toString());
+    this._file = new X.file(new String(object.file().path()).toString());
   }
   
   this['_opacity'] = object.opacity();
@@ -286,6 +287,8 @@ X.object.prototype.copy_ = function(object) {
   }
   
   this['_magicMode'] = object.magicMode();
+  
+  this._dirty = true;
   
 };
 
@@ -550,7 +553,7 @@ X.object.prototype.texture = function() {
 /**
  * Set the object texture. If null is passed, the object will have no texture.
  * 
- * @param {?X.texture|string} texture The new texture.
+ * @param {?X.texture|string} texture The new texture or an image file path.
  * @throws {Error} An exception if the given texture is invalid.
  */
 X.object.prototype.setTexture = function(texture) {
@@ -566,7 +569,9 @@ X.object.prototype.setTexture = function(texture) {
   if (goog.isString(texture)) {
     
     // a string has to be converted to a new X.texture
-    texture = new X.texture(texture);
+    var textureFile = texture;
+    texture = new X.texture();
+    texture.setFile(textureFile);
     
   }
   
@@ -788,7 +793,7 @@ X.object.prototype.setVisible = function(visible) {
 
   if (this.hasChildren()) {
     
-    // loop through the children and propagate the new color
+    // loop through the children and propagate the new visibility
     var children = this.children();
     var numberOfChildren = children.length;
     var c = 0;
@@ -873,14 +878,9 @@ X.object.prototype.load = function(filepath) {
     
   }
   
-  if (!this._file) {
-    
-    this._file = new X.file();
-    
-  }
+  this._file = new X.file(filepath);
   
-  this._file.setPath(filepath);
-  
+
 };
 
 
@@ -1142,5 +1142,4 @@ goog.exportSymbol('X.object.prototype.intersect', X.object.prototype.intersect);
 goog.exportSymbol('X.object.prototype.inverse', X.object.prototype.inverse);
 goog.exportSymbol('X.object.prototype.subtract', X.object.prototype.subtract);
 goog.exportSymbol('X.object.prototype.union', X.object.prototype.union);
-goog.exportSymbol('X.object.OPACITY_COMPARATOR', X.object.OPACITY_COMPARATOR);
 goog.exportSymbol('X.object.prototype.children', X.object.prototype.children);
