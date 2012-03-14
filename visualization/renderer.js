@@ -1918,7 +1918,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       }
       
       // check visibility
-      if (!object['_visible'] || (volume && !volume['visible'])) {
+      if (!object['_visible'] || (volume && !volume['_visible'])) {
         
         // not visible, continue to the next one..
         continue;
