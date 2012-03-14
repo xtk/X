@@ -12,5 +12,5 @@ git pull
 
 cd $XTKUTILS_DIR
 # -n: nightly
-python build.py -t -n
+python build.py -d -t -n
 

@@ -26,18 +26,6 @@ function testXbasePrint() {
 }
 
 /**
- * Test for X.base.id
- * Goal: Make sure the ID is incremented.
- */
-function testXbaseID() {
-
-  b1 = new X.base();
-  b2 = new X.base();
-
-  assertNotEquals(b1.id(), b2.id());
-}
-
-/**
  * Test for X.base.dirty
  * Goal: Make sure the dirty flag is modified.
  */
