@@ -431,6 +431,18 @@ X.volume.prototype.setVolumeRendering = function(volumeRendering) {
 
 
 /**
+ * @inheritDoc
+ */
+X.volume.prototype.setVisible = function(visible) {
+
+  // we do not want to propagate to the children here
+  
+  this['_visible'] = visible;
+  
+};
+
+
+/**
  * Set the center of this X.volume. This has to be called (for now) before a
  * volume data gets loaded aka. before the first X.renderer.render() call.
  * 
@@ -496,6 +508,8 @@ goog.exportSymbol('X.volume.prototype.dimensions',
     X.volume.prototype.dimensions);
 goog.exportSymbol('X.volume.prototype.scalarRange',
     X.volume.prototype.scalarRange);
+goog.exportSymbol('X.volume.prototype.setVisible',
+    X.volume.prototype.setVisible);
 goog.exportSymbol('X.volume.prototype.setCenter', X.volume.prototype.setCenter);
 goog.exportSymbol('X.volume.prototype.setVolumeRendering',
     X.volume.prototype.setVolumeRendering);

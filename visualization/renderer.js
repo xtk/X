@@ -1907,8 +1907,18 @@ X.renderer.prototype.render_ = function(picking, invoked) {
     if (object) {
       // we have a valid object
       
+      // special case for volumes
+      var volume = null;
+      
+      if (object instanceof X.slice && object._volume) {
+        
+        // we got a volume
+        volume = object._volume;
+        
+      }
+      
       // check visibility
-      if (!object['_visible']) {
+      if (!object['_visible'] || (volume && !volume['visible'])) {
         
         // not visible, continue to the next one..
         continue;
@@ -2059,10 +2069,8 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       // VOLUMES
       // several special values need to be passed to the shaders if the object
       // is a X.slice (part of an X.volume)
-      if (object instanceof X.slice && object._volume) {
-        
-        // we got a volume
-        var volume = object._volume;
+      // this is the case if we have a volume here..
+      if (volume) {
         
         // pass the lower threshold
         this._gl.uniform1f(uVolumeLowerThreshold, volume['_lowerThreshold']);
