@@ -31,21 +31,41 @@ def chromeDriverExecutable( xtkLibDir ):
   return chromedriverExecutable
 
 
-def calculate( xtkDir, xtkLibDir ):
+def calculate( xtkDir, xtkLibDir):
   '''
   '''
+
+  if os.path.exists('xtk_test.log'): os.remove('xtk_test.log')
+
   # add selenium path
   sys.path.append( xtkLibDir + os.sep + 'selenium' )
 
   print
 
   print '======== GOOGLE CHROME RESULTS ========'
-  print runTests( xtkDir, xtkLibDir, 'chrome' )
+  chrome_results = runTests( xtkDir, xtkLibDir, 'chrome' )
+  print chrome_results
   print
 
   print '======== FIREFOX RESULTS ========'
-  print runTests( xtkDir, xtkLibDir, 'firefox' )
+  firefox_results = runTests( xtkDir, xtkLibDir, 'firefox' )
+  print firefox_results
   print
+
+  # writee to logfile the results
+  with open("xtk_test.log", "a") as f:
+    # chrome
+    f.write("chrome\n")
+    if not chrome_results:
+      f.write('chrome not found')
+    else:
+      f.write(chrome_results)
+    # firefox
+    f.write("\nfirefox\n")
+    if not firefox_results:
+      f.write('firefox not found')
+    else:
+      f.write(firefox_results)
 
   return True
 

@@ -16,13 +16,10 @@
 
 import os
 import platform
-import logging
-from subprocess import Popen, PIPE
-from extension_connection import ExtensionConnection
+from subprocess import Popen, PIPE, STDOUT
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common import utils
 import time
-import socket
-import signal
 
 
 class FirefoxBinary(object):
@@ -30,9 +27,12 @@ class FirefoxBinary(object):
     NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
 
     def __init__(self, firefox_path=None):
-        self._start_cmd = firefox_path 
+        self._start_cmd = firefox_path
         if self._start_cmd is None:
             self._start_cmd = self._get_firefox_start_cmd()
+        # Rather than modifying the environment of the calling Python process
+        # copy it and modify as needed.
+        self._firefox_env = os.environ.copy()
 
     def launch_browser(self, profile):
         """Launches the browser for the given profile name.
@@ -41,50 +41,49 @@ class FirefoxBinary(object):
         self.profile = profile
 
         self._start_from_profile_path(self.profile.path)
-        self._wait_until_connectable() 
-            
+        self._wait_until_connectable()
+ 
     def kill(self):
         """Kill the browser.
 
         This is useful when the browser is stuck.
         """
-        try:
-            if self.process:
-                os.kill(self.process.pid, signal.SIGTERM)
-                os.wait()
-        except AttributeError:
-            # kill may not be available under windows environment
-            pass
+        if self.process:
+            self.process.kill()
+            self.process.wait()
 
     def _start_from_profile_path(self, path):
-        os.environ["XRE_PROFILE_PATH"] = path
-        os.environ["MOZ_CRASHREPORTER_DISABLE"] = "1"
-        os.environ["MOZ_NO_REMOTE"] = "1"
-        os.environ["NO_EM_RESTART"] = "1"
-        Popen([self._start_cmd, "-silent"], stdout=PIPE, stderr=PIPE).wait()
-        self.process = Popen([self._start_cmd], stdout=PIPE, stderr=PIPE)
+        self._firefox_env["XRE_PROFILE_PATH"] = path
+        self._firefox_env["MOZ_CRASHREPORTER_DISABLE"] = "1"
+        self._firefox_env["MOZ_NO_REMOTE"] = "1"
+        self._firefox_env["NO_EM_RESTART"] = "1"
+        
+        if platform.system().lower() == 'linux':
+            self._modify_link_library_path()
+        
+        Popen([self._start_cmd, "-silent"], stdout=PIPE, stderr=STDOUT,
+              env=self._firefox_env).wait()
+        self.process = Popen(
+            [self._start_cmd, "-foreground"], stdout=PIPE, stderr=STDOUT,
+            env=self._firefox_env)
 
-    def is_connectable(self):
-        """Trys to connect to the extension but do not retrieve context."""
-        try:
-            socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            socket_.settimeout(1)
-            socket_.connect(("127.0.0.1", self.profile.port))
-            socket_.close()
-            return True
-        except socket.error:
-            return False
+    def _get_firefox_output(self):
+      return self.process.communicate()[0]
 
     def _wait_until_connectable(self):
         """Blocks until the extension is connectable in the firefox."""
         count = 0
-        while not self.is_connectable():
-            if self.process.returncode:
+        while not utils.is_connectable(self.profile.port):
+            if self.process.poll() is not None:
                 # Browser has exited
-                return WebDriverException("The browser appears to have exited before we could connect") 
+                raise WebDriverException("The browser appears to have exited "
+                      "before we could connect. The output was: %s" %
+                      self._get_firefox_output())
             if count == 30:
                 self.kill()
-                raise WebDriverException("Can't load the profile. Profile Dir : %s" % self.profile.path)
+                raise WebDriverException("Can't load the profile. Profile "
+                      "Dir: %s Firefox output: %s" % (
+                          self.profile.path, self._get_firefox_output()))
             count += 1
             time.sleep(1)
         return True
@@ -106,7 +105,7 @@ class FirefoxBinary(object):
                 pass
         else:
             return ""
-    
+ 
         return shlex.split(command)[0]
 
     def _get_firefox_start_cmd(self):
@@ -115,7 +114,8 @@ class FirefoxBinary(object):
         if platform.system() == "Darwin":
             start_cmd = ("/Applications/Firefox.app/Contents/MacOS/firefox-bin")
         elif platform.system() == "Windows":
-            start_cmd = self._find_exe_in_registry() or self._default_windows_location()
+            start_cmd = (self._find_exe_in_registry() or 
+                self._default_windows_location())
         else:
             # Maybe iceweasel (Debian) is another candidate...
             for ffname in ["firefox2", "firefox", "firefox-3.0", "firefox-4.0"]:
@@ -128,8 +128,35 @@ class FirefoxBinary(object):
         program_files = os.getenv("PROGRAMFILES", r"\Program Files")
         return os.path.join(program_files, "Mozilla Firefox\\firefox.exe")
 
+    def _modify_link_library_path(self):
+        existing_ld_lib_path = os.environ.get('LD_LIBRARY_PATH', '')
+
+        new_ld_lib_path = self._extract_and_check(
+            self.profile, self.NO_FOCUS_LIBRARY_NAME, "x86", "amd64")
+
+        new_ld_lib_path += existing_ld_lib_path
+
+        self._firefox_env["LD_LIBRARY_PATH"] = new_ld_lib_path
+        self._firefox_env['LD_PRELOAD'] = self.NO_FOCUS_LIBRARY_NAME
+
+    def _extract_and_check(self, profile, no_focus_so_name, x86, amd64):
+
+        paths = [x86, amd64]
+        built_path = ""
+        for path in paths:
+            library_path = os.path.join(profile.path, path)
+            os.makedirs(library_path)
+            import shutil
+            shutil.copy(os.path.join(os.path.dirname(__file__), path,
+              self.NO_FOCUS_LIBRARY_NAME),
+              library_path)
+            built_path += library_path + ":"
+
+        return built_path
+
     def which(self, fname):
-        """Returns the fully qualified path by searching Path of the given name"""
+        """Returns the fully qualified path by searching Path of the given 
+        name"""
         for pe in os.environ['PATH'].split(os.pathsep):
             checkname = os.path.join(pe, fname)
             if os.access(checkname, os.X_OK) and not os.path.isdir(checkname):

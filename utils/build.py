@@ -4,12 +4,16 @@
 #
 
 # system imports
-import os, sys, argparse
+import os, sys, argparse, datetime
 
 # xtk imports
 # to be renamed...?
 import paths
+
+import xupdate_parser
+import xconf_parser
 import xbuild_parser
+import xtest_parser
 
 import scripts.deps
 import scripts.style
@@ -32,7 +36,7 @@ parser.add_argument( '-v', '--verbose',
                     help='More verbose.' )
 
 # target project
-target_group.add_argument( '-a', '--all',
+parser.add_argument( '-a', '--all',
                           action='store_true',
                           dest='all',
                           default=False,
@@ -44,7 +48,7 @@ parser.add_argument( '-s', '--style',
                     default=False,
                     help='Check the style of the target projects.' )
 
-option_group.add_argument( '-so', '--style_only',
+parser.add_argument( '-so', '--style_only',
                     action='store_true',
                     dest='style_only',
                     default=False,
@@ -57,7 +61,7 @@ parser.add_argument( '-d', '--deps',
                     default=False,
                     help='Generate goog dependencies of the target projects.' )
 
-option_group.add_argument( '-do', '--deps_only',
+parser.add_argument( '-do', '--deps_only',
                     action='store_true',
                     dest='deps_only',
                     default=False,
@@ -70,40 +74,40 @@ parser.add_argument( '-j', '--jsdoc',
                     default=False,
                     help='Generate documentation of the target projects.' )
 
-option_group.add_argument( '-jo', '--jsdoc_only',
+parser.add_argument( '-jo', '--jsdoc_only',
                     action='store_true',
                     dest='jsdoc_only',
                     default=False,
                     help='Only generate documentation of the target projects.' )
 # testing
-option_group.add_argument( '-t', '--test',
+parser.add_argument( '-t', '--test',
                     action='store_true',
                     dest='test',
                     default=False,
                     help='Run all tests in Chrome and Firefox.' )
 
-option_group.add_argument( '-to', '--test_only',
+parser.add_argument( '-to', '--test_only',
                     action='store_true',
                     dest='test_only',
                     default=False,
                     help='Only run all tests in Chrome and Firefox.' )
 
 # experimental build
-option_group.add_argument( '-e', '--experimental',
+parser.add_argument( '-e', '--experimental',
                     action='store_true',
                     dest='experimental',
                     default=False,
                     help='Experimental build. Reports to cdash.xtk.org' )
 
 # nightly build
-option_group.add_argument( '-n', '--nightly',
+parser.add_argument( '-n', '--nightly',
                     action='store_true',
                     dest='nightly',
                     default=False,
                     help='Nightly build. Reports to cdash.xtk.org' )
 
 # continuous build
-option_group.add_argument( '-c', '--continuous',
+parser.add_argument( '-c', '--continuous',
                     action='store_true',
                     dest='continuous',
                     default=False,
@@ -233,7 +237,7 @@ if( options.jsdoc or options.jsdoc_only ):
 if( options.test_only ):
     print '*-----------------------*'
     print 'Testing WITHOUT compilation...'
-    scripts.test.calculate( paths.xtkDir, paths.xtkLibDir )
+    scripts.test.calculate( paths.xtkDir, paths.xtkLibDir)
     print 'Testing done.'
     print '*-----------------------*'
     print 'Enjoy XTK'
@@ -252,25 +256,38 @@ if( options.test ):
     print '*-----------------------*'
     print 'Testing WITH compilation...'
     print 'Should give path to xtb-build and update log file'
-    scripts.test.calculate( paths.xtkDir, paths.xtkLibDir )
+    scripts.test.calculate( paths.xtkDir, paths.xtkLibDir)
     print 'Testing done.'
     print '*-----------------------*'
     print 'Enjoy XTK'
 
 # report to cdash
 # need timing info
+
+now = datetime.datetime.now()
+buildtime = str( now.year ) + str( now.month ) + str( now.day ) + "-" + str( now.minute ) + str( now.second )
+
 if( options.experimental):
-    xbuild_parser.calculate('Experimental', 'xtk_build.log')
+    xupdate_parser.calculate('Experimental', '', buildtime);
+    xconf_parser.calculate('Experimental', '', buildtime);
+    xbuild_parser.calculate('Experimental', 'xtk_build.log', buildtime)
+    xtest_parser.calculate('Experimental', '', buildtime)
     command = "ctest -S xtk.cmake -V"
     os.system(command)
 
 if(options.nightly):
-    xbuild_parser.calculate('Nightly', 'xtk_build.log')
+    xupdate_parser.calculate('Nightly', '', buildtime);
+    xconf_parser.calculate('Nightly', '', buildtime);
+    xbuild_parser.calculate('Nightly', 'xtk_build.log', buildtime)
+    xtest_parser.calculate('Nightly', '', buildtime)
     command = "ctest -S xtk.cmake -V"
     os.system(command)
 
 if(options.continuous):
-    xbuild_parser.calculate('Continuous', 'xtk_build.log')
+    xupdate_parser.calculate('Continuous', '', buildtime);
+    xconf_parser.calculate('Continuous', '', buildtime);
+    xbuild_parser.calculate('Continuous', 'xtk_build.log', buildtime)
+    xtest_parser.calculate('Continuous', '', buildtime)
     command = "ctest -S xtk.cmake -V"
     os.system(command)
 

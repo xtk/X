@@ -14,11 +14,13 @@
 # limitations under the License.
 
 class Command(object):
-    """Defines constants for the standard WebDriver commands.
+    """
+    Defines constants for the standard WebDriver commands.
 
     While these constants have no meaning in and of themselves, they are
     used to marshal commands through a service that implements WebDriver's
     remote wire protocol:
+    
         http://code.google.com/p/selenium/wiki/JsonWireProtocol
     """
 
@@ -45,11 +47,15 @@ class Command(object):
     CLICK_ELEMENT = "clickElement"
     HOVER_OVER_ELEMENT = "hoverOverElement"
     SEND_KEYS_TO_ELEMENT = "sendKeysToElement"
-    SEND_MODIFIER_KEY_TO_ACTIVE_ELEMENT = "sendModifierKeyToActiveElement"
+    SEND_KEYS_TO_ACTIVE_ELEMENT = "sendKeysToActiveElement"
     SUBMIT_ELEMENT = "submitElement"
     TOGGLE_ELEMENT = "toggleElement"
     GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle"
     GET_WINDOW_HANDLES = "getWindowHandles"
+    GET_WINDOW_SIZE = "getWindowSize"
+    GET_WINDOW_POSITION = "getWindowPosition"
+    SET_WINDOW_SIZE = "setWindowSize"
+    SET_WINDOW_POSITION = "setWindowPosition"
     SWITCH_TO_WINDOW = "switchToWindow"
     SWITCH_TO_FRAME = "switchToFrame"
     GET_ACTIVE_ELEMENT = "getActiveElement"
@@ -80,7 +86,6 @@ class Command(object):
     IMPLICIT_WAIT = "implicitlyWait"
     EXECUTE_ASYNC_SCRIPT = "executeAsyncScript"
     SET_SCRIPT_TIMEOUT = "setScriptTimeout"
-    GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty"
 
     #Alerts
     DISMISS_ALERT = "dismissAlert"
@@ -94,3 +99,7 @@ class Command(object):
     MOUSE_DOWN = "mouseButtonDown";
     MOUSE_UP = "mouseButtonUp";
     MOVE_TO = "mouseMoveTo";
+
+    # Screen Orientation
+    SET_SCREEN_ORIENTATION = "setScreenOrientation"
+    GET_SCREEN_ORIENTATION = "getScreenOrientation"

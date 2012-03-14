@@ -7,9 +7,10 @@ from xml.dom import minidom
 import datetime
 from time import time, gmtime, strftime
 #from cElementTree.SimpleXMLWriter import XMLWriter
+import string
 
 # xtk-utils dir
-def calculate( buildtype, filename ):
+def calculate( buildtype, filename, buildtime ):
   xtkUtilsDir = os.path.abspath( os.path.dirname( sys.argv[0] ) )
 
   f = open( xtkUtilsDir + os.sep + filename, 'r' );
@@ -28,8 +29,6 @@ def calculate( buildtype, filename ):
 
   hostname = getfqdn()
 
-  now = datetime.datetime.now()
-  buildtime = str( now.year ) + str( now.month ) + str( now.day ) + "-" + str( now.minute ) + str( now.second )
   buildtype = buildtype
   buildstamp = buildtime + '-' + buildtype
   siteElement.setAttribute( 'BuildStamp', buildstamp )
@@ -60,7 +59,6 @@ def calculate( buildtype, filename ):
   f2 = open( 'XTKBuild.xml', 'w' )
   f2.write( xml.toxml() )
   f2.close()
-
 
 # read first builded file, then create method to loop
 #for line in f:
@@ -131,9 +129,3 @@ def fillxml( xml, parent, elementname, content ):
   parent.appendChild( element )
   elementcontent = xml.createTextNode( content )
   element.appendChild( elementcontent )
-
-
-#if __name__ == "__main__":
-#    main()
-#    command = "ctest -S xtk.cmake -V"
-#    os.system(command)
