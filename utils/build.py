@@ -250,7 +250,7 @@ if( options.test_only ):
 print '*-----------------------*'
 print 'Compiling Code'
 
-#os.system('python easybuild.py')
+os.system('python easybuild.py')
 
 if( options.test ):
     print '*-----------------------*'

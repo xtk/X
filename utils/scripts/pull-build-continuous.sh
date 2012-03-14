@@ -13,7 +13,7 @@ if [ "$old_head" != "$new_head" ]
 then
   # rebuild
   cd $XTKUTILS_DIR
-  python build.py -c
+  python build.py -t -c
 else
   echo 'no changes..'
 fi
