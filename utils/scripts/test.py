@@ -57,13 +57,13 @@ def calculate( xtkDir, xtkLibDir):
     # chrome
     f.write("chrome\n")
     if not chrome_results:
-      f.write('chrome not found')
+      f.write('chrome not found\n')
     else:
       f.write(chrome_results)
     # firefox
     f.write("\nfirefox\n")
     if not firefox_results:
-      f.write('firefox not found')
+      f.write('firefox not found\n')
     else:
       f.write(firefox_results)
 

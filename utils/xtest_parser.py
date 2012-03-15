@@ -31,6 +31,9 @@ def calculate( buildtype, filename, buildtime ):
 
   xml.appendChild( siteElement )
 
+  # if no tests don't try to parse the file
+  if(os.path.exists('xtk_test.log') == False): return
+
   f3 = open( 'xtk_test.log', 'r' );
   f4 = open( 'xtk_test.log', 'r' );
   count3 = 1;
