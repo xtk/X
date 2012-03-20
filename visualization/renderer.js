@@ -1901,6 +1901,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   var objects = this._objects.getValues();
   var numberOfObjects = objects.length;
   i = numberOfObjects;
+  window.console.log('numberOfObjects', numberOfObjects);
   do {
     
     window.console.log('grab object');
