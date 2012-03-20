@@ -1903,15 +1903,19 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   i = numberOfObjects;
   do {
     
+    window.console.log('grab object');
     var object = objects[numberOfObjects - i];
+    window.console.log('grab object finish');
     
-
     if (object) {
       // we have a valid object
+      
+      window.console.log('have object');
       
       // special case for volumes
       var volume = null;
       
+      window.console.log('before volume check');
       if (object instanceof X.slice && object._volume) {
         
         // we got a volume
