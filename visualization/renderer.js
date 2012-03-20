@@ -1796,7 +1796,6 @@ X.renderer.prototype.render_ = function(picking, invoked) {
     return;
   }
   
-  window.console.log('enter rendering');
   // picking = false;
   // for ( var y = 0; y < this._topLevelObjects.length; y++) {
   //    
@@ -1825,7 +1824,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   // clear the canvas
   this._gl.viewport(0, 0, this._width, this._height);
   this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
-  window.console.log('after canvas clearance');
+  
   // grab the current perspective from the camera
   var perspectiveMatrix = this._camera._perspective;
   
@@ -1845,7 +1844,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   var center = this._center;
   this._gl.uniform3f(this._uniformLocations.get(X.shaders.uniforms.CENTER),
       parseFloat(center[0]), parseFloat(center[1]), parseFloat(center[2]));
-  window.console.log('before ordering');
+  
   //
   // re-order the objects, but only if enabled.
   // this ordering should be disabled if the objects' opacity settings are not
@@ -1855,7 +1854,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
     this.order_();
     
   }
-  window.console.log('after ordering');
+  
   var statisticsEnabled = (!picking && goog.isDefAndNotNull(invoked) && invoked && this['config']['STATISTICS_ENABLED']);
   if (statisticsEnabled) {
     
@@ -1866,7 +1865,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
     var pointsCounter = 0;
     
   }
-  window.console.log('before orientvolume');
+  
   //
   // orient volumes for proper volume rendering - if there are any,
   // this means, depending on the direction of the eye, we use the slice stack
@@ -1879,7 +1878,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       this.orientVolume_(topLevelObject);
     }
   }
-  window.console.log('after orientvolume');
+  
   //
   // caching for multiple objects
   //
@@ -1904,12 +1903,12 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   var uVolumeScalarMax = uLocations.get(X.shaders.uniforms.VOLUMESCALARMAX);
   var uObjectTransform = uLocations.get(X.shaders.uniforms.OBJECTTRANSFORM);
   var uPointSize = uLocations.get(X.shaders.uniforms.POINTSIZE);
-  window.console.log('start object loop');
+  
   //
   // loop through all objects and (re-)draw them
   
   i = numberOfObjects;
-  window.console.log('numberOfObjects', numberOfObjects);
+  
   do {
     
     var object = objects[numberOfObjects - i];
@@ -1917,19 +1916,15 @@ X.renderer.prototype.render_ = function(picking, invoked) {
     if (object) {
       // we have a valid object
       
-      window.console.log('have object');
-      
       // special case for volumes
       var volume = null;
       
-      window.console.log('before volume check');
       if (object instanceof X.slice && object._volume) {
         
         // we got a volume
         volume = object._volume;
         
       }
-      window.console.log('after volume check');
       
       // check visibility
       if (!object['_visible'] || (volume && !volume['_visible'])) {
@@ -1938,7 +1933,6 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         continue;
         
       }
-      window.console.log('after visibility check');
       
       var id = object['_id'];
       
