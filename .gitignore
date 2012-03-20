@@ -28,7 +28,4 @@ xtk.js
 *.log
 
 # the build system CDash XML file
-XTKUpdate.xml
-XTKConf.xml
-XTKBuild.xml
-XTKTest.xml
+*.xml
