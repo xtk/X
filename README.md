@@ -40,19 +40,21 @@
 
 ### Example Usage ###
 
-    // create a new renderer
-    var r = new X.renderer('r');
-    r.init();
+```javascript
+// create a new renderer
+var r = new X.renderer('r');
+r.init();
     
-    // load a .vtk file
-    var skull = new X.object();
-    skull.load('skull.vtk');
+// load a .vtk file
+var skull = new X.object();
+skull.load('skull.vtk');
     
-    // add the object
-    r.add(skull);
+// add the object
+r.add(skull);
     
-    // .. and render it
-    r.render();
+// .. and render it
+r.render();
+```
 
 Click to see the <a href="http://lessons.goxtk.com/05/" target="_blank">live version</a>!
 
