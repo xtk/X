@@ -1787,6 +1787,15 @@ X.renderer.prototype.pick = function(x, y) {
  */
 X.renderer.prototype.render_ = function(picking, invoked) {
 
+  // only proceed if there are actually objects to render
+  var objects = this._objects.getValues();
+  var numberOfObjects = objects.length;
+  if (numberOfObjects == 0) {
+    // there is nothing to render
+    // get outta here
+    return;
+  }
+  
   // picking = false;
   // for ( var y = 0; y < this._topLevelObjects.length; y++) {
   //    
@@ -1896,8 +1905,6 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   
   //
   // loop through all objects and (re-)draw them
-  var objects = this._objects.getValues();
-  var numberOfObjects = objects.length;
   i = numberOfObjects;
   do {
     
