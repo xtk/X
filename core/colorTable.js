@@ -32,6 +32,7 @@ goog.provide('X.colorTable');
 
 // requires
 goog.require('X.base');
+goog.require('X.file');
 goog.require('goog.structs.Map');
 
 
@@ -64,6 +65,8 @@ X.colorTable = function() {
    */
   this._map = new goog.structs.Map();
   
+  this._file = null;
+  
 };
 // inherit from X.base
 goog.inherits(X.colorTable, X.base);
@@ -92,5 +95,44 @@ X.colorTable.prototype.add = function(value, label, r, g, b, a) {
   this._map.set(value, [label, r, g, b, a]);
   
   this._dirty = true;
+  
+};
+
+
+/**
+ * Get the file of this color table.
+ * 
+ * @return {?X.file} The file of this color table.
+ */
+X.colorTable.prototype.file = function() {
+
+  return this._file;
+  
+};
+
+
+/**
+ * Set the file for this color table.
+ * 
+ * @param {?X.file|string} file The file path or an X.file object containing the
+ *          path.
+ */
+X.colorTable.prototype.setFile = function(file) {
+
+  if (!goog.isDefAndNotNull(file)) {
+    
+    // null files are allowed
+    this._file = null;
+    return;
+    
+  }
+  
+  if (goog.isString(file)) {
+    
+    file = new X.file(file);
+    
+  }
+  
+  this._file = file;
   
 };

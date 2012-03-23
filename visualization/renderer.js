@@ -970,6 +970,7 @@ X.renderer.prototype.update_ = function(object) {
   var texture = object.texture();
   var file = object.file();
   var transform = object.transform();
+  var colorTable = object.colorTable();
   
   // here we check if additional loading is necessary
   // this would be the case if
@@ -977,8 +978,17 @@ X.renderer.prototype.update_ = function(object) {
   // b) the object is based on an external file (vtk, stl...)
   // in these cases, we do not directly update the object but activate the
   // X.loader to get the externals and then let it call the update method
-  if (goog.isDefAndNotNull(texture) && goog.isDefAndNotNull(texture.file()) &&
-      texture.file().dirty()) {
+  if (goog.isDefAndNotNull(colorTable) &&
+      goog.isDefAndNotNull(colorTable.file()) && colorTable.file().dirty()) {
+    // a colorTable file is associated to this object and it is dirty..
+    
+    // start loading
+    this.loader().loadColorTable(object);
+    
+    return;
+    
+  } else if (goog.isDefAndNotNull(texture) &&
+      goog.isDefAndNotNull(texture.file()) && texture.file().dirty()) {
     // a texture file is associated to this object and it is dirty..
     
     // start loading..

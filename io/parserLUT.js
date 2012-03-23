@@ -106,15 +106,15 @@ X.parserLUT.prototype.parse = function(object, data, colorTable) {
     // here, we have a valid array containing
     // labelValue, labelName, r, g, b, a
     
-    // convert r, g, b, a to the range 0..1
-    lineFields[2] /= 255; // r
-    lineFields[3] /= 255; // g
-    lineFields[4] /= 255; // b
-    lineFields[5] /= 255; // a
+    // convert r, g, b, a to the range 0..1 and don't forget to make it a number
+    lineFields[2] = parseInt(lineFields[2], 10) / 255; // r
+    lineFields[3] = parseInt(lineFields[3], 10) / 255; // g
+    lineFields[4] = parseInt(lineFields[4], 10) / 255; // b
+    lineFields[5] = parseInt(lineFields[5], 10) / 255; // a
     
     // .. push it
-    colorTable.add(lineFields[0], lineFields[1], lineFields[2], lineFields[3],
-        lineFields[4], lineFields[5]);
+    colorTable.add(parseInt(lineFields[0], 10), lineFields[1], lineFields[2],
+        lineFields[3], lineFields[4], lineFields[5], 10);
     
   }
   

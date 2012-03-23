@@ -205,17 +205,32 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
     for (row = 0; row < rowsCount; row++) {
       for (col = 0; col < colsCount; col++) {
         
-        // map pixel value to 1 byte
+        // map pixel values
         var pixelValue = currentSlice[p];
-        pixelValue = 255 * (pixelValue / max);
+        var pixelValue_r = 0;
+        var pixelValue_g = 0;
+        var pixelValue_b = 0;
+        var pixelValue_a = 0;
+        if (object._colorTable) {
+          // color table!
+          var lookupValue = object._colorTable._map.get(pixelValue);
+          pixelValue_r = 255 * lookupValue[1];
+          pixelValue_g = 255 * lookupValue[2];
+          pixelValue_b = 255 * lookupValue[3];
+          pixelValue_a = 255 * lookupValue[4];
+        } else {
+          // no color table, 1-channel gray value
+          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
+          pixelValue_a = 255;
+        }
         
         var textureStartIndex = p * 4;
-        textureForCurrentSlice[textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
+        textureForCurrentSlice[textureStartIndex] = pixelValue_r;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
         
-        // save the converted pixelValue in the 3d image data
+        // save the pixelValue in the 3d image data
         image[z][row][col] = pixelValue;
         
         p++;
@@ -250,12 +265,28 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
       for (col = 0; col < colsCount; col++) {
         
         pixelValue = image[z][row][col];
+        var pixelValue_r = 0;
+        var pixelValue_g = 0;
+        var pixelValue_b = 0;
+        var pixelValue_a = 0;
+        if (object._colorTable) {
+          // color table!
+          var lookupValue = object._colorTable._map.get(pixelValue);
+          pixelValue_r = 255 * lookupValue[1];
+          pixelValue_g = 255 * lookupValue[2];
+          pixelValue_b = 255 * lookupValue[3];
+          pixelValue_a = 255 * lookupValue[4];
+        } else {
+          // no color table, 1-channel gray value
+          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
+          pixelValue_a = 255;
+        }
         
         var textureStartIndex = p * 4;
-        textureForCurrentSlice[textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
+        textureForCurrentSlice[textureStartIndex] = pixelValue_r;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
         
         p++;
         
@@ -283,12 +314,28 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
       for (row = 0; row < rowsCount; row++) {
         
         pixelValue = image[z][row][col];
+        var pixelValue_r = 0;
+        var pixelValue_g = 0;
+        var pixelValue_b = 0;
+        var pixelValue_a = 0;
+        if (object._colorTable) {
+          // color table!
+          var lookupValue = object._colorTable._map.get(pixelValue);
+          pixelValue_r = 255 * lookupValue[1];
+          pixelValue_g = 255 * lookupValue[2];
+          pixelValue_b = 255 * lookupValue[3];
+          pixelValue_a = 255 * lookupValue[4];
+        } else {
+          // no color table, 1-channel gray value
+          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
+          pixelValue_a = 255;
+        }
         
         var textureStartIndex = p * 4;
-        textureForCurrentSlice[textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
+        textureForCurrentSlice[textureStartIndex] = pixelValue_r;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
         
         p++;
         

@@ -33,6 +33,7 @@ goog.require('X.base');
 goog.require('X.event');
 goog.require('X.object');
 goog.require('X.parserFSM');
+goog.require('X.parserLUT');
 goog.require('X.parserNRRD');
 goog.require('X.parserSTL');
 goog.require('X.parserTRK');
@@ -148,6 +149,52 @@ X.loader.prototype.loadTextureCompleted = function(object) {
   }.bind(this), 100);
   
 };
+
+X.loader.prototype.loadColorTable = function(object) {
+
+  if (!goog.isDefAndNotNull(object.colorTable())) {
+    
+    // should not happen :)
+    throw new Error('Internal error during file loading.');
+    
+  }
+  
+  // get the associated file of the object
+  var filepath = object.colorTable().file().path();
+  
+  // we use a simple XHR to get the file contents
+  // this works for binary and for ascii files
+  var request = new XMLHttpRequest();
+  
+  // listen to progress events.. here, goog.events.listen did not work
+  // request.addEventListener('progress',
+  // this.loadFileProgress.bind(this, object), false);
+  
+  // listen to abort events
+  goog.events.listen(request, 'abort', this.loadFileFailed.bind(this, request,
+      object));
+  
+  // listen to error events
+  goog.events.listen(request, 'error', this.loadFileFailed.bind(this, request,
+      object));
+  
+  // listen to completed events
+  goog.events.listen(request, 'load', this.loadColorTableCompleted.bind(this,
+      request, object));
+  
+  // configure the URL
+  request.open('GET', filepath, true);
+  request.overrideMimeType("text/plain; charset=x-user-defined");
+  request.setRequestHeader("Content-Type", "text/plain");
+  
+  // .. and GO!
+  request.send(null);
+  
+  // add this loading job to our jobs map
+  this.jobs_().set(object.id(), false);
+  
+};
+
 
 X.loader.prototype.loadFile = function(object) {
 
@@ -269,6 +316,23 @@ X.loader.prototype.loadFileFailed = function(request, object) {
   
 };
 
+X.loader.prototype.loadColorTableCompleted = function(request, object) {
+  
+  // we use a timeout here to let the progress bar be able to breath and show
+  // something
+  setTimeout(function() {
+
+    var lutParser = new X.parserLUT();
+    
+    goog.events.listenOnce(lutParser, X.event.events.MODIFIED,
+        this.parseColorTableCompleted.bind(this));
+    
+    lutParser.parse(object, request.response, object.colorTable());
+    
+  }.bind(this), 100);
+  
+};
+
 X.loader.prototype.loadFileCompleted = function(request, object) {
 
   // loading completed, add progress
@@ -363,6 +427,27 @@ X.loader.prototype.parseFileCompleted = function(event) {
   
 };
 
+
+X.loader.prototype.parseColorTableCompleted = function(event) {
+
+  // we use a timeout here to let the progress bar be able to breath and show
+  // something
+  setTimeout(function() {
+
+    var object = event._object;
+    
+    // the parsing is done here..
+    object.colorTable().file().setClean();
+    
+    // fire the modified event
+    object.modified();
+    
+    // mark the loading job as completed
+    this.jobs_().set(object.id(), true);
+    
+  }.bind(this), 100);
+  
+};
 
 
 /**

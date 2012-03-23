@@ -187,7 +187,6 @@ X.volume = function() {
   this['_volumeRendering'] = false;
   this._volumeRenderingOld = false;
   
-
   /**
    * The direction for the volume rendering. This is used for caching.
    * 
@@ -196,6 +195,7 @@ X.volume = function() {
    */
   this._volumeRenderingDirection = 0;
   
+
 };
 // inherit from X.object
 goog.inherits(X.volume, X.object);
@@ -296,24 +296,28 @@ X.volume.prototype.create_ = function() {
  */
 X.volume.prototype.modified = function() {
 
-  if (this['_volumeRendering'] != this._volumeRenderingOld) {
+  // only do this if we already have children aka. the create_() method was
+  // called
+  if (this.children().length > 0) {
+    if (this['_volumeRendering'] != this._volumeRenderingOld) {
+      
+      // switch from slicing to volume rendering or vice versa
+      this._dirty = true;
+      this._volumeRenderingOld = this['_volumeRendering'];
+      
+    }
     
-    // switch from slicing to volume rendering or vice versa
-    this._dirty = true;
-    this._volumeRenderingOld = this['_volumeRendering'];
-    
-  }
-  
-  if (this['_volumeRendering']) {
-    
-    // prepare volume rendering
-    this.volumeRendering_(this._volumeRenderingDirection);
-    
-  } else {
-    
-    // prepare slicing
-    this.slicing_();
-    
+    if (this['_volumeRendering']) {
+      
+      // prepare volume rendering
+      this.volumeRendering_(this._volumeRenderingDirection);
+      
+    } else {
+      
+      // prepare slicing
+      this.slicing_();
+      
+    }
   }
   
 
@@ -501,6 +505,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   this._volumeRenderingDirection = direction;
   
 };
+
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.volume', X.volume);
