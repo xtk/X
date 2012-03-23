@@ -91,6 +91,7 @@ X.parserNRRD.prototype.parse = function(object, data) {
   
   var _data = 0; // the data without header
   
+  console.log('unzipping start', new Date());
   if (this.encoding == 'gzip' || this.encoding == 'gz') {
     // we need to decompress the datastream
     _data = new JXG.Util.Unzip(data.substr(position)).unzip()[0][0];
@@ -98,6 +99,7 @@ X.parserNRRD.prototype.parse = function(object, data) {
     // we can use the data directly
     _data = data.substr(position);
   }
+  console.log('unzipping stop', new Date());
   
   var numberOfPixels = this.sizes[0] * this.sizes[1] * this.sizes[2];
   
@@ -151,9 +153,11 @@ X.parserNRRD.prototype.parse = function(object, data) {
   // create the object
   object.create_();
   
+  console.log('reslicing start', new Date());
   // now we have the values and need to reslice in the 3 orthogonal directions
   // and create the textures for each slice
   this.reslice(object, datastream, this.sizes, min, max);
+  console.log('reslicing stop', new Date());
   
   // all done..
   var modifiedEvent = new X.event.ModifiedEvent();

@@ -65,6 +65,19 @@ X.colorTable = function() {
    */
   this._map = new goog.structs.Map();
   
+  // the global id counter
+  var counter = window["X.Counter"];
+  // ..get a new unique id
+  counter.increment();
+  
+  /**
+   * The uniqueId of this object. Each object in XTK has a uniqueId.
+   * 
+   * @type {number}
+   * @protected
+   */
+  this['_id'] = counter.value();
+  
   this._file = null;
   
 };
@@ -95,6 +108,18 @@ X.colorTable.prototype.add = function(value, label, r, g, b, a) {
   this._map.set(value, [label, r, g, b, a]);
   
   this._dirty = true;
+  
+};
+
+
+/**
+ * Get the id of this color table.
+ * 
+ * @return {number} The id of this color table.
+ */
+X.colorTable.prototype.id = function() {
+
+  return this._id;
   
 };
 

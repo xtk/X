@@ -191,7 +191,7 @@ X.loader.prototype.loadColorTable = function(object) {
   request.send(null);
   
   // add this loading job to our jobs map
-  this.jobs_().set(object.id(), false);
+  this.jobs_().set(object.colorTable().id(), false);
   
 };
 
@@ -317,7 +317,7 @@ X.loader.prototype.loadFileFailed = function(request, object) {
 };
 
 X.loader.prototype.loadColorTableCompleted = function(request, object) {
-  
+
   // we use a timeout here to let the progress bar be able to breath and show
   // something
   setTimeout(function() {
@@ -443,7 +443,7 @@ X.loader.prototype.parseColorTableCompleted = function(event) {
     object.modified();
     
     // mark the loading job as completed
-    this.jobs_().set(object.id(), true);
+    this.jobs_().set(object.colorTable().id(), true);
     
   }.bind(this), 100);
   
