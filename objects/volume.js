@@ -195,7 +195,14 @@ X.volume = function() {
    */
   this._volumeRenderingDirection = 0;
   
-
+  /**
+   * The label map of this volume.
+   * 
+   * @type {?X.volume}
+   * @private
+   */
+  this._labelMap = null;
+  
 };
 // inherit from X.object
 goog.inherits(X.volume, X.object);
@@ -507,6 +514,25 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 };
 
 
+/**
+ * Return the label map of this volume. A new label map gets created if required
+ * (Singleton).
+ * 
+ * @type {?X.volume}
+ */
+X.volume.prototype.labelMap = function() {
+
+  if (!this._labelMap) {
+    
+    this._labelMap = new X.volume();
+    
+  }
+  
+  return this._labelMap;
+  
+};
+
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.volume', X.volume);
 goog.exportSymbol('X.volume.prototype.dimensions',
@@ -520,3 +546,4 @@ goog.exportSymbol('X.volume.prototype.setVolumeRendering',
     X.volume.prototype.setVolumeRendering);
 goog.exportSymbol('X.volume.prototype.threshold', X.volume.prototype.threshold);
 goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);
+goog.exportSymbol('X.volume.prototype.labelMap', X.volume.prototype.labelMap);

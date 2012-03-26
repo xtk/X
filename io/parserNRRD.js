@@ -91,7 +91,7 @@ X.parserNRRD.prototype.parse = function(object, data) {
   
   var _data = 0; // the data without header
   
-  console.log('unzipping start', new Date());
+  console.log('unzipping start', new Date(), object._id);
   if (this.encoding == 'gzip' || this.encoding == 'gz') {
     // we need to decompress the datastream
     _data = new JXG.Util.Unzip(data.substr(position)).unzip()[0][0];
@@ -183,9 +183,11 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
   for ( var iS = 0; iS < slices; iS++) {
     image[iS] = new Array(rowsCount);
     for ( var iR = 0; iR < rowsCount; iR++) {
-      image[iS][iR] = new Uint8Array(colsCount);
+      image[iS][iR] = new Array(colsCount);
     }
   }
+  
+  var pixelValue = 0;
   
   // loop through all slices in scan direction
   //
@@ -210,7 +212,7 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
       for (col = 0; col < colsCount; col++) {
         
         // map pixel values
-        var pixelValue = currentSlice[p];
+        pixelValue = currentSlice[p];
         var pixelValue_r = 0;
         var pixelValue_g = 0;
         var pixelValue_b = 0;

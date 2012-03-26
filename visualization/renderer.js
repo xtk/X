@@ -37,6 +37,7 @@ goog.require('X.camera');
 goog.require('X.caption');
 goog.require('X.event');
 goog.require('X.interactor');
+goog.require('X.labelMap');
 goog.require('X.loader');
 goog.require('X.matrix');
 goog.require('X.object');
@@ -971,7 +972,23 @@ X.renderer.prototype.update_ = function(object) {
   var file = object.file();
   var transform = object.transform();
   var colorTable = object.colorTable();
+  var labelMap = object._labelMap; // here we access directly since we do not
+  // want to create one using the labelMap()
+  // singleton accessor
   
+  //
+  // LABEL MAP
+  //
+  if (goog.isDefAndNotNull(labelMap) && goog.isDefAndNotNull(labelMap.file()) &&
+      labelMap.file().dirty()) {
+    // a labelMap file is associated to this object and it is dirty..
+    
+    // run the update_ function on the labelMap object
+    this.update_(labelMap);
+    
+  }
+  
+
   // here we check if additional loading is necessary
   // this would be the case if
   // a) the object has an external texture
