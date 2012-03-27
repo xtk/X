@@ -973,8 +973,7 @@ X.renderer.prototype.update_ = function(object) {
   var transform = object.transform();
   var colorTable = object.colorTable();
   var labelMap = object._labelMap; // here we access directly since we do not
-  // want to create one using the labelMap()
-  // singleton accessor
+  // want to create one using the labelMap() singleton accessor
   
   //
   // LABEL MAP
@@ -982,13 +981,16 @@ X.renderer.prototype.update_ = function(object) {
   if (goog.isDefAndNotNull(labelMap) && goog.isDefAndNotNull(labelMap.file()) &&
       labelMap.file().dirty()) {
     // a labelMap file is associated to this object and it is dirty..
+    // background: we always want to parse label maps first
     
     // run the update_ function on the labelMap object
     this.update_(labelMap);
     
+    // jump out
+    return;
+    
   }
   
-
   // here we check if additional loading is necessary
   // this would be the case if
   // a) the object has an external texture
@@ -1921,7 +1923,10 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   var uObjectColor = uLocations.get(X.shaders.uniforms.OBJECTCOLOR);
   var uObjectOpacity = uLocations.get(X.shaders.uniforms.OBJECTOPACITY);
   var uUseTexture = uLocations.get(X.shaders.uniforms.USETEXTURE);
+  var uUseLabelMapTexture = uLocations
+      .get(X.shaders.uniforms.USELABELMAPTEXTURE);
   var uTextureSampler = uLocations.get(X.shaders.uniforms.TEXTURESAMPLER);
+  var uTextureSampler2 = uLocations.get(X.shaders.uniforms.TEXTURESAMPLER2);
   var uVolumeLowerThreshold = uLocations
       .get(X.shaders.uniforms.VOLUMELOWERTHRESHOLD);
   var uVolumeUpperThreshold = uLocations
@@ -2077,7 +2082,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         // bind the texture
         this._gl.activeTexture(this._gl.TEXTURE0);
         
-        // grab the texture from the internal hash map using the filename as the
+        // grab the texture from the internal hash map using the id as the
         // key
         this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures
             .get(object._texture['_id']));
@@ -2118,10 +2123,28 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         this._gl.uniform1f(uVolumeScalarMin, scalarRange[0]);
         this._gl.uniform1f(uVolumeScalarMax, scalarRange[1]);
         
+        // get the (optional) label map
+        var labelMap = volume._labelMap;
+        
         // opacity, only if volume rendering is active
         if (volume['_volumeRendering']) {
           
           this._gl.uniform1f(uObjectOpacity, parseFloat(volume['_opacity']));
+          
+        } else if (labelMap) {
+          // only if we have an associated labelMap..
+          console.log('found a labelmap for this slice.');
+          
+          // we handle a second texture, actually the one for the labelMap
+          this._gl.uniform1i(uUseLabelMapTexture, true);
+          
+          // bind the texture
+          this._gl.activeTexture(this._gl.TEXTURE1);
+          
+          // grab the texture from the internal hash map using the id as
+          // the key
+          this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures.get(2627));
+          this._gl.uniform1i(uTextureSampler2, 1);
           
         }
         

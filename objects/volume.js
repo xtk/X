@@ -524,7 +524,7 @@ X.volume.prototype.labelMap = function() {
 
   if (!this._labelMap) {
     
-    this._labelMap = new X.volume();
+    this._labelMap = new X.labelMap(this);
     
   }
   

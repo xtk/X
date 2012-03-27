@@ -44,7 +44,7 @@ goog.require('X.volume');
  * @constructor
  * @extends X.volume
  */
-X.labelMap = function() {
+X.labelMap = function(volume) {
 
   //
   // call the standard constructor of X.volume
@@ -59,18 +59,33 @@ X.labelMap = function() {
    */
   this['_className'] = 'labelMap';
   
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this['_visible'] = false; // never show label maps
+  
+  this._volume = volume;
+  
 };
 // inherit from X.volume
 goog.inherits(X.labelMap, X.volume);
 
 
-
 /**
+ * Re-show the slices or re-activate the volume rendering for this volume.
+ * 
  * @inheritDoc
  */
-X.labelMap.prototype.create_ = function() {
+X.labelMap.prototype.modified = function() {
 
-  // here, for label maps we do nothing
+  // call the X.volumes' modified method
+  this._volume.modified();
+  
+  // .. and fire our own modified event
+  var modifiedEvent = new X.event.ModifiedEvent();
+  modifiedEvent._object = this;
+  this.dispatchEvent(modifiedEvent);
   
 };
 

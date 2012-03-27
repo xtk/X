@@ -120,7 +120,9 @@ X.shaders = function() {
   t2 += '\n';
   t2 += 'uniform bool usePicking;\n';
   t2 += 'uniform bool useTexture;\n';
+  t2 += 'uniform bool useLabelMapTexture;\n'; // which activates textureSampler2
   t2 += 'uniform sampler2D textureSampler;\n';
+  t2 += 'uniform sampler2D textureSampler2;\n';
   t2 += 'uniform float objectOpacity;\n';
   t2 += 'uniform float volumeLowerThreshold;\n';
   t2 += 'uniform float volumeUpperThreshold;\n';
@@ -137,16 +139,21 @@ X.shaders = function() {
   t2 += ' if (usePicking) {\n';
   t2 += '   gl_FragColor = vec4(fragmentColor, 1.0);\n';
   t2 += ' } else if (useTexture) {\n';
-  t2 += '   gl_FragColor = texture2D(textureSampler,';
-  t2 += '   vec2(fragmentTexturePos.s,fragmentTexturePos.t));\n';
+  t2 += '   vec4 texture1 = texture2D(textureSampler,fragmentTexturePos);\n';
+  t2 += '   vec4 textureSum = texture1;\n';
+  t2 += '   if (useLabelMapTexture) {\n'; // special case for label maps
+  t2 += '     vec4 texture2 = texture2D(textureSampler2,fragmentTexturePos);\n';
+  t2 += '     textureSum = texture1 + texture2;\n';
+  t2 += '   }\n';
   // threshold functionality for 1-channel volumes
   t2 += '   float _volumeLowerThreshold = (volumeLowerThreshold / volumeScalarMax);\n';
   t2 += '   float _volumeUpperThreshold = (volumeUpperThreshold / volumeScalarMax);\n';
-  t2 += '   if (gl_FragColor.r < _volumeLowerThreshold ||\n';
-  t2 += '       gl_FragColor.r > _volumeUpperThreshold) {\n';
+  t2 += '   if (texture1.r < _volumeLowerThreshold ||\n';
+  t2 += '       texture1.r > _volumeUpperThreshold) {\n';
   t2 += '     discard;\n';
   t2 += '   };\n';
-  t2 += ' gl_FragColor.a = objectOpacity;\n';
+  t2 += '   gl_FragColor = textureSum;\n';
+  t2 += '   gl_FragColor.a = objectOpacity;\n';
   t2 += ' } else {\n';
   // configure advanced lighting
   t2 += '   vec3 nNormal = normalize(fTransformedVertexNormal);\n';
@@ -210,7 +217,9 @@ X.shaders.uniforms = {
   NORMAL: 'normal',
   USEPICKING: 'usePicking',
   USETEXTURE: 'useTexture',
+  USELABELMAPTEXTURE: 'useLabelMapTexture',
   TEXTURESAMPLER: 'textureSampler',
+  TEXTURESAMPLER2: 'textureSampler2',
   VOLUMELOWERTHRESHOLD: 'volumeLowerThreshold',
   VOLUMEUPPERTHRESHOLD: 'volumeUpperThreshold',
   VOLUMESCALARMIN: 'volumeScalarMin',
