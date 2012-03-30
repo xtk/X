@@ -22,12 +22,6 @@ import scripts.test
 
 parser = argparse.ArgumentParser( description='This the XTK build tool' )
 
-# define some mutual exclusive groups
-# i.e. cannot call xtk_only and app_only at the same time
-# testing is also separate
-target_group = parser.add_mutually_exclusive_group()
-option_group = parser.add_mutually_exclusive_group()
-
 # verbose
 parser.add_argument( '-v', '--verbose',
                     action='store_true',
@@ -35,24 +29,19 @@ parser.add_argument( '-v', '--verbose',
                     default=False,
                     help='More verbose.' )
 
-# target project
-parser.add_argument( '-a', '--all',
-                          action='store_true',
-                          dest='all',
-                          default=False,
-                          help='Check style, build doc, build deps and compile code' )
+# build
+parser.add_argument( '-b', '--build',
+                    action='store_true',
+                    dest='build',
+                    default=True,
+                    help='Compile the XTK source code.' )
+
 # style
 parser.add_argument( '-s', '--style',
                     action='store_true',
                     dest='style',
                     default=False,
                     help='Check the style of the target projects.' )
-
-parser.add_argument( '-so', '--style_only',
-                    action='store_true',
-                    dest='style_only',
-                    default=False,
-                    help='Only check the style of the target project.' )
 
 # dependencies
 parser.add_argument( '-d', '--deps',
@@ -61,12 +50,6 @@ parser.add_argument( '-d', '--deps',
                     default=False,
                     help='Generate goog dependencies of the target projects.' )
 
-parser.add_argument( '-do', '--deps_only',
-                    action='store_true',
-                    dest='deps_only',
-                    default=False,
-                    help='Only generate dependencies of the target projects.' )
-
 # documentation
 parser.add_argument( '-j', '--jsdoc',
                     action='store_true',
@@ -74,23 +57,11 @@ parser.add_argument( '-j', '--jsdoc',
                     default=False,
                     help='Generate documentation of the target projects.' )
 
-parser.add_argument( '-jo', '--jsdoc_only',
-                    action='store_true',
-                    dest='jsdoc_only',
-                    default=False,
-                    help='Only generate documentation of the target projects.' )
-# testing
 parser.add_argument( '-t', '--test',
                     action='store_true',
                     dest='test',
                     default=False,
                     help='Run all tests in Chrome and Firefox.' )
-
-parser.add_argument( '-to', '--test_only',
-                    action='store_true',
-                    dest='test_only',
-                    default=False,
-                    help='Only run all tests in Chrome and Firefox.' )
 
 # experimental build
 parser.add_argument( '-e', '--experimental',
@@ -115,65 +86,31 @@ parser.add_argument( '-c', '--continuous',
 
 options = parser.parse_args()
 
-# sanity check, in case we turn on deps and style_only at the same time
-value_list = [options.style_only, options.deps_only, options.jsdoc_only]
-name_list = ['style_only', 'deps_only', 'jsdoc_only', 'test_only']
-
-if( True in value_list ):
-    index = value_list.index( True )
-
-    if( options.all ):
-        print '>> WARNING: using \'--all\', \'--' + str( name_list[index] ) + '\' will have no effect'
-        options.style = True
-        options.deps = True
-        options.jsdoc = True
-        options.test = True
-        options.style_only = False
-        options.deps_only = False
-        options.jsdoc_only = False
-        options.test_only = False
-        # build type
-        options.experimental = True
-        options.nightly = True
-        options.continuous = True
-    else:
-        if( options.style ):
-            options.style = False
-            print '>> WARNING: using \'--' + str( name_list[index] ) + '\': --style will have no effect'
-        if( options.deps ):
-            options.deps = False
-            print '>> WARNING: using \'--' + str( name_list[index] ) + '\': --deps will have no effect'
-        if( options.jsdoc ):
-            options.jsdoc = False
-            print '>> WARNING: using \'--' + str( name_list[index] ) + '\': --jsdoc will have no effect'
-        if( options.test ):
-            options.test = False
-            print '>> WARNING: using \'--' + str( name_list[index] ) + '\': --test will have no effect'
-
 if ( options.verbose ):
     print '___________>T<___________'
     print ' ' + parser.description
     print '*-----------------------*'
     print '*'
+    print '* build.............: ' + str( options.build )
     print '* build tool........: ' + paths.compilerFilePath
     print '* compiler file path: ' + paths.closureBuilderFilePath
     print '* xtkDir............: ' + paths.xtkDir
     print '*'
     print '* style.............: ' + str( options.style )
-    print '* style_only........: ' + str( options.style_only )
     print '* style file path...: ' + paths.closureLinterFilePath
     print '*'
     print '* deps..............: ' + str( options.deps )
-    print '* deps_only.........: ' + str( options.deps_only )
     print '* deps file path....: ' + paths.closureDepsFilePath
     print '*'
     print '* jsdoc.............: ' + str( options.jsdoc )
-    print '* jsdoc_only........: ' + str( options.jsdoc_only )
     print '* jsdoc dir.........: ' + paths.jsdocDir
     print '*'
     print '* test..............: ' + str( options.test )
-    print '* test_only.........: ' + str( options.test_only )
     print '* test dir..........: ' + '!!! to be added !!!'
+    print '*'
+    print '* experimental......: ' + str( options.experimental )
+    print '* nightly...........: ' + str( options.nightly )
+    print '* continuous........: ' + str( options.continuous )
     print '*'
     print '*-----------------------*'
 
@@ -182,7 +119,7 @@ if ( options.verbose ):
 # passing this step is important for a good style consistency,
 # a good documentation and a better compilation
 #
-if( options.style or options.style_only ):
+if( options.style ):
     print '*-----------------------*'
     print 'Checking style '
 
@@ -192,34 +129,11 @@ if( options.style or options.style_only ):
     print 'Style checked'
     print '*-----------------------*'
 
-    if ( options.style_only ):
-        print 'Enjoy XTK'
-        sys.exit()
-#
-# generate the deps files
-# target-deps.js will be generated wrote in the target's
-# source directory
-# deps are useful if you want to use the non compiled target with goog
-#
-if( options.deps or options.deps_only ):
-    print '*-----------------------*'
-    print 'Generating dependencies '
-
-    # inputs: namespace, project dir, build tool
-    scripts.deps.calculate( 'xtk', paths.xtkDir, paths.closureDepsFilePath )
-
-    print 'Dependencies generated'
-    print '*-----------------------*'
-
-    if ( options.deps_only ):
-        print 'Enjoy XTK'
-        sys.exit()
-
 #
 # generate the documentation
 # the documentation will be generated in the target-build/doc folder
 #
-if( options.jsdoc or options.jsdoc_only ):
+if( options.jsdoc ):
     print '*-----------------------*'
     print 'Generating Documentation '
 
@@ -229,41 +143,43 @@ if( options.jsdoc or options.jsdoc_only ):
     print 'Documentation generated'
     print '*-----------------------*'
 
-    if( options.jsdoc_only ):
-        print 'Enjoy XTK'
-        sys.exit()
-
-
-if( options.test_only ):
+#
+# generate the deps files
+# target-deps.js will be generated wrote in the target's
+# source directory
+# deps are useful if you want to use the non compiled target with goog
+#
+if( options.deps ):
     print '*-----------------------*'
-    print 'Testing WITHOUT compilation...'
-    scripts.test.calculate( paths.xtkDir, paths.xtkLibDir)
-    print 'Testing done.'
+    print 'Generating dependencies '
+
+    # inputs: namespace, project dir, build tool
+    scripts.deps.calculate( 'xtk', paths.xtkDir, paths.closureDepsFilePath )
+
+    print 'Dependencies generated'
     print '*-----------------------*'
-    print 'Enjoy XTK'
-    sys.exit()
 
 #
 # Compile the project
 #
-
-print '*-----------------------*'
-print 'Compiling Code'
-
-os.system('python easybuild.py')
+if( options.build ):
+    print '*-----------------------*'
+    print 'Compiling Code'
+    os.system('python easybuild.py')
+    print 'Code compiled'
+    print '*-----------------------*'
 
 if( options.test ):
     print '*-----------------------*'
+    print 'Testing code'
     print 'Testing WITH compilation...'
     print 'Should give path to xtb-build and update log file'
     scripts.test.calculate( paths.xtkDir, paths.xtkLibDir)
-    print 'Testing done.'
+    print 'Code tested'
     print '*-----------------------*'
-    print 'Enjoy XTK'
 
 # report to cdash
 # need timing info
-
 now = datetime.datetime.now()
 buildtime = str( now.year ) + str( now.month ) + str( now.day ) + "-" + str( now.minute ) + str( now.second )
 
@@ -291,8 +207,16 @@ if(options.continuous):
     command = "ctest -S xtk.cmake -V"
     os.system(command)
 
-
 # delete temp output file
+# CDASH
+if os.path.exists( 'XTKUpdate.xml' ): os.remove( 'XTKUpdate.xml' )
+if os.path.exists( 'XTKConf.xml' ): os.remove( 'XTKConf.xml' )
+if os.path.exists( 'XTKBuild.xml' ): os.remove( 'XTKBuild.xml' )
+if os.path.exists( 'XTKTest.xml' ): os.remove( 'XTKTest.xml' )
+# log files
+if os.path.exists( 'xtk_build.log' ): os.remove( 'xtk_build.log' )
+if os.path.exists( 'xtk_test.log' ): os.remove( 'xtk_test.log' )
 
-print 'Code Compiled'
-print '*-----------------------*'
+print 'Visit us at goxtk.com!!!'
+print 'Contact us at: dev@goxtk.com'
+print 'Enjoy XTK'
