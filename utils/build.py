@@ -33,7 +33,7 @@ parser.add_argument( '-v', '--verbose',
 parser.add_argument( '-b', '--build',
                     action='store_true',
                     dest='build',
-                    default=True,
+                    default=False,
                     help='Compile the XTK source code.' )
 
 # style
@@ -217,6 +217,8 @@ if os.path.exists( 'XTKTest.xml' ): os.remove( 'XTKTest.xml' )
 if os.path.exists( 'xtk_build.log' ): os.remove( 'xtk_build.log' )
 if os.path.exists( 'xtk_test.log' ): os.remove( 'xtk_test.log' )
 
+print '*-----------------------*'
 print 'Visit us at goxtk.com!!!'
 print 'Contact us at: dev@goxtk.com'
 print 'Enjoy XTK'
+print '*-----------------------*'
