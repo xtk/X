@@ -1960,6 +1960,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   var uUseObjectColor = uLocations.get(X.shaders.uniforms.USEOBJECTCOLOR);
   var uObjectColor = uLocations.get(X.shaders.uniforms.OBJECTCOLOR);
   var uObjectOpacity = uLocations.get(X.shaders.uniforms.OBJECTOPACITY);
+  var uLabelMapOpacity = uLocations.get(X.shaders.uniforms.LABELMAPOPACITY);
   var uUseTexture = uLocations.get(X.shaders.uniforms.USETEXTURE);
   var uUseLabelMapTexture = uLocations
       .get(X.shaders.uniforms.USELABELMAPTEXTURE);
@@ -2189,6 +2190,9 @@ X.renderer.prototype.render_ = function(picking, invoked) {
           this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures
               .get(labelMapTextureID));
           this._gl.uniform1i(uTextureSampler2, 1);
+          
+          // propagate label map opacity
+          this._gl.uniform1f(uLabelMapOpacity, labelMap['_opacity']);
           
         }
         

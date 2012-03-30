@@ -124,6 +124,7 @@ X.shaders = function() {
   t2 += 'uniform sampler2D textureSampler;\n';
   t2 += 'uniform sampler2D textureSampler2;\n';
   t2 += 'uniform float objectOpacity;\n';
+  t2 += 'uniform float labelMapOpacity;\n';
   t2 += 'uniform float volumeLowerThreshold;\n';
   t2 += 'uniform float volumeUpperThreshold;\n';
   t2 += 'uniform float volumeScalarMin;\n';
@@ -143,8 +144,13 @@ X.shaders = function() {
   t2 += '   vec4 textureSum = texture1;\n';
   t2 += '   if (useLabelMapTexture) {\n'; // special case for label maps
   t2 += '     vec4 texture2 = texture2D(textureSampler2,fragmentTexturePos);\n';
-  t2 += '     if (texture2.a > 0.0) {\n';
-  t2 += '       textureSum = texture2;\n';
+  t2 += '     if (texture2.a > 0.0) {\n'; // check if this is the background
+                                          // label
+  t2 += '       if (labelMapOpacity < 1.0) {\n'; // transparent label map
+  t2 += '         textureSum = mix(texture2, textureSum, 1.0 - labelMapOpacity);\n';
+  t2 += '       } else {\n';
+  t2 += '         textureSum = texture2;\n'; // fully opaque label map so we
+  t2 += '       }\n';
   t2 += '     }\n';
   t2 += '   }\n';
   // threshold functionality for 1-channel volumes
@@ -220,6 +226,7 @@ X.shaders.uniforms = {
   USEPICKING: 'usePicking',
   USETEXTURE: 'useTexture',
   USELABELMAPTEXTURE: 'useLabelMapTexture',
+  LABELMAPOPACITY: 'labelMapOpacity',
   TEXTURESAMPLER: 'textureSampler',
   TEXTURESAMPLER2: 'textureSampler2',
   VOLUMELOWERTHRESHOLD: 'volumeLowerThreshold',
