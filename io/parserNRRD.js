@@ -171,6 +171,9 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
   // number of cols in each slice in scan direction
   var colsCount = sizes[0];
   
+  // do we have a labelMap?
+  var hasLabelMap = object._labelMap != null;
+  
   // slice dimensions in scan direction
   var numberPixelsPerSlice = rowsCount * colsCount;
   
@@ -179,9 +182,11 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
   for ( var iS = 0; iS < slices; iS++) {
     image[iS] = new Array(rowsCount);
     for ( var iR = 0; iR < rowsCount; iR++) {
-      image[iS][iR] = new Uint8Array(colsCount);
+      image[iS][iR] = new Array(colsCount);
     }
   }
+  
+  var pixelValue = 0;
   
   // loop through all slices in scan direction
   //
@@ -205,17 +210,32 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
     for (row = 0; row < rowsCount; row++) {
       for (col = 0; col < colsCount; col++) {
         
-        // map pixel value to 1 byte
-        var pixelValue = currentSlice[p];
-        pixelValue = 255 * (pixelValue / max);
+        // map pixel values
+        pixelValue = currentSlice[p];
+        var pixelValue_r = 0;
+        var pixelValue_g = 0;
+        var pixelValue_b = 0;
+        var pixelValue_a = 0;
+        if (object._colorTable) {
+          // color table!
+          var lookupValue = object._colorTable._map.get(pixelValue);
+          pixelValue_r = 255 * lookupValue[1];
+          pixelValue_g = 255 * lookupValue[2];
+          pixelValue_b = 255 * lookupValue[3];
+          pixelValue_a = 255 * lookupValue[4];
+        } else {
+          // no color table, 1-channel gray value
+          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
+          pixelValue_a = 255;
+        }
         
         var textureStartIndex = p * 4;
-        textureForCurrentSlice[textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
+        textureForCurrentSlice[textureStartIndex] = pixelValue_r;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
         
-        // save the converted pixelValue in the 3d image data
+        // save the pixelValue in the 3d image data
         image[z][row][col] = pixelValue;
         
         p++;
@@ -229,7 +249,18 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture.setRawData(textureForCurrentSlice);
     pixelTexture.setRawDataWidth(colsCount);
     pixelTexture.setRawDataHeight(rowsCount);
-    object._slicesZ.children()[z].setTexture(pixelTexture);
+    
+    var currentSlice = object._slicesZ.children()[z];
+    currentSlice.setTexture(pixelTexture);
+    if (hasLabelMap) {
+      
+      // if this object has a labelMap,
+      // we have it loaded at this point (for sure)
+      // ..so we can attach it as the second texture to this slice
+      currentSlice._labelMap = object._labelMap._slicesZ.children()[z]
+          .texture();
+      
+    }
     
   }
   
@@ -250,12 +281,28 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
       for (col = 0; col < colsCount; col++) {
         
         pixelValue = image[z][row][col];
+        var pixelValue_r = 0;
+        var pixelValue_g = 0;
+        var pixelValue_b = 0;
+        var pixelValue_a = 0;
+        if (object._colorTable) {
+          // color table!
+          var lookupValue = object._colorTable._map.get(pixelValue);
+          pixelValue_r = 255 * lookupValue[1];
+          pixelValue_g = 255 * lookupValue[2];
+          pixelValue_b = 255 * lookupValue[3];
+          pixelValue_a = 255 * lookupValue[4];
+        } else {
+          // no color table, 1-channel gray value
+          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
+          pixelValue_a = 255;
+        }
         
         var textureStartIndex = p * 4;
-        textureForCurrentSlice[textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
+        textureForCurrentSlice[textureStartIndex] = pixelValue_r;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
         
         p++;
         
@@ -266,7 +313,18 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture.setRawData(textureForCurrentSlice);
     pixelTexture.setRawDataWidth(colsCount);
     pixelTexture.setRawDataHeight(slices);
-    object._slicesY.children()[row].setTexture(pixelTexture);
+    
+    var currentSlice = object._slicesY.children()[row];
+    currentSlice.setTexture(pixelTexture);
+    if (hasLabelMap) {
+      
+      // if this object has a labelMap,
+      // we have it loaded at this point (for sure)
+      // ..so we can attach it as the second texture to this slice
+      currentSlice._labelMap = object._labelMap._slicesY.children()[row]
+          .texture();
+      
+    }
     
   }
   
@@ -283,12 +341,28 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
       for (row = 0; row < rowsCount; row++) {
         
         pixelValue = image[z][row][col];
+        var pixelValue_r = 0;
+        var pixelValue_g = 0;
+        var pixelValue_b = 0;
+        var pixelValue_a = 0;
+        if (object._colorTable) {
+          // color table!
+          var lookupValue = object._colorTable._map.get(pixelValue);
+          pixelValue_r = 255 * lookupValue[1];
+          pixelValue_g = 255 * lookupValue[2];
+          pixelValue_b = 255 * lookupValue[3];
+          pixelValue_a = 255 * lookupValue[4];
+        } else {
+          // no color table, 1-channel gray value
+          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
+          pixelValue_a = 255;
+        }
         
         var textureStartIndex = p * 4;
-        textureForCurrentSlice[textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue;
-        textureForCurrentSlice[++textureStartIndex] = 255; // fully opaque
+        textureForCurrentSlice[textureStartIndex] = pixelValue_r;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
         
         p++;
         
@@ -299,7 +373,18 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture.setRawData(textureForCurrentSlice);
     pixelTexture.setRawDataWidth(rowsCount);
     pixelTexture.setRawDataHeight(slices);
-    object._slicesX.children()[col].setTexture(pixelTexture);
+    
+    var currentSlice = object._slicesX.children()[col];
+    currentSlice.setTexture(pixelTexture);
+    if (hasLabelMap) {
+      
+      // if this object has a labelMap,
+      // we have it loaded at this point (for sure)
+      // ..so we can attach it as the second texture to this slice
+      currentSlice._labelMap = object._labelMap._slicesX.children()[col]
+          .texture();
+      
+    }
     
   }
   

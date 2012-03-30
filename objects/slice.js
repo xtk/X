@@ -155,6 +155,14 @@ X.slice = function(center, front, up, width, height) {
    */
   this._volume = null;
   
+  /**
+   * The label map of this slice which is a second texture.
+   * 
+   * @type {?X.texture}
+   * @protected
+   */
+  this._labelMap = null;
+  
   // create the slice
   this.create_();
   
@@ -247,6 +255,12 @@ X.slice.prototype.create_ = function() {
   this.normals().add(frontVector.x, frontVector.y, frontVector.z);
   this.normals().add(frontVector.x, frontVector.y, frontVector.z);
   this.normals().add(frontVector.x, frontVector.y, frontVector.z);
+  
+};
+
+X.slice.prototype.labelMap = function() {
+
+  return this._labelMap;
   
 };
 

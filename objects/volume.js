@@ -187,7 +187,6 @@ X.volume = function() {
   this['_volumeRendering'] = false;
   this._volumeRenderingOld = false;
   
-
   /**
    * The direction for the volume rendering. This is used for caching.
    * 
@@ -195,6 +194,14 @@ X.volume = function() {
    * @private
    */
   this._volumeRenderingDirection = 0;
+  
+  /**
+   * The label map of this volume.
+   * 
+   * @type {?X.volume}
+   * @private
+   */
+  this._labelMap = null;
   
 };
 // inherit from X.object
@@ -296,24 +303,28 @@ X.volume.prototype.create_ = function() {
  */
 X.volume.prototype.modified = function() {
 
-  if (this['_volumeRendering'] != this._volumeRenderingOld) {
+  // only do this if we already have children aka. the create_() method was
+  // called
+  if (this.children().length > 0) {
+    if (this['_volumeRendering'] != this._volumeRenderingOld) {
+      
+      // switch from slicing to volume rendering or vice versa
+      this._dirty = true;
+      this._volumeRenderingOld = this['_volumeRendering'];
+      
+    }
     
-    // switch from slicing to volume rendering or vice versa
-    this._dirty = true;
-    this._volumeRenderingOld = this['_volumeRendering'];
-    
-  }
-  
-  if (this['_volumeRendering']) {
-    
-    // prepare volume rendering
-    this.volumeRendering_(this._volumeRenderingDirection);
-    
-  } else {
-    
-    // prepare slicing
-    this.slicing_();
-    
+    if (this['_volumeRendering']) {
+      
+      // prepare volume rendering
+      this.volumeRendering_(this._volumeRenderingDirection);
+      
+    } else {
+      
+      // prepare slicing
+      this.slicing_();
+      
+    }
   }
   
 
@@ -502,6 +513,26 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   
 };
 
+
+/**
+ * Return the label map of this volume. A new label map gets created if required
+ * (Singleton).
+ * 
+ * @type {?X.volume}
+ */
+X.volume.prototype.labelMap = function() {
+
+  if (!this._labelMap) {
+    
+    this._labelMap = new X.labelMap(this);
+    
+  }
+  
+  return this._labelMap;
+  
+};
+
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.volume', X.volume);
 goog.exportSymbol('X.volume.prototype.dimensions',
@@ -515,3 +546,4 @@ goog.exportSymbol('X.volume.prototype.setVolumeRendering',
     X.volume.prototype.setVolumeRendering);
 goog.exportSymbol('X.volume.prototype.threshold', X.volume.prototype.threshold);
 goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);
+goog.exportSymbol('X.volume.prototype.labelMap', X.volume.prototype.labelMap);

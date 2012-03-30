@@ -37,6 +37,7 @@ goog.require('csgVertex');
 goog.require('csgPolygon');
 
 goog.require('X.base');
+goog.require('X.colorTable');
 goog.require('X.file');
 goog.require('X.indexer');
 goog.require('X.triplets');
@@ -217,6 +218,8 @@ X.object = function(object) {
     this.copy_(object);
     
   }
+  
+  this._colorTable = null;
   
   this._dirty = true;
   
@@ -582,6 +585,39 @@ X.object.prototype.setTexture = function(texture) {
   }
   
   this._texture = texture;
+  
+};
+
+
+/**
+ * 
+ */
+X.object.prototype.setColorTable = function(colorTable) {
+
+  if (!goog.isDefAndNotNull(colorTable)) {
+    
+    // null colorTables are allowed
+    this._colorTable = null;
+    return;
+    
+  }
+  
+  if (goog.isString(colorTable)) {
+    
+    // a string has to be converted to a new X.texture
+    var colorTableFile = colorTable;
+    colorTable = new X.colorTable();
+    colorTable.setFile(colorTableFile);
+    
+  }
+  
+  if (!(colorTable instanceof X.colorTable)) {
+    
+    throw new Error('Invalid colorTable.');
+    
+  }
+  
+  this._colorTable = colorTable;
   
 };
 
@@ -1101,6 +1137,13 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
   }
   
   return 1;
+  
+};
+
+
+X.object.prototype.colorTable = function() {
+
+  return this._colorTable;
   
 };
 
