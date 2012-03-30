@@ -657,21 +657,13 @@ X.renderer.prototype.init = function() {
     
     // WebGL is not supported with this browser/machine/gpu
     
-    // TODO replace by nicer popup
+    // attach a message to the container's inner HTML
+    var style = "color:red;font-family:sans-serif;";
+    var msg = 'Sorry, WebGL is <strong>not supported</strong> on this machine! See <a href="http://crash.goXTK.com" target="_blank">http://crash.goXTK.com</a> for requirements..';
+    this.container().innerHTML = '<h3 style="' + style +
+        '">Oooops..</h3><p style="' + style + '">' + msg + '</p>';
     
-    //    
-    // 
-    // var errorDialog = new goog.ui.Popup(this.container());
-    // // errorDialog.setContent('mmm');
-    // // errorDialog.setTitle('Ooops..');
-    // // errorDialog.setHasTitleCloseButton(false);
-    // // errorDialog.setButtonSet(null);
-    // errorDialog.setVisible(true);
-    
-    var msg = 'WebGL not supported! See http://wiki.goXTK.com/index.php/X:Browsers for instructions..';
-    
-    alert(msg);
-    
+    // .. and throw an exception
     throw new Error(msg);
     
   }
