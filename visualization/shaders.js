@@ -143,7 +143,9 @@ X.shaders = function() {
   t2 += '   vec4 textureSum = texture1;\n';
   t2 += '   if (useLabelMapTexture) {\n'; // special case for label maps
   t2 += '     vec4 texture2 = texture2D(textureSampler2,fragmentTexturePos);\n';
-  t2 += '     textureSum = texture1 + texture2;\n';
+  t2 += '     if (texture2.a > 0.0) {\n';
+  t2 += '       textureSum = texture2;\n';
+  t2 += '     }\n';
   t2 += '   }\n';
   // threshold functionality for 1-channel volumes
   t2 += '   float _volumeLowerThreshold = (volumeLowerThreshold / volumeScalarMax);\n';

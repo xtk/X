@@ -1068,6 +1068,159 @@ X.renderer.prototype.update_ = function(object) {
   
   this._locked = true;
   
+  //
+  // LOCKED DOWN: ACTION!!
+  //
+  // This gets executed after all dynamic content has been loaded.
+  
+  // check if this is an X.slice as part of a X.labelMap
+  var isLabelMap = (object instanceof X.slice && object._volume instanceof X.labelMap);
+  
+  //
+  // TEXTURE
+  //
+  
+  if (existed && goog.isDefAndNotNull(texture) && texture.dirty()) {
+    
+    // this means the object already existed and the texture is dirty
+    // therefore, we delete the old gl buffers
+    
+    var oldTexturePositionBuffer = this._texturePositionBuffers.get(id);
+    if (goog.isDefAndNotNull(oldTexturePositionBuffer)) {
+      
+      if (this._gl.isBuffer(oldTexturePositionBuffer._glBuffer)) {
+        
+        this._gl.deleteBuffer(oldTexturePositionBuffer._glBuffer);
+        
+      }
+      
+    }
+  }
+  
+  var texturePositionBuffer = null;
+  if (goog.isDefAndNotNull(texture)) {
+    // texture associated to this object
+    
+    if (!existed || texture.dirty()) {
+      
+      // the object either did not exist or the texture is dirty, so we
+      // re-create the gl buffers
+      
+      var textureCoordinateMap = object.textureCoordinateMap();
+      
+      // check if we have a valid texture-to-object's-coordinate map
+      if (!goog.isDefAndNotNull(textureCoordinateMap)) {
+        
+        var m = 'Can not add an object and texture ';
+        m += 'without valid coordinate mapping! Set the textureCoordinateMap!';
+        throw new Error(m);
+        
+      }
+      
+      // setup the glTexture, at this point the image for the texture was
+      // already
+      // loaded thanks to X.loader
+      var glTexture = this._gl.createTexture();
+      
+      // connect the image and the glTexture
+      glTexture.image = texture.image();
+      
+      //
+      // activate the texture on the WebGL side
+      this._textures.set(texture.id(), glTexture);
+      
+      this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
+      if (texture.rawData()) {
+        
+        // use rawData rather than loading an imagefile
+        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, texture
+            .rawDataWidth(), texture.rawDataHeight(), 0, this._gl.RGBA,
+            this._gl.UNSIGNED_BYTE, texture.rawData());
+        
+        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S,
+            this._gl.CLAMP_TO_EDGE);
+        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T,
+            this._gl.CLAMP_TO_EDGE);
+        
+        // we do not want to flip here
+        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, true);
+        
+      } else {
+        
+        // use an imageFile for the texture
+        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA,
+            this._gl.RGBA, this._gl.UNSIGNED_BYTE, glTexture.image);
+        
+        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
+        
+      }
+      
+      // for labelMaps, we use NEAREST NEIGHBOR filtering
+      if (isLabelMap) {
+        this._gl.texParameteri(this._gl.TEXTURE_2D,
+            this._gl.TEXTURE_MAG_FILTER, this._gl.NEAREST);
+        this._gl.texParameteri(this._gl.TEXTURE_2D,
+            this._gl.TEXTURE_MIN_FILTER, this._gl.NEAREST);
+      } else {
+        this._gl.texParameteri(this._gl.TEXTURE_2D,
+            this._gl.TEXTURE_MAG_FILTER, this._gl.LINEAR);
+        this._gl.texParameteri(this._gl.TEXTURE_2D,
+            this._gl.TEXTURE_MIN_FILTER, this._gl.LINEAR);
+      }
+      
+      // release the texture binding to clear things
+      this._gl.bindTexture(this._gl.TEXTURE_2D, null);
+      
+      // create texture buffer
+      var glTexturePositionBuffer = this._gl.createBuffer();
+      
+      // bind and fill with colors defined above
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTexturePositionBuffer);
+      this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(
+          textureCoordinateMap), this._gl.STATIC_DRAW);
+      
+      // create an X.buffer to store the texture-coordinate map
+      texturePositionBuffer = new X.buffer(glTexturePositionBuffer,
+          textureCoordinateMap.length, 2);
+      
+      texture.setClean();
+      
+    } else {
+      
+      // the texture is not dirty and the object already existed, so use the old
+      // buffer
+      texturePositionBuffer = this._texturePositionBuffers.get(id);
+      
+    }
+    
+    // dirty check
+    
+  } // check if object has a texture
+  
+  this.loader().addProgress(0.1);
+  
+  //
+  // SPECIAL CASE: LABELMAPS
+  // 
+  
+  // since we now have labelMap support, we process the textures (which is the
+  // only essential of labelMaps) first and ..
+  
+  // .. jump out if this is part of a labelMap
+  if (isLabelMap) {
+    
+    this._locked = false; // we gotta unlock here already
+    
+    this.loader().addProgress(0.9); // add the missing progress
+    
+    return; // sayonara
+    
+    // this prevents storing of not required buffers, objects etc. since the
+    // labelMaps are only pseudo X.objects and never rendered directly but
+    // merged into an X.volume
+    
+  }
+  
 
   //
   // BOUNDING BOX
@@ -1291,122 +1444,7 @@ X.renderer.prototype.update_ = function(object) {
   
   this.loader().addProgress(0.3);
   
-  //
-  // TEXTURE
-  //
-  
-  if (existed && goog.isDefAndNotNull(texture) && texture.dirty()) {
-    
-    // this means the object already existed and the texture is dirty
-    // therefore, we delete the old gl buffers
-    
-    var oldTexturePositionBuffer = this._texturePositionBuffers.get(id);
-    if (goog.isDefAndNotNull(oldTexturePositionBuffer)) {
-      
-      if (this._gl.isBuffer(oldTexturePositionBuffer._glBuffer)) {
-        
-        this._gl.deleteBuffer(oldTexturePositionBuffer._glBuffer);
-        
-      }
-      
-    }
-  }
-  
-  var texturePositionBuffer = null;
-  if (goog.isDefAndNotNull(texture)) {
-    // texture associated to this object
-    
-    if (!existed || texture.dirty()) {
-      
-      // the object either did not exist or the texture is dirty, so we
-      // re-create the gl buffers
-      
-      var textureCoordinateMap = object.textureCoordinateMap();
-      
-      // check if we have a valid texture-to-object's-coordinate map
-      if (!goog.isDefAndNotNull(textureCoordinateMap)) {
-        
-        var m = 'Can not add an object and texture ';
-        m += 'without valid coordinate mapping! Set the textureCoordinateMap!';
-        throw new Error(m);
-        
-      }
-      
-      // setup the glTexture, at this point the image for the texture was
-      // already
-      // loaded thanks to X.loader
-      var glTexture = this._gl.createTexture();
-      
-      // connect the image and the glTexture
-      glTexture.image = texture.image();
-      
-      //
-      // activate the texture on the WebGL side
-      this._textures.set(texture.id(), glTexture);
-      
-      this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
-      if (texture.rawData()) {
-        
-        // use rawData rather than loading an imagefile
-        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, texture
-            .rawDataWidth(), texture.rawDataHeight(), 0, this._gl.RGBA,
-            this._gl.UNSIGNED_BYTE, texture.rawData());
-        
-        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S,
-            this._gl.CLAMP_TO_EDGE);
-        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T,
-            this._gl.CLAMP_TO_EDGE);
-        
-        // we do not want to flip here
-        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, true);
-        
-      } else {
-        
-        // use an imageFile for the texture
-        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA,
-            this._gl.RGBA, this._gl.UNSIGNED_BYTE, glTexture.image);
-        
-        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
-        
-      }
-      
-      // TODO different filters?
-      this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER,
-          this._gl.LINEAR);
-      this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER,
-          this._gl.LINEAR);
-      
-      // release the texture binding to clear things
-      this._gl.bindTexture(this._gl.TEXTURE_2D, null);
-      
-      // create texture buffer
-      var glTexturePositionBuffer = this._gl.createBuffer();
-      
-      // bind and fill with colors defined above
-      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTexturePositionBuffer);
-      this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(
-          textureCoordinateMap), this._gl.STATIC_DRAW);
-      
-      // create an X.buffer to store the texture-coordinate map
-      texturePositionBuffer = new X.buffer(glTexturePositionBuffer,
-          textureCoordinateMap.length, 2);
-      
-      texture.setClean();
-      
-    } else {
-      
-      // the texture is not dirty and the object already existed, so use the old
-      // buffer
-      texturePositionBuffer = this._texturePositionBuffers.get(id);
-      
-    }
-    
-    // dirty check
-    
-  } // check if object has a texture
-  
-  this.loader().addProgress(0.1);
-  
+
   //
   // FINAL STEPS
   //
@@ -2133,7 +2171,9 @@ X.renderer.prototype.render_ = function(picking, invoked) {
           
         } else if (labelMap) {
           // only if we have an associated labelMap..
-          console.log('found a labelmap for this slice.');
+          
+          // grab the id of the labelMap
+          var labelMapTextureID = object._labelMap._id;
           
           // we handle a second texture, actually the one for the labelMap
           this._gl.uniform1i(uUseLabelMapTexture, true);
@@ -2143,7 +2183,8 @@ X.renderer.prototype.render_ = function(picking, invoked) {
           
           // grab the texture from the internal hash map using the id as
           // the key
-          this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures.get(2627));
+          this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures
+              .get(labelMapTextureID));
           this._gl.uniform1i(uTextureSampler2, 1);
           
         }

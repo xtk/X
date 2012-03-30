@@ -79,13 +79,13 @@ goog.inherits(X.labelMap, X.volume);
  */
 X.labelMap.prototype.modified = function() {
 
-  // call the X.volumes' modified method
-  this._volume.modified();
-  
   // .. and fire our own modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = this;
   this.dispatchEvent(modifiedEvent);
+  
+  // call the X.volumes' modified method
+  this._volume.modified();
   
 };
 

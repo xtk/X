@@ -205,6 +205,13 @@ X.loader.prototype.loadFile = function(object) {
     
   }
   
+  // jump out if we already process this job
+  if (this._jobs_.containsKey(object.id())) {
+    
+    return;
+    
+  }
+  
   // clear all points and normals of the object
   object.points().clear();
   object.normals().clear();
