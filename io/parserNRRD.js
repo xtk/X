@@ -250,7 +250,7 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture.setRawDataWidth(colsCount);
     pixelTexture.setRawDataHeight(rowsCount);
     
-    var currentSlice = object._slicesZ.children()[z];
+    currentSlice = object._slicesZ.children()[z];
     currentSlice.setTexture(pixelTexture);
     if (hasLabelMap) {
       
@@ -314,7 +314,7 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture.setRawDataWidth(colsCount);
     pixelTexture.setRawDataHeight(slices);
     
-    var currentSlice = object._slicesY.children()[row];
+    currentSlice = object._slicesY.children()[row];
     currentSlice.setTexture(pixelTexture);
     if (hasLabelMap) {
       
@@ -374,7 +374,7 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture.setRawDataWidth(rowsCount);
     pixelTexture.setRawDataHeight(slices);
     
-    var currentSlice = object._slicesX.children()[col];
+    currentSlice = object._slicesX.children()[col];
     currentSlice.setTexture(pixelTexture);
     if (hasLabelMap) {
       

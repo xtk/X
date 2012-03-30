@@ -119,7 +119,7 @@ X.colorTable.prototype.add = function(value, label, r, g, b, a) {
  */
 X.colorTable.prototype.id = function() {
 
-  return this._id;
+  return this['_id'];
   
 };
 

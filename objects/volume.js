@@ -518,7 +518,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
  * Return the label map of this volume. A new label map gets created if required
  * (Singleton).
  * 
- * @type {?X.volume}
+ * @return {!X.volume}
  */
 X.volume.prototype.labelMap = function() {
 

@@ -2176,7 +2176,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
           // only if we have an associated labelMap..
           
           // grab the id of the labelMap
-          var labelMapTextureID = object._labelMap._id;
+          var labelMapTextureID = object._labelMap['_id'];
           
           // we handle a second texture, actually the one for the labelMap
           this._gl.uniform1i(uUseLabelMapTexture, true);
