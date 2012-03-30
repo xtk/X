@@ -59,12 +59,6 @@ X.labelMap = function(volume) {
    */
   this['_className'] = 'labelMap';
   
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this['_visible'] = false; // never show label maps
-  
   this._volume = volume;
   
 };

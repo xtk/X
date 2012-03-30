@@ -2164,15 +2164,15 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         // get the (optional) label map
         var labelMap = volume._labelMap;
         
+        // no labelMap by default
+        this._gl.uniform1i(uUseLabelMapTexture, false);
+        
         // opacity, only if volume rendering is active
         if (volume['_volumeRendering']) {
           
           this._gl.uniform1f(uObjectOpacity, parseFloat(volume['_opacity']));
           
-          // no labelMap if we use volume rendering
-          this._gl.uniform1i(uUseLabelMapTexture, false);
-          
-        } else if (labelMap) {
+        } else if (labelMap && labelMap['_visible']) {
           // only if we have an associated labelMap..
           
           // grab the id of the labelMap

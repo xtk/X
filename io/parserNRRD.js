@@ -218,7 +218,14 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
         var pixelValue_a = 0;
         if (object._colorTable) {
           // color table!
-          var lookupValue = object._colorTable._map.get(pixelValue);
+          var lookupValue = object._colorTable._map.get(Math.floor(pixelValue));
+          
+          // check for out of range and use the last label value in this case
+          if (!lookupValue) {
+            lookupValue = object._colorTable._map.get(object._colorTable._map
+                .getCount() - 1);
+          }
+          
           pixelValue_r = 255 * lookupValue[1];
           pixelValue_g = 255 * lookupValue[2];
           pixelValue_b = 255 * lookupValue[3];
@@ -287,7 +294,14 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
         var pixelValue_a = 0;
         if (object._colorTable) {
           // color table!
-          var lookupValue = object._colorTable._map.get(pixelValue);
+          var lookupValue = object._colorTable._map.get(Math.floor(pixelValue));
+          
+          // check for out of range and use the last label value in this case
+          if (!lookupValue) {
+            lookupValue = object._colorTable._map.get(object._colorTable._map
+                .getCount() - 1);
+          }
+          
           pixelValue_r = 255 * lookupValue[1];
           pixelValue_g = 255 * lookupValue[2];
           pixelValue_b = 255 * lookupValue[3];
@@ -347,7 +361,14 @@ X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
         var pixelValue_a = 0;
         if (object._colorTable) {
           // color table!
-          var lookupValue = object._colorTable._map.get(pixelValue);
+          var lookupValue = object._colorTable._map.get(Math.floor(pixelValue));
+          
+          // check for out of range and use the last label value in this case
+          if (!lookupValue) {
+            lookupValue = object._colorTable._map.get(object._colorTable._map
+                .getCount() - 1);
+          }
+          
           pixelValue_r = 255 * lookupValue[1];
           pixelValue_g = 255 * lookupValue[2];
           pixelValue_b = 255 * lookupValue[3];
