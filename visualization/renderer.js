@@ -2169,6 +2169,9 @@ X.renderer.prototype.render_ = function(picking, invoked) {
           
           this._gl.uniform1f(uObjectOpacity, parseFloat(volume['_opacity']));
           
+          // no labelMap if we use volume rendering
+          this._gl.uniform1i(uUseLabelMapTexture, false);
+          
         } else if (labelMap) {
           // only if we have an associated labelMap..
           
