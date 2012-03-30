@@ -68,7 +68,7 @@ The full documentation of the API is available <a href="http://api.goXTK.com" ta
 We use <a href="http://stackoverflow.com/questions/tagged/xtk">http://stackoverflow.com/questions/tagged/xtk</a> for user support. Please ask and tag ([xtk]) your question there!
 
 ### Contribute? ###
-Yes, please! See the <a href="http://wiki.goxtk.com/index.php/X:DevelopersHeadsUp" target="_blank">Developer's Heads Up</a> and the <a href="http://wiki.goxtk.com/index.php/X:Future" target="_blank">X:Future page</a>.
+Yes, please! See the <a href="https://github.com/xtk/X/wiki/X:DevelopersHeadsUp" target="_blank">Developer's Heads Up</a> and the <a href="https://github.com/xtk/X/wiki/X:Future" target="_blank">X:Future page</a>.
 
 ### License ###
 Copyright (c) 2012 The X Toolkit Developers <dev@goXTK.com>
