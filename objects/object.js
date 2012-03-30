@@ -590,7 +590,22 @@ X.object.prototype.setTexture = function(texture) {
 
 
 /**
+ * The color table associated with this object.
  * 
+ * @return {?X.colorTable} The color table.
+ */
+X.object.prototype.colorTable = function() {
+
+  return this._colorTable;
+  
+};
+
+
+/**
+ * Set the color table for this object.
+ * 
+ * @param {?X.colorTable|string} colorTable The new color table or a file path.
+ * @throws {Error} An error if the color table is invalid.
  */
 X.object.prototype.setColorTable = function(colorTable) {
 
@@ -1141,13 +1156,6 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
 };
 
 
-X.object.prototype.colorTable = function() {
-
-  return this._colorTable;
-  
-};
-
-
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.object', X.object);
 goog.exportSymbol('X.object.prototype.id', X.object.prototype.id);
@@ -1158,6 +1166,10 @@ goog.exportSymbol('X.object.prototype.normals', X.object.prototype.normals);
 goog.exportSymbol('X.object.prototype.texture', X.object.prototype.texture);
 goog.exportSymbol('X.object.prototype.setTexture',
     X.object.prototype.setTexture);
+goog.exportSymbol('X.object.prototype.colorTable',
+    X.object.prototype.colorTable);
+goog.exportSymbol('X.object.prototype.setColorTable',
+    X.object.prototype.setColorTable);
 goog.exportSymbol('X.object.prototype.colors', X.object.prototype.colors);
 goog.exportSymbol('X.object.prototype.color', X.object.prototype.color);
 goog.exportSymbol('X.object.prototype.setColor', X.object.prototype.setColor);
