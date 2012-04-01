@@ -120,6 +120,7 @@ X.shaders = function() {
   t2 += '\n';
   t2 += 'uniform bool usePicking;\n';
   t2 += 'uniform bool useTexture;\n';
+  t2 += 'uniform bool useTextureThreshold;\n';
   t2 += 'uniform bool useLabelMapTexture;\n'; // which activates textureSampler2
   t2 += 'uniform sampler2D textureSampler;\n';
   t2 += 'uniform sampler2D textureSampler2;\n';
@@ -145,7 +146,7 @@ X.shaders = function() {
   t2 += '   if (useLabelMapTexture) {\n'; // special case for label maps
   t2 += '     vec4 texture2 = texture2D(textureSampler2,fragmentTexturePos);\n';
   t2 += '     if (texture2.a > 0.0) {\n'; // check if this is the background
-                                          // label
+  // label
   t2 += '       if (labelMapOpacity < 1.0) {\n'; // transparent label map
   t2 += '         textureSum = mix(texture2, textureSum, 1.0 - labelMapOpacity);\n';
   t2 += '       } else {\n';
@@ -154,11 +155,13 @@ X.shaders = function() {
   t2 += '     }\n';
   t2 += '   }\n';
   // threshold functionality for 1-channel volumes
-  t2 += '   float _volumeLowerThreshold = (volumeLowerThreshold / volumeScalarMax);\n';
-  t2 += '   float _volumeUpperThreshold = (volumeUpperThreshold / volumeScalarMax);\n';
-  t2 += '   if (texture1.r < _volumeLowerThreshold ||\n';
-  t2 += '       texture1.r > _volumeUpperThreshold) {\n';
-  t2 += '     discard;\n';
+  t2 += '   if (useTextureThreshold) {\n';
+  t2 += '     float _volumeLowerThreshold = (volumeLowerThreshold / volumeScalarMax);\n';
+  t2 += '     float _volumeUpperThreshold = (volumeUpperThreshold / volumeScalarMax);\n';
+  t2 += '     if (texture1.r < _volumeLowerThreshold ||\n';
+  t2 += '         texture1.r > _volumeUpperThreshold) {\n';
+  t2 += '       discard;\n';
+  t2 += '     };\n';
   t2 += '   };\n';
   t2 += '   gl_FragColor = textureSum;\n';
   t2 += '   gl_FragColor.a = objectOpacity;\n';
@@ -225,6 +228,7 @@ X.shaders.uniforms = {
   NORMAL: 'normal',
   USEPICKING: 'usePicking',
   USETEXTURE: 'useTexture',
+  USETEXTURETHRESHOLD: 'useTextureThreshold',
   USELABELMAPTEXTURE: 'useLabelMapTexture',
   LABELMAPOPACITY: 'labelMapOpacity',
   TEXTURESAMPLER: 'textureSampler',
