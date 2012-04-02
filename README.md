@@ -80,3 +80,4 @@ The X Toolkit (XTK) is licensed under the MIT License:
 ### Affiliations and Sponsors ###
 <a href="http://childrenshospital.org/FNNDSC"><img src="http://xtk.github.com/chb_logo.jpg" alt="Children's Hospital Boston" title="Children's Hospital Boston"></a>
 <a href="http://hms.harvard.edu"><img src="http://xtk.github.com/hms_logo.jpg" alt="Harvard Medical School" title="Harvard Medical School"></a>
+ 
