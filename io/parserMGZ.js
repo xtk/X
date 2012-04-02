@@ -32,7 +32,7 @@
  */
 
 // provides
-goog.provide('X.parserNRRD');
+goog.provide('X.parserMGZ');
 
 // requires
 goog.require('X.event');
@@ -44,12 +44,12 @@ goog.require('JXG.Util.Unzip');
 
 
 /**
- * Create a parser for .NRRD files.
+ * Create a parser for .MGZ files.
  * 
  * @constructor
  * @extends X.parser
  */
-X.parserNRRD = function() {
+X.parserMGZ = function() {
 
   //
   // call the standard constructor of X.parser
@@ -62,34 +62,126 @@ X.parserNRRD = function() {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'parserNRRD';
+  this['_className'] = 'parserMGZ';
   
 };
 // inherit from X.parser
-goog.inherits(X.parserNRRD, X.parser);
+goog.inherits(X.parserMGZ, X.parser);
+
+function MRI_headerPrint(MRI, b_prefix, b_suffix) {
+	
+	b_prefix	= typeof b_prefix !== 'undefined' ? b_prefix : 1;
+	b_suffix	= typeof b_suffix !== 'undefined' ? b_suffix : 1;
+
+	if (b_prefix) {
+		console.log(sprintf('%20s = %10d\n', 'version',	MRI.version));
+		console.log(sprintf('%20s = %10d\n', 'ndim1', 	MRI.ndim1));
+		console.log(sprintf('%20s = %10d\n', 'ndim2', 	MRI.ndim2));
+		console.log(sprintf('%20s = %10d\n', 'ndim3', 	MRI.ndim3));
+		console.log(sprintf('%20s = %10d\n', 'nframes', MRI.nframes));
+		console.log(sprintf('%20s = %10d\n', 'type', 	MRI.type));
+		console.log(sprintf('%20s = %10d\n', 'dof', 	MRI.dof));
+		console.log(sprintf('%20s = %10d\n', 'rasgoodflag', 	
+													MRI.rasgoodflag));
+	}
+	if (b_suffix) {
+		console.log(sprintf('%20s = %10.5f [ms]\n', 	
+							'Tr',			MRI.Tr));
+		console.log(sprintf('%20s = %10.5f [radians]\n',
+							'flipangle',	MRI.flipangle));
+		console.log(sprintf('%20s = %10.5f [degrees]\n',
+							'flipangle',	MRI.flipangle * 180 / Math.PI));
+		console.log(sprintf('%20s = %10.5f [ms]\n',
+							'Te',			MRI.Te));
+		console.log(sprintf('%20s = %10.5f [ms]\n',
+							'Ti',			MRI.Ti));
+	}
+}
+
+function MRI_voxelSizesPrint(MRI) {
+	console.log('Voxel sizes = %f x %f x %f [mm]\n',
+				MRI.v_voxelsize[0],
+				MRI.v_voxelsize[1],
+				MRI.v_voxelsize[2]);
+}
+
+function MRI_rasMatrixPrint(MRI) {
+	var	width	= 10;
+	var	prec	= 5;
+	console.log(sprintf('| %10.5f%10.5f%10.5f%15.5f |\n',
+		MRI.M_ras[0][0], MRI.M_ras[0][1], MRI.M_ras[0][2], MRI.M_ras[0][3]));
+	console.log(sprintf('| %10.5f%10.5f%10.5f%15.5f |\n',
+		MRI.M_ras[1][0], MRI.M_ras[1][1], MRI.M_ras[1][2], MRI.M_ras[1][3]));
+	console.log(sprintf('| %10.5f%10.5f%10.5f%15.5f |\n',
+		MRI.M_ras[2][0], MRI.M_ras[2][1], MRI.M_ras[2][2], MRI.M_ras[2][3]));
+}
+
+function dobj(data, array_parse, dataSize, numElements) {
+	this.data			= [];
+	this._dataPointer	= 0;
+	this._sizeofChunk	= 1;
+	this._chunks		= 1;
+	this._b_verbose		= false;
+
+	// A function that 'reads' from the data stream, returning
+	// an array of _chunks. If _chunkSizeOf is 1, then return
+	// only the _chunk.
+	this.array_parse	= null;
+ 
+	if(typeof data 			!== 'undefined') this.data 			= data;
+	if(typeof array_parse 	!== 'undefined') this.array_parse	= array_parse;
+	if(typeof dataSize 		!== 'undefined') this._sizeofChunk	= dataSize;	
+	if(typeof numElements   !== 'undefined') this._chunks		= numElements;
+}
+
+dobj.prototype.sizeofChunk	= function(size) {
+	if(typeof size == 'undefined') return this._sizeofChunk;
+	this._sizeofChunk = size;
+};
+
+dobj.prototype.dataPointer	= function(dataPointer) {
+	if(typeof dataPointer == 'undefined') return this._dataPointer;
+	this._dataPointer = dataPointer;
+};
+
+dobj.prototype.b_verbose	= function(verbosity) {
+	if(typeof verbosity == 'undefined') return this._b_verbose;
+	this._b_verbose = verbosity;
+};
+
+dobj.prototype.array_parse_set = function(array_parse, sizeofChunk) {
+	this.array_parse	= array_parse;
+	this._sizeofChunk	= sizeofChunk;
+};
+
+dobj.prototype.read		= function(chunks) {
+	// By default, read and return a single chunk
+	if(typeof chunks == 'undefined') {
+		chunks = 1;
+	}
+	ret			= this.array_parse(this.data, this._dataPointer, chunks);
+	arr_byte	= ret[0];
+	if(this._b_verbose) {
+		cprints(sprintf('%d', this._dataPointer), arr_byte);
+	}
+	this._dataPointer += this._sizeofChunk * chunks;
+	if(chunks == 1) {
+		return arr_byte[0];
+	} else {
+		return arr_byte;
+	}
+};
 
 
 /**
  * @inheritDoc
  */
-X.parserNRRD.prototype.parse = function(object, data) {
+X.parserMGZ.prototype.parse = function(object, data) {
 
   // the position in the file
   var position = 0;
-  
-  // grab the header
-  var headerRegexMatch = data.match(/^([\s\S]*?)\r?\n\r?\n/);
-  position = headerRegexMatch[0].length; // the one _with_ the blank line
-  var header = headerRegexMatch[1]; // the one without the blank line
-  
-  // parse the header
-  this.parseHeader(header);
-  
-  // now we have all kinds of things attached to this reader..
-  // this was done by M. Lauer
-  // I don't really like it but it works..
-  
-  var _data = 0; // the data without header
+
+  var _data = 0; 
   
   if (this.encoding == 'gzip' || this.encoding == 'gz') {
     // we need to decompress the datastream
@@ -98,6 +190,8 @@ X.parserNRRD.prototype.parse = function(object, data) {
     // we can use the data directly
     _data = data.substr(position);
   }
+
+  
   
   var numberOfPixels = this.sizes[0] * this.sizes[1] * this.sizes[2];
   
@@ -106,54 +200,6 @@ X.parserNRRD.prototype.parse = function(object, data) {
   //
   var datastream = new Array(numberOfPixels);
   
-  // we store the min and max values to be able to convert the values to uint8
-  // later
-  var max = -Infinity;
-  var min = Infinity;
-  
-  var i;
-  for (i = 0; i < numberOfPixels; i++) {
-    // parseFunc was defined by analyzing the nrrd header
-    var pixelValue = this.parseFunc(_data, 0 + (i * this.parseBytes));
-    datastream[i] = pixelValue;
-    max = Math.max(max, pixelValue);
-    min = Math.min(min, pixelValue);
-  }
-  
-  //
-  // we know enough to create the object
-  
-  // origin
-  // var _origin = this['space origin'];
-  // _origin = _origin.slice(1, _origin.length).split(',');
-  // object._center[0] = parseFloat(_origin[0]) - this.sizes[0] / 2;
-  // object._center[1] = parseFloat(_origin[1]) - this.sizes[1] / 2;
-  // object._center[2] = parseFloat(_origin[2]) - this.sizes[2] / 2;
-  
-  // dimensions
-  object._dimensions = [this.sizes[0], this.sizes[1], this.sizes[2]];
-  
-  // spacing
-  var spacingX = new goog.math.Vec3(this.vectors[0][0], this.vectors[0][1],
-      this.vectors[0][2]).magnitude();
-  var spacingY = new goog.math.Vec3(this.vectors[1][0], this.vectors[1][1],
-      this.vectors[1][2]).magnitude();
-  var spacingZ = new goog.math.Vec3(this.vectors[2][0], this.vectors[2][1],
-      this.vectors[2][2]).magnitude();
-  object._spacing = [spacingX, spacingY, spacingZ];
-  
-
-  // attach the scalar range to the volume
-  object._scalarRange = [min, max];
-  // .. and set the default threshold
-  object.threshold(min, max);
-  
-  // create the object
-  object.create_();
-  
-  // now we have the values and need to reslice in the 3 orthogonal directions
-  // and create the textures for each slice
-  this.reslice(object, datastream, this.sizes, min, max);
   
   // all done..
   var modifiedEvent = new X.event.ModifiedEvent();
@@ -162,402 +208,144 @@ X.parserNRRD.prototype.parse = function(object, data) {
   
 };
 
-X.parserNRRD.prototype.reslice = function(object, datastream, sizes, min, max) {
+X.parserMGZ.prototype.parseStream = function (data) {
 
-  // number of slices in scan direction
-  var slices = sizes[2];
-  // number of rows in each slice in scan direction
-  var rowsCount = sizes[1];
-  // number of cols in each slice in scan direction
-  var colsCount = sizes[0];
-  
-  // do we have a labelMap?
-  var hasLabelMap = object._labelMap != null;
-  
-  // slice dimensions in scan direction
-  var numberPixelsPerSlice = rowsCount * colsCount;
-  
-  // allocate 3d image array [slices][rows][cols]
-  var image = new Array(slices);
-  for ( var iS = 0; iS < slices; iS++) {
-    image[iS] = new Array(rowsCount);
-    for ( var iR = 0; iR < rowsCount; iR++) {
-      image[iS][iR] = new Array(colsCount);
-    }
-  }
-  
-  var pixelValue = 0;
-  
-  // loop through all slices in scan direction
-  //
-  // this step creates the slices in X-direction and fills the 3d image array at
-  // the same time
-  // combining the two operations saves some time..
-  var z = 0;
-  for (z = 0; z < slices; z++) {
-    
-    // grab the pixels for the current slice z
-    var currentSlice = datastream.slice(z * (numberPixelsPerSlice), (z + 1) *
-        numberPixelsPerSlice);
-    // the texture has 3 times the pixel value + 1 opacity value for all pixels
-    var textureForCurrentSlice = new Uint8Array(4 * numberPixelsPerSlice);
-    
-    // now loop through all pixels of the current slice
-    var row = 0;
-    var col = 0;
-    var p = 0; // just a counter
-    
-    for (row = 0; row < rowsCount; row++) {
-      for (col = 0; col < colsCount; col++) {
-        
-        // map pixel values
-        pixelValue = currentSlice[p];
-        var pixelValue_r = 0;
-        var pixelValue_g = 0;
-        var pixelValue_b = 0;
-        var pixelValue_a = 0;
-        if (object._colorTable) {
-          // color table!
-          var lookupValue = object._colorTable._map.get(Math.floor(pixelValue));
-          
-          // check for out of range and use the last label value in this case
-          if (!lookupValue) {
-            lookupValue = object._colorTable._map.get(object._colorTable._map
-                .getCount() - 1);
-          }
-          
-          pixelValue_r = 255 * lookupValue[1];
-          pixelValue_g = 255 * lookupValue[2];
-          pixelValue_b = 255 * lookupValue[3];
-          pixelValue_a = 255 * lookupValue[4];
-        } else {
-          // no color table, 1-channel gray value
-          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
-          pixelValue_a = 255;
-        }
-        
-        var textureStartIndex = p * 4;
-        textureForCurrentSlice[textureStartIndex] = pixelValue_r;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
-        
-        // save the pixelValue in the 3d image data
-        image[z][row][col] = pixelValue;
-        
-        p++;
-        
-      }
-      
-    }
-    
-    // create the texture for slices in X-direction
-    var pixelTexture = new X.texture();
-    pixelTexture.setRawData(textureForCurrentSlice);
-    pixelTexture.setRawDataWidth(colsCount);
-    pixelTexture.setRawDataHeight(rowsCount);
-    
-    currentSlice = object._slicesZ.children()[z];
-    currentSlice.setTexture(pixelTexture);
-    if (hasLabelMap) {
-      
-      // if this object has a labelMap,
-      // we have it loaded at this point (for sure)
-      // ..so we can attach it as the second texture to this slice
-      currentSlice._labelMap = object._labelMap._slicesZ.children()[z]
-          .texture();
-      
-    }
-    
-  }
-  
-  // the following parses the 3d image array according to the Y- and the
-  // Z-direction of the slices
-  // this was unrolled for more performance
-  
-  // for Y-direction
-  // all slices are along the rows of the image
-  // all rows are along the slices of the image
-  // all cols are along the cols of the image
-  //  
-  for (row = 0; row < rowsCount; row++) {
-    
-    var textureForCurrentSlice = new Uint8Array(4 * slices * colsCount);
-    var p = 0; // just a counter
-    for (z = 0; z < slices; z++) {
-      for (col = 0; col < colsCount; col++) {
-        
-        pixelValue = image[z][row][col];
-        var pixelValue_r = 0;
-        var pixelValue_g = 0;
-        var pixelValue_b = 0;
-        var pixelValue_a = 0;
-        if (object._colorTable) {
-          // color table!
-          var lookupValue = object._colorTable._map.get(Math.floor(pixelValue));
-          
-          // check for out of range and use the last label value in this case
-          if (!lookupValue) {
-            lookupValue = object._colorTable._map.get(object._colorTable._map
-                .getCount() - 1);
-          }
-          
-          pixelValue_r = 255 * lookupValue[1];
-          pixelValue_g = 255 * lookupValue[2];
-          pixelValue_b = 255 * lookupValue[3];
-          pixelValue_a = 255 * lookupValue[4];
-        } else {
-          // no color table, 1-channel gray value
-          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
-          pixelValue_a = 255;
-        }
-        
-        var textureStartIndex = p * 4;
-        textureForCurrentSlice[textureStartIndex] = pixelValue_r;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
-        
-        p++;
-        
-      }
-    }
-    
-    var pixelTexture = new X.texture();
-    pixelTexture.setRawData(textureForCurrentSlice);
-    pixelTexture.setRawDataWidth(colsCount);
-    pixelTexture.setRawDataHeight(slices);
-    
-    currentSlice = object._slicesY.children()[row];
-    currentSlice.setTexture(pixelTexture);
-    if (hasLabelMap) {
-      
-      // if this object has a labelMap,
-      // we have it loaded at this point (for sure)
-      // ..so we can attach it as the second texture to this slice
-      currentSlice._labelMap = object._labelMap._slicesY.children()[row]
-          .texture();
-      
-    }
-    
-  }
-  
+	var MRI = {
+			version:		0,
+			Tr: 			0, 
+			Te: 			0, 
+			flipangle:		0,
+			Ti:				0,
+			ndim1:			0,
+			ndim2:			0,
+			ndim3:			0,
+			nframes: 		0,
+			type:			0,
+			dof:			0,
+			rasgoodflag:	0,
+			M_ras:			[
+			      			 [0, 0, 0, 0],
+			      			 [0, 0, 0, 0],
+			      			 [0, 0, 0, 0]
+			      			 ],
+			v_voxelsize:	[],
+			v_data:			[],		// data as single vector
+			V_data: 		[]		// data as volume 
+			};	
 
-  // for Z
-  // all slices are along the cols of the image
-  // all rows are along the slices of the image
-  // all cols are along the rows of the image
-  //  
-  for (col = 0; col < colsCount; col++) {
-    var textureForCurrentSlice = new Uint8Array(4 * slices * rowsCount);
-    var p = 0; // just a counter
-    for (z = 0; z < slices; z++) {
-      for (row = 0; row < rowsCount; row++) {
-        
-        pixelValue = image[z][row][col];
-        var pixelValue_r = 0;
-        var pixelValue_g = 0;
-        var pixelValue_b = 0;
-        var pixelValue_a = 0;
-        if (object._colorTable) {
-          // color table!
-          var lookupValue = object._colorTable._map.get(Math.floor(pixelValue));
-          
-          // check for out of range and use the last label value in this case
-          if (!lookupValue) {
-            lookupValue = object._colorTable._map.get(object._colorTable._map
-                .getCount() - 1);
-          }
-          
-          pixelValue_r = 255 * lookupValue[1];
-          pixelValue_g = 255 * lookupValue[2];
-          pixelValue_b = 255 * lookupValue[3];
-          pixelValue_a = 255 * lookupValue[4];
-        } else {
-          // no color table, 1-channel gray value
-          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
-          pixelValue_a = 255;
-        }
-        
-        var textureStartIndex = p * 4;
-        textureForCurrentSlice[textureStartIndex] = pixelValue_r;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
-        
-        p++;
-        
-      }
-    }
-    
-    var pixelTexture = new X.texture();
-    pixelTexture.setRawData(textureForCurrentSlice);
-    pixelTexture.setRawDataWidth(rowsCount);
-    pixelTexture.setRawDataHeight(slices);
-    
-    currentSlice = object._slicesX.children()[col];
-    currentSlice.setTexture(pixelTexture);
-    if (hasLabelMap) {
-      
-      // if this object has a labelMap,
-      // we have it loaded at this point (for sure)
-      // ..so we can attach it as the second texture to this slice
-      currentSlice._labelMap = object._labelMap._slicesX.children()[col]
-          .texture();
-      
-    }
-    
-  }
-  
-};
+	var MRItype = {
+			MRI_UCHAR	: {value: 0, name: "uchar",	size:	1},
+			MRI_INT		: {value: 1, name: "int",	size:	4},
+			MRI_LONG	: {value: 2, name: "long",	size:   8},
+			MRI_FLOAT	: {value: 3, name: "float", size:	4},
+			MRI_SHORT	: {value: 4, name: "short", size:	2},
+			MRI_BITMAP 	: {value: 5, name: "bitmap", size:  8}
+	};
+	
+	var UNUSED_SPACE_SIZE	= 256;
+	var MGH_VERSION			= 1;
+	var sizeof_char			= 1;
+	var sizeof_short		= 2;
+	var sizeof_int			= 4;
+	var	sizeof_float		= 4;
+	var sizeof_double		= 8;
+	var USED_SPACE_SIZE		= (3*sizeof_float+4*3*sizeof_float);
+	var unused_space_size	= UNUSED_SPACE_SIZE;
+	
+	dstream			= new dobj(data, parseUInt32EndianSwappedArray, sizeof_int);
+	dstream.b_verbose(false);
+	console.log(dstream.read());
+	console.log(dstream.read());
+	console.log(dstream.read());
+	console.log(dstream.read());
+	console.log(dstream.read());
+	console.log(dstream.read());
+	console.log(dstream.read());
+	dstream.array_parse_set(parseUInt16EndianSwappedArray, sizeof_short);
+	console.log(dstream.read());
+	dstream.array_parse_set(parseFloat32EndianSwappedArray, sizeof_float);
+	console.log('%f', dstream.read());
+	console.log('%f', dstream.read());
+	console.log('%f', dstream.read());
+	
+	MRI.version		= parseUInt32EndianSwapped(data, dp(sizeof_int));
+	MRI.ndim1		= parseUInt32EndianSwapped(data, dp());
+	MRI.ndim2		= parseUInt32EndianSwapped(data, dp());
+	MRI.ndim3		= parseUInt32EndianSwapped(data, dp());
+	MRI.nframes		= parseUInt32EndianSwapped(data, dp());
+	MRI.type		= parseUInt32EndianSwapped(data, dp());
+	MRI.dof			= parseUInt32EndianSwapped(data, dp());
+	MRI.rasgoodflag	= parseUInt16EndianSwapped(data, dp(sizeof_short)); //dp now 30
+	unused_space_size -= sizeof_short;
+	
+	MRI_headerPrint(MRI, 1, 0);
 
-X.parserNRRD.prototype.parseHeader = function(header) {
+	if(MRI.rasgoodflag > 0) {
+		// Read in voxel size and RAS matrix
+		unused_space_size -= USED_SPACE_SIZE;
+		MRI.v_voxelsize[0]	= parseFloat32EndianSwapped(data, dp(sizeof_float));
+		MRI.v_voxelsize[1]	= parseFloat32EndianSwapped(data, dp());
+		MRI.v_voxelsize[2] 	= parseFloat32EndianSwapped(data, dp());
+		
+		// X
+		MRI.M_ras[0][0]		= parseFloat32EndianSwapped(data, dp());
+		MRI.M_ras[1][0]		= parseFloat32EndianSwapped(data, dp());
+		MRI.M_ras[2][0]		= parseFloat32EndianSwapped(data, dp());
 
-  var data, field, fn, i, l, lines, m, _i, _len, _results;
-  lines = header.split(/\r?\n/);
-  for (_i = 0, _len = lines.length; _i < _len; _i++) {
-    l = lines[_i];
-    if (l.match(/NRRD\d+/)) {
-      this.isNrrd = true;
-    } else if (l.match(/^#/)) {
-    } else if (m = l.match(/(.*):(.*)/)) {
-      field = m[1].trim();
-      data = m[2].trim();
-      fn = this.fieldFunctions[field];
-      if (fn) {
-        fn.call(this, data);
-      } else {
-        this[field] = data;
-      }
-    }
-  }
-  if (!this.isNrrd) {
-    throw new Error('Not an NRRD file');
-  }
-  if (this.encoding !== 'raw' && this.encoding !== 'gzip' &&
-      this.encoding !== 'gz') {
-    throw new Error('Only raw or gz/gzip encoding is allowed');
-  }
-  if (!this.vectors) {
-    this.vectors = [new goog.math.Vec3(1, 0, 0), new goog.math.Vec3(0, 1, 0),
-                    new goog.math.Vec3(0, 0, 1)];
-    if (this.spacings) {
-      _results = [];
-      for (i = 0; i <= 2; i++) {
-        _results.push(!isNaN(this.spacings[i]) ? this.vectors[i]
-            .scale(this.spacings[i]) : void 0);
-      }
-      return _results;
-    }
-  }
-};
+		// Y
+		MRI.M_ras[0][1]		= parseFloat32EndianSwapped(data, dp());
+		MRI.M_ras[1][1]		= parseFloat32EndianSwapped(data, dp());
+		MRI.M_ras[2][1]		= parseFloat32EndianSwapped(data, dp());
+		
+		// Z
+		MRI.M_ras[0][2]		= parseFloat32EndianSwapped(data, dp());
+		MRI.M_ras[1][2]		= parseFloat32EndianSwapped(data, dp());
+		MRI.M_ras[2][2]		= parseFloat32EndianSwapped(data, dp());
 
-X.parserNRRD.prototype.fieldFunctions = {
-  'type': function(data) {
+		// C
+		MRI.M_ras[0][3]		= parseFloat32EndianSwapped(data, dp());
+		MRI.M_ras[1][3]		= parseFloat32EndianSwapped(data, dp());
+		MRI.M_ras[2][3]		= parseFloat32EndianSwapped(data, dp()); //dp = 90
 
-    switch (data) {
-    case 'unsigned char':
-    case 'uint8':
-      this.parseFunc = this.parseUChar8;
-      this.parseBytes = 1;
-      break;
-    case 'signed char':
-    case 'int8':
-      this.parseFunc = this.parseSChar8;
-      this.parseBytes = 1;
-      break;
-    case 'short':
-    case 'signed short':
-    case 'unsigned short':
-    case 'short int':
-    case 'int16':
-      this.parseFunc = this.parseUInt16;
-      this.parseBytes = 2;
-      break;
-    case 'int':
-    case 'int32':
-      break;
-    case 'float':
-      this.parseFunc = this.parseFloat32;
-      this.parseBytes = 4;
-      break;
-    default:
-      throw new Error('Only short/int/int8/float data is allowed. Found ' +
-          data);
-    }
-    return this.type = data;
-  },
-  'endian': function(data) {
+		MRI_voxelSizesPrint(MRI);
+		MRI_rasMatrixPrint(MRI);
+	}
+	cprintf('unused space size', unused_space_size);
+	dp(sizeof_char, unused_space_size);
+	var volsize	= MRI.ndim1 * MRI.ndim2 * MRI.ndim3;
+	
+	var MRIdata;
+	switch(MRI.type) {
+	case MRItype.MRI_UCHAR.value:
+		MRIdata		= MRItype.MRI_UCHAR;
+		console.log('Reading UCHAR vals: %d\n', volsize);
+		a_ret		= parseUChar8Array(data, dp(sizeof_char, volsize), volsize);
+		MRI.v_data	= a_ret[0];
+		break;
+	case MRItype.MRI_INT.value:
+		MRIdata		= MRItype.MRI_INT;
+		console.log('Reading INT vals: %d\n', volsize);
+		a_ret		= parseUInt32EndianSwappedArray(data, pointer, volsize);
+		MRI.v_data	= a_ret[0];
+		break;
+	}
+	
+	// Now for the final MRI parameters at the end of the data stream:
+	pointer			= 284 + volsize*MRIdata.size;
+	console.log('reading final mr_params...\n');
+	MRI.Tr	 		= parseFloat32EndianSwapped(data, dp(sizeof_float));
+	MRI.flipangle	= parseFloat32EndianSwapped(data, dp());
+	MRI.Te			= parseFloat32EndianSwapped(data, dp());
+	MRI.Ti			= parseFloat32EndianSwapped(data, dp());
+	MRI_headerPrint(MRI, 0, 1);
+	
+	stats_determine(MRI.v_data);
+	return MRI;
+}
 
-    return this.endian = data;
-  },
-  'encoding': function(data) {
-
-    return this.encoding = data;
-  },
-  'dimension': function(data) {
-
-    return this.dim = parseInt(data, 10);
-  },
-  'sizes': function(data) {
-
-    var i;
-    return this.sizes = (function() {
-
-      var _i, _len, _ref, _results;
-      _ref = data.split(/\s+/);
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        i = _ref[_i];
-        _results.push(parseInt(i, 10));
-      }
-      return _results;
-    })();
-  },
-  'space directions': function(data) {
-
-    var f, parts, v;
-    parts = data.match(/\(.*?\)/g);
-    return this.vectors = (function() {
-
-      var _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = parts.length; _i < _len; _i++) {
-        v = parts[_i];
-        _results.push((function() {
-
-          var _j, _len2, _ref, _results2;
-          _ref = v.slice(1, -1).split(/,/);
-          _results2 = [];
-          for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
-            f = _ref[_j];
-            _results2.push(parseFloat(f));
-          }
-          return _results2;
-        })());
-      }
-      return _results;
-    })();
-  },
-  'spacings': function(data) {
-
-    var f, parts;
-    parts = data.split(/\s+/);
-    return this.spacings = (function() {
-
-      var _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = parts.length; _i < _len; _i++) {
-        f = parts[_i];
-        _results.push(parseFloat(f));
-      }
-      return _results;
-    })();
-  }
-};
 
 
 
 // export symbols (required for advanced compilation)
-goog.exportSymbol('X.parserNRRD', X.parserNRRD);
-goog.exportSymbol('X.parserNRRD.prototype.parse', X.parserNRRD.prototype.parse);
+goog.exportSymbol('X.parserMGZ', X.parserMGZ);
+goog.exportSymbol('X.parserMGZ.prototype.parse', X.parserMGZ.prototype.parse);
