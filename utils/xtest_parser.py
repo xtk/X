@@ -63,6 +63,7 @@ def calculate( buildtype, filename, buildtime ):
 #for line in f:
 #        print line,
 def parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml ):
+
   #base case
   if( count3 >= numberoflines ):
     return
@@ -72,7 +73,7 @@ def parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml 
 
   count3 +=2;
 
-  if(browserfound.find(browser) < 0):
+  if(browserfound.find('Not Found') < 0):
 
     f3.readline();
     f3.readline();
