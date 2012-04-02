@@ -1,0 +1,17 @@
+LICENSE.txt
+MANIFEST.in
+README.rst
+TODO
+pavement.py
+requirements.txt
+setup.py
+EasyProcess.egg-info/PKG-INFO
+EasyProcess.egg-info/SOURCES.txt
+EasyProcess.egg-info/dependency_links.txt
+EasyProcess.egg-info/not-zip-safe
+EasyProcess.egg-info/top_level.txt
+easyprocess/__init__.py
+easyprocess/unicodeutil.py
+easyprocess/examples/__init__.py
+easyprocess/examples/log.py
+easyprocess/examples/ver.py
