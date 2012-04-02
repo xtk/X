@@ -3,6 +3,11 @@ import platform
 import sys
 import os
 
+import paths
+sys.path.append(paths.xtkLibDir + '/EasyProcess/build/lib.linux-x86_64-2.7/')
+sys.path.append(paths.xtkLibDir + '/PyVirtualDisplay/build/lib.linux-x86_64-2.7/')
+# virtual buffer to run tests on a virtual frame buffer!
+from pyvirtualdisplay import Display
 
 def chromeDriverExecutable( xtkLibDir ):
   '''
@@ -31,9 +36,13 @@ def chromeDriverExecutable( xtkLibDir ):
   return chromedriverExecutable
 
 
-def calculate( xtkDir, xtkLibDir):
+def calculate( xtkTestFile, xtkLibDir):
   '''
   '''
+
+  # start the virtual buffer
+  display = Display(visible=0, size=(800, 600))
+  display.start()
 
   if os.path.exists('xtk_test.log'): os.remove('xtk_test.log')
 
@@ -43,16 +52,16 @@ def calculate( xtkDir, xtkLibDir):
   print
 
   print '======== GOOGLE CHROME RESULTS ========'
-  chrome_results = runTests( xtkDir, xtkLibDir, 'chrome' )
+  chrome_results = runTests( xtkTestFile, xtkLibDir, 'chrome' )
   print chrome_results
   print
 
   print '======== FIREFOX RESULTS ========'
-  firefox_results = runTests( xtkDir, xtkLibDir, 'firefox' )
+  firefox_results = runTests( xtkTestFile, xtkLibDir, 'firefox' )
   print firefox_results
   print
 
-  # writee to logfile the results
+  # write to logfile the results
   with open("xtk_test.log", "a") as f:
     # chrome
     f.write("chrome\n")
@@ -68,10 +77,14 @@ def calculate( xtkDir, xtkLibDir):
     else:
       f.write(firefox_results)
 
+  # close the virtual buffer
+  display.stop()
+
   return True
 
 
-def runTests( xtkDir, xtkLibDir, browser='chrome' ):
+
+def runTests( xtkTestFile, xtkLibDir, browser='chrome' ):
 
   import selenium
   from selenium import webdriver
@@ -92,7 +105,7 @@ def runTests( xtkDir, xtkLibDir, browser='chrome' ):
     return
 
   # we don't need os.sep here since it's a url
-  browser.get( "file://" + xtkDir + '/testing/xtk_tests.html' )
+  browser.get( "file://" + xtkTestFile)
 
   time.sleep( 3 )
 
