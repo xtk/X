@@ -66,6 +66,7 @@ stats = function(a){
 }
 
 function cprintd(str_left, val) {
+	// print a %d to the javascript console
 	console.log(sprintf('%20s%25s\n', str_left, sprintf('[ %d ]', val)));
 }
 
