@@ -31,7 +31,7 @@ def chromeDriverExecutable( xtkLibDir ):
   return chromedriverExecutable
 
 
-def calculate( xtkDir, xtkLibDir):
+def calculate( xtkTestFile, xtkLibDir):
   '''
   '''
 
@@ -43,12 +43,12 @@ def calculate( xtkDir, xtkLibDir):
   print
 
   print '======== GOOGLE CHROME RESULTS ========'
-  chrome_results = runTests( xtkDir, xtkLibDir, 'chrome' )
+  chrome_results = runTests( xtkTestFile, xtkLibDir, 'chrome' )
   print chrome_results
   print
 
   print '======== FIREFOX RESULTS ========'
-  firefox_results = runTests( xtkDir, xtkLibDir, 'firefox' )
+  firefox_results = runTests( xtkTestFile, xtkLibDir, 'firefox' )
   print firefox_results
   print
 
@@ -71,7 +71,7 @@ def calculate( xtkDir, xtkLibDir):
   return True
 
 
-def runTests( xtkDir, xtkLibDir, browser='chrome' ):
+def runTests( xtkTestFile, xtkLibDir, browser='chrome' ):
 
   import selenium
   from selenium import webdriver
@@ -92,7 +92,7 @@ def runTests( xtkDir, xtkLibDir, browser='chrome' ):
     return
 
   # we don't need os.sep here since it's a url
-  browser.get( "file://" + xtkDir + '/testing/xtk_tests.html' )
+  browser.get( "file://" + xtkTestFile)
 
   time.sleep( 3 )
 

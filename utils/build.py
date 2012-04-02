@@ -172,9 +172,10 @@ if( options.build ):
 if( options.test ):
     print '*-----------------------*'
     print 'Testing code'
-    print 'Testing WITH compilation...'
-    print 'Should give path to xtb-build and update log file'
-    scripts.test.calculate( paths.xtkDir, paths.xtkLibDir)
+    if( options.build ):
+      scripts.test.calculate( paths.xtkDir + '/testing/xtk_tests_build.html', paths.xtkLibDir)
+    else:
+      scripts.test.calculate( paths.xtkDir + '/testing/xtk_tests.html', paths.xtkLibDir)
     print 'Code tested'
     print '*-----------------------*'
 
