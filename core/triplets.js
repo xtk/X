@@ -150,7 +150,8 @@ X.triplets.prototype.add = function(a, b, c) {
  */
 X.triplets.prototype.get = function(id) {
 
-  if (!goog.isNumber(id) || (id * 3 > this._triplets_.length)) {
+  if (!goog.isNumber(id) ||
+      (id < 0 || id * 3 > this._triplets_.length || id == this.count())) {
     
     throw new Error('Invalid id.');
     
@@ -172,7 +173,8 @@ X.triplets.prototype.get = function(id) {
  */
 X.triplets.prototype.remove = function(id) {
 
-  if (!goog.isNumber(id) || (id * 3 > this._triplets_.length)) {
+  if (!goog.isNumber(id) ||
+      (id < 0 || id * 3 > this._triplets_.length || id == this.count())) {
     
     throw new Error('Invalid id.');
     
