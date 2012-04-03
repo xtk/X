@@ -337,6 +337,8 @@ goog.exportSymbol('X.transform.prototype.translateY',
 goog.exportSymbol('X.transform.prototype.translateZ',
     X.transform.prototype.translateZ);
 goog.exportSymbol('X.transform.prototype.matrix', X.transform.prototype.matrix);
+goog.exportSymbol('X.transform.prototype.glMatrix',
+    X.transform.prototype.glMatrix);
 goog.exportSymbol('X.transform.prototype.setMatrix',
     X.transform.prototype.setMatrix);
 goog.exportSymbol('X.transform.prototype.flipX', X.transform.prototype.flipX);
