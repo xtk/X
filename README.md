@@ -7,8 +7,7 @@
 <li><i>Volume rendering, thresholding and cross-sectional slicing</i> of 3d image data</li>
 <li>Integration of the <i><a href="http://evanw.github.com/csg.js/" target="_blank">Constructive Solid Geometry</a></i>-library supporting Boolean operations like union and intersection on meshes</li>
 <li><i>Javascript and HTML5 based</i>: suppport of major browsers (Chrome, Firefox, Safari and Opera)</li>
-<li><i>CDash</i> + <i>Google Closure Compiler</i> driven <a href="http://cdash.goxtk.com/index.php?project=XTK" target="_blank">build system</a></li>
-<li>Integration of the <i><a href="https://github.com/ponty/PyVirtualDisplay.git" target="_blank">PyVirtualDisplay</a></i> and <i><a href="https://github.com/ponty/EasyProcess.git" target="_blank">EasyProcess</a></i> from Ponty for offscreen testing.</li>
+<li><i>CDash</i> + <i>Google Closure Compiler</i> driven <a href="http://cdash.goxtk.com/index.php?project=XTK" target="_blank">build and test system</a></li>
 </ul>
 
 #### Demos ####
