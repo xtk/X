@@ -2,7 +2,6 @@ goog.require('X.base');
 goog.require('X.file');
 goog.require('X.texture');
 goog.require('goog.testing.jsunit');
-goog.require('goog.asserts');
 
 /**
  * Test for X.texture.className

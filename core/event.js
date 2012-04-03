@@ -43,6 +43,7 @@ goog.provide('X.event.ModifiedEvent');
 
 // requires
 goog.require('X');
+goog.require('X.object');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 
@@ -226,12 +227,6 @@ X.event.RenderEvent = function() {
   // call the default event constructor
   goog.base(this, X.event.events.RENDER);
   
-  /**
-   * The timestamp of this render event.
-   * 
-   * @type {!number}
-   */
-  this._timestamp = Date.now();
 };
 // inherit from goog.events.Event
 goog.inherits(X.event.RenderEvent, X.event);
