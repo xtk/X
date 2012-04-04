@@ -206,7 +206,7 @@ X.loader.prototype.loadFile = function(object) {
   }
   
   // jump out if we already process this job
-  if (this._jobs_.containsKey(object.id())) {
+  if (this._jobs().containsKey(object.id())) {
     
     return;
     
