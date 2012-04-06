@@ -140,7 +140,7 @@ def testVisualization( xtkLibDir, browserString='chrome', againstBuild=False ):
       browser = webdriver.Firefox()
 
   except:
-    print 'Could not find browser ' + browser + '.. Skipping it'
+    print 'Could not find browser ' + browserString + '.. Skipping it'
     return
 
   # list of tests
