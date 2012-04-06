@@ -345,6 +345,14 @@ X.renderer = function(container) {
   this._locked = false;
   
   /**
+   * A flag to show if the initial loading was completed.
+   * 
+   * @type {boolean}
+   * @public
+   */
+  this['_initialLoadingCompleted'] = false;
+  
+  /**
    * The configuration of this renderer.
    * 
    * @enum {boolean}
@@ -1532,6 +1540,8 @@ X.renderer.prototype.render = function() {
     
     // call the onShowtime function which can be overloaded
     eval("this.onShowtime()");
+    this['_initialLoadingCompleted'] = true; // flag the renderer as 'initial
+    // loading completed'
     
     // .. we exit here since the hiding takes some time and automatically
     // triggers the rendering when done
