@@ -1,0 +1,26 @@
+Metadata-Version: 1.0
+Name: pypng
+Version: 0.0.9
+Summary: Pure Python PNG image encoder/decoder
+Home-page: http://code.google.com/p/pypng/
+Author: David Jones
+Author-email: drj@pobox.com
+License: UNKNOWN
+Download-URL: http://pypng.googlecode.com/files/pypng-0.0.9.tar.gz
+Description: 
+        PyPNG allows PNG image files to be read and written using pure Python.
+        
+        It's available from Google code:
+        http://code.google.com/p/pypng/downloads/list
+        
+        Documentation is kindly hosted at python.org:
+        http://packages.python.org/pypng/
+        (and also available in the download tarball).
+        
+Platform: UNKNOWN
+Classifier: Topic :: Multimedia :: Graphics
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2.3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
