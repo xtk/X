@@ -3,6 +3,7 @@ import platform
 import sys
 import os
 import tempfile
+from datetime import datetime
 
 import paths
 sys.path.append( paths.xtkLibDir + '/EasyProcess/build/lib.linux-x86_64-2.7/' )
@@ -39,13 +40,15 @@ def chromeDriverExecutable( xtkLibDir ):
   return chromedriverExecutable
 
 
-def calculate( xtkTestFile, xtkLibDir ):
+def calculate( xtkTestFile, xtkLibDir, visualTests=False ):
   '''
   '''
 
-  # start the virtual buffer
-  display = Display( visible=0, size=( 1024, 768 ) )
-  display.start()
+  # only use the framebuffer if visualTests are deactivated
+  if not visualTests:
+    # start the virtual buffer
+    display = Display( visible=0, size=( 1024, 768 ) )
+    display.start()
 
   if os.path.exists( 'xtk_test.log' ): os.remove( 'xtk_test.log' )
 
@@ -56,19 +59,28 @@ def calculate( xtkTestFile, xtkLibDir ):
 
   print '======== GOOGLE CHROME RESULTS ========'
   chrome_results = runTests( xtkTestFile, xtkLibDir, 'chrome' )
+  if visualTests:
+    visualization_test_results = testVisualization( xtkLibDir, 'chrome', xtkTestFile.find( 'build' ) != -1 )
+    # merge the outputs
+    chrome_results_array = chrome_results.split( '\n' )
+    chrome_results_array_without_done = chrome_results_array[0:-2]
+    chrome_results_array_without_done.extend( visualization_test_results.split( '\n' ) )
+    chrome_results = "\n".join( chrome_results_array_without_done )
   print chrome_results
-  print
-  visualization_test_results = testVisualization( xtkLibDir, 'chrome', xtkTestFile.find( 'build' ) != -1 )
-  print visualization_test_results
   print
 
   print '======== FIREFOX RESULTS ========'
   firefox_results = runTests( xtkTestFile, xtkLibDir, 'firefox' )
+  if visualTests:
+    visualization_test_results = testVisualization( xtkLibDir, 'firefox', xtkTestFile.find( 'build' ) != -1 )
+    # merge the outputs
+    firefox_results_array = firefox_results.split( '\n' )
+    firefox_results_array_without_done = firefox_results_array[0:-2]
+    firefox_results_array_without_done.extend( visualization_test_results.split( '\n' ) )
+    firefox_results = "\n".join( firefox_results_array_without_done )
   print firefox_results
   print
-  visualization_test_results = testVisualization( xtkLibDir, 'firefox', xtkTestFile.find( 'build' ) != -1 )
-  print visualization_test_results
-  print
+
 
   # write to logfile the results
   with open( "xtk_test.log", "a" ) as f:
@@ -85,8 +97,9 @@ def calculate( xtkTestFile, xtkLibDir ):
     else:
       f.write( firefox_results )
 
-  # close the virtual buffer
-  display.stop()
+  if not visualTests:
+    # close the virtual buffer
+    display.stop()
 
   return True
 
@@ -174,7 +187,8 @@ def testVisualization( xtkLibDir, browserString='chrome', againstBuild=False ):
       timer += 1
 
     # create a screenshot and save it to a temp. file
-    testFileId = os.path.splitext( t )[0] + '_' + browserString
+    testId = os.path.splitext( t )[0]
+    testFileId = testId + '_' + browserString
     tmpfile = tempfile.mkstemp( suffix='.png', prefix='xtk_' + testFileId )[1]
     browser.save_screenshot( tmpfile )
 
@@ -183,11 +197,19 @@ def testVisualization( xtkLibDir, browserString='chrome', againstBuild=False ):
 
     # compare temp. file vs. baseline
     testPassed = compareImages( tmpfile, baseline )
-    output += testFileId + ' : ' + str( testPassed ) + '\n'
+    if testPassed:
+      testPassed = "PASSED"
+    else:
+      testPassed = "FAILED"
+    _now = datetime.now()
+    timestamp = str( _now.hour ).zfill( 2 ) + ':' + str( _now.minute ).zfill( 2 ) + ':' + str( _now.second ).zfill( 2 ) + '.' + str( _now.microsecond / 1000 ).zfill( 3 )
+    output += timestamp + "  Visualization" + testId.replace( '_build', '' ) + ' : ' + testPassed + '\n'
 
   browser.close()
 
-  result = output + '\nVISUALIZATION TESTS DONE'
+  _now = datetime.now()
+  timestamp = str( _now.hour ).zfill( 2 ) + ':' + str( _now.minute ).zfill( 2 ) + ':' + str( _now.second ).zfill( 2 ) + '.' + str( _now.microsecond / 1000 ).zfill( 3 )
+  result = output + timestamp + '  Done\n'
 
   return result
 
