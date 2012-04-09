@@ -63,6 +63,12 @@ parser.add_argument( '-t', '--test',
                     default=False,
                     help='Run all tests in Chrome and Firefox.' )
 
+parser.add_argument( '-tv', '--testvisualization',
+                    action='store_true',
+                    dest='testvisualization',
+                    default=False,
+                    help='Run all visual tests in Chrome and Firefox.' )
+
 # experimental build
 parser.add_argument( '-e', '--experimental',
                     action='store_true',
@@ -106,6 +112,7 @@ if ( options.verbose ):
     print '* jsdoc dir.........: ' + paths.jsdocDir
     print '*'
     print '* test..............: ' + str( options.test )
+    print '* testvisualization.: ' + str( options.testvisualization )
     print '* test dir..........: ' + '!!! to be added !!!'
     print '*'
     print '* experimental......: ' + str( options.experimental )
@@ -165,7 +172,7 @@ if( options.deps ):
 if( options.build ):
     print '*-----------------------*'
     print 'Compiling Code'
-    os.system('python easybuild.py')
+    os.system( 'python easybuild.py' )
     print 'Code compiled'
     print '*-----------------------*'
 
@@ -173,9 +180,9 @@ if( options.test ):
     print '*-----------------------*'
     print 'Testing code'
     if( options.build ):
-      scripts.test.calculate( paths.xtkDir + '/testing/xtk_tests_build.html', paths.xtkLibDir)
+      scripts.test.calculate( paths.xtkDir + '/testing/xtk_tests_build.html', paths.xtkLibDir, options.testvisualization )
     else:
-      scripts.test.calculate( paths.xtkDir + '/testing/xtk_tests.html', paths.xtkLibDir)
+      scripts.test.calculate( paths.xtkDir + '/testing/xtk_tests.html', paths.xtkLibDir, options.testvisualization )
     print 'Code tested'
     print '*-----------------------*'
 
@@ -184,29 +191,29 @@ if( options.test ):
 now = datetime.datetime.now()
 buildtime = str( now.year ) + str( now.month ) + str( now.day ) + "-" + str( now.minute ) + str( now.second )
 
-if( options.experimental):
-    xupdate_parser.calculate('Experimental', '', buildtime);
-    xconf_parser.calculate('Experimental', '', buildtime);
-    xbuild_parser.calculate('Experimental', 'xtk_build.log', buildtime)
-    xtest_parser.calculate('Experimental', '', buildtime)
+if( options.experimental ):
+    xupdate_parser.calculate( 'Experimental', '', buildtime );
+    xconf_parser.calculate( 'Experimental', '', buildtime );
+    xbuild_parser.calculate( 'Experimental', 'xtk_build.log', buildtime )
+    xtest_parser.calculate( 'Experimental', '', buildtime )
     command = "ctest -S xtk.cmake -V"
-    os.system(command)
+    os.system( command )
 
-if(options.nightly):
-    xupdate_parser.calculate('Nightly', '', buildtime);
-    xconf_parser.calculate('Nightly', '', buildtime);
-    xbuild_parser.calculate('Nightly', 'xtk_build.log', buildtime)
-    xtest_parser.calculate('Nightly', '', buildtime)
+if( options.nightly ):
+    xupdate_parser.calculate( 'Nightly', '', buildtime );
+    xconf_parser.calculate( 'Nightly', '', buildtime );
+    xbuild_parser.calculate( 'Nightly', 'xtk_build.log', buildtime )
+    xtest_parser.calculate( 'Nightly', '', buildtime )
     command = "ctest -S xtk.cmake -V"
-    os.system(command)
+    os.system( command )
 
-if(options.continuous):
-    xupdate_parser.calculate('Continuous', '', buildtime);
-    xconf_parser.calculate('Continuous', '', buildtime);
-    xbuild_parser.calculate('Continuous', 'xtk_build.log', buildtime)
-    xtest_parser.calculate('Continuous', '', buildtime)
+if( options.continuous ):
+    xupdate_parser.calculate( 'Continuous', '', buildtime );
+    xconf_parser.calculate( 'Continuous', '', buildtime );
+    xbuild_parser.calculate( 'Continuous', 'xtk_build.log', buildtime )
+    xtest_parser.calculate( 'Continuous', '', buildtime )
     command = "ctest -S xtk.cmake -V"
-    os.system(command)
+    os.system( command )
 
 # delete temp output file
 # CDASH
