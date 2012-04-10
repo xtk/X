@@ -283,12 +283,25 @@ def compareImages( image1, image2 ):
   sum2 = 0
 
   for p in list( pixels1[2] ):
+    cnt = 0
     for rgba in p:
-      sum1 += rgba
+
+      if cnt % 4 != 0:
+        # skip every 4th
+        sum1 += rgba
+
+      cnt += 1
+
 
   for p in list( pixels2[2] ):
+    cnt = 0
     for rgba in p:
-      sum2 += rgba
+
+      if cnt % 4 != 0:
+        # skip every 4th
+        sum2 += rgba
+
+      cnt += 1
 
   print 'sum1', sum1
   print 'sum2', sum2
