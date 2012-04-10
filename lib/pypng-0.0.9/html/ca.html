@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Why Use PyPNG? &mdash; PyPNG v0.0.9 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.9',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PyPNG v0.0.9 documentation" href="index.html" />
+    <link rel="next" title="PyPNG Code Examples" href="ex.html" />
+    <link rel="prev" title="PyPNG documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="ex.html" title="PyPNG Code Examples"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="PyPNG documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PyPNG v0.0.9 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="why-use-pypng">
+<h1>Why Use PyPNG?<a class="headerlink" href="#why-use-pypng" title="Permalink to this headline">¶</a></h1>
+<p>In order to motivate you into using PyPNG this document discusses some
+of the reasons for using PyPNG over other software.</p>
+<p>For starters I assume you already love PNG.  If you don&#8217;t want to read
+and write PNG files then you don&#8217;t want to use PyPNG.</p>
+<p>The most obvious &#8220;competitor&#8221; to PyPNG is PIL.  Depending on what job
+you want to do you might also want to use Netpbm (PyPNG can convert to
+and from the Netpbm PNM format), or use <tt class="docutils literal"><span class="pre">ctypes</span></tt> to interface directly to a
+compiled version of libpng.  If you know of others, let me know.</p>
+<p>PyPNG is written in Python.  Python is clearly the coolest sexiest
+language going, so PyPNG is cool and sexy too.  By association.</p>
+<p>Because PyPNG is written in Python it&#8217;s trivial to install into a Python
+installation, or include in your application (as long as it&#8217;s written in
+Python!).  Just use <tt class="docutils literal"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">install</span></tt> or just copy the
+<tt class="docutils literal"><span class="pre">code/png.py</span></tt> file.  You can even <cite>curl</cite> it straight into wherever you
+need it: <tt class="docutils literal"><span class="pre">curl</span> <span class="pre">-O</span> <span class="pre">http://pypng.googlecode.com/svn/trunk/code/png.py</span></tt>.
+In fact, I have never managed to install PIL and that was one of the
+motivating factors for PyPNG.  So PyPNG will always be easy to install.</p>
+<p>PyPNG can read and write all PNG formats.  PNG supports a generous
+variety of image formats: RGB or greyscale, with or without an alpha
+channel; and a choice of bit depths from 1,2, or 4 (as long as you want
+greyscale or a pallete), 8, and 16 (but 16 bits is not allowed for
+palettes).  A pixel can vary in size from 1 to 64 bits:
+1/2/4/8/16/24/32/48/64.  In addition a PNG file can be <cite>interlaced</cite> or
+not.  An interlaced file allows an incrementally refined display of
+images being downloaded over slow links.</p>
+<p>PIL, according to its handbook, does not support interlaced PNG
+files.  Also, PIL only has internal representations (PIL <cite>mode</cite>)
+for 1-bit and 8-bit channel values.  This makes me wonder if PIL
+can read PNG files with bit depth 2 or 4 (greyscale or palette),
+and also bit depth 16 (which PNG supports for greyscale and RGB
+images).  In addition, PIL has only &#8220;limited support&#8221; for greyscale
+with alpha, which is one of PNG&#8217;s supported formats (in 8 and 16
+bits per channel).</p>
+<p>I don&#8217;t mean to belittle PIL here, PIL&#8217;s focus is not PNG.  PIL&#8217;s focus
+is image processing, and this is where PyPNG sucks.  If you want to
+actually process an image&#8212;resize, rotate, composite, crop&#8211;then you
+should use PIL.  This is simply out of scope for PyPNG.  In PyPNG you
+get the image as basically an array of numbers.  So some image
+processing is possible fairly easily, for example cropping to integer
+coordinates, or gamma conversion, but in any case PyPNG provides no
+support for it.  In the future a sister project to PyPNG may add some
+simple image processing, but processing in pure Python will be way slow.</p>
+<p>PyPNG (when used in its command-line mode) can read and write Netpbm
+PAM files.  PAM is useful as an intermediary format for performing
+processing; it allows the pixel data to be transferred in a simple format
+that is easily processed.  A typical workflow using PAM might be:</p>
+<p>PNG to PAM ... process PAM file (for example, resize) ... PAM to PNG</p>
+<p>Using PAM as an intermediate format is preferred over having to
+carry around your alpha channel in a separate file; it allows
+workflows to be pipelined more easily.</p>
+<p>When reading PAM files a single source file can be used to create
+PNG files with all permitted channel combinations: greyscale,
+greyscale&#8211;alpha, RGB, RGBA.  When writing a PAM file is created for
+those PNG formats with an alpha channel, otherwise a compatible PGM or
+PPM file is created.</p>
+<p>Netpbm&#8217;s support for PAM to PNG conversion is more limited than PyPNG&#8217;s.
+Netpbm will only convert a source PAM that has 4 channels (for example it does
+not create greyscale&#8211;alpha PNG files from <tt class="docutils literal"><span class="pre">GRAYSCALE_ALPHA</span></tt> PAM files).
+Netpbm&#8217;s usual tool for create PNG files, <tt class="docutils literal"><span class="pre">pnmtopng</span></tt>, requires an alpha
+channel to be specified in a separate file.</p>
+<p>PyPNG has good support for PNG&#8217;s <tt class="docutils literal"><span class="pre">sBIT</span></tt> chunk.  This allows end to end
+processing of files with any bit depth from 1 to 16 (for example a
+10-bit scanner may use the <tt class="docutils literal"><span class="pre">sBIT</span></tt> chunk to declare that the samples in
+a 16-bit PNG file are rescaled 10-bit samples; in this case, PyPNG
+delivers 10-bit samples).  Netpbm handle&#8217;s the <tt class="docutils literal"><span class="pre">sBIT</span></tt> chunk in a
+similar way, but other toolsets may not (PIL?).</p>
+<p><tt class="docutils literal"><span class="pre">libpng</span></tt> is made by the PNG gods, so if want to get at all that
+goodness, then you may want to interface directly to libpng via
+<tt class="docutils literal"><span class="pre">ctypes</span></tt>.  That could be a good idea for some things.  Installation
+would be trickier.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="index.html"
+                                  title="previous chapter">PyPNG documentation</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="ex.html"
+                                  title="next chapter">PyPNG Code Examples</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/ca.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="ex.html" title="PyPNG Code Examples"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="PyPNG documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">PyPNG v0.0.9 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009, David Jones.
+      Last updated on 2009-06-16T08:52:15.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1.
+    </div>
+  </body>
+</html>

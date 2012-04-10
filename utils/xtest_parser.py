@@ -12,7 +12,7 @@ import string
 # xtk-utils dir
 def calculate( buildtype, filename, buildtime ):
   # if no tests don't try to parse the file
-  if(os.path.exists('xtk_test.log') == False): return
+  if( os.path.exists( 'xtk_test.log' ) == False ): return
 
   xtkUtilsDir = os.path.abspath( os.path.dirname( sys.argv[0] ) )
 
@@ -46,10 +46,10 @@ def calculate( buildtype, filename, buildtime ):
   fillxml( xml, testingElement, 'StartDateTime', strftime( "%b %d %H:%M %Z", gmtime() ) )
   fillxml( xml, testingElement, 'StartTestTime', str( time() ) )
 
-  testListElement = xml.createElement('TestList');
-  testingElement.appendChild(testListElement);
+  testListElement = xml.createElement( 'TestList' );
+  testingElement.appendChild( testListElement );
 
-  parsefile2(f3, count3, len(data3), testingElement, testListElement, xml)
+  parsefile2( f3, count3, len( data3 ), testingElement, testListElement, xml )
 
   fillxml( xml, testingElement, 'EndDateTime', strftime( "%b %d %H:%M %Z", gmtime() ) )
   fillxml( xml, testingElement, 'EndTestTime', str( time() ) )
@@ -68,12 +68,12 @@ def parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml 
   if( count3 >= numberoflines ):
     return
 
-  browser = string.capwords(f3.readline(), ' ');
-  browserfound = string.capwords(f3.readline(), ' ');
+  browser = string.capwords( f3.readline(), ' ' );
+  browserfound = string.capwords( f3.readline(), ' ' );
 
-  count3 +=2;
+  count3 += 2;
 
-  if(browserfound.find('Not Found') < 0):
+  if( browserfound.find( 'Not Found' ) < 0 ):
 
     f3.readline();
     f3.readline();
@@ -84,53 +84,53 @@ def parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml 
 
     start = f3.readline();
 
-    starttime = start.split(' ')[0];
+    starttime = start.split( ' ' )[0];
 
     nexttest = f3.readline();
     count3 += 2;
 
     # loop through tests
-    while(nexttest.find('Done') < 0):
+    while( nexttest.find( 'Done' ) < 0 ):
       # get name
-      name = nexttest.split(' ');
-      fillxml( xml, testListElement, 'Test', browser +'- '+ name[2])
+      name = nexttest.split( ' ' );
+      fillxml( xml, testListElement, 'Test', browser + '- ' + name[2] )
 
       endtime = name[0]
 
       # write content of error message if any
       element = xml.createElement( 'Test' )
       testingElement.appendChild( element )
-         
-      if(nexttest.find('FAILED') < 0):
-        element.setAttribute('Status', 'passed')
-        fillxml( xml, element, 'Name', browser +'- '+ name[2])
-        
+
+      if( nexttest.find( 'FAILED' ) < 0 ):
+        element.setAttribute( 'Status', 'passed' )
+        fillxml( xml, element, 'Name', browser + '- ' + name[2] )
+
         resultsElement = xml.createElement( 'Results' )
         element.appendChild( resultsElement )
-          
+
         nexttest = f3.readline();
-        
+
         count3 += 1;
-        
+
       else:
-        element.setAttribute('Status', 'failed')
-        fillxml( xml, element, 'Name', browser + '- ' + name[2])
+        element.setAttribute( 'Status', 'failed' )
+        fillxml( xml, element, 'Name', browser + '- ' + name[2] )
         nexttest = f3.readline();
         error = ''
         error1 = 'still some log for the error'
-        
-        while(error1 != '\n'):
+
+        while( error1 != '\n' ):
           error1 = f3.readline();
           error += error1;
           count3 += 1;
- 
+
         resultsElement = xml.createElement( 'Results' )
         element.appendChild( resultsElement )
 
         measurementElement = xml.createElement( 'Measurement' )
         resultsElement.appendChild( measurementElement )
-        
-        fillxml(xml, measurementElement, 'Value', error)
+
+        fillxml( xml, measurementElement, 'Value', error )
 
         nexttest = f3.readline();
         count3 += 2;
@@ -139,16 +139,16 @@ def parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml 
       # time
       namedmeasurementElement = xml.createElement( 'NamedMeasurement' )
       resultsElement.appendChild( namedmeasurementElement )
-        
+
       year = datetime.date.today().year
       month = datetime.date.today().month
       day = datetime.date.today().day
-      enddatetime = datetime.datetime(int(year), int(month), int(day), int(endtime[0:2]), int(endtime[3:5]), int(endtime[6:8]), 1000*int(endtime[9:12]))
-      startdatetime = datetime.datetime(int(year), int(month), int(day), int(starttime[0:2]), int(starttime[3:5]), int(starttime[6:8]), 1000*int(starttime[9:12]))
+      enddatetime = datetime.datetime( int( year ), int( month ), int( day ), int( endtime[0:2] ), int( endtime[3:5] ), int( endtime[6:8] ), 1000 * int( endtime[9:12] ) )
+      startdatetime = datetime.datetime( int( year ), int( month ), int( day ), int( starttime[0:2] ), int( starttime[3:5] ), int( starttime[6:8] ), 1000 * int( starttime[9:12] ) )
 
-      namedmeasurementElement.setAttribute('name', 'Execution Time')
+      namedmeasurementElement.setAttribute( 'name', 'Execution Time' )
 
-      fillxml(xml, namedmeasurementElement, 'Value', str(enddatetime - startdatetime))
+      fillxml( xml, namedmeasurementElement, 'Value', str( enddatetime - startdatetime ) )
 
       starttime = endtime;
 
