@@ -68,6 +68,13 @@ X.parserHelper = function(data) {
   this._dataPointer = 0;
   
   this._elementSize = 1;
+
+  // helper 'static'-like defs.
+  this.sizeOfChar		= 1;
+  this.sizeOfShort		= 2;
+  this.sizeOfInt		= 4;
+  this.sizeOfFloat		= 4;
+  this.sizeOfDouble		= 8;
   
 };
 // inherit from X.base
@@ -94,7 +101,7 @@ X.parserHelper.prototype.elementSize = function() {
 };
 
 
-X.parserHelper.protoype.setElementSize = function(elementSize) {
+X.parserHelper.prototype.setElementSize = function(elementSize) {
 
   if (!goog.isNumber(elementSize)) {
     
@@ -134,7 +141,7 @@ X.parserHelper.prototype.setParseFunction = function(func, elementSize) {
 };
 
 
-X.parserHelper.read = function(chunks) {
+X.parserHelper.prototype.read = function(chunks) {
 
   if (!goog.isDefAndNotNull(chunks)) {
     
