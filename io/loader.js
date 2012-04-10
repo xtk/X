@@ -32,6 +32,7 @@ goog.provide('X.loader');
 goog.require('X.base');
 goog.require('X.event');
 goog.require('X.object');
+goog.require('X.parserCRV');
 goog.require('X.parserFSM');
 goog.require('X.parserLUT');
 goog.require('X.parserNRRD');
@@ -226,7 +227,8 @@ X.loader.prototype.loadFile = function(object) {
   if (!(fileExtension == X.loader.extensions.TRK ||
       fileExtension == X.loader.extensions.STL ||
       fileExtension == X.loader.extensions.FSM ||
-      fileExtension == X.loader.extensions.VTK || fileExtension == X.loader.extensions.NRRD)) {
+      fileExtension == X.loader.extensions.VTK ||
+      fileExtension == X.loader.extensions.NRRD || fileExtension == X.loader.extensions.CRV)) {
     
     // file format is not supported
     throw new Error('The ' + fileExtension + ' file format is not supported.');
@@ -401,6 +403,15 @@ X.loader.prototype.loadFileCompleted = function(request, object) {
       
       nrrdParser.parse(object, request.response);
       
+    } else if (fileExtension == 'crv') {
+      
+      var crvParser = new X.parserCRV();
+      
+      goog.events.listenOnce(crvParser, X.event.events.MODIFIED,
+          this.parseFileCompleted.bind(this));
+      
+      crvParser.parse(object, request.response);
+      
     }
     
 
@@ -468,5 +479,6 @@ X.loader.extensions = {
   VTK: 'VTK',
   TRK: 'TRK',
   FSM: 'FSM',
-  NRRD: 'NRRD'
+  NRRD: 'NRRD',
+  CRV: 'CRV'
 };
