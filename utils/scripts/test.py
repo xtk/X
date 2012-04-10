@@ -5,13 +5,22 @@ import os
 import tempfile
 from datetime import datetime
 
+
 import paths
 sys.path.append( paths.xtkLibDir + '/EasyProcess/build/lib.linux-x86_64-2.7/' )
 sys.path.append( paths.xtkLibDir + '/PyVirtualDisplay/build/lib.linux-x86_64-2.7/' )
 sys.path.append( paths.xtkLibDir + '/pypng-0.0.9/code' )
+sys.path.append( paths.xtkLibDir + os.sep + 'selenium' )
 
 # virtual buffer to run tests on a virtual frame buffer!
 from pyvirtualdisplay import Display
+
+# selenium
+import selenium
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.keys import Keys
+
 
 def chromeDriverExecutable( xtkLibDir ):
   '''
@@ -24,8 +33,6 @@ def chromeDriverExecutable( xtkLibDir ):
   # find the chromedriver executable
   chromedriverExecutable = 'chromedriver'
 
-  # first, try to use the bundled chromedriver version
-  # if this fails, try to look in the system path.. that's all we can do..
   if system == 'Darwin':
     chromedriverExecutable = chromedriverDir + 'chromedriver_mac'
   elif system == 'Windows':
@@ -40,45 +47,54 @@ def chromeDriverExecutable( xtkLibDir ):
   return chromedriverExecutable
 
 
-def calculate( xtkTestFile, xtkLibDir, visualTests=False ):
+def calculate( xtkTestFile, xtkLibDir ):
   '''
   '''
-
-  # only use the framebuffer if visualTests are deactivated
-  if not visualTests:
-    # start the virtual buffer
-    display = Display( visible=0, size=( 1024, 768 ) )
-    display.start()
 
   if os.path.exists( 'xtk_test.log' ): os.remove( 'xtk_test.log' )
-
-  # add selenium path
-  sys.path.append( xtkLibDir + os.sep + 'selenium' )
 
   print
 
   print '======== GOOGLE CHROME RESULTS ========'
-  chrome_results = runTests( xtkTestFile, xtkLibDir, 'chrome' )
-  if chrome_results and visualTests:
-    visualization_test_results = testVisualization( xtkLibDir, 'chrome', xtkTestFile.find( 'build' ) != -1 )
-    # merge the outputs
-    chrome_results_array = chrome_results.split( '\n' )
-    chrome_results_array_without_done = chrome_results_array[0:-2]
-    chrome_results_array_without_done.extend( visualization_test_results.split( '\n' ) )
-    chrome_results = "\n".join( chrome_results_array_without_done )
-  print chrome_results
+  browserString = 'chrome'
+  display = Display( visible=0, size=( 1024, 768 ) )
+  display.start()
+  chrome_results = runTests( xtkTestFile, xtkLibDir, browserString )
+  display.stop()
+  if chrome_results:
+    visualization_test_results = testVisualization( xtkLibDir, browserString, xtkTestFile.find( 'build' ) != -1 )
+    if visualization_test_results:
+      # merge the outputs
+      chrome_results_array = chrome_results.split( '\n' )
+      chrome_results_array_without_done = chrome_results_array[0:-2]
+      chrome_results_array_without_done.extend( visualization_test_results.split( '\n' ) )
+      chrome_results = "\n".join( chrome_results_array_without_done )
+    else:
+      print 'Could not run visual tests!\n'
+    print chrome_results
+  else:
+    print 'Could not run any ' + browserString + ' tests!'
   print
 
   print '======== FIREFOX RESULTS ========'
-  firefox_results = runTests( xtkTestFile, xtkLibDir, 'firefox' )
-  if firefox_results and visualTests:
-    visualization_test_results = testVisualization( xtkLibDir, 'firefox', xtkTestFile.find( 'build' ) != -1 )
-    # merge the outputs
-    firefox_results_array = firefox_results.split( '\n' )
-    firefox_results_array_without_done = firefox_results_array[0:-2]
-    firefox_results_array_without_done.extend( visualization_test_results.split( '\n' ) )
-    firefox_results = "\n".join( firefox_results_array_without_done )
-  print firefox_results
+  browserString = 'firefox'
+  display = Display( visible=0, size=( 1024, 768 ) )
+  display.start()
+  firefox_results = runTests( xtkTestFile, xtkLibDir, browserString )
+  display.stop()
+  if firefox_results:
+    visualization_test_results = testVisualization( xtkLibDir, browserString, xtkTestFile.find( 'build' ) != -1 )
+    if visualization_test_results:
+      # merge the outputs
+      firefox_results_array = firefox_results.split( '\n' )
+      firefox_results_array_without_done = firefox_results_array[0:-2]
+      firefox_results_array_without_done.extend( visualization_test_results.split( '\n' ) )
+      firefox_results = "\n".join( firefox_results_array_without_done )
+    else:
+      print 'Could not run visual tests!\n'
+    print firefox_results
+  else:
+    print 'Could not run any ' + browserString + ' tests!'
   print
 
 
@@ -97,32 +113,34 @@ def calculate( xtkTestFile, xtkLibDir, visualTests=False ):
     else:
       f.write( firefox_results )
 
-  if not visualTests:
-    # close the virtual buffer
-    display.stop()
-
   return True
 
 
-
-def runTests( xtkTestFile, xtkLibDir, browser='chrome' ):
-
-  import selenium
-  from selenium import webdriver
-  from selenium.common.exceptions import NoSuchElementException
-  from selenium.webdriver.common.keys import Keys
+def getBrowser( xtkLibDir, browserString ):
 
   try:
-    if browser == 'chrome':
+    if browserString == 'chrome':
       # find the chrome browser
       chromedriverExecutable = chromeDriverExecutable( xtkLibDir )
       browser = webdriver.Chrome( chromedriverExecutable )
-    else:
+    elif browserString == 'firefox':
       # use firefox
       browser = webdriver.Firefox()
 
-  except:
-    print 'Could not find browser ' + browser + '.. Skipping it'
+  except Exception as e:
+    print 'Could not start ' + browserString
+    print e.msg
+    browser = None
+
+  return browser
+
+def runTests( xtkTestFile, xtkLibDir, browserString ):
+
+  print 'RUNNING OFFSCREEN TESTING..'
+
+  browser = getBrowser( xtkLibDir, browserString )
+
+  if not browser:
     return None
 
   # we don't need os.sep here since it's a url
@@ -134,27 +152,18 @@ def runTests( xtkTestFile, xtkLibDir, browser='chrome' ):
 
   browser.close()
 
+  print 'RUNNING OFFSCREEN TESTING.. DONE!'
+
   return result
 
-def testVisualization( xtkLibDir, browserString='chrome', againstBuild=False ):
+def testVisualization( xtkLibDir, browserString, againstBuild=False ):
 
-  import selenium
-  from selenium import webdriver
-  from selenium.common.exceptions import NoSuchElementException
-  from selenium.webdriver.common.keys import Keys
+  print 'RUNNING VISUAL TESTING..'
 
-  try:
-    if browserString == 'chrome':
-      # find the chrome browser
-      chromedriverExecutable = chromeDriverExecutable( xtkLibDir )
-      browser = webdriver.Chrome( chromedriverExecutable )
-    else:
-      # use firefox
-      browser = webdriver.Firefox()
+  browser = getBrowser( xtkLibDir, browserString )
 
-  except:
-    print 'Could not find browser ' + browserString + '.. Skipping it'
-    return
+  if not browser:
+    return None
 
   # list of tests
   tests = ['test_trk.html']
@@ -197,12 +206,15 @@ def testVisualization( xtkLibDir, browserString='chrome', againstBuild=False ):
 
     # compare temp. file vs. baseline
     testPassed = compareImages( tmpfile, baseline )
+    _now = datetime.now()
+    timestamp = str( _now.hour ).zfill( 2 ) + ':' + str( _now.minute ).zfill( 2 ) + ':' + str( _now.second ).zfill( 2 ) + '.' + str( _now.microsecond / 1000 ).zfill( 3 )
+
     if testPassed:
       testPassed = "PASSED"
     else:
       testPassed = "FAILED"
-    _now = datetime.now()
-    timestamp = str( _now.hour ).zfill( 2 ) + ':' + str( _now.minute ).zfill( 2 ) + ':' + str( _now.second ).zfill( 2 ) + '.' + str( _now.microsecond / 1000 ).zfill( 3 )
+      testPassed += "\n" + timestamp + "  ERROR in Visualization" + testId.replace( '_build', '' ) + '\nComparison against baseline failed.\n'
+
     output += timestamp + "  Visualization" + testId.replace( '_build', '' ) + ' : ' + testPassed + '\n'
 
   browser.close()
@@ -210,6 +222,8 @@ def testVisualization( xtkLibDir, browserString='chrome', againstBuild=False ):
   _now = datetime.now()
   timestamp = str( _now.hour ).zfill( 2 ) + ':' + str( _now.minute ).zfill( 2 ) + ':' + str( _now.second ).zfill( 2 ) + '.' + str( _now.microsecond / 1000 ).zfill( 3 )
   result = output + timestamp + '  Done\n'
+
+  print 'RUNNING VISUAL TESTING.. DONE!'
 
   return result
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #
 # imports
 # all option, routine to go through dirs not good enough
@@ -63,12 +64,6 @@ parser.add_argument( '-t', '--test',
                     default=False,
                     help='Run all tests in Chrome and Firefox.' )
 
-parser.add_argument( '-tv', '--testvisualization',
-                    action='store_true',
-                    dest='testvisualization',
-                    default=False,
-                    help='Run all visual tests in Chrome and Firefox.' )
-
 # experimental build
 parser.add_argument( '-e', '--experimental',
                     action='store_true',
@@ -112,7 +107,6 @@ if ( options.verbose ):
     print '* jsdoc dir.........: ' + paths.jsdocDir
     print '*'
     print '* test..............: ' + str( options.test )
-    print '* testvisualization.: ' + str( options.testvisualization )
     print '* test dir..........: ' + '!!! to be added !!!'
     print '*'
     print '* experimental......: ' + str( options.experimental )
@@ -180,9 +174,9 @@ if( options.test ):
     print '*-----------------------*'
     print 'Testing code'
     if( options.build ):
-      scripts.test.calculate( paths.xtkDir + '/testing/xtk_tests_build.html', paths.xtkLibDir, options.testvisualization )
+      scripts.test.calculate( paths.xtkDir + '/testing/xtk_tests_build.html', paths.xtkLibDir )
     else:
-      scripts.test.calculate( paths.xtkDir + '/testing/xtk_tests.html', paths.xtkLibDir, options.testvisualization )
+      scripts.test.calculate( paths.xtkDir + '/testing/xtk_tests.html', paths.xtkLibDir )
     print 'Code tested'
     print '*-----------------------*'
 
