@@ -302,6 +302,4 @@ def compareImages( image1, image2 ):
 
       cnt += 1
 
-  print 'sum1', sum1
-  print 'sum2', sum2
-  return ( sum1 / sum2 ) > 0.8
+  return ( ( float( sum1 ) / float( sum2 ) ) > 0.8 )
