@@ -38,6 +38,7 @@ goog.provide('X.parserMGZ');
 goog.require('X.event');
 goog.require('X.object');
 goog.require('X.parser');
+goog.require('X.parserHelper');
 goog.require('X.triplets');
 goog.require('goog.math.Vec3');
 goog.require('JXG.Util.Unzip');
@@ -68,55 +69,7 @@ X.parserMGZ = function() {
 // inherit from X.parser
 goog.inherits(X.parserMGZ, X.parser);
 
-function MRI_headerPrint(MRI, b_prefix, b_suffix) {
-	
-	b_prefix	= typeof b_prefix !== 'undefined' ? b_prefix : 1;
-	b_suffix	= typeof b_suffix !== 'undefined' ? b_suffix : 1;
-
-	if (b_prefix) {
-		console.log(sprintf('%20s = %10d\n', 'version',	MRI.version));
-		console.log(sprintf('%20s = %10d\n', 'ndim1', 	MRI.ndim1));
-		console.log(sprintf('%20s = %10d\n', 'ndim2', 	MRI.ndim2));
-		console.log(sprintf('%20s = %10d\n', 'ndim3', 	MRI.ndim3));
-		console.log(sprintf('%20s = %10d\n', 'nframes', MRI.nframes));
-		console.log(sprintf('%20s = %10d\n', 'type', 	MRI.type));
-		console.log(sprintf('%20s = %10d\n', 'dof', 	MRI.dof));
-		console.log(sprintf('%20s = %10d\n', 'rasgoodflag', 	
-													MRI.rasgoodflag));
-	}
-	if (b_suffix) {
-		console.log(sprintf('%20s = %10.5f [ms]\n', 	
-							'Tr',			MRI.Tr));
-		console.log(sprintf('%20s = %10.5f [radians]\n',
-							'flipangle',	MRI.flipangle));
-		console.log(sprintf('%20s = %10.5f [degrees]\n',
-							'flipangle',	MRI.flipangle * 180 / Math.PI));
-		console.log(sprintf('%20s = %10.5f [ms]\n',
-							'Te',			MRI.Te));
-		console.log(sprintf('%20s = %10.5f [ms]\n',
-							'Ti',			MRI.Ti));
-	}
-}
-
-function MRI_voxelSizesPrint(MRI) {
-	console.log('Voxel sizes = %f x %f x %f [mm]\n',
-				MRI.v_voxelsize[0],
-				MRI.v_voxelsize[1],
-				MRI.v_voxelsize[2]);
-}
-
-function MRI_rasMatrixPrint(MRI) {
-	var	width	= 10;
-	var	prec	= 5;
-	console.log(sprintf('| %10.5f%10.5f%10.5f%15.5f |\n',
-		MRI.M_ras[0][0], MRI.M_ras[0][1], MRI.M_ras[0][2], MRI.M_ras[0][3]));
-	console.log(sprintf('| %10.5f%10.5f%10.5f%15.5f |\n',
-		MRI.M_ras[1][0], MRI.M_ras[1][1], MRI.M_ras[1][2], MRI.M_ras[1][3]));
-	console.log(sprintf('| %10.5f%10.5f%10.5f%15.5f |\n',
-		MRI.M_ras[2][0], MRI.M_ras[2][1], MRI.M_ras[2][2], MRI.M_ras[2][3]));
-}
-
-
+f
 /**
  * @inheritDoc
  */
@@ -153,6 +106,8 @@ X.parserMGZ.prototype.parse = function(object, data) {
 };
 
 X.parserMGZ.prototype.parseStream = function (data) {
+	b_consoleOut	= true;
+	if(typeof ab_consoleOut == 'undefined') b_consoleOut = false;
 
 	var MRI = {
 			version:		0,
@@ -167,6 +122,7 @@ X.parserMGZ.prototype.parseStream = function (data) {
 			type:			0,
 			dof:			0,
 			rasgoodflag:	0,
+			MRIreader:		null,
 			M_ras:			[
 			      			 [0, 0, 0, 0],
 			      			 [0, 0, 0, 0],
@@ -178,12 +134,18 @@ X.parserMGZ.prototype.parseStream = function (data) {
 			};	
 
 	var MRItype = {
-			MRI_UCHAR	: {value: 0, name: "uchar",	size:	1},
-			MRI_INT		: {value: 1, name: "int",	size:	4},
-			MRI_LONG	: {value: 2, name: "long",	size:   8},
-			MRI_FLOAT	: {value: 3, name: "float", size:	4},
-			MRI_SHORT	: {value: 4, name: "short", size:	2},
-			MRI_BITMAP 	: {value: 5, name: "bitmap", size:  8}
+		MRI_UCHAR	: {	value: 0,	name: "uchar",	size:	1, 
+						func_arrayRead: parseUChar8Array },
+		MRI_INT		: {	value: 1, 	name: "int",	size:	4,
+						func_arrayRead: parseUInt32EndianSwappedArray },
+		MRI_LONG	: {	value: 2, 	name: "long",	size:   8,
+						func_arrayRead: null },	// NOT YET DEFINED!
+		MRI_FLOAT	: {	value: 3, 	name: "float", 	size:	4,
+						func_arrayRead: parseFloat32EndianSwappedArray },
+		MRI_SHORT	: { value: 4, 	name: "short", 	size:	2,
+						func_arrayRead: parseUInt16EndianSwappedArray },
+		MRI_BITMAP 	: {	value: 5, 	name: "bitmap", size:  	8,
+						func_arrayRead: null}	// NOT YET DEFINED!
 	};
 	
 	var UNUSED_SPACE_SIZE	= 256;
@@ -196,94 +158,92 @@ X.parserMGZ.prototype.parseStream = function (data) {
 	var USED_SPACE_SIZE		= (3*sizeof_float+4*3*sizeof_float);
 	var unused_space_size	= UNUSED_SPACE_SIZE;
 	
-	dstream			= new dobj(data, parseUInt32EndianSwappedArray, sizeof_int);
-	dstream.b_verbose(false);
-	console.log(dstream.read());
-	console.log(dstream.read());
-	console.log(dstream.read());
-	console.log(dstream.read());
-	console.log(dstream.read());
-	console.log(dstream.read());
-	console.log(dstream.read());
-	dstream.array_parse_set(parseUInt16EndianSwappedArray, sizeof_short);
-	console.log(dstream.read());
-	dstream.array_parse_set(parseFloat32EndianSwappedArray, sizeof_float);
-	console.log('%f', dstream.read());
-	console.log('%f', dstream.read());
-	console.log('%f', dstream.read());
+	syslog('FreeSurfer MGH/MGZ data stream START.');
+	syslog('Reading MGH/MGZ header');
+	dataptr			= new dstream(data, parseUInt32EndianSwappedArray, sizeof_int);
+	dataptr.b_verbose(false);
+	MRI.version		= dataptr.read();
+	MRI.ndim1		= dataptr.read();
+	MRI.ndim2		= dataptr.read();
+	MRI.ndim3		= dataptr.read();
+	MRI.nframes		= dataptr.read();
+	MRI.type		= dataptr.read();
+	switch(MRI.type) {
+		case 0:	MRI.MRIdatatype = MRItype.MRI_UCHAR; 	break;
+		case 1: MRI.MRIdatatype = MRItype.MRI_INT;		break;
+		case 2: MRI.MRIdatatype = MRItype.MRI_LONG; 	break;
+		case 3: MRI.MRIdatatype = MRItype.MRI_FLOAT;	break;
+		case 4:	MRI.MRIdatatype = MRItype.MRI_SHORT;	break;
+		case 5: MRI.MRIdatatype = MRItype.MRI_BITMAP;	break;
+		// case else?
+	}
+	MRI.dof			= dataptr.read();
+	dataptr.array_parse_set(parseUInt16EndianSwappedArray, sizeof_short);
+	MRI.rasgoodflag	= dataptr.read();
 	
-	MRI.version		= parseUInt32EndianSwapped(data, dp(sizeof_int));
-	MRI.ndim1		= parseUInt32EndianSwapped(data, dp());
-	MRI.ndim2		= parseUInt32EndianSwapped(data, dp());
-	MRI.ndim3		= parseUInt32EndianSwapped(data, dp());
-	MRI.nframes		= parseUInt32EndianSwapped(data, dp());
-	MRI.type		= parseUInt32EndianSwapped(data, dp());
-	MRI.dof			= parseUInt32EndianSwapped(data, dp());
-	MRI.rasgoodflag	= parseUInt16EndianSwapped(data, dp(sizeof_short)); //dp now 30
 	unused_space_size -= sizeof_short;
 	
-	MRI_headerPrint(MRI, 1, 0);
+	if(b_consoleOut) MRI_headerPrint(MRI, 1, 0);
 
 	if(MRI.rasgoodflag > 0) {
+		dataptr.array_parse_set(parseFloat32EndianSwappedArray, sizeof_float);
 		// Read in voxel size and RAS matrix
 		unused_space_size -= USED_SPACE_SIZE;
-		MRI.v_voxelsize[0]	= parseFloat32EndianSwapped(data, dp(sizeof_float));
-		MRI.v_voxelsize[1]	= parseFloat32EndianSwapped(data, dp());
-		MRI.v_voxelsize[2] 	= parseFloat32EndianSwapped(data, dp());
+		MRI.v_voxelsize[0]	= dataptr.read();
+		MRI.v_voxelsize[1]	= dataptr.read();
+		MRI.v_voxelsize[2] 	= dataptr.read();
 		
 		// X
-		MRI.M_ras[0][0]		= parseFloat32EndianSwapped(data, dp());
-		MRI.M_ras[1][0]		= parseFloat32EndianSwapped(data, dp());
-		MRI.M_ras[2][0]		= parseFloat32EndianSwapped(data, dp());
+		MRI.M_ras[0][0]		= dataptr.read();
+		MRI.M_ras[1][0]		= dataptr.read();
+		MRI.M_ras[2][0]		= dataptr.read();
 
 		// Y
-		MRI.M_ras[0][1]		= parseFloat32EndianSwapped(data, dp());
-		MRI.M_ras[1][1]		= parseFloat32EndianSwapped(data, dp());
-		MRI.M_ras[2][1]		= parseFloat32EndianSwapped(data, dp());
+		MRI.M_ras[0][1]		= dataptr.read();
+		MRI.M_ras[1][1]		= dataptr.read();
+		MRI.M_ras[2][1]		= dataptr.read();
 		
 		// Z
-		MRI.M_ras[0][2]		= parseFloat32EndianSwapped(data, dp());
-		MRI.M_ras[1][2]		= parseFloat32EndianSwapped(data, dp());
-		MRI.M_ras[2][2]		= parseFloat32EndianSwapped(data, dp());
+		MRI.M_ras[0][2]		= dataptr.read();
+		MRI.M_ras[1][2]		= dataptr.read();
+		MRI.M_ras[2][2]		= dataptr.read();
 
 		// C
-		MRI.M_ras[0][3]		= parseFloat32EndianSwapped(data, dp());
-		MRI.M_ras[1][3]		= parseFloat32EndianSwapped(data, dp());
-		MRI.M_ras[2][3]		= parseFloat32EndianSwapped(data, dp()); //dp = 90
+		MRI.M_ras[0][3]		= dataptr.read();
+		MRI.M_ras[1][3]		= dataptr.read();
+		MRI.M_ras[2][3]		= dataptr.read();
 
-		MRI_voxelSizesPrint(MRI);
-		MRI_rasMatrixPrint(MRI);
+		if(b_consoleOut) {
+			MRI_voxelSizesPrint(MRI);
+			MRI_rasMatrixPrint(MRI);
+		}
 	}
-	cprintf('unused space size', unused_space_size);
-	dp(sizeof_char, unused_space_size);
+	//cprintf('unused space size', unused_space_size);
+	dataptr.array_parse_set(parseUChar8Array, sizeof_char);
+	dataptr.read(unused_space_size);
 	var volsize	= MRI.ndim1 * MRI.ndim2 * MRI.ndim3;
 	
-	var MRIdata;
-	switch(MRI.type) {
-	case MRItype.MRI_UCHAR.value:
-		MRIdata		= MRItype.MRI_UCHAR;
-		console.log('Reading UCHAR vals: %d\n', volsize);
-		a_ret		= parseUChar8Array(data, dp(sizeof_char, volsize), volsize);
-		MRI.v_data	= a_ret[0];
-		break;
-	case MRItype.MRI_INT.value:
-		MRIdata		= MRItype.MRI_INT;
-		console.log('Reading INT vals: %d\n', volsize);
-		a_ret		= parseUInt32EndianSwappedArray(data, pointer, volsize);
-		MRI.v_data	= a_ret[0];
-		break;
-	}
+	syslog('Reading MGH/MGZ image data');
+	syslog(sprintf('Accessing %d %s vals (%d bytes)', volsize, MRI.MRIdatatype.name, 
+			volsize*MRI.MRIdatatype.size));
+	dataptr.array_parse_set(MRI.MRIdatatype.func_arrayRead, MRI.MRIdatatype.size);
+	a_ret	= dataptr.read(volsize);
+	MRI.v_data	= a_ret;
 	
 	// Now for the final MRI parameters at the end of the data stream:
-	pointer			= 284 + volsize*MRIdata.size;
-	console.log('reading final mr_params...\n');
-	MRI.Tr	 		= parseFloat32EndianSwapped(data, dp(sizeof_float));
-	MRI.flipangle	= parseFloat32EndianSwapped(data, dp());
-	MRI.Te			= parseFloat32EndianSwapped(data, dp());
-	MRI.Ti			= parseFloat32EndianSwapped(data, dp());
-	MRI_headerPrint(MRI, 0, 1);
-	
-	stats_determine(MRI.v_data);
+	if(dataptr.dataPointer()+4*sizeof_float < dataptr.dataStream().length) {
+		syslog('Reading MGH/MGZ MRI parameters');
+		dataptr.array_parse_set(parseFloat32EndianSwappedArray, sizeof_float);
+		MRI.Tr	 		= dataptr.read();
+		MRI.flipangle	= dataptr.read();
+		MRI.Te			= dataptr.read();
+		MRI.Ti			= dataptr.read();
+		if(b_consoleOut) MRI_headerPrint(MRI, 0, 1);
+	}
+	syslog('Calculating data/image stats...');
+	stats = stats_calc(MRI.v_data);
+	if(b_consoleOut) stats_print(stats);
+	syslog('FreeSurfer MGH/MGZ data stream END.');
 	return MRI;
 }
 
