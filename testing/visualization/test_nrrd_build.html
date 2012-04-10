@@ -21,14 +21,14 @@
  *    The X Toolkit (XTK) is licensed under the MIT License:
  *      http://www.opensource.org/licenses/mit-license.php
  *
- * Test: Load a small .trk file and visualize it.
+ * Test: Load a small .NRRD file and visualize it.
  *
  */
 -->
 
 <html>
 <head>
-<title>XTK TEST: .TRK FILE</title>
+<title>XTK TEST: .NRRD FILE</title>
 
 <script type="text/javascript" src="../../utils/xtk.js"></script>
 
@@ -40,11 +40,11 @@
     test_renderer.init();
 
     // load a .vtk file
-    var fibers = new X.object();
-    fibers.load('data/smalltrack.trk');
-
+    var volume = new X.volume();
+    volume.load('data/smallvolume.nrrd');
+    
     // add the object
-    test_renderer.add(fibers);
+    test_renderer.add(volume);
 
     // .. and render it
     test_renderer.render();

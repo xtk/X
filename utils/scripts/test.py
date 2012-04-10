@@ -166,8 +166,8 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
     return None
 
   # list of tests
-  tests = ['test_trk.html']
-  tests_build = ['test_trk_build.html']
+  tests = ['test_trk.html', 'test_vtk.html', 'test_nrrd.html']
+  tests_build = ['test_trk_build.html', 'test_vtk_build.html', 'test_nrrd_build.html']
 
   # distinguish between build and dev tree
   if againstBuild:
@@ -270,6 +270,8 @@ def compareImages( image1, image2 ):
   import png
   i1 = png.Reader( image1 )
   i2 = png.Reader( image2 )
+
+  #print image1, image2
 
   # the pixels from png are iterators, so we just compare them
   from itertools import izip_longest, tee

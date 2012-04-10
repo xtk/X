@@ -21,18 +21,23 @@
  *    The X Toolkit (XTK) is licensed under the MIT License:
  *      http://www.opensource.org/licenses/mit-license.php
  *
- * Test: Load a small .trk file and visualize it.
+ * Test: Load a small .vtk file and visualize it.
  *
  */
 -->
 
 <html>
 <head>
-<title>XTK TEST: .TRK FILE</title>
+<title>XTK TEST: .VTK FILE</title>
 
-<script type="text/javascript" src="../../utils/xtk.js"></script>
+<script type="text/javascript" src="../../lib/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../xtk-deps.js"></script>
 
 <script type="text/javascript">
+
+  goog.require('X.renderer');
+  goog.require('X.object');
+
   var run = function() {
     
     // create a new test_renderer
@@ -40,11 +45,12 @@
     test_renderer.init();
 
     // load a .vtk file
-    var fibers = new X.object();
-    fibers.load('data/smalltrack.trk');
-
+    var surface = new X.object();
+    surface.load('data/smallsurface.vtk');
+    surface.setColor(1,0,0);
+    
     // add the object
-    test_renderer.add(fibers);
+    test_renderer.add(surface);
 
     // .. and render it
     test_renderer.render();
