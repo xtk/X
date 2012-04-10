@@ -33,6 +33,7 @@ goog.provide('X.parserCRV');
 // requires
 goog.require('X.event');
 goog.require('X.parser');
+goog.require('X.parserHelper');
 goog.require('X.triplets');
 
 
@@ -67,31 +68,28 @@ goog.inherits(X.parserCRV, X.parser);
  * @inheritDoc
  */
 X.parserCRV.prototype.parse = function(object, data) {
+	
+  dstream = new X.parserHelper(data);
+  dstream.setParseFunction(this.parseUChar8Array.bind(this), dstream.sizeOfChar);	
+  b1 = dstream.read();
+  b2 = dstream.read();
+  b3 = dstream.read();
+  var vnum = (b1 << 16) + (b2 << 8) + b3;
 
-  // dataptr = new dobj(data, this.parseUInt32EndianSwappedArray,
-  // this._sizeof_int);
-  // dataptr.b_verbose(false);
-  // b1 = dataptr.read();
-  // b2 = dataptr.read();
-  // b3 = dataptr.read();
-  
-  var vnum = this.fread3(data);
-  
-  var nvertices = this.parseUInt32EndianSwapped(data, 3);
-  
-  // var nvertices = dstream.read();
-  var nfaces = this.parseUInt32EndianSwapped(data, 7);
-  var nvalsPerVertex = this.parseUInt32EndianSwapped(data, 11);
+  dstream.setParseFunction(this.parseUInt32EndianSwappedArray.bind(this), 
+		  					dstream.sizeOfInt);
+  var nvertices		 = dstream.read();
+  var nfaces 		 = dstream.read();
+  var nvalsPerVertex = dstream.read();
   
   var af_curvVals = [];
   var al_ret = [];
   
-  al_ret = this.parseFloat32EndianSwappedArray(data, 15, nvertices);
-  af_curvVals = al_ret[0];
-  
-  var f_max = al_ret[1];
-  var f_min = al_ret[2];
-  
+  dstream.setParseFunction(this.parseFloat32EndianSwappedArray.bind(this),
+		  					dstream.sizeOfFloat);
+  al_ret = dstream.read(nvertices);
+  af_curvVals = al_ret;
+    
   object.curvVals = af_curvVals;
   
   var modifiedEvent = new X.event.ModifiedEvent();
