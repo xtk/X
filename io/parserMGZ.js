@@ -116,62 +116,6 @@ function MRI_rasMatrixPrint(MRI) {
 		MRI.M_ras[2][0], MRI.M_ras[2][1], MRI.M_ras[2][2], MRI.M_ras[2][3]));
 }
 
-function dobj(data, array_parse, dataSize, numElements) {
-	this.data			= [];
-	this._dataPointer	= 0;
-	this._sizeofChunk	= 1;
-	this._chunks		= 1;
-	this._b_verbose		= false;
-
-	// A function that 'reads' from the data stream, returning
-	// an array of _chunks. If _chunkSizeOf is 1, then return
-	// only the _chunk.
-	this.array_parse	= null;
- 
-	if(typeof data 			!== 'undefined') this.data 			= data;
-	if(typeof array_parse 	!== 'undefined') this.array_parse	= array_parse;
-	if(typeof dataSize 		!== 'undefined') this._sizeofChunk	= dataSize;	
-	if(typeof numElements   !== 'undefined') this._chunks		= numElements;
-}
-
-dobj.prototype.sizeofChunk	= function(size) {
-	if(typeof size == 'undefined') return this._sizeofChunk;
-	this._sizeofChunk = size;
-};
-
-dobj.prototype.dataPointer	= function(dataPointer) {
-	if(typeof dataPointer == 'undefined') return this._dataPointer;
-	this._dataPointer = dataPointer;
-};
-
-dobj.prototype.b_verbose	= function(verbosity) {
-	if(typeof verbosity == 'undefined') return this._b_verbose;
-	this._b_verbose = verbosity;
-};
-
-dobj.prototype.array_parse_set = function(array_parse, sizeofChunk) {
-	this.array_parse	= array_parse;
-	this._sizeofChunk	= sizeofChunk;
-};
-
-dobj.prototype.read		= function(chunks) {
-	// By default, read and return a single chunk
-	if(typeof chunks == 'undefined') {
-		chunks = 1;
-	}
-	ret			= this.array_parse(this.data, this._dataPointer, chunks);
-	arr_byte	= ret[0];
-	if(this._b_verbose) {
-		cprints(sprintf('%d', this._dataPointer), arr_byte);
-	}
-	this._dataPointer += this._sizeofChunk * chunks;
-	if(chunks == 1) {
-		return arr_byte[0];
-	} else {
-		return arr_byte;
-	}
-};
-
 
 /**
  * @inheritDoc

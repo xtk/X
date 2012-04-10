@@ -56,7 +56,7 @@ X.parserCRV = function() {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'parserSTL';
+  this['_className'] = 'parserCRV';
   
 };
 // inherit from X.parser
@@ -67,44 +67,36 @@ goog.inherits(X.parserCRV, X.parser);
  * @inheritDoc
  */
 X.parserCRV.prototype.parse = function(object, data) {
-		
-  var vnum		= fread3(data);
-		
-  var nvertices	= parseUInt32EndianSwapped(data, 3);
-  var nfaces		= parseUInt32EndianSwapped(data, 7);
 
-  console.log(sprintf('%20s = %10d\n', 'MAGIC NUMBER', vnum));
-  console.log(sprintf('%20s = %10d\n', 'data size', data.length));
-  console.log(sprintf('%20s = %10d\n', 'nvertices', nvertices));
-  console.log(sprintf('%20s = %10d\n', 'nfaces', nfaces));
+  dataptr	= new dobj(data, this.parseUInt32EndianSwappedArray, this._sizeof_int);
+  dataptr.b_verbose(false);
+  b1			= dataptr.read();
+  b2			= dataptr.read();
+  b3			= dataptr.read();
+  
+  var vnum		= this.fread3(data);
 		
+  var nvertices		= this.parseUInt32EndianSwapped(data, 3);
+  var nvertices		= dstream.read();
+  var nfaces		= this.parseUInt32EndianSwapped(data, 7);
+  var nvalsPerVertex= this.parseUInt32EndianSwapped(data, 11);
+
   var af_curvVals 	= [];
-  var al_ret			= [];
+  var al_ret		= [];
 		
-  al_ret = parseFloat32EndianSwappedArray(data, 11, nvertices);
-  af_curvVals			= al_ret[0];
-			
+  al_ret 			= this.parseFloat32EndianSwappedArray(data, 15, nvertices);
+  af_curvVals		= al_ret[0];
+  
   var f_max			= al_ret[1];
   var f_min			= al_ret[2];
-		
-  stats_determine(af_curvVals);
-  
+
+  object.curvVals 	= af_curvVals;
   
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
   this.dispatchEvent(modifiedEvent);
   
 };
-
-function fread3(data) {
-	
-	var b1 = parseUChar8(data, 0);
-	var b2 = parseUChar8(data, 1);
-	var b3 = parseUChar8(data, 2);
-
-	return (b1 << 16) + (b2 << 8) + b3;
-}
-
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.parserCRV', X.parserCRV);
