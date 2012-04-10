@@ -277,5 +277,19 @@ def compareImages( image1, image2 ):
   pixels1 = i1.read()
   pixels2 = i2.read()
   # return true if identical, false otherwise
-  return all( a == b for a, b in izip_longest( pixels1[2], pixels2[2], fillvalue=sentinel ) )
+  #return all( a == b for a, b in izip_longest( pixels1[2], pixels2[2], fillvalue=sentinel ) )
 
+  sum1 = 0
+  sum2 = 0
+
+  for p in list( pixels1[2] ):
+    for rgba in p:
+      sum1 += rgba
+
+  for p in list( pixels2[2] ):
+    for rgba in p:
+      sum2 += rgba
+
+  print 'sum1', sum1
+  print 'sum2', sum2
+  return sum1 == sum2

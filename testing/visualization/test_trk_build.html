@@ -31,6 +31,8 @@
 <title>XTK TEST: .TRK FILE</title>
 
 <script type="text/javascript" src="../../utils/xtk.js"></script>
+<script type="text/javascript" src="base64.js"></script>
+<script type="text/javascript" src="canvas2image.js"></script>
 
 <script type="text/javascript">
   var run = function() {
@@ -48,6 +50,12 @@
 
     // .. and render it
     test_renderer.render();
+    
+    test_renderer.onShowtime = function() {
+    
+      Canvas2Image.saveAsPNG(test_renderer.canvas());
+    
+    };
     
   };
 </script>
