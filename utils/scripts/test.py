@@ -283,7 +283,7 @@ def compareImages( image1, image2 ):
   sum2 = 0
 
   for p in list( pixels1[2] ):
-    cnt = 0
+    cnt = 1
     for rgba in p:
 
       if cnt % 4 != 0:
@@ -293,10 +293,9 @@ def compareImages( image1, image2 ):
       cnt += 1
 
 
-  for p in list( pixels2[2] ):
-    cnt = 0
-    for rgba in p:
-
+  for p2 in list( pixels2[2] ):
+    cnt = 1
+    for rgba in p2:
       if cnt % 4 != 0:
         # skip every 4th
         sum2 += rgba
@@ -305,4 +304,4 @@ def compareImages( image1, image2 ):
 
   print 'sum1', sum1
   print 'sum2', sum2
-  return sum1 == sum2
+  return ( sum1 / sum2 ) > 0.8
