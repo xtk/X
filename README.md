@@ -7,7 +7,7 @@
 <li><i>Volume rendering, thresholding and cross-sectional slicing</i> of 3d image data</li>
 <li>Integration of the <i><a href="http://evanw.github.com/csg.js/" target="_blank">Constructive Solid Geometry</a></i>-library supporting Boolean operations like union and intersection on meshes</li>
 <li><i>Javascript and HTML5 based</i>: suppport of major browsers (Chrome, Firefox, Safari and Opera)</li>
-<li><i>CDash</i> + <i>Google Closure Compiler</i> driven <a href="http://cdash.goxtk.com/index.php?project=XTK" target="_blank">build system</a></li>
+<li><i>CDash</i> + <i>Google Closure Compiler</i> driven <a href="http://cdash.goxtk.com/index.php?project=XTK" target="_blank">build and test system</a></li>
 </ul>
 
 #### Demos ####
@@ -68,7 +68,7 @@ The full documentation of the API is available <a href="http://api.goXTK.com" ta
 We use <a href="http://stackoverflow.com/questions/tagged/xtk">http://stackoverflow.com/questions/tagged/xtk</a> for user support. Please ask and tag ([xtk]) your question there!
 
 ### Contribute? ###
-Yes, please! See the <a href="http://wiki.goxtk.com/index.php/X:DevelopersHeadsUp" target="_blank">Developer's Heads Up</a> and the <a href="http://wiki.goxtk.com/index.php/X:Future" target="_blank">X:Future page</a>.
+Yes, please! See the <a href="https://github.com/xtk/X/wiki/X:DevelopersHeadsUp" target="_blank">Developer's Heads Up</a> and the <a href="https://github.com/xtk/X/wiki/X:Future" target="_blank">X:Future page</a>.
 
 ### License ###
 Copyright (c) 2012 The X Toolkit Developers <dev@goXTK.com>
@@ -79,3 +79,4 @@ The X Toolkit (XTK) is licensed under the MIT License:
 ### Affiliations and Sponsors ###
 <a href="http://childrenshospital.org/FNNDSC"><img src="http://xtk.github.com/chb_logo.jpg" alt="Children's Hospital Boston" title="Children's Hospital Boston"></a>
 <a href="http://hms.harvard.edu"><img src="http://xtk.github.com/hms_logo.jpg" alt="Harvard Medical School" title="Harvard Medical School"></a>
+ 

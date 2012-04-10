@@ -67,6 +67,8 @@
  *        - Giles' WebGL Lessons (http://learningwebgl.com/blog/): awesome stuff dude!
  *
  *   - the Closure Library by Google is the base of XTK (http://code.google.com/p/closure-library/)
+ * 
+ *   - the great PyVirtualDisplay and EasyProcess python libraries from Ponty for easy offscreen testing. (https://github.com/ponty)
  *
  *   THANK YOU ALL!
  *

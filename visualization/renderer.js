@@ -356,7 +356,7 @@ X.renderer = function(container) {
     'STATISTICS_ENABLED': false
   };
   
-  window.console.log('XTK Release 3a -- 20/12/12 -- http://www.goXTK.com');
+  window.console.log('XTK Release 3b -- 03/31/12 -- http://www.goXTK.com');
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
@@ -657,21 +657,13 @@ X.renderer.prototype.init = function() {
     
     // WebGL is not supported with this browser/machine/gpu
     
-    // TODO replace by nicer popup
+    // attach a message to the container's inner HTML
+    var style = "color:red;font-family:sans-serif;";
+    var msg = 'Sorry, WebGL is <strong>not supported</strong> on this machine! See <a href="http://crash.goXTK.com" target="_blank">http://crash.goXTK.com</a> for requirements..';
+    this.container().innerHTML = '<h3 style="' + style +
+        '">Oooops..</h3><p style="' + style + '">' + msg + '</p>';
     
-    //    
-    // 
-    // var errorDialog = new goog.ui.Popup(this.container());
-    // // errorDialog.setContent('mmm');
-    // // errorDialog.setTitle('Ooops..');
-    // // errorDialog.setHasTitleCloseButton(false);
-    // // errorDialog.setButtonSet(null);
-    // errorDialog.setVisible(true);
-    
-    var msg = 'WebGL not supported! See http://wiki.goXTK.com/index.php/X:Browsers for instructions..';
-    
-    alert(msg);
-    
+    // .. and throw an exception
     throw new Error(msg);
     
   }
@@ -1962,6 +1954,8 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   var uObjectOpacity = uLocations.get(X.shaders.uniforms.OBJECTOPACITY);
   var uLabelMapOpacity = uLocations.get(X.shaders.uniforms.LABELMAPOPACITY);
   var uUseTexture = uLocations.get(X.shaders.uniforms.USETEXTURE);
+  var uUseTextureThreshold = uLocations
+      .get(X.shaders.uniforms.USETEXTURETHRESHOLD);
   var uUseLabelMapTexture = uLocations
       .get(X.shaders.uniforms.USELABELMAPTEXTURE);
   var uTextureSampler = uLocations.get(X.shaders.uniforms.TEXTURESAMPLER);
@@ -2134,6 +2128,9 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         this._gl.vertexAttribPointer(aTexturePosition,
             texturePositionBuffer._itemSize, this._gl.FLOAT, false, 0, 0);
         
+        // by default, don't use thresholding
+        this._gl.uniform1i(uUseTextureThreshold, false);
+        
       } else {
         
         // no texture for this object or 'picking' mode
@@ -2151,6 +2148,9 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       // is a X.slice (part of an X.volume)
       // this is the case if we have a volume here..
       if (volume) {
+        
+        // enable texture thresholding for volumes
+        this._gl.uniform1i(uUseTextureThreshold, true);
         
         // pass the lower threshold
         this._gl.uniform1f(uVolumeLowerThreshold, volume['_lowerThreshold']);

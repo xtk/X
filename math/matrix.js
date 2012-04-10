@@ -99,7 +99,8 @@ X.matrix.createIdentityMatrix = function(n) {
 
 
 /**
- * Create a flattened, one-dimensional representation of a matrix.
+ * Create a flattened, one-dimensional representation of a matrix. Notice: This
+ * method flattens column by column.
  * 
  * @this {X.matrix}
  * @return {Array} A one-dimensional representation of this matrix.
@@ -331,6 +332,9 @@ goog.exportSymbol('X.matrix.createIdentityMatrix',
 goog.exportSymbol('X.matrix.prototype.flatten', X.matrix.prototype.flatten);
 goog.exportSymbol('X.matrix.prototype.translate', X.matrix.prototype.translate);
 goog.exportSymbol('X.matrix.prototype.rotate', X.matrix.prototype.rotate);
+goog.exportSymbol('X.matrix.prototype.toArray', X.matrix.prototype.toArray);
+goog.exportSymbol('X.matrix.prototype.getValueAt',
+    X.matrix.prototype.getValueAt);
 goog.exportSymbol('X.matrix.prototype.multiplyByVector',
     X.matrix.prototype.multiplyByVector);
 goog.exportSymbol('X.matrix.prototype.swapRows', X.matrix.prototype.swapRows);

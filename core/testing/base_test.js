@@ -3,14 +3,14 @@ goog.require('goog.testing.jsunit');
 
 
 /**
- * Test for X.base.getClassName
+ * Test for X.base.className()
  */
 function testXbaseClassName() {
 
   b = new X.base();
-
+  
   assertEquals(b.className(), 'base');
-
+  
 }
 
 
@@ -20,22 +20,19 @@ function testXbaseClassName() {
 function testXbasePrint() {
 
   b = new X.base();
-
+  
   assertContains('== X.base ==\n', b.print());
-
+  
 }
 
 /**
- * Test for X.base.dirty
- * Goal: Make sure the dirty flag is modified.
+ * Test for X.base.dirty. Make sure the dirty flag is not set by default.
  */
 function testXbaseDirty() {
+
   b = new X.base();
-
-  // object dirty by default
-  assertEquals( b.dirty(), false);
-
-  // clean the object
-  b.setClean();
-  assertEquals( b.dirty(), false);
+  
+  // object is not dirty by default
+  assertEquals(b.dirty(), false);
+  
 }

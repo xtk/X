@@ -27,5 +27,5 @@ xtk.js
 # all .log files
 *.log
 
-# the build system CDash XML file
-*.xml
+# nfs
+*.nfs*

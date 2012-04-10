@@ -11,6 +11,9 @@ import string
 
 # xtk-utils dir
 def calculate( buildtype, filename, buildtime ):
+  # if no tests don't try to parse the file
+  if(os.path.exists('xtk_build.log') == False): return
+
   xtkUtilsDir = os.path.abspath( os.path.dirname( sys.argv[0] ) )
 
   f = open( xtkUtilsDir + os.sep + filename, 'r' );

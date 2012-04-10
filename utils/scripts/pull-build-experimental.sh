@@ -6,4 +6,4 @@ cd $XTK_DIR
 
 # rebuild
 cd $XTKUTILS_DIR
-python build.py -d -t -e
+python build.py -b -d -t -e

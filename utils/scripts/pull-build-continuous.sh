@@ -14,6 +14,7 @@ then
   # rebuild
   cd $XTKUTILS_DIR
   python build.py -d -t -c
+  python build.py -b -t -c
 else
   echo 'no changes..'
 fi

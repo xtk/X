@@ -1,0 +1,5 @@
+
+- stop() does not kill all subprocess tree 
+    http://stackoverflow.com/questions/1191374/subprocess-with-timeout
+    http://code.google.com/p/psutil/
+- unit test for alias    

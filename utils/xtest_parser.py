@@ -11,6 +11,9 @@ import string
 
 # xtk-utils dir
 def calculate( buildtype, filename, buildtime ):
+  # if no tests don't try to parse the file
+  if(os.path.exists('xtk_test.log') == False): return
+
   xtkUtilsDir = os.path.abspath( os.path.dirname( sys.argv[0] ) )
 
   xml = minidom.Document()
@@ -30,9 +33,6 @@ def calculate( buildtype, filename, buildtime ):
   siteElement.setAttribute( 'Hostname', hostname )
 
   xml.appendChild( siteElement )
-
-  # if no tests don't try to parse the file
-  if(os.path.exists('xtk_test.log') == False): return
 
   f3 = open( 'xtk_test.log', 'r' );
   f4 = open( 'xtk_test.log', 'r' );
@@ -63,6 +63,7 @@ def calculate( buildtype, filename, buildtime ):
 #for line in f:
 #        print line,
 def parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml ):
+
   #base case
   if( count3 >= numberoflines ):
     return
@@ -72,7 +73,7 @@ def parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml 
 
   count3 +=2;
 
-  if(browserfound.find(browser) < 0):
+  if(browserfound.find('Not Found') < 0):
 
     f3.readline();
     f3.readline();
