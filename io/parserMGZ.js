@@ -69,7 +69,6 @@ X.parserMGZ = function() {
 // inherit from X.parser
 goog.inherits(X.parserMGZ, X.parser);
 
-f
 /**
  * @inheritDoc
  */
@@ -88,15 +87,8 @@ X.parserMGZ.prototype.parse = function(object, data) {
     _data = data.substr(position);
   }
 
-  
-  
-  var numberOfPixels = this.sizes[0] * this.sizes[1] * this.sizes[2];
-  
-  //
-  // parse the (unzipped) data to a datastream of the correct type
-  //
-  var datastream = new Array(numberOfPixels);
-  
+  MRI = this.parseStream(_data);  
+  object.MRI = MRI;
   
   // all done..
   var modifiedEvent = new X.event.ModifiedEvent();
@@ -107,7 +99,7 @@ X.parserMGZ.prototype.parse = function(object, data) {
 
 X.parserMGZ.prototype.parseStream = function (data) {
 	b_consoleOut	= true;
-	if(typeof ab_consoleOut == 'undefined') b_consoleOut = false;
+//	if(typeof ab_consoleOut == 'undefined') b_consoleOut = false;
 
 	var MRI = {
 			version:		0,
@@ -160,8 +152,9 @@ X.parserMGZ.prototype.parseStream = function (data) {
 	
 	syslog('FreeSurfer MGH/MGZ data stream START.');
 	syslog('Reading MGH/MGZ header');
-	dataptr			= new dstream(data, parseUInt32EndianSwappedArray, sizeof_int);
-	dataptr.b_verbose(false);
+	dataptr = new X.parserHelper(data);
+	dataptr.setParseFunction(this.parseUInt32EndianSwappedArray.bind(this), 
+							dataptr.sizeOfInt);	
 	MRI.version		= dataptr.read();
 	MRI.ndim1		= dataptr.read();
 	MRI.ndim2		= dataptr.read();
@@ -178,7 +171,8 @@ X.parserMGZ.prototype.parseStream = function (data) {
 		// case else?
 	}
 	MRI.dof			= dataptr.read();
-	dataptr.array_parse_set(parseUInt16EndianSwappedArray, sizeof_short);
+	dataptr.setParseFunction(this.parseUInt16EndianSwappedArray.bind(this),
+							 dataptr.sizeOfShort);
 	MRI.rasgoodflag	= dataptr.read();
 	
 	unused_space_size -= sizeof_short;
@@ -186,7 +180,8 @@ X.parserMGZ.prototype.parseStream = function (data) {
 	if(b_consoleOut) MRI_headerPrint(MRI, 1, 0);
 
 	if(MRI.rasgoodflag > 0) {
-		dataptr.array_parse_set(parseFloat32EndianSwappedArray, sizeof_float);
+		dataptr.setParseFunction(this.parseFloat32EndianSwappedArray.bind(this),
+								dataptr.sizeOfFloat);
 		// Read in voxel size and RAS matrix
 		unused_space_size -= USED_SPACE_SIZE;
 		MRI.v_voxelsize[0]	= dataptr.read();
@@ -219,7 +214,7 @@ X.parserMGZ.prototype.parseStream = function (data) {
 		}
 	}
 	//cprintf('unused space size', unused_space_size);
-	dataptr.array_parse_set(parseUChar8Array, sizeof_char);
+	dataptr.setParseFunction(this.parseUChar8Array, dataptr.sizeOfChar);
 	dataptr.read(unused_space_size);
 	var volsize	= MRI.ndim1 * MRI.ndim2 * MRI.ndim3;
 	
@@ -245,9 +240,8 @@ X.parserMGZ.prototype.parseStream = function (data) {
 	if(b_consoleOut) stats_print(stats);
 	syslog('FreeSurfer MGH/MGZ data stream END.');
 	return MRI;
+	
 }
-
-
 
 
 // export symbols (required for advanced compilation)
