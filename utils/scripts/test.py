@@ -59,7 +59,7 @@ def calculate( xtkTestFile, xtkLibDir, visualTests=False ):
 
   print '======== GOOGLE CHROME RESULTS ========'
   chrome_results = runTests( xtkTestFile, xtkLibDir, 'chrome' )
-  if visualTests:
+  if chrome_results and visualTests:
     visualization_test_results = testVisualization( xtkLibDir, 'chrome', xtkTestFile.find( 'build' ) != -1 )
     # merge the outputs
     chrome_results_array = chrome_results.split( '\n' )
@@ -71,7 +71,7 @@ def calculate( xtkTestFile, xtkLibDir, visualTests=False ):
 
   print '======== FIREFOX RESULTS ========'
   firefox_results = runTests( xtkTestFile, xtkLibDir, 'firefox' )
-  if visualTests:
+  if firefox_results and visualTests:
     visualization_test_results = testVisualization( xtkLibDir, 'firefox', xtkTestFile.find( 'build' ) != -1 )
     # merge the outputs
     firefox_results_array = firefox_results.split( '\n' )
@@ -123,7 +123,7 @@ def runTests( xtkTestFile, xtkLibDir, browser='chrome' ):
 
   except:
     print 'Could not find browser ' + browser + '.. Skipping it'
-    return
+    return None
 
   # we don't need os.sep here since it's a url
   browser.get( "file://" + xtkTestFile )
