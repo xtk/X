@@ -120,15 +120,17 @@ X.parser.prototype.stats_calc = function(data) {
 
 // TODO acknowledge the FNNDSC webGL viewer
 
-X.parser.prototype.fread3 = function fread3(data) {
-
-  var b1 = this.parseUChar8(data, 0);
-  var b2 = this.parseUChar8(data, 1);
-  var b3 = this.parseUChar8(data, 2);
-  
-  return (b1 << 16) + (b2 << 8) + b3;
-  
-};
+// Added directly to parserCRV.parse -- 10 April 2012
+// Can probably delete...
+//X.parser.prototype.fread3 = function fread3(data) {
+//
+//  var b1 = this.parseUChar8(data, 0);
+//  var b2 = this.parseUChar8(data, 1);
+//  var b3 = this.parseUChar8(data, 2);
+//  
+//  return (b1 << 16) + (b2 << 8) + b3;
+//  
+//};
 
 
 X.parser.prototype.parseString = function(data, offset, length) {
@@ -232,6 +234,25 @@ X.parser.prototype.parseUInt32EndianSwapped = function(data, offset) {
 };
 
 
+X.parser.prototype.parseUInt32EndianSwappedArray = function(data, offset, elements) {
+
+	  var arr = new Array();
+	  
+	  var max = 0;
+	  var min = Infinity;
+	  
+	  var i;
+	  for (i = 0; i < elements; i++) {
+	    var val = this.parseUInt32EndianSwapped(data, offset + (i * 4));
+	    arr[i] = val;
+	    max = Math.max(max, val);
+	    min = Math.min(min, val);
+	  }
+	  
+	  return [arr, max, min];
+};
+
+
 X.parser.prototype.parseUInt24EndianSwapped = function(data, offset) {
 
   var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
@@ -280,3 +301,26 @@ X.parser.prototype.parseUChar8 = function(data, offset) {
 
   return data.charCodeAt(offset) & 0xff;
 };
+
+
+X.parser.prototype.parseUChar8Array = function(data, offset, elements) {
+
+	  var arr = new Array();
+	  
+	  var max = 0;
+	  var min = Infinity;
+	  
+	  var i;
+   	  testobj = this;
+	  for (i = 0; i < elements; i++) {
+	    var val = this.parseUChar8(data, offset + (i));
+	    arr[i] = val;
+	    max = Math.max(max, val);
+	    min = Math.min(min, val);
+	  }
+	  
+	  return [arr, max, min];
+};
+
+
+
