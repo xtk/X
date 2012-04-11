@@ -99,7 +99,6 @@ X.parserMGZ.prototype.parse = function(object, data) {
 
 X.parserMGZ.prototype.parseStream = function (data) {
 	b_consoleOut	= true;
-//	if(typeof ab_consoleOut == 'undefined') b_consoleOut = false;
 
 	var MRI = {
 			version:		0,
@@ -127,15 +126,15 @@ X.parserMGZ.prototype.parseStream = function (data) {
 
 	var MRItype = {
 		MRI_UCHAR	: {	value: 0,	name: "uchar",	size:	1, 
-						func_arrayRead: parseUChar8Array },
+						func_arrayRead: this.parseUChar8Array.bind(this) },
 		MRI_INT		: {	value: 1, 	name: "int",	size:	4,
-						func_arrayRead: parseUInt32EndianSwappedArray },
+						func_arrayRead: this.parseUInt32EndianSwappedArray.bind(this) },
 		MRI_LONG	: {	value: 2, 	name: "long",	size:   8,
 						func_arrayRead: null },	// NOT YET DEFINED!
 		MRI_FLOAT	: {	value: 3, 	name: "float", 	size:	4,
-						func_arrayRead: parseFloat32EndianSwappedArray },
+						func_arrayRead: this.parseFloat32EndianSwappedArray.bind(this) },
 		MRI_SHORT	: { value: 4, 	name: "short", 	size:	2,
-						func_arrayRead: parseUInt16EndianSwappedArray },
+						func_arrayRead: this.parseUInt16EndianSwappedArray.bind(this) },
 		MRI_BITMAP 	: {	value: 5, 	name: "bitmap", size:  	8,
 						func_arrayRead: null}	// NOT YET DEFINED!
 	};
@@ -214,21 +213,22 @@ X.parserMGZ.prototype.parseStream = function (data) {
 		}
 	}
 	//cprintf('unused space size', unused_space_size);
-	dataptr.setParseFunction(this.parseUChar8Array, dataptr.sizeOfChar);
+	dataptr.setParseFunction(this.parseUChar8Array.bind(this), dataptr.sizeOfChar);
 	dataptr.read(unused_space_size);
 	var volsize	= MRI.ndim1 * MRI.ndim2 * MRI.ndim3;
 	
 	syslog('Reading MGH/MGZ image data');
 	syslog(sprintf('Accessing %d %s vals (%d bytes)', volsize, MRI.MRIdatatype.name, 
 			volsize*MRI.MRIdatatype.size));
-	dataptr.array_parse_set(MRI.MRIdatatype.func_arrayRead, MRI.MRIdatatype.size);
+	dataptr.setParseFunction(MRI.MRIdatatype.func_arrayRead, MRI.MRIdatatype.size);
 	a_ret	= dataptr.read(volsize);
 	MRI.v_data	= a_ret;
 	
 	// Now for the final MRI parameters at the end of the data stream:
-	if(dataptr.dataPointer()+4*sizeof_float < dataptr.dataStream().length) {
+	if(dataptr.dataPointer()+4*sizeof_float < dataptr.data().length) {
 		syslog('Reading MGH/MGZ MRI parameters');
-		dataptr.array_parse_set(parseFloat32EndianSwappedArray, sizeof_float);
+		dataptr.setParseFunction(this.parseFloat32EndianSwappedArray.bind(this), 
+								dataptr.sizeOfFloat)
 		MRI.Tr	 		= dataptr.read();
 		MRI.flipangle	= dataptr.read();
 		MRI.Te			= dataptr.read();
@@ -236,8 +236,7 @@ X.parserMGZ.prototype.parseStream = function (data) {
 		if(b_consoleOut) MRI_headerPrint(MRI, 0, 1);
 	}
 	syslog('Calculating data/image stats...');
-	stats = stats_calc(MRI.v_data);
-	if(b_consoleOut) stats_print(stats);
+	stats = this.stats_calc(MRI.v_data);
 	syslog('FreeSurfer MGH/MGZ data stream END.');
 	return MRI;
 	
