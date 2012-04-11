@@ -38,7 +38,7 @@ goog.require('X.base');
  * Create a parser for binary or ascii data.
  * 
  * @constructor
- * @param {!Array} data The data to parse.
+ * @param {!String} data The data to parse.
  * @extends X.base
  * @throws {Error} If the arguments are invalid.
  */
@@ -68,13 +68,13 @@ X.parserHelper = function(data) {
   this._dataPointer = 0;
   
   this._elementSize = 1;
-
+  
   // helper 'static'-like defs.
-  this.sizeOfChar		= 1;
-  this.sizeOfShort		= 2;
-  this.sizeOfInt		= 4;
-  this.sizeOfFloat		= 4;
-  this.sizeOfDouble		= 8;
+  this.sizeOfChar = 1;
+  this.sizeOfShort = 2;
+  this.sizeOfInt = 4;
+  this.sizeOfFloat = 4;
+  this.sizeOfDouble = 8;
   
 };
 // inherit from X.base
@@ -85,9 +85,12 @@ goog.inherits(X.parserHelper, X.base);
  * Returns the currently associated parse function of this class. Should be
  * overloaded.
  * 
- * @param {Object} func A new parse function.
+ * @param {*=} f1
+ * @param {*=} f2
+ * @param {*=} f3
+ * @return {*}
  */
-X.parserHelper.prototype.parseFunction = function(func) {
+X.parserHelper.prototype.parseFunction = function(f1, f2, f3) {
 
   // do nothing
   
@@ -116,9 +119,9 @@ X.parserHelper.prototype.setElementSize = function(elementSize) {
 
 X.parserHelper.prototype.data = function() {
 
-	  return this._data;
-	  
-	};
+  return this._data;
+  
+};
 
 
 /**
@@ -160,6 +163,12 @@ X.parserHelper.prototype.setParseFunction = function(func, elementSize) {
 };
 
 
+/**
+ * Read from the data stream.
+ * 
+ * @param {*=} chunks Number of elements to read. By default, 1.
+ * @return {number|Array} The requested chunks, matching the requested number.
+ */
 X.parserHelper.prototype.read = function(chunks) {
 
   if (!goog.isDefAndNotNull(chunks)) {

@@ -68,28 +68,29 @@ goog.inherits(X.parserCRV, X.parser);
  * @inheritDoc
  */
 X.parserCRV.prototype.parse = function(object, data) {
-	
-  dstream = new X.parserHelper(data);
-  dstream.setParseFunction(this.parseUChar8Array.bind(this), dstream.sizeOfChar);	
-  b1 = dstream.read();
-  b2 = dstream.read();
-  b3 = dstream.read();
-  var vnum = (b1 << 16) + (b2 << 8) + b3;
 
-  dstream.setParseFunction(this.parseUInt32EndianSwappedArray.bind(this), 
-		  					dstream.sizeOfInt);
-  var nvertices		 = dstream.read();
-  var nfaces 		 = dstream.read();
+  var dstream = new X.parserHelper(data);
+  dstream
+      .setParseFunction(this.parseUChar8Array.bind(this), dstream.sizeOfChar);
+  var b1 = dstream.read();
+  var b2 = dstream.read();
+  var b3 = dstream.read();
+  var vnum = (b1 << 16) + (b2 << 8) + b3;
+  
+  dstream.setParseFunction(this.parseUInt32EndianSwappedArray.bind(this),
+      dstream.sizeOfInt);
+  var nvertices = dstream.read();
+  var nfaces = dstream.read();
   var nvalsPerVertex = dstream.read();
   
   var af_curvVals = [];
   var al_ret = [];
   
   dstream.setParseFunction(this.parseFloat32EndianSwappedArray.bind(this),
-		  					dstream.sizeOfFloat);
+      dstream.sizeOfFloat);
   al_ret = dstream.read(nvertices);
   af_curvVals = al_ret;
-    
+  
   object.curvVals = af_curvVals;
   
   var modifiedEvent = new X.event.ModifiedEvent();

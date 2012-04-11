@@ -35,6 +35,7 @@ goog.require('X.object');
 goog.require('X.parserCRV');
 goog.require('X.parserFSM');
 goog.require('X.parserLUT');
+goog.require('X.parserMGZ');
 goog.require('X.parserNRRD');
 goog.require('X.parserSTL');
 goog.require('X.parserTRK');
@@ -228,7 +229,9 @@ X.loader.prototype.loadFile = function(object) {
       fileExtension == X.loader.extensions.STL ||
       fileExtension == X.loader.extensions.FSM ||
       fileExtension == X.loader.extensions.VTK ||
-      fileExtension == X.loader.extensions.NRRD || fileExtension == X.loader.extensions.CRV)) {
+      fileExtension == X.loader.extensions.NRRD ||
+      fileExtension == X.loader.extensions.CRV ||
+      fileExtension == X.loader.extensions.MGH || fileExtension == X.loader.extensions.MGZ)) {
     
     // file format is not supported
     throw new Error('The ' + fileExtension + ' file format is not supported.');
@@ -412,6 +415,15 @@ X.loader.prototype.loadFileCompleted = function(request, object) {
       
       crvParser.parse(object, request.response);
       
+    } else if (fileExtension == 'mgh' || fileExtension == 'mgz') {
+      
+      var mgzParser = new X.parserMGZ();
+      
+      goog.events.listenOnce(mgzParser, X.event.events.MODIFIED,
+          this.parseFileCompleted.bind(this));
+      
+      mgzParser.parse(object, request.response, (fileExtension == 'mgz'));
+      
     }
     
 
@@ -480,5 +492,7 @@ X.loader.extensions = {
   TRK: 'TRK',
   FSM: 'FSM',
   NRRD: 'NRRD',
-  CRV: 'CRV'
+  CRV: 'CRV',
+  MGH: 'MGH',
+  MGZ: 'MGZ'
 };
