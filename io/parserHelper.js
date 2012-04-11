@@ -114,6 +114,25 @@ X.parserHelper.prototype.setElementSize = function(elementSize) {
 };
 
 
+X.parserHelper.prototype.data = function() {
+
+	  return this._data;
+	  
+	};
+
+
+/**
+ * @param data
+ */
+X.parserHelper.prototype.setData = function(data) {
+
+  // TODO validation
+  
+  this._data = data;
+  
+};
+
+
 X.parserHelper.prototype.dataPointer = function() {
 
   return this._dataPointer;
