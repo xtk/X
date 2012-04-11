@@ -1,0 +1,76 @@
+<!-- 
+/*
+ * 
+ *                  xxxxxxx      xxxxxxx
+ *                   x:::::x    x:::::x 
+ *                    x:::::x  x:::::x  
+ *                     x:::::xx:::::x   
+ *                      x::::::::::x    
+ *                       x::::::::x     
+ *                       x::::::::x     
+ *                      x::::::::::x    
+ *                     x:::::xx:::::x   
+ *                    x:::::x  x:::::x  
+ *                   x:::::x    x:::::x 
+ *              THE xxxxxxx      xxxxxxx TOOLKIT
+ *                    
+ *                  http://www.goXTK.com
+ *                   
+ * Copyright (c) 2012 The X Toolkit Developers <dev@goXTK.com>
+ *                   
+ *    The X Toolkit (XTK) is licensed under the MIT License:
+ *      http://www.opensource.org/licenses/mit-license.php
+ *
+ * Test: Render a cube, sphere and cylinder using CSG (under the hood).
+ *
+ */
+-->
+
+<html>
+<head>
+<title>XTK TEST: CSG SHAPES</title>
+
+<script type="text/javascript" src="../../lib/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../xtk-deps.js"></script>
+
+<script type="text/javascript">
+
+  goog.require('X.renderer');
+  goog.require('X.cube');
+  goog.require('X.sphere');
+  goog.require('X.cylinder');
+  
+  var run = function() {
+    
+    // create a new test_renderer
+    test_renderer = new X.renderer('r');
+    test_renderer.init();
+
+    // create some CSG primitives.. this is by the way an official example of CSG
+    var cube = new X.cube([-20,-20,0],10,10,10);
+    cube.setColor(1,0,0);
+    
+    var sphere = new X.sphere([0,0,0],13,13,13);
+    sphere.setColor(0,1,0);
+    
+    var cylinder = new X.cylinder([-30,-30,0],[30,30,0],7);
+    cylinder.setColor(0,0,1);
+
+    // add the objects
+    test_renderer.add(cube);
+    test_renderer.add(sphere);
+    test_renderer.add(cylinder);
+
+    // .. and render it
+    test_renderer.camera().setPosition(-200,0,300);
+    test_renderer.render();
+    
+  };
+</script>
+
+<body onload="run()" style="margin:0px;">
+  
+  <!-- the container for the renderer -->
+  <div id="r" style="background-color: #000000; width: 100%; height: 100%;"></div>
+    
+</body>    
