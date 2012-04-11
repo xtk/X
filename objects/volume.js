@@ -436,7 +436,7 @@ X.volume.prototype.threshold = function(lower, upper) {
  */
 X.volume.prototype.setVolumeRendering = function(volumeRendering) {
 
-  this._volumeRendering = volumeRendering;
+  this['_volumeRendering'] = volumeRendering;
   
 };
 
