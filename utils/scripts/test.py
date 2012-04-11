@@ -166,8 +166,8 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
     return None
 
   # list of tests
-  tests = ['test_trk.html', 'test_vtk.html', 'test_nrrd.html']
-  tests_build = ['test_trk_build.html', 'test_vtk_build.html', 'test_nrrd_build.html']
+  tests = ['test_trk.html', 'test_vtk.html', 'test_nrrd.html', 'test_vr.html']
+  tests_build = ['test_trk_build.html', 'test_vtk_build.html', 'test_nrrd_build.html', 'test_vr_build.html']
 
   # distinguish between build and dev tree
   if againstBuild:
@@ -194,6 +194,7 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
     while not browser.execute_script( 'return test_renderer._initialLoadingCompleted' ) and timer < 5:
       time.sleep( 1 ) # loading did not complete yet
       timer += 1
+    time.sleep( 1 )
 
     # create a screenshot and save it to a temp. file
     testId = os.path.splitext( t )[0]
