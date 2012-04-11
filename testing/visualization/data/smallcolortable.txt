@@ -1,0 +1,3 @@
+0 background 0 0 0 0
+1 tissue 128 174 128 255
+308 unknown 100 100 130 255
