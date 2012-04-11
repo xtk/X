@@ -290,6 +290,26 @@ X.parser.prototype.parseUInt16Array = function(data, offset, elements) {
   return [arr, max, min];
 };
 
+
+X.parser.prototype.parseUInt16EndianSwappedArray = function(data, offset, elements) {
+
+	  var arr = new Array();
+	  
+	  var max = 0;
+	  var min = Infinity;
+	  
+	  var i;
+	  for (i = 0; i < elements; i++) {
+	    var val = parseUInt16EndianSwapped(data, offset + (i * 2));
+	    arr[i] = val;
+	    max = Math.max(max, val);
+	    min = Math.min(min, val);
+	  }
+	  
+	  return [arr, max, min];
+};
+
+
 X.parser.prototype.parseSChar8 = function(data, offset) {
 
   var b = this.parseUChar8(data, offset);
