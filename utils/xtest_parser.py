@@ -5,9 +5,11 @@ from socket import getfqdn
 from xml.dom import minidom
 # GET DATE
 import datetime
-from time import time, gmtime, strftime
+import time
+from time import gmtime, strftime
 #from cElementTree.SimpleXMLWriter import XMLWriter
 import string
+import base64
 
 # xtk-utils dir
 def calculate( buildtype, filename, buildtime ):
@@ -44,7 +46,7 @@ def calculate( buildtype, filename, buildtime ):
 
 
   fillxml( xml, testingElement, 'StartDateTime', strftime( "%b %d %H:%M %Z", gmtime() ) )
-  fillxml( xml, testingElement, 'StartTestTime', str( time() ) )
+  fillxml( xml, testingElement, 'StartTestTime', str( time.time() ) )
 
   testListElement = xml.createElement( 'TestList' );
   testingElement.appendChild( testListElement );
@@ -52,7 +54,7 @@ def calculate( buildtype, filename, buildtime ):
   parsefile2( f3, count3, len( data3 ), testingElement, testListElement, xml )
 
   fillxml( xml, testingElement, 'EndDateTime', strftime( "%b %d %H:%M %Z", gmtime() ) )
-  fillxml( xml, testingElement, 'EndTestTime', str( time() ) )
+  fillxml( xml, testingElement, 'EndTestTime', str( time.time() ) )
   fillxml( xml, testingElement, 'ElapsedMinutes', '0' )
 
   f2 = open( 'XTKTest.xml', 'w' )
@@ -97,6 +99,22 @@ def parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml 
 
       endtime = name[0]
 
+      hasImages = False
+      if len( name ) > 5:
+        # we have some images
+        hasImages = True
+
+        imageResultPath = name[6]
+        imageResultBase64 = None
+        with open( imageResultPath, "rb" ) as im1:
+          imageResultBase64 = base64.b64encode( im1.read() )
+
+        imageBaselinePath = name[8]
+        imageBaselineBase64 = None
+        with open( imageBaselinePath, "rb" ) as im2:
+          imageBaselineBase64 = base64.b64encode( im2.read() )
+
+
       # write content of error message if any
       element = xml.createElement( 'Test' )
       testingElement.appendChild( element )
@@ -138,19 +156,44 @@ def parsefile2( f3, count3, numberoflines, testingElement, testListElement, xml 
 
       # time
       namedmeasurementElement = xml.createElement( 'NamedMeasurement' )
-      resultsElement.appendChild( namedmeasurementElement )
+
 
       year = datetime.date.today().year
       month = datetime.date.today().month
       day = datetime.date.today().day
-      enddatetime = datetime.datetime( int( year ), int( month ), int( day ), int( endtime[0:2] ), int( endtime[3:5] ), int( endtime[6:8] ), 1000 * int( endtime[9:12] ) )
-      startdatetime = datetime.datetime( int( year ), int( month ), int( day ), int( starttime[0:2] ), int( starttime[3:5] ), int( starttime[6:8] ), 1000 * int( starttime[9:12] ) )
+      enddatetime = datetime.datetime ( int( year ), int( month ), int( day ), int( endtime[0:2] ), int( endtime[3:5] ), int( endtime[6:8] ), 1000 * int( endtime[9:12] ) )
+      startdatetime = datetime.datetime ( int( year ), int( month ), int( day ), int( starttime[0:2] ), int( starttime[3:5] ), int( starttime[6:8] ), 1000 * int( starttime[9:12] ) )
+      enddatetime_ts = time.mktime( enddatetime.timetuple() )
+      startdatetime_ts = time.mktime( startdatetime.timetuple() )
 
       namedmeasurementElement.setAttribute( 'name', 'Execution Time' )
+      namedmeasurementElement.setAttribute( 'type', 'numeric/double' )
 
-      fillxml( xml, namedmeasurementElement, 'Value', str( enddatetime - startdatetime ) )
+      fillxml( xml, namedmeasurementElement, 'Value', str( enddatetime_ts - startdatetime_ts ) )
+      resultsElement.appendChild( namedmeasurementElement )
 
       starttime = endtime;
+
+      # images
+      if hasImages and imageResultBase64 and imageBaselineBase64:
+        namedImageResultElement = xml.createElement( 'NamedMeasurement' )
+        namedImageResultElement.setAttribute( 'type', 'image/png' )
+        namedImageResultElement.setAttribute( 'name', 'Result Image' )
+        fillxml( xml, namedImageResultElement, 'Value', str( imageResultBase64 ) )
+        resultsElement.appendChild( namedImageResultElement )
+
+
+        namedImageBaselineElement = xml.createElement( 'NamedMeasurement' )
+        namedImageBaselineElement.setAttribute( 'type', 'image/png' )
+        namedImageBaselineElement.setAttribute( 'name', 'Baseline Image' )
+        fillxml( xml, namedImageBaselineElement, 'Value', str( imageBaselineBase64 ) )
+        resultsElement.appendChild( namedImageBaselineElement )
+
+      accurateTime = xml.createElement( 'NamedMeasurement' )
+      accurateTime.setAttribute( 'type', 'text/string' )
+      accurateTime.setAttribute( 'name', 'Accurate Execution Time' )
+      fillxml( xml, accurateTime, 'Value', str( enddatetime - startdatetime ) )
+      resultsElement.appendChild( accurateTime )
 
       # command
 

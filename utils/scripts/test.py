@@ -211,9 +211,9 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
     timestamp = str( _now.hour ).zfill( 2 ) + ':' + str( _now.minute ).zfill( 2 ) + ':' + str( _now.second ).zfill( 2 ) + '.' + str( _now.microsecond / 1000 ).zfill( 3 )
 
     if testPassed:
-      testPassed = "PASSED"
+      testPassed = "PASSED : " + tmpfile + " : " + baseline + " : "
     else:
-      testPassed = "FAILED"
+      testPassed = "FAILED : " + tmpfile + " : " + baseline + " : "
       testPassed += "\n" + timestamp + "  ERROR in Visualization" + testId.replace( '_build', '' ) + '\nComparison against baseline failed.\n'
 
     output += timestamp + "  Visualization" + testId.replace( '_build', '' ) + ' : ' + testPassed + '\n'
