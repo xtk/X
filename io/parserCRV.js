@@ -69,6 +69,15 @@ goog.inherits(X.parserCRV, X.parser);
  */
 X.parserCRV.prototype.parse = function(object, data) {
 
+  var ind = object._pointIndices;
+  
+  // we need point indices here, so fail if there aren't any
+  if (ind.length == 0) {
+    
+    throw new Error('No _pointIndices defined on the X.object.');
+    
+  }
+  
   var dstream = new X.parserHelper(data);
   dstream
       .setParseFunction(this.parseUChar8Array.bind(this), dstream.sizeOfChar);

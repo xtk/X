@@ -998,17 +998,7 @@ X.renderer.prototype.update_ = function(object) {
   // b) the object is based on an external file (vtk, stl...)
   // in these cases, we do not directly update the object but activate the
   // X.loader to get the externals and then let it call the update method
-  if (goog.isDefAndNotNull(scalars) && goog.isDefAndNotNull(scalars.file()) &&
-      scalars.file().dirty()) {
-    // a scalars container is associated to this object and it's associated file
-    // is dirty
-    
-    // start loading
-    this.loader().loadScalars(object);
-    
-    return;
-    
-  } else if (goog.isDefAndNotNull(colorTable) &&
+  if (goog.isDefAndNotNull(colorTable) &&
       goog.isDefAndNotNull(colorTable.file()) && colorTable.file().dirty()) {
     // a colorTable file is associated to this object and it is dirty..
     
@@ -1031,6 +1021,16 @@ X.renderer.prototype.update_ = function(object) {
     
     // start loading..
     this.loader().loadFile(object);
+    
+    return;
+    
+  } else if (goog.isDefAndNotNull(scalars) &&
+      goog.isDefAndNotNull(scalars.file()) && scalars.file().dirty()) {
+    // a scalars container is associated to this object and it's associated file
+    // is dirty
+    
+    // start loading
+    this.loader().loadScalars(object);
     
     return;
     
