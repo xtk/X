@@ -198,6 +198,53 @@ X.loader.prototype.loadColorTable = function(object) {
 };
 
 
+
+X.loader.prototype.loadScalars = function(object) {
+
+  if (!goog.isDefAndNotNull(object.scalars())) {
+    
+    // should not happen :)
+    throw new Error('Internal error during file loading.');
+    
+  }
+  
+  // get the associated file of the object
+  var filepath = object.scalars().file().path();
+  
+  // we use a simple XHR to get the file contents
+  // this works for binary and for ascii files
+  var request = new XMLHttpRequest();
+  
+  // listen to progress events.. here, goog.events.listen did not work
+  // request.addEventListener('progress',
+  // this.loadFileProgress.bind(this, object), false);
+  
+  // listen to abort events
+  goog.events.listen(request, 'abort', this.loadFileFailed.bind(this, request,
+      object));
+  
+  // listen to error events
+  goog.events.listen(request, 'error', this.loadFileFailed.bind(this, request,
+      object));
+  
+  // listen to completed events
+  goog.events.listen(request, 'load', this.loadScalarsCompleted.bind(this,
+      request, object));
+  
+  // configure the URL
+  request.open('GET', filepath, true);
+  request.overrideMimeType("text/plain; charset=x-user-defined");
+  request.setRequestHeader("Content-Type", "text/plain");
+  
+  // .. and GO!
+  request.send(null);
+  
+  // add this loading job to our jobs map
+  this.jobs_().set(object.scalars().id(), false);
+  
+};
+
+
 X.loader.prototype.loadFile = function(object) {
 
   if (!goog.isDefAndNotNull(object.file())) {
@@ -230,7 +277,6 @@ X.loader.prototype.loadFile = function(object) {
       fileExtension == X.loader.extensions.FSM ||
       fileExtension == X.loader.extensions.VTK ||
       fileExtension == X.loader.extensions.NRRD ||
-      fileExtension == X.loader.extensions.CRV ||
       fileExtension == X.loader.extensions.MGH || fileExtension == X.loader.extensions.MGZ)) {
     
     // file format is not supported
@@ -345,6 +391,35 @@ X.loader.prototype.loadColorTableCompleted = function(request, object) {
   
 };
 
+X.loader.prototype.loadScalarsCompleted = function(request, object) {
+
+  // we use a timeout here to let the progress bar be able to breath and show
+  // something
+  setTimeout(function() {
+
+    var filepath = object.scalars().file().path();
+    
+    var fileExtension = filepath.split('.').pop().toLowerCase();
+    
+    if (fileExtension == 'crv') {
+      
+      var crvParser = new X.parserCRV();
+      
+      goog.events.listenOnce(crvParser, X.event.events.MODIFIED,
+          this.parseScalarsCompleted.bind(this));
+      
+      crvParser.parse(object, request.response);
+      
+    } else {
+      
+      throw new Error('Only .CRV files supported.');
+      
+    }
+    
+  }.bind(this), 100);
+  
+};
+
 X.loader.prototype.loadFileCompleted = function(request, object) {
 
   // loading completed, add progress
@@ -406,15 +481,6 @@ X.loader.prototype.loadFileCompleted = function(request, object) {
       
       nrrdParser.parse(object, request.response);
       
-    } else if (fileExtension == 'crv') {
-      
-      var crvParser = new X.parserCRV();
-      
-      goog.events.listenOnce(crvParser, X.event.events.MODIFIED,
-          this.parseFileCompleted.bind(this));
-      
-      crvParser.parse(object, request.response);
-      
     } else if (fileExtension == 'mgh' || fileExtension == 'mgz') {
       
       var mgzParser = new X.parserMGZ();
@@ -452,6 +518,28 @@ X.loader.prototype.parseFileCompleted = function(event) {
     
     // mark the loading job as completed
     this.jobs_().set(object.id(), true);
+    
+  }.bind(this), 100);
+  
+};
+
+
+X.loader.prototype.parseScalarsCompleted = function(event) {
+
+  // we use a timeout here to let the progress bar be able to breath and show
+  // something
+  setTimeout(function() {
+
+    var object = event._object;
+    
+    // the parsing is done here..
+    object.scalars().file().setClean();
+    
+    // fire the modified event
+    object.modified();
+    
+    // mark the loading job as completed
+    this.jobs_().set(object.scalars().id(), true);
     
   }.bind(this), 100);
   

@@ -72,6 +72,8 @@ X.scalars = function() {
   
   this._file = null;
   
+  this._array = null;
+  
 };
 // inherit from X.base
 goog.inherits(X.scalars, X.base);
@@ -124,6 +126,13 @@ X.scalars.prototype.setFile = function(file) {
   }
   
   this._file = file;
+  
+};
+
+
+X.scalars.prototype.setArray = function(array) {
+
+  this._array = array;
   
 };
 

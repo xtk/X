@@ -84,14 +84,12 @@ X.parserCRV.prototype.parse = function(object, data) {
   var nvalsPerVertex = dstream.read();
   
   var af_curvVals = [];
-  var al_ret = [];
   
   dstream.setParseFunction(this.parseFloat32EndianSwappedArray.bind(this),
       dstream.sizeOfFloat);
-  al_ret = dstream.read(nvertices);
-  af_curvVals = al_ret;
+  af_curvVals = dstream.read(nvertices);
   
-  object.curvVals = af_curvVals;
+  object._scalars._array = af_curvVals;
   
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
