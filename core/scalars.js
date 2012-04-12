@@ -74,6 +74,9 @@ X.scalars = function() {
   
   this._array = null;
   
+  this._min = Infinity;
+  this._max = -Infinity;
+  
 };
 // inherit from X.base
 goog.inherits(X.scalars, X.base);

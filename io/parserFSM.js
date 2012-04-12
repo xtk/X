@@ -184,6 +184,8 @@ X.parserFSM.prototype.parse = function(object, data) {
     
   }
   
+  console.log(t);
+  
   // configure the points and normals for the X.object
   for (t = 0; t < numberOfTriangles; t++) {
     
@@ -195,6 +197,21 @@ X.parserFSM.prototype.parse = function(object, data) {
     var v1 = unorderedPoints.get(index1);
     var v2 = unorderedPoints.get(index2);
     var v3 = unorderedPoints.get(index3);
+    
+    var curv1 = object._scalars._array[index1];
+    var curv2 = object._scalars._array[index2];
+    var curv3 = object._scalars._array[index3];
+    
+    // curv1 = (curv1 - object._scalars._min) /
+    // (object._scalars._max - object._scalars._min);
+    // curv2 = (curv2 - object._scalars._min) /
+    // (object._scalars._max - object._scalars._min);
+    // curv3 = (curv3 - object._scalars._min) /
+    // (object._scalars._max - object._scalars._min);
+    //    
+    object._colors.add(curv1, 1.0 - curv1, 0);
+    object._colors.add(curv2, 1.0 - curv2, 0);
+    object._colors.add(curv3, 1.0 - curv3, 0);
     
     // store the ordered vertices
     p.add(v1[0], v1[1], v1[2]);

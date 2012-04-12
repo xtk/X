@@ -89,6 +89,10 @@ X.parserCRV.prototype.parse = function(object, data) {
       dstream.sizeOfFloat);
   af_curvVals = dstream.read(nvertices);
   
+  var stats = this.stats_calc(af_curvVals);
+  
+  object._scalars._min = stats.min;
+  object._scalars._max = stats.max;
   object._scalars._array = af_curvVals;
   
   var modifiedEvent = new X.event.ModifiedEvent();
