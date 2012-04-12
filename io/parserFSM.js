@@ -185,8 +185,6 @@ X.parserFSM.prototype.parse = function(object, data) {
     
   }
   
-  console.log(t);
-  
   // configure the points and normals for the X.object
   for (t = 0; t < numberOfTriangles; t++) {
     

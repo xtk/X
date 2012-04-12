@@ -100,9 +100,39 @@ X.parserCRV.prototype.parse = function(object, data) {
   
   var stats = this.stats_calc(af_curvVals);
   
+  //
+  // now order the curvature values based on the indices
+  //
+  var numberOfScalars = af_curvVals.length;
+  var numberOfIndices = ind.length;
+  
+  var orderedCurvatures = [];
+  
+  var i;
+  for (i = 0; i < numberOfIndices; i++) {
+    
+    var currentIndex = ind[i];
+    
+    // validate
+    if (currentIndex > numberOfScalars) {
+      
+      throw new Error('Could not find scalar for vertex.');
+      
+    }
+    
+    // grab the current scalar
+    var currentScalar = af_curvVals[currentIndex];
+    
+    // add the scalar 3x since we need to match the point array length
+    orderedCurvatures.push(currentScalar);
+    orderedCurvatures.push(currentScalar);
+    orderedCurvatures.push(currentScalar);
+    
+  }
+  
   object._scalars._min = stats.min;
   object._scalars._max = stats.max;
-  object._scalars._array = af_curvVals;
+  object._scalars._array = orderedCurvatures;
   
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
