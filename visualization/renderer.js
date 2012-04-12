@@ -974,6 +974,7 @@ X.renderer.prototype.update_ = function(object) {
   var colorTable = object.colorTable();
   var labelMap = object._labelMap; // here we access directly since we do not
   // want to create one using the labelMap() singleton accessor
+  var scalars = object._scalars; // same direct access policy
   
   //
   // LABEL MAP
@@ -997,7 +998,17 @@ X.renderer.prototype.update_ = function(object) {
   // b) the object is based on an external file (vtk, stl...)
   // in these cases, we do not directly update the object but activate the
   // X.loader to get the externals and then let it call the update method
-  if (goog.isDefAndNotNull(colorTable) &&
+  if (goog.isDefAndNotNull(scalars) && goog.isDefAndNotNull(scalars.file()) &&
+      scalars.file().dirty()) {
+    // a scalars container is associated to this object and it's associated file
+    // is dirty
+    
+    // start loading
+    this.loader().loadScalars(object);
+    
+    return;
+    
+  } else if (goog.isDefAndNotNull(colorTable) &&
       goog.isDefAndNotNull(colorTable.file()) && colorTable.file().dirty()) {
     // a colorTable file is associated to this object and it is dirty..
     

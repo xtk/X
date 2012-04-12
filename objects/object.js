@@ -231,7 +231,7 @@ X.object = function(object) {
   /**
    * The scalars of this object.
    * 
-   * @type {?Array}
+   * @type {?X.scalars}
    * @protected
    */
   this._scalars = null;
@@ -1111,39 +1111,51 @@ X.object.prototype.setMagicMode = function(magicMode) {
 };
 
 
-X.object.prototype.scalars = function(n) {
 
-  if (!goog.isDefAndNotNull(n) || n < 0) {
+/**
+ * The scalars associated with this object.
+ * 
+ * @return {?X.scalars} The scalars.
+ */
+X.object.prototype.scalars = function() {
+
+  return this._scalars;
+  
+};
+
+
+/**
+ * Set the scalars for this object.
+ * 
+ * @param {?X.scalars|string} scalars The new scalars or a file path.
+ * @throws {Error} An error if the scalars are invalid.
+ */
+X.object.prototype.setScalars = function(scalars) {
+
+  if (!goog.isDefAndNotNull(scalars)) {
     
-    // we need n here
-    throw new Error('Invalid scalar index.');
+    // null scalars are allowed
+    this._scalars = null;
+    return;
     
   }
   
-  if (!this._scalars) {
+  if (goog.isString(scalars)) {
     
-    // if this is the first access attempt, create the scalars array
-    this._scalars = [];
-    
-  }
-  
-  if (n > this._scalars.length) {
-    
-    // if n is out of bounds, throw an error
-    throw new Error('Invalid scalar index.');
+    // a string has to be converted to a new X.texture
+    var scalarsFile = scalars;
+    scalars = new X.scalars();
+    scalars.setFile(scalarsFile);
     
   }
   
-  if (n == this._scalars.length) {
+  if (!(scalars instanceof X.scalars)) {
     
-    // this means the requested X.scalars object does not exist yet
-    // .. so we create a new one
-    this._scalars.push(new X.scalars());
+    throw new Error('Invalid scalars.');
     
   }
   
-  // return the requested scalar
-  return this._scalars[n];
+  this._scalars = scalars;
   
 };
 
@@ -1222,6 +1234,9 @@ goog.exportSymbol('X.object.prototype.colorTable',
     X.object.prototype.colorTable);
 goog.exportSymbol('X.object.prototype.setColorTable',
     X.object.prototype.setColorTable);
+goog.exportSymbol('X.object.prototype.scalars', X.object.prototype.scalars);
+goog.exportSymbol('X.object.prototype.setScalars',
+    X.object.prototype.setScalars);
 goog.exportSymbol('X.object.prototype.colors', X.object.prototype.colors);
 goog.exportSymbol('X.object.prototype.color', X.object.prototype.color);
 goog.exportSymbol('X.object.prototype.setColor', X.object.prototype.setColor);

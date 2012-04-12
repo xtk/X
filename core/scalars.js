@@ -128,24 +128,5 @@ X.scalars.prototype.setFile = function(file) {
 };
 
 
-/**
- * Load a scalars file.
- * 
- * @param {string} filepath The file path for this scalars container.
- */
-X.scalars.prototype.load = function(filepath) {
-
-  if (!goog.isDefAndNotNull(filepath) || !goog.isString(filepath)) {
-    
-    // not allowed
-    throw new Error('Invalid filepath.');
-    
-  }
-  
-  this.setFile(filepath);
-  
-};
-
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.scalars', X.scalars);
-goog.exportSymbol('X.scalars.prototype.load', X.scalars.prototype.load);
