@@ -166,8 +166,8 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
     return None
 
   # list of tests
-  tests = ['test_trk.html', 'test_vtk.html', 'test_nrrd.html', 'test_vr.html', 'test_labelmap.html', 'test_shapes.html']
-  tests_build = ['test_trk_build.html', 'test_vtk_build.html', 'test_nrrd_build.html', 'test_vr_build.html', 'test_labelmap_build.html', 'test_shapes_build.html']
+  tests = ['test_trk.html', 'test_vtk.html', 'test_nrrd.html', 'test_vr.html', 'test_labelmap.html', 'test_shapes.html', 'test_mgh.html', 'test_mgz.html']
+  tests_build = ['test_trk_build.html', 'test_vtk_build.html', 'test_nrrd_build.html', 'test_vr_build.html', 'test_labelmap_build.html', 'test_shapes_build.html', 'test_mgh_build.html', 'test_mgz_build.html']
 
   # distinguish between build and dev tree
   if againstBuild:
