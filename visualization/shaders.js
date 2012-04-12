@@ -71,12 +71,14 @@ X.shaders = function() {
   t += 'attribute vec3 vertexNormal;\n';
   t += 'attribute vec3 vertexColor;\n';
   t += 'attribute vec2 vertexTexturePos;\n';
+  t += 'attribute float vertexScalar;\n';
   t += '\n';
   t += 'uniform mat4 view;\n';
   t += 'uniform mat4 perspective;\n';
   t += 'uniform vec3 center;\n';
   t += 'uniform mat4 objectTransform;\n';
   t += 'uniform bool useObjectColor;\n';
+  t += 'uniform bool useScalars;\n';
   t += 'uniform vec3 objectColor;\n';
   t += 'uniform float pointSize;\n';
   t += '\n';
@@ -95,7 +97,9 @@ X.shaders = function() {
   t += '  vec3 vertexPosition2 = vertexPosition - center;\n';
   t += '  fVertexPosition = view * objectTransform * vec4(vertexPosition2, 1.0);\n';
   t += '  fragmentTexturePos = vertexTexturePos;\n';
-  t += '  if (useObjectColor) {\n';
+  t += '  if (useScalars) {\n';
+  t += '    fragmentColor = vertexScalar * vec3(1.0, 0.0, 0.0) + (1.0 - vertexScalar) * vec3(0.0, 1.0, 0.0);\n';
+  t += '  } else if (useObjectColor) {\n';
   t += '    fragmentColor = objectColor;\n';
   t += '  } else {\n';
   t += '    fragmentColor = vertexColor;\n';
@@ -206,7 +210,8 @@ X.shaders.attributes = {
   VERTEXPOSITION: 'vertexPosition',
   VERTEXNORMAL: 'vertexNormal',
   VERTEXCOLOR: 'vertexColor',
-  VERTEXTEXTUREPOS: 'vertexTexturePos'
+  VERTEXTEXTUREPOS: 'vertexTexturePos',
+  VERTEXSCALAR: 'vertexScalar'
 };
 
 
@@ -223,6 +228,7 @@ X.shaders.uniforms = {
   OBJECTTRANSFORM: 'objectTransform',
   USEOBJECTCOLOR: 'useObjectColor',
   OBJECTCOLOR: 'objectColor',
+  USESCALARS: 'useScalars',
   POINTSIZE: 'pointSize',
   OBJECTOPACITY: 'objectOpacity',
   NORMAL: 'normal',

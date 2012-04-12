@@ -73,9 +73,13 @@ X.scalars = function() {
   this._file = null;
   
   this._array = null;
+  this._glArray = null;
   
   this._min = Infinity;
   this._max = -Infinity;
+  
+  this['_maxColor'] = [1, 0, 0];
+  this['_minColor'] = [0, 1, 0];
   
 };
 // inherit from X.base
@@ -133,9 +137,22 @@ X.scalars.prototype.setFile = function(file) {
 };
 
 
+X.scalars.prototype.setGlArray = function(array) {
+
+  this._glArray = array;
+  
+  // also, mark this dirty so the renderer can pick it up
+  this._dirty = true;
+  
+};
+
+
 X.scalars.prototype.setArray = function(array) {
 
   this._array = array;
+  
+  // also, mark this dirty so the renderer can pick it up
+  this._dirty = true;
   
 };
 

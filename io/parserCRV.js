@@ -130,9 +130,12 @@ X.parserCRV.prototype.parse = function(object, data) {
     
   }
   
+  // attach min, max curvature values and the whole shebang!
   object._scalars._min = stats.min;
   object._scalars._max = stats.max;
-  object._scalars._array = orderedCurvatures;
+  object._scalars._array = af_curvVals; // the un-ordered scalars
+  object._scalars.setGlArray(orderedCurvatures); // the ordered, gl-Ready
+  // version - use the setter to mark the scalars dirty
   
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
