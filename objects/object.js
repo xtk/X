@@ -236,6 +236,14 @@ X.object = function(object) {
    */
   this._scalars = null;
   
+  /**
+   * An array reflecting the point or vertex indices.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._pointIndices = [];
+  
   this._dirty = true;
   
 };
