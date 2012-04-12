@@ -40,6 +40,7 @@ goog.require('X.base');
 goog.require('X.colorTable');
 goog.require('X.file');
 goog.require('X.indexer');
+goog.require('X.scalars');
 goog.require('X.triplets');
 goog.require('X.texture');
 goog.require('X.transform');
@@ -219,7 +220,21 @@ X.object = function(object) {
     
   }
   
+  /**
+   * The color table of this object.
+   * 
+   * @type {?X.colorTable}
+   * @protected
+   */
   this._colorTable = null;
+  
+  /**
+   * The scalars of this object.
+   * 
+   * @type {?Array}
+   * @protected
+   */
+  this._scalars = null;
   
   this._dirty = true;
   
@@ -1092,6 +1107,43 @@ X.object.prototype.setMagicMode = function(magicMode) {
   }
   
   this['_magicMode'] = magicMode;
+  
+};
+
+
+X.object.prototype.scalars = function(n) {
+
+  if (!goog.isDefAndNotNull(n) || n < 0) {
+    
+    // we need n here
+    throw new Error('Invalid scalar index.');
+    
+  }
+  
+  if (!this._scalars) {
+    
+    // if this is the first access attempt, create the scalars array
+    this._scalars = [];
+    
+  }
+  
+  if (n > this._scalars.length) {
+    
+    // if n is out of bounds, throw an error
+    throw new Error('Invalid scalar index.');
+    
+  }
+  
+  if (n == this._scalars.length) {
+    
+    // this means the requested X.scalars object does not exist yet
+    // .. so we create a new one
+    this._scalars.push(new X.scalars());
+    
+  }
+  
+  // return the requested scalar
+  return this._scalars[n];
   
 };
 
