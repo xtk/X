@@ -42,7 +42,7 @@ goog.require('X.triplets');
 
 
 /**
- * Create a parser for the ascii .STL format.
+ * Create a parser for the binary .CRV format of Freesurfer.
  * 
  * @constructor
  * @extends X.parser
