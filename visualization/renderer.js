@@ -1470,7 +1470,7 @@ X.renderer.prototype.update_ = function(object) {
   //
   // Objects can have scalars attached to each vertex.
   
-  if (existed && scalars.dirty()) {
+  if (existed && scalars && scalars.dirty()) {
     
     // this means the object already existed and the scalars are dirty
     // therefore, we delete the old gl buffers
