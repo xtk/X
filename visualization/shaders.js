@@ -79,6 +79,14 @@ X.shaders = function() {
   t += 'uniform mat4 objectTransform;\n';
   t += 'uniform bool useObjectColor;\n';
   t += 'uniform bool useScalars;\n';
+  t += 'uniform float scalarsMin;\n';
+  t += 'uniform float scalarsMax;\n';
+  t += 'uniform vec3 scalarsMinColor;\n';
+  t += 'uniform vec3 scalarsMaxColor;\n';
+  t += 'uniform float scalarsMinThreshold;\n';
+  t += 'uniform float scalarsMaxThreshold;\n';
+  t += 'uniform vec3 volumeScalarMin;\n';
+  t += 'uniform vec3 volumeScalarMax;\n';
   t += 'uniform vec3 objectColor;\n';
   t += 'uniform float pointSize;\n';
   t += '\n';
@@ -97,8 +105,13 @@ X.shaders = function() {
   t += '  vec3 vertexPosition2 = vertexPosition - center;\n';
   t += '  fVertexPosition = view * objectTransform * vec4(vertexPosition2, 1.0);\n';
   t += '  fragmentTexturePos = vertexTexturePos;\n';
-  t += '  if (useScalars) {\n';
-  t += '    fragmentColor = vertexScalar * vec3(1.0, 0.0, 0.0) + (1.0 - vertexScalar) * vec3(0.0, 1.0, 0.0);\n';
+  t += '  if (useScalars) {\n'; // use scalar overlays
+  t += '    float scalarValue = vertexScalar;\n'; // ..and threshold
+  t += '    if (scalarValue < scalarsMinThreshold || scalarValue > scalarsMaxThreshold) {\n';
+  t += '      fragmentColor = objectColor;\n'; // outside threshold
+  t += '    } else {\n';
+  t += '      fragmentColor = scalarValue * scalarsMaxColor + (1.0 - scalarValue) * scalarsMinColor;\n';
+  t += '    }\n';
   t += '  } else if (useObjectColor) {\n';
   t += '    fragmentColor = objectColor;\n';
   t += '  } else {\n';
@@ -229,6 +242,12 @@ X.shaders.uniforms = {
   USEOBJECTCOLOR: 'useObjectColor',
   OBJECTCOLOR: 'objectColor',
   USESCALARS: 'useScalars',
+  SCALARSMIN: 'scalarsMin',
+  SCALARSMAX: 'scalarsMax',
+  SCALARSMINCOLOR: 'scalarsMinColor',
+  SCALARSMAXCOLOR: 'scalarsMaxColor',
+  SCALARSMINTHRESHOLD: 'scalarsMinThreshold',
+  SCALARSMAXTHRESHOLD: 'scalarsMaxThreshold',
   POINTSIZE: 'pointSize',
   OBJECTOPACITY: 'objectOpacity',
   NORMAL: 'normal',

@@ -2054,6 +2054,14 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   var uUseObjectColor = uLocations.get(X.shaders.uniforms.USEOBJECTCOLOR);
   var uObjectColor = uLocations.get(X.shaders.uniforms.OBJECTCOLOR);
   var uUseScalars = uLocations.get(X.shaders.uniforms.USESCALARS);
+  var uScalarsMin = uLocations.get(X.shaders.uniforms.SCALARSMIN);
+  var uScalarsMax = uLocations.get(X.shaders.uniforms.SCALARSMAX);
+  var uScalarsMinColor = uLocations.get(X.shaders.uniforms.SCALARSMINCOLOR);
+  var uScalarsMaxColor = uLocations.get(X.shaders.uniforms.SCALARSMAXCOLOR);
+  var uScalarsMinThreshold = uLocations
+      .get(X.shaders.uniforms.SCALARSMINTHRESHOLD);
+  var uScalarsMaxThreshold = uLocations
+      .get(X.shaders.uniforms.SCALARSMAXTHRESHOLD);
   var uObjectOpacity = uLocations.get(X.shaders.uniforms.OBJECTOPACITY);
   var uLabelMapOpacity = uLocations.get(X.shaders.uniforms.LABELMAPOPACITY);
   var uUseTexture = uLocations.get(X.shaders.uniforms.USETEXTURE);
@@ -2211,6 +2219,26 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         // activate the useScalars flag on the shader
         this._gl.uniform1i(uUseScalars, true);
         
+        var minColor = object._scalars['_minColor'];
+        var maxColor = object._scalars['_maxColor'];
+        
+        // propagate minColors and maxColors for the scalars
+        this._gl.uniform3f(uScalarsMinColor, parseFloat(minColor[0]),
+            parseFloat(minColor[1]), parseFloat(minColor[2]));
+        this._gl.uniform3f(uScalarsMaxColor, parseFloat(maxColor[0]),
+            parseFloat(maxColor[1]), parseFloat(maxColor[2]));
+        
+        // propagate minThreshold and maxThreshold for the scalars
+        this._gl.uniform1f(uScalarsMinThreshold,
+            parseFloat(object._scalars['_minThreshold']));
+        this._gl.uniform1f(uScalarsMaxThreshold,
+            parseFloat(object._scalars['_maxThreshold']));
+        
+        // propagate min and max for the scalars
+        this._gl.uniform1f(uScalarsMin, parseFloat(object._scalars._min));
+        this._gl.uniform1f(uScalarsMax, parseFloat(object._scalars._max));
+        
+
         this._gl.bindBuffer(this._gl.ARRAY_BUFFER, scalarBuffer._glBuffer);
         
         this._gl.vertexAttribPointer(aScalar, scalarBuffer._itemSize,
