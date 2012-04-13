@@ -373,7 +373,7 @@ X.renderer = function(container) {
     'STATISTICS_ENABLED': false
   };
   
-  window.console.log('XTK Release 3b -- 03/31/12 -- http://www.goXTK.com');
+  window.console.log('XTK Release 4 -- 04/12/12 -- http://www.goXTK.com');
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
