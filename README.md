@@ -3,11 +3,11 @@
 <b>XTK is <i>easy</i>, <i>lightweight</i> and <i>fast</i> !</b>
 
 <ul>
-<li>Native reading of <i>.vtk (Visualization Toolkit)</i>, <i>.stl (Standard Tessellation)</i>, <i>.trk (Diffusion Toolkit)</i>, <i>.nrrd (Single-file DICOM)</i> and <i>.fsm (Freesurfer)</i> files</li>
-<li><i>Volume rendering, thresholding and cross-sectional slicing</i> of 3d image data</li>
-<li>Integration of the <i><a href="http://evanw.github.com/csg.js/" target="_blank">Constructive Solid Geometry</a></i>-library supporting Boolean operations like union and intersection on meshes</li>
+<li>Native reading of a <i><b>variety of scientific file formats</b></i> (see <a href="https://github.com/xtk/X/wiki/X:Fileformats">File formats</a>)</li>
+<li><i><b>Volume rendering, thresholding and cross-sectional slicing</b></i> of 3d image data</li>
+<li><i><b>Label maps, color tables and surface overlays</b></i> are supported, as well as <i><a href="http://evanw.github.com/csg.js/" target="_blank">Constructive Solid Geometry</a></i>
 <li><i>Javascript and HTML5 based</i>: suppport of major browsers (Chrome, Firefox, Safari and Opera)</li>
-<li><i>CDash</i> + <i>Google Closure Compiler</i> driven <a href="http://cdash.goxtk.com/index.php?project=XTK" target="_blank">build and test system</a></li>
+<li>CDash + Google Closure driven <a href="http://cdash.goxtk.com/index.php?project=XTK" target="_blank"><i>build and test system</i></a></li>
 </ul>
 
 #### Demos ####
@@ -35,6 +35,9 @@
 <a href="http://lessons.goxtk.com/08/"><img src="http://xtk.github.com/lessons/08/smallcaption.png" alt="lesson08" title="Click me!"></a>
 <a href="http://lessons.goxtk.com/09/"><img src="http://xtk.github.com/lessons/09/smallcaption.png" alt="lesson09" title="Click me!"></a>
 <a href="http://lessons.goxtk.com/10/"><img src="http://xtk.github.com/lessons/10/smallcaption.png" alt="lesson10" title="Click me!"></a>
+<a href="http://lessons.goxtk.com/12/"><img src="http://xtk.github.com/lessons/12/smallcaption.png" alt="lesson12" title="Click me!"></a>
+<br>
+<a href="http://lessons.goxtk.com/11/"><img src="http://xtk.github.com/lessons/11/smallcaption.png" alt="lesson11" title="Click me!"></a>
 
 #### >>><br>>>> Get it right here: <a href="http://get.goXTK.com/xtk.js">xtk.js</a> !<br>>>>####
 
