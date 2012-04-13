@@ -303,6 +303,15 @@ X.renderer = function(container) {
   this._colorBuffers = new goog.structs.Map();
   
   /**
+   * A hash map of scalar buffers of this renderer. Each buffer is associated
+   * with a displayable object using its unique id.
+   * 
+   * @type {!goog.structs.Map}
+   * @protected
+   */
+  this._scalarBuffers = new goog.structs.Map();
+  
+  /**
    * A hash map of texture position buffers of this renderer. Each buffer is
    * associated with a displayable object using its unique id.
    * 
@@ -974,6 +983,7 @@ X.renderer.prototype.update_ = function(object) {
   var colorTable = object.colorTable();
   var labelMap = object._labelMap; // here we access directly since we do not
   // want to create one using the labelMap() singleton accessor
+  var scalars = object._scalars; // same direct access policy
   
   //
   // LABEL MAP
@@ -1020,6 +1030,16 @@ X.renderer.prototype.update_ = function(object) {
     
     // start loading..
     this.loader().loadFile(object);
+    
+    return;
+    
+  } else if (goog.isDefAndNotNull(scalars) &&
+      goog.isDefAndNotNull(scalars.file()) && scalars.file().dirty()) {
+    // a scalars container is associated to this object and it's associated file
+    // is dirty
+    
+    // start loading
+    this.loader().loadScalars(object);
     
     return;
     
@@ -1442,7 +1462,77 @@ X.renderer.prototype.update_ = function(object) {
     
   }
   
-  this.loader().addProgress(0.3);
+  this.loader().addProgress(0.2);
+  
+
+  //
+  // SCALARS
+  //
+  // Objects can have scalars attached to each vertex.
+  
+  if (existed && scalars.dirty()) {
+    
+    // this means the object already existed and the scalars are dirty
+    // therefore, we delete the old gl buffers
+    
+    var oldScalarBuffer = this._scalarBuffers.get(id);
+    if (goog.isDefAndNotNull(oldScalarBuffer)) {
+      
+      if (this._gl.isBuffer(oldScalarBuffer._glBuffer)) {
+        
+        this._gl.deleteBuffer(oldScalarBuffer._glBuffer);
+        
+      }
+      
+    }
+  }
+  
+  // check if we have scalars, then we need to setup the glBuffer and the
+  // X.buffer
+  var scalarBuffer = null;
+  
+  if (scalars) {
+    
+    // yes, there are scalars setup
+    var scalarsArray = scalars._glArray;
+    
+    if (!existed || scalars.dirty()) {
+      
+      // the object either did not exist or the scalars are dirty, so we
+      // re-create the gl buffers
+      
+      // check if the scalars are valid - we must match the number of vertices
+      // here
+      if (scalarsArray.length != points.length()) {
+        
+        // mismatch, this can not work
+        throw new Error('Mismatch between points and scalars.');
+        
+      }
+      var glScalarBuffer = this._gl.createBuffer();
+      
+      // bind and fill with colors defined above
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glScalarBuffer);
+      this._gl.bufferData(this._gl.ARRAY_BUFFER,
+          new Float32Array(scalarsArray), this._gl.STATIC_DRAW);
+      
+      // create an X.buffer to store the colors
+      // every scalar consists of 1 item
+      scalarBuffer = new X.buffer(glScalarBuffer, scalarsArray.length, 3);
+      
+      scalars.setClean();
+      
+    } else {
+      
+      // the colors are not dirty and the object already existed, so use the old
+      // buffer
+      scalarBuffer = this._scalarBuffers.get(id);
+      
+    }
+    
+  }
+  
+  this.loader().addProgress(0.1);
   
 
   //
@@ -1466,6 +1556,7 @@ X.renderer.prototype.update_ = function(object) {
   this._normalBuffers.set(id, normalBuffer);
   this._colorBuffers.set(id, colorBuffer);
   this._texturePositionBuffers.set(id, texturePositionBuffer);
+  this._scalarBuffers.set(id, scalarBuffer);
   
   // clean the object
   object.setClean();
@@ -1956,11 +2047,21 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   var aNormal = aPointers.get(X.shaders.attributes.VERTEXNORMAL);
   var aColor = aPointers.get(X.shaders.attributes.VERTEXCOLOR);
   var aTexturePosition = aPointers.get(X.shaders.attributes.VERTEXTEXTUREPOS);
+  var aScalar = aPointers.get(X.shaders.attributes.VERTEXSCALAR);
   
   var uLocations = this._uniformLocations;
   var uUsePicking = uLocations.get(X.shaders.uniforms.USEPICKING);
   var uUseObjectColor = uLocations.get(X.shaders.uniforms.USEOBJECTCOLOR);
   var uObjectColor = uLocations.get(X.shaders.uniforms.OBJECTCOLOR);
+  var uUseScalars = uLocations.get(X.shaders.uniforms.USESCALARS);
+  var uScalarsMin = uLocations.get(X.shaders.uniforms.SCALARSMIN);
+  var uScalarsMax = uLocations.get(X.shaders.uniforms.SCALARSMAX);
+  var uScalarsMinColor = uLocations.get(X.shaders.uniforms.SCALARSMINCOLOR);
+  var uScalarsMaxColor = uLocations.get(X.shaders.uniforms.SCALARSMAXCOLOR);
+  var uScalarsMinThreshold = uLocations
+      .get(X.shaders.uniforms.SCALARSMINTHRESHOLD);
+  var uScalarsMaxThreshold = uLocations
+      .get(X.shaders.uniforms.SCALARSMAXTHRESHOLD);
   var uObjectOpacity = uLocations.get(X.shaders.uniforms.OBJECTOPACITY);
   var uLabelMapOpacity = uLocations.get(X.shaders.uniforms.LABELMAPOPACITY);
   var uUseTexture = uLocations.get(X.shaders.uniforms.USETEXTURE);
@@ -2017,6 +2118,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       var normalBuffer = this._normalBuffers.get(id);
       
       var colorBuffer = this._colorBuffers.get(id);
+      var scalarBuffer = this._scalarBuffers.get(id);
       var texturePositionBuffer = this._texturePositionBuffers.get(id);
       
       // ..bind the glBuffers
@@ -2104,6 +2206,52 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         // we always have to configure the attribute of the point colors
         // even if no point colors are in use
         this._gl.vertexAttribPointer(aColor, vertexBuffer._itemSize,
+            this._gl.FLOAT, false, 0, 0);
+        
+      }
+      
+      // SCALARS
+      if (scalarBuffer && !picking && !magicMode) {
+        
+        // scalars are defined for this object and there is not picking
+        // request and no magicMode active
+        
+        // activate the useScalars flag on the shader
+        this._gl.uniform1i(uUseScalars, true);
+        
+        var minColor = object._scalars['_minColor'];
+        var maxColor = object._scalars['_maxColor'];
+        
+        // propagate minColors and maxColors for the scalars
+        this._gl.uniform3f(uScalarsMinColor, parseFloat(minColor[0]),
+            parseFloat(minColor[1]), parseFloat(minColor[2]));
+        this._gl.uniform3f(uScalarsMaxColor, parseFloat(maxColor[0]),
+            parseFloat(maxColor[1]), parseFloat(maxColor[2]));
+        
+        // propagate minThreshold and maxThreshold for the scalars
+        this._gl.uniform1f(uScalarsMinThreshold,
+            parseFloat(object._scalars['_minThreshold']));
+        this._gl.uniform1f(uScalarsMaxThreshold,
+            parseFloat(object._scalars['_maxThreshold']));
+        
+        // propagate min and max for the scalars
+        this._gl.uniform1f(uScalarsMin, parseFloat(object._scalars._min));
+        this._gl.uniform1f(uScalarsMax, parseFloat(object._scalars._max));
+        
+
+        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, scalarBuffer._glBuffer);
+        
+        this._gl.vertexAttribPointer(aScalar, scalarBuffer._itemSize,
+            this._gl.FLOAT, false, 0, 0);
+        
+      } else {
+        
+        // de-activate the useScalars flag on the shader
+        this._gl.uniform1i(uUseScalars, false);
+        
+        // we always have to configure the attribute of the scalars
+        // even if no scalars are in use
+        this._gl.vertexAttribPointer(aScalar, vertexBuffer._itemSize,
             this._gl.FLOAT, false, 0, 0);
         
       }

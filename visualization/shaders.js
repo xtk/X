@@ -71,12 +71,22 @@ X.shaders = function() {
   t += 'attribute vec3 vertexNormal;\n';
   t += 'attribute vec3 vertexColor;\n';
   t += 'attribute vec2 vertexTexturePos;\n';
+  t += 'attribute float vertexScalar;\n';
   t += '\n';
   t += 'uniform mat4 view;\n';
   t += 'uniform mat4 perspective;\n';
   t += 'uniform vec3 center;\n';
   t += 'uniform mat4 objectTransform;\n';
   t += 'uniform bool useObjectColor;\n';
+  t += 'uniform bool useScalars;\n';
+  t += 'uniform float scalarsMin;\n';
+  t += 'uniform float scalarsMax;\n';
+  t += 'uniform vec3 scalarsMinColor;\n';
+  t += 'uniform vec3 scalarsMaxColor;\n';
+  t += 'uniform float scalarsMinThreshold;\n';
+  t += 'uniform float scalarsMaxThreshold;\n';
+  t += 'uniform vec3 volumeScalarMin;\n';
+  t += 'uniform vec3 volumeScalarMax;\n';
   t += 'uniform vec3 objectColor;\n';
   t += 'uniform float pointSize;\n';
   t += '\n';
@@ -95,7 +105,14 @@ X.shaders = function() {
   t += '  vec3 vertexPosition2 = vertexPosition - center;\n';
   t += '  fVertexPosition = view * objectTransform * vec4(vertexPosition2, 1.0);\n';
   t += '  fragmentTexturePos = vertexTexturePos;\n';
-  t += '  if (useObjectColor) {\n';
+  t += '  if (useScalars) {\n'; // use scalar overlays
+  t += '    float scalarValue = vertexScalar;\n'; // ..and threshold
+  t += '    if (scalarValue < scalarsMinThreshold || scalarValue > scalarsMaxThreshold) {\n';
+  t += '      fragmentColor = objectColor;\n'; // outside threshold
+  t += '    } else {\n';
+  t += '      fragmentColor = scalarValue * scalarsMaxColor + (1.0 - scalarValue) * scalarsMinColor;\n';
+  t += '    }\n';
+  t += '  } else if (useObjectColor) {\n';
   t += '    fragmentColor = objectColor;\n';
   t += '  } else {\n';
   t += '    fragmentColor = vertexColor;\n';
@@ -206,7 +223,8 @@ X.shaders.attributes = {
   VERTEXPOSITION: 'vertexPosition',
   VERTEXNORMAL: 'vertexNormal',
   VERTEXCOLOR: 'vertexColor',
-  VERTEXTEXTUREPOS: 'vertexTexturePos'
+  VERTEXTEXTUREPOS: 'vertexTexturePos',
+  VERTEXSCALAR: 'vertexScalar'
 };
 
 
@@ -223,6 +241,13 @@ X.shaders.uniforms = {
   OBJECTTRANSFORM: 'objectTransform',
   USEOBJECTCOLOR: 'useObjectColor',
   OBJECTCOLOR: 'objectColor',
+  USESCALARS: 'useScalars',
+  SCALARSMIN: 'scalarsMin',
+  SCALARSMAX: 'scalarsMax',
+  SCALARSMINCOLOR: 'scalarsMinColor',
+  SCALARSMAXCOLOR: 'scalarsMaxColor',
+  SCALARSMINTHRESHOLD: 'scalarsMinThreshold',
+  SCALARSMAXTHRESHOLD: 'scalarsMaxThreshold',
   POINTSIZE: 'pointSize',
   OBJECTOPACITY: 'objectOpacity',
   NORMAL: 'normal',

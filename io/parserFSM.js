@@ -73,8 +73,9 @@ goog.inherits(X.parserFSM, X.parser);
  */
 X.parserFSM.prototype.parse = function(object, data) {
 
-  var p = object.points();
-  var n = object.normals();
+  var p = object._points;
+  var n = object._normals;
+  var ind = object._pointIndices;
   
   // in .FSM files, the points are not ordered for rendering, so we need to
   // buffer everything in X.triplets containers and then order it
@@ -195,6 +196,11 @@ X.parserFSM.prototype.parse = function(object, data) {
     var v1 = unorderedPoints.get(index1);
     var v2 = unorderedPoints.get(index2);
     var v3 = unorderedPoints.get(index3);
+    
+    // store the ordered vertex indices
+    ind.push(index1);
+    ind.push(index2);
+    ind.push(index3);
     
     // store the ordered vertices
     p.add(v1[0], v1[1], v1[2]);

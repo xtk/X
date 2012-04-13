@@ -40,6 +40,7 @@ goog.require('X.base');
 goog.require('X.colorTable');
 goog.require('X.file');
 goog.require('X.indexer');
+goog.require('X.scalars');
 goog.require('X.triplets');
 goog.require('X.texture');
 goog.require('X.transform');
@@ -219,7 +220,29 @@ X.object = function(object) {
     
   }
   
+  /**
+   * The color table of this object.
+   * 
+   * @type {?X.colorTable}
+   * @protected
+   */
   this._colorTable = null;
+  
+  /**
+   * The scalars of this object.
+   * 
+   * @type {?X.scalars}
+   * @protected
+   */
+  this._scalars = null;
+  
+  /**
+   * An array reflecting the point or vertex indices.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._pointIndices = [];
   
   this._dirty = true;
   
@@ -1096,6 +1119,55 @@ X.object.prototype.setMagicMode = function(magicMode) {
 };
 
 
+
+/**
+ * The scalars associated with this object.
+ * 
+ * @return {?X.scalars} The scalars.
+ */
+X.object.prototype.scalars = function() {
+
+  return this._scalars;
+  
+};
+
+
+/**
+ * Set the scalars for this object.
+ * 
+ * @param {?X.scalars|string} scalars The new scalars or a file path.
+ * @throws {Error} An error if the scalars are invalid.
+ */
+X.object.prototype.setScalars = function(scalars) {
+
+  if (!goog.isDefAndNotNull(scalars)) {
+    
+    // null scalars are allowed
+    this._scalars = null;
+    return;
+    
+  }
+  
+  if (goog.isString(scalars)) {
+    
+    // a string has to be converted to a new X.texture
+    var scalarsFile = scalars;
+    scalars = new X.scalars();
+    scalars.setFile(scalarsFile);
+    
+  }
+  
+  if (!(scalars instanceof X.scalars)) {
+    
+    throw new Error('Invalid scalars.');
+    
+  }
+  
+  this._scalars = scalars;
+  
+};
+
+
 /**
  * Compare two X.objects by their opacity values and their distance to the
  * viewer's eye. Fully opaque objects should be always ordered before
@@ -1170,6 +1242,9 @@ goog.exportSymbol('X.object.prototype.colorTable',
     X.object.prototype.colorTable);
 goog.exportSymbol('X.object.prototype.setColorTable',
     X.object.prototype.setColorTable);
+goog.exportSymbol('X.object.prototype.scalars', X.object.prototype.scalars);
+goog.exportSymbol('X.object.prototype.setScalars',
+    X.object.prototype.setScalars);
 goog.exportSymbol('X.object.prototype.colors', X.object.prototype.colors);
 goog.exportSymbol('X.object.prototype.color', X.object.prototype.color);
 goog.exportSymbol('X.object.prototype.setColor', X.object.prototype.setColor);
@@ -1198,3 +1273,4 @@ goog.exportSymbol('X.object.prototype.inverse', X.object.prototype.inverse);
 goog.exportSymbol('X.object.prototype.subtract', X.object.prototype.subtract);
 goog.exportSymbol('X.object.prototype.union', X.object.prototype.union);
 goog.exportSymbol('X.object.prototype.children', X.object.prototype.children);
+goog.exportSymbol('X.object.prototype.modified', X.object.prototype.modified);
