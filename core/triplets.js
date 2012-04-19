@@ -59,12 +59,12 @@ X.triplets = function(data) {
    */
   this['_className'] = 'triplets';
   
-  this._minA = null;
-  this._maxA = null;
-  this._minB = null;
-  this._maxB = null;
-  this._minC = null;
-  this._maxC = null;
+  this._minA = Infinity;
+  this._maxA = -Infinity;
+  this._minB = Infinity;
+  this._maxB = -Infinity;
+  this._minC = Infinity;
+  this._maxC = -Infinity;
   this._centroid = [0, 0, 0];
   
   /**
@@ -101,35 +101,16 @@ goog.inherits(X.triplets, X.base);
  * @param {!number} b The second value of the triplet.
  * @param {!number} c The third value of the triplet.
  * @return {!number} The id of the added triplet.
- * @throws {Error} An exception if the passed coordinates are invalid.
  */
 X.triplets.prototype.add = function(a, b, c) {
 
-  if (!goog.isNumber(a) || !goog.isNumber(b) || !goog.isNumber(c)) {
-    
-    throw new Error('Invalid triplet.');
-    
-  }
-  
   // update bounding box
-  if (!this._minA || a < this._minA) {
-    this._minA = a;
-  }
-  if (!this._maxA || a > this._maxA) {
-    this._maxA = a;
-  }
-  if (!this._minB || b < this._minB) {
-    this._minB = b;
-  }
-  if (!this._maxB || b > this._maxB) {
-    this._maxB = b;
-  }
-  if (!this._minC || c < this._minC) {
-    this._minC = c;
-  }
-  if (!this._maxC || c > this._maxC) {
-    this._maxC = c;
-  }
+  this._minA = Math.min(this._minA, a);
+  this._maxA = Math.max(this._maxA, a);
+  this._minB = Math.min(this._minB, b);
+  this._maxB = Math.max(this._maxB, b);
+  this._minC = Math.min(this._minC, c);
+  this._maxC = Math.max(this._maxC, c);
   
   this._centroid = [(this._minA + this._maxA) / 2,
                     (this._minB + this._maxB) / 2,
@@ -146,17 +127,9 @@ X.triplets.prototype.add = function(a, b, c) {
  * 
  * @param {!number} id The id of the requested triplet.
  * @return {!Array} The triplet with the given id as a 1D Array with length 3.
- * @throws {Error} An exception if the passed id is invalid or does not exist.
  */
 X.triplets.prototype.get = function(id) {
 
-  if (!goog.isNumber(id) ||
-      (id < 0 || id * 3 > this._triplets_.length || id == this.count())) {
-    
-    throw new Error('Invalid id.');
-    
-  }
-  
   // we need to convert the id to the index in the array
   id = id * 3;
   
