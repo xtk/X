@@ -79,6 +79,7 @@ X.shaders = function() {
   t += 'uniform mat4 objectTransform;\n';
   t += 'uniform bool useObjectColor;\n';
   t += 'uniform bool useScalars;\n';
+  t += 'uniform bool scalarsReplaceMode;\n';
   t += 'uniform float scalarsMin;\n';
   t += 'uniform float scalarsMax;\n';
   t += 'uniform vec3 scalarsMinColor;\n';
@@ -90,6 +91,7 @@ X.shaders = function() {
   t += 'uniform vec3 objectColor;\n';
   t += 'uniform float pointSize;\n';
   t += '\n';
+  t += 'varying float fDiscardNow;\n';
   t += 'varying vec4 fVertexPosition;\n';
   t += 'varying vec3 fragmentColor;\n';
   t += 'varying vec2 fragmentTexturePos;\n';
@@ -101,6 +103,7 @@ X.shaders = function() {
   t += '  fTransformedVertexNormal = mat3(view[0].xyz,view[1].xyz,view[2].xyz) * ';
   t += 'mat3(objectTransform[0].xyz,objectTransform[1].xyz,objectTransform[2].xyz) * ';
   t += 'vertexNormal;\n';
+  t += '  fDiscardNow = 0.0;\n'; // don't discard by default
   // t += ' vec4 gVertexPosition = vec4(fVertexPosition.xyz - focus, 1.0);\n';
   t += '  vec3 vertexPosition2 = vertexPosition - center;\n';
   t += '  fVertexPosition = view * objectTransform * vec4(vertexPosition2, 1.0);\n';
@@ -108,9 +111,22 @@ X.shaders = function() {
   t += '  if (useScalars) {\n'; // use scalar overlays
   t += '    float scalarValue = vertexScalar;\n'; // ..and threshold
   t += '    if (scalarValue < scalarsMinThreshold || scalarValue > scalarsMaxThreshold) {\n';
-  t += '      fragmentColor = objectColor;\n'; // outside threshold
+  t += '      if (scalarsReplaceMode) {\n';
+  t += '        fragmentColor = objectColor;\n'; // outside threshold
+  t += '      } else {\n';
+  t += '        fDiscardNow = 1.0;\n';
+  // if we don't replace the colors, just
+  // discard this vertex (fiber length
+  // thresholding f.e.)
+  t += '      }\n';
   t += '    } else {\n';
-  t += '      fragmentColor = scalarValue * scalarsMaxColor + (1.0 - scalarValue) * scalarsMinColor;\n';
+  t += '      if (scalarsReplaceMode) {\n';
+  t += '        fragmentColor = scalarValue * scalarsMaxColor + (1.0 - scalarValue) * scalarsMinColor;\n';
+  t += '      } else {\n';
+  t += '        fragmentColor = vertexColor;\n'; // if we don't replace and
+  // didn't discard, just use
+  // the point color here
+  t += '      }\n';
   t += '    }\n';
   t += '  } else if (useObjectColor) {\n';
   t += '    fragmentColor = objectColor;\n';
@@ -148,12 +164,16 @@ X.shaders = function() {
   t2 += 'uniform float volumeScalarMin;\n';
   t2 += 'uniform float volumeScalarMax;\n';
   t2 += '\n';
+  t2 += 'varying float fDiscardNow;\n';
   t2 += 'varying vec4 fVertexPosition;\n';
   t2 += 'varying vec3 fragmentColor;\n';
   t2 += 'varying vec2 fragmentTexturePos;\n';
   t2 += 'varying vec3 fTransformedVertexNormal;\n';
   t2 += '\n';
   t2 += 'void main(void) {\n';
+  t2 += ' if (fDiscardNow > 0.0) {\n';
+  t2 += '   discard;\n'; // really discard now
+  t2 += ' }\n';
   // in picking mode, we don't want any extras but just the plain color
   t2 += ' if (usePicking) {\n';
   t2 += '   gl_FragColor = vec4(fragmentColor, 1.0);\n';
@@ -242,6 +262,7 @@ X.shaders.uniforms = {
   USEOBJECTCOLOR: 'useObjectColor',
   OBJECTCOLOR: 'objectColor',
   USESCALARS: 'useScalars',
+  SCALARSREPLACEMODE: 'scalarsReplaceMode',
   SCALARSMIN: 'scalarsMin',
   SCALARSMAX: 'scalarsMax',
   SCALARSMINCOLOR: 'scalarsMinColor',

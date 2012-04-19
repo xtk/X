@@ -114,6 +114,9 @@ X.parserTRK.prototype.parse = function(object, data) {
   
   // loop through all fibers
   var fibers = [];
+  var lengths = [];
+  var minLength = Infinity;
+  var maxLength = -Infinity;
   
   var minX = null;
   var maxX = null;
@@ -127,6 +130,8 @@ X.parserTRK.prototype.parse = function(object, data) {
     var numPoints = this.parseUInt32(data, offset);
     
     var currentPoints = new X.triplets();
+    
+    var length = 0.0;
     
     offset += 4;
     
@@ -157,6 +162,17 @@ X.parserTRK.prototype.parse = function(object, data) {
       
       currentPoints.add(x, y, z);
       
+      // fiber length
+      if (j > 0) {
+        // if not the first point, calculate length
+        var oldPoint = currentPoints.get(j - 1);
+        
+        length += Math.sqrt(Math.pow(x - oldPoint[0], 2) +
+            Math.pow(y - oldPoint[1], 2) + Math.pow(z - oldPoint[2], 2));
+        
+
+      }
+      
     }
     
     // read additional properties, if existing
@@ -167,16 +183,7 @@ X.parserTRK.prototype.parse = function(object, data) {
       offset += (header.n_properties * 4);
     }
     
-    // calculate track length
-    // we don't support it right now in XTK
-    // var length = 0.0;
-    // for (j = 0; j < numPoints - 1; j++) {
-    // length += Math.sqrt(Math.pow(points[j + 1].position[0] -
-    // points[j].position[0], 2) +
-    // Math.pow(points[j + 1].position[1] - points[j].position[1], 2) +
-    // Math.pow(points[j + 1].position[2] - points[j].position[2], 2));
-    // }
-    
+
     // we need to get the bounding box of the whole .trk file before we add the
     // points to properly setup normals
     
@@ -208,6 +215,8 @@ X.parserTRK.prototype.parse = function(object, data) {
     
     // append this track to our fibers list
     fibers.push(currentPoints);
+    // .. and also the length
+    lengths.push(length);
     
   } // end of loop through all tracks
   
@@ -216,12 +225,20 @@ X.parserTRK.prototype.parse = function(object, data) {
   var centerY = (minY + maxY) / 2;
   var centerZ = (minZ + maxZ) / 2;
   
+  // the scalar array
+  var scalarArray = [];
+  
   // now we have a list of fibers
   for (i = 0; i < numberOfFibers; i++) {
     
     // grab the current points of this fiber
     var points = fibers[i];
     var numberOfPoints = points.count();
+    // grab the length of this fiber
+    var length = lengths[i];
+    
+    minLength = Math.min(minLength, length);
+    maxLength = Math.max(maxLength, length);
     
     for ( var j = 0; j < numberOfPoints - 1; j++) {
       
@@ -270,12 +287,33 @@ X.parserTRK.prototype.parse = function(object, data) {
       c.add(diff[0], diff[1], diff[2]);
       c.add(diff[0], diff[1], diff[2]);
       
+      // add the length (6 times since we added two points with each 3
+      // coordinates)
+      scalarArray.push(length);
+      scalarArray.push(length);
+      scalarArray.push(length);
+      scalarArray.push(length);
+      scalarArray.push(length);
+      scalarArray.push(length);
+      
     } // loop through points
     
   } // loop through fibers
   
   // set the object type to LINES
   object.setType(X.object.types.LINES);
+  
+  // attach the scalars
+  var scalars = new X.scalars();
+  scalars._min = minLength;
+  scalars._max = maxLength;
+  scalars['_minThreshold'] = minLength;
+  scalars['_maxThreshold'] = maxLength;
+  scalars.setGlArray(scalarArray); // the ordered, gl-Ready
+  // version - use the setter to mark the scalars dirty
+  scalars._replaceMode = false; // we don't want to replace - we want to
+  // discard!
+  object._scalars = scalars;
   
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;

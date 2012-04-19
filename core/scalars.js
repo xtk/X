@@ -142,6 +142,15 @@ X.scalars = function() {
    */
   this['_maxThreshold'] = Infinity;
   
+  /**
+   * Flag to replace the colors after thresholding. If FALSE, discard the the
+   * vertex.
+   * 
+   * @type {boolean}
+   * @protected
+   */
+  this._replaceMode = true;
+  
 };
 // inherit from X.base
 goog.inherits(X.scalars, X.base);

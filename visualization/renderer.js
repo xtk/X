@@ -2054,6 +2054,8 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   var uUseObjectColor = uLocations.get(X.shaders.uniforms.USEOBJECTCOLOR);
   var uObjectColor = uLocations.get(X.shaders.uniforms.OBJECTCOLOR);
   var uUseScalars = uLocations.get(X.shaders.uniforms.USESCALARS);
+  var uScalarsReplaceMode = uLocations
+      .get(X.shaders.uniforms.SCALARSREPLACEMODE);
   var uScalarsMin = uLocations.get(X.shaders.uniforms.SCALARSMIN);
   var uScalarsMax = uLocations.get(X.shaders.uniforms.SCALARSMAX);
   var uScalarsMinColor = uLocations.get(X.shaders.uniforms.SCALARSMINCOLOR);
@@ -2218,6 +2220,9 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         
         // activate the useScalars flag on the shader
         this._gl.uniform1i(uUseScalars, true);
+        
+        // propagate the replace flag
+        this._gl.uniform1i(uScalarsReplaceMode, object._scalars._replaceMode);
         
         var minColor = object._scalars['_minColor'];
         var maxColor = object._scalars['_maxColor'];
