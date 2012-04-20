@@ -203,6 +203,14 @@ X.volume = function() {
    */
   this._labelMap = null;
   
+  /**
+   * Flag to show borders or not.
+   * 
+   * @type {boolean}
+   * @protected
+   */
+  this._borders = true;
+  
 };
 // inherit from X.object
 goog.inherits(X.volume, X.object);
@@ -253,22 +261,26 @@ X.volume.prototype.create_ = function() {
       // dimensions
       var width = 0;
       var height = 0;
+      var borderColor = [1, 1, 1];
       if (xyz == 0) {
         // for x slices
         width = this._dimensions[2] * this._spacing[2] - this._spacing[2];
         height = this._dimensions[1] * this._spacing[1] - this._spacing[1];
+        borderColor = [1, 1, 0];
       } else if (xyz == 1) {
         // for y slices
         width = this._dimensions[0] * this._spacing[0] - this._spacing[0];
         height = this._dimensions[2] * this._spacing[2] - this._spacing[2];
+        borderColor = [1, 0, 0];
       } else if (xyz == 2) {
         width = this._dimensions[0] * this._spacing[0] - this._spacing[0];
         height = this._dimensions[1] * this._spacing[1] - this._spacing[1];
+        borderColor = [0, 1, 0];
       }
       
       // .. new slice
       var _slice = new X.slice(_center[xyz], _front[xyz], _up[xyz], width,
-          height);
+          height, this._borders, borderColor);
       _slice._volume = this;
       
       // only show the middle slice, hide everything else
@@ -507,6 +519,14 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   // show new volume rendering slices
   _child = this.children()[direction];
   _child.setVisible(true);
+  // turn off all borders
+  var s = 0;
+  var b = 0;
+  for (s in _child.children()) {
+    for (b in _child.children()[s].children()) {
+      _child.children()[s].children()[b].setVisible(false);
+    }
+  }
   
   // store the direction
   this._volumeRenderingDirection = direction;
@@ -533,6 +553,31 @@ X.volume.prototype.labelMap = function() {
 };
 
 
+/**
+ * Return the borders flag.
+ * 
+ * @return {boolean} TRUE if borders are enabled, FALSE otherwise.
+ */
+X.volume.prototype.borders = function() {
+
+  return this._borders;
+  
+};
+
+
+/**
+ * Set the borders flag. Must be called before the volume gets created
+ * internally. After that, the borders can be modified using the children of
+ * each slice.
+ * 
+ * @param {boolean} borders TRUE to enable borders, FALSE to disable them.
+ */
+X.volume.prototype.setBorders = function(borders) {
+
+  this._borders = borders;
+  
+};
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.volume', X.volume);
 goog.exportSymbol('X.volume.prototype.dimensions',
@@ -547,3 +592,6 @@ goog.exportSymbol('X.volume.prototype.setVolumeRendering',
 goog.exportSymbol('X.volume.prototype.threshold', X.volume.prototype.threshold);
 goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);
 goog.exportSymbol('X.volume.prototype.labelMap', X.volume.prototype.labelMap);
+goog.exportSymbol('X.volume.prototype.borders', X.volume.prototype.borders);
+goog.exportSymbol('X.volume.prototype.setBorders',
+    X.volume.prototype.setBorders);

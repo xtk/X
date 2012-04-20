@@ -48,9 +48,11 @@ goog.require('goog.math.Vec3');
  *          Array with length 3.
  * @param {!number} width The width of the slice.
  * @param {!number} height The height of the slice.
+ * @param {!boolean=} borders Enable or disable borders.
+ * @param {!Array=} borderColor The optional borderColor.
  * @extends X.object
  */
-X.slice = function(center, front, up, width, height) {
+X.slice = function(center, front, up, width, height, borders, borderColor) {
 
   if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
       (center.length != 3)) {
@@ -81,6 +83,20 @@ X.slice = function(center, front, up, width, height) {
   if (!goog.isNumber(height)) {
     
     throw new Error('Invalid height.');
+    
+  }
+  
+  var _borders = false;
+  if (goog.isDefAndNotNull(borders)) {
+    
+    _borders = borders;
+    
+  }
+  
+  var _borderColor = [1, 1, 1]; // white by default
+  if (goog.isDefAndNotNull(borderColor)) {
+    
+    _borderColor = borderColor;
     
   }
   
@@ -162,6 +178,22 @@ X.slice = function(center, front, up, width, height) {
    * @protected
    */
   this._labelMap = null;
+  
+  /**
+   * Flag to show borders or not.
+   * 
+   * @type {boolean}
+   * @protected
+   */
+  this._borders = _borders;
+  
+  /**
+   * The border color to use.
+   * 
+   * @type {Array}
+   * @protected
+   */
+  this._borderColor = _borderColor;
   
   // create the slice
   this.create_();
@@ -255,6 +287,52 @@ X.slice.prototype.create_ = function() {
   this.normals().add(frontVector.x, frontVector.y, frontVector.z);
   this.normals().add(frontVector.x, frontVector.y, frontVector.z);
   this.normals().add(frontVector.x, frontVector.y, frontVector.z);
+  
+  // add some borders, if enabled
+  if (this._borders) {
+    var border1 = new X.object();
+    border1.points().add(point0.x, point0.y, point0.z); // 0
+    border1.points().add(point1.x, point1.y, point1.z); // 1
+    border1.normals().add(0, 0, 0);
+    border1.normals().add(0, 0, 0);
+    border1.setColor(this._borderColor[0], this._borderColor[1],
+        this._borderColor[2]);
+    border1.setType(X.object.types.LINES);
+    border1.setLineWidth(2);
+    var border2 = new X.object();
+    border2.points().add(point1.x, point1.y, point1.z); // 1
+    border2.points().add(point4.x, point4.y, point4.z); // 4
+    border2.normals().add(0, 0, 0);
+    border2.normals().add(0, 0, 0);
+    border2.setColor(this._borderColor[0], this._borderColor[1],
+        this._borderColor[2]);
+    border2.setType(X.object.types.LINES);
+    border2.setLineWidth(2);
+    var border3 = new X.object();
+    border3.points().add(point4.x, point4.y, point4.z); // 4
+    border3.points().add(point2.x, point2.y, point2.z); // 2
+    border3.normals().add(0, 0, 0);
+    border3.normals().add(0, 0, 0);
+    border3.setColor(this._borderColor[0], this._borderColor[1],
+        this._borderColor[2]);
+    border3.setType(X.object.types.LINES);
+    border3.setLineWidth(2);
+    var border4 = new X.object();
+    border4.points().add(point2.x, point2.y, point2.z); // 2
+    border4.points().add(point0.x, point0.y, point0.z); // 0
+    border4.normals().add(0, 0, 0);
+    border4.normals().add(0, 0, 0);
+    border4.setColor(this._borderColor[0], this._borderColor[1],
+        this._borderColor[2]);
+    border4.setType(X.object.types.LINES);
+    border4.setLineWidth(2);
+    
+
+    this.children().push(border1);
+    this.children().push(border2);
+    this.children().push(border3);
+    this.children().push(border4);
+  }
   
 };
 

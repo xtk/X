@@ -95,6 +95,7 @@ X.shaders = function() {
   t += 'varying vec4 fVertexPosition;\n';
   t += 'varying vec3 fragmentColor;\n';
   t += 'varying vec2 fragmentTexturePos;\n';
+  t += 'varying vec3 fVertexNormal;\n';
   t += 'varying vec3 fTransformedVertexNormal;\n';
   t += '\n';
   t += 'void main(void) {\n';
@@ -103,6 +104,7 @@ X.shaders = function() {
   t += '  fTransformedVertexNormal = mat3(view[0].xyz,view[1].xyz,view[2].xyz) * ';
   t += 'mat3(objectTransform[0].xyz,objectTransform[1].xyz,objectTransform[2].xyz) * ';
   t += 'vertexNormal;\n';
+  t += '  fVertexNormal = vertexNormal;\n';
   t += '  fDiscardNow = 0.0;\n'; // don't discard by default
   // t += ' vec4 gVertexPosition = vec4(fVertexPosition.xyz - focus, 1.0);\n';
   t += '  vec3 vertexPosition2 = vertexPosition - center;\n';
@@ -168,6 +170,7 @@ X.shaders = function() {
   t2 += 'varying vec4 fVertexPosition;\n';
   t2 += 'varying vec3 fragmentColor;\n';
   t2 += 'varying vec2 fragmentTexturePos;\n';
+  t2 += 'varying vec3 fVertexNormal;\n';
   t2 += 'varying vec3 fTransformedVertexNormal;\n';
   t2 += '\n';
   t2 += 'void main(void) {\n';
@@ -205,6 +208,11 @@ X.shaders = function() {
   t2 += ' } else {\n';
   // configure advanced lighting
   t2 += '   vec3 nNormal = normalize(fTransformedVertexNormal);\n';
+  // .. ignore the lightning if the normals are 0,0,0
+  t2 += '   if (fVertexNormal == vec3(0.0,0.0,0.0)) {\n';
+  t2 += '     gl_FragColor = vec4(fragmentColor,1.0);\n';
+  t2 += '     return;\n';
+  t2 += '   }\n';
   t2 += '   vec3 light = vec3(0.0, 0.0, 1.0);\n';
   // t2 += ' vec3 lightDirection = vec3(-10.0, 4.0, -20.0);\n';
   // I liked the following better
