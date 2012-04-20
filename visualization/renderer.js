@@ -1083,6 +1083,7 @@ X.renderer.prototype.update_ = function(object) {
     
     // wait
     counter++;
+    window.console.log('Possible thread lock avoided: ' + counter);
     
   }
   
