@@ -1176,8 +1176,8 @@ X.object.prototype.setScalars = function(scalars) {
  * 
  * @param {X.object} object1 Object1 to compare against Object2.
  * @param {X.object} object2 Object2 to compare against Object1.
- * @return {!number} 1, if Object1 should be ordered after Object2 Object2. -1,
- *         if Object1 should be ordered before Object2
+ * @return {!number} 1, if Object1 should be ordered after Object2. -1, if
+ *         Object1 should be ordered before Object2
  */
 X.object.OPACITY_COMPARATOR = function(object1, object2) {
 
