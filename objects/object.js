@@ -173,6 +173,8 @@ X.object = function(object) {
    */
   this._children = null;
   
+  this._hideChildren = false;
+  
   /**
    * The visibility of this object.
    * 
@@ -1009,6 +1011,12 @@ X.object.prototype.children = function() {
 X.object.prototype.hasChildren = function() {
 
   if (!this._children) {
+    
+    return false;
+    
+  }
+  
+  if (this._hideChildren) {
     
     return false;
     
