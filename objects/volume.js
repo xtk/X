@@ -273,6 +273,7 @@ X.volume.prototype.create_ = function() {
         height = this._dimensions[2] * this._spacing[2] - this._spacing[2];
         borderColor = [1, 0, 0];
       } else if (xyz == 2) {
+        // for z slices
         width = this._dimensions[0] * this._spacing[0] - this._spacing[0];
         height = this._dimensions[1] * this._spacing[1] - this._spacing[1];
         borderColor = [0, 1, 0];
@@ -284,7 +285,14 @@ X.volume.prototype.create_ = function() {
       _slice._volume = this;
       
       // only show the middle slice, hide everything else
-      _slice.setVisible(i == _indexCenter);
+      _slice._hideChildren = false;
+      _slice.setVisible(i == Math.floor(_indexCenter));
+      _slice._hideChildren = true;
+      if (i == Math.floor(_indexCenter)) {
+        
+        console.log(_slice);
+        
+      }
       
       // attach to all _slices with the correct slice index
       slices.push(_slice);
@@ -356,6 +364,7 @@ X.volume.prototype.slicing_ = function() {
     // hide the volume rendering slices
     var _child = this.children()[this._volumeRenderingDirection];
     _child.setVisible(false);
+    console.log('visi1223');
     
   }
   
@@ -382,9 +391,17 @@ X.volume.prototype.slicing_ = function() {
     }
     
     // hide the old slice
-    _child.children()[parseInt(oldIndex, 10)].setVisible(false);
-    // show the current slice
-    _child.children()[parseInt(currentIndex, 10)].setVisible(true);
+    var _oldSlice = _child.children()[parseInt(oldIndex, 10)];
+    _oldSlice._hideChildren = false;
+    _oldSlice.setVisible(false);
+    _oldSlice._hideChildren = true;
+    // show the current slice and also show the borders if they exist by
+    // deactivating the hideChildren flag
+    var _currentSlice = _child.children()[parseInt(currentIndex, 10)];
+    _currentSlice._hideChildren = false;
+    _currentSlice.setVisible(true);
+    _currentSlice._hideChildren = true;
+    console.log('visi2324421');
     
   }
   
@@ -525,6 +542,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   for (s in _child.children()) {
     for (b in _child.children()[s].children()) {
       _child.children()[s].children()[b].setVisible(false);
+      console.log('3424ddd');
     }
   }
   

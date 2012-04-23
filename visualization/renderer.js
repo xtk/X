@@ -51,7 +51,6 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.iter.Iterator');
 goog.require('goog.math.Vec3');
-goog.require('goog.structs.AvlTree');
 goog.require('goog.structs.Map');
 goog.require('goog.Timer');
 
@@ -170,24 +169,13 @@ X.renderer = function(container) {
    */
   this._interactor = null;
   
-  // /**
-  // * An array containing the displayable objects of this renderer.
-  // *
-  // * @type {!Array}
-  // * @protected
-  // */
-  // this._objects = new Array();
-  //  
-  // /**
-  // * An AVL tree containing the displayable objects of this renderer. The tree
-  // * reflects the rendering order for the associated objects.
-  // *
-  // * @type {!goog.structs.AvlTree}
-  // * @protected
-  // */
-  // this._objects = new goog.structs.AvlTree(X.object.OPACITY_COMPARATOR);
-  //  
-  
+  /**
+   * An X.array containing the displayable objects of this renderer. The object
+   * reflects the rendering order for the associated objects.
+   * 
+   * @type {!X.array}
+   * @protected
+   */
   this._objects = new X.array(X.object.OPACITY_COMPARATOR);
   
   /**
@@ -1055,7 +1043,7 @@ X.renderer.prototype.update_ = function(object) {
   // so on
   //
   // check if this object has children
-  if (object.dirty() && object.hasChildren()) {
+  if (object.dirty() && object.children().length > 0) {
     
     // loop through the children and recursively setup the object
     var children = object.children();
@@ -1820,7 +1808,7 @@ X.renderer.prototype.orientVolume_ = function(volume) {
 
 
 /**
- * Calculates the distance for each associated X.object and orders the AVL tree
+ * Calculates the distance for each associated X.object and orders objects array
  * accordingly from back-to-front while fully opaque objects are drawn first.
  * Jumps out as early as possible if all objects are fully opaque.
  */
@@ -1848,6 +1836,8 @@ X.renderer.prototype.order_ = function() {
     var volume = object._volume;
     if (object instanceof X.slice) {
       
+      // continue;
+      
       if (volume && volume['_volumeRendering']) {
         
         // X.slices are only transparent in volume rendering mode
@@ -1868,7 +1858,7 @@ X.renderer.prototype.order_ = function() {
       continue;
       
     }
-    
+    // console.log('obj:', object);
     var centroid = object._points._centroid;
     var centroidVector = new goog.math.Vec3(centroid[0], centroid[1],
         centroid[2]);
