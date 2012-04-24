@@ -1803,17 +1803,18 @@ X.renderer.prototype.orientVolume_ = function(volume) {
 };
 
 
-X.renderer.prototype.distanceToEye_ = function(object, centroid) {
+X.renderer.prototype.distanceToEye_ = function(object) {
 
+  var centroid = object._points._centroid;
   var centroidVector = new goog.math.Vec3(centroid[0], centroid[1], centroid[2]);
   var transformedCentroidVector = object._transform._matrix
       .multiplyByVector(centroidVector);
   var realCentroidVector = this._camera._view
       .multiplyByVector(transformedCentroidVector);
-  var distanceFromEye = goog.math.Vec3.distance(this._camera._focus,
+  var distanceFromEye = goog.math.Vec3.distance(this._camera._position,
       realCentroidVector);
   
-  return distanceFromEye;
+  return Math.round(distanceFromEye * 1000) / 1000;
   
 };
 
@@ -1827,8 +1828,6 @@ X.renderer.prototype.order_ = function() {
 
   // by default we do not want to update the rendering order
   var reSortRequired = false;
-  
-  window.console.time('firstLoop');
   
   var topLevelObjects = this._topLevelObjects;
   var numberOfTopLevelObjects = topLevelObjects.length;
@@ -1858,28 +1857,30 @@ X.renderer.prototype.order_ = function() {
       
       // grab the first slice, attach the distance and opacity
       var firstSlice = _slices[0];
-      firstSlice.distance = this.distanceToEye_(firstSlice,
-          firstSlice._points._centroid);
+      firstSlice._distance = this.distanceToEye_(firstSlice);
       firstSlice['_opacity'] = object['_opacity'];
       
       // grab the last slice, attach the distance and opacity
       var lastSlice = _slices[numberOfSlices - 1];
-      lastSlice.distance = this.distanceToEye_(lastSlice,
-          lastSlice._points._centroid);
+      lastSlice._distance = this.distanceToEye_(lastSlice);
       lastSlice['_opacity'] = object['_opacity'];
       
       // get the distanceDifference the distanceStep
       // if these are > 0: the firstSlice is closer to the eye
       // if these are < 0: the lastSlice is closer to the eye
-      var distanceDifference = lastSlice.distance - firstSlice.distance;
-      var distanceStep = distanceDifference / numberOfSlices;
+      var distanceDifference = lastSlice._distance - firstSlice._distance;
+      var distanceStep = Math
+          .round((distanceDifference / numberOfSlices) * 1000) / 1000;
       
       // loop through all other slices in the volumeRendering direction and
       // calculate the distance and attach the opacity
       var s = 1;
       for (s = 1; s < numberOfSlices - 1; s++) {
         
-        _slices[s].distance = firstSlice.distance + (s * distanceStep);
+        var currentDistance = Math
+            .round((firstSlice._distance + (s * distanceStep)) * 1000) / 1000;
+        
+        _slices[s]._distance = currentDistance;
         _slices[s]['_opacity'] = object['_opacity'];
         
       }
@@ -1915,21 +1916,17 @@ X.renderer.prototype.order_ = function() {
     }
     
     // attach the distance from the eye to the object
-    object.distance = this.distanceToEye_(object, object._points._centroid);
+    object._distance = this.distanceToEye_(object);
     
     // we need to update the rendering order
     reSortRequired = true;
     
   } while (i--);
   
-  window.console.timeEnd('firstLoop');
-  
   // only re-sort the tree if required
   if (reSortRequired) {
     
-    window.console.time('addLoop');
     this._objects.sort();
-    window.console.timeEnd('addLoop');
     
   }
   

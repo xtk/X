@@ -246,6 +246,14 @@ X.object = function(object) {
    */
   this._pointIndices = [];
   
+  /**
+   * This distance of this object to the viewer's eye.
+   * 
+   * @type {number}
+   * @protected
+   */
+  this._distance = 0;
+  
   this._dirty = true;
   
 };
@@ -1198,30 +1206,30 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
   }
   
   // full opaque objects should always be rendered first
-  if (object1.opacity() == 1) {
+  if (object1['_opacity'] == 1) {
     
     // always put object1 before object2
     return -1;
     
   }
-  if (object2.opacity() == 1) {
+  if (object2['_opacity'] == 1) {
     
     // always put object2 before object1
     return 1;
     
   }
   
-  if (goog.isDefAndNotNull(object1.distance) &&
-      goog.isDefAndNotNull(object2.distance)) {
+  if (goog.isDefAndNotNull(object1._distance) &&
+      goog.isDefAndNotNull(object2._distance)) {
     
     // order back-to-front from the viewer's eye
     
-    if (object1.distance > object2.distance) {
+    if (object1._distance > object2._distance) {
       
       // object2 is closer so object1 should be ordered (drawn) before object2
       return -1;
       
-    } else if (object1.distance <= object2.distance) {
+    } else if (object1._distance <= object2._distance) {
       
       // object 1 is closer so object1 should be ordered (drawn) after object2
       return 1;
