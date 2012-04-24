@@ -195,6 +195,8 @@ X.slice = function(center, front, up, width, height, borders, borderColor) {
    */
   this._borderColor = _borderColor;
   
+  this._hideChildren = true;
+  
   // create the slice
   this.create_();
   

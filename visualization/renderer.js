@@ -31,6 +31,7 @@
 goog.provide('X.renderer');
 
 // requires
+goog.require('X.array');
 goog.require('X.base');
 goog.require('X.buffer');
 goog.require('X.camera');
@@ -50,7 +51,6 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.iter.Iterator');
 goog.require('goog.math.Vec3');
-goog.require('goog.structs.AvlTree');
 goog.require('goog.structs.Map');
 goog.require('goog.Timer');
 
@@ -169,22 +169,14 @@ X.renderer = function(container) {
    */
   this._interactor = null;
   
-  // /**
-  // * An array containing the displayable objects of this renderer.
-  // *
-  // * @type {!Array}
-  // * @protected
-  // */
-  // this._objects = new Array();
-  
   /**
-   * An AVL tree containing the displayable objects of this renderer. The tree
+   * An X.array containing the displayable objects of this renderer. The object
    * reflects the rendering order for the associated objects.
    * 
-   * @type {!goog.structs.AvlTree}
+   * @type {!X.array}
    * @protected
    */
-  this._objects = new goog.structs.AvlTree(X.object.OPACITY_COMPARATOR);
+  this._objects = new X.array(X.object.OPACITY_COMPARATOR);
   
   /**
    * An array containing the topLevel objects (which do not have parents) of
@@ -1051,7 +1043,7 @@ X.renderer.prototype.update_ = function(object) {
   // so on
   //
   // check if this object has children
-  if (object.dirty() && object.hasChildren()) {
+  if (object.dirty() && object.children().length > 0) {
     
     // loop through the children and recursively setup the object
     var children = object.children();
@@ -1543,11 +1535,7 @@ X.renderer.prototype.update_ = function(object) {
   // add the object to the internal tree which reflects the rendering order
   // (based on opacity)
   if (!existed) {
-    if (!this._objects.add(object)) {
-      
-      throw new Error('Could not add object to this renderer.');
-      
-    }
+    this._objects.add(object);
   }
   
   // add the buffers for the object to the internal hash maps
@@ -1707,7 +1695,7 @@ X.renderer.prototype.get = function(id) {
     
   }
   
-  var objects = this._objects.getValues();
+  var objects = this._objects.values();
   var k = 0;
   var numberOfObjects = objects.length;
   
@@ -1771,29 +1759,29 @@ X.renderer.prototype.orientVolume_ = function(volume) {
   // here
   var centroidVector = new goog.math.Vec3(1, 0, 0);
   var realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  var distanceFromEyeX = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeX = goog.math.Vec3.distance(this._camera._position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(-1, 0, 0);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  var distanceFromEyeX2 = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeX2 = goog.math.Vec3.distance(this._camera._position,
       realCentroidVector);
   
   centroidVector = new goog.math.Vec3(0, 1, 0);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  var distanceFromEyeY = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeY = goog.math.Vec3.distance(this._camera._position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(0, -1, 0);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  var distanceFromEyeY2 = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeY2 = goog.math.Vec3.distance(this._camera._position,
       realCentroidVector);
   
   centroidVector = new goog.math.Vec3(0, 0, 1);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  var distanceFromEyeZ = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeZ = goog.math.Vec3.distance(this._camera._position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(0, 0, -1);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  var distanceFromEyeZ2 = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeZ2 = goog.math.Vec3.distance(this._camera._position,
       realCentroidVector);
   
   var maxDistance = Math
@@ -1813,17 +1801,96 @@ X.renderer.prototype.orientVolume_ = function(volume) {
 };
 
 
+X.renderer.prototype.distanceToEye_ = function(object) {
+
+  var centroid = object._points._centroid;
+  var centroidVector = new goog.math.Vec3(centroid[0], centroid[1], centroid[2]);
+  var transformedCentroidVector = object._transform._matrix
+      .multiplyByVector(centroidVector);
+  var realCentroidVector = this._camera._view
+      .multiplyByVector(transformedCentroidVector);
+  var distanceFromEye = goog.math.Vec3.distance(this._camera._position,
+      realCentroidVector);
+  
+  return Math.round(distanceFromEye * 1000) / 1000;
+  
+};
+
+
 /**
- * Calculates the distance for each associated X.object and orders the AVL tree
+ * Calculates the distance for each associated X.object and orders objects array
  * accordingly from back-to-front while fully opaque objects are drawn first.
  * Jumps out as early as possible if all objects are fully opaque.
  */
 X.renderer.prototype.order_ = function() {
 
-  // by default we do not want to update the tree
-  var reSortTreeRequired = false;
+  // by default we do not want to update the rendering order
+  var reSortRequired = false;
   
-  var objects = this._objects.getValues();
+  var topLevelObjects = this._topLevelObjects;
+  var numberOfTopLevelObjects = topLevelObjects.length;
+  var t;
+  t = numberOfTopLevelObjects - 1;
+  do {
+    
+    var object = topLevelObjects[t];
+    
+    // special case for X.volumes in volumeRendering mode
+    // a) we know the volumeRendering direction and the center of the volume
+    // b) based on this we can minimize the expensive distance calculation to
+    // the first and last slices
+    // c) .. and get the distance for the other slices by simple multiplication
+    if (object instanceof X.volume && object['_volumeRendering']) {
+      
+      var _volumeRenderingDirection = object._volumeRenderingDirection;
+      
+      var _slices = object._slicesX.children();
+      if (_volumeRenderingDirection == 1) {
+        _slices = object._slicesY.children();
+      } else if (_volumeRenderingDirection == 2) {
+        _slices = object._slicesZ.children();
+      }
+      
+      var numberOfSlices = _slices.length;
+      
+      // grab the first slice, attach the distance and opacity
+      var firstSlice = _slices[0];
+      firstSlice._distance = this.distanceToEye_(firstSlice);
+      firstSlice['_opacity'] = object['_opacity'];
+      
+      // grab the last slice, attach the distance and opacity
+      var lastSlice = _slices[numberOfSlices - 1];
+      lastSlice._distance = this.distanceToEye_(lastSlice);
+      lastSlice['_opacity'] = object['_opacity'];
+      
+      // get the distanceDifference the distanceStep
+      // if these are > 0: the firstSlice is closer to the eye
+      // if these are < 0: the lastSlice is closer to the eye
+      var distanceDifference = lastSlice._distance - firstSlice._distance;
+      var distanceStep = Math
+          .round((distanceDifference / numberOfSlices) * 1000) / 1000;
+      
+      // loop through all other slices in the volumeRendering direction and
+      // calculate the distance and attach the opacity
+      var s = 1;
+      for (s = 1; s < numberOfSlices - 1; s++) {
+        
+        var currentDistance = Math
+            .round((firstSlice._distance + (s * distanceStep)) * 1000) / 1000;
+        
+        _slices[s]._distance = currentDistance;
+        _slices[s]['_opacity'] = object['_opacity'];
+        
+      }
+      
+      // we need to update the rendering order
+      reSortRequired = true;
+      
+    }
+    
+  } while (t--);
+  
+  var objects = this._objects.values();
   var numberOfObjects = objects.length;
   
   var i;
@@ -1831,67 +1898,33 @@ X.renderer.prototype.order_ = function() {
   do {
     
     var object = objects[i];
-    if (!object) {
-      return;
+    
+    if (!object['_visible']) {
+      continue;
     }
     
-    var opacity = object['_opacity'];
-    
-    // if we order X.slice-s of an X.volume, we want to use the opacity of the
-    // parent volume but only in volume rendering mode
-    var volume = object._volume;
-    if (object instanceof X.slice) {
+    // the following cases do not need to be calculated
+    // a) opacity is 1
+    // b) object is an X.slice since we take care of that when grabbing the
+    // volume
+    if ((object['_opacity'] == 1) || (object instanceof X.slice)) {
       
-      if (volume && volume['_volumeRendering']) {
-        
-        // X.slices are only transparent in volume rendering mode
-        opacity = object['_opacity'] = object._volume['_opacity'];
-        
-      } else {
-        
-        // no volume rendering, so the X.slice is fully opaque
-        opacity = object['_opacity'] = 1.0;
-        
-      }
-      
-    }
-    
-    if (opacity == 1) {
-      
-      // this object is fully opaque, we do not need to calculate the distance
       continue;
       
     }
     
-    var centroid = object._points._centroid;
-    var centroidVector = new goog.math.Vec3(centroid[0], centroid[1],
-        centroid[2]);
-    var transformedCentroidVector = object._transform._matrix
-        .multiplyByVector(centroidVector);
-    var realCentroidVector = this._camera._view
-        .multiplyByVector(transformedCentroidVector);
-    var distanceFromEye = goog.math.Vec3.distance(this._camera._focus,
-        realCentroidVector);
-    objects[i].distance = distanceFromEye;
+    // attach the distance from the eye to the object
+    object._distance = this.distanceToEye_(object);
     
-    // we need to update the tree
-    reSortTreeRequired = true;
+    // we need to update the rendering order
+    reSortRequired = true;
     
   } while (i--);
   
   // only re-sort the tree if required
-  if (reSortTreeRequired) {
+  if (reSortRequired) {
     
-    // re-sort the tree by clearing and re-adding all objects
-    // should be fast..
-    this._objects.clear();
-    
-    i = numberOfObjects - 1;
-    do {
-      
-      this._objects.add(objects[i]);
-      
-    } while (i--);
+    this._objects.sort();
     
   }
   
@@ -1949,7 +1982,7 @@ X.renderer.prototype.pick = function(x, y) {
 X.renderer.prototype.render_ = function(picking, invoked) {
 
   // only proceed if there are actually objects to render
-  var objects = this._objects.getValues();
+  var objects = this._objects.values();
   var numberOfObjects = objects.length;
   if (numberOfObjects == 0) {
     // there is nothing to render
@@ -2007,6 +2040,19 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       parseFloat(center[0]), parseFloat(center[1]), parseFloat(center[2]));
   
   //
+  // orient volumes for proper volume rendering - if there are any,
+  // this means, depending on the direction of the eye, we use the slice stack
+  // of a specific axis to create the tiled texture
+  var i;
+  var topLevelObjectsLength = this._topLevelObjects.length;
+  for (i = 0; i < topLevelObjectsLength; ++i) {
+    var topLevelObject = this._topLevelObjects[i];
+    if (topLevelObject instanceof X.volume) {
+      this.orientVolume_(topLevelObject);
+    }
+  }
+  
+  //
   // re-order the objects, but only if enabled.
   // this ordering should be disabled if the objects' opacity settings are not
   // used or if a large number of objects are associated
@@ -2025,19 +2071,6 @@ X.renderer.prototype.render_ = function(picking, invoked) {
     var linesCounter = 0;
     var pointsCounter = 0;
     
-  }
-  
-  //
-  // orient volumes for proper volume rendering - if there are any,
-  // this means, depending on the direction of the eye, we use the slice stack
-  // of a specific axis to create the tiled texture
-  var i;
-  var topLevelObjectsLength = this._topLevelObjects.length;
-  for (i = 0; i < topLevelObjectsLength; ++i) {
-    var topLevelObject = this._topLevelObjects[i];
-    if (topLevelObject instanceof X.volume) {
-      this.orientVolume_(topLevelObject);
-    }
   }
   
   //
@@ -2087,7 +2120,6 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   // loop through all objects and (re-)draw them
   
   i = numberOfObjects;
-  
   do {
     
     var object = objects[numberOfObjects - i];
