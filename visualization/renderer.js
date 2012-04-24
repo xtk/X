@@ -1759,36 +1759,35 @@ X.renderer.prototype.orientVolume_ = function(volume) {
   // here
   var centroidVector = new goog.math.Vec3(1, 0, 0);
   var realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  var distanceFromEyeX = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeX = goog.math.Vec3.distance(this._camera._position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(-1, 0, 0);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  var distanceFromEyeX2 = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeX2 = goog.math.Vec3.distance(this._camera._position,
       realCentroidVector);
   
   centroidVector = new goog.math.Vec3(0, 1, 0);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  var distanceFromEyeY = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeY = goog.math.Vec3.distance(this._camera._position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(0, -1, 0);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  var distanceFromEyeY2 = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeY2 = goog.math.Vec3.distance(this._camera._position,
       realCentroidVector);
   
   centroidVector = new goog.math.Vec3(0, 0, 1);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  var distanceFromEyeZ = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeZ = goog.math.Vec3.distance(this._camera._position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(0, 0, -1);
   realCentroidVector = this._camera.view().multiplyByVector(centroidVector);
-  var distanceFromEyeZ2 = goog.math.Vec3.distance(this._camera.focus(),
+  var distanceFromEyeZ2 = goog.math.Vec3.distance(this._camera._position,
       realCentroidVector);
   
   var maxDistance = Math
       .max(distanceFromEyeX, distanceFromEyeY, distanceFromEyeZ,
           distanceFromEyeX2, distanceFromEyeY2, distanceFromEyeZ2);
   
-  window.console.time('volumeRendering');
   if (maxDistance == distanceFromEyeX || maxDistance == distanceFromEyeX2) {
     volume.volumeRendering_(0);
   } else if (maxDistance == distanceFromEyeY ||
@@ -1798,7 +1797,6 @@ X.renderer.prototype.orientVolume_ = function(volume) {
       maxDistance == distanceFromEyeZ2) {
     volume.volumeRendering_(2);
   }
-  window.console.timeEnd('volumeRendering');
   
 };
 
@@ -2041,7 +2039,6 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   this._gl.uniform3f(this._uniformLocations.get(X.shaders.uniforms.CENTER),
       parseFloat(center[0]), parseFloat(center[1]), parseFloat(center[2]));
   
-  window.console.time('orientVolumes');
   //
   // orient volumes for proper volume rendering - if there are any,
   // this means, depending on the direction of the eye, we use the slice stack
@@ -2054,9 +2051,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       this.orientVolume_(topLevelObject);
     }
   }
-  window.console.timeEnd('orientVolumes');
   
-  window.console.time('order');
   //
   // re-order the objects, but only if enabled.
   // this ordering should be disabled if the objects' opacity settings are not
@@ -2066,7 +2061,6 @@ X.renderer.prototype.render_ = function(picking, invoked) {
     this.order_();
     
   }
-  window.console.timeEnd('order');
   
   var statisticsEnabled = (!picking && goog.isDefAndNotNull(invoked) && invoked && this['config']['STATISTICS_ENABLED']);
   if (statisticsEnabled) {
@@ -2126,7 +2120,6 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   // loop through all objects and (re-)draw them
   
   i = numberOfObjects;
-  window.console.time('realRenderingLoop');
   do {
     
     var object = objects[numberOfObjects - i];
@@ -2482,7 +2475,6 @@ X.renderer.prototype.render_ = function(picking, invoked) {
     }
     
   } while (--i); // loop through objects
-  window.console.timeEnd('realRenderingLoop');
   
   if (statisticsEnabled) {
     
