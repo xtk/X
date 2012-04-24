@@ -262,6 +262,7 @@ X.volume.prototype.create_ = function() {
       var width = 0;
       var height = 0;
       var borderColor = [1, 1, 1];
+      var borders = this._borders;
       if (xyz == 0) {
         // for x slices
         width = this._dimensions[2] * this._spacing[2] - this._spacing[2];
@@ -279,20 +280,20 @@ X.volume.prototype.create_ = function() {
         borderColor = [0, 1, 0];
       }
       
+      // for labelmaps, don't create the borders since this would create them 2x
+      if (goog.isDefAndNotNull(this._volume)) {
+        borders = false;
+      }
+      
       // .. new slice
       var _slice = new X.slice(_center[xyz], _front[xyz], _up[xyz], width,
-          height, this._borders, borderColor);
+          height, borders, borderColor);
       _slice._volume = this;
       
       // only show the middle slice, hide everything else
       _slice._hideChildren = false;
       _slice.setVisible(i == Math.floor(_indexCenter));
       _slice._hideChildren = true;
-      if (i == Math.floor(_indexCenter)) {
-        
-        console.log(_slice);
-        
-      }
       
       // attach to all _slices with the correct slice index
       slices.push(_slice);
@@ -336,10 +337,29 @@ X.volume.prototype.modified = function() {
     
     if (this['_volumeRendering']) {
       
+      // first, hide possible slicing slices
+      var _sliceX = this.children()[0].children()[parseInt(this['_indexX'], 10)];
+      _sliceX._hideChildren = false;
+      _sliceX.setVisible(false);
+      _sliceX._hideChildren = true;
+      var _sliceY = this.children()[1].children()[parseInt(this['_indexY'], 10)];
+      _sliceY._hideChildren = false;
+      _sliceY.setVisible(false);
+      _sliceY._hideChildren = true;
+      var _sliceZ = this.children()[2].children()[parseInt(this['_indexZ'], 10)];
+      _sliceZ._hideChildren = false;
+      _sliceZ.setVisible(false);
+      _sliceZ._hideChildren = true;
+      
+
       // prepare volume rendering
       this.volumeRendering_(this._volumeRenderingDirection);
       
     } else {
+      
+      // hide the volume rendering slices
+      var _child = this.children()[this._volumeRenderingDirection];
+      _child.setVisible(false);
       
       // prepare slicing
       this.slicing_();
@@ -359,15 +379,6 @@ X.volume.prototype.modified = function() {
  */
 X.volume.prototype.slicing_ = function() {
 
-  if (this._dirty) {
-    
-    // hide the volume rendering slices
-    var _child = this.children()[this._volumeRenderingDirection];
-    _child.setVisible(false);
-    console.log('visi1223');
-    
-  }
-  
   // display the current slices in X,Y and Z direction
   var xyz = 0; // 0 for x, 1 for y, 2 for z
   for (xyz = 0; xyz < 3; xyz++) {
@@ -376,6 +387,7 @@ X.volume.prototype.slicing_ = function() {
     var currentIndex = 0;
     var oldIndex = 0;
     
+    // buffer the old indices
     if (xyz == 0) {
       currentIndex = this['_indexX'];
       oldIndex = this._indexXold;
@@ -401,7 +413,6 @@ X.volume.prototype.slicing_ = function() {
     _currentSlice._hideChildren = false;
     _currentSlice.setVisible(true);
     _currentSlice._hideChildren = true;
-    console.log('visi2324421');
     
   }
   
@@ -521,14 +532,6 @@ X.volume.prototype.volumeRendering_ = function(direction) {
     
   }
   
-  // first, hide possible slicing slices
-  this.children()[0].children()[parseInt(this['_indexX'], 10)]
-      .setVisible(false);
-  this.children()[1].children()[parseInt(this['_indexY'], 10)]
-      .setVisible(false);
-  this.children()[2].children()[parseInt(this['_indexZ'], 10)]
-      .setVisible(false);
-  
   // hide old volume rendering slices
   var _child = this.children()[this._volumeRenderingDirection];
   _child.setVisible(false);
@@ -536,15 +539,6 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   // show new volume rendering slices
   _child = this.children()[direction];
   _child.setVisible(true);
-  // turn off all borders
-  var s = 0;
-  var b = 0;
-  for (s in _child.children()) {
-    for (b in _child.children()[s].children()) {
-      _child.children()[s].children()[b].setVisible(false);
-      console.log('3424ddd');
-    }
-  }
   
   // store the direction
   this._volumeRenderingDirection = direction;
