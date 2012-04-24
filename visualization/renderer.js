@@ -1535,11 +1535,7 @@ X.renderer.prototype.update_ = function(object) {
   // add the object to the internal tree which reflects the rendering order
   // (based on opacity)
   if (!existed) {
-    if (!this._objects.add(object)) {
-      
-      throw new Error('Could not add object to this renderer.');
-      
-    }
+    this._objects.add(object);
   }
   
   // add the buffers for the object to the internal hash maps
@@ -1807,6 +1803,21 @@ X.renderer.prototype.orientVolume_ = function(volume) {
 };
 
 
+X.renderer.prototype.distanceToEye_ = function(object, centroid) {
+
+  var centroidVector = new goog.math.Vec3(centroid[0], centroid[1], centroid[2]);
+  var transformedCentroidVector = object._transform._matrix
+      .multiplyByVector(centroidVector);
+  var realCentroidVector = this._camera._view
+      .multiplyByVector(transformedCentroidVector);
+  var distanceFromEye = goog.math.Vec3.distance(this._camera._focus,
+      realCentroidVector);
+  
+  return distanceFromEye;
+  
+};
+
+
 /**
  * Calculates the distance for each associated X.object and orders objects array
  * accordingly from back-to-front while fully opaque objects are drawn first.
@@ -1814,90 +1825,113 @@ X.renderer.prototype.orientVolume_ = function(volume) {
  */
 X.renderer.prototype.order_ = function() {
 
-  // by default we do not want to update the tree
-  var reSortTreeRequired = false;
+  // by default we do not want to update the rendering order
+  var reSortRequired = false;
+  
+  window.console.time('firstLoop');
+  
+  var topLevelObjects = this._topLevelObjects;
+  var numberOfTopLevelObjects = topLevelObjects.length;
+  var t;
+  t = numberOfTopLevelObjects - 1;
+  do {
+    
+    var object = topLevelObjects[t];
+    
+    // special case for X.volumes in volumeRendering mode
+    // a) we know the volumeRendering direction and the center of the volume
+    // b) based on this we can minimize the expensive distance calculation to
+    // the first and last slices
+    // c) .. and get the distance for the other slices by simple multiplication
+    if (object instanceof X.volume && object['_volumeRendering']) {
+      
+      var _volumeRenderingDirection = object._volumeRenderingDirection;
+      
+      var _slices = object._slicesX.children();
+      if (_volumeRenderingDirection == 1) {
+        _slices = object._slicesY.children();
+      } else if (_volumeRenderingDirection == 2) {
+        _slices = object._slicesZ.children();
+      }
+      
+      var numberOfSlices = _slices.length;
+      
+      // grab the first slice, attach the distance and opacity
+      var firstSlice = _slices[0];
+      firstSlice.distance = this.distanceToEye_(firstSlice,
+          firstSlice._points._centroid);
+      firstSlice['_opacity'] = object['_opacity'];
+      
+      // grab the last slice, attach the distance and opacity
+      var lastSlice = _slices[numberOfSlices - 1];
+      lastSlice.distance = this.distanceToEye_(lastSlice,
+          lastSlice._points._centroid);
+      lastSlice['_opacity'] = object['_opacity'];
+      
+      // get the distanceDifference the distanceStep
+      // if these are > 0: the firstSlice is closer to the eye
+      // if these are < 0: the lastSlice is closer to the eye
+      var distanceDifference = lastSlice.distance - firstSlice.distance;
+      var distanceStep = distanceDifference / numberOfSlices;
+      
+      // loop through all other slices in the volumeRendering direction and
+      // calculate the distance and attach the opacity
+      var s = 1;
+      for (s = 1; s < numberOfSlices - 1; s++) {
+        
+        _slices[s].distance = firstSlice.distance + (s * distanceStep);
+        _slices[s]['_opacity'] = object['_opacity'];
+        
+      }
+      
+      // we need to update the rendering order
+      reSortRequired = true;
+      
+    }
+    
+  } while (t--);
   
   var objects = this._objects.values();
   var numberOfObjects = objects.length;
-  window.console.time('firstLoop');
+  
   var i;
   i = numberOfObjects - 1;
   do {
     
     var object = objects[i];
-    if (!object) {
-      return;
+    
+    if (!object['_visible']) {
+      continue;
     }
     
-    var opacity = object['_opacity'];
-    
-    // if we order X.slice-s of an X.volume, we want to use the opacity of the
-    // parent volume but only in volume rendering mode
-    var volume = object._volume;
-    if (object instanceof X.slice) {
+    // the following cases do not need to be calculated
+    // a) opacity is 1
+    // b) object is an X.slice since we take care of that when grabbing the
+    // volume
+    if ((object['_opacity'] == 1) || (object instanceof X.slice)) {
       
-      // continue;
-      
-      if (volume && volume['_volumeRendering']) {
-        
-        // X.slices are only transparent in volume rendering mode
-        opacity = object['_opacity'] = object._volume['_opacity'];
-        
-      } else {
-        
-        // no volume rendering, so the X.slice is fully opaque
-        opacity = object['_opacity'] = 1.0;
-        
-      }
-      
-    }
-    
-    if (opacity == 1) {
-      
-      // this object is fully opaque, we do not need to calculate the distance
       continue;
       
     }
-    // console.log('obj:', object);
-    var centroid = object._points._centroid;
-    var centroidVector = new goog.math.Vec3(centroid[0], centroid[1],
-        centroid[2]);
-    var transformedCentroidVector = object._transform._matrix
-        .multiplyByVector(centroidVector);
-    var realCentroidVector = this._camera._view
-        .multiplyByVector(transformedCentroidVector);
-    var distanceFromEye = goog.math.Vec3.distance(this._camera._focus,
-        realCentroidVector);
-    objects[i].distance = distanceFromEye;
     
-    // we need to update the tree
-    reSortTreeRequired = true;
+    // attach the distance from the eye to the object
+    object.distance = this.distanceToEye_(object, object._points._centroid);
+    
+    // we need to update the rendering order
+    reSortRequired = true;
     
   } while (i--);
+  
   window.console.timeEnd('firstLoop');
   
-  window.console.time('secondLoop');
   // only re-sort the tree if required
-  if (reSortTreeRequired) {
-    
-    window.console.time('clearTree');
-    // re-sort the tree by clearing and re-adding all objects
-    // should be fast..
-    // this._objects.clear();
-    window.console.timeEnd('clearTree');
+  if (reSortRequired) {
     
     window.console.time('addLoop');
-    // i = numberOfObjects - 1;
-    // do {
-    //      
     this._objects.sort();
-    // this._objects.add(objects[i]);
-    //      
-    // } while (i--);
     window.console.timeEnd('addLoop');
     
   }
-  window.console.time('secondLoop');
   
 };
 
@@ -2010,6 +2044,21 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   this._gl.uniform3f(this._uniformLocations.get(X.shaders.uniforms.CENTER),
       parseFloat(center[0]), parseFloat(center[1]), parseFloat(center[2]));
   
+  window.console.time('orientVolumes');
+  //
+  // orient volumes for proper volume rendering - if there are any,
+  // this means, depending on the direction of the eye, we use the slice stack
+  // of a specific axis to create the tiled texture
+  var i;
+  var topLevelObjectsLength = this._topLevelObjects.length;
+  for (i = 0; i < topLevelObjectsLength; ++i) {
+    var topLevelObject = this._topLevelObjects[i];
+    if (topLevelObject instanceof X.volume) {
+      this.orientVolume_(topLevelObject);
+    }
+  }
+  window.console.timeEnd('orientVolumes');
+  
   window.console.time('order');
   //
   // re-order the objects, but only if enabled.
@@ -2032,21 +2081,6 @@ X.renderer.prototype.render_ = function(picking, invoked) {
     var pointsCounter = 0;
     
   }
-  
-  window.console.time('orientVolumes');
-  //
-  // orient volumes for proper volume rendering - if there are any,
-  // this means, depending on the direction of the eye, we use the slice stack
-  // of a specific axis to create the tiled texture
-  var i;
-  var topLevelObjectsLength = this._topLevelObjects.length;
-  for (i = 0; i < topLevelObjectsLength; ++i) {
-    var topLevelObject = this._topLevelObjects[i];
-    if (topLevelObject instanceof X.volume) {
-      this.orientVolume_(topLevelObject);
-    }
-  }
-  window.console.timeEnd('orientVolumes');
   
   //
   // caching for multiple objects

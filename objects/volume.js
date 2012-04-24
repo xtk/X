@@ -367,7 +367,6 @@ X.volume.prototype.modified = function() {
     }
   }
   
-
   // call the superclass' modified method
   X.volume.superClass_.modified.call(this);
   
