@@ -44,22 +44,6 @@ goog.require('goog.structs.Map');
  * @constructor
  * @extends X.base
  */
-
-X.triplets = {
-  
-  'className': 'sdsd',
-  doSomething: function() {
-
-    return 1 + 1;
-  }
-
-}
-
-a = new X.triplets();
-a.min()
-
-
-
 X.triplets = function(data) {
 
   //
