@@ -76,16 +76,16 @@ X.triplets = function(data) {
   this._triplets_ = new Array();
   
   // if we have initial data, use it!
-  if (goog.isDefAndNotNull(data) && (data instanceof X.triplets)) {
+  if (goog.isDefAndNotNull(data)) {
     
-    this._triplets_ = data.all().slice();
-    this._minA = data.minA();
-    this._maxA = data.maxA();
-    this._minB = data.minB();
-    this._maxB = data.maxB();
-    this._minC = data.minC();
-    this._maxC = data.maxC();
-    this._centroid = data.centroid().slice();
+    this._triplets_ = data._triplets_.slice();
+    this._minA = data._minA;
+    this._maxA = data._maxA;
+    this._minB = data._minB;
+    this._maxB = data._maxB;
+    this._minC = data._minC;
+    this._maxC = data._maxC;
+    this._centroid = data._centroid.slice();
     
   }
   

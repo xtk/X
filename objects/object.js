@@ -287,7 +287,7 @@ X.object.prototype.copy_ = function(object) {
 
   this['_type'] = object['_type'];
   
-  // this._transform.setMatrix(new X.matrix(object._transform._matrix));
+  this._transform.setMatrix(new X.matrix(object._transform._matrix.array_));
   
   this['_color'] = new Array(object['_color']);
   
