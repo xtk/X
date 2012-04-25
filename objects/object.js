@@ -285,44 +285,44 @@ X.object.types = {
  */
 X.object.prototype.copy_ = function(object) {
 
-  this['_type'] = object.type();
+  this['_type'] = object['_type'];
   
-  this._transform.setMatrix(new X.matrix(object.transform().matrix()));
+  // this._transform.setMatrix(new X.matrix(object._transform._matrix));
   
-  this['_color'] = new Array(object.color());
+  this['_color'] = new Array(object['_color']);
   
-  this._points = new X.triplets(object.points());
+  this._points = new X.triplets(object._points);
   
-  this._normals = new X.triplets(object.normals());
+  this._normals = new X.triplets(object._normals);
   
-  this._colors = new X.triplets(object.colors());
+  this._colors = new X.triplets(object._colors);
   
   // do we need to copy this? maybe not
-  this._texture = object.texture();
-  this._textureCoordinateMap = object.textureCoordinateMap();
+  this._texture = object._texture;
+  this._textureCoordinateMap = object._textureCoordinateMap;
   
-  if (object.file()) {
+  if (object._file) {
     // only if a file is configured
-    this._file = new X.file(new String(object.file().path()).toString());
+    this._file = new X.file(new String(object._file._path).toString());
   }
   
-  this['_opacity'] = object.opacity();
+  this['_opacity'] = object['_opacity'];
   
   // note: children are not copied
-  this._children = object.children();
+  this._children = object._children;
   
-  this['_visible'] = object.visible();
+  this['_visible'] = object['_visible'];
   
-  this['_pointSize'] = object.pointSize();
+  this['_pointSize'] = object['_pointSize'];
   
-  this['_lineWidth'] = object.lineWidth();
+  this['_lineWidth'] = object['_lineWidth'];
   
-  if (object.caption()) {
+  if (object['_caption']) {
     // only if a caption is configured
-    this['_caption'] = new String(object.caption()).toString();
+    this['_caption'] = new String(object['_caption']).toString();
   }
   
-  this['_magicMode'] = object.magicMode();
+  this['_magicMode'] = object['_magicMode'];
   
   this._dirty = true;
   
