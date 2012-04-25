@@ -1248,6 +1248,7 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
 goog.exportSymbol('X.object', X.object);
 goog.exportSymbol('X.object.prototype.id', X.object.prototype.id);
 goog.exportSymbol('X.object.prototype.type', X.object.prototype.type);
+goog.exportSymbol('X.object.prototype.setType', X.object.prototype.setType);
 goog.exportSymbol('X.object.prototype.transform', X.object.prototype.transform);
 goog.exportSymbol('X.object.prototype.points', X.object.prototype.points);
 goog.exportSymbol('X.object.prototype.normals', X.object.prototype.normals);

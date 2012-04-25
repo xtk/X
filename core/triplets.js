@@ -44,6 +44,22 @@ goog.require('goog.structs.Map');
  * @constructor
  * @extends X.base
  */
+
+X.triplets = {
+  
+  'className': 'sdsd',
+  doSomething: function() {
+
+    return 1 + 1;
+  }
+
+}
+
+a = new X.triplets();
+a.min()
+
+
+
 X.triplets = function(data) {
 
   //
@@ -59,12 +75,12 @@ X.triplets = function(data) {
    */
   this['_className'] = 'triplets';
   
-  this._minA = null;
-  this._maxA = null;
-  this._minB = null;
-  this._maxB = null;
-  this._minC = null;
-  this._maxC = null;
+  this._minA = Infinity;
+  this._maxA = -Infinity;
+  this._minB = Infinity;
+  this._maxB = -Infinity;
+  this._minC = Infinity;
+  this._maxC = -Infinity;
   this._centroid = [0, 0, 0];
   
   /**
@@ -111,32 +127,34 @@ X.triplets.prototype.add = function(a, b, c) {
     
   }
   
+  this.parseTriplet_(a, b, c);
+  
+  this._dirty = true;
+  return this._triplets_.push(a, b, c) / 3;
+  
+};
+
+
+/**
+ * Calculate the bounding box by parsing a triplet.
+ * 
+ * @param {!number} a The first value of the triplet.
+ * @param {!number} b The second value of the triplet.
+ * @param {!number} c The third value of the triplet.
+ */
+X.triplets.prototype.parseTriplet_ = function(a, b, c) {
+
   // update bounding box
-  if (!this._minA || a < this._minA) {
-    this._minA = a;
-  }
-  if (!this._maxA || a > this._maxA) {
-    this._maxA = a;
-  }
-  if (!this._minB || b < this._minB) {
-    this._minB = b;
-  }
-  if (!this._maxB || b > this._maxB) {
-    this._maxB = b;
-  }
-  if (!this._minC || c < this._minC) {
-    this._minC = c;
-  }
-  if (!this._maxC || c > this._maxC) {
-    this._maxC = c;
-  }
+  this._minA = Math.min(this._minA, a);
+  this._maxA = Math.max(this._maxA, a);
+  this._minB = Math.min(this._minB, b);
+  this._maxB = Math.max(this._maxB, b);
+  this._minC = Math.min(this._minC, c);
+  this._maxC = Math.max(this._maxC, c);
   
   this._centroid = [(this._minA + this._maxA) / 2,
                     (this._minB + this._maxB) / 2,
                     (this._minC + this._maxC) / 2];
-  
-  this._dirty = true;
-  return this._triplets_.push(a, b, c) / 3;
   
 };
 
@@ -195,6 +213,57 @@ X.triplets.prototype.remove = function(id) {
 X.triplets.prototype.all = function() {
 
   return this._triplets_;
+  
+};
+
+
+/**
+ * Set all triplets as a sequence. If one or more values of the bounding box are
+ * missing, a re-calculation is forced.
+ * 
+ * @param {!Array} triplets All triplets as a sequence in a 1D Array.
+ * @param {number=} minA The minA value.
+ * @param {number=} maxA The maxA value.
+ * @param {number=} minB The minB value.
+ * @param {number=} maxB The maxB value.
+ * @param {number=} minC The minC value.
+ * @param {number=} maxC The maxC value.
+ * @param {number=} centroid The centroid.
+ */
+X.triplets.prototype.setAll = function(triplets, minA, maxA, minB, maxB, minC,
+    maxC, centroid) {
+
+  this._triplets_ = triplets;
+  
+  if (!goog.isDefAndNotNull(minA) || !goog.isDefAndNotNull(maxA) ||
+      !goog.isDefAndNotNull(minB) || !goog.isDefAndNotNull(maxB) ||
+      !goog.isDefAndNotNull(minC) || !goog.isDefAndNotNull(maxC) ||
+      !goog.isDefAndNotNull(centroid)) {
+    
+    // we can set the bounding box directly (yahoo, this is fast)
+    this._minA = minA;
+    this._maxA = maxA;
+    this._minB = minB;
+    this._maxB = maxB;
+    this._minC = minC;
+    this._maxC = maxC;
+    this._centroid = centroid;
+    
+
+  } else {
+    
+    // we have to update the bounding box (a little slower)
+    var i = 0;
+    for (i = 0; i < this.count(); i++) {
+      
+      var _triplet = this.get(i);
+      this.parseTriplet_(_triplet[0], _triplet[1], _triplet[2]);
+      
+    }
+    
+  }
+  
+  this._dirty = true;
   
 };
 
@@ -288,6 +357,15 @@ goog.exportSymbol('X.triplets.prototype.add', X.triplets.prototype.add);
 goog.exportSymbol('X.triplets.prototype.get', X.triplets.prototype.get);
 goog.exportSymbol('X.triplets.prototype.remove', X.triplets.prototype.remove);
 goog.exportSymbol('X.triplets.prototype.all', X.triplets.prototype.all);
+goog.exportSymbol('X.triplets.prototype.setAll', X.triplets.prototype.setAll);
 goog.exportSymbol('X.triplets.prototype.clear', X.triplets.prototype.clear);
 goog.exportSymbol('X.triplets.prototype.count', X.triplets.prototype.count);
 goog.exportSymbol('X.triplets.prototype.length', X.triplets.prototype.length);
+goog.exportSymbol('X.triplets.prototype.minA', X.triplets.prototype.minA);
+goog.exportSymbol('X.triplets.prototype.maxA', X.triplets.prototype.maxA);
+goog.exportSymbol('X.triplets.prototype.minB', X.triplets.prototype.minB);
+goog.exportSymbol('X.triplets.prototype.maxB', X.triplets.prototype.maxB);
+goog.exportSymbol('X.triplets.prototype.minC', X.triplets.prototype.minC);
+goog.exportSymbol('X.triplets.prototype.maxC', X.triplets.prototype.maxC);
+goog.exportSymbol('X.triplets.prototype.centroid',
+    X.triplets.prototype.centroid);
