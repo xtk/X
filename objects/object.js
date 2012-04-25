@@ -289,7 +289,7 @@ X.object.prototype.copy_ = function(object) {
   
   this._transform.setMatrix(new X.matrix(object._transform._matrix.array_));
   
-  this['_color'] = new Array(object['_color']);
+  this['_color'] = object['_color'].slice();
   
   this._points = new X.triplets(object._points);
   
