@@ -942,7 +942,7 @@ X.renderer.prototype.update_ = function(object) {
     
   }
   
-  if (!goog.isDefAndNotNull(object) || !(object instanceof X.object)) {
+  if (!goog.isDefAndNotNull(object)) {
     window.console.log(object);
     throw new Error('Illegal object.');
     
@@ -951,7 +951,7 @@ X.renderer.prototype.update_ = function(object) {
   // check if object already existed..
   var existed = false;
   
-  if (this.get(object.id())) {
+  if (this.get(object['_id'])) {
     // this means, we are updating
     existed = true;
     
@@ -965,14 +965,14 @@ X.renderer.prototype.update_ = function(object) {
     
   }
   
-  var id = object.id();
-  var points = object.points();
-  var normals = object.normals();
-  var colors = object.colors();
-  var texture = object.texture();
-  var file = object.file();
-  var transform = object.transform();
-  var colorTable = object.colorTable();
+  var id = object['_id'];
+  var points = object._points;
+  var normals = object._normals;
+  var colors = object._colors;
+  var texture = object._texture;
+  var file = object._file;
+  var transform = object._transform;
+  var colorTable = object._colorTable;
   var labelMap = object._labelMap; // here we access directly since we do not
   // want to create one using the labelMap() singleton accessor
   var scalars = object._scalars; // same direct access policy
@@ -980,8 +980,8 @@ X.renderer.prototype.update_ = function(object) {
   //
   // LABEL MAP
   //
-  if (goog.isDefAndNotNull(labelMap) && goog.isDefAndNotNull(labelMap.file()) &&
-      labelMap.file().dirty()) {
+  if (goog.isDefAndNotNull(labelMap) && goog.isDefAndNotNull(labelMap._file) &&
+      labelMap._file._dirty) {
     // a labelMap file is associated to this object and it is dirty..
     // background: we always want to parse label maps first
     
@@ -1000,7 +1000,7 @@ X.renderer.prototype.update_ = function(object) {
   // in these cases, we do not directly update the object but activate the
   // X.loader to get the externals and then let it call the update method
   if (goog.isDefAndNotNull(colorTable) &&
-      goog.isDefAndNotNull(colorTable.file()) && colorTable.file().dirty()) {
+      goog.isDefAndNotNull(colorTable._file) && colorTable._file._dirty) {
     // a colorTable file is associated to this object and it is dirty..
     
     // start loading
@@ -1009,7 +1009,7 @@ X.renderer.prototype.update_ = function(object) {
     return;
     
   } else if (goog.isDefAndNotNull(texture) &&
-      goog.isDefAndNotNull(texture.file()) && texture.file().dirty()) {
+      goog.isDefAndNotNull(texture._file) && texture._file._dirty) {
     // a texture file is associated to this object and it is dirty..
     
     // start loading..
@@ -1017,7 +1017,7 @@ X.renderer.prototype.update_ = function(object) {
     
     return;
     
-  } else if (goog.isDefAndNotNull(file) && file.dirty()) {
+  } else if (goog.isDefAndNotNull(file) && file._dirty) {
     // this object is based on an external file and it is dirty..
     
     // start loading..
@@ -1026,7 +1026,7 @@ X.renderer.prototype.update_ = function(object) {
     return;
     
   } else if (goog.isDefAndNotNull(scalars) &&
-      goog.isDefAndNotNull(scalars.file()) && scalars.file().dirty()) {
+      goog.isDefAndNotNull(scalars._file) && scalars._file._dirty) {
     // a scalars container is associated to this object and it's associated file
     // is dirty
     
@@ -1043,7 +1043,7 @@ X.renderer.prototype.update_ = function(object) {
   // so on
   //
   // check if this object has children
-  if (object.dirty() && object.children().length > 0) {
+  if (object._dirty && object.children().length > 0) {
     
     // loop through the children and recursively setup the object
     var children = object.children();
@@ -1093,7 +1093,7 @@ X.renderer.prototype.update_ = function(object) {
   // TEXTURE
   //
   
-  if (existed && goog.isDefAndNotNull(texture) && texture.dirty()) {
+  if (existed && goog.isDefAndNotNull(texture) && texture._dirty) {
     
     // this means the object already existed and the texture is dirty
     // therefore, we delete the old gl buffers
@@ -1114,12 +1114,12 @@ X.renderer.prototype.update_ = function(object) {
   if (goog.isDefAndNotNull(texture)) {
     // texture associated to this object
     
-    if (!existed || texture.dirty()) {
+    if (!existed || texture._dirty) {
       
       // the object either did not exist or the texture is dirty, so we
       // re-create the gl buffers
       
-      var textureCoordinateMap = object.textureCoordinateMap();
+      var textureCoordinateMap = object._textureCoordinateMap;
       
       // check if we have a valid texture-to-object's-coordinate map
       if (!goog.isDefAndNotNull(textureCoordinateMap)) {
@@ -1136,19 +1136,19 @@ X.renderer.prototype.update_ = function(object) {
       var glTexture = this._gl.createTexture();
       
       // connect the image and the glTexture
-      glTexture.image = texture.image();
+      glTexture.image = texture._image;
       
       //
       // activate the texture on the WebGL side
-      this._textures.set(texture.id(), glTexture);
+      this._textures.set(texture['_id'], glTexture);
       
       this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
-      if (texture.rawData()) {
+      if (texture._rawData) {
         
         // use rawData rather than loading an imagefile
         this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, texture
             .rawDataWidth(), texture.rawDataHeight(), 0, this._gl.RGBA,
-            this._gl.UNSIGNED_BYTE, texture.rawData());
+            this._gl.UNSIGNED_BYTE, texture._rawData);
         
         this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S,
             this._gl.CLAMP_TO_EDGE);
@@ -1241,7 +1241,7 @@ X.renderer.prototype.update_ = function(object) {
   // The global bounding incorporates all individual bounding boxes of the
   // objects. This bounding box only changes if either the points or the
   // transform are dirty.
-  if (points.dirty() || transform.dirty()) {
+  if (points._dirty || transform._dirty) {
     var transformationMatrix = transform.matrix();
     
     var tMin = transformationMatrix.multiplyByVector(new goog.math.Vec3(points
@@ -1281,7 +1281,7 @@ X.renderer.prototype.update_ = function(object) {
   // VERTICES
   //
   
-  if (existed && points.dirty()) {
+  if (existed && points._dirty) {
     
     // this means the object already existed and the points are dirty
     // therefore, we delete the old gl buffers
@@ -1302,7 +1302,7 @@ X.renderer.prototype.update_ = function(object) {
   
   var vertexBuffer = null;
   
-  if (!existed || points.dirty()) {
+  if (!existed || points._dirty) {
     
     // the object either did not exist or the points are dirty, so we re-create
     // the gl buffers and reset the bounding box
@@ -1336,7 +1336,7 @@ X.renderer.prototype.update_ = function(object) {
   // NORMALS
   //
   
-  if (existed && normals.dirty()) {
+  if (existed && normals._dirty) {
     
     // this means the object already existed and the points are dirty
     // therefore, we delete the old gl buffers
@@ -1357,7 +1357,7 @@ X.renderer.prototype.update_ = function(object) {
   
   var normalBuffer = null;
   
-  if (!existed || normals.dirty()) {
+  if (!existed || normals._dirty) {
     
     // the object either did not exist or the normals are dirty, so we re-create
     // the gl buffers
@@ -1393,7 +1393,7 @@ X.renderer.prototype.update_ = function(object) {
   // Objects can have point colors which can be different for each fragment.
   // If no point colors are defined, the object has a solid color.
   
-  if (existed && colors.dirty()) {
+  if (existed && colors._dirty) {
     
     // this means the object already existed and the colors are dirty
     // therefore, we delete the old gl buffers
@@ -1418,7 +1418,7 @@ X.renderer.prototype.update_ = function(object) {
     
     // yes, there are point colors setup
     
-    if (!existed || colors.dirty()) {
+    if (!existed || colors._dirty) {
       
       // the object either did not exist or the colors are dirty, so we
       // re-create the gl buffers
@@ -1463,7 +1463,7 @@ X.renderer.prototype.update_ = function(object) {
   //
   // Objects can have scalars attached to each vertex.
   
-  if (existed && scalars && scalars.dirty()) {
+  if (existed && scalars && scalars._dirty) {
     
     // this means the object already existed and the scalars are dirty
     // therefore, we delete the old gl buffers
@@ -1489,7 +1489,7 @@ X.renderer.prototype.update_ = function(object) {
     // yes, there are scalars setup
     var scalarsArray = scalars._glArray;
     
-    if (!existed || scalars.dirty()) {
+    if (!existed || scalars._dirty) {
       
       // the object either did not exist or the scalars are dirty, so we
       // re-create the gl buffers
@@ -1659,7 +1659,7 @@ X.renderer.prototype.generateTree_ = function(object, level) {
     
   }
   
-  output += object.id();
+  output += object['_id'];
   
   if (object.hasChildren()) {
     
@@ -1701,7 +1701,7 @@ X.renderer.prototype.get = function(id) {
   
   for (k = 0; k < numberOfObjects; k++) {
     
-    if (objects[k].id() == id) {
+    if (objects[k]['_id'] == id) {
       
       return objects[k];
       
