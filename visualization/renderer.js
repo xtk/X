@@ -943,7 +943,7 @@ X.renderer.prototype.update_ = function(object) {
   }
   
   if (!goog.isDefAndNotNull(object) || !(object instanceof X.object)) {
-    
+    window.console.log(object);
     throw new Error('Illegal object.');
     
   }

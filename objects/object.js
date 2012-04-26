@@ -281,7 +281,7 @@ X.object.types = {
  * textureCoordinateMap and the children are not copied but linked.
  * 
  * @param {!X.object} object The given object.
- * @private
+ * @protected
  */
 X.object.prototype.copy_ = function(object) {
 

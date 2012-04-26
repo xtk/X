@@ -41,9 +41,10 @@ goog.require('X.slice');
  * and can also be volume rendered.
  * 
  * @constructor
+ * @param {X.volume=} volume Another X.volume to use as a template.
  * @extends X.object
  */
-X.volume = function() {
+X.volume = function(volume) {
 
   //
   // call the standard constructor of X.base
@@ -211,9 +212,93 @@ X.volume = function() {
    */
   this._borders = true;
   
+  if (goog.isDefAndNotNull(volume)) {
+    
+    // copy the properties of the given volume over
+    this.copyVol(volume);
+    
+  }
+  
 };
 // inherit from X.object
 goog.inherits(X.volume, X.object);
+
+
+
+/**
+ * Copies the properties from a given volume to this volume.
+ * 
+ * @param {!X.volume} volume The given volume.
+ * @protected
+ */
+X.volume.prototype.copyVol = function(volume) {
+
+  this._center = volume._center.slice();
+  this._dimensions = volume._dimensions.slice();
+  this._spacing = volume._spacing.slice();
+  this['_indexX'] = volume['_indexX'];
+  this._indexXold = volume._indexXold;
+  this['_indexY'] = volume['_indexY'];
+  this._indexYold = volume._indexYold;
+  this['_indexZ'] = volume['_indexZ'];
+  this._indexZold = volume._indexZold;
+  this._slicesX = new X.object(volume._slicesX);
+  this._slicesY = new X.object(volume._slicesY);
+  this._slicesZ = new X.object(volume._slicesZ);
+  this['_lowerThreshold'] = volume['_lowerThreshold'];
+  this['_upperThreshold'] = volume['_upperThreshold'];
+  this._scalarRange = volume._scalarRange.slice();
+  this['_volumeRendering'] = volume['_volumeRendering'];
+  this._volumeRenderingOld = volume._volumeRenderingOld;
+  this._volumeRenderingDirection = volume._volumeRenderingDirection;
+  this._labelMap = volume._labelMap;
+  this._borders = volume._borders;
+  
+  var object = volume;
+  
+  this['_type'] = object['_type'];
+  
+  this._transform.setMatrix(new X.matrix(object._transform._matrix.array_));
+  
+  this['_color'] = object['_color'].slice();
+  
+  this._points = new X.triplets(object._points);
+  
+  this._normals = new X.triplets(object._normals);
+  
+  this._colors = new X.triplets(object._colors);
+  
+  // do we need to copy this? maybe not
+  this._texture = object._texture;
+  this._textureCoordinateMap = object._textureCoordinateMap;
+  
+  if (object._file) {
+    // only if a file is configured
+    this._file = new X.file(new String(object._file._path).toString());
+  }
+  
+  this['_opacity'] = object['_opacity'];
+  
+  // note: children are not copied
+  this._children = object._children;
+  
+  this['_visible'] = object['_visible'];
+  
+  this['_pointSize'] = object['_pointSize'];
+  
+  this['_lineWidth'] = object['_lineWidth'];
+  
+  if (object['_caption']) {
+    // only if a caption is configured
+    this['_caption'] = new String(object['_caption']).toString();
+  }
+  
+  this['_magicMode'] = object['_magicMode'];
+  
+  this._dirty = true;
+  
+
+};
 
 
 /**
