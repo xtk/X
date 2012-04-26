@@ -308,8 +308,26 @@ X.object.prototype.copy_ = function(object) {
   
   this['_opacity'] = object['_opacity'];
   
-  // note: children are not copied
-  this._children = object._children;
+  // 
+  // children
+  this.children().length = 0; // remove old ones
+  var _oldChildren = object._children;
+  if (_oldChildren) {
+    var _oldChildrenLength = _oldChildren.length;
+    var i = 0;
+    for (i = 0; i < _oldChildrenLength; i++) {
+      
+      this['_child'] = _oldChildren[i];
+      this['_newChild'] = this['_child'];
+      
+      // dynamic duck typing
+      var _className = this['_child']['_className'];
+      eval("this['_newChild'] = new X." + _className + "(this['_child']);");
+      
+      this.children().push(this['_newChild']);
+      
+    }
+  }
   
   this['_visible'] = object['_visible'];
   

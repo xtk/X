@@ -215,7 +215,7 @@ X.volume = function(volume) {
   if (goog.isDefAndNotNull(volume)) {
     
     // copy the properties of the given volume over
-    this.copyVol(volume);
+    this.copy_(volume);
     
   }
   
@@ -231,7 +231,7 @@ goog.inherits(X.volume, X.object);
  * @param {!X.volume} volume The given volume.
  * @protected
  */
-X.volume.prototype.copyVol = function(volume) {
+X.volume.prototype.copy_ = function(volume) {
 
   this._center = volume._center.slice();
   this._dimensions = volume._dimensions.slice();
@@ -254,50 +254,9 @@ X.volume.prototype.copyVol = function(volume) {
   this._labelMap = volume._labelMap;
   this._borders = volume._borders;
   
-  var object = volume;
+  // call the superclass' modified method
+  X.volume.superClass_.copy_.call(this, volume);
   
-  this['_type'] = object['_type'];
-  
-  this._transform.setMatrix(new X.matrix(object._transform._matrix.array_));
-  
-  this['_color'] = object['_color'].slice();
-  
-  this._points = new X.triplets(object._points);
-  
-  this._normals = new X.triplets(object._normals);
-  
-  this._colors = new X.triplets(object._colors);
-  
-  // do we need to copy this? maybe not
-  this._texture = object._texture;
-  this._textureCoordinateMap = object._textureCoordinateMap;
-  
-  if (object._file) {
-    // only if a file is configured
-    this._file = new X.file(new String(object._file._path).toString());
-  }
-  
-  this['_opacity'] = object['_opacity'];
-  
-  // note: children are not copied
-  this._children = object._children;
-  
-  this['_visible'] = object['_visible'];
-  
-  this['_pointSize'] = object['_pointSize'];
-  
-  this['_lineWidth'] = object['_lineWidth'];
-  
-  if (object['_caption']) {
-    // only if a caption is configured
-    this['_caption'] = new String(object['_caption']).toString();
-  }
-  
-  this['_magicMode'] = object['_magicMode'];
-  
-  this._dirty = true;
-  
-
 };
 
 
@@ -371,8 +330,9 @@ X.volume.prototype.create_ = function() {
       }
       
       // .. new slice
-      var _slice = new X.slice(_center[xyz], _front[xyz], _up[xyz], width,
-          height, borders, borderColor);
+      var _slice = new X.slice();
+      _slice.setup(_center[xyz], _front[xyz], _up[xyz], width, height, borders,
+          borderColor);
       _slice._volume = this;
       
       // only show the middle slice, hide everything else

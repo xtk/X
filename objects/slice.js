@@ -40,6 +40,148 @@ goog.require('goog.math.Vec3');
  * Create a displayable 2D slice/plane.
  * 
  * @constructor
+ * @param {X.slice=} slice Another X.s;ice to use as a template.
+ * @extends X.object
+ */
+X.slice = function(slice) {
+
+  //
+  // call the standard constructor of X.base
+  goog.base(this);
+  
+  //
+  // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this['_className'] = 'slice';
+  
+  /**
+   * The center of this slice as a 3d vector.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._center = [0, 0, 0];
+  
+  /**
+   * The front of this slice as a 3d vector.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._front = [0, 0, 1];
+  
+  /**
+   * The up direction of this slice as a 3d vector.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._up = [0, 1, 0];
+  
+  /**
+   * The width of this slice.
+   * 
+   * @type {number}
+   * @protected
+   */
+  this._width = 10;
+  
+  /**
+   * The height of this slice.
+   * 
+   * @type {number}
+   * @protected
+   */
+  this._height = 10;
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._textureCoordinateMap = [
+
+  0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0
+
+  ];
+  
+  /**
+   * A pointer to the parent volume of this slice.
+   * 
+   * @type {?X.volume}
+   * @protected
+   */
+  this._volume = null;
+  
+  /**
+   * The label map of this slice which is a second texture.
+   * 
+   * @type {?X.texture}
+   * @protected
+   */
+  this._labelMap = null;
+  
+  /**
+   * Flag to show borders or not.
+   * 
+   * @type {boolean}
+   * @protected
+   */
+  this._borders = true;
+  
+  /**
+   * The border color to use.
+   * 
+   * @type {Array}
+   * @protected
+   */
+  this._borderColor = [1, 1, 1];
+  
+  this._hideChildren = true;
+  
+  if (goog.isDefAndNotNull(slice)) {
+    
+    // copy the properties of the given object over
+    this.copy_(slice);
+    
+  }
+  
+};
+// inherit from X.object
+goog.inherits(X.slice, X.object);
+
+
+/**
+ * Copies the properties from a given slice to this slice.
+ * 
+ * @param {!X.slice} slice The given slice.
+ * @protected
+ */
+X.slice.prototype.copy_ = function(slice) {
+
+  this._center = slice._center.slice();
+  this._front = slice._front.slice();
+  this._up = slice._up.slice();
+  this._width = slice._width;
+  this._height = slice._height;
+  this._volume = slice._volume;
+  this._labelMap = slice._labelMap;
+  this._borders = slice._borders;
+  this._borderColor = slice._borderColor;
+  this._hideChildren = slice._hideChildren;
+  
+  // call the superclass' modified method
+  X.slice.superClass_.copy_.call(this, slice);
+  
+};
+
+
+/**
+ * Setup this X.slice and create it.
+ * 
  * @param {!Array} center The center position in 3D space as a 1-D Array with
  *          length 3.
  * @param {!Array} front A vector pointing in the direction of the front side in
@@ -50,10 +192,11 @@ goog.require('goog.math.Vec3');
  * @param {!number} height The height of the slice.
  * @param {!boolean=} borders Enable or disable borders.
  * @param {!Array=} borderColor The optional borderColor.
- * @extends X.object
  */
-X.slice = function(center, front, up, width, height, borders, borderColor) {
+X.slice.prototype.setup = function(center, front, up, width, height, borders,
+    borderColor) {
 
+  
   if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
       (center.length != 3)) {
     
@@ -100,109 +243,24 @@ X.slice = function(center, front, up, width, height, borders, borderColor) {
     
   }
   
-  //
-  // call the standard constructor of X.base
-  goog.base(this);
-  
-  //
-  // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this['_className'] = 'slice';
-  
-  /**
-   * The center of this slice as a 3d vector.
-   * 
-   * @type {!Array}
-   * @protected
-   */
+
   this._center = center;
   
-  /**
-   * The front of this slice as a 3d vector.
-   * 
-   * @type {!Array}
-   * @protected
-   */
   this._front = front;
   
-  /**
-   * The up direction of this slice as a 3d vector.
-   * 
-   * @type {!Array}
-   * @protected
-   */
   this._up = up;
   
-  /**
-   * The width of this slice.
-   * 
-   * @type {number}
-   * @protected
-   */
   this._width = width;
   
-  /**
-   * The height of this slice.
-   * 
-   * @type {number}
-   * @protected
-   */
   this._height = height;
   
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._textureCoordinateMap = [
-
-  0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0
-
-  ];
-  
-  /**
-   * A pointer to the parent volume of this slice.
-   * 
-   * @type {?X.volume}
-   * @protected
-   */
-  this._volume = null;
-  
-  /**
-   * The label map of this slice which is a second texture.
-   * 
-   * @type {?X.texture}
-   * @protected
-   */
-  this._labelMap = null;
-  
-  /**
-   * Flag to show borders or not.
-   * 
-   * @type {boolean}
-   * @protected
-   */
   this._borders = _borders;
-  
-  /**
-   * The border color to use.
-   * 
-   * @type {Array}
-   * @protected
-   */
   this._borderColor = _borderColor;
-  
-  this._hideChildren = true;
   
   // create the slice
   this.create_();
   
 };
-// inherit from X.object
-goog.inherits(X.slice, X.object);
 
 
 /**
@@ -328,3 +386,4 @@ X.slice.prototype.labelMap = function() {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.slice', X.slice);
+goog.exportSymbol('X.slice.prototype.setup', X.slice.prototype.setup);
