@@ -1249,13 +1249,24 @@ X.renderer.prototype.update_ = function(object) {
     var tMax = transformationMatrix.multiplyByVector(new goog.math.Vec3(points
         .maxA(), points.maxB(), points.maxC()));
     
-    this._minX = Math.min(this._minX, tMin.x);
-    this._maxX = Math.max(this._maxX, tMax.x);
-    this._minY = Math.min(this._minY, tMin.y);
-    this._maxY = Math.max(this._maxY, tMax.y);
-    this._minZ = Math.min(this._minZ, tMin.z);
-    this._maxZ = Math.max(this._maxZ, tMax.z);
-    
+    if (goog.isNull(this._minX) || tMin.x < this._minX) {
+      this._minX = tMin.x;
+    }
+    if (goog.isNull(this._maxX) || tMax.x > this._maxX) {
+      this._maxX = tMax.x;
+    }
+    if (goog.isNull(this._minY) || tMin.y < this._minY) {
+      this._minY = tMin.y;
+    }
+    if (goog.isNull(this._maxY) || tMax.y > this._maxY) {
+      this._maxY = tMax.y;
+    }
+    if (goog.isNull(this._minZ) || tMin.z < this._minZ) {
+      this._minZ = tMin.z;
+    }
+    if (goog.isNull(this._maxZ) || tMax.z > this._maxZ) {
+      this._maxZ = tMax.z;
+    }
     // we always keep track of the current center position
     this._center = [(this._minX + this._maxX) / 2,
                     (this._minY + this._maxY) / 2,
