@@ -215,7 +215,7 @@ X.interactor.prototype.init = function() {
     
   }
   
-  if (this['config']['MOUSEWHEEL_ENABLED']) {
+  if (this['config']['MOUSECLICKS_ENABLED']) {
     
     // mouse down
     this._mouseDownListener = goog.events.listen(this._element,
@@ -821,6 +821,7 @@ X.interactor.prototype.onKey_ = function(event) {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.interactor', X.interactor);
+goog.exportSymbol('X.interactor.prototype.init', X.interactor.prototype.init);
 goog.exportSymbol('X.interactor.prototype.onMouseDown',
     X.interactor.prototype.onMouseDown);
 goog.exportSymbol('X.interactor.prototype.onMouseUp',
