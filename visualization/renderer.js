@@ -130,12 +130,12 @@ X.renderer = function(container) {
   this._canvas = null;
   
   /**
-   * The rendering context of this renderer.
+   * The WebGL context of this renderer.
    * 
    * @type {?Object}
    * @protected
    */
-  this._context = null;
+  this._gl = null;
   
   /**
    * The shader pair for this renderer.
@@ -786,15 +786,14 @@ X.renderer.prototype.init = function() {
   // should be one of the last things to do here since we use these attributes
   // to check if the initialization was completed successfully
   this._canvas = canvas;
-  this._context = gl;
+  this._gl = gl;
   this._camera = camera;
   this._interactor = interactor;
   
   //
   // add default shaders to this renderer
   // it is possible to attach other custom shaders after this init call
-  // also, this has to happen after this._canvas, this._context and this._camera
-  // were
+  // also, this has to happen after this._canvas, this._gl and this._camera were
   // attached to this renderer since we check for these
   var defaultShaders = new X.shaders();
   this.addShaders(defaultShaders);
@@ -811,8 +810,7 @@ X.renderer.prototype.init = function() {
 X.renderer.prototype.addShaders = function(shaders) {
 
   // check if the renderer is initialized properly
-  if (!goog.isDefAndNotNull(this._canvas) ||
-      !goog.isDefAndNotNull(this._context) ||
+  if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
       !goog.isDefAndNotNull(this._camera)) {
     
     throw new Error('Renderer was not initialized properly.');
@@ -831,52 +829,48 @@ X.renderer.prototype.addShaders = function(shaders) {
   shaders.validate();
   
   // compile the fragment and vertex shaders
-  var glFragmentShader = this._context
-      .createShader(this._context.FRAGMENT_SHADER);
-  var glVertexShader = this._context.createShader(this._context.VERTEX_SHADER);
+  var glFragmentShader = this._gl.createShader(this._gl.FRAGMENT_SHADER);
+  var glVertexShader = this._gl.createShader(this._gl.VERTEX_SHADER);
   
   // attach the sources, defined in the shaders pair
-  this._context.shaderSource(glFragmentShader, shaders.fragment());
-  this._context.shaderSource(glVertexShader, shaders.vertex());
+  this._gl.shaderSource(glFragmentShader, shaders.fragment());
+  this._gl.shaderSource(glVertexShader, shaders.vertex());
   
   // start compilation
-  this._context.compileShader(glFragmentShader);
-  this._context.compileShader(glVertexShader);
+  this._gl.compileShader(glFragmentShader);
+  this._gl.compileShader(glVertexShader);
   
-  if (!this._context.getShaderParameter(glFragmentShader,
-      this._context.COMPILE_STATUS)) {
+  if (!this._gl.getShaderParameter(glFragmentShader, this._gl.COMPILE_STATUS)) {
     
     throw new Error('Fragement Shader compilation failed!\n' +
-        this._context.getShaderInfoLog(glFragmentShader));
+        this._gl.getShaderInfoLog(glFragmentShader));
     
   }
   
-  if (!this._context.getShaderParameter(glVertexShader,
-      this._context.COMPILE_STATUS)) {
+  if (!this._gl.getShaderParameter(glVertexShader, this._gl.COMPILE_STATUS)) {
     
     throw new Error('Vertex Shader compilation failed!\n' +
-        this._context.getShaderInfoLog(glVertexShader));
+        this._gl.getShaderInfoLog(glVertexShader));
     
   }
   
   // create a shaderProgram, attach the shaders and link'em all together
-  var shaderProgram = this._context.createProgram();
-  this._context.attachShader(shaderProgram, glVertexShader);
-  this._context.attachShader(shaderProgram, glFragmentShader);
-  this._context.linkProgram(shaderProgram);
+  var shaderProgram = this._gl.createProgram();
+  this._gl.attachShader(shaderProgram, glVertexShader);
+  this._gl.attachShader(shaderProgram, glFragmentShader);
+  this._gl.linkProgram(shaderProgram);
   
-  if (!this._context.getProgramParameter(shaderProgram,
-      this._context.LINK_STATUS)) {
+  if (!this._gl.getProgramParameter(shaderProgram, this._gl.LINK_STATUS)) {
     
     throw new Error('Could not create shader program!\n' +
-        this._context.getShaderInfoLog(glFragmentShader) + '\n' +
-        this._context.getShaderInfoLog(glVertexShader) + '\n' +
-        this._context.getProgramInfoLog(shaderProgram));
+        this._gl.getShaderInfoLog(glFragmentShader) + '\n' +
+        this._gl.getShaderInfoLog(glVertexShader) + '\n' +
+        this._gl.getProgramInfoLog(shaderProgram));
     
   }
   
   // activate the new shaderProgram
-  this._context.useProgram(shaderProgram);
+  this._gl.useProgram(shaderProgram);
   
   // attach the shaderProgram to this renderer
   this._shaderProgram = shaderProgram;
@@ -887,9 +881,9 @@ X.renderer.prototype.addShaders = function(shaders) {
   attributes.forEach(function(a) {
 
     a = eval("X.shaders.attributes." + a);
-    this._attributePointers.set(a, this._context.getAttribLocation(
+    this._attributePointers.set(a, this._gl.getAttribLocation(
         this._shaderProgram, a));
-    this._context.enableVertexAttribArray(this._attributePointers.get(a));
+    this._gl.enableVertexAttribArray(this._attributePointers.get(a));
     
   }.bind(this));
   
@@ -899,7 +893,7 @@ X.renderer.prototype.addShaders = function(shaders) {
   uniforms.forEach(function(u) {
 
     u = eval("X.shaders.uniforms." + u);
-    this._uniformLocations.set(u, this._context.getUniformLocation(
+    this._uniformLocations.set(u, this._gl.getUniformLocation(
         this._shaderProgram, u));
     
   }.bind(this));
@@ -941,8 +935,7 @@ X.renderer.prototype.add = function(object) {
  */
 X.renderer.prototype.update_ = function(object) {
 
-  if (!goog.isDefAndNotNull(this._canvas) ||
-      !goog.isDefAndNotNull(this._context) ||
+  if (!goog.isDefAndNotNull(this._canvas) || !goog.isDefAndNotNull(this._gl) ||
       !goog.isDefAndNotNull(this._camera)) {
     
     throw new Error('Renderer was not initialized properly.');
@@ -1108,9 +1101,9 @@ X.renderer.prototype.update_ = function(object) {
     var oldTexturePositionBuffer = this._texturePositionBuffers.get(id);
     if (goog.isDefAndNotNull(oldTexturePositionBuffer)) {
       
-      if (this._context.isBuffer(oldTexturePositionBuffer._glBuffer)) {
+      if (this._gl.isBuffer(oldTexturePositionBuffer._glBuffer)) {
         
-        this._context.deleteBuffer(oldTexturePositionBuffer._glBuffer);
+        this._gl.deleteBuffer(oldTexturePositionBuffer._glBuffer);
         
       }
       
@@ -1140,7 +1133,7 @@ X.renderer.prototype.update_ = function(object) {
       // setup the glTexture, at this point the image for the texture was
       // already
       // loaded thanks to X.loader
-      var glTexture = this._context.createTexture();
+      var glTexture = this._gl.createTexture();
       
       // connect the image and the glTexture
       glTexture.image = texture._image;
@@ -1149,58 +1142,55 @@ X.renderer.prototype.update_ = function(object) {
       // activate the texture on the WebGL side
       this._textures.set(texture['_id'], glTexture);
       
-      this._context.bindTexture(this._context.TEXTURE_2D, glTexture);
+      this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
       if (texture._rawData) {
         
         // use rawData rather than loading an imagefile
-        this._context.texImage2D(this._context.TEXTURE_2D, 0,
-            this._context.RGBA, texture.rawDataWidth(),
-            texture.rawDataHeight(), 0, this._context.RGBA,
-            this._context.UNSIGNED_BYTE, texture._rawData);
+        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA, texture
+            .rawDataWidth(), texture.rawDataHeight(), 0, this._gl.RGBA,
+            this._gl.UNSIGNED_BYTE, texture._rawData);
         
-        this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_WRAP_S, this._context.CLAMP_TO_EDGE);
-        this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_WRAP_T, this._context.CLAMP_TO_EDGE);
+        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S,
+            this._gl.CLAMP_TO_EDGE);
+        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T,
+            this._gl.CLAMP_TO_EDGE);
         
         // we do not want to flip here
-        this._context.pixelStorei(this._context.UNPACK_FLIP_Y_WEBGL, true);
+        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, true);
         
       } else {
         
         // use an imageFile for the texture
-        this._context.texImage2D(this._context.TEXTURE_2D, 0,
-            this._context.RGBA, this._context.RGBA,
-            this._context.UNSIGNED_BYTE, glTexture.image);
+        this._gl.texImage2D(this._gl.TEXTURE_2D, 0, this._gl.RGBA,
+            this._gl.RGBA, this._gl.UNSIGNED_BYTE, glTexture.image);
         
-        this._context.pixelStorei(this._context.UNPACK_FLIP_Y_WEBGL, false);
+        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
         
       }
       
       // for labelMaps, we use NEAREST NEIGHBOR filtering
       if (isLabelMap) {
-        this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_MAG_FILTER, this._context.NEAREST);
-        this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_MIN_FILTER, this._context.NEAREST);
+        this._gl.texParameteri(this._gl.TEXTURE_2D,
+            this._gl.TEXTURE_MAG_FILTER, this._gl.NEAREST);
+        this._gl.texParameteri(this._gl.TEXTURE_2D,
+            this._gl.TEXTURE_MIN_FILTER, this._gl.NEAREST);
       } else {
-        this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_MAG_FILTER, this._context.LINEAR);
-        this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_MIN_FILTER, this._context.LINEAR);
+        this._gl.texParameteri(this._gl.TEXTURE_2D,
+            this._gl.TEXTURE_MAG_FILTER, this._gl.LINEAR);
+        this._gl.texParameteri(this._gl.TEXTURE_2D,
+            this._gl.TEXTURE_MIN_FILTER, this._gl.LINEAR);
       }
       
       // release the texture binding to clear things
-      this._context.bindTexture(this._context.TEXTURE_2D, null);
+      this._gl.bindTexture(this._gl.TEXTURE_2D, null);
       
       // create texture buffer
-      var glTexturePositionBuffer = this._context.createBuffer();
+      var glTexturePositionBuffer = this._gl.createBuffer();
       
       // bind and fill with colors defined above
-      this._context.bindBuffer(this._context.ARRAY_BUFFER,
-          glTexturePositionBuffer);
-      this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-          textureCoordinateMap), this._context.STATIC_DRAW);
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glTexturePositionBuffer);
+      this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(
+          textureCoordinateMap), this._gl.STATIC_DRAW);
       
       // create an X.buffer to store the texture-coordinate map
       texturePositionBuffer = new X.buffer(glTexturePositionBuffer,
@@ -1300,9 +1290,9 @@ X.renderer.prototype.update_ = function(object) {
     var oldVertexBuffer = this._vertexBuffers.get(id);
     if (goog.isDefAndNotNull(oldVertexBuffer)) {
       
-      if (this._context.isBuffer(oldVertexBuffer._glBuffer)) {
+      if (this._gl.isBuffer(oldVertexBuffer._glBuffer)) {
         
-        this._context.deleteBuffer(oldVertexBuffer._glBuffer);
+        this._gl.deleteBuffer(oldVertexBuffer._glBuffer);
         
       }
       
@@ -1317,13 +1307,13 @@ X.renderer.prototype.update_ = function(object) {
     // the object either did not exist or the points are dirty, so we re-create
     // the gl buffers and reset the bounding box
     
-    var glVertexBuffer = this._context.createBuffer();
+    var glVertexBuffer = this._gl.createBuffer();
     
     // bind and fill with vertices of current object
-    this._context.bindBuffer(this._context.ARRAY_BUFFER, glVertexBuffer);
+    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glVertexBuffer);
     
-    this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-        points.all()), this._context.STATIC_DRAW);
+    this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(points.all()),
+        this._gl.STATIC_DRAW);
     
     // create an X.buffer to store the vertices
     // every vertex consists of 3 items (x,y,z)
@@ -1355,9 +1345,9 @@ X.renderer.prototype.update_ = function(object) {
     var oldNormalBuffer = this._vertexBuffers.get(id);
     if (goog.isDefAndNotNull(oldNormalBuffer)) {
       
-      if (this._context.isBuffer(oldNormalBuffer._glBuffer)) {
+      if (this._gl.isBuffer(oldNormalBuffer._glBuffer)) {
         
-        this._context.deleteBuffer(oldNormalBuffer._glBuffer);
+        this._gl.deleteBuffer(oldNormalBuffer._glBuffer);
         
       }
       
@@ -1372,12 +1362,12 @@ X.renderer.prototype.update_ = function(object) {
     // the object either did not exist or the normals are dirty, so we re-create
     // the gl buffers
     
-    var glNormalBuffer = this._context.createBuffer();
+    var glNormalBuffer = this._gl.createBuffer();
     
     // bind and fill with normals of current object
-    this._context.bindBuffer(this._context.ARRAY_BUFFER, glNormalBuffer);
-    this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-        normals.all()), this._context.STATIC_DRAW);
+    this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glNormalBuffer);
+    this._gl.bufferData(this._gl.ARRAY_BUFFER, new Float32Array(normals.all()),
+        this._gl.STATIC_DRAW);
     
     // create an X.buffer to store the normals
     // every normal consists of 3 items (x,y,z)
@@ -1411,9 +1401,9 @@ X.renderer.prototype.update_ = function(object) {
     var oldColorBuffer = this._colorBuffers.get(id);
     if (goog.isDefAndNotNull(oldColorBuffer)) {
       
-      if (this._context.isBuffer(oldColorBuffer._glBuffer)) {
+      if (this._gl.isBuffer(oldColorBuffer._glBuffer)) {
         
-        this._context.deleteBuffer(oldColorBuffer._glBuffer);
+        this._gl.deleteBuffer(oldColorBuffer._glBuffer);
         
       }
       
@@ -1442,12 +1432,12 @@ X.renderer.prototype.update_ = function(object) {
         throw new Error('Mismatch between points and point colors.');
         
       }
-      var glColorBuffer = this._context.createBuffer();
+      var glColorBuffer = this._gl.createBuffer();
       
       // bind and fill with colors defined above
-      this._context.bindBuffer(this._context.ARRAY_BUFFER, glColorBuffer);
-      this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-          colors.all()), this._context.STATIC_DRAW);
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glColorBuffer);
+      this._gl.bufferData(this._gl.ARRAY_BUFFER,
+          new Float32Array(colors.all()), this._gl.STATIC_DRAW);
       
       // create an X.buffer to store the colors
       // every color consists of 3 items (r,g,b)
@@ -1481,9 +1471,9 @@ X.renderer.prototype.update_ = function(object) {
     var oldScalarBuffer = this._scalarBuffers.get(id);
     if (goog.isDefAndNotNull(oldScalarBuffer)) {
       
-      if (this._context.isBuffer(oldScalarBuffer._glBuffer)) {
+      if (this._gl.isBuffer(oldScalarBuffer._glBuffer)) {
         
-        this._context.deleteBuffer(oldScalarBuffer._glBuffer);
+        this._gl.deleteBuffer(oldScalarBuffer._glBuffer);
         
       }
       
@@ -1512,12 +1502,12 @@ X.renderer.prototype.update_ = function(object) {
         throw new Error('Mismatch between points and scalars.');
         
       }
-      var glScalarBuffer = this._context.createBuffer();
+      var glScalarBuffer = this._gl.createBuffer();
       
       // bind and fill with colors defined above
-      this._context.bindBuffer(this._context.ARRAY_BUFFER, glScalarBuffer);
-      this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-          scalarsArray), this._context.STATIC_DRAW);
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, glScalarBuffer);
+      this._gl.bufferData(this._gl.ARRAY_BUFFER,
+          new Float32Array(scalarsArray), this._gl.STATIC_DRAW);
       
       // create an X.buffer to store the colors
       // every scalar consists of 1 item
@@ -1574,7 +1564,7 @@ X.renderer.prototype.update_ = function(object) {
  */
 X.renderer.prototype.render = function() {
 
-  if (!this._canvas || !this._context || !this._camera) {
+  if (!this._canvas || !this._gl || !this._camera) {
     
     throw new Error('The renderer was not initialized properly.');
     
@@ -1960,8 +1950,8 @@ X.renderer.prototype.pick = function(x, y) {
     
     // grab the content of the framebuffer
     var data = new Uint8Array(4);
-    this._context.readPixels(x, this._height - y, 1, 1, this._context.RGBA,
-        this._context.UNSIGNED_BYTE, data);
+    this._gl.readPixels(x, this._height - y, 1, 1, this._gl.RGBA,
+        this._gl.UNSIGNED_BYTE, data);
     
     // grab the id
     var r = Math.round(data[0] / 255 * 10);
@@ -2016,20 +2006,18 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   if (picking) {
     
     // we are in picking mode, so use the framebuffer rather than the canvas
-    this._context.bindFramebuffer(this._context.FRAMEBUFFER,
-        this._pickFrameBuffer);
+    this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, this._pickFrameBuffer);
     
   } else {
     
     // disable the framebuffer
-    this._context.bindFramebuffer(this._context.FRAMEBUFFER, null);
+    this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
     
   }
   
   // clear the canvas
-  this._context.viewport(0, 0, this._width, this._height);
-  this._context.clear(this._context.COLOR_BUFFER_BIT |
-      this._context.DEPTH_BUFFER_BIT);
+  this._gl.viewport(0, 0, this._width, this._height);
+  this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
   
   // grab the current perspective from the camera
   var perspectiveMatrix = this._camera._perspective;
@@ -2039,17 +2027,16 @@ X.renderer.prototype.render_ = function(picking, invoked) {
   
   // propagate perspective and view matrices to the uniforms of
   // the shader
-  this._context.uniformMatrix4fv(this._uniformLocations
+  this._gl.uniformMatrix4fv(this._uniformLocations
       .get(X.shaders.uniforms.PERSPECTIVE), false, perspectiveMatrix);
   
-  this._context.uniformMatrix4fv(this._uniformLocations
-      .get(X.shaders.uniforms.VIEW), false, viewMatrix);
+  this._gl.uniformMatrix4fv(
+      this._uniformLocations.get(X.shaders.uniforms.VIEW), false, viewMatrix);
   
   // propagate the objects' center to the shader
   //
   var center = this._center;
-  this._context.uniform3f(
-      this._uniformLocations.get(X.shaders.uniforms.CENTER),
+  this._gl.uniform3f(this._uniformLocations.get(X.shaders.uniforms.CENTER),
       parseFloat(center[0]), parseFloat(center[1]), parseFloat(center[2]));
   
   //
@@ -2172,28 +2159,26 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       // ..bind the glBuffers
       
       // VERTICES
-      this._context.bindBuffer(this._context.ARRAY_BUFFER,
-          vertexBuffer._glBuffer);
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, vertexBuffer._glBuffer);
       
-      this._context.vertexAttribPointer(aPosition, vertexBuffer._itemSize,
-          this._context.FLOAT, false, 0, 0);
+      this._gl.vertexAttribPointer(aPosition, vertexBuffer._itemSize,
+          this._gl.FLOAT, false, 0, 0);
       
       // NORMALS
-      this._context.bindBuffer(this._context.ARRAY_BUFFER,
-          normalBuffer._glBuffer);
+      this._gl.bindBuffer(this._gl.ARRAY_BUFFER, normalBuffer._glBuffer);
       
-      this._context.vertexAttribPointer(aNormal, normalBuffer._itemSize,
-          this._context.FLOAT, false, 0, 0);
+      this._gl.vertexAttribPointer(aNormal, normalBuffer._itemSize,
+          this._gl.FLOAT, false, 0, 0);
       
       if (picking) {
         
         // in picking mode, we use a color based on the id of this object
-        this._context.uniform1i(uUsePicking, true);
+        this._gl.uniform1i(uUsePicking, true);
         
       } else {
         
         // in picking mode, we use a color based on the id of this object
-        this._context.uniform1i(uUsePicking, false);
+        this._gl.uniform1i(uUsePicking, false);
         
       }
       
@@ -2204,13 +2189,12 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         // request and no magicMode active
         
         // de-activate the useObjectColor flag on the shader
-        this._context.uniform1i(uUseObjectColor, false);
+        this._gl.uniform1i(uUseObjectColor, false);
         
-        this._context.bindBuffer(this._context.ARRAY_BUFFER,
-            colorBuffer._glBuffer);
+        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, colorBuffer._glBuffer);
         
-        this._context.vertexAttribPointer(aColor, colorBuffer._itemSize,
-            this._context.FLOAT, false, 0, 0);
+        this._gl.vertexAttribPointer(aColor, colorBuffer._itemSize,
+            this._gl.FLOAT, false, 0, 0);
         
       } else {
         
@@ -2226,7 +2210,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         
         // activate the useObjectColor flag on the shader
         // in magicMode, this is always false!
-        this._context.uniform1i(uUseObjectColor, useObjectColor);
+        this._gl.uniform1i(uUseObjectColor, useObjectColor);
         
         var objectColor = object['_color'];
         
@@ -2251,13 +2235,13 @@ X.renderer.prototype.render_ = function(picking, invoked) {
           objectColor = [r / 10, g / 10, b / 10];
         }
         
-        this._context.uniform3f(uObjectColor, parseFloat(objectColor[0]),
+        this._gl.uniform3f(uObjectColor, parseFloat(objectColor[0]),
             parseFloat(objectColor[1]), parseFloat(objectColor[2]));
         
         // we always have to configure the attribute of the point colors
         // even if no point colors are in use
-        this._context.vertexAttribPointer(aColor, vertexBuffer._itemSize,
-            this._context.FLOAT, false, 0, 0);
+        this._gl.vertexAttribPointer(aColor, vertexBuffer._itemSize,
+            this._gl.FLOAT, false, 0, 0);
         
       }
       
@@ -2268,52 +2252,50 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         // request and no magicMode active
         
         // activate the useScalars flag on the shader
-        this._context.uniform1i(uUseScalars, true);
+        this._gl.uniform1i(uUseScalars, true);
         
         // propagate the replace flag
-        this._context.uniform1i(uScalarsReplaceMode,
-            object._scalars._replaceMode);
+        this._gl.uniform1i(uScalarsReplaceMode, object._scalars._replaceMode);
         
         var minColor = object._scalars['_minColor'];
         var maxColor = object._scalars['_maxColor'];
         
         // propagate minColors and maxColors for the scalars
-        this._context.uniform3f(uScalarsMinColor, parseFloat(minColor[0]),
+        this._gl.uniform3f(uScalarsMinColor, parseFloat(minColor[0]),
             parseFloat(minColor[1]), parseFloat(minColor[2]));
-        this._context.uniform3f(uScalarsMaxColor, parseFloat(maxColor[0]),
+        this._gl.uniform3f(uScalarsMaxColor, parseFloat(maxColor[0]),
             parseFloat(maxColor[1]), parseFloat(maxColor[2]));
         
         // propagate minThreshold and maxThreshold for the scalars
-        this._context.uniform1f(uScalarsMinThreshold,
+        this._gl.uniform1f(uScalarsMinThreshold,
             parseFloat(object._scalars['_minThreshold']));
-        this._context.uniform1f(uScalarsMaxThreshold,
+        this._gl.uniform1f(uScalarsMaxThreshold,
             parseFloat(object._scalars['_maxThreshold']));
         
         // propagate min and max for the scalars
-        this._context.uniform1f(uScalarsMin, parseFloat(object._scalars._min));
-        this._context.uniform1f(uScalarsMax, parseFloat(object._scalars._max));
+        this._gl.uniform1f(uScalarsMin, parseFloat(object._scalars._min));
+        this._gl.uniform1f(uScalarsMax, parseFloat(object._scalars._max));
         
 
-        this._context.bindBuffer(this._context.ARRAY_BUFFER,
-            scalarBuffer._glBuffer);
+        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, scalarBuffer._glBuffer);
         
-        this._context.vertexAttribPointer(aScalar, scalarBuffer._itemSize,
-            this._context.FLOAT, false, 0, 0);
+        this._gl.vertexAttribPointer(aScalar, scalarBuffer._itemSize,
+            this._gl.FLOAT, false, 0, 0);
         
       } else {
         
         // de-activate the useScalars flag on the shader
-        this._context.uniform1i(uUseScalars, false);
+        this._gl.uniform1i(uUseScalars, false);
         
         // we always have to configure the attribute of the scalars
         // even if no scalars are in use
-        this._context.vertexAttribPointer(aScalar, vertexBuffer._itemSize,
-            this._context.FLOAT, false, 0, 0);
+        this._gl.vertexAttribPointer(aScalar, vertexBuffer._itemSize,
+            this._gl.FLOAT, false, 0, 0);
         
       }
       
       // OPACITY
-      this._context.uniform1f(uObjectOpacity, parseFloat(object['_opacity']));
+      this._gl.uniform1f(uObjectOpacity, parseFloat(object['_opacity']));
       
       // TEXTURE
       if (object._texture && texturePositionBuffer && !picking) {
@@ -2322,38 +2304,38 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         //
         
         // activate the texture flag on the shader
-        this._context.uniform1i(uUseTexture, true);
+        this._gl.uniform1i(uUseTexture, true);
         
         // setup the sampler
         
         // bind the texture
-        this._context.activeTexture(this._context.TEXTURE0);
+        this._gl.activeTexture(this._gl.TEXTURE0);
         
         // grab the texture from the internal hash map using the id as the
         // key
-        this._context.bindTexture(this._context.TEXTURE_2D, this._textures
+        this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures
             .get(object._texture['_id']));
-        this._context.uniform1i(uTextureSampler, 0);
+        this._gl.uniform1i(uTextureSampler, 0);
         
         // propagate the current texture-coordinate-map to WebGL
-        this._context.bindBuffer(this._context.ARRAY_BUFFER,
+        this._gl.bindBuffer(this._gl.ARRAY_BUFFER,
             texturePositionBuffer._glBuffer);
         
-        this._context.vertexAttribPointer(aTexturePosition,
-            texturePositionBuffer._itemSize, this._context.FLOAT, false, 0, 0);
+        this._gl.vertexAttribPointer(aTexturePosition,
+            texturePositionBuffer._itemSize, this._gl.FLOAT, false, 0, 0);
         
         // by default, don't use thresholding
-        this._context.uniform1i(uUseTextureThreshold, false);
+        this._gl.uniform1i(uUseTextureThreshold, false);
         
       } else {
         
         // no texture for this object or 'picking' mode
-        this._context.uniform1i(uUseTexture, false);
+        this._gl.uniform1i(uUseTexture, false);
         
         // we always have to configure the attribute of the texture positions
         // even if no textures are in use
-        this._context.vertexAttribPointer(aTexturePosition,
-            vertexBuffer._itemSize, this._context.FLOAT, false, 0, 0);
+        this._gl.vertexAttribPointer(aTexturePosition, vertexBuffer._itemSize,
+            this._gl.FLOAT, false, 0, 0);
         
       }
       
@@ -2364,31 +2346,28 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       if (volume) {
         
         // enable texture thresholding for volumes
-        this._context.uniform1i(uUseTextureThreshold, true);
+        this._gl.uniform1i(uUseTextureThreshold, true);
         
         // pass the lower threshold
-        this._context.uniform1f(uVolumeLowerThreshold,
-            volume['_lowerThreshold']);
+        this._gl.uniform1f(uVolumeLowerThreshold, volume['_lowerThreshold']);
         // pass the upper threshold
-        this._context.uniform1f(uVolumeUpperThreshold,
-            volume['_upperThreshold']);
+        this._gl.uniform1f(uVolumeUpperThreshold, volume['_upperThreshold']);
         
         // pass the scalar range
         var scalarRange = volume._scalarRange;
-        this._context.uniform1f(uVolumeScalarMin, scalarRange[0]);
-        this._context.uniform1f(uVolumeScalarMax, scalarRange[1]);
+        this._gl.uniform1f(uVolumeScalarMin, scalarRange[0]);
+        this._gl.uniform1f(uVolumeScalarMax, scalarRange[1]);
         
         // get the (optional) label map
         var labelMap = volume._labelMap;
         
         // no labelMap by default
-        this._context.uniform1i(uUseLabelMapTexture, false);
+        this._gl.uniform1i(uUseLabelMapTexture, false);
         
         // opacity, only if volume rendering is active
         if (volume['_volumeRendering']) {
           
-          this._context.uniform1f(uObjectOpacity,
-              parseFloat(volume['_opacity']));
+          this._gl.uniform1f(uObjectOpacity, parseFloat(volume['_opacity']));
           
         } else if (labelMap && labelMap['_visible']) {
           // only if we have an associated labelMap..
@@ -2397,19 +2376,19 @@ X.renderer.prototype.render_ = function(picking, invoked) {
           var labelMapTextureID = object._labelMap['_id'];
           
           // we handle a second texture, actually the one for the labelMap
-          this._context.uniform1i(uUseLabelMapTexture, true);
+          this._gl.uniform1i(uUseLabelMapTexture, true);
           
           // bind the texture
-          this._context.activeTexture(this._context.TEXTURE1);
+          this._gl.activeTexture(this._gl.TEXTURE1);
           
           // grab the texture from the internal hash map using the id as
           // the key
-          this._context.bindTexture(this._context.TEXTURE_2D, this._textures
+          this._gl.bindTexture(this._gl.TEXTURE_2D, this._textures
               .get(labelMapTextureID));
-          this._context.uniform1i(uTextureSampler2, 1);
+          this._gl.uniform1i(uTextureSampler2, 1);
           
           // propagate label map opacity
-          this._context.uniform1f(uLabelMapOpacity, labelMap['_opacity']);
+          this._gl.uniform1f(uLabelMapOpacity, labelMap['_opacity']);
           
         }
         
@@ -2417,7 +2396,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       
       // TRANSFORMS
       // propagate transform to the uniform matrices of the shader
-      this._context.uniformMatrix4fv(uObjectTransform, false,
+      this._gl.uniformMatrix4fv(uObjectTransform, false,
           object._transform._glMatrix);
       
       // POINT SIZE
@@ -2425,7 +2404,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       if (object['_type'] == X.object.types.POINTS) {
         pointSize = object['_pointSize'];
       }
-      this._context.uniform1f(uPointSize, pointSize);
+      this._gl.uniform1f(uPointSize, pointSize);
       
       //
       // .. and draw with the object's DRAW MODE
@@ -2433,30 +2412,30 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       var drawMode = -1;
       if (object.type() == X.object.types.TRIANGLES) {
         
-        drawMode = this._context.TRIANGLES;
+        drawMode = this._gl.TRIANGLES;
         if (statisticsEnabled) {
           trianglesCounter += (vertexBuffer._itemCount / 3);
         }
         
       } else if (object.type() == X.object.types.LINES) {
         
-        this._context.lineWidth(object.lineWidth());
+        this._gl.lineWidth(object.lineWidth());
         
-        drawMode = this._context.LINES;
+        drawMode = this._gl.LINES;
         if (statisticsEnabled) {
           linesCounter += (vertexBuffer._itemCount / 2);
         }
         
       } else if (object.type() == X.object.types.POINTS) {
         
-        drawMode = this._context.POINTS;
+        drawMode = this._gl.POINTS;
         if (statisticsEnabled) {
           pointsCounter += vertexBuffer._itemCount;
         }
         
       } else if (object.type() == X.object.types.TRIANGLE_STRIPS) {
         
-        drawMode = this._context.TRIANGLE_STRIP;
+        drawMode = this._gl.TRIANGLE_STRIP;
         if (statisticsEnabled) {
           trianglesCounter += (vertexBuffer._itemCount / 3);
         }
@@ -2470,11 +2449,11 @@ X.renderer.prototype.render_ = function(picking, invoked) {
         // X.object.toCSG/fromCSG functions but not used here.
         if (vertexBuffer._itemCount % 3 == 0) {
           
-          drawMode = this._context.TRIANGLES;
+          drawMode = this._gl.TRIANGLES;
           
         } else {
           
-          drawMode = this._context.TRIANGLE_FAN;
+          drawMode = this._gl.TRIANGLE_FAN;
           
         }
         
@@ -2491,7 +2470,7 @@ X.renderer.prototype.render_ = function(picking, invoked) {
       }
       
       // push it to the GPU, baby..
-      this._context.drawArrays(drawMode, 0, vertexBuffer._itemCount);
+      this._gl.drawArrays(drawMode, 0, vertexBuffer._itemCount);
       
     }
     
@@ -2534,10 +2513,9 @@ X.renderer.prototype.destroy = function() {
   delete this._interactor;
   
   // remove the gl context
-  this._context.clear(this._context.COLOR_BUFFER_BIT |
-      this._context.DEPTH_BUFFER_BIT);
-  this._context = null;
-  delete this._context;
+  this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
+  this._gl = null;
+  delete this._gl;
   
   // remove the canvas from the dom tree
   goog.dom.removeNode(this._canvas);
