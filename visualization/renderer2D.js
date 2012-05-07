@@ -67,8 +67,6 @@ goog.inherits(X.renderer2D, X.renderer);
  */
 X.renderer2D.prototype.init = function() {
 
-  var _contextName = '2d';
-  
   // call the superclass' init method
   X.renderer2D.superClass_.init.call(this, "2d");
   
@@ -119,38 +117,80 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   
   var _pixels = this.context.getImageData(0, 0, this['width'], this['height']);
   
-  var children_ = this.topLevelObjects[0]._slicesX.children();
+  var children_ = this.topLevelObjects[0]._slicesY.children();
   
-  var x = 0;
-  setInterval(function() {
-
-    x++;
-    if (x >= children_.length) {
-      x = 0;
-    }
-    var _slice = children_[x];
-    
-
-
-    var _newPixels = _slice._texture._rawData;
-    
-    // for (y = 0; y < _slice._height; y++) {
-    // for (x = 0; x < _slice._width; x++) {
-    // window.console.log(_pixels.data.length);
-    // var index__ = (x + y * _slice._width) * 4;
-    for ( var index__ = 0; index__ < _pixels.data.length; index__++) {
+  var _slice = children_[22];
+  var _sliceData = _slice._texture._rawData;
+  
+  var _width = this['width'];
+  var _height = this['height'];
+  var _sliceWidth = _slice._width + 1;
+  var _sliceHeight = _slice._height + 1;
+  console.log('sliceWidth', _sliceWidth);
+  console.log('sliceHeight', _sliceHeight);
+  
+  var _paddingX = ((_width - _sliceWidth) / 2);
+  var _paddingY = ((_height - _sliceHeight) / 2);
+  
+  var _x, _y = 0;
+  var _i = 0; // this is the pointer to the current slice data byte
+  
+  // for (_y = 0; _y < _height; _y++) {
+  // for (_x = 0; _x < _width; _x++) {
+  for (_y = _height; _y > 0; _y--) {
+    for (_x = _width; _x > 0; _x--) {
       
-      _pixels.data[index__] = _newPixels[index__];
-      // _pixels.data[index__ + 1] = _newPixels[index__ + 1];
-      // _pixels.data[index__ + 2] = _newPixels[index__ + 2];
-      // _pixels.data[index__ + 3] = _newPixels[index__ + 3];
-      // }
+      // the pixel index
+      var _pxIndex = _x + _y * _width;
+      
+      // the r-index is the pixel index * 4 since we have RGBA components
+      var _rIndex = _pxIndex * 4;
+      
+      // check if we are in area to draw slice data
+      if ((_x > _paddingX && _y > _paddingY) &&
+          (_x < (_width - _paddingX) && _y < (_height - _paddingY))) {
+        
+        // console.log('drawing', _rIndex, _i);
+        
+        // yes we are..! draw slice data
+        _pixels.data[_rIndex] = _sliceData[_i];
+        _pixels.data[++_rIndex] = _sliceData[++_i];
+        _pixels.data[++_rIndex] = _sliceData[++_i];
+        _pixels.data[++_rIndex] = _sliceData[++_i];
+        
+        ++_i; // increase the slice data byte pointer
+        
+      } else {
+        
+        // draw background
+        _pixels.data[_rIndex] = 0;
+        _pixels.data[++_rIndex] = 0;
+        _pixels.data[++_rIndex] = 0;
+        _pixels.data[++_rIndex] = 255;
+        
+      }
+      
+
     }
-    
-    this.context.putImageData(_pixels, 0, 0);
-  }.bind(this), 10);
+  }
+  
+
+  this.context.putImageData(_pixels, 0, 0);
+  
+
+  // }.bind(this), 1000);
+  
   // window.console.log(_newPixels.length);
 };
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer2D', X.renderer2D);
+goog.exportSymbol('X.renderer2D.prototype.init', X.renderer2D.prototype.init);
+goog.exportSymbol('X.renderer2D.prototype.add', X.renderer2D.prototype.add);
+goog.exportSymbol('X.renderer2D.prototype.onShowtime',
+    X.renderer2D.prototype.onShowtime);
+goog.exportSymbol('X.renderer2D.prototype.get', X.renderer2D.prototype.get);
+goog.exportSymbol('X.renderer2D.prototype.render',
+    X.renderer2D.prototype.render);
+goog.exportSymbol('X.renderer2D.prototype.destroy',
+    X.renderer2D.prototype.destroy);

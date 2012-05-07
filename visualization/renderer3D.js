@@ -275,7 +275,7 @@ X.renderer3D.prototype.resetViewAndRender = function() {
 X.renderer3D.prototype.init = function() {
 
   // call the superclass' init method
-  X.renderer3D.superClass_.init_.call(this, "experimental-webgl");
+  X.renderer3D.superClass_.init.call(this, "experimental-webgl");
   
   //
   // Step2: Configure the context
@@ -1918,6 +1918,14 @@ X.renderer3D.prototype.destroy = function() {
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer3D', X.renderer3D);
 goog.exportSymbol('X.renderer3D.prototype.init', X.renderer3D.prototype.init);
+goog.exportSymbol('X.renderer3D.prototype.add', X.renderer3D.prototype.add);
+goog.exportSymbol('X.renderer3D.prototype.onShowtime',
+    X.renderer3D.prototype.onShowtime);
+goog.exportSymbol('X.renderer3D.prototype.get', X.renderer3D.prototype.get);
+goog.exportSymbol('X.renderer3D.prototype.render',
+    X.renderer3D.prototype.render);
+goog.exportSymbol('X.renderer3D.prototype.destroy',
+    X.renderer3D.prototype.destroy);
 goog.exportSymbol('X.renderer3D.prototype.resetBoundingBox',
     X.renderer3D.prototype.resetBoundingBox);
 goog.exportSymbol('X.renderer3D.prototype.resetViewAndRender',
