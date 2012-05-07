@@ -28,12 +28,12 @@
  */
 
 // provides
-goog.provide('X.renderer2D');
+goog.provide('X.renderer');
 
 // requires
 goog.require('X.array');
 goog.require('X.base');
-goog.require('X.events');
+goog.require('X.event');
 goog.require('X.labelMap');
 goog.require('X.loader');
 goog.require('X.object');
@@ -42,6 +42,8 @@ goog.require('X.volume');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.Timer');
+
 
 
 /**
@@ -194,7 +196,7 @@ X.renderer = function(container) {
    * @enum {boolean}
    */
   this['config'] = {
-    'PROGRESSBAR_ENABLED': true,
+    'PROGRESSBAR_ENABLED': true
   };
   
   window.console.log('XTK Release 4 -- 04/12/12 -- http://www.goXTK.com');
@@ -332,7 +334,7 @@ X.renderer.prototype.hideProgressBar_ = function() {
  * attach all necessary objects (e.g. camera, shaders..). Finally, initialize
  * the event listeners.
  * 
- * @param {String} _contextName The name of the context to create.
+ * @param {string} _contextName The name of the context to create.
  * @throws {Error} An exception if there were problems during initialization.
  * @public
  */
@@ -376,15 +378,15 @@ X.renderer.prototype.init = function(_contextName) {
     // Canvas2D is not supported with this browser/machine/gpu
     
     // attach a message to the container's inner HTML
-    var style = "color:red;font-family:sans-serif;";
-    var msg = 'Sorry, ' +
+    var _style = "color:red;font-family:sans-serif;";
+    var _msg = 'Sorry, ' +
         _contextName +
         ' context is <strong>not supported</strong> on this machine! See <a href="http://crash.goXTK.com" target="_blank">http://crash.goXTK.com</a> for requirements..';
-    this['container'].innerHTML = '<h3 style="' + style +
-        '">Oooops..</h3><p style="' + style + '">' + msg + '</p>';
+    this['container'].innerHTML = '<h3 style="' + _style +
+        '">Oooops..</h3><p style="' + _style + '">' + _msg + '</p>';
     
     // .. and throw an exception
-    throw new Error(msg);
+    throw new Error(_msg);
     
   }
   
@@ -481,23 +483,23 @@ X.renderer.prototype.update_ = function(object) {
  */
 X.renderer3D.prototype.get = function(id) {
 
-  // TODO we can store the objects ordered and do a binary search here
-  
   if (!goog.isDefAndNotNull(id)) {
     
     throw new Error('Invalid object id.');
     
   }
   
-  var objects = this.objects.values();
-  var k = 0;
-  var numberOfObjects = objects.length;
+  // loop through objects and try to find the id
+  var _objects = this.objects.values();
+  var _numberOfObjects = _objects.length;
   
-  for (k = 0; k < numberOfObjects; k++) {
+  var _k = 0;
+  for (_k = 0; _k < _numberOfObjects; _k++) {
     
-    if (objects[k]['_id'] == id) {
+    if (_objects[_k]['_id'] == id) {
       
-      return objects[k];
+      // found!
+      return _objects[_k];
       
     }
     
@@ -519,11 +521,11 @@ X.renderer.prototype.printScene = function() {
   var _numberOfTopLevelObjects = this.topLevelObjects.length;
   
   var _y;
-  for ( var _y = 0; _y < _numberOfTopLevelObjects; _y++) {
+  for (_y = 0; _y < _numberOfTopLevelObjects; _y++) {
     
-    var topLevelObject = this.topLevelObjects[_y];
+    var _topLevelObject = this.topLevelObjects[_y];
     
-    this.generateTree_(topLevelObject, 0);
+    this.generateTree_(_topLevelObject, 0);
     
   }
   
@@ -539,28 +541,29 @@ X.renderer.prototype.printScene = function() {
  */
 X.renderer.prototype.generateTree_ = function(object, level) {
 
-  var output = "";
+  var _output = "";
   
-  for ( var l = 0; l < level; l++) {
+  var _l = 0;
+  for (_l = 0; _l < level; _l++) {
     
-    output += ">";
+    _output += ">";
     
   }
   
-  output += object['_id'];
+  _output += object['_id'];
   
-  window.console.log(output);
+  window.console.log(_output);
   
   if (object.hasChildren()) {
     
     // loop through the children
-    var children = object.children();
-    var numberOfChildren = children.length;
-    var c = 0;
+    var _children = object.children();
+    var _numberOfChildren = _children.length;
+    var _c = 0;
     
-    for (c = 0; c < numberOfChildren; c++) {
+    for (_c = 0; _c < _numberOfChildren; _c++) {
       
-      this.generateTree_(children[c], level + 1);
+      this.generateTree_(_children[_c], level + 1);
       
     }
     
@@ -677,15 +680,53 @@ X.renderer.prototype.onShowtime = function() {
  * @throws {Error} If anything goes wrong.
  * @protected
  */
-X.renderer3D.prototype.render_ = function(picking, invoked) {
+X.renderer.prototype.render_ = function(picking, invoked) {
 
-  // only proceed if there are actually objects to render
-  var objects = this.objects.values();
-  var numberOfObjects = objects.length;
-  if (numberOfObjects == 0) {
-    // there is nothing to render
-    // get outta here
-    return;
-  }
+  
+
+};
+
+
+/**
+ * Destroy this renderer.
+ * 
+ * @public
+ */
+X.renderer.prototype.destroy = function() {
+
+  // remove all objects
+  this.objects.clear();
+  delete this.objects;
+  this.topLevelObjects.length = 0;
+  delete this.topLevelObjects;
+  
+  // remove loader, camera and interactor
+  delete this.loader;
+  this.loader = null;
+  
+  delete this['camera'];
+  this['camera'] = null;
+  
+  delete this['interactor'];
+  this['interactor'] = null;
+  
+  // remove the rendering context
+  delete this.context;
+  this.context = null;
+  
+  // remove the canvas from the dom tree
+  goog.dom.removeNode(this['canvas']);
+  delete this['canvas'];
+  this['canvas'] = null;
   
 };
+
+// export symbols (required for advanced compilation)
+goog.exportSymbol('X.renderer', X.renderer);
+goog.exportSymbol('X.renderer.prototype.init', X.renderer.prototype.init);
+goog.exportSymbol('X.renderer.prototype.add', X.renderer.prototype.add);
+goog.exportSymbol('X.renderer.prototype.onShowtime',
+    X.renderer.prototype.onShowtime);
+goog.exportSymbol('X.renderer.prototype.get', X.renderer.prototype.get);
+goog.exportSymbol('X.renderer.prototype.render', X.renderer.prototype.render);
+goog.exportSymbol('X.renderer.prototype.destroy', X.renderer.prototype.destroy);

@@ -34,17 +34,13 @@ goog.provide('X.renderer3D');
 goog.require('X.buffer');
 goog.require('X.camera');
 goog.require('X.caption');
-goog.require('X.event');
 goog.require('X.interactor');
 goog.require('X.matrix');
 goog.require('X.renderer');
 goog.require('X.shaders');
 goog.require('X.triplets');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('goog.math.Vec3');
 goog.require('goog.structs.Map');
-goog.require('goog.Timer');
 
 
 
@@ -54,13 +50,13 @@ goog.require('goog.Timer');
  * @constructor
  * @param {!Element} container The container (DOM Element) to place the renderer
  *          inside.
- * @extends X.base
+ * @extends X.renderer
  */
 X.renderer3D = function(container) {
 
   //
   // call the standard constructor of X.renderer
-  goog.base(this);
+  goog.base(this, container);
   
   //
   // class attributes
@@ -288,30 +284,34 @@ X.renderer3D.prototype.init = function() {
   //
   try {
     
-    gl.viewport(0, 0, this['width'], this['height']);
+    this.context.viewport(0, 0, this['width'], this['height']);
     
     // configure opacity to 0.0 to overwrite the viewport background-color by
     // the container color
-    gl.clearColor(0.0, 0.0, 0.0, 0.0);
+    this.context.clearColor(0.0, 0.0, 0.0, 0.0);
     
     // enable transparency
-    gl.enable(gl.BLEND);
-    gl.blendEquation(gl.FUNC_ADD);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    // gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE,
-    // gl.ZERO);
-    // gl.blendFunc(gl.DST_COLOR, gl.ZERO);
-    // gl.blendFunc(gl.ONE_MINUS_SRC_ALPHA, gl.SRC_ALPHA);
+    this.context.enable(this.context.BLEND);
+    this.context.blendEquation(this.context.FUNC_ADD);
+    this.context.blendFunc(this.context.SRC_ALPHA,
+        this.context.ONE_MINUS_SRC_ALPHA);
+    // this.context.blendFuncSeparate(this.context.SRC_ALPHA,
+    // this.context.ONE_MINUS_SRC_ALPHA, this.context.ONE,
+    // this.context.ZERO);
+    // this.context.blendFunc(this.context.DST_COLOR, this.context.ZERO);
+    // this.context.blendFunc(this.context.ONE_MINUS_SRC_ALPHA,
+    // this.context.SRC_ALPHA);
     // // enable depth testing
-    gl.enable(gl.DEPTH_TEST);
-    // // gl.polygonOffset(1.0, 1.0);
+    this.context.enable(this.context.DEPTH_TEST);
+    // // this.context.polygonOffset(1.0, 1.0);
     // // .. with perspective rendering
-    gl.depthFunc(gl.LEQUAL);
+    this.context.depthFunc(this.context.LEQUAL);
     //    
     
 
     // clear color and depth buffer
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    this.context.clear(this.context.COLOR_BUFFER_BIT |
+        this.context.DEPTH_BUFFER_BIT);
     
     if (this['config']['PICKING_ENABLED']) {
       //
@@ -324,26 +324,30 @@ X.renderer3D.prototype.init = function() {
       // object
       // color to check which object is where (a simulated Z buffer since we can
       // not directly access the one from WebGL)
-      var pickFrameBuffer = gl.createFramebuffer();
-      var pickRenderBuffer = gl.createRenderbuffer();
-      var pickTexture = gl.createTexture();
+      var pickFrameBuffer = this.context.createFramebuffer();
+      var pickRenderBuffer = this.context.createRenderbuffer();
+      var pickTexture = this.context.createTexture();
       
-      gl.bindTexture(gl.TEXTURE_2D, pickTexture);
+      this.context.bindTexture(this.context.TEXTURE_2D, pickTexture);
       
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, this['width'], this['height'], 0,
-          gl.RGB, gl.UNSIGNED_BYTE, null);
+      this.context.texImage2D(this.context.TEXTURE_2D, 0, this.context.RGB,
+          this['width'], this['height'], 0, this.context.RGB,
+          this.context.UNSIGNED_BYTE, null);
       
-      gl.bindFramebuffer(gl.FRAMEBUFFER, pickFrameBuffer);
-      gl.bindRenderbuffer(gl.RENDERBUFFER, pickRenderBuffer);
-      gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this
-          .width(), this['height']);
-      gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+      this.context.bindFramebuffer(this.context.FRAMEBUFFER, pickFrameBuffer);
+      this.context
+          .bindRenderbuffer(this.context.RENDERBUFFER, pickRenderBuffer);
+      this.context.renderbufferStorage(this.context.RENDERBUFFER,
+          this.context.DEPTH_COMPONENT16, this.width(), this['height']);
+      this.context.bindRenderbuffer(this.context.RENDERBUFFER, null);
       
-      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
-          gl.TEXTURE_2D, pickTexture, 0);
-      gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT,
-          gl.RENDERBUFFER, pickRenderBuffer);
-      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      this.context.framebufferTexture2D(this.context.FRAMEBUFFER,
+          this.context.COLOR_ATTACHMENT0, this.context.TEXTURE_2D, pickTexture,
+          0);
+      this.context.framebufferRenderbuffer(this.context.FRAMEBUFFER,
+          this.context.DEPTH_ATTACHMENT, this.context.RENDERBUFFER,
+          pickRenderBuffer);
+      this.context.bindFramebuffer(this.context.FRAMEBUFFER, null);
       
       this.pickFrameBuffer = pickFrameBuffer;
       
@@ -365,7 +369,7 @@ X.renderer3D.prototype.init = function() {
   
   //
   // create a new interactor
-  var _interactor = new X.interactor(canvas);
+  var _interactor = new X.interactor(this['canvas']);
   _interactor.init();
   // .. listen to resetViewEvents
   goog.events.listen(_interactor, X.event.events.RESETVIEW,
@@ -1144,8 +1148,8 @@ X.renderer3D.prototype.showCaption_ = function(x, y) {
     
     if (caption) {
       
-      var t = new X.caption(this.container(), this.container().offsetLeft + x +
-          10, this.container().offsetTop + y + 10, this.interactor());
+      var t = new X.caption(this['container'], this['container'].offsetLeft +
+          x + 10, this['container'].offsetTop + y + 10, this['interactor']);
       t.setHtml(caption);
       
     }
@@ -1387,6 +1391,15 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   // call the update_ method of the superclass
   X.renderer3D.superClass_.render_.call(this, picking, invoked);
   
+  // only proceed if there are actually objects to render
+  var _objects = this.objects.values();
+  var _numberOfObjects = _objects.length;
+  if (_numberOfObjects == 0) {
+    // there is nothing to render
+    // get outta here
+    return;
+  }
+  
   if (picking) {
     
     // we are in picking mode, so use the framebuffer rather than the canvas
@@ -1505,10 +1518,10 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   //
   // loop through all objects and (re-)draw them
   
-  i = numberOfObjects;
+  i = _numberOfObjects;
   do {
     
-    var object = objects[numberOfObjects - i];
+    var object = _objects[_numberOfObjects - i];
     
     if (object) {
       // we have a valid object
@@ -1872,7 +1885,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   
   if (statisticsEnabled) {
     
-    var statistics = "Objects: " + numberOfObjects + " | ";
+    var statistics = "Objects: " + _numberOfObjects + " | ";
     statistics += "Vertices: " + verticesCounter + " | ";
     statistics += "Triangles: " + Math.round(trianglesCounter) + " | ";
     statistics += "Lines: " + linesCounter + " | ";
@@ -1886,63 +1899,28 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 
 
 /**
- * Destroy this renderer.
+ * @inheritDoc
  */
 X.renderer3D.prototype.destroy = function() {
 
-  // remove all objects
-  this.objects.clear();
-  delete this.objects;
-  this.topLevelObjects.length = 0;
-  delete this.topLevelObjects;
-  
-  // remove shaders, loader, camera and interactor
+  // remove all shaders
   this.shaders = null;
   delete this.shaders;
-  this.loader = null;
-  delete this.loader;
-  this['camera'] = null;
-  delete this['camera'];
-  this['interactor'] = null;
-  delete this['interactor'];
   
   // remove the gl context
   this.context.clear(this.context.COLOR_BUFFER_BIT |
       this.context.DEPTH_BUFFER_BIT);
-  this.context = null;
-  delete this.context;
   
-  // remove the canvas from the dom tree
-  goog.dom.removeNode(this['canvas']);
-  delete this['canvas'];
+  // call the destroy method of the superclass
+  X.renderer3D.superClass_.destroy.call(this);
   
 };
 
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer3D', X.renderer3D);
-goog.exportSymbol('X.renderer3D.prototype.width', X.renderer3D.prototype.width);
-goog.exportSymbol('X.renderer3D.prototype.height',
-    X.renderer3D.prototype.height);
-goog.exportSymbol('X.renderer3D.prototype.canvas',
-    X.renderer3D.prototype.canvas);
-goog.exportSymbol('X.renderer3D.prototype.container',
-    X.renderer3D.prototype.container);
-goog.exportSymbol('X.renderer3D.prototype.camera',
-    X.renderer3D.prototype.camera);
-goog.exportSymbol('X.renderer3D.prototype.interactor',
-    X.renderer3D.prototype.interactor);
 goog.exportSymbol('X.renderer3D.prototype.resetBoundingBox',
     X.renderer3D.prototype.resetBoundingBox);
 goog.exportSymbol('X.renderer3D.prototype.resetViewAndRender',
     X.renderer3D.prototype.resetViewAndRender);
-goog.exportSymbol('X.renderer3D.prototype.init', X.renderer3D.prototype.init);
-goog.exportSymbol('X.renderer3D.prototype.add', X.renderer3D.prototype.add);
-goog.exportSymbol('X.renderer3D.prototype.onShowtime',
-    X.renderer3D.prototype.onShowtime);
-goog.exportSymbol('X.renderer3D.prototype.get', X.renderer3D.prototype.get);
 goog.exportSymbol('X.renderer3D.prototype.pick', X.renderer3D.prototype.pick);
-goog.exportSymbol('X.renderer3D.prototype.render',
-    X.renderer3D.prototype.render);
-goog.exportSymbol('X.renderer3D.prototype.destroy',
-    X.renderer3D.prototype.destroy);

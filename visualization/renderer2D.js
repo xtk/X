@@ -67,10 +67,10 @@ goog.inherits(X.renderer2D, X.renderer);
  */
 X.renderer2D.prototype.init = function() {
 
-  var _contextName = '2d';
+  var contextName = '2d';
   
   // call the superclass' init method
-  X.renderer2D.superClass_.init.call(this, _contextName);
+  X.renderer2D.superClass_.init.call(this, contextName);
   
 };
 
@@ -91,7 +91,7 @@ X.renderer2D.prototype.update_ = function(object) {
     // this object is based on an external file and it is dirty..
     
     // start loading..
-    this._loader.loadFile(object);
+    this.loader.loadFile(object);
     
     return;
     
@@ -101,16 +101,23 @@ X.renderer2D.prototype.update_ = function(object) {
   
 };
 
-X.renderer2D.prototype.render = function() {
+X.renderer2D.prototype.render = function(picking, invoked) {
 
   // call the update_ method of the superclass
   X.renderer2D.superClass_.render_.call(this, picking, invoked);
   
-
-
-  var _pixels = this._context.getImageData(0, 0, this['width'], this['height']);
+  // only proceed if there are actually objects to render
+  var _objects = this.objects.values();
+  var _numberOfObjects = _objects.length;
+  if (_numberOfObjects == 0) {
+    // there is nothing to render
+    // get outta here
+    return;
+  }
   
-  var children_ = this._topLevelObjects[0]._slicesX.children();
+  var _pixels = this.context.getImageData(0, 0, this['width'], this['height']);
+  
+  var children_ = this.topLevelObjects[0]._slicesX.children();
   
   var x = 0;
   setInterval(function() {
@@ -138,14 +145,10 @@ X.renderer2D.prototype.render = function() {
       // }
     }
     
-    this._context.putImageData(_pixels, 0, 0);
+    this.context.putImageData(_pixels, 0, 0);
   }.bind(this), 10);
   // window.console.log(_newPixels.length);
 };
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer2D', X.renderer2D);
-goog.exportSymbol('X.renderer2D.prototype.init', X.renderer2D.prototype.init);
-goog.exportSymbol('X.renderer2D.prototype.add', X.renderer2D.prototype.add);
-goog.exportSymbol('X.renderer2D.prototype.render',
-    X.renderer2D.prototype.render);
