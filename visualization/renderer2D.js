@@ -42,7 +42,7 @@ goog.require('X.renderer');
  *          inside.
  * @extends X.renderer
  */
-X.renderer2D = function(container) {
+X.renderer2D = function(container, orientation) {
 
   //
   // call the standard constructor of X.renderer
@@ -56,6 +56,8 @@ X.renderer2D = function(container) {
    * @const
    */
   this['className'] = 'renderer2D';
+  
+  this['orientation'] = orientation;
   
 };
 // inherit from X.base
@@ -117,63 +119,162 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   
   var _pixels = this.context.getImageData(0, 0, this['width'], this['height']);
   
-  var children_ = this.topLevelObjects[0]._slicesY.children();
+  var _currentSlice = 0;
+  var _volume = this.topLevelObjects[0];
   
-  var _slice = children_[22];
+  var _children = null;
+  
+  if (this['orientation'] == 'X') {
+    
+    _children = _volume._slicesX.children();
+    _currentSlice = _volume['_indexX'];
+    
+  } else if (this['orientation'] == 'Y') {
+    
+    _children = _volume._slicesY.children();
+    _currentSlice = _volume['_indexY'];
+    
+  } else if (this['orientation'] == 'Z') {
+    
+    _children = _volume._slicesZ.children();
+    _currentSlice = _volume['_indexZ'];
+    
+  }
+  
+
+  var _slice = _children[parseInt(_currentSlice)];
   var _sliceData = _slice._texture._rawData;
   
   var _width = this['width'];
   var _height = this['height'];
   var _sliceWidth = _slice._width + 1;
   var _sliceHeight = _slice._height + 1;
-  console.log('sliceWidth', _sliceWidth);
-  console.log('sliceHeight', _sliceHeight);
   
-  var _paddingX = ((_width - _sliceWidth) / 2);
-  var _paddingY = ((_height - _sliceHeight) / 2);
-  
+
+
   var _x, _y = 0;
   var _i = 0; // this is the pointer to the current slice data byte
   
-  // for (_y = 0; _y < _height; _y++) {
-  // for (_x = 0; _x < _width; _x++) {
-  for (_y = _height; _y > 0; _y--) {
-    for (_x = _width; _x > 0; _x--) {
-      
-      // the pixel index
-      var _pxIndex = _x + _y * _width;
-      
-      // the r-index is the pixel index * 4 since we have RGBA components
-      var _rIndex = _pxIndex * 4;
-      
-      // check if we are in area to draw slice data
-      if ((_x > _paddingX && _y > _paddingY) &&
-          (_x < (_width - _paddingX) && _y < (_height - _paddingY))) {
+  if (this['orientation'] != 'X') {
+    
+
+    var _paddingX = ((_width - _sliceWidth) / 2);
+    var _paddingY = ((_height - _sliceHeight) / 2);
+    
+    for (_y = _height; _y >= 0; _y--) {
+      for (_x = _width; _x >= 0; _x--) {
         
-        // console.log('drawing', _rIndex, _i);
+        // the pixel index
+        var _pxIndex = _x + _y * _width;
         
-        // yes we are..! draw slice data
-        _pixels.data[_rIndex] = _sliceData[_i];
-        _pixels.data[++_rIndex] = _sliceData[++_i];
-        _pixels.data[++_rIndex] = _sliceData[++_i];
-        _pixels.data[++_rIndex] = _sliceData[++_i];
+        // the r-index is the pixel index * 4 since we have RGBA components
+        var _rIndex = _pxIndex * 4;
         
-        ++_i; // increase the slice data byte pointer
+        // check if we are in area to draw slice data
+        if ((_x >= _paddingX && _y >= _paddingY) &&
+            (_x < (_width - _paddingX) && _y < (_height - _paddingY))) {
+          
+          // console.log('drawing', _rIndex, _i);
+          
+          // yes we are..! draw slice data
+          _pixels.data[_rIndex] = _sliceData[_i];
+          _pixels.data[++_rIndex] = _sliceData[++_i];
+          _pixels.data[++_rIndex] = _sliceData[++_i];
+          _pixels.data[++_rIndex] = _sliceData[++_i];
+          
+          ++_i; // increase the slice data byte pointer
+          
+        } else {
+          
+          // draw background
+          _pixels.data[_rIndex] = 0;
+          _pixels.data[++_rIndex] = 0;
+          _pixels.data[++_rIndex] = 0;
+          _pixels.data[++_rIndex] = 255;
+          
+        }
         
-      } else {
+
+      }
+    }
+    
+  } else {
+    
+
+
+    var _paddingX = ((_width - _sliceHeight) / 2);
+    var _paddingY = ((_height - _sliceWidth) / 2);
+    
+    // for (_x = _width; _x > 0; _x--) {
+    // for (_y = _height; _y > 0; _y--) {
+    //      
+    _i = 0;// _sliceData.length;
+    
+    for (_y = _height; _y >= 0; _y--) {
+      for (_x = _width; _x >= 0; _x--) {
         
-        // draw background
-        _pixels.data[_rIndex] = 0;
-        _pixels.data[++_rIndex] = 0;
-        _pixels.data[++_rIndex] = 0;
-        _pixels.data[++_rIndex] = 255;
+
+
+        // the pixel index
+        var _pxIndex = _x + _y * _width;
         
+        // the r-index is the pixel index * 4 since we have RGBA components
+        var _rIndex = _pxIndex * 4;
+        
+        if (_pxIndex == 10) {
+          
+          _pixels.data[_rIndex] = 255;
+          _pixels.data[++_rIndex] = 0;
+          _pixels.data[++_rIndex] = 0;
+          _pixels.data[++_rIndex] = 255;
+          
+        }
+        
+        // check if we are in area to draw slice data
+        if ((_x >= _paddingX && _y >= _paddingY) &&
+            (_x < (_width - _paddingX) && _y < (_height - _paddingY))) {
+          
+          // console.log('drawing', _rIndex, _i);
+          
+
+
+          // yes we are..! draw slice data
+          // _pixels.data[_rIndex] = _sliceData[_i - 4];
+          // _pixels.data[++_rIndex] = _sliceData[_i - 3];
+          // _pixels.data[++_rIndex] = _sliceData[_i - 2];
+          // _pixels.data[++_rIndex] = _sliceData[_i - 1];
+          //          
+          // _i = _i - 4; // increase the slice data byte pointer
+          
+
+          // yes we are..! draw slice data
+          _pixels.data[_rIndex] = _sliceData[_i];
+          _pixels.data[++_rIndex] = _sliceData[_i + 1];
+          _pixels.data[++_rIndex] = _sliceData[_i + 2];
+          _pixels.data[++_rIndex] = _sliceData[_i + 3];
+          
+
+          _i = _i + 4; // increase the slice data byte pointer
+          
+
+        } else {
+          
+          // draw background
+          _pixels.data[_rIndex] = 0;
+          _pixels.data[++_rIndex] = 0;
+          _pixels.data[++_rIndex] = 0;
+          _pixels.data[++_rIndex] = 255;
+          
+        }
+        
+
       }
       
-
     }
+    
   }
   
+
 
   this.context.putImageData(_pixels, 0, 0);
   
