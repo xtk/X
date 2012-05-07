@@ -67,10 +67,10 @@ goog.inherits(X.renderer2D, X.renderer);
  */
 X.renderer2D.prototype.init = function() {
 
-  var contextName = '2d';
+  var _contextName = '2d';
   
   // call the superclass' init method
-  X.renderer2D.superClass_.init.call(this, contextName);
+  X.renderer2D.superClass_.init.call(this, "2d");
   
 };
 
@@ -97,11 +97,13 @@ X.renderer2D.prototype.update_ = function(object) {
     
   }
   
+  this.objects.add(object);
+  
   window.console.log('updating done', object);
   
 };
 
-X.renderer2D.prototype.render = function(picking, invoked) {
+X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   // call the update_ method of the superclass
   X.renderer2D.superClass_.render_.call(this, picking, invoked);

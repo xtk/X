@@ -336,9 +336,9 @@ X.renderer.prototype.hideProgressBar_ = function() {
  * 
  * @param {string} _contextName The name of the context to create.
  * @throws {Error} An exception if there were problems during initialization.
- * @public
+ * @protected
  */
-X.renderer.prototype.init = function(_contextName) {
+X.renderer.prototype.init_ = function(_contextName) {
 
   // create the canvas
   var _canvas = goog.dom.createDom('canvas');
@@ -481,7 +481,7 @@ X.renderer.prototype.update_ = function(object) {
  * @throws {Error} If the given id was invalid.
  * @public
  */
-X.renderer3D.prototype.get = function(id) {
+X.renderer.prototype.get = function(id) {
 
   if (!goog.isDefAndNotNull(id)) {
     
@@ -723,7 +723,6 @@ X.renderer.prototype.destroy = function() {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer', X.renderer);
-goog.exportSymbol('X.renderer.prototype.init', X.renderer.prototype.init);
 goog.exportSymbol('X.renderer.prototype.add', X.renderer.prototype.add);
 goog.exportSymbol('X.renderer.prototype.onShowtime',
     X.renderer.prototype.onShowtime);

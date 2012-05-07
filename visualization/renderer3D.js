@@ -274,10 +274,8 @@ X.renderer3D.prototype.resetViewAndRender = function() {
  */
 X.renderer3D.prototype.init = function() {
 
-  var _contextName = 'experimental-webgl';
-  
   // call the superclass' init method
-  X.renderer3D.superClass_.init.call(this, _contextName);
+  X.renderer3D.superClass_.init_.call(this, "experimental-webgl");
   
   //
   // Step2: Configure the context
@@ -338,7 +336,7 @@ X.renderer3D.prototype.init = function() {
       this.context
           .bindRenderbuffer(this.context.RENDERBUFFER, pickRenderBuffer);
       this.context.renderbufferStorage(this.context.RENDERBUFFER,
-          this.context.DEPTH_COMPONENT16, this.width(), this['height']);
+          this.context.DEPTH_COMPONENT16, this['width'], this['height']);
       this.context.bindRenderbuffer(this.context.RENDERBUFFER, null);
       
       this.context.framebufferTexture2D(this.context.FRAMEBUFFER,
@@ -1919,6 +1917,7 @@ X.renderer3D.prototype.destroy = function() {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer3D', X.renderer3D);
+goog.exportSymbol('X.renderer3D.prototype.init', X.renderer3D.prototype.init);
 goog.exportSymbol('X.renderer3D.prototype.resetBoundingBox',
     X.renderer3D.prototype.resetBoundingBox);
 goog.exportSymbol('X.renderer3D.prototype.resetViewAndRender',
