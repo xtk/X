@@ -141,7 +141,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     
   }
   
-
   var _slice = _children[parseInt(_currentSlice)];
   var _sliceData = _slice._texture._rawData;
   
@@ -151,19 +150,16 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _sliceHeight = _slice._height + 1;
   
 
-
+  var _paddingX = ((_width - _sliceWidth) / 2);
+  var _paddingY = ((_height - _sliceHeight) / 2);
   var _x, _y = 0;
   var _i = 0; // this is the pointer to the current slice data byte
   
   if (this['orientation'] == 'X') {
     
-    var _paddingX = ((_width - _sliceHeight) / 2);
-    var _paddingY = ((_height - _sliceWidth) / 2);
-    
-  } else {
-    
-    var _paddingX = ((_width - _sliceWidth) / 2);
-    var _paddingY = ((_height - _sliceHeight) / 2);
+    // the X oriented texture is twisted ..
+    _paddingX = ((_width - _sliceHeight) / 2);
+    _paddingY = ((_height - _sliceWidth) / 2);
     
   }
   
@@ -180,38 +176,49 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       if ((_x >= _paddingX && _y >= _paddingY) &&
           (_x < (_width - _paddingX) && _y < (_height - _paddingY))) {
         
-        // console.log('drawing', _rIndex, _i);
+        //
+        // thresholding
+        // console.log(_sliceData[_i]);
+        var _currentPixelValue = _sliceData[_i] / 255 *
+            _volume.scalarRange()[1];
+        var _lowerThreshold = _volume['_lowerThreshold'];
+        var _upperThreshold = _volume['_upperThreshold'];
         
-        // yes we are..! draw slice data
-        _pixels.data[_rIndex] = _sliceData[_i];
-        _pixels.data[++_rIndex] = _sliceData[++_i];
-        _pixels.data[++_rIndex] = _sliceData[++_i];
-        _pixels.data[++_rIndex] = _sliceData[++_i];
+
+
+        if (_currentPixelValue >= _lowerThreshold &&
+            _currentPixelValue <= _upperThreshold) {
+          
+          // yes we are..! draw slice data
+          _pixels.data[_rIndex] = _sliceData[_i];
+          _pixels.data[++_rIndex] = _sliceData[_i + 1];
+          _pixels.data[++_rIndex] = _sliceData[_i + 2];
+          _pixels.data[++_rIndex] = _sliceData[_i + 3];
+          
+          _i = _i + 4; // increase the slice data byte pointer
+          
+          continue;
+          
+        }
         
-        ++_i; // increase the slice data byte pointer
-        
-      } else {
-        
-        // draw background
-        _pixels.data[_rIndex] = 0;
-        _pixels.data[++_rIndex] = 0;
-        _pixels.data[++_rIndex] = 0;
-        _pixels.data[++_rIndex] = 255;
+        _i = _i + 4; // increase the slice data byte pointer
         
       }
       
-
+      // draw background since we are either outside a threshold or outside
+      // the
+      // pixel region
+      _pixels.data[_rIndex] = 0;
+      _pixels.data[++_rIndex] = 0;
+      _pixels.data[++_rIndex] = 0;
+      _pixels.data[++_rIndex] = 255;
+      
     }
   }
   
-
-
+  // propagate new image data
   this.context.putImageData(_pixels, 0, 0);
   
-
-  // }.bind(this), 1000);
-  
-  // window.console.log(_newPixels.length);
 };
 
 // export symbols (required for advanced compilation)
