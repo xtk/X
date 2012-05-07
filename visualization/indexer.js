@@ -60,7 +60,7 @@ X.indexer = function() {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'indexer';
+  this['className'] = 'indexer';
   
   /**
    * The unique objects.

@@ -60,7 +60,7 @@ X.parserTRK = function() {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'parserTRK';
+  this['className'] = 'parserTRK';
   
 };
 // inherit from X.parser

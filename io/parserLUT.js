@@ -56,7 +56,7 @@ X.parserLUT = function() {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'parserLUT';
+  this['className'] = 'parserLUT';
   
 };
 // inherit from X.parser

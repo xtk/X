@@ -54,7 +54,7 @@ X.texture = function() {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'texture';
+  this['className'] = 'texture';
   
   // the global id counter
   var counter = window["X.Counter"];

@@ -70,7 +70,7 @@ X.object = function(object) {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'object';
+  this['className'] = 'object';
   
   // the global id counter
   var counter = window["X.Counter"];
@@ -321,8 +321,8 @@ X.object.prototype.copy_ = function(object) {
       this['_newChild'] = this['_child'];
       
       // dynamic duck typing
-      var _className = this['_child']['_className'];
-      eval("this['_newChild'] = new X." + _className + "(this['_child']);");
+      var className = this['_child']['className'];
+      eval("this['_newChild'] = new X." + className + "(this['_child']);");
       
       this.children().push(this['_newChild']);
       

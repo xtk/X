@@ -54,7 +54,7 @@ X.shaders = function() {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'shader';
+  this['className'] = 'shader';
   
   /**
    * The vertex shader source of this shader pair. By default, a basic shader

@@ -69,7 +69,7 @@ X.camera = function(width, height) {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'camera';
+  this['className'] = 'camera';
   
   /**
    * The field of view in degrees.

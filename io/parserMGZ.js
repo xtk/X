@@ -63,7 +63,7 @@ X.parserMGZ = function() {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'parserMGZ';
+  this['className'] = 'parserMGZ';
   
 };
 // inherit from X.parser
