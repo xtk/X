@@ -155,123 +155,53 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _x, _y = 0;
   var _i = 0; // this is the pointer to the current slice data byte
   
-  if (this['orientation'] != 'X') {
+  if (this['orientation'] == 'X') {
     
-
-    var _paddingX = ((_width - _sliceWidth) / 2);
-    var _paddingY = ((_height - _sliceHeight) / 2);
-    
-    for (_y = _height; _y >= 0; _y--) {
-      for (_x = _width; _x >= 0; _x--) {
-        
-        // the pixel index
-        var _pxIndex = _x + _y * _width;
-        
-        // the r-index is the pixel index * 4 since we have RGBA components
-        var _rIndex = _pxIndex * 4;
-        
-        // check if we are in area to draw slice data
-        if ((_x >= _paddingX && _y >= _paddingY) &&
-            (_x < (_width - _paddingX) && _y < (_height - _paddingY))) {
-          
-          // console.log('drawing', _rIndex, _i);
-          
-          // yes we are..! draw slice data
-          _pixels.data[_rIndex] = _sliceData[_i];
-          _pixels.data[++_rIndex] = _sliceData[++_i];
-          _pixels.data[++_rIndex] = _sliceData[++_i];
-          _pixels.data[++_rIndex] = _sliceData[++_i];
-          
-          ++_i; // increase the slice data byte pointer
-          
-        } else {
-          
-          // draw background
-          _pixels.data[_rIndex] = 0;
-          _pixels.data[++_rIndex] = 0;
-          _pixels.data[++_rIndex] = 0;
-          _pixels.data[++_rIndex] = 255;
-          
-        }
-        
-
-      }
-    }
-    
-  } else {
-    
-
-
     var _paddingX = ((_width - _sliceHeight) / 2);
     var _paddingY = ((_height - _sliceWidth) / 2);
     
-    // for (_x = _width; _x > 0; _x--) {
-    // for (_y = _height; _y > 0; _y--) {
-    //      
-    _i = 0;// _sliceData.length;
+  } else {
     
-    for (_y = _height; _y >= 0; _y--) {
-      for (_x = _width; _x >= 0; _x--) {
+    var _paddingX = ((_width - _sliceWidth) / 2);
+    var _paddingY = ((_height - _sliceHeight) / 2);
+    
+  }
+  
+  for (_y = _height; _y >= 0; _y--) {
+    for (_x = _width; _x >= 0; _x--) {
+      
+      // the pixel index
+      var _pxIndex = _x + _y * _width;
+      
+      // the r-index is the pixel index * 4 since we have RGBA components
+      var _rIndex = _pxIndex * 4;
+      
+      // check if we are in area to draw slice data
+      if ((_x >= _paddingX && _y >= _paddingY) &&
+          (_x < (_width - _paddingX) && _y < (_height - _paddingY))) {
         
-
-
-        // the pixel index
-        var _pxIndex = _x + _y * _width;
+        // console.log('drawing', _rIndex, _i);
         
-        // the r-index is the pixel index * 4 since we have RGBA components
-        var _rIndex = _pxIndex * 4;
+        // yes we are..! draw slice data
+        _pixels.data[_rIndex] = _sliceData[_i];
+        _pixels.data[++_rIndex] = _sliceData[++_i];
+        _pixels.data[++_rIndex] = _sliceData[++_i];
+        _pixels.data[++_rIndex] = _sliceData[++_i];
         
-        if (_pxIndex == 10) {
-          
-          _pixels.data[_rIndex] = 255;
-          _pixels.data[++_rIndex] = 0;
-          _pixels.data[++_rIndex] = 0;
-          _pixels.data[++_rIndex] = 255;
-          
-        }
+        ++_i; // increase the slice data byte pointer
         
-        // check if we are in area to draw slice data
-        if ((_x >= _paddingX && _y >= _paddingY) &&
-            (_x < (_width - _paddingX) && _y < (_height - _paddingY))) {
-          
-          // console.log('drawing', _rIndex, _i);
-          
-
-
-          // yes we are..! draw slice data
-          // _pixels.data[_rIndex] = _sliceData[_i - 4];
-          // _pixels.data[++_rIndex] = _sliceData[_i - 3];
-          // _pixels.data[++_rIndex] = _sliceData[_i - 2];
-          // _pixels.data[++_rIndex] = _sliceData[_i - 1];
-          //          
-          // _i = _i - 4; // increase the slice data byte pointer
-          
-
-          // yes we are..! draw slice data
-          _pixels.data[_rIndex] = _sliceData[_i];
-          _pixels.data[++_rIndex] = _sliceData[_i + 1];
-          _pixels.data[++_rIndex] = _sliceData[_i + 2];
-          _pixels.data[++_rIndex] = _sliceData[_i + 3];
-          
-
-          _i = _i + 4; // increase the slice data byte pointer
-          
-
-        } else {
-          
-          // draw background
-          _pixels.data[_rIndex] = 0;
-          _pixels.data[++_rIndex] = 0;
-          _pixels.data[++_rIndex] = 0;
-          _pixels.data[++_rIndex] = 255;
-          
-        }
+      } else {
         
-
+        // draw background
+        _pixels.data[_rIndex] = 0;
+        _pixels.data[++_rIndex] = 0;
+        _pixels.data[++_rIndex] = 0;
+        _pixels.data[++_rIndex] = 255;
+        
       }
       
+
     }
-    
   }
   
 
