@@ -141,7 +141,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     
   }
   
-  var _slice = _children[parseInt(_currentSlice)];
+  var _slice = _children[parseInt(_currentSlice, 10)];
   var _sliceData = _slice._texture._rawData;
   
   var _width = this['width'];
