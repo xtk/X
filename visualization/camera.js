@@ -100,7 +100,7 @@ X.camera = function(width, height) {
    * @type {!X.matrix}
    * @protected
    */
-  this.view = this.lookAt_(this.position, this.focus);
+  this['view'] = this.lookAt_(this.position, this.focus);
   
   /**
    * The view matrix as a 'ready-to-use'-gl version.
@@ -108,7 +108,7 @@ X.camera = function(width, height) {
    * @type {!Object}
    * @protected
    */
-  this.glView = new Float32Array(this.view.flatten());
+  this.glView = new Float32Array(this['view'].flatten());
   
 };
 // inherit from X.base
@@ -199,8 +199,8 @@ X.camera.prototype.setView = function(view) {
     
   }
   
-  this.view = view;
-  this.glView = new Float32Array(this.view.flatten());
+  this['view'] = view;
+  this.glView = new Float32Array(this['view'].flatten());
   
 };
 
@@ -283,8 +283,8 @@ X.camera.prototype.setUp = function(x, y, z) {
 X.camera.prototype.reset = function() {
 
   // update the view matrix and its gl versions
-  this.view = this.lookAt_(this.position, this.focus);
-  this.glView = new Float32Array(this.view.flatten());
+  this['view'] = this.lookAt_(this.position, this.focus);
+  this.glView = new Float32Array(this['view'].flatten());
   
 };
 
@@ -310,8 +310,8 @@ X.camera.prototype.pan = function(distance) {
   var identity = X.matrix.createIdentityMatrix(4);
   var panMatrix = identity.translate(distance3d);
   
-  this.view = new X.matrix(panMatrix.multiply(this.view));
-  this.glView = new Float32Array(this.view.flatten());
+  this['view'] = new X.matrix(panMatrix.multiply(this['view']));
+  this.glView = new Float32Array(this['view'].flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -342,8 +342,8 @@ X.camera.prototype.zoomIn = function(fast) {
   var identity = X.matrix.createIdentityMatrix(4);
   var zoomMatrix = identity.translate(zoomVector);
   
-  this.view = new X.matrix(zoomMatrix.multiply(this.view));
-  this.glView = new Float32Array(this.view.flatten());
+  this['view'] = new X.matrix(zoomMatrix.multiply(this['view']));
+  this.glView = new Float32Array(this['view'].flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -374,8 +374,8 @@ X.camera.prototype.zoomOut = function(fast) {
   var identity = X.matrix.createIdentityMatrix(4);
   var zoomMatrix = identity.translate(zoomVector);
   
-  this.view = new X.matrix(zoomMatrix.multiply(this.view));
-  this.glView = new Float32Array(this.view.flatten());
+  this['view'] = new X.matrix(zoomMatrix.multiply(this['view']));
+  this.glView = new Float32Array(this['view'].flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -401,7 +401,7 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
     
   }
   
-  return new X.matrix(4, 4);
+  return X.matrix.createIdentityMatrix(4);
   
 };
 

@@ -117,6 +117,19 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     return;
   }
   
+  //
+  // grab the camera settings
+  
+  // first the view matrix which is 4x4 in favor of the 3D renderer
+  var _view = this['camera']['view'];
+  
+  // ..then the x and y values which are the focus position
+  var _focusX = 2 * _view.getValueAt(0, 3); // 2 is a acceleration factor
+  var _focusY = -2 * _view.getValueAt(1, 3); // we need to flip y here
+  
+  // ..then the z value which is the zoom level (distance from eye)
+  var _scale = _view.getValueAt(2, 3);
+  
   var _pixels = this.context.getImageData(0, 0, this['width'], this['height']);
   
   var _currentSlice = 0;
@@ -217,7 +230,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   }
   
   // propagate new image data
-  this.context.putImageData(_pixels, 0, 0);
+  this.context.putImageData(_pixels, _focusX, _focusY);
   
 };
 
