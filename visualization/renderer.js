@@ -361,7 +361,7 @@ X.renderer.prototype.init = function(_contextName) {
   // Step1: Get Context of canvas
   //
   try {
-    window.console.log(_contextName);
+    
     var _context = _canvas.getContext(_contextName);
     
     if (!_context) {
