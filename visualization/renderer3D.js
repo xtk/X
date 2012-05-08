@@ -1155,29 +1155,29 @@ X.renderer3D.prototype.orientVolume_ = function(volume) {
   var centroidVector = new goog.math.Vec3(1, 0, 0);
   var realCentroidVector = this['camera'].view().multiplyByVector(
       centroidVector);
-  var distanceFromEyeX = goog.math.Vec3.distance(this['camera']._position,
+  var distanceFromEyeX = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(-1, 0, 0);
   realCentroidVector = this['camera'].view().multiplyByVector(centroidVector);
-  var distanceFromEyeX2 = goog.math.Vec3.distance(this['camera']._position,
+  var distanceFromEyeX2 = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   
   centroidVector = new goog.math.Vec3(0, 1, 0);
   realCentroidVector = this['camera'].view().multiplyByVector(centroidVector);
-  var distanceFromEyeY = goog.math.Vec3.distance(this['camera']._position,
+  var distanceFromEyeY = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(0, -1, 0);
   realCentroidVector = this['camera'].view().multiplyByVector(centroidVector);
-  var distanceFromEyeY2 = goog.math.Vec3.distance(this['camera']._position,
+  var distanceFromEyeY2 = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   
   centroidVector = new goog.math.Vec3(0, 0, 1);
   realCentroidVector = this['camera'].view().multiplyByVector(centroidVector);
-  var distanceFromEyeZ = goog.math.Vec3.distance(this['camera']._position,
+  var distanceFromEyeZ = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(0, 0, -1);
   realCentroidVector = this['camera'].view().multiplyByVector(centroidVector);
-  var distanceFromEyeZ2 = goog.math.Vec3.distance(this['camera']._position,
+  var distanceFromEyeZ2 = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   
   var maxDistance = Math
@@ -1203,9 +1203,9 @@ X.renderer3D.prototype.distanceToEye_ = function(object) {
   var centroidVector = new goog.math.Vec3(centroid[0], centroid[1], centroid[2]);
   var transformedCentroidVector = object._transform._matrix
       .multiplyByVector(centroidVector);
-  var realCentroidVector = this['camera']._view
+  var realCentroidVector = this['camera'].view
       .multiplyByVector(transformedCentroidVector);
-  var distanceFromEye = goog.math.Vec3.distance(this['camera']._position,
+  var distanceFromEye = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   
   return Math.round(distanceFromEye * 1000) / 1000;
@@ -1401,10 +1401,10 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       this.context.DEPTH_BUFFER_BIT);
   
   // grab the current perspective from the camera
-  var perspectiveMatrix = this['camera']._perspective;
+  var perspectiveMatrix = this['camera'].perspective;
   
   // grab the current view from the camera
-  var viewMatrix = this['camera']._glView;
+  var viewMatrix = this['camera'].glView;
   
   // propagate perspective and view matrices to the uniforms of
   // the shader
