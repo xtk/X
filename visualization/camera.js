@@ -32,7 +32,6 @@ goog.provide('X.camera');
 
 // requires
 goog.require('X.event.ZoomEvent');
-goog.require('X.event.RotateEvent');
 goog.require('X.event.PanEvent');
 goog.require('X.event.RenderEvent');
 goog.require('X.base');
@@ -72,14 +71,6 @@ X.camera = function(width, height) {
   this['className'] = 'camera';
   
   /**
-   * The field of view in degrees.
-   * 
-   * @type {!number}
-   * @const
-   */
-  this.fieldOfView = 45;
-  
-  /**
    * The position of this camera, by default 0, 0, 100.
    * 
    * @type {!goog.math.Vec3}
@@ -104,15 +95,6 @@ X.camera = function(width, height) {
   this.up = new goog.math.Vec3(0, 1, 0);
   
   /**
-   * The perspective matrix.
-   * 
-   * @type {!Object}
-   * @protected
-   */
-  this.perspective = new Float32Array(this.calculatePerspective_(
-      this.fieldOfView, (width / height), 1, 10000).flatten());
-  
-  /**
    * The view matrix.
    * 
    * @type {!X.matrix}
@@ -134,8 +116,8 @@ goog.inherits(X.camera, X.base);
 
 
 /**
- * Configures observes for a given interactor. The method sets up listeners for
- * PAN, ROTATE and ZOOM events.
+ * Configures observers for a given interactor. The method sets up listeners for
+ * PAN and ZOOM events.
  * 
  * @param {!X.interactor} interactor The interactor which should be observed.
  */
@@ -149,8 +131,6 @@ X.camera.prototype.observe = function(interactor) {
   }
   
   goog.events.listen(interactor, X.event.events.PAN, this.onPan_.bind(this));
-  goog.events.listen(interactor, X.event.events.ROTATE, this.onRotate_
-      .bind(this));
   goog.events.listen(interactor, X.event.events.ZOOM, this.onZoom_.bind(this));
   
 };
@@ -161,7 +141,7 @@ X.camera.prototype.observe = function(interactor) {
  * 
  * @param {!X.event.ZoomEvent} event The event.
  * @throws {Error} An exception if the event is invalid.
- * @private
+ * @protected
  */
 X.camera.prototype.onZoom_ = function(event) {
 
@@ -189,7 +169,7 @@ X.camera.prototype.onZoom_ = function(event) {
  * 
  * @param {!X.event.PanEvent} event The event.
  * @throws {Error} An exception if the event is invalid.
- * @private
+ * @protected
  */
 X.camera.prototype.onPan_ = function(event) {
 
@@ -205,30 +185,11 @@ X.camera.prototype.onPan_ = function(event) {
 
 
 /**
- * The callback for a ROTATE event.
- * 
- * @param {!X.event.RotateEvent} event The event.
- * @throws {Error} An exception if the event is invalid.
- * @private
- */
-X.camera.prototype.onRotate_ = function(event) {
-
-  if (!(event instanceof X.event.RotateEvent)) {
-    
-    throw new Error('Received no valid rotate event.');
-    
-  }
-  
-  this.rotate(event._distance);
-  
-};
-
-
-/**
  * Set the view matrix for the three-dimensional space.
  * 
  * @param {!X.matrix} view The view matrix.
  * @throws {Error} An exception if the view matrix is invalid.
+ * @public
  */
 X.camera.prototype.setView = function(view) {
 
@@ -251,6 +212,7 @@ X.camera.prototype.setView = function(view) {
  * @param {!number} x The X component of the new camera position.
  * @param {!number} y The Y component of the new camera position.
  * @param {!number} z The Z component of the new camera position.
+ * @public
  */
 X.camera.prototype.setPosition = function(x, y, z) {
 
@@ -268,24 +230,13 @@ X.camera.prototype.setPosition = function(x, y, z) {
 
 
 /**
- * Reset the camera according to its configured position and focus.
- */
-X.camera.prototype.reset = function() {
-
-  // update the view matrix and its gl versions
-  this.view = this.lookAt_(this.position, this.focus);
-  this.glView = new Float32Array(this.view.flatten());
-  
-};
-
-
-/**
  * Set the focus of this camera. This forces a re-calculation of the view
  * matrix. This action _does not_ force an immediate render event automatically.
  * 
  * @param {!number} x The X component of the new camera focus.
  * @param {!number} y The Y component of the new camera focus.
  * @param {!number} z The Z component of the new camera focus.
+ * @public
  */
 X.camera.prototype.setFocus = function(x, y, z) {
 
@@ -309,6 +260,7 @@ X.camera.prototype.setFocus = function(x, y, z) {
  * @param {!number} x The X component of the new camera up-vector.
  * @param {!number} y The Y component of the new camera up-vector.
  * @param {!number} z The Z component of the new camera up-vector.
+ * @public
  */
 X.camera.prototype.setUp = function(x, y, z) {
 
@@ -326,69 +278,24 @@ X.camera.prototype.setUp = function(x, y, z) {
 
 
 /**
- * Calculate a perspective matrix based on the given values. This calculation is
- * based on known principles of Computer Vision (Source: TODO?).
- * 
- * @param {number} fieldOfViewY The field of view in degrees in Y direction.
- * @param {number} aspectRatio The aspect ratio between width and height of the
- *          viewport.
- * @param {number} zNearClippingPlane The Z coordinate of the near clipping
- *          plane (close to the eye).
- * @param {number} zFarClippingPlane The Z coordinate of the far clipping plane
- *          (far from the eye).
- * @return {X.matrix} The perspective matrix.
- * @private
+ * Reset the camera according to its configured position and focus.
  */
-X.camera.prototype.calculatePerspective_ = function(fieldOfViewY, aspectRatio,
-    zNearClippingPlane, zFarClippingPlane) {
+X.camera.prototype.reset = function() {
 
-  var ymax = zNearClippingPlane * Math.tan(fieldOfViewY * Math.PI / 360.0);
-  var ymin = -ymax;
-  var xmin = ymin * aspectRatio;
-  var xmax = ymax * aspectRatio;
-  
-  return this.calculateViewingFrustum_(xmin, xmax, ymin, ymax,
-      zNearClippingPlane, zFarClippingPlane);
+  // update the view matrix and its gl versions
+  this.view = this.lookAt_(this.position, this.focus);
+  this.glView = new Float32Array(this.view.flatten());
   
 };
 
 
 /**
- * Calculate the view frustum which is the three-dimensional area which is
- * visible to the eye by 'trimming' the world space. This calculation is based
- * on known principles of Computer Vision (Source:
- * http://en.wikipedia.org/wiki/Viewing_frustum).
- * 
- * @param {number} left The Y coordinate of the left border.
- * @param {number} right The Y coordinate of the right border.
- * @param {number} bottom The X coordinate of the bottom border.
- * @param {number} top The X coordinate of the top border.
- * @param {number} znear The Z coordinate of the near the eye border.
- * @param {number} zfar The Z coordinate of the far of the eye border.
- * @return {X.matrix} The frustum matrix.
- * @private
- */
-X.camera.prototype.calculateViewingFrustum_ = function(left, right, bottom,
-    top, znear, zfar) {
-
-  var x = 2 * znear / (right - left);
-  var y = 2 * znear / (top - bottom);
-  var a = (right + left) / (right - left);
-  var b = (top + bottom) / (top - bottom);
-  var c = -(zfar + znear) / (zfar - znear);
-  var d = -2 * zfar * znear / (zfar - znear);
-  
-  return new X.matrix([[x, 0, a, 0], [0, y, b, 0], [0, 0, c, d], [0, 0, -1, 0]]);
-  
-};
-
-
-/**
- * Perform a pan operation. This method fires a X.camera.RenderEvent() after the
+ * Perform a pan operation. This method fires a X.event.RenderEvent() after the
  * calculation is done.
  * 
  * @param {!goog.math.Vec2} distance The distance of the panning in respect of
  *          the last camera position.
+ * @public
  */
 X.camera.prototype.pan = function(distance) {
 
@@ -413,63 +320,12 @@ X.camera.prototype.pan = function(distance) {
 
 
 /**
- * Perform a rotate operation. This method fires a X.camera.RenderEvent() after
- * the calculation is done.
- * 
- * @param {!goog.math.Vec2|!Array} distance The distance of the rotation in
- *          respect of the last camera position as either a 2D Array or a
- *          goog.math.Vec2 containing the X and Y distances for the rotation.
- */
-X.camera.prototype.rotate = function(distance) {
-
-  if ((distance instanceof Array) && (distance.length == 2)) {
-    
-    distance = new goog.math.Vec2(distance[0], distance[1]);
-    
-  } else if (!(distance instanceof goog.math.Vec2)) {
-    
-    throw new Error('Invalid distance vector for rotate operation.');
-    
-  }
-  
-  // in radii, the 5 is a constant stating how quick the rotation performs..
-  var angleX = -distance.x / 5 * Math.PI / 180;
-  var angleY = -distance.y / 5 * Math.PI / 180;
-  
-  var identity = X.matrix.createIdentityMatrix(4);
-  // the x-Axis vector is determined by the first row of the view matrix
-  var xAxisVector = new goog.math.Vec3(parseFloat(this.view.getValueAt(0, 0)),
-      parseFloat(this.view.getValueAt(0, 1)), parseFloat(this.view.getValueAt(
-          0, 2)));
-  // the y-Axis vector is determined by the second row of the view matrix
-  var yAxisVector = new goog.math.Vec3(parseFloat(this.view.getValueAt(1, 0)),
-      parseFloat(this.view.getValueAt(1, 1)), parseFloat(this.view.getValueAt(
-          1, 2)));
-  
-  // we rotate around the Y Axis when the mouse moves along the screen in X
-  // direction
-  var rotateX = identity.rotate(angleX, yAxisVector);
-  
-  // we rotate around the X axis when the mouse moves along the screen in Y
-  // direction
-  var rotateY = identity.rotate(angleY, xAxisVector);
-  
-  // perform the actual rotation calculation
-  this.view = new X.matrix(this.view.multiply(rotateY.multiply(rotateX)));
-  this.glView = new Float32Array(this.view.flatten());
-  
-  // fire a render event
-  this.dispatchEvent(new X.event.RenderEvent());
-  
-};
-
-
-/**
- * Perform a zoom in operation. This method fires a X.camera.RenderEvent() after
+ * Perform a zoom in operation. This method fires a X.event.RenderEvent() after
  * the calculation is done.
  * 
  * @param {boolean} fast Enables/disables the fast mode which zooms much
  *          quicker.
+ * @public
  */
 X.camera.prototype.zoomIn = function(fast) {
 
@@ -496,11 +352,12 @@ X.camera.prototype.zoomIn = function(fast) {
 
 
 /**
- * Perform a zoom out operation. This method fires a X.camera.RenderEvent()
- * after the calculation is done.
+ * Perform a zoom out operation. This method fires a X.event.RenderEvent() after
+ * the calculation is done.
  * 
  * @param {boolean} fast Enables/disables the fast mode which zooms much
  *          quicker.
+ * @public
  */
 X.camera.prototype.zoomOut = function(fast) {
 
@@ -532,7 +389,8 @@ X.camera.prototype.zoomOut = function(fast) {
  * @param {!goog.math.Vec3} cameraPosition The camera position.
  * @param {!goog.math.Vec3} targetPoint The focus (target) point.
  * @return {!X.matrix} The view matrix.
- * @private
+ * @throws {Error} If the given arguments are invalid.
+ * @protected
  */
 X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
 
@@ -543,65 +401,7 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
     
   }
   
-  var matrix = X.matrix.createIdentityMatrix(4);
-  
-  // Make rotation matrix
-  
-  // Z vector = cameraPosition - targetPoint
-  var zVector = goog.math.Vec3.difference(cameraPosition, targetPoint);
-  
-  // normalize Z
-  zVector = zVector.normalize();
-  
-  // Y vector = up
-  var yVector = this.up.clone();
-  
-  // WARNING: there is a problem if yVector == zVector
-  if (yVector.equals(zVector)) {
-    
-    // we now change the zVector a little bit
-    yVector.z += 0.000001;
-    
-  }
-  
-  // X vector = Y x Z
-  var xVector = goog.math.Vec3.cross(yVector, zVector);
-  
-  // recompute Y vector = Z x X
-  yVector = goog.math.Vec3.cross(zVector, xVector);
-  
-  // normalize X and Y
-  xVector = xVector.normalize();
-  yVector = yVector.normalize();
-  
-  // create view matrix
-  // first row
-  matrix.setValueAt(0, 0, xVector.x);
-  matrix.setValueAt(0, 1, xVector.y);
-  matrix.setValueAt(0, 2, xVector.z);
-  matrix.setValueAt(0, 3, 0);
-  
-  // second row
-  matrix.setValueAt(1, 0, yVector.x);
-  matrix.setValueAt(1, 1, yVector.y);
-  matrix.setValueAt(1, 2, yVector.z);
-  matrix.setValueAt(1, 3, 0);
-  
-  // third row
-  matrix.setValueAt(2, 0, zVector.x);
-  matrix.setValueAt(2, 1, zVector.y);
-  matrix.setValueAt(2, 2, zVector.z);
-  matrix.setValueAt(2, 3, 0);
-  
-  // last row
-  matrix.setValueAt(3, 0, 0);
-  matrix.setValueAt(3, 1, 0);
-  matrix.setValueAt(3, 2, 0);
-  matrix.setValueAt(3, 3, 1);
-  
-  var invertedCameraPosition = cameraPosition.clone();
-  
-  return matrix.translate(invertedCameraPosition.invert());
+  return new X.matrix(4, 4);
   
 };
 
@@ -614,6 +414,5 @@ goog.exportSymbol('X.camera.prototype.setPosition',
 goog.exportSymbol('X.camera.prototype.setFocus', X.camera.prototype.setFocus);
 goog.exportSymbol('X.camera.prototype.setUp', X.camera.prototype.setUp);
 goog.exportSymbol('X.camera.prototype.pan', X.camera.prototype.pan);
-goog.exportSymbol('X.camera.prototype.rotate', X.camera.prototype.rotate);
 goog.exportSymbol('X.camera.prototype.zoomIn', X.camera.prototype.zoomIn);
 goog.exportSymbol('X.camera.prototype.zoomOut', X.camera.prototype.zoomOut);

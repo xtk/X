@@ -32,9 +32,7 @@ goog.provide('X.renderer3D');
 
 // requires
 goog.require('X.buffer');
-goog.require('X.camera');
 goog.require('X.caption');
-goog.require('X.interactor3D');
 goog.require('X.matrix');
 goog.require('X.renderer');
 goog.require('X.shaders');
@@ -362,24 +360,6 @@ X.renderer3D.prototype.init = function() {
   // --------------------------------------------------------------------------
   
 
-  //
-  // create a new camera
-  // width and height are required to calculate the perspective
-  var _camera = new X.camera(this['width'], this['height']);
-  // observe the interactor for user interactions (mouse-movements etc.)
-  _camera.observe(this['interactor']);
-  // ..listen to render requests from the camera
-  // these get fired after user-interaction and camera re-positioning to re-draw
-  // all objects
-  goog.events.listen(_camera, X.event.events.RENDER, this.render_.bind(this,
-      false, false));
-  
-  //
-  // attach all created objects as class attributes
-  // should be one of the last things to do here since we use these attributes
-  // to check if the initialization was completed successfully
-  this['camera'] = _camera;
-  
   //
   // add default shaders to this renderer
   // it is possible to attach other custom shaders after this init call

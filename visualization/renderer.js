@@ -33,7 +33,13 @@ goog.provide('X.renderer');
 // requires
 goog.require('X.array');
 goog.require('X.base');
+goog.require('X.camera');
+goog.require('X.camera2D');
+goog.require('X.camera3D');
 goog.require('X.event');
+goog.require('X.interactor');
+goog.require('X.interactor2D');
+goog.require('X.interactor3D');
 goog.require('X.labelMap');
 goog.require('X.loader');
 goog.require('X.object');
@@ -449,6 +455,29 @@ X.renderer.prototype.init = function(_contextName) {
   // .. and finally register it to this instance
   this['interactor'] = _interactor;
   
+  //
+  // create a new camera
+  // width and height are required to calculate the perspective
+  var _camera = new X.camera3D(this['width'], this['height']);
+  
+  if (_contextName == '2d') {
+    _camera = new X.camera2D(this['width'], this['height']);
+  }
+  // observe the interactor for user interactions (mouse-movements etc.)
+  _camera.observe(this['interactor']);
+  // ..listen to render requests from the camera
+  // these get fired after user-interaction and camera re-positioning to re-draw
+  // all objects
+  goog.events.listen(_camera, X.event.events.RENDER, this.render_.bind(this,
+      false, false));
+  
+  //
+  // attach all created objects as class attributes
+  // should be one of the last things to do here since we use these attributes
+  // to check if the initialization was completed successfully
+  this['camera'] = _camera;
+  
+
   //
   //
   // .. the rest should be performed in the subclasses
