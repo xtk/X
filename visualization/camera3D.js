@@ -245,7 +245,7 @@ X.camera3D.prototype.lookAt_ = function(cameraPosition, targetPoint) {
   zVector = zVector.normalize();
   
   // Y vector = up
-  var yVector = this.up.clone();
+  var yVector = this['up'].clone();
   
   // WARNING: there is a problem if yVector == zVector
   if (yVector.equals(zVector)) {

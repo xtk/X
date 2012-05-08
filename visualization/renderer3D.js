@@ -1133,30 +1133,30 @@ X.renderer3D.prototype.orientVolume_ = function(volume) {
   // TODO once we have arbitary sliced volumes, we need to modify the vectors
   // here
   var centroidVector = new goog.math.Vec3(1, 0, 0);
-  var realCentroidVector = this['camera'].view().multiplyByVector(
-      centroidVector);
+  var realCentroidVector = this['camera']['view']
+      .multiplyByVector(centroidVector);
   var distanceFromEyeX = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(-1, 0, 0);
-  realCentroidVector = this['camera'].view().multiplyByVector(centroidVector);
+  realCentroidVector = this['camera']['view'].multiplyByVector(centroidVector);
   var distanceFromEyeX2 = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   
   centroidVector = new goog.math.Vec3(0, 1, 0);
-  realCentroidVector = this['camera'].view().multiplyByVector(centroidVector);
+  realCentroidVector = this['camera']['view'].multiplyByVector(centroidVector);
   var distanceFromEyeY = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(0, -1, 0);
-  realCentroidVector = this['camera'].view().multiplyByVector(centroidVector);
+  realCentroidVector = this['camera']['view'].multiplyByVector(centroidVector);
   var distanceFromEyeY2 = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   
   centroidVector = new goog.math.Vec3(0, 0, 1);
-  realCentroidVector = this['camera'].view().multiplyByVector(centroidVector);
+  realCentroidVector = this['camera']['view'].multiplyByVector(centroidVector);
   var distanceFromEyeZ = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(0, 0, -1);
-  realCentroidVector = this['camera'].view().multiplyByVector(centroidVector);
+  realCentroidVector = this['camera']['view'].multiplyByVector(centroidVector);
   var distanceFromEyeZ2 = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   

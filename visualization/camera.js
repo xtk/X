@@ -76,7 +76,7 @@ X.camera = function(width, height) {
    * @type {!goog.math.Vec3}
    * @protected
    */
-  this.position = new goog.math.Vec3(0, 0, 100);
+  this['position'] = new goog.math.Vec3(0, 0, 100);
   
   /**
    * The focus point of this camera, by default 0, 0, 0.
@@ -84,7 +84,7 @@ X.camera = function(width, height) {
    * @type {!goog.math.Vec3}
    * @protected
    */
-  this.focus = new goog.math.Vec3(0, 0, 0);
+  this['focus'] = new goog.math.Vec3(0, 0, 0);
   
   /**
    * The unit vector pointing to the top of the three-dimensional space.
@@ -92,7 +92,7 @@ X.camera = function(width, height) {
    * @type {!goog.math.Vec3}
    * @protected
    */
-  this.up = new goog.math.Vec3(0, 1, 0);
+  this['up'] = new goog.math.Vec3(0, 1, 0);
   
   /**
    * The view matrix.
@@ -100,7 +100,7 @@ X.camera = function(width, height) {
    * @type {!X.matrix}
    * @protected
    */
-  this['view'] = this.lookAt_(this.position, this.focus);
+  this['view'] = this.lookAt_(this['position'], this['focus']);
   
   /**
    * The view matrix as a 'ready-to-use'-gl version.
@@ -222,7 +222,7 @@ X.camera.prototype.setPosition = function(x, y, z) {
     
   }
   
-  this.position = new goog.math.Vec3(x, y, z);
+  this['position'] = new goog.math.Vec3(x, y, z);
   
   this.reset();
   
@@ -246,7 +246,7 @@ X.camera.prototype.setFocus = function(x, y, z) {
     
   }
   
-  this.focus = new goog.math.Vec3(x, y, z);
+  this['focus'] = new goog.math.Vec3(x, y, z);
   
   this.reset();
   
@@ -270,7 +270,7 @@ X.camera.prototype.setUp = function(x, y, z) {
     
   }
   
-  this.up = new goog.math.Vec3(x, y, z);
+  this['up'] = new goog.math.Vec3(x, y, z);
   
   this.reset();
   
@@ -283,7 +283,7 @@ X.camera.prototype.setUp = function(x, y, z) {
 X.camera.prototype.reset = function() {
 
   // update the view matrix and its gl versions
-  this['view'] = this.lookAt_(this.position, this.focus);
+  this['view'] = this.lookAt_(this['position'], this['focus']);
   this.glView = new Float32Array(this['view'].flatten());
   
 };
