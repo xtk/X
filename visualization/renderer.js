@@ -252,19 +252,39 @@ X.renderer.prototype.onModified = function(event) {
 
 
 /**
- * The callback for X.event.events.HOVER events which indicates a hovering over
+ * The callback for X.event.events.HOVER events which indicate a hovering over
  * the viewport.
  * 
  * @param {!X.event.HoverEvent} event The hover event pointing to the relevant
  *          screen coordinates.
  * @throws {Error} An error if the given event is invalid.
- * @public
+ * @protected
  */
-X.renderer.prototype.onHover = function(event) {
+X.renderer.prototype.onHover_ = function(event) {
 
   if (!goog.isDefAndNotNull(event) || !(event instanceof X.event.HoverEvent)) {
     
     throw new Error('Invalid hover event.');
+    
+  }
+  
+};
+
+
+/**
+ * The callback for X.event.events.SCROLL events which indicate scrolling of the
+ * viewport.
+ * 
+ * @param {!X.event.ScrollEvent} event The scroll event indicating the scrolling
+ *          direction.
+ * @throws {Error} An error if the given event is invalid.
+ * @protected
+ */
+X.renderer.prototype.onScroll_ = function(event) {
+
+  if (!goog.isDefAndNotNull(event) || !(event instanceof X.event.ScrollEvent)) {
+    
+    throw new Error('Invalid scroll event.');
     
   }
   
@@ -440,7 +460,9 @@ X.renderer.prototype.init = function(_contextName) {
   
   // in the 2d case, create a 2d interactor (of course..)
   if (_contextName == '2d') {
+    
     _interactor = new X.interactor2D(this['canvas']);
+    
   }
   // initialize it and..
   _interactor.init();
@@ -449,9 +471,13 @@ X.renderer.prototype.init = function(_contextName) {
   goog.events.listen(_interactor, X.event.events.RESETVIEW,
       this.resetViewAndRender.bind(this));
   // .. listen to hoverEvents
-  goog.events
-      .listen(_interactor, X.event.events.HOVER, this.onHover.bind(this));
+  goog.events.listen(_interactor, X.event.events.HOVER, this.onHover_
+      .bind(this));
+  // .. listen to scroll events
+  goog.events.listen(_interactor, X.event.events.SCROLL, this.onScroll_
+      .bind(this));
   
+
   // .. and finally register it to this instance
   this['interactor'] = _interactor;
   

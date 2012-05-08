@@ -67,6 +67,57 @@ goog.inherits(X.renderer2D, X.renderer);
 /**
  * @inheritDoc
  */
+X.renderer2D.prototype.onScroll_ = function(event) {
+
+  goog.base(this, 'onScroll_', event);
+  
+  // grab the current volume
+  var _volume = this.topLevelObjects[0];
+  // .. if there is none, exist right away
+  if (!_volume) {
+    return;
+  }
+  
+  // switch between different orientations
+  var _orientation = this['orientation'];
+  var _dimIndex = 0; // for X
+  if (_orientation == 'Y') {
+    _dimIndex = 1;
+  } else if (_orientation == 'Z') {
+    _dimIndex = 2;
+  }
+  
+  if (event._up) {
+    
+    // check if we are in the bounds
+    if (_volume['_index' + _orientation] < _volume._dimensions[_dimIndex] - 1) {
+      
+      // yes, scroll up
+      _volume['_index' + _orientation] = _volume['_index' + _orientation] + 1;
+      
+    }
+    
+  } else {
+    
+    // check if we are in the bounds
+    if (_volume['_index' + _orientation] > 0) {
+      
+      // yes, so scroll down
+      _volume['_index' + _orientation] = _volume['_index' + _orientation] - 1;
+      
+    }
+    
+  }
+  
+  // .. and trigger re-rendering
+  this.render_(false, false);
+  
+};
+
+
+/**
+ * @inheritDoc
+ */
 X.renderer2D.prototype.init = function() {
 
   // call the superclass' init method
@@ -80,8 +131,6 @@ X.renderer2D.prototype.update_ = function(object) {
 
   // call the update_ method of the superclass
   goog.base(this, 'update_', object);
-  
-  window.console.log('updating..');
   
   var id = object['_id'];
   var texture = object._texture;
@@ -98,8 +147,6 @@ X.renderer2D.prototype.update_ = function(object) {
   }
   
   this.objects.add(object);
-  
-  window.console.log('updating done', object);
   
 };
 

@@ -34,7 +34,6 @@ goog.provide('X.camera2D');
 goog.require('X.camera');
 
 
-
 /**
  * Create a 2D camera.
  * 

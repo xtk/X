@@ -59,3 +59,33 @@ X.interactor3D = function(element) {
 };
 // inherit from X.base
 goog.inherits(X.interactor3D, X.interactor);
+
+
+/**
+ * @inheritDoc
+ */
+X.interactor3D.prototype.onMouseWheel_ = function(event) {
+
+  goog.base(this, 'onMouseWheel_', event);
+  
+  // create a new zoom event
+  var e = new X.event.ZoomEvent();
+  
+  // make sure, deltaY is defined
+  if (!goog.isDefAndNotNull(event.deltaY)) {
+    event.deltaY = 0;
+  }
+  
+  // set the zoom direction
+  // true if zooming in, false if zooming out
+  // delta is here given by the event
+  e._in = (event.deltaY < 0);
+  
+  // with the mouseWheel, the zoom will happen rather
+  // fast than fine
+  e._fast = true;
+  
+  // .. fire the event
+  this.dispatchEvent(e);
+  
+};

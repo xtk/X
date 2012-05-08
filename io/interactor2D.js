@@ -31,6 +31,7 @@ goog.provide('X.interactor2D');
 
 // requires
 goog.require('X.interactor');
+goog.require('X.event.ScrollEvent');
 
 
 
@@ -59,3 +60,29 @@ X.interactor2D = function(element) {
 };
 // inherit from X.base
 goog.inherits(X.interactor2D, X.interactor);
+
+
+/**
+ * @inheritDoc
+ */
+X.interactor2D.prototype.onMouseWheel_ = function(event) {
+
+  goog.base(this, 'onMouseWheel_', event);
+  
+  // create a new scroll event
+  var e = new X.event.ScrollEvent();
+  
+  // make sure, deltaY is defined
+  if (!goog.isDefAndNotNull(event.deltaY)) {
+    event.deltaY = 0;
+  }
+  
+  // set the scroll direction
+  // true if up, false if down
+  // delta is here given by the event
+  e._up = (event.deltaY < 0);
+  
+  // .. fire the event
+  this.dispatchEvent(e);
+  
+};

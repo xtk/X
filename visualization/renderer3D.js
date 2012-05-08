@@ -257,9 +257,9 @@ X.renderer3D.prototype.resetBoundingBox = function() {
 /**
  * @inheritDoc
  */
-X.renderer3D.prototype.onHover = function(event) {
+X.renderer3D.prototype.onHover_ = function(event) {
 
-  goog.base(this, 'onHover', event);
+  goog.base(this, 'onHover_', event);
   
   this.showCaption_(event._x, event._y);
   

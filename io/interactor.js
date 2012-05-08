@@ -292,7 +292,7 @@ X.interactor.prototype.init = function() {
  * Callback for mouse down events on the associated DOM element.
  * 
  * @param {Event} event The browser fired event.
- * @private
+ * @protected
  */
 X.interactor.prototype.onMouseDown_ = function(event) {
 
@@ -343,7 +343,7 @@ X.interactor.prototype.onMouseDown = function(left, middle, right) {
  * Callback for mouse up events on the associated DOM element.
  * 
  * @param {Event} event The browser fired event.
- * @private
+ * @protected
  */
 X.interactor.prototype.onMouseUp_ = function(event) {
 
@@ -395,7 +395,7 @@ X.interactor.prototype.onMouseUp = function(left, middle, right) {
  * resets all internal interactor flags.
  * 
  * @param {Event} event The browser fired event.
- * @private
+ * @protected
  */
 X.interactor.prototype.onMouseMovementOutside_ = function(event) {
 
@@ -441,7 +441,7 @@ X.interactor.prototype.onMouseMove = function(event) {
  * proper X.event events.
  * 
  * @param {Event} event The browser fired event.
- * @private
+ * @protected
  */
 X.interactor.prototype.onMouseMovementInside_ = function(event) {
 
@@ -638,11 +638,10 @@ X.interactor.prototype.onMouseWheel = function(event) {
 
 
 /**
- * Callback for mouse wheel events on the associated DOM element. This fires
- * proper X.event events.
+ * Internal callback for mouse wheel events on the associated DOM element.
  * 
  * @param {Event} event The browser fired event.
- * @private
+ * @protected
  */
 X.interactor.prototype.onMouseWheel_ = function(event) {
 
@@ -655,26 +654,6 @@ X.interactor.prototype.onMouseWheel_ = function(event) {
   
   // prevent any other action (like scrolling..)
   event.preventDefault();
-  
-  // create a new zoom event
-  var e = new X.event.ZoomEvent();
-  
-  // make sure, deltaY is defined
-  if (!goog.isDefAndNotNull(event.deltaY)) {
-    event.deltaY = 0;
-  }
-  
-  // set the zoom direction
-  // true if zooming in, false if zooming out
-  // delta is here given by the event
-  e._in = (event.deltaY < 0);
-  
-  // with the mouseWheel, the zoom will happen rather
-  // fast than fine
-  e._fast = true;
-  
-  // .. fire the event
-  this.dispatchEvent(e);
   
 };
 
@@ -696,7 +675,7 @@ X.interactor.prototype.onKey = function(event) {
  * X.event events.
  * 
  * @param {Event} event The browser fired event.
- * @private
+ * @protected
  */
 X.interactor.prototype.onKey_ = function(event) {
 
