@@ -735,8 +735,11 @@ X.interactor.prototype.onKey_ = function(event) {
       e = new X.event.ZoomEvent();
       
     } else {
-      // create a new rotate event
+      // create a new rotate event for 3D or a new scroll event for 2D
       e = new X.event.RotateEvent();
+      if (this instanceof X.interactor2D) {
+        e = new X.event.ScrollEvent();
+      }
       
     }
     
@@ -753,8 +756,10 @@ X.interactor.prototype.onKey_ = function(event) {
     if (keyCode == 37) {
       // '<-' LEFT
       distance.x = 5;
+      e._up = false; // scroll direction
       if (alt) {
         // for zoom, we configure the zooming behavior
+        e._up = true;
         e._in = true;
         e._fast = false;
       }
@@ -762,6 +767,7 @@ X.interactor.prototype.onKey_ = function(event) {
     } else if (keyCode == 39) {
       // '->' RIGHT
       distance.x = -5;
+      e._up = true; // scroll direction
       if (alt) {
         // for zoom, we configure the zooming behavior
         e._in = false;
@@ -771,6 +777,7 @@ X.interactor.prototype.onKey_ = function(event) {
     } else if (keyCode == 38) {
       // '^-' TOP
       distance.y = 5;
+      e._up = true; // scroll direction
       if (alt) {
         // for zoom, we configure the zooming behavior
         e._in = true;
@@ -780,6 +787,7 @@ X.interactor.prototype.onKey_ = function(event) {
     } else if (keyCode == 40) {
       // '-v' BOTTOM
       distance.y = -5;
+      e._up = false; // scroll direction
       if (alt) {
         // for zoom, we configure the zooming behavior
         e._in = false;
