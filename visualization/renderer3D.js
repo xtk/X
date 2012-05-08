@@ -34,7 +34,7 @@ goog.provide('X.renderer3D');
 goog.require('X.buffer');
 goog.require('X.camera');
 goog.require('X.caption');
-goog.require('X.interactor');
+goog.require('X.interactor3D');
 goog.require('X.matrix');
 goog.require('X.renderer');
 goog.require('X.shaders');
@@ -257,14 +257,13 @@ X.renderer3D.prototype.resetBoundingBox = function() {
 
 
 /**
- * Resets the view according to the global bounding box of all associated
- * objects, the configured camera position as well as its focus _and_ triggers
- * re-rendering.
+ * @inheritDoc
  */
-X.renderer3D.prototype.resetViewAndRender = function() {
+X.renderer3D.prototype.onHover = function(event) {
 
-  this['camera'].reset();
-  this.render_(false, false);
+  goog.base(this, 'onHover', event);
+  
+  this.showCaption_(event._x, event._y);
   
 };
 
@@ -275,7 +274,7 @@ X.renderer3D.prototype.resetViewAndRender = function() {
 X.renderer3D.prototype.init = function() {
 
   // call the superclass' init method
-  X.renderer3D.superClass_.init.call(this, "experimental-webgl");
+  goog.base(this, 'init', "experimental-webgl");
   
   //
   // Step2: Configure the context
@@ -362,27 +361,13 @@ X.renderer3D.prototype.init = function() {
   // WebGL Viewport initialization done
   // --------------------------------------------------------------------------
   
-  // now since we have a valid gl viewport, we want to configure the interactor
-  // and camera
-  
-  //
-  // create a new interactor
-  var _interactor = new X.interactor(this['canvas']);
-  _interactor.init();
-  // .. listen to resetViewEvents
-  goog.events.listen(_interactor, X.event.events.RESETVIEW,
-      this.resetViewAndRender.bind(this));
-  // .. listen to hoverEvents
-  goog.events
-      .listen(_interactor, X.event.events.HOVER, this.onHover.bind(this));
-  
 
   //
   // create a new camera
   // width and height are required to calculate the perspective
   var _camera = new X.camera(this['width'], this['height']);
   // observe the interactor for user interactions (mouse-movements etc.)
-  _camera.observe(_interactor);
+  _camera.observe(this['interactor']);
   // ..listen to render requests from the camera
   // these get fired after user-interaction and camera re-positioning to re-draw
   // all objects
@@ -394,7 +379,6 @@ X.renderer3D.prototype.init = function() {
   // should be one of the last things to do here since we use these attributes
   // to check if the initialization was completed successfully
   this['camera'] = _camera;
-  this['interactor'] = _interactor;
   
   //
   // add default shaders to this renderer
@@ -524,7 +508,7 @@ X.renderer3D.prototype.addShaders = function(shaders) {
 X.renderer3D.prototype.update_ = function(object) {
 
   // call the update_ method of the superclass
-  X.renderer3D.superClass_.update_.call(this, object);
+  goog.base(this, 'update_', object);
   
   // check if object already existed..
   var existed = false;
@@ -1387,7 +1371,7 @@ X.renderer3D.prototype.pick = function(x, y) {
 X.renderer3D.prototype.render_ = function(picking, invoked) {
 
   // call the update_ method of the superclass
-  X.renderer3D.superClass_.render_.call(this, picking, invoked);
+  goog.base(this, 'render_', picking, invoked);
   
   // only proceed if there are actually objects to render
   var _objects = this.objects.values();
@@ -1910,7 +1894,7 @@ X.renderer3D.prototype.destroy = function() {
       this.context.DEPTH_BUFFER_BIT);
   
   // call the destroy method of the superclass
-  X.renderer3D.superClass_.destroy.call(this);
+  goog.base(this, 'destroy');
   
 };
 

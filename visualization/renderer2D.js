@@ -70,7 +70,7 @@ goog.inherits(X.renderer2D, X.renderer);
 X.renderer2D.prototype.init = function() {
 
   // call the superclass' init method
-  X.renderer2D.superClass_.init.call(this, "2d");
+  goog.base(this, 'init', '2d');
   
 };
 
@@ -79,7 +79,7 @@ X.renderer2D.prototype.init = function() {
 X.renderer2D.prototype.update_ = function(object) {
 
   // call the update_ method of the superclass
-  X.renderer2D.superClass_.update_.call(this, object);
+  goog.base(this, 'update_', object);
   
   window.console.log('updating..');
   
@@ -106,7 +106,7 @@ X.renderer2D.prototype.update_ = function(object) {
 X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   // call the update_ method of the superclass
-  X.renderer2D.superClass_.render_.call(this, picking, invoked);
+  goog.base(this, 'render_', picking, invoked);
   
   // only proceed if there are actually objects to render
   var _objects = this.objects.values();

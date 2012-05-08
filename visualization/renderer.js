@@ -247,19 +247,33 @@ X.renderer.prototype.onModified = function(event) {
 
 /**
  * The callback for X.event.events.HOVER events which indicates a hovering over
- * an X.object. This triggers picking.
+ * the viewport.
  * 
  * @param {!X.event.HoverEvent} event The hover event pointing to the relevant
  *          screen coordinates.
+ * @throws {Error} An error if the given event is invalid.
  * @public
  */
 X.renderer.prototype.onHover = function(event) {
 
-  if (goog.isDefAndNotNull(event) && event instanceof X.event.HoverEvent) {
+  if (!goog.isDefAndNotNull(event) || !(event instanceof X.event.HoverEvent)) {
     
-    this.showCaption_(event._x, event._y);
+    throw new Error('Invalid hover event.');
     
   }
+  
+};
+
+
+/**
+ * Resets the view according to the global bounding box of all associated
+ * objects, the configured camera position as well as its focus _and_ triggers
+ * re-rendering.
+ */
+X.renderer.prototype.resetViewAndRender = function() {
+
+  this['camera'].reset();
+  this.render_(false, false);
   
 };
 
@@ -411,10 +425,33 @@ X.renderer.prototype.init = function(_contextName) {
   this.context = _context;
   
   //
-  // Step2: Configure the context
+  // Step2: Configure the context and the viewport
   //
   
-  // .. Should be overloaded and performed in the subclasses
+  //
+  // create a new interactor
+  var _interactor = new X.interactor3D(this['canvas']);
+  
+  // in the 2d case, create a 2d interactor (of course..)
+  if (_contextName == '2d') {
+    _interactor = new X.interactor2D(this['canvas']);
+  }
+  // initialize it and..
+  _interactor.init();
+  
+  // .. listen to resetViewEvents
+  goog.events.listen(_interactor, X.event.events.RESETVIEW,
+      this.resetViewAndRender.bind(this));
+  // .. listen to hoverEvents
+  goog.events
+      .listen(_interactor, X.event.events.HOVER, this.onHover.bind(this));
+  
+  // .. and finally register it to this instance
+  this['interactor'] = _interactor;
+  
+  //
+  //
+  // .. the rest should be performed in the subclasses
   
 };
 
