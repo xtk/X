@@ -209,6 +209,14 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _height = this['height'];
   var _sliceWidth = _slice._width + 1;
   var _sliceHeight = _slice._height + 1;
+  if (this['orientation'] == 'X') {
+    
+    // the X oriented texture is twisted ..
+    var _newSliceWidth = _sliceHeight;
+    _sliceHeight = _sliceWidth;
+    _sliceWidth = _newSliceWidth;
+    
+  }
   
 
   var _paddingX = ((_width - _sliceWidth) / 2);
@@ -216,18 +224,10 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _x, _y = 0;
   var _i = 0; // this is the pointer to the current slice data byte
   
-  if (this['orientation'] == 'X') {
-    
-    // the X oriented texture is twisted ..
-    _paddingX = ((_width - _sliceHeight) / 2);
-    _paddingY = ((_height - _sliceWidth) / 2);
-    
-  }
+  console.log(_scale, _width);
   
-  console.log(_scale);
-  
-  for (_y = _height; _y >= 0; _y--) {
-    for (_x = _width; _x >= 0; _x--) {
+  for (_y = _height; _y >= 0; _y = _y - 1 - _scale) {
+    for (_x = _width; _x >= 0; _x = _x - 1 - _scale) {
       
       // the pixel index
       var _pxIndex = _x + _y * _width;
@@ -235,78 +235,62 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       // the r-index is the pixel index * 4 since we have RGBA components
       var _rIndex = _pxIndex * 4;
       
-      // if there is a gap (==room for pixel), let's draw the background color
-      var _gap = (_x % _scale || _y % _scale);
-      if (_gap) {
-        // _pixels.data[_rIndex] = 0;
-        // _pixels.data[++_rIndex] = 0;
-        // _pixels.data[++_rIndex] = 0;
-        // _pixels.data[++_rIndex] = 255;
-        continue;
-      }
+      var _color = [0, 0, 0, 255];
       
-      // check if we are in area to draw slice data
-      if ((_x >= _paddingX / Math.max(_scale, 1)) &&
-          (_y >= _paddingY / Math.max(_scale, 1)) &&
-          (_x < (_width - _paddingX / Math.max(_scale, 1))) &&
-          (_y < (_height - _paddingY / Math.max(_scale, 1)))) {
+      //
+      // check if we are in the right area to draw slice data
+      //
+      var _scaledSliceWidth = _sliceWidth * _scale / 2;
+      var _scaledSliceHeight = _sliceHeight * _scale / 2;
+      var _scaledPaddingX = _paddingX - _scaledSliceWidth;
+      var _scaledPaddingY = _paddingY - _scaledSliceHeight;
+      
+      if ((_x >= _scaledPaddingX) && (_y >= _scaledPaddingY) &&
+          (_x < _width - _scaledPaddingX) && (_y < _height - _scaledPaddingY)) {
         
-        //
-        // thresholding
-        // console.log(_sliceData[_i]);
+        // use slice data
+        var _currentIntensity = [_sliceData[_i], _sliceData[_i + 1],
+                                 _sliceData[_i + 2], _sliceData[_i + 3]];
+        
+        // grab the real pixel value and the thresholds of the volume
         var _currentPixelValue = _sliceData[_i] / 255 *
             _volume.scalarRange()[1];
         var _lowerThreshold = _volume['_lowerThreshold'];
         var _upperThreshold = _volume['_upperThreshold'];
         
 
-
+        // apply thresholding
         if (_currentPixelValue >= _lowerThreshold &&
             _currentPixelValue <= _upperThreshold) {
           
-          // yes we are..! draw slice data
-          // _pixels.data[_rIndex] = _sliceData[_i];
-          // _pixels.data[++_rIndex] = _sliceData[_i + 1];
-          // _pixels.data[++_rIndex] = _sliceData[_i + 2];
-          // _pixels.data[++_rIndex] = _sliceData[_i + 3];
-          
-          // we draw backwards
-          _rIndex = _rIndex + 3;
-          
-          _pixels.data[_rIndex] = _sliceData[_i + 3];
-          _pixels.data[--_rIndex] = _sliceData[_i + 2];
-          _pixels.data[--_rIndex] = _sliceData[_i + 1];
-          _pixels.data[--_rIndex] = _sliceData[_i];
-          
-          var _j = 1;
-          for (_j = 1; _j < _scale; _j++) {
-            
-            _pixels.data[--_rIndex] = _sliceData[_i + 3];
-            _pixels.data[--_rIndex] = _sliceData[_i + 2];
-            _pixels.data[--_rIndex] = _sliceData[_i + 1];
-            _pixels.data[--_rIndex] = _sliceData[_i];
-            
-          }
-          
-          _i = _i + 4; // increase the slice data byte pointer
-          
-          continue;
+          // current intensity is inside the threshold range
+          _color = _currentIntensity;
           
         }
         
-        _i = _i + 4; // increase the slice data byte pointer
+        _i = _i + 4; // increase the slice data byte pointer no matter if
+        // thresholded or not
         
       }
       
-      // draw background since we are either outside a threshold or outside
-      // the
-      // pixel region
-      _pixels.data[_rIndex] = 0;
-      _pixels.data[++_rIndex] = 0;
-      _pixels.data[++_rIndex] = 0;
-      _pixels.data[++_rIndex] = 255;
+      var _j = 0;
+      for (_j = 0; _j <= _scale; _j++) {
+        var _k = 0;
+        for (_k = 0; _k <= _scale; _k++) {
+          
+          var _position = _rIndex + _k * 4 + _j * 4 * _width;
+          
+          _pixels.data[_position] = _color[0]; // r
+          _pixels.data[_position + 1] = _color[1]; // g
+          _pixels.data[_position + 2] = _color[2]; // b
+          _pixels.data[_position + 3] = _color[3]; // a
+          
+        }
+        
+      }
       
     }
+    
   }
   
   // propagate new image data
