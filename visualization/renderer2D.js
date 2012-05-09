@@ -175,7 +175,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _focusY = -2 * _view.getValueAt(1, 3); // we need to flip y here
   
   // ..then the z value which is the zoom level (distance from eye)
-  var _scale = _view.getValueAt(2, 3);
+  window.console.log(_focusX, _focusY);
+  var _scale = Math.max(_view.getValueAt(2, 3), 0);
   
   var _pixels = this.context.getImageData(0, 0, this['width'], this['height']);
   
@@ -223,6 +224,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     
   }
   
+  console.log(_scale);
+  
   for (_y = _height; _y >= 0; _y--) {
     for (_x = _width; _x >= 0; _x--) {
       
@@ -232,9 +235,21 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       // the r-index is the pixel index * 4 since we have RGBA components
       var _rIndex = _pxIndex * 4;
       
+      // if there is a gap (==room for pixel), let's draw the background color
+      var _gap = (_x % _scale || _y % _scale);
+      if (_gap) {
+        // _pixels.data[_rIndex] = 0;
+        // _pixels.data[++_rIndex] = 0;
+        // _pixels.data[++_rIndex] = 0;
+        // _pixels.data[++_rIndex] = 255;
+        continue;
+      }
+      
       // check if we are in area to draw slice data
-      if ((_x >= _paddingX && _y >= _paddingY) &&
-          (_x < (_width - _paddingX) && _y < (_height - _paddingY))) {
+      if ((_x >= _paddingX / Math.max(_scale, 1)) &&
+          (_y >= _paddingY / Math.max(_scale, 1)) &&
+          (_x < (_width - _paddingX / Math.max(_scale, 1))) &&
+          (_y < (_height - _paddingY / Math.max(_scale, 1)))) {
         
         //
         // thresholding
@@ -250,10 +265,28 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
             _currentPixelValue <= _upperThreshold) {
           
           // yes we are..! draw slice data
-          _pixels.data[_rIndex] = _sliceData[_i];
-          _pixels.data[++_rIndex] = _sliceData[_i + 1];
-          _pixels.data[++_rIndex] = _sliceData[_i + 2];
-          _pixels.data[++_rIndex] = _sliceData[_i + 3];
+          // _pixels.data[_rIndex] = _sliceData[_i];
+          // _pixels.data[++_rIndex] = _sliceData[_i + 1];
+          // _pixels.data[++_rIndex] = _sliceData[_i + 2];
+          // _pixels.data[++_rIndex] = _sliceData[_i + 3];
+          
+          // we draw backwards
+          _rIndex = _rIndex + 3;
+          
+          _pixels.data[_rIndex] = _sliceData[_i + 3];
+          _pixels.data[--_rIndex] = _sliceData[_i + 2];
+          _pixels.data[--_rIndex] = _sliceData[_i + 1];
+          _pixels.data[--_rIndex] = _sliceData[_i];
+          
+          var _j = 1;
+          for (_j = 1; _j < _scale; _j++) {
+            
+            _pixels.data[--_rIndex] = _sliceData[_i + 3];
+            _pixels.data[--_rIndex] = _sliceData[_i + 2];
+            _pixels.data[--_rIndex] = _sliceData[_i + 1];
+            _pixels.data[--_rIndex] = _sliceData[_i];
+            
+          }
           
           _i = _i + 4; // increase the slice data byte pointer
           
