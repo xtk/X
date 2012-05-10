@@ -234,12 +234,37 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   console.log('width - scaledPadding', _width - _scaledPaddingX);
   console.log('height - scaledPadding', _height - _scaledPaddingY);
   
+  var _pixelsDisplayedX = Math.floor(_width / _scale);
+  var _pixelsDisplayedY = Math.floor(_height / _scale);
+  
+  var _sliceOverheadX = (_sliceWidth - _pixelsDisplayedX);
+  var _sliceOverheadY = (_sliceHeight - _pixelsDisplayedY);
+  
+  console.log('pixelsDisplayedX', _pixelsDisplayedX);
+  console.log('pixelsDisplayedY', _pixelsDisplayedY);
+  
+  if (_scaledPaddingX <= 0) {
+    console.log('sliceOverheadX', _sliceOverheadX);
+    console.log('sliceOverheadY', _sliceOverheadY);
+  }
+  
+
   var _x, _y = 0;
   var _i = 0; // this is the pointer to the current slice data byte
   
   console.log(_scale, _width);
   
   for (_y = _height; _y >= 0; _y = _y - 1 - _scale) {
+    
+    //
+    //
+    //
+    if (_scaledPaddingX <= 0) {
+      
+      // _i = _i + (_y - _height) * _sliceOverheadX * 4;
+      
+    }
+    
     for (_x = _width; _x >= 0; _x = _x - 1 - _scale) {
       
       // the pixel index
@@ -253,8 +278,12 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       //
       // check if we are in the right area to draw slice data
       //
-      if ((_x >= _scaledPaddingX) && (_y >= _scaledPaddingY) &&
-          (_x < _width - _scaledPaddingX) && (_y < _height - _scaledPaddingY)) {
+      // if ((_x >= Math.max(_scaledPaddingX, 0)) && (_y >= _scaledPaddingY) &&
+      // (_x < Math.min(_width - _scaledPaddingX, 300)) &&
+      // (_y < _height - _scaledPaddingY)) {
+      if ((_x >= Math.max(_scaledPaddingX, 0)) && (_y >= _scaledPaddingY) &&
+          (_x < Math.min(_width - _scaledPaddingX, 300)) &&
+          (_y < _height - _scaledPaddingY)) {
         
         // use slice data
         var _currentIntensity = [_sliceData[_i], _sliceData[_i + 1],
