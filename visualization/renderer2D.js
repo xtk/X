@@ -171,12 +171,14 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _view = this['camera']['view'];
   
   // ..then the x and y values which are the focus position
-  var _focusX = 2 * _view.getValueAt(0, 3); // 2 is a acceleration factor
+  var _focusX = 2 * _view.getValueAt(0, 3); // 2 is an acceleration factor
   var _focusY = -2 * _view.getValueAt(1, 3); // we need to flip y here
   
   // ..then the z value which is the zoom level (distance from eye)
   window.console.log(_focusX, _focusY);
   var _scale = Math.max(_view.getValueAt(2, 3), 0);
+  _focusX = _focusX - _scale / 2;
+  _focusY = _focusY - _scale / 2;
   
   var _pixels = this.context.getImageData(0, 0, this['width'], this['height']);
   
