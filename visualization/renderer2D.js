@@ -59,6 +59,13 @@ X.renderer2D = function(container, orientation) {
   
   this['orientation'] = orientation;
   
+  this.scale = 1;
+  
+  this.frameBuffer = null;
+  this.frameBufferContext
+  this.sliceWidth = 0;
+  this.sliceHeight = 0;
+  
 };
 // inherit from X.base
 goog.inherits(X.renderer2D, X.renderer);
@@ -123,6 +130,14 @@ X.renderer2D.prototype.init = function() {
   // call the superclass' init method
   goog.base(this, 'init', '2d');
   
+  // background color of the canvas
+  this.context.fillStyle = "rgba(0,0,0,0)";
+  // .. and size
+  this.context.fillRect(0, 0, this['width'], this['height']);
+  
+  // create an invisible canvas as a framebuffer
+  this.frameBuffer = goog.dom.createDom('canvas');
+  
 };
 
 
@@ -132,8 +147,8 @@ X.renderer2D.prototype.update_ = function(object) {
   // call the update_ method of the superclass
   goog.base(this, 'update_', object);
   
-  var id = object['_id'];
-  var texture = object._texture;
+  // var id = object['_id'];
+  // var texture = object._texture;
   var file = object._file;
   
   if (goog.isDefAndNotNull(file) && file._dirty) {
@@ -145,8 +160,98 @@ X.renderer2D.prototype.update_ = function(object) {
     return;
     
   }
-  
+  // TODO existing check?
   this.objects.add(object);
+  
+  // check the orientation and store a pointer to the slices
+  if (this['orientation'] == 'X') {
+    
+    this.slices = object._slicesX.children();
+    
+  } else if (this['orientation'] == 'Y') {
+    
+    this.slices = object._slicesY.children();
+    
+  } else if (this['orientation'] == 'Z') {
+    
+    this.slices = object._slicesZ.children();
+    
+  }
+  
+  // to probe the slice dimensions, just grab the first slice
+  var _slice = this.slices[0];
+  
+  var _sliceWidth = _slice._width + 1;
+  var _sliceHeight = _slice._height + 1;
+  if (this['orientation'] == 'X') {
+    
+    // the X oriented texture is twisted ..
+    var _newSliceWidth = _sliceHeight;
+    _sliceHeight = _sliceWidth;
+    _sliceWidth = _newSliceWidth;
+    
+  }
+  // .. and store the dimensions
+  this.sliceWidth = _sliceWidth;
+  this.sliceHeight = _sliceHeight;
+  
+  // update the invisible canvas to store the current slice
+  var _frameBuffer = this.frameBuffer;
+  _frameBuffer.width = _sliceWidth;
+  _frameBuffer.height = _sliceHeight;
+  // .. and the context
+  this.frameBufferContext = _frameBuffer.getContext('2d');
+  
+  // TODO existing check?
+  // this.resetView_();
+  
+};
+
+/**
+ * @inheritDoc
+ */
+// X.renderer2D.prototype.resetViewAndRender = function() {
+//
+// this.resetView_();
+// this.render_(false, false);
+//  
+// };
+X.renderer2D.prototype.resetView_ = function() {
+
+  return;
+  console.log('rrrr');
+  // ..then the x and y values which are the focus position
+  var _view = this['camera']['view'];
+  var _focusX = _view.getValueAt(0, 3); // 2 is an acceleration factor
+  var _focusY = -1 * _view.getValueAt(1, 3); // we need to flip y here
+  console.log(_focusX, _focusY);
+  // calculate the optimal scale for the displayed slice
+  var _wScale = this['width'] / this.sliceWidth;
+  var _hScale = this['height'] / this.sliceHeight;
+  
+  if (_wScale > _hScale) {
+    
+    console.log('width', _wScale);
+    
+    this.scale = _wScale;
+    _focusX = (this['width'] / 2 - this.sliceWidth / 2) / this.scale;
+    _focusY = 0;
+    
+
+  } else {
+    
+    console.log('height', _hScale);
+    
+    this.scale = _hScale;
+    _focusX = 0;
+    _focusY = (this['height'] / 2 - this.sliceHeight / 2) / this.scale;
+    
+
+  }
+  _view.setValueAt(0, 3, _focusX);
+  _view.setValueAt(1, 3, _focusY);
+  
+  // this.context.translate(this['width'] / 2, this['height'] / 2);
   
 };
 
@@ -155,6 +260,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // call the update_ method of the superclass
   goog.base(this, 'render_', picking, invoked);
   
+
+
   // only proceed if there are actually objects to render
   var _objects = this.objects.values();
   var _numberOfObjects = _objects.length;
@@ -166,172 +273,128 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   
   //
   // grab the camera settings
+  //
   
-  // first the view matrix which is 4x4 in favor of the 3D renderer
-  var _view = this['camera']['view'];
-  
-  // ..then the x and y values which are the focus position
-  var _focusX = 2 * _view.getValueAt(0, 3); // 2 is an acceleration factor
-  var _focusY = -2 * _view.getValueAt(1, 3); // we need to flip y here
-  
-  // ..then the z value which is the zoom level (distance from eye)
-  window.console.log(_focusX, _focusY);
-  var _scale = Math.max(_view.getValueAt(2, 3), 0);
-  _focusX = _focusX - _scale / 2;
-  _focusY = _focusY - _scale / 2;
-  
-  var _pixels = this.context.getImageData(0, 0, this['width'], this['height']);
-  
-  var _currentSlice = 0;
-  var _volume = this.topLevelObjects[0];
-  
-  var _children = null;
-  
-  if (this['orientation'] == 'X') {
-    
-    _children = _volume._slicesX.children();
-    _currentSlice = _volume['_indexX'];
-    
-  } else if (this['orientation'] == 'Y') {
-    
-    _children = _volume._slicesY.children();
-    _currentSlice = _volume['_indexY'];
-    
-  } else if (this['orientation'] == 'Z') {
-    
-    _children = _volume._slicesZ.children();
-    _currentSlice = _volume['_indexZ'];
-    
-  }
-  
-  var _slice = _children[parseInt(_currentSlice, 10)];
-  var _sliceData = _slice._texture._rawData;
-  
+  // viewport size
   var _width = this['width'];
   var _height = this['height'];
-  var _sliceWidth = _slice._width + 1;
-  var _sliceHeight = _slice._height + 1;
-  if (this['orientation'] == 'X') {
+  
+  // first grab the view matrix which is 4x4 in favor of the 3D renderer
+  var _view = this['camera']['view'];
+  
+  console.log(_view + "");
+  
+  // ..then the x and y values which are the focus position
+  var _focusX = _view.getValueAt(0, 3); // 2 is an acceleration factor
+  var _focusY = -1 * _view.getValueAt(1, 3); // we need to flip y here
+  
+  // ..then the z value which is the zoom level (distance from eye)
+  var _scale = _view.getValueAt(2, 3);
+  
+  // we need to convert the scale from the camera to a binary scale which just
+  // indicates the zoom direction
+  if (Boolean(_scale)) {
     
-    // the X oriented texture is twisted ..
-    var _newSliceWidth = _sliceHeight;
-    _sliceHeight = _sliceWidth;
-    _sliceWidth = _newSliceWidth;
+    var _zoomFactor = 0.1;
     
-  }
-  
-
-  var _paddingX = ((_width - _sliceWidth) / 2);
-  var _paddingY = ((_height - _sliceHeight) / 2);
-  var _scaledSliceWidth = _sliceWidth * _scale / 2;
-  var _scaledSliceHeight = _sliceHeight * _scale / 2;
-  var _scaledPaddingX = _paddingX - _scaledSliceWidth;
-  var _scaledPaddingY = _paddingY - _scaledSliceHeight;
-  
-  console.log('padding', _paddingX, _paddingY);
-  console.log('scaledSlice', _scaledSliceWidth, _scaledSliceHeight);
-  console.log('scaledPadding', _scaledPaddingX, _scaledPaddingY);
-  console.log('width - scaledPadding', _width - _scaledPaddingX);
-  console.log('height - scaledPadding', _height - _scaledPaddingY);
-  
-  var _pixelsDisplayedX = Math.floor(_width / _scale);
-  var _pixelsDisplayedY = Math.floor(_height / _scale);
-  
-  var _sliceOverheadX = (_sliceWidth - _pixelsDisplayedX);
-  var _sliceOverheadY = (_sliceHeight - _pixelsDisplayedY);
-  
-  console.log('pixelsDisplayedX', _pixelsDisplayedX);
-  console.log('pixelsDisplayedY', _pixelsDisplayedY);
-  
-  if (_scaledPaddingX <= 0) {
-    console.log('sliceOverheadX', _sliceOverheadX);
-    console.log('sliceOverheadY', _sliceOverheadY);
-  }
-  
-
-  var _x, _y = 0;
-  var _i = 0; // this is the pointer to the current slice data byte
-  
-  console.log(_scale, _width);
-  
-  for (_y = _height; _y >= 0; _y = _y - 1 - _scale) {
-    
-    //
-    //
-    //
-    if (_scaledPaddingX <= 0) {
+    if (_scale < 0 && this.scale > 0.1) {
       
-      // _i = _i + (_y - _height) * _sliceOverheadX * 4;
+      // we zoom out
+      _zoomFactor = -0.1;
       
     }
     
-    for (_x = _width; _x >= 0; _x = _x - 1 - _scale) {
-      
-      // the pixel index
-      var _pxIndex = _x + _y * _width;
-      
-      // the r-index is the pixel index * 4 since we have RGBA components
-      var _rIndex = _pxIndex * 4;
-      
-      var _color = [0, 0, 0, 255];
-      
-      //
-      // check if we are in the right area to draw slice data
-      //
-      // if ((_x >= Math.max(_scaledPaddingX, 0)) && (_y >= _scaledPaddingY) &&
-      // (_x < Math.min(_width - _scaledPaddingX, 300)) &&
-      // (_y < _height - _scaledPaddingY)) {
-      if ((_x >= Math.max(_scaledPaddingX, 0)) && (_y >= _scaledPaddingY) &&
-          (_x < Math.min(_width - _scaledPaddingX, 300)) &&
-          (_y < _height - _scaledPaddingY)) {
-        
-        // use slice data
-        var _currentIntensity = [_sliceData[_i], _sliceData[_i + 1],
-                                 _sliceData[_i + 2], _sliceData[_i + 3]];
-        
-        // grab the real pixel value and the thresholds of the volume
-        var _currentPixelValue = _sliceData[_i] / 255 *
-            _volume.scalarRange()[1];
-        var _lowerThreshold = _volume['_lowerThreshold'];
-        var _upperThreshold = _volume['_upperThreshold'];
-        
-
-        // apply thresholding
-        if (_currentPixelValue >= _lowerThreshold &&
-            _currentPixelValue <= _upperThreshold) {
-          
-          // current intensity is inside the threshold range
-          _color = _currentIntensity;
-          
-        }
-        
-        _i = _i + 4; // increase the slice data byte pointer no matter if
-        // thresholded or not
-        
-      }
-      
-      var _j, _k = 0;
-      for (_j = 0; _j <= _scale; _j++) {
-        for (_k = 0; _k <= _scale; _k++) {
-          
-          var _position = _rIndex + _k * 4 + _j * 4 * _width;
-          
-          _pixels.data[_position] = _color[0]; // r
-          _pixels.data[_position + 1] = _color[1]; // g
-          _pixels.data[_position + 2] = _color[2]; // b
-          _pixels.data[_position + 3] = _color[3]; // a
-          
-        }
-        
-      }
-      
-    }
+    this.scale = this.scale + _zoomFactor;
+    
+    // always reset the scale to avoid recursion
+    _view.setValueAt(2, 3, 0);
     
   }
   
-  // propagate new image data
-  this.context.putImageData(_pixels, _focusX, _focusY);
+
+  //
+  // grab the volume and current slice
+  //
+  var _volume = this.topLevelObjects[0];
+  var _currentSlice = _volume['_index' + this['orientation']];
   
+  // .. here is the current slice
+  var _slice = this.slices[parseInt(_currentSlice, 10)];
+  var _sliceData = _slice._texture._rawData;
+  var _sliceWidth = this.sliceWidth;
+  var _sliceHeight = this.sliceHeight;
+  
+  //
+  // the invincible invisible canvas
+  //  
+  var _fbContext = this.frameBufferContext;
+  
+  // grab the current pixels
+  var _imageData = _fbContext.getImageData(0, 0, _sliceWidth, _sliceHeight);
+  var _pixels = _imageData.data;
+  var _pixelsLength = _pixels.length;
+  
+  // threshold values
+  var _maxScalarRange = _volume.scalarRange()[1];
+  var _lowerThreshold = _volume['_lowerThreshold'];
+  var _upperThreshold = _volume['_upperThreshold'];
+  
+  // loop through the pixels and draw them to the invisible canvas
+  // from bottom right up
+  // also apply thresholding
+  var _index = 0;
+  do {
+    
+    // default color is just transparent
+    var _color = [0, 0, 0, 0];
+    
+    // grab the pixel intensity
+    var _intensity = _sliceData[_index] / 255 * _maxScalarRange;
+    
+    // apply thresholding
+    if (_intensity >= _lowerThreshold && _intensity <= _upperThreshold) {
+      
+      // current intensity is inside the threshold range so use the real
+      // intensity
+      _color = [_sliceData[_index], _sliceData[_index + 1],
+                _sliceData[_index + 2], _sliceData[_index + 3]];
+      
+    }
+    
+    var _invertedIndex = (_pixelsLength - 1 - _index);
+    
+    _pixels[_invertedIndex - 3] = _color[0]; // r
+    _pixels[_invertedIndex - 2] = _color[1]; // g
+    _pixels[_invertedIndex - 1] = _color[2]; // b
+    _pixels[_invertedIndex] = _color[3]; // a
+    
+    _index = _index + 4; // increase by rgba unit
+    
+  } while (_index < _pixelsLength);
+  
+  // store the generated image data to the invisible canvas context
+  _fbContext.putImageData(_imageData, 0, 0);
+  
+
+  //
+  // the actual drawing (rendering) happens here
+  //
+  
+
+  if (_scale != 0) {
+    // reset the transform of the canvas (including old scales)
+    this.context.setTransform(1, 0, 0, 1, 0, 0);
+    // propagate the current scale to the canvas
+    this.context.scale(this.scale, this.scale);
+  }
+  
+  // clear the canvas
+  this.context.clearRect(0, 0, _width, _height);
+  
+  // draw the invisibleCanvas (which equals the slice data) to the main context
+  console.log('fx,fy', _focusX, _focusY);
+  this.context.drawImage(this.frameBuffer, _focusX, _focusY);
+  console.log('render');
 };
 
 // export symbols (required for advanced compilation)
@@ -341,6 +404,8 @@ goog.exportSymbol('X.renderer2D.prototype.add', X.renderer2D.prototype.add);
 goog.exportSymbol('X.renderer2D.prototype.onShowtime',
     X.renderer2D.prototype.onShowtime);
 goog.exportSymbol('X.renderer2D.prototype.get', X.renderer2D.prototype.get);
+goog.exportSymbol('X.renderer2D.prototype.resetViewAndRender',
+    X.renderer2D.prototype.resetViewAndRender);
 goog.exportSymbol('X.renderer2D.prototype.render',
     X.renderer2D.prototype.render);
 goog.exportSymbol('X.renderer2D.prototype.destroy',
