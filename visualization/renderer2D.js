@@ -223,6 +223,17 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   var _paddingX = ((_width - _sliceWidth) / 2);
   var _paddingY = ((_height - _sliceHeight) / 2);
+  var _scaledSliceWidth = _sliceWidth * _scale / 2;
+  var _scaledSliceHeight = _sliceHeight * _scale / 2;
+  var _scaledPaddingX = _paddingX - _scaledSliceWidth;
+  var _scaledPaddingY = _paddingY - _scaledSliceHeight;
+  
+  console.log('padding', _paddingX, _paddingY);
+  console.log('scaledSlice', _scaledSliceWidth, _scaledSliceHeight);
+  console.log('scaledPadding', _scaledPaddingX, _scaledPaddingY);
+  console.log('width - scaledPadding', _width - _scaledPaddingX);
+  console.log('height - scaledPadding', _height - _scaledPaddingY);
+  
   var _x, _y = 0;
   var _i = 0; // this is the pointer to the current slice data byte
   
@@ -242,11 +253,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       //
       // check if we are in the right area to draw slice data
       //
-      var _scaledSliceWidth = _sliceWidth * _scale / 2;
-      var _scaledSliceHeight = _sliceHeight * _scale / 2;
-      var _scaledPaddingX = _paddingX - _scaledSliceWidth;
-      var _scaledPaddingY = _paddingY - _scaledSliceHeight;
-      
       if ((_x >= _scaledPaddingX) && (_y >= _scaledPaddingY) &&
           (_x < _width - _scaledPaddingX) && (_y < _height - _scaledPaddingY)) {
         
@@ -275,9 +281,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         
       }
       
-      var _j = 0;
+      var _j, _k = 0;
       for (_j = 0; _j <= _scale; _j++) {
-        var _k = 0;
         for (_k = 0; _k <= _scale; _k++) {
           
           var _position = _rIndex + _k * 4 + _j * 4 * _width;
