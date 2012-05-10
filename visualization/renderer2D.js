@@ -380,20 +380,16 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // the actual drawing (rendering) happens here
   //
   
-
-  if (_scale != 0) {
-    // reset the transform of the canvas (including old scales)
-    this.context.setTransform(1, 0, 0, 1, 0, 0);
-    // propagate the current scale to the canvas
-    this.context.scale(this.scale, this.scale);
-  }
-  
   // clear the canvas
+  this.context.save();
   this.context.clearRect(0, 0, _width, _height);
+  this.context.restore();
+  
+  this.context.setTransform(this.scale, 0, 0, this.scale, _focusX, _focusY);
   
   // draw the invisibleCanvas (which equals the slice data) to the main context
   console.log('fx,fy', _focusX, _focusY);
-  this.context.drawImage(this.frameBuffer, _focusX, _focusY);
+  this.context.drawImage(this.frameBuffer, 0, 0);
   console.log('render');
 };
 
