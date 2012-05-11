@@ -34,6 +34,7 @@ goog.provide('X.renderer2D');
 goog.require('X.renderer');
 
 
+
 /**
  * Create a 2D renderer inside a given DOM Element.
  * 
@@ -57,15 +58,60 @@ X.renderer2D = function(container, orientation) {
    */
   this['className'] = 'renderer2D';
   
+  /**
+   * The orientation of this renderer.
+   * 
+   * @type {string}
+   * @protected
+   */
   this['orientation'] = orientation;
   
-  this.scale = 1;
-  
+  /**
+   * A frame buffer for slice data.
+   * 
+   * @type {?Element}
+   * @protected
+   */
   this.frameBuffer = null;
-  this.labelFrameBuffer = null;
+  
+  /**
+   * The rendering context of the slice frame buffer.
+   * 
+   * @type {?Object}
+   * @protected
+   */
   this.frameBufferContext = null;
+  
+  /**
+   * A frame buffer for label data.
+   * 
+   * @type {?Element}
+   * @protected
+   */
+  this.labelFrameBuffer = null;
+  
+  /**
+   * The rendering context of the label frame buffer.
+   * 
+   * @type {?Object}
+   * @protected
+   */
   this.labelFrameBufferContext = null;
+  
+  /**
+   * The current slice width.
+   * 
+   * @type {number}
+   * @protected
+   */
   this.sliceWidth = 0;
+  
+  /**
+   * The current slice height.
+   * 
+   * @type {number}
+   * @protected
+   */
   this.sliceHeight = 0;
   
 };
@@ -132,7 +178,7 @@ X.renderer2D.prototype.init = function() {
   // call the superclass' init method
   goog.base(this, 'init', '2d');
   
-  // background color of the canvas
+  // use the background color of the container by setting transparency here
   this.context.fillStyle = "rgba(0,0,0,0)";
   // .. and size
   this.context.fillRect(0, 0, this['width'], this['height']);
@@ -142,13 +188,14 @@ X.renderer2D.prototype.init = function() {
   this.labelFrameBuffer = goog.dom.createDom('canvas');
   //
   // 
-  // try to apply nearest-neighbor interpolation
-  this.labelFrameBuffer.style.imageRendering = 'optimizeSpeed';
-  this.labelFrameBuffer.style.imageRendering = '-moz-crisp-edges';
-  this.labelFrameBuffer.style.imageRendering = '-o-crisp-edges';
-  this.labelFrameBuffer.style.imageRendering = '-webkit-optimize-contrast';
-  this.labelFrameBuffer.style.imageRendering = 'optimize-contrast';
-  this.labelFrameBuffer.style.msInterpolationMode = 'nearest-neighbor';
+  // try to apply nearest-neighbor interpolation -> does not work right now
+  // so we ignore it
+  // this.labelFrameBuffer.style.imageRendering = 'optimizeSpeed';
+  // this.labelFrameBuffer.style.imageRendering = '-moz-crisp-edges';
+  // this.labelFrameBuffer.style.imageRendering = '-o-crisp-edges';
+  // this.labelFrameBuffer.style.imageRendering = '-webkit-optimize-contrast';
+  // this.labelFrameBuffer.style.imageRendering = 'optimize-contrast';
+  // this.labelFrameBuffer.style.msInterpolationMode = 'nearest-neighbor';
   
 };
 
@@ -464,9 +511,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   this.context.drawImage(this.frameBuffer, _canvasCenterX, _canvasCenterY);
   
   // draw the labels with a configured opacity
-  if (_currentLabelMap && _volume._labelMap._visible) {
+  if (_currentLabelMap && _volume._labelMap['_visible']) {
     
-    var _labelOpacity = _volume._labelMap._opacity;
+    var _labelOpacity = _volume._labelMap['_opacity'];
     
     this.context.globalAlpha = _labelOpacity; // draw transparent depending on
     // opacity
