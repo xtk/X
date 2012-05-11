@@ -62,7 +62,9 @@ X.renderer2D = function(container, orientation) {
   this.scale = 1;
   
   this.frameBuffer = null;
+  this.labelFrameBuffer = null;
   this.frameBufferContext = null;
+  this.labelFrameBufferContext = null;
   this.sliceWidth = 0;
   this.sliceHeight = 0;
   
@@ -137,10 +139,23 @@ X.renderer2D.prototype.init = function() {
   
   // create an invisible canvas as a framebuffer
   this.frameBuffer = goog.dom.createDom('canvas');
+  this.labelFrameBuffer = goog.dom.createDom('canvas');
+  //
+  // 
+  // try to apply nearest-neighbor interpolation
+  this.labelFrameBuffer.style.imageRendering = 'optimizeSpeed';
+  this.labelFrameBuffer.style.imageRendering = '-moz-crisp-edges';
+  this.labelFrameBuffer.style.imageRendering = '-o-crisp-edges';
+  this.labelFrameBuffer.style.imageRendering = '-webkit-optimize-contrast';
+  this.labelFrameBuffer.style.imageRendering = 'optimize-contrast';
+  this.labelFrameBuffer.style.msInterpolationMode = 'nearest-neighbor';
   
 };
 
 
+/**
+ * @inheritDoc
+ */
 X.renderer2D.prototype.resetViewAndRender = function() {
 
   // call the super class
@@ -153,6 +168,10 @@ X.renderer2D.prototype.resetViewAndRender = function() {
   
 };
 
+
+/**
+ * @inheritDoc
+ */
 X.renderer2D.prototype.update_ = function(object) {
 
   // call the update_ method of the superclass
@@ -170,7 +189,43 @@ X.renderer2D.prototype.update_ = function(object) {
   // var id = object['_id'];
   // var texture = object._texture;
   var file = object._file;
+  var labelMap = object._labelMap; // here we access directly since we do not
+  // want to create one using the labelMap() singleton accessor
+  var colorTable = object._colorTable;
   
+  //
+  // LABEL MAP
+  //
+  if (goog.isDefAndNotNull(labelMap) && goog.isDefAndNotNull(labelMap._file) &&
+      labelMap._file._dirty) {
+    // a labelMap file is associated to this object and it is dirty..
+    // background: we always want to parse label maps first
+    
+    // run the update_ function on the labelMap object
+    this.update_(labelMap);
+    
+    // jump out
+    return;
+    
+  }
+  
+  //
+  // COLOR TABLE
+  //
+  if (goog.isDefAndNotNull(colorTable) &&
+      goog.isDefAndNotNull(colorTable._file) && colorTable._file._dirty) {
+    // a colorTable file is associated to this object and it is dirty..
+    
+    // start loading
+    this.loader.loadColorTable(object);
+    
+    return;
+    
+  }
+  
+  //
+  // VOLUME
+  //
   if (goog.isDefAndNotNull(file) && file._dirty) {
     // this object is based on an external file and it is dirty..
     
@@ -221,8 +276,12 @@ X.renderer2D.prototype.update_ = function(object) {
   var _frameBuffer = this.frameBuffer;
   _frameBuffer.width = _sliceWidth;
   _frameBuffer.height = _sliceHeight;
+  var _frameBuffer2 = this.labelFrameBuffer;
+  _frameBuffer2.width = _sliceWidth;
+  _frameBuffer2.height = _sliceHeight;
   // .. and the context
   this.frameBufferContext = _frameBuffer.getContext('2d');
+  this.labelFrameBufferContext = _frameBuffer2.getContext('2d');
   
 
 
@@ -235,6 +294,9 @@ X.renderer2D.prototype.update_ = function(object) {
 };
 
 
+/**
+ * Adjust the zoom (scale) to best fit the current slice.
+ */
 X.renderer2D.prototype.autoScale_ = function() {
 
   // let's auto scale for best fit
@@ -250,6 +312,10 @@ X.renderer2D.prototype.autoScale_ = function() {
   
 };
 
+
+/**
+ * @inheritDoc
+ */
 X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   // call the update_ method of the superclass
@@ -297,6 +363,11 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // .. here is the current slice
   var _slice = this.slices[parseInt(_currentSlice, 10)];
   var _sliceData = _slice._texture._rawData;
+  var _currentLabelMap = _slice._labelMap;
+  var _labelData = null;
+  if (_currentLabelMap) {
+    _labelData = _currentLabelMap._rawData;
+  }
   var _sliceWidth = this.sliceWidth;
   var _sliceHeight = this.sliceHeight;
   
@@ -310,11 +381,16 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   //
   // FRAME BUFFERING
   //  
-  var _fbContext = this.frameBufferContext;
+  var _imageFBContext = this.frameBufferContext;
+  var _labelFBContext = this.labelFrameBufferContext;
   
   // grab the current pixels
-  var _imageData = _fbContext.getImageData(0, 0, _sliceWidth, _sliceHeight);
+  var _imageData = _imageFBContext
+      .getImageData(0, 0, _sliceWidth, _sliceHeight);
+  var _labelMapData = _labelFBContext.getImageData(0, 0, _sliceWidth,
+      _sliceHeight);
   var _pixels = _imageData.data;
+  var _labelPixels = _labelMapData.data;
   var _pixelsLength = _pixels.length;
   
   // threshold values
@@ -322,14 +398,16 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _lowerThreshold = _volume['_lowerThreshold'];
   var _upperThreshold = _volume['_upperThreshold'];
   
+
   // loop through the pixels and draw them to the invisible canvas
   // from bottom right up
   // also apply thresholding
   var _index = 0;
   do {
     
-    // default color is just transparent
+    // default color and label is just transparent
     var _color = [0, 0, 0, 0];
+    var _label = [0, 0, 0, 0];
     
     // grab the pixel intensity
     var _intensity = _sliceData[_index] / 255 * _maxScalarRange;
@@ -342,6 +420,14 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       _color = [_sliceData[_index], _sliceData[_index + 1],
                 _sliceData[_index + 2], _sliceData[_index + 3]];
       
+      if (_currentLabelMap) {
+        
+        // we have a label map here
+        _label = [_labelData[_index], _labelData[_index + 1],
+                  _labelData[_index + 2], _labelData[_index + 3]];
+        
+      }
+      
     }
     
     var _invertedIndex = (_pixelsLength - 1 - _index);
@@ -351,20 +437,42 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     _pixels[_invertedIndex - 1] = _color[2]; // b
     _pixels[_invertedIndex] = _color[3]; // a
     
+
+    _labelPixels[_invertedIndex - 3] = _label[0]; // r
+    _labelPixels[_invertedIndex - 2] = _label[1]; // g
+    _labelPixels[_invertedIndex - 1] = _label[2]; // b
+    _labelPixels[_invertedIndex] = _label[3]; // a
+    
+
     _index = _index + 4; // increase by 4 units for r,g,b,a
     
   } while (_index < _pixelsLength);
   
   // store the generated image data to the frame buffer context
-  _fbContext.putImageData(_imageData, 0, 0);
+  _imageFBContext.putImageData(_imageData, 0, 0);
+  _labelFBContext.putImageData(_labelMapData, 0, 0);
   
+
 
   //
   // the actual drawing (rendering) happens here
   //
   
-  // draw the invisibleCanvas (which equals the slice data) to the main context
+  // draw the slice frame buffer (which equals the slice data) to the main
+  // context
+  this.context.globalAlpha = 1.0; // draw fully opaque
   this.context.drawImage(this.frameBuffer, _canvasCenterX, _canvasCenterY);
+  
+  // draw the labels with a configured opacity
+  if (_currentLabelMap && _volume._labelMap._visible) {
+    
+    var _labelOpacity = _volume._labelMap._opacity;
+    
+    this.context.globalAlpha = _labelOpacity; // draw transparent depending on
+    // opacity
+    this.context.drawImage(this.labelFrameBuffer, _canvasCenterX,
+        _canvasCenterY);
+  }
   
 };
 
