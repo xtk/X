@@ -54,7 +54,7 @@ X.parser = function() {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'parser';
+  this['className'] = 'parser';
   
 };
 // inherit from X.base

@@ -56,7 +56,7 @@ X.slice = function(slice) {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'slice';
+  this['className'] = 'slice';
   
   /**
    * The center of this slice as a 3d vector.

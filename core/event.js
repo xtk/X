@@ -32,14 +32,15 @@ goog.provide('X.event');
 goog.provide('X.event.events');
 
 // events provided
-goog.provide('X.event.ZoomEvent');
-goog.provide('X.event.RotateEvent');
-goog.provide('X.event.PanEvent');
-goog.provide('X.event.RenderEvent');
 goog.provide('X.event.HoverEvent');
 goog.provide('X.event.HoverEndEvent');
-goog.provide('X.event.ResetViewEvent');
 goog.provide('X.event.ModifiedEvent');
+goog.provide('X.event.PanEvent');
+goog.provide('X.event.RenderEvent');
+goog.provide('X.event.ResetViewEvent');
+goog.provide('X.event.RotateEvent');
+goog.provide('X.event.ScrollEvent');
+goog.provide('X.event.ZoomEvent');
 
 // requires
 goog.require('X');
@@ -71,7 +72,7 @@ X.event = function(type) {
    * @type {string}
    * @protected
    */
-  this['_className'] = 'event';
+  this['className'] = 'event';
   
 };
 // inherit from goog.events.Event
@@ -104,6 +105,9 @@ X.event.events = {
   
   // the zoom event, where the event Z coordinate changes
   ZOOM: X.event.uniqueId('zoom'),
+  
+  // the scroll event
+  SCROLL: X.event.uniqueId('scroll'),
   
   // the render event
   RENDER: X.event.uniqueId('render'),
@@ -214,6 +218,31 @@ X.event.ZoomEvent = function() {
 };
 // inherit from goog.events.Event
 goog.inherits(X.event.ZoomEvent, X.event);
+
+
+/**
+ * The scroll event to initiate scrolling.
+ * 
+ * @constructor
+ * @extends X.event
+ */
+X.event.ScrollEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.event.events.SCROLL);
+  
+  /**
+   * The flag for the scrolling direction. If TRUE, the scroll operation is up.
+   * If FALSE, it is down.
+   * 
+   * @type {!boolean}
+   * @protected
+   */
+  this._up = false;
+  
+};
+// inherit from goog.events.Event
+goog.inherits(X.event.ScrollEvent, X.event);
 
 
 /**

@@ -27,26 +27,25 @@
  * 
  */
 
-// provides
-goog.provide('X.file');
+goog.provide('X.interactor3D');
 
 // requires
-goog.require('X.base');
+goog.require('X.interactor');
 
 
 
 /**
- * Create a container for a files path mapping.
+ * Create a 3D interactor for a given element in the DOM tree.
  * 
- * @param {?string} path The file path for the file.
  * @constructor
- * @extends X.base
+ * @param {Element} element The DOM element to be observed.
+ * @extends X.interactor
  */
-X.file = function(path) {
+X.interactor3D = function(element) {
 
   //
   // call the standard constructor of X.base
-  goog.base(this);
+  goog.base(this, element);
   
   //
   // class attributes
@@ -55,45 +54,38 @@ X.file = function(path) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'file';
+  this['className'] = 'interactor3D';
   
-  /**
-   * The file path.
-   * 
-   * @type {?string}
-   * @protected
-   */
-  this._path = path;
-  
-  // mark as dirty since we configure a path here
-  this._dirty = true;
 };
 // inherit from X.base
-goog.inherits(X.file, X.base);
+goog.inherits(X.interactor3D, X.interactor);
 
 
 /**
- * Get the file path.
- * 
- * @return {?string} The file path.
+ * @inheritDoc
  */
-X.file.prototype.path = function() {
+X.interactor3D.prototype.onMouseWheel_ = function(event) {
 
-  return this._path;
+  goog.base(this, 'onMouseWheel_', event);
   
-};
-
-
-/**
- * Set the file path.
- * 
- * @param {?string} path The file path.
- */
-X.file.prototype.setPath = function(path) {
-
-  this._path = path;
+  // create a new zoom event
+  var e = new X.event.ZoomEvent();
   
-  // mark as dirty
-  this._dirty = true;
+  // make sure, deltaY is defined
+  if (!goog.isDefAndNotNull(event.deltaY)) {
+    event.deltaY = 0;
+  }
+  
+  // set the zoom direction
+  // true if zooming in, false if zooming out
+  // delta is here given by the event
+  e._in = (event.deltaY < 0);
+  
+  // with the mouseWheel, the zoom will happen rather
+  // fast than fine
+  e._fast = true;
+  
+  // .. fire the event
+  this.dispatchEvent(e);
   
 };

@@ -61,7 +61,7 @@ X.parserHelper = function(data) {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'parserHelper';
+  this['className'] = 'parserHelper';
   
   this._data = data;
   

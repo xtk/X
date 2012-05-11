@@ -60,7 +60,7 @@ X.base = function() {
    * @type {string}
    * @protected
    */
-  this['_className'] = 'base';
+  this['className'] = 'base';
   
   /**
    * The 'dirty' flag of this object.
@@ -80,7 +80,7 @@ goog.inherits(X.base, goog.events.EventTarget);
  */
 X.base.prototype.className = function() {
 
-  return this['_className'];
+  return this['className'];
   
 };
 
@@ -104,7 +104,7 @@ X.base.prototype.print = function() {
     var aValue = eval(aName);
     
     // catch the className, since we want to display it differently
-    if (aName == 'this._className') {
+    if (aName == 'this.className') {
       className = aValue;
     } else {
       attributesStringList += aName + ': ' + aValue + '\n';

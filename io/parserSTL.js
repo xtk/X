@@ -56,7 +56,7 @@ X.parserSTL = function() {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'parserSTL';
+  this['className'] = 'parserSTL';
   
 };
 // inherit from X.parser

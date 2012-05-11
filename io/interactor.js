@@ -75,7 +75,7 @@ X.interactor = function(element) {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'interactor';
+  this['className'] = 'interactor';
   
   /**
    * The observed DOM element of this interactor.
@@ -83,7 +83,7 @@ X.interactor = function(element) {
    * @type {!Element}
    * @protected
    */
-  this._element = element;
+  this.element = element;
   
   /**
    * The listener id for mouse wheel observation.
@@ -91,7 +91,7 @@ X.interactor = function(element) {
    * @type {?number}
    * @protected
    */
-  this._mouseWheelListener = null;
+  this.mouseWheelListener = null;
   
   /**
    * The listener id for mouse down observation.
@@ -99,7 +99,7 @@ X.interactor = function(element) {
    * @type {?number}
    * @protected
    */
-  this._mouseDownListener = null;
+  this.mouseDownListener = null;
   
   /**
    * The listener id for mouse up observation.
@@ -107,7 +107,7 @@ X.interactor = function(element) {
    * @type {?number}
    * @protected
    */
-  this._mouseUpListener = null;
+  this.mouseUpListener = null;
   
   /**
    * The listener id for mouse move observation.
@@ -115,7 +115,7 @@ X.interactor = function(element) {
    * @type {?number}
    * @protected
    */
-  this._mouseMoveListener = null;
+  this.mouseMoveListener = null;
   
   /**
    * The listener id for mouse out observation.
@@ -123,7 +123,7 @@ X.interactor = function(element) {
    * @type {?number}
    * @protected
    */
-  this._mouseOutListener = null;
+  this.mouseOutListener = null;
   
   /**
    * The browser independent mouse wheel handler.
@@ -131,7 +131,7 @@ X.interactor = function(element) {
    * @type {?goog.events.MouseWheelHandler}
    * @protected
    */
-  this._mouseWheelHandler = null;
+  this.mouseWheelHandler = null;
   
   /**
    * Indicates if the mouse is inside the element.
@@ -139,7 +139,7 @@ X.interactor = function(element) {
    * @type {boolean}
    * @protected
    */
-  this._mouseInside = true;
+  this.mouseInside = true;
   
   /**
    * Indicates if the left mouse button is pressed.
@@ -171,7 +171,7 @@ X.interactor = function(element) {
    * @type {!goog.math.Vec2}
    * @protected
    */
-  this._lastMousePosition = new goog.math.Vec2(0, 0);
+  this.lastMousePosition = new goog.math.Vec2(0, 0);
   
   /**
    * The configuration of this interactor.
@@ -200,39 +200,39 @@ X.interactor.prototype.init = function() {
     
     // we use the goog.events.MouseWheelHandler for a browser-independent
     // implementation
-    this._mouseWheelHandler = new goog.events.MouseWheelHandler(this._element);
+    this.mouseWheelHandler = new goog.events.MouseWheelHandler(this.element);
     
-    this._mouseWheelListener = goog.events.listen(this._mouseWheelHandler,
+    this.mouseWheelListener = goog.events.listen(this.mouseWheelHandler,
         goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.onMouseWheel_
             .bind(this));
     
   } else {
     
     // remove all mouse wheel observers, if they exist..
-    goog.events.unlistenByKey(this._mouseWheelListener);
+    goog.events.unlistenByKey(this.mouseWheelListener);
     
-    this._mouseWheelHandler = null;
+    this.mouseWheelHandler = null;
     
   }
   
   if (this['config']['MOUSECLICKS_ENABLED']) {
     
     // mouse down
-    this._mouseDownListener = goog.events.listen(this._element,
+    this.mouseDownListener = goog.events.listen(this.element,
         goog.events.EventType.MOUSEDOWN, this.onMouseDown_.bind(this));
     
     // mouse up
-    this._mouseUpListener = goog.events.listen(this._element,
+    this.mouseUpListener = goog.events.listen(this.element,
         goog.events.EventType.MOUSEUP, this.onMouseUp_.bind(this));
     
   } else {
     
     // remove the observer, if it exists..
-    // goog.events.unlisten(this._element, goog.events.EventType.MOUSEDOWN);
-    goog.events.unlistenByKey(this._mouseDownListener);
+    // goog.events.unlisten(this.element, goog.events.EventType.MOUSEDOWN);
+    goog.events.unlistenByKey(this.mouseDownListener);
     
     // remove the observer, if it exists..
-    goog.events.unlistenByKey(this._mouseUpListener);
+    goog.events.unlistenByKey(this.mouseUpListener);
     
   }
   
@@ -242,7 +242,7 @@ X.interactor.prototype.init = function() {
     // found no way to use goog.events for that? tried everything..
     // according to http://help.dottoro.com/ljhwjsss.php, this method is
     // compatible with all browsers but opera
-    this._element.oncontextmenu = function() {
+    this.element.oncontextmenu = function() {
 
       return false;
       
@@ -251,7 +251,7 @@ X.interactor.prototype.init = function() {
   } else {
     
     // re-activate right-click context menu
-    this._element.oncontextmenu = null;
+    this.element.oncontextmenu = null;
   }
   
   if (this['config']['KEYBOARD_ENABLED']) {
@@ -272,17 +272,17 @@ X.interactor.prototype.init = function() {
   // we do make sure, we add them only once
   
   // remove the observer, if it exists..
-  goog.events.unlistenByKey(this._mouseMoveListener);
+  goog.events.unlistenByKey(this.mouseMoveListener);
   
   // remove the observer, if it exists..
-  goog.events.unlistenByKey(this._mouseOutListener);
+  goog.events.unlistenByKey(this.mouseOutListener);
   
   // mouse movement inside the element
-  this._mouseMoveListener = goog.events.listen(this._element,
+  this.mouseMoveListener = goog.events.listen(this.element,
       goog.events.EventType.MOUSEMOVE, this.onMouseMovementInside_.bind(this));
   
   // mouse movement outside the element
-  this._mouseOutListener = goog.events.listen(this._element,
+  this.mouseOutListener = goog.events.listen(this.element,
       goog.events.EventType.MOUSEOUT, this.onMouseMovementOutside_.bind(this));
   
 };
@@ -292,7 +292,7 @@ X.interactor.prototype.init = function() {
  * Callback for mouse down events on the associated DOM element.
  * 
  * @param {Event} event The browser fired event.
- * @private
+ * @protected
  */
 X.interactor.prototype.onMouseDown_ = function(event) {
 
@@ -343,7 +343,7 @@ X.interactor.prototype.onMouseDown = function(left, middle, right) {
  * Callback for mouse up events on the associated DOM element.
  * 
  * @param {Event} event The browser fired event.
- * @private
+ * @protected
  */
 X.interactor.prototype.onMouseUp_ = function(event) {
 
@@ -395,12 +395,12 @@ X.interactor.prototype.onMouseUp = function(left, middle, right) {
  * resets all internal interactor flags.
  * 
  * @param {Event} event The browser fired event.
- * @private
+ * @protected
  */
 X.interactor.prototype.onMouseMovementOutside_ = function(event) {
 
   // reset the click flags
-  this._mouseInside = false;
+  this.mouseInside = false;
   if (this['config']['KEYBOARD_ENABLED']) {
     
     // if we observe the keyboard, remove the observer here
@@ -415,7 +415,7 @@ X.interactor.prototype.onMouseMovementOutside_ = function(event) {
   // end all hovering since the scene can change and a caption might be
   // misplaced etc.
   this.hoverEnd_();
-  this._lastMousePosition = new goog.math.Vec2(0, 0);
+  this.lastMousePosition = new goog.math.Vec2(0, 0);
   
   // prevent further handling by the browser
   event.preventDefault();
@@ -441,7 +441,7 @@ X.interactor.prototype.onMouseMove = function(event) {
  * proper X.event events.
  * 
  * @param {Event} event The browser fired event.
- * @private
+ * @protected
  */
 X.interactor.prototype.onMouseMovementInside_ = function(event) {
 
@@ -449,7 +449,7 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
   // advanced compilation
   eval("this.onMouseMove(this['mousemoveEvent'])");
   
-  this._mouseInside = true;
+  this.mouseInside = true;
   
   if (this['config']['KEYBOARD_ENABLED'] && window.onkeydown == null) {
     
@@ -469,10 +469,10 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
   var currentMousePosition = new goog.math.Vec2(event.offsetX, event.offsetY);
   
   // get the distance in terms of the last mouse move event
-  var distance = this._lastMousePosition.subtract(currentMousePosition);
+  var distance = this.lastMousePosition.subtract(currentMousePosition);
   
   // save the current mouse position as the last one
-  this._lastMousePosition = currentMousePosition.clone();
+  this.lastMousePosition = currentMousePosition.clone();
   
   // 
   // hovering, if enabled..
@@ -491,7 +491,7 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
     // start the hovering countdown
     // if the mouse does not move for 2 secs, fire the HoverEvent to initiate
     // picking etc.
-    this._hoverTrigger = setTimeout(function() {
+    this.hoverTrigger = setTimeout(function() {
 
       this.hoverEnd_();
       
@@ -502,7 +502,7 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
       this.dispatchEvent(e);
       
       // reset the trigger
-      this._hoverTrigger = null;
+      this.hoverTrigger = null;
       
     }.bind(this), 300);
     
@@ -615,8 +615,8 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
  */
 X.interactor.prototype.hoverEnd_ = function() {
 
-  if (this._hoverTrigger) {
-    clearTimeout(this._hoverTrigger);
+  if (this.hoverTrigger) {
+    clearTimeout(this.hoverTrigger);
   }
   
   var e = new X.event.HoverEndEvent();
@@ -638,11 +638,10 @@ X.interactor.prototype.onMouseWheel = function(event) {
 
 
 /**
- * Callback for mouse wheel events on the associated DOM element. This fires
- * proper X.event events.
+ * Internal callback for mouse wheel events on the associated DOM element.
  * 
  * @param {Event} event The browser fired event.
- * @private
+ * @protected
  */
 X.interactor.prototype.onMouseWheel_ = function(event) {
 
@@ -655,26 +654,6 @@ X.interactor.prototype.onMouseWheel_ = function(event) {
   
   // prevent any other action (like scrolling..)
   event.preventDefault();
-  
-  // create a new zoom event
-  var e = new X.event.ZoomEvent();
-  
-  // make sure, deltaY is defined
-  if (!goog.isDefAndNotNull(event.deltaY)) {
-    event.deltaY = 0;
-  }
-  
-  // set the zoom direction
-  // true if zooming in, false if zooming out
-  // delta is here given by the event
-  e._in = (event.deltaY < 0);
-  
-  // with the mouseWheel, the zoom will happen rather
-  // fast than fine
-  e._fast = true;
-  
-  // .. fire the event
-  this.dispatchEvent(e);
   
 };
 
@@ -696,13 +675,13 @@ X.interactor.prototype.onKey = function(event) {
  * X.event events.
  * 
  * @param {Event} event The browser fired event.
- * @private
+ * @protected
  */
 X.interactor.prototype.onKey_ = function(event) {
 
   // only listen to key events if the mouse is inside our element
   // this f.e. enables key event listening for multiple renderers
-  if (!this._mouseInside) {
+  if (!this.mouseInside) {
     
     return;
     
@@ -756,8 +735,11 @@ X.interactor.prototype.onKey_ = function(event) {
       e = new X.event.ZoomEvent();
       
     } else {
-      // create a new rotate event
+      // create a new rotate event for 3D or a new scroll event for 2D
       e = new X.event.RotateEvent();
+      if (this instanceof X.interactor2D) {
+        e = new X.event.ScrollEvent();
+      }
       
     }
     
@@ -774,8 +756,10 @@ X.interactor.prototype.onKey_ = function(event) {
     if (keyCode == 37) {
       // '<-' LEFT
       distance.x = 5;
+      e._up = false; // scroll direction
       if (alt) {
         // for zoom, we configure the zooming behavior
+        e._up = true;
         e._in = true;
         e._fast = false;
       }
@@ -783,6 +767,7 @@ X.interactor.prototype.onKey_ = function(event) {
     } else if (keyCode == 39) {
       // '->' RIGHT
       distance.x = -5;
+      e._up = true; // scroll direction
       if (alt) {
         // for zoom, we configure the zooming behavior
         e._in = false;
@@ -792,6 +777,7 @@ X.interactor.prototype.onKey_ = function(event) {
     } else if (keyCode == 38) {
       // '^-' TOP
       distance.y = 5;
+      e._up = true; // scroll direction
       if (alt) {
         // for zoom, we configure the zooming behavior
         e._in = true;
@@ -801,6 +787,7 @@ X.interactor.prototype.onKey_ = function(event) {
     } else if (keyCode == 40) {
       // '-v' BOTTOM
       distance.y = -5;
+      e._up = false; // scroll direction
       if (alt) {
         // for zoom, we configure the zooming behavior
         e._in = false;

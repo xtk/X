@@ -55,7 +55,7 @@ X.scalars = function() {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'scalars';
+  this['className'] = 'scalars';
   
   // the global id counter
   var counter = window["X.Counter"];

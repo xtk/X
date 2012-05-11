@@ -28,25 +28,25 @@
  */
 
 // provides
-goog.provide('X.file');
+goog.provide('X.camera2D');
 
 // requires
-goog.require('X.base');
-
+goog.require('X.camera');
 
 
 /**
- * Create a container for a files path mapping.
+ * Create a 2D camera.
  * 
- * @param {?string} path The file path for the file.
  * @constructor
- * @extends X.base
+ * @param {number} width The width of the camera's viewport.
+ * @param {number} height The height of the camera's viewport.
+ * @extends X.camera
  */
-X.file = function(path) {
+X.camera2D = function(width, height) {
 
   //
   // call the standard constructor of X.base
-  goog.base(this);
+  goog.base(this, width, height);
   
   //
   // class attributes
@@ -55,45 +55,8 @@ X.file = function(path) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'file';
+  this['className'] = 'camera2D';
   
-  /**
-   * The file path.
-   * 
-   * @type {?string}
-   * @protected
-   */
-  this._path = path;
-  
-  // mark as dirty since we configure a path here
-  this._dirty = true;
 };
 // inherit from X.base
-goog.inherits(X.file, X.base);
-
-
-/**
- * Get the file path.
- * 
- * @return {?string} The file path.
- */
-X.file.prototype.path = function() {
-
-  return this._path;
-  
-};
-
-
-/**
- * Set the file path.
- * 
- * @param {?string} path The file path.
- */
-X.file.prototype.setPath = function(path) {
-
-  this._path = path;
-  
-  // mark as dirty
-  this._dirty = true;
-  
-};
+goog.inherits(X.camera2D, X.camera);

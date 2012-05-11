@@ -62,7 +62,7 @@ X.loader = function() {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'loader';
+  this['className'] = 'loader';
   
   /**
    * @private

@@ -60,7 +60,7 @@ X.parserCRV = function() {
    * @inheritDoc
    * @const
    */
-  this['_className'] = 'parserCRV';
+  this['className'] = 'parserCRV';
   
 };
 // inherit from X.parser
