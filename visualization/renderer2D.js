@@ -62,7 +62,7 @@ X.renderer2D = function(container, orientation) {
   this.scale = 1;
   
   this.frameBuffer = null;
-  this.frameBufferContext
+  this.frameBufferContext = null;
   this.sliceWidth = 0;
   this.sliceHeight = 0;
   
@@ -149,7 +149,7 @@ X.renderer2D.prototype.resetViewAndRender = function() {
   // .. and perform auto scaling
   this.autoScale_();
   // .. render
-  this.render_();
+  this.render_(false, false);
   
 };
 
@@ -157,6 +157,15 @@ X.renderer2D.prototype.update_ = function(object) {
 
   // call the update_ method of the superclass
   goog.base(this, 'update_', object);
+  
+  // check if object already existed..
+  var existed = false;
+  
+  if (this.get(object['_id'])) {
+    // this means, we are updating
+    existed = true;
+    
+  }
   
   // var id = object['_id'];
   // var texture = object._texture;
@@ -171,8 +180,10 @@ X.renderer2D.prototype.update_ = function(object) {
     return;
     
   }
-  // TODO existing check?
-  this.objects.add(object);
+  
+  //
+  // at this point the orientation of this renderer might have changed so we
+  // should recalculate all the cached values
   
   // check the orientation and store a pointer to the slices
   if (this['orientation'] == 'X') {
@@ -213,8 +224,13 @@ X.renderer2D.prototype.update_ = function(object) {
   // .. and the context
   this.frameBufferContext = _frameBuffer.getContext('2d');
   
-  // TODO check if existing
-  this.autoScale_();
+
+
+  // do the following only if the object is brand-new
+  if (!existed) {
+    this.objects.add(object);
+    this.autoScale_();
+  }
   
 };
 
@@ -258,7 +274,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   
   // first grab the view matrix which is 4x4 in favor of the 3D renderer
   var _view = this['camera']['view'];
-  console.log(_view + "");
   
   // clear the canvas
   this.context.save();
