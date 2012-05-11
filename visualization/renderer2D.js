@@ -141,6 +141,17 @@ X.renderer2D.prototype.init = function() {
 };
 
 
+X.renderer2D.prototype.resetViewAndRender = function() {
+
+  // call the super class
+  goog.base(this, 'resetViewAndRender');
+  
+  // .. and perform auto scaling
+  this.autoScale_();
+  // .. render
+  this.render_();
+  
+};
 
 X.renderer2D.prototype.update_ = function(object) {
 
@@ -202,56 +213,24 @@ X.renderer2D.prototype.update_ = function(object) {
   // .. and the context
   this.frameBufferContext = _frameBuffer.getContext('2d');
   
-  // TODO existing check?
-  // this.resetView_();
+  // TODO check if existing
+  this.autoScale_();
   
 };
 
-/**
- * @inheritDoc
- */
-// X.renderer2D.prototype.resetViewAndRender = function() {
-//
-// this.resetView_();
-// this.render_(false, false);
-//  
-// };
-X.renderer2D.prototype.resetView_ = function() {
 
-  return;
-  console.log('rrrr');
-  // ..then the x and y values which are the focus position
-  var _view = this['camera']['view'];
-  var _focusX = _view.getValueAt(0, 3); // 2 is an acceleration factor
-  var _focusY = -1 * _view.getValueAt(1, 3); // we need to flip y here
-  console.log(_focusX, _focusY);
-  // calculate the optimal scale for the displayed slice
+X.renderer2D.prototype.autoScale_ = function() {
+
+  // let's auto scale for best fit
   var _wScale = this['width'] / this.sliceWidth;
   var _hScale = this['height'] / this.sliceHeight;
   
-  if (_wScale > _hScale) {
-    
-    console.log('width', _wScale);
-    
-    this.scale = _wScale;
-    _focusX = (this['width'] / 2 - this.sliceWidth / 2) / this.scale;
-    _focusY = 0;
-    
-
-  } else {
-    
-    console.log('height', _hScale);
-    
-    this.scale = _hScale;
-    _focusX = 0;
-    _focusY = (this['height'] / 2 - this.sliceHeight / 2) / this.scale;
-    
-
-  }
-  _view.setValueAt(0, 3, _focusX);
-  _view.setValueAt(1, 3, _focusY);
+  var _autoScale = Math.min(_wScale, _hScale);
+  _autoScale = 10 * _autoScale - 10;
   
-  // this.context.translate(this['width'] / 2, this['height'] / 2);
+  // propagate scale (zoom) to the camera
+  var _view = this['camera']['view'];
+  _view.setValueAt(2, 3, _autoScale);
   
 };
 
@@ -260,8 +239,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // call the update_ method of the superclass
   goog.base(this, 'render_', picking, invoked);
   
-
-
   // only proceed if there are actually objects to render
   var _objects = this.objects.values();
   var _numberOfObjects = _objects.length;
@@ -281,35 +258,19 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   
   // first grab the view matrix which is 4x4 in favor of the 3D renderer
   var _view = this['camera']['view'];
-  
   console.log(_view + "");
   
-  // ..then the x and y values which are the focus position
-  var _focusX = _view.getValueAt(0, 3); // 2 is an acceleration factor
-  var _focusY = -1 * _view.getValueAt(1, 3); // we need to flip y here
+  // clear the canvas
+  this.context.save();
+  this.context.clearRect(-_width, -_height, 2 * _width, 2 * _height);
+  this.context.restore();
   
-  // ..then the z value which is the zoom level (distance from eye)
-  var _scale = _view.getValueAt(2, 3);
-  
-  // we need to convert the scale from the camera to a binary scale which just
-  // indicates the zoom direction
-  if (Boolean(_scale)) {
-    
-    var _zoomFactor = 0.1;
-    
-    if (_scale < 0 && this.scale > 0.1) {
-      
-      // we zoom out
-      _zoomFactor = -0.1;
-      
-    }
-    
-    this.scale = this.scale + _zoomFactor;
-    
-    // always reset the scale to avoid recursion
-    _view.setValueAt(2, 3, 0);
-    
-  }
+  // transform the canvas according to the view matrix
+  var _x = 1 * _view.getValueAt(0, 3);
+  var _y = -1 * _view.getValueAt(1, 3); // we need to flip y here
+  // .. this includes zoom
+  var _normalizedScale = Math.max(1 + _view.getValueAt(2, 3) / 10, 0.6);
+  this.context.setTransform(_normalizedScale, 0, 0, _normalizedScale, _x, _y);
   
 
   //
@@ -324,8 +285,15 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _sliceWidth = this.sliceWidth;
   var _sliceHeight = this.sliceHeight;
   
+  // canvas center, taking zooming and panning in account
+  var _canvasCenterX = (1 / (_normalizedScale * 2)) *
+      (_width - _sliceWidth * _normalizedScale) + _x;
+  var _canvasCenterY = (1 / (_normalizedScale * 2)) *
+      (_height - _sliceHeight * _normalizedScale) + _y;
+  
+
   //
-  // the invincible invisible canvas
+  // FRAME BUFFERING
   //  
   var _fbContext = this.frameBufferContext;
   
@@ -368,11 +336,11 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     _pixels[_invertedIndex - 1] = _color[2]; // b
     _pixels[_invertedIndex] = _color[3]; // a
     
-    _index = _index + 4; // increase by rgba unit
+    _index = _index + 4; // increase by 4 units for r,g,b,a
     
   } while (_index < _pixelsLength);
   
-  // store the generated image data to the invisible canvas context
+  // store the generated image data to the frame buffer context
   _fbContext.putImageData(_imageData, 0, 0);
   
 
@@ -380,17 +348,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // the actual drawing (rendering) happens here
   //
   
-  // clear the canvas
-  this.context.save();
-  this.context.clearRect(0, 0, _width, _height);
-  this.context.restore();
-  
-  this.context.setTransform(this.scale, 0, 0, this.scale, _focusX, _focusY);
-  
   // draw the invisibleCanvas (which equals the slice data) to the main context
-  console.log('fx,fy', _focusX, _focusY);
-  this.context.drawImage(this.frameBuffer, 0, 0);
-  console.log('render');
+  this.context.drawImage(this.frameBuffer, _canvasCenterX, _canvasCenterY);
+  
 };
 
 // export symbols (required for advanced compilation)
