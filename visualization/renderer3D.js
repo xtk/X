@@ -675,8 +675,13 @@ X.renderer3D.prototype.update_ = function(object) {
         
       }
       
-      this.context.pixelStorei(this.context.UNPACK_FLIP_Y_WEBGL,
-          texture._rawData);
+      var _flipY = false;
+      if (texture._rawData) {
+        // use the standard webgl flip Y
+        _flipY = true;
+      }
+      
+      this.context.pixelStorei(this.context.UNPACK_FLIP_Y_WEBGL, _flipY);
       
       // setup the glTexture, at this point the image for the texture was
       // already
@@ -703,16 +708,11 @@ X.renderer3D.prototype.update_ = function(object) {
         this.context.texParameteri(this.context.TEXTURE_2D,
             this.context.TEXTURE_WRAP_T, this.context.CLAMP_TO_EDGE);
         
-        // we do not want to flip here
-        // this.context.pixelStorei(this.context.UNPACK_FLIP_Y_WEBGL, true);
-        
       } else {
         
         // use an imageFile for the texture
         this.context.texImage2D(this.context.TEXTURE_2D, 0, this.context.RGBA,
             this.context.RGBA, this.context.UNSIGNED_BYTE, glTexture.image);
-        
-        // this.context.pixelStorei(this.context.UNPACK_FLIP_Y_WEBGL, false);
         
       }
       
