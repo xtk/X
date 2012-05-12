@@ -294,6 +294,10 @@ X.slice.prototype.create_ = function() {
     sizeVector = new goog.math.Vec3(this._width / 2, this._height / 2,
         this._center[2]);
     // standard texture-coordinate-map
+    this._textureCoordinateMap = [
+
+    // 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0
+    0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1];
   }
   
   //
