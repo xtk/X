@@ -527,6 +527,17 @@ X.renderer3D.prototype.update_ = function(object) {
     
   }
   
+  // check for a label map again
+  // this case can happen whenever a label map was already parsed (maybe in a
+  // different renderer) and does not need additional file loading but just the
+  // gl texture setup
+  if (goog.isDefAndNotNull(labelMap) && labelMap._dirty) {
+    
+    // run the update_ function on the labelMap object without jumping out
+    this.update_(labelMap);
+    
+  }
+  
   // here we check if additional loading is necessary
   // this would be the case if
   // a) the object has an external texture
