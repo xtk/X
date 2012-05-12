@@ -120,6 +120,18 @@ goog.inherits(X.renderer2D, X.renderer);
 
 
 /**
+ * Overload this function to execute code after scrolling has completed and just
+ * before the next rendering call.
+ * 
+ * @public
+ */
+X.renderer2D.prototype.onScroll = function() {
+
+  // do nothing
+};
+
+
+/**
  * @inheritDoc
  */
 X.renderer2D.prototype.onScroll_ = function(event) {
@@ -163,6 +175,11 @@ X.renderer2D.prototype.onScroll_ = function(event) {
     }
     
   }
+  
+  _volume.modified();
+  
+  // execute the callback
+  eval('this.onScroll(event);');
   
   // .. and trigger re-rendering
   this.render_(false, false);
@@ -529,6 +546,8 @@ goog.exportSymbol('X.renderer2D.prototype.init', X.renderer2D.prototype.init);
 goog.exportSymbol('X.renderer2D.prototype.add', X.renderer2D.prototype.add);
 goog.exportSymbol('X.renderer2D.prototype.onShowtime',
     X.renderer2D.prototype.onShowtime);
+goog.exportSymbol('X.renderer2D.prototype.onScroll',
+    X.renderer2D.prototype.onScroll);
 goog.exportSymbol('X.renderer2D.prototype.get', X.renderer2D.prototype.get);
 goog.exportSymbol('X.renderer2D.prototype.resetViewAndRender',
     X.renderer2D.prototype.resetViewAndRender);

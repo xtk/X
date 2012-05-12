@@ -374,6 +374,34 @@ X.volume.prototype.modified = function() {
   if (this.children().length > 0) {
     if (this['_volumeRendering'] != this._volumeRenderingOld) {
       
+      if (this['_volumeRendering']) {
+        
+        // first, hide possible slicing slices but only if volume rendering was
+        // just switched on
+        var _sliceX = this.children()[0].children()[parseInt(this['_indexX'],
+            10)];
+        _sliceX._hideChildren = false;
+        _sliceX.setVisible(false);
+        _sliceX._hideChildren = true;
+        var _sliceY = this.children()[1].children()[parseInt(this['_indexY'],
+            10)];
+        _sliceY._hideChildren = false;
+        _sliceY.setVisible(false);
+        _sliceY._hideChildren = true;
+        var _sliceZ = this.children()[2].children()[parseInt(this['_indexZ'],
+            10)];
+        _sliceZ._hideChildren = false;
+        _sliceZ.setVisible(false);
+        _sliceZ._hideChildren = true;
+        
+      } else {
+        
+        // hide the volume rendering slices
+        var _child = this.children()[this._volumeRenderingDirection];
+        _child.setVisible(false);
+        
+      }
+      
       // switch from slicing to volume rendering or vice versa
       this._dirty = true;
       this._volumeRenderingOld = this['_volumeRendering'];
@@ -382,29 +410,10 @@ X.volume.prototype.modified = function() {
     
     if (this['_volumeRendering']) {
       
-      // first, hide possible slicing slices
-      var _sliceX = this.children()[0].children()[parseInt(this['_indexX'], 10)];
-      _sliceX._hideChildren = false;
-      _sliceX.setVisible(false);
-      _sliceX._hideChildren = true;
-      var _sliceY = this.children()[1].children()[parseInt(this['_indexY'], 10)];
-      _sliceY._hideChildren = false;
-      _sliceY.setVisible(false);
-      _sliceY._hideChildren = true;
-      var _sliceZ = this.children()[2].children()[parseInt(this['_indexZ'], 10)];
-      _sliceZ._hideChildren = false;
-      _sliceZ.setVisible(false);
-      _sliceZ._hideChildren = true;
-      
-
       // prepare volume rendering
       this.volumeRendering_(this._volumeRenderingDirection);
       
     } else {
-      
-      // hide the volume rendering slices
-      var _child = this.children()[this._volumeRenderingDirection];
-      _child.setVisible(false);
       
       // prepare slicing
       this.slicing_();
@@ -457,6 +466,7 @@ X.volume.prototype.slicing_ = function() {
     _currentSlice._hideChildren = false;
     _currentSlice.setVisible(true);
     _currentSlice._hideChildren = true;
+    _currentSlice.setOpacity(1.0);
     
   }
   
@@ -568,7 +578,7 @@ X.volume.prototype.setCenter = function(center) {
  */
 X.volume.prototype.volumeRendering_ = function(direction) {
 
-  if ((!this._dirty && !this['_volumeRendering']) ||
+  if ((!this['_volumeRendering']) ||
       (!this._dirty && direction == this._volumeRenderingDirection)) {
     
     // we do not have to do anything
@@ -586,6 +596,8 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   
   // store the direction
   this._volumeRenderingDirection = direction;
+  
+  this._dirty = false;
   
 };
 
