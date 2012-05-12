@@ -675,6 +675,9 @@ X.renderer3D.prototype.update_ = function(object) {
         
       }
       
+      this.context.pixelStorei(this.context.UNPACK_FLIP_Y_WEBGL,
+          texture._rawData);
+      
       // setup the glTexture, at this point the image for the texture was
       // already
       // loaded thanks to X.loader
@@ -701,7 +704,7 @@ X.renderer3D.prototype.update_ = function(object) {
             this.context.TEXTURE_WRAP_T, this.context.CLAMP_TO_EDGE);
         
         // we do not want to flip here
-        this.context.pixelStorei(this.context.UNPACK_FLIP_Y_WEBGL, true);
+        // this.context.pixelStorei(this.context.UNPACK_FLIP_Y_WEBGL, true);
         
       } else {
         
@@ -709,7 +712,7 @@ X.renderer3D.prototype.update_ = function(object) {
         this.context.texImage2D(this.context.TEXTURE_2D, 0, this.context.RGBA,
             this.context.RGBA, this.context.UNSIGNED_BYTE, glTexture.image);
         
-        this.context.pixelStorei(this.context.UNPACK_FLIP_Y_WEBGL, false);
+        // this.context.pixelStorei(this.context.UNPACK_FLIP_Y_WEBGL, false);
         
       }
       
