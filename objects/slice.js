@@ -32,6 +32,7 @@ goog.provide('X.slice');
 
 // requires
 goog.require('X.base');
+goog.require('X.cube');
 goog.require('X.object');
 goog.require('goog.math.Vec3');
 
@@ -285,11 +286,28 @@ X.slice.prototype.create_ = function() {
   if (frontVector.x == 1) {
     sizeVector = new goog.math.Vec3(this._center[0], this._height / 2,
         this._width / 2);
-    this._textureCoordinateMap = [0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0];
+    // this._textureCoordinateMap = [0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0];
+    
+    this._textureCoordinateMap = [
+
+    // 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0
+    0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1
+
+
+    ];
+    
   } else if (frontVector.y == 1) {
     sizeVector = new goog.math.Vec3(this._width / 2, this._center[1],
         this._height / 2);
-    this._textureCoordinateMap = [0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1];
+    // this._textureCoordinateMap = [0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1];
+    this._textureCoordinateMap = [
+
+    // 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0
+    0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1
+
+
+    ];
+    
   } else if (frontVector.z == 1) {
     sizeVector = new goog.math.Vec3(this._width / 2, this._height / 2,
         this._center[2]);
@@ -297,7 +315,10 @@ X.slice.prototype.create_ = function() {
     this._textureCoordinateMap = [
 
     // 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0
-    0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1];
+    0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1
+
+
+    ];
   }
   
   //
@@ -376,7 +397,11 @@ X.slice.prototype.create_ = function() {
     borders.setType(X.object.types.LINES);
     borders.setLineWidth(2);
     
+    var s = new X.cube([point0.x, point0.y, point0.z], 3, 3, 3);
+    s.setColor(0, 0, 1);
+    
     this.children().push(borders);
+    this.children().push(s);
     
   }
   

@@ -298,6 +298,8 @@ X.volume.prototype.create_ = function() {
       
       var _front = new Array([1, 0, 0], [0, 1, 0], [0, 0, 1]);
       var _up = new Array([0, 1, 0], [0, 0, -1], [0, 1, 0]);
+      // var _front = new Array([0, 0, 1], [1, 0, 0], [0, 1, 0]);
+      // var _up = new Array([0, 1, 0], [0, 1, 0], [0, 0, 1]);
       
       // the container and indices
       var slices = this.children()[xyz].children();
