@@ -304,26 +304,31 @@ X.renderer2D.prototype.update_ = function(object) {
   // at this point the orientation of this renderer might have changed so we
   // should recalculate all the cached values
   
+  var _sliceWidth = 0;
+  var _sliceHeight = 0;
+  var _dimensions = object._dimensions;
+  
   // check the orientation and store a pointer to the slices
   if (this['orientation'] == 'X') {
     
     this.slices = object._slicesX.children();
+    _sliceWidth = _dimensions[2];
+    _sliceHeight = _dimensions[1];
     
   } else if (this['orientation'] == 'Y') {
     
     this.slices = object._slicesY.children();
+    _sliceWidth = _dimensions[0];
+    _sliceHeight = _dimensions[2];
     
   } else if (this['orientation'] == 'Z') {
     
     this.slices = object._slicesZ.children();
+    _sliceWidth = _dimensions[0];
+    _sliceHeight = _dimensions[1];
     
   }
   
-  // to probe the slice dimensions, just grab the first slice
-  var _slice = this.slices[0];
-  
-  var _sliceWidth = _slice._width + 1;
-  var _sliceHeight = _slice._height + 1;
   if (this['orientation'] == 'X') {
     
     // the X oriented texture is twisted ..
