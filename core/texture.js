@@ -56,18 +56,13 @@ X.texture = function() {
    */
   this._className = 'texture';
   
-  // the global id counter
-  var counter = window["X.Counter"];
-  // ..get a new unique id
-  counter.increment();
-  
   /**
    * The uniqueId of this texture. Each texture in XTK has a uniqueId.
    * 
    * @type {number}
    * @protected
    */
-  this._id = counter.value();
+  this._id = window["X.counter"].uniqueId(this);
   
   /**
    * @type {X.file}

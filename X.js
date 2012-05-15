@@ -39,28 +39,34 @@ goog.provide('X');
  */
 var X = X || {};
 
-window["X.Counter"] = (function() {
+window["X.counter"] = function() {
 
-  var privateCounter = 0;
-  function changeBy(val) {
+  this._counters = [];
+  
+  function uniqueId(instance) {
 
-    privateCounter += val;
-  }
-  return {
-    increment: function() {
-
-      changeBy(1);
-    },
-    decrement: function() {
-
-      changeBy(-1);
-    },
-    value: function() {
-
-      return privateCounter;
+    var className = instance._className;
+    
+    if (className in this._counters) {
+      
+      // we have already a counter for that
+      // so just increase it
+      this._counters[className] += 1;
+      
+    } else {
+      
+      // this is a new counter
+      this._counter[className] = 0;
+      
     }
-  };
-})();
+    
+    // .. and return it
+    return this._counters[className];
+    
+  }
+  
+};
+
 
 //
 // BROWSER COMPATIBILITY FIXES GO HERE
