@@ -5,7 +5,7 @@ goog.require('goog.testing.jsunit');
 /**
  * Test for X.file.className
  */
-function testXfile.className {
+function testXfileClassName() {
 
   // create test file
   var f = new X.file('/dev/null');

@@ -173,14 +173,6 @@ X.event.RotateEvent = function() {
    */
   this._distance = new goog.math.Vec2(0, 0);
   
-  /**
-   * The angle in degrees to pan around the last mouse position in screen space.
-   * 
-   * @type {!number}
-   * @protected
-   */
-  this._angle = 0;
-  
 };
 // inherit from goog.events.Event
 goog.inherits(X.event.RotateEvent, X.event);
@@ -272,7 +264,20 @@ X.event.HoverEvent = function() {
   // call the default event constructor
   goog.base(this, X.event.events.HOVER);
   
+  /**
+   * The x coordinate.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._x = 0;
+  
+  /**
+   * The y coordinate.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._y = 0;
   
 };

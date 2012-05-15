@@ -5,7 +5,7 @@ goog.require('goog.testing.jsunit');
 /**
  * Test for X.base.className
  */
-function testXbase.className {
+function testXbaseClassName() {
 
   b = new X.base();
   

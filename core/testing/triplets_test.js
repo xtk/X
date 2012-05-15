@@ -7,7 +7,7 @@ goog.require('goog.testing.asserts');
 /**
  * Test for X.triplets.className
  */
-function testXtriplets.className {
+function testXtripletsClassName() {
 
   var t = new X.triplets();
   

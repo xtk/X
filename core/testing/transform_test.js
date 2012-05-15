@@ -8,7 +8,7 @@ goog.require('goog.testing.asserts');
 /**
  * Test for X.transform.className
  */
-function testXtransform.className {
+function testXtransformClassName() {
 
   var t = new X.transform();
   

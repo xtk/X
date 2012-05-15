@@ -6,7 +6,7 @@ goog.require('goog.testing.jsunit');
 /**
  * Test for X.texture.className
  */
-function testXtexture.className {
+function testXtextureClassName() {
 
   t = new X.texture();
   

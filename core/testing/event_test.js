@@ -14,12 +14,12 @@ goog.require('goog.testing.jsunit');
 /**
  * Test for X.event.className
  */
-function testXevent.className {
+function testXeventClassName() {
 
   // create test event
   var e = new X.event('test');
   
-  assertEquals(e._className, 'event');
+  assertEquals(e.className, 'event');
   
 }
 
