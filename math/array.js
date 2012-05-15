@@ -55,7 +55,7 @@ X.array = function(comparator) {
    * @type {string}
    * @protected
    */
-  this['className'] = 'array';
+  this._className = 'array';
   
   this._array = [];
   

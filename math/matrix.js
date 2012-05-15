@@ -63,7 +63,7 @@ X.matrix = function(m, opt_n) {
    * @type {string}
    * @protected
    */
-  this['className'] = 'matrix';
+  this._className = 'matrix';
   
 };
 // inherit from goog.math.Matrix

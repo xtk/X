@@ -72,7 +72,7 @@ X.event = function(type) {
    * @type {string}
    * @protected
    */
-  this['className'] = 'event';
+  this._className = 'event';
   
 };
 // inherit from goog.events.Event

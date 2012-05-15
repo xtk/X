@@ -63,7 +63,7 @@ X.renderer3D = function(container) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'renderer3D';
+  this._className = 'renderer3D';
   
   /**
    * The shader pair for this renderer.
@@ -607,7 +607,7 @@ X.renderer3D.prototype.update_ = function(object) {
   // empty objects can be used to group objects
   if (points.count() == 0) {
     
-    object.setClean();
+    object._dirty = false;
     return;
     
   }
@@ -745,7 +745,7 @@ X.renderer3D.prototype.update_ = function(object) {
       texturePositionBuffer = new X.buffer(glTexturePositionBuffer,
           textureCoordinateMap.length, 2);
       
-      texture.setClean();
+      texture._dirty = false;
       
     } else {
       
@@ -821,7 +821,7 @@ X.renderer3D.prototype.update_ = function(object) {
                    (this.minZ + this.maxZ) / 2];
     
     // only set the transform clean since we still need to look at the points
-    transform.setClean();
+    transform._dirty = false;
   }
   
 
@@ -867,7 +867,7 @@ X.renderer3D.prototype.update_ = function(object) {
     // every vertex consists of 3 items (x,y,z)
     vertexBuffer = new X.buffer(glVertexBuffer, points.count(), 3);
     
-    points.setClean();
+    points._dirty = false;
     
   } else {
     
@@ -921,7 +921,7 @@ X.renderer3D.prototype.update_ = function(object) {
     // every normal consists of 3 items (x,y,z)
     normalBuffer = new X.buffer(glNormalBuffer, normals.count(), 3);
     
-    normals.setClean();
+    normals._dirty = false;
     
   } else {
     
@@ -991,7 +991,7 @@ X.renderer3D.prototype.update_ = function(object) {
       // every color consists of 3 items (r,g,b)
       colorBuffer = new X.buffer(glColorBuffer, colors.count(), 3);
       
-      colors.setClean();
+      colors._dirty = false;
       
     } else {
       
@@ -1061,7 +1061,7 @@ X.renderer3D.prototype.update_ = function(object) {
       // every scalar consists of 1 item
       scalarBuffer = new X.buffer(glScalarBuffer, scalarsArray.length, 3);
       
-      scalars.setClean();
+      scalars._dirty = false;
       
     } else {
       
@@ -1096,7 +1096,7 @@ X.renderer3D.prototype.update_ = function(object) {
   this.scalarBuffers.set(id, scalarBuffer);
   
   // clean the object
-  object.setClean();
+  object._dirty = false;
   
   // unlock
   this.locked = false;

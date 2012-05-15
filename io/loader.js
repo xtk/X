@@ -62,7 +62,7 @@ X.loader = function() {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'loader';
+  this._className = 'loader';
   
   /**
    * @private
@@ -140,7 +140,7 @@ X.loader.prototype.loadTextureCompleted = function(object) {
   setTimeout(function() {
 
     // at this point the image for the texture was loaded properly
-    object.texture().file().setClean();
+    object.texture().file()._dirty = false;
     
     // fire the modified event
     object.modified();
@@ -511,7 +511,7 @@ X.loader.prototype.parseFileCompleted = function(event) {
     var object = event._object;
     
     // the parsing is done here..
-    object.file().setClean();
+    object.file()._dirty = false;
     
     // fire the modified event
     object.modified();
@@ -533,7 +533,7 @@ X.loader.prototype.parseScalarsCompleted = function(event) {
     var object = event._object;
     
     // the parsing is done here..
-    object.scalars().file().setClean();
+    object.scalars().file()._dirty = false;
     
     // fire the modified event
     object.modified();
@@ -555,7 +555,7 @@ X.loader.prototype.parseColorTableCompleted = function(event) {
     var object = event._object;
     
     // the parsing is done here..
-    object.colorTable().file().setClean();
+    object.colorTable().file()._dirty = false;
     
     // fire the modified event
     object.modified();

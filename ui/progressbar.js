@@ -71,7 +71,7 @@ X.progressbar = function(parent, initialvalue) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'progressbar';
+  this._className = 'progressbar';
   
   /**
    * The parent element in the DOM tree of this progress bar.

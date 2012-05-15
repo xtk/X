@@ -56,7 +56,7 @@ X.colorTable = function() {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'colorTable';
+  this._className = 'colorTable';
   
   /**
    * The internal hash map to store the value-color mapping.

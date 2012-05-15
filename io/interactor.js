@@ -75,7 +75,7 @@ X.interactor = function(element) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'interactor';
+  this._className = 'interactor';
   
   /**
    * The observed DOM element of this interactor.

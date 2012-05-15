@@ -68,7 +68,7 @@ X.camera = function(width, height) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'camera';
+  this._className = 'camera';
   
   /**
    * The position of this camera, by default 0, 0, 100.

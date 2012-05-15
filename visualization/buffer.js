@@ -75,7 +75,7 @@ X.buffer = function(glBuffer, itemCount, itemSize) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'buffer';
+  this._className = 'buffer';
   
   /**
    * The GL buffer.

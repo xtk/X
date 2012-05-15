@@ -84,7 +84,7 @@ X.caption = function(parent, x, y, interactor) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'caption';
+  this._className = 'caption';
   
   /**
    * The parent element in the DOM tree of this caption element.

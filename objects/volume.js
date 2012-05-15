@@ -57,7 +57,7 @@ X.volume = function(volume) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'volume';
+  this._className = 'volume';
   
   /**
    * The center of this volume.

@@ -19,7 +19,7 @@ function testXeventClassName() {
   // create test event
   var e = new X.event('test');
   
-  assertEquals(e['className'], 'event');
+  assertEquals(e._className, 'event');
   
 }
 

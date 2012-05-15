@@ -55,7 +55,7 @@ X.camera2D = function(width, height) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'camera2D';
+  this._className = 'camera2D';
   
 };
 // inherit from X.base

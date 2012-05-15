@@ -56,7 +56,7 @@ X.renderer2D = function(container, orientation) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'renderer2D';
+  this._className = 'renderer2D';
   
   /**
    * The orientation of this renderer.

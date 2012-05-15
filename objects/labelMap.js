@@ -57,7 +57,7 @@ X.labelMap = function(volume) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'labelMap';
+  this._className = 'labelMap';
   
   this._volume = volume;
   
