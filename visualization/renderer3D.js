@@ -1636,8 +1636,8 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         this.context.uniform1i(uScalarsReplaceMode,
             object._scalars._replaceMode);
         
-        var minColor = object._scalars['_minColor'];
-        var maxColor = object._scalars['_maxColor'];
+        var minColor = object._scalars._minColor;
+        var maxColor = object._scalars._maxColor;
         
         // propagate minColors and maxColors for the scalars
         this.context.uniform3f(uScalarsMinColor, parseFloat(minColor[0]),
@@ -1647,9 +1647,9 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         
         // propagate minThreshold and maxThreshold for the scalars
         this.context.uniform1f(uScalarsMinThreshold,
-            parseFloat(object._scalars['_minThreshold']));
+            parseFloat(object._scalars._lowerThreshold));
         this.context.uniform1f(uScalarsMaxThreshold,
-            parseFloat(object._scalars['_maxThreshold']));
+            parseFloat(object._scalars._upperThreshold));
         
         // propagate min and max for the scalars
         this.context.uniform1f(uScalarsMin, parseFloat(object._scalars._min));

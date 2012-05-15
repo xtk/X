@@ -123,6 +123,7 @@ X.colorTable.prototype.add = function(value, label, r, g, b, a) {
  * Get the file of this color table.
  * 
  * @return {?X.file} The file of this color table.
+ * @public
  */
 X.colorTable.prototype.__defineGetter__('file', function() {
 
@@ -136,6 +137,7 @@ X.colorTable.prototype.__defineGetter__('file', function() {
  * 
  * @param {?X.file|string} file The file path or an X.file object containing the
  *          path.
+ * @public
  */
 X.colorTable.prototype.__defineSetter__('file', function(file) {
 

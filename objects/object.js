@@ -1187,7 +1187,7 @@ X.object.prototype.setScalars = function(scalars) {
     // a string has to be converted to a new X.texture
     var scalarsFile = scalars;
     scalars = new X.scalars();
-    scalars.setFile(scalarsFile);
+    scalars._file = scalarsFile;
     
   }
   

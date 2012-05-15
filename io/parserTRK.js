@@ -307,12 +307,13 @@ X.parserTRK.prototype.parse = function(object, data) {
   var scalars = new X.scalars();
   scalars._min = minLength;
   scalars._max = maxLength;
-  scalars['_minThreshold'] = minLength;
-  scalars['_maxThreshold'] = maxLength;
-  scalars.setGlArray(scalarArray); // the ordered, gl-Ready
+  scalars._lowerThreshold = minLength;
+  scalars._upperThreshold = maxLength;
+  scalars._glArray = scalarArray; // the ordered, gl-Ready
   // version - use the setter to mark the scalars dirty
   scalars._replaceMode = false; // we don't want to replace - we want to
   // discard!
+  scalars._dirty = true;
   object._scalars = scalars;
   
   var modifiedEvent = new X.event.ModifiedEvent();

@@ -116,7 +116,7 @@ X.scalars = function() {
    * @type {!Array}
    * @protected
    */
-  this['_minColor'] = [0, 1, 0];
+  this._minColor = [0, 1, 0];
   
   /**
    * The color to map the max. scalar.
@@ -124,7 +124,7 @@ X.scalars = function() {
    * @type {!Array}
    * @protected
    */
-  this['_maxColor'] = [1, 0, 0];
+  this._maxColor = [1, 0, 0];
   
   /**
    * The lower threshold.
@@ -132,7 +132,7 @@ X.scalars = function() {
    * @type {number}
    * @protected
    */
-  this['_minThreshold'] = -Infinity;
+  this._lowerThreshold = -Infinity;
   
   /**
    * The upper threshold.
@@ -140,10 +140,10 @@ X.scalars = function() {
    * @type {number}
    * @protected
    */
-  this['_maxThreshold'] = Infinity;
+  this._upperThreshold = Infinity;
   
   /**
-   * Flag to replace the colors after thresholding. If FALSE, discard the the
+   * Flag to replace the colors after thresholding. If FALSE, discard the
    * vertex.
    * 
    * @type {boolean}
@@ -157,36 +157,26 @@ goog.inherits(X.scalars, X.base);
 
 
 /**
- * Get the id of this scalars container.
+ * Get the file of this scalar container.
  * 
- * @return {number} The id of this scalars container.
+ * @return {?X.file} The file of this scalar container.
+ * @public
  */
-X.scalars.prototype.id = function() {
-
-  return this._id;
-  
-};
-
-
-/**
- * Get the file of this scalars container.
- * 
- * @return {?X.file|string} The file of this scalars container.
- */
-X.scalars.prototype.file = function() {
+X.scalars.prototype.__defineGetter__('file', function() {
 
   return this._file;
   
-};
+});
 
 
 /**
- * Set the file for this scalars container.
+ * Set the file for this scalar container.
  * 
  * @param {?X.file|string} file The file path or an X.file object containing the
  *          path.
+ * @public
  */
-X.scalars.prototype.setFile = function(file) {
+X.colorTable.prototype.__defineSetter__('file', function(file) {
 
   if (!goog.isDefAndNotNull(file)) {
     
@@ -204,23 +194,21 @@ X.scalars.prototype.setFile = function(file) {
   
   this._file = file;
   
-};
+});
 
 
 /**
- * Set the WebGL-ready array containing the scalars. This marks this object as
- * dirty so the X.renderer can pick it up. Should be only used internally.
+ * Get the array containing the scalars. This array is 'WebGL-ready', meaning
+ * that all values are represented by 3 elements to match the X,Y,Z coordinates
+ * of points.
  * 
- * @param {Array} array The WebGL-ready array.
+ * @public
  */
-X.scalars.prototype.setGlArray = function(array) {
+X.scalars.prototype.__defineGetter__('array', function() {
 
-  this._glArray = array;
+  return this._array;
   
-  // also, mark this dirty so the renderer can pick it up
-  this._dirty = true;
-  
-};
+});
 
 
 /**
@@ -232,8 +220,9 @@ X.scalars.prototype.setGlArray = function(array) {
  * 
  * @param {Array} array The WebGL-ready array matching
  *          X.object.points().length() in size.
+ * @public
  */
-X.scalars.prototype.setArray = function(array) {
+X.scalars.prototype.__defineSetter__('array', function(array) {
 
   this._array = array;
   this._glArray = array;
@@ -241,41 +230,118 @@ X.scalars.prototype.setArray = function(array) {
   // also, mark this dirty so the renderer can pick it up
   this._dirty = true;
   
-};
+});
+
+
+/**
+ * Get the lower threshold.
+ * 
+ * @return {number} The lower threshold.
+ * @public
+ */
+X.scalars.prototype.__defineGetter__('lowerThreshold', function() {
+
+  return this._lowerThreshold;
+  
+});
+
+
+/**
+ * Set the lower threshold if it is inside the min-max range.
+ * 
+ * @param {number} lowerThreshold
+ * @public
+ */
+X.scalars.prototype.__defineSetter__('lowerThreshold',
+    function(lowerThreshold) {
+
+      if (lowerThreshold <= this._min && lowerThreshold >= this._max) {
+        
+        this._lowerThreshold = lowerThreshold;
+        
+      }
+      
+    });
+
+
+/**
+ * Get the upper threshold.
+ * 
+ * @return {number} The upper threshold.
+ * @public
+ */
+X.scalars.prototype.__defineGetter__('upperThreshold', function() {
+
+  return this._upperThreshold;
+  
+});
+
+
+/**
+ * Set the upper threshold if it is inside the min-max range.
+ * 
+ * @param {number} upperThreshold
+ * @public
+ */
+X.scalars.prototype.__defineSetter__('upperThreshold',
+    function(upperThreshold) {
+
+      if (upperThreshold <= this._min && upperThreshold >= this._max) {
+        
+        this._upperThreshold = upperThreshold;
+        
+      }
+      
+    });
 
 
 /**
  * Get the min. scalar value.
  * 
  * @return {number} The min. scalar value.
+ * @public
  */
-X.scalars.prototype.min = function() {
+X.scalars.prototype.__defineGetter__('min', function() {
 
   return this._min;
   
-};
+});
 
 
 /**
  * Get the max. scalar value.
  * 
  * @return {number} The max. scalar value.
+ * @public
  */
-X.scalars.prototype.max = function() {
+X.scalars.prototype.__defineGetter__('max', function() {
 
   return this._max;
   
-};
+});
 
 
 /**
- * Set the color range to linear map the scalars to colors.
+ * Get the min color which is used to map the scalars to colors in a linear
+ * fashion.
  * 
- * @param {Array} minColor The color corresponding to the min. scalar value.
- * @param {Array} maxColor The color corresponding to the max. scalar value.
- * @throws {Error} An exception if the given colors are invalid.
+ * @return {!Array} An array holding the r,g,b components of the color.
+ * @public
  */
-X.scalars.prototype.setColorRange = function(minColor, maxColor) {
+X.scalars.prototype.__defineGetter__('minColor', function() {
+
+  return this._minColor;
+  
+});
+
+
+/**
+ * Set the min color to linear map the scalars to colors.
+ * 
+ * @param {!Array} minColor The color corresponding to the min. scalar value.
+ * @public
+ */
+X.scalars.prototype.__defineSetter__('minColor', function(minColor) {
 
   if (!goog.isDefAndNotNull(minColor) || !(minColor instanceof Array) ||
       (minColor.length != 3)) {
@@ -284,6 +350,33 @@ X.scalars.prototype.setColorRange = function(minColor, maxColor) {
     
   }
   
+  this._minColor = minColor;
+  
+});
+
+
+/**
+ * Get the max color which is used to map the scalars to colors in a linear
+ * fashion.
+ * 
+ * @return {!Array} An array holding the r,g,b components of the color.
+ * @public
+ */
+X.scalars.prototype.__defineGetter__('maxColor', function() {
+
+  return this._maxColor;
+  
+});
+
+
+/**
+ * Set the max color to linear map the scalars to colors.
+ * 
+ * @param {!Array} maxColor The color corresponding to the min. scalar value.
+ * @public
+ */
+X.scalars.prototype.__defineSetter__('maxColor', function(maxColor) {
+
   if (!goog.isDefAndNotNull(maxColor) || !(maxColor instanceof Array) ||
       (maxColor.length != 3)) {
     
@@ -291,30 +384,9 @@ X.scalars.prototype.setColorRange = function(minColor, maxColor) {
     
   }
   
-  this['_minColor'] = minColor;
-  this['_maxColor'] = maxColor;
+  this._maxColor = maxColor;
   
-};
-
-
-/**
- * Get the color range which maps the scalars to colors in a linear fashion.
- * 
- * @return {Array} An array of length 2 where the min. color is element 0 and
- *         max. color is element 1. The elements are again arrays with length 3.
- */
-X.scalars.prototype.colorRange = function() {
-
-  return [this['_minColor'], this['_maxColor']];
-  
-};
+});
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.scalars', X.scalars);
-goog.exportSymbol('X.scalars.prototype.min', X.scalars.prototype.min);
-goog.exportSymbol('X.scalars.prototype.max', X.scalars.prototype.max);
-goog.exportSymbol('X.scalars.prototype.colorRange',
-    X.scalars.prototype.colorRange);
-goog.exportSymbol('X.scalars.prototype.setColorRange',
-    X.scalars.prototype.setColorRange);
-goog.exportSymbol('X.scalars.prototype.setArray', X.scalars.prototype.setArray);

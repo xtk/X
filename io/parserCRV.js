@@ -223,11 +223,12 @@ X.parserCRV.prototype.parse = function(object, data) {
   // attach min, max curvature values and the whole shebang!
   object._scalars._min = minCurv[1];
   object._scalars._max = maxCurv[1];
-  object._scalars['_minThreshold'] = minCurv[1];
-  object._scalars['_maxThreshold'] = maxCurv[1];
+  object._scalars._lowerThreshold = minCurv[1];
+  object._scalars._upperThreshold = maxCurv[1];
   object._scalars._array = vertexCurvatures; // the un-ordered scalars
-  object._scalars.setGlArray(orderedCurvatures); // the ordered, gl-Ready
-  // version - use the setter to mark the scalars dirty
+  object._scalars._glArray = orderedCurvatures; // the ordered, gl-Ready
+  // now mark the scalars dirty
+  object._scalars._dirty = true;
   
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
