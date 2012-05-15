@@ -6,11 +6,11 @@ goog.require('goog.testing.jsunit');
 /**
  * Test for X.texture.className
  */
-function testXtextureClassName() {
+function testXtexture.className {
 
   t = new X.texture();
   
-  assertEquals(t.className(), 'texture');
+  assertEquals(t.className, 'texture');
   
 }
 

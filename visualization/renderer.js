@@ -588,7 +588,7 @@ X.renderer.prototype.get = function(id) {
   var _k = 0;
   for (_k = 0; _k < _numberOfObjects; _k++) {
     
-    if (_objects[_k]['_id'] == id) {
+    if (_objects[_k]._id == id) {
       
       // found!
       return _objects[_k];
@@ -642,7 +642,7 @@ X.renderer.prototype.generateTree_ = function(object, level) {
     
   }
   
-  _output += object['_id'];
+  _output += object._id;
   
   window.console.log(_output);
   

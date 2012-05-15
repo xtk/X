@@ -83,7 +83,7 @@ X.object = function(object) {
    * @type {number}
    * @protected
    */
-  this['_id'] = counter.value();
+  this._id = counter.value();
   
   /**
    * The rendering type of this object, default is {X.object.types.TRIANGLES}.
@@ -354,7 +354,7 @@ X.object.prototype.copy_ = function(object) {
  */
 X.object.prototype.id = function() {
 
-  return this['_id'];
+  return this._id;
   
 };
 
@@ -673,7 +673,7 @@ X.object.prototype.setColorTable = function(colorTable) {
     // a string has to be converted to a new X.texture
     var colorTableFile = colorTable;
     colorTable = new X.colorTable();
-    colorTable.setFile(colorTableFile);
+    colorTable.file = colorTableFile;
     
   }
   

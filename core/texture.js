@@ -67,7 +67,7 @@ X.texture = function() {
    * @type {number}
    * @protected
    */
-  this['_id'] = counter.value();
+  this._id = counter.value();
   
   /**
    * @type {X.file}
@@ -104,7 +104,7 @@ X.texture.filters = {
 
 X.texture.prototype.id = function() {
 
-  return this['_id'];
+  return this._id;
   
 };
 

@@ -68,7 +68,7 @@ X.scalars = function() {
    * @type {number}
    * @protected
    */
-  this['_id'] = counter.value();
+  this._id = counter.value();
   
   /**
    * The file containing the scalars.
@@ -163,7 +163,7 @@ goog.inherits(X.scalars, X.base);
  */
 X.scalars.prototype.id = function() {
 
-  return this['_id'];
+  return this._id;
   
 };
 

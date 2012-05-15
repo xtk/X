@@ -62,6 +62,7 @@ X.colorTable = function() {
    * The internal hash map to store the value-color mapping.
    * 
    * @type {!goog.structs.Map}
+   * @protected
    */
   this._map = new goog.structs.Map();
   
@@ -76,8 +77,14 @@ X.colorTable = function() {
    * @type {number}
    * @protected
    */
-  this['_id'] = counter.value();
+  this._id = counter.value();
   
+  /**
+   * The file of this color table.
+   * 
+   * @type {?string|X.file}
+   * @protected
+   */
   this._file = null;
   
 };
@@ -113,27 +120,15 @@ X.colorTable.prototype.add = function(value, label, r, g, b, a) {
 
 
 /**
- * Get the id of this color table.
- * 
- * @return {number} The id of this color table.
- */
-X.colorTable.prototype.id = function() {
-
-  return this['_id'];
-  
-};
-
-
-/**
  * Get the file of this color table.
  * 
  * @return {?X.file} The file of this color table.
  */
-X.colorTable.prototype.file = function() {
+X.colorTable.prototype.__defineGetter__('file', function() {
 
   return this._file;
   
-};
+});
 
 
 /**
@@ -142,7 +137,7 @@ X.colorTable.prototype.file = function() {
  * @param {?X.file|string} file The file path or an X.file object containing the
  *          path.
  */
-X.colorTable.prototype.setFile = function(file) {
+X.colorTable.prototype.__defineSetter__('file', function(file) {
 
   if (!goog.isDefAndNotNull(file)) {
     
@@ -160,4 +155,4 @@ X.colorTable.prototype.setFile = function(file) {
   
   this._file = file;
   
-};
+});

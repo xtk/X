@@ -244,13 +244,13 @@ X.renderer2D.prototype.update_ = function(object) {
   // check if object already existed..
   var existed = false;
   
-  if (this.get(object['_id'])) {
+  if (this.get(object._id)) {
     // this means, we are updating
     existed = true;
     
   }
   
-  // var id = object['_id'];
+  // var id = object._id;
   // var texture = object._texture;
   var file = object._file;
   var labelMap = object._labelMap; // here we access directly since we do not

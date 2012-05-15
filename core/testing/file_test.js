@@ -5,12 +5,12 @@ goog.require('goog.testing.jsunit');
 /**
  * Test for X.file.className
  */
-function testXfileClassName() {
+function testXfile.className {
 
   // create test file
   var f = new X.file('/dev/null');
   
-  assertEquals(f.className(), 'file');
+  assertEquals(f.className, 'file');
   
 }
 

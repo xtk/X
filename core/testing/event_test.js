@@ -14,7 +14,7 @@ goog.require('goog.testing.jsunit');
 /**
  * Test for X.event.className
  */
-function testXeventClassName() {
+function testXevent.className {
 
   // create test event
   var e = new X.event('test');
@@ -219,7 +219,7 @@ function testXeventModifiedEvent() {
   assertEquals(me.type, me2.type);
   
   // check the className of the associated object
-  assertEquals(me._object.className(), 'object');
+  assertEquals(me._object.className, 'object');
   
 
 }

@@ -11,7 +11,7 @@ function testXcolorTableClassName() {
 
   c = new X.colorTable();
   
-  assertEquals(c.className(), 'colorTable');
+  assertEquals(c.className, 'colorTable');
   
 }
 
@@ -30,7 +30,7 @@ function testXcolorTableId() {
   
   assertEquals(newValue, oldValue + 1);
   
-}
+};
 
 /**
  * Test for X.colorTable.file
@@ -40,23 +40,23 @@ function testXcolorTableFile() {
   var c = new X.colorTable();
   
   // be default, the file should be null
-  assertEquals(c.file(), null);
+  assertEquals(c.file, null);
   
   // let's try to set the file by string
-  c.setFile('/dev/null');
+  c.file = '/dev/null';
   
   // .. this should be converted internally to an X.file object
-  assertTrue(c.file() instanceof X.file);
+  assertTrue(c.file instanceof X.file);
   
   // let's try to set the file using X.file directly
   var f = new X.file('/dev/null');
   
-  c.setFile(f);
+  c.file = f;
   
   // .. should be the same
-  assertEquals(c.file(), f);
+  assertEquals(c.file, f);
   
-}
+};
 
 /**
  * Test for X.colorTable.add
@@ -64,9 +64,6 @@ function testXcolorTableFile() {
 function testXcolorTableAdd() {
 
   var c = new X.colorTable();
-  
-  // a fresh colorTable should not be dirty
-  assertFalse(c.dirty());
   
   // define an example color table entry
   var colorValue = 0;
@@ -88,4 +85,4 @@ function testXcolorTableAdd() {
   assertEquals(returnedColor[3], colorB);
   assertEquals(returnedColor[4], colorA);
   
-}
+};

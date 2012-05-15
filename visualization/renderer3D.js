@@ -493,13 +493,13 @@ X.renderer3D.prototype.update_ = function(object) {
   // check if object already existed..
   var existed = false;
   
-  if (this.get(object['_id'])) {
+  if (this.get(object._id)) {
     // this means, we are updating
     existed = true;
     
   }
   
-  var id = object['_id'];
+  var id = object._id;
   var points = object._points;
   var normals = object._normals;
   var colors = object._colors;
@@ -693,7 +693,7 @@ X.renderer3D.prototype.update_ = function(object) {
       
       //
       // activate the texture on the WebGL side
-      this.textures.set(texture['_id'], glTexture);
+      this.textures.set(texture._id, glTexture);
       
       this.context.bindTexture(this.context.TEXTURE_2D, glTexture);
       if (texture._rawData) {
@@ -1520,7 +1520,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         
       }
       
-      var id = object['_id'];
+      var id = object._id;
       
       var magicMode = object['_magicMode'];
       
@@ -1694,7 +1694,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         // grab the texture from the internal hash map using the id as the
         // key
         this.context.bindTexture(this.context.TEXTURE_2D, this.textures
-            .get(object._texture['_id']));
+            .get(object._texture._id));
         this.context.uniform1i(uTextureSampler, 0);
         
         // propagate the current texture-coordinate-map to WebGL
@@ -1756,7 +1756,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
           // only if we have an associated labelMap..
           
           // grab the id of the labelMap
-          var labelMapTextureID = object._labelMap['_id'];
+          var labelMapTextureID = object._labelMap._id;
           
           // we handle a second texture, actually the one for the labelMap
           this.context.uniform1i(uUseLabelMapTexture, true);
