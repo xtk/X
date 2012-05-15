@@ -70,30 +70,3 @@ X.file = function(path) {
 };
 // inherit from X.base
 goog.inherits(X.file, X.base);
-
-
-/**
- * Get the file path.
- * 
- * @return {?string} The file path.
- */
-X.file.prototype.path = function() {
-
-  return this._path;
-  
-};
-
-
-/**
- * Set the file path.
- * 
- * @param {?string} path The file path.
- */
-X.file.prototype.setPath = function(path) {
-
-  this._path = path;
-  
-  // mark as dirty
-  this._dirty = true;
-  
-};

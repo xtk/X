@@ -73,6 +73,7 @@ X.base = function() {
 // enable events
 goog.inherits(X.base, goog.events.EventTarget);
 
+
 /**
  * Get the className of this object.
  * 
@@ -84,6 +85,7 @@ X.base.prototype.__defineGetter__('className', function() {
   return this._className;
   
 });
+
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.base', X.base);

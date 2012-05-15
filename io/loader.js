@@ -113,7 +113,7 @@ X.loader.prototype.loadTexture = function(object) {
   }
   // setup the image object
   var image = new Image();
-  var currentTextureFilename = object.texture().file().path();
+  var currentTextureFilename = object.texture().file()._path;
   image.src = currentTextureFilename;
   
   // we let the object point to this image
@@ -162,7 +162,7 @@ X.loader.prototype.loadColorTable = function(object) {
   }
   
   // get the associated file of the object
-  var filepath = object.colorTable().file().path();
+  var filepath = object.colorTable().file()._path;
   
   // we use a simple XHR to get the file contents
   // this works for binary and for ascii files
@@ -209,7 +209,7 @@ X.loader.prototype.loadScalars = function(object) {
   }
   
   // get the associated file of the object
-  var filepath = object.scalars().file().path();
+  var filepath = object.scalars().file()._path;
   
   // we use a simple XHR to get the file contents
   // this works for binary and for ascii files
@@ -266,7 +266,7 @@ X.loader.prototype.loadFile = function(object) {
   object.normals().clear();
   
   // get the associated file of the object
-  var filepath = object.file().path();
+  var filepath = object.file()._path;
   
   // check if the file is supported
   var fileExtension = filepath.split('.').pop();
@@ -397,7 +397,7 @@ X.loader.prototype.loadScalarsCompleted = function(request, object) {
   // something
   setTimeout(function() {
 
-    var filepath = object.scalars().file().path();
+    var filepath = object.scalars().file()._path;
     
     var fileExtension = filepath.split('.').pop().toLowerCase();
     
@@ -429,7 +429,7 @@ X.loader.prototype.loadFileCompleted = function(request, object) {
   // something
   setTimeout(function() {
 
-    var filepath = object.file().path();
+    var filepath = object.file()._path;
     
     var fileExtension = filepath.split('.').pop().toLowerCase();
     
