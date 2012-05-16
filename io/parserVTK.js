@@ -423,7 +423,7 @@ X.parserVTK.prototype.configureTriangles = function(unorderedPoints,
     unorderedNormals, p, n) {
 
   // cache often used values for fast access
-  var numberOfUnorderedNormals = unorderedNormals.length();
+  var numberOfUnorderedNormals = unorderedNormals.length;
   
   var numberOfGeometries = this._geometries.length;
   var i = numberOfGeometries;
@@ -479,7 +479,7 @@ X.parserVTK.prototype.configureTriangleStrips = function(unorderedPoints,
     unorderedNormals, p, n) {
 
   // cache often used values for fast access
-  var numberOfUnorderedNormals = unorderedNormals.length();
+  var numberOfUnorderedNormals = unorderedNormals.length;
   
   var numberOfGeometries = this._geometries.length;
   var i = numberOfGeometries;
@@ -568,7 +568,7 @@ X.parserVTK.prototype.configurePoints = function(unorderedPoints,
     unorderedNormals, p, n) {
 
   // cache often used values for fast access
-  var numberOfUnorderedNormals = unorderedNormals.length();
+  var numberOfUnorderedNormals = unorderedNormals.length;
   
   var numberOfGeometries = this._geometries.length;
   var i = numberOfGeometries;
@@ -629,7 +629,7 @@ X.parserVTK.prototype.configureLines = function(unorderedPoints,
     unorderedNormals, p, n) {
 
   // cache often used values for fast access
-  var numberOfUnorderedNormals = unorderedNormals.length();
+  var numberOfUnorderedNormals = unorderedNormals.length;
   
   var numberOfGeometries = this._geometries.length;
   var i = numberOfGeometries;
@@ -701,7 +701,7 @@ X.parserVTK.prototype.configurePolygons = function(unorderedPoints,
     unorderedNormals, p, n) {
 
   // cache often used values for fast access
-  var numberOfUnorderedNormals = unorderedNormals.length();
+  var numberOfUnorderedNormals = unorderedNormals.length;
   
   var numberOfGeometries = this._geometries.length;
   var i = numberOfGeometries;

@@ -605,7 +605,7 @@ X.renderer3D.prototype.update_ = function(object) {
   
   // check if this is an empty object, if yes, jump out
   // empty objects can be used to group objects
-  if (points.count() == 0) {
+  if (points.count == 0) {
     
     object._dirty = false;
     return;
@@ -793,10 +793,10 @@ X.renderer3D.prototype.update_ = function(object) {
   if (points._dirty || transform._dirty) {
     var transformationMatrix = transform._matrix;
     
-    var tMin = transformationMatrix.multiplyByVector(new goog.math.Vec3(points
-        .minA(), points.minB(), points.minC()));
-    var tMax = transformationMatrix.multiplyByVector(new goog.math.Vec3(points
-        .maxA(), points.maxB(), points.maxC()));
+    var tMin = transformationMatrix.multiplyByVector(new goog.math.Vec3(
+        points._minA, points._minB, points._minC));
+    var tMax = transformationMatrix.multiplyByVector(new goog.math.Vec3(
+        points._maxA, points._maxB, points._maxC));
     
     if (goog.isNull(this.minX) || tMin.x < this.minX) {
       this.minX = tMin.x;
@@ -860,12 +860,12 @@ X.renderer3D.prototype.update_ = function(object) {
     // bind and fill with vertices of current object
     this.context.bindBuffer(this.context.ARRAY_BUFFER, glVertexBuffer);
     
-    this.context.bufferData(this.context.ARRAY_BUFFER, new Float32Array(points
-        .all()), this.context.STATIC_DRAW);
+    this.context.bufferData(this.context.ARRAY_BUFFER, new Float32Array(
+        points._triplets), this.context.STATIC_DRAW);
     
     // create an X.buffer to store the vertices
     // every vertex consists of 3 items (x,y,z)
-    vertexBuffer = new X.buffer(glVertexBuffer, points.count(), 3);
+    vertexBuffer = new X.buffer(glVertexBuffer, points.count, 3);
     
     points._dirty = false;
     
@@ -914,12 +914,12 @@ X.renderer3D.prototype.update_ = function(object) {
     
     // bind and fill with normals of current object
     this.context.bindBuffer(this.context.ARRAY_BUFFER, glNormalBuffer);
-    this.context.bufferData(this.context.ARRAY_BUFFER, new Float32Array(normals
-        .all()), this.context.STATIC_DRAW);
+    this.context.bufferData(this.context.ARRAY_BUFFER, new Float32Array(
+        normals._triplets), this.context.STATIC_DRAW);
     
     // create an X.buffer to store the normals
     // every normal consists of 3 items (x,y,z)
-    normalBuffer = new X.buffer(glNormalBuffer, normals.count(), 3);
+    normalBuffer = new X.buffer(glNormalBuffer, normals.count, 3);
     
     normals._dirty = false;
     
@@ -962,7 +962,7 @@ X.renderer3D.prototype.update_ = function(object) {
   // X.buffer
   var colorBuffer = null;
   
-  if (colors.length() > 0) {
+  if (colors.length > 0) {
     
     // yes, there are point colors setup
     
@@ -974,7 +974,7 @@ X.renderer3D.prototype.update_ = function(object) {
       // check if the point colors are valid, note that we use the length for
       // this
       // check which is slightly faster!
-      if (colors.length() != points.length()) {
+      if (colors.length != points.length) {
         
         // mismatch, this can not work
         throw new Error('Mismatch between points and point colors.');
@@ -985,11 +985,11 @@ X.renderer3D.prototype.update_ = function(object) {
       // bind and fill with colors defined above
       this.context.bindBuffer(this.context.ARRAY_BUFFER, glColorBuffer);
       this.context.bufferData(this.context.ARRAY_BUFFER, new Float32Array(
-          colors.all()), this.context.STATIC_DRAW);
+          colors._triplets), this.context.STATIC_DRAW);
       
       // create an X.buffer to store the colors
       // every color consists of 3 items (r,g,b)
-      colorBuffer = new X.buffer(glColorBuffer, colors.count(), 3);
+      colorBuffer = new X.buffer(glColorBuffer, colors.count, 3);
       
       colors._dirty = false;
       
@@ -1044,7 +1044,7 @@ X.renderer3D.prototype.update_ = function(object) {
       
       // check if the scalars are valid - we must match the number of vertices
       // here
-      if (scalarsArray.length != points.length()) {
+      if (scalarsArray.length != points.length) {
         
         // mismatch, this can not work
         throw new Error('Mismatch between points and scalars.');

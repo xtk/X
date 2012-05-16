@@ -187,12 +187,12 @@ X.parserTRK.prototype.parse = function(object, data) {
     // we need to get the bounding box of the whole .trk file before we add the
     // points to properly setup normals
     
-    var cMinX = currentPoints.minA();
-    var cMaxX = currentPoints.maxA();
-    var cMinY = currentPoints.minB();
-    var cMaxY = currentPoints.maxB();
-    var cMinZ = currentPoints.minC();
-    var cMaxZ = currentPoints.maxC();
+    var cMinX = currentPoints._minA;
+    var cMaxX = currentPoints._maxA;
+    var cMinY = currentPoints._minB;
+    var cMaxY = currentPoints._maxB;
+    var cMinZ = currentPoints._minC;
+    var cMaxZ = currentPoints._maxC;
     
     if (!minX || cMinX < minX) {
       minX = cMinX;
@@ -233,7 +233,7 @@ X.parserTRK.prototype.parse = function(object, data) {
     
     // grab the current points of this fiber
     var points = fibers[i];
-    var numberOfPoints = points.count();
+    var numberOfPoints = points.count;
     // grab the length of this fiber
     var length = lengths[i];
     

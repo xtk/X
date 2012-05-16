@@ -200,13 +200,13 @@ X.scalars.prototype.__defineGetter__('array', function() {
 
 /**
  * Set the array containing the scalars. This array has to be WebGL-ready
- * meaning that it has to match X.object.points().length(), which equals 3
- * entries for each vertex (X,Y,Z coordinates). Calling this method marks this
- * object as dirty so the X.renderer can pick it up. This method should be used
+ * meaning that it has to match X.object.points().length, which equals 3 entries
+ * for each vertex (X,Y,Z coordinates). Calling this method marks this object as
+ * dirty so the X.renderer can pick it up. This method should be used
  * externally.
  * 
- * @param {Array} array The WebGL-ready array matching
- *          X.object.points().length() in size.
+ * @param {Array} array The WebGL-ready array matching X.object.points().length
+ *          in size.
  * @public
  */
 X.scalars.prototype.__defineSetter__('array', function(array) {
