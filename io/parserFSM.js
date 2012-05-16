@@ -50,18 +50,18 @@ goog.require('goog.math.Vec3');
  */
 X.parserFSM = function() {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'parserFSM';  
+  
   //
   // call the standard constructor of X.parser
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'parserFSM';
   
 };
 // inherit from X.parser

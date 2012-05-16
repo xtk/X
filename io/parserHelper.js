@@ -50,18 +50,18 @@ X.parserHelper = function(data) {
     
   }
   
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'parserHelper';  
+  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'parserHelper';
   
   this._data = data;
   

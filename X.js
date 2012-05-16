@@ -30,7 +30,7 @@
 // entry point
 // namespace
 goog.provide('X');
-
+goog.provide('X.counter');
 
 /**
  * The XTK namespace.
@@ -39,11 +39,20 @@ goog.provide('X');
  */
 var X = X || {};
 
-window["X.counter"] = function() {
+/**
+ * The counter class, keeping track of instance ids.
+ * 
+ * @constructor
+ */
+X.counter = function() {
 
   this._counters = [];
   
-  function uniqueId(instance) {
+  /**
+   * @param instance
+   * @return
+   */
+  this.uniqueId = function(instance) {
 
     var className = instance._className;
     
@@ -56,16 +65,17 @@ window["X.counter"] = function() {
     } else {
       
       // this is a new counter
-      this._counter[className] = 0;
+      this._counters[className] = 0;
       
     }
     
     // .. and return it
     return this._counters[className];
     
-  }
-  
+  };
+                      
 };
+window["X.counter"] = new X.counter();
 
 
 //

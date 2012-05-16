@@ -65,17 +65,17 @@ X.buffer = function(glBuffer, itemCount, itemSize) {
     
   }
   
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'buffer';    
+  
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'buffer';
   
   /**
    * The GL buffer.

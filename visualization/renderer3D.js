@@ -52,18 +52,18 @@ goog.require('goog.structs.Map');
  */
 X.renderer3D = function(container) {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'renderer3D';
+  
   //
   // call the standard constructor of X.renderer
   goog.base(this, container);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'renderer3D';
   
   /**
    * The shader pair for this renderer.
@@ -492,6 +492,10 @@ X.renderer3D.prototype.update_ = function(object) {
   
   // check if object already existed..
   var existed = false;
+  
+  if (object instanceof X.volume) {
+    console.log('aaa');
+  }
   
   if (this.get(object._id)) {
     // this means, we are updating

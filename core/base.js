@@ -46,6 +46,14 @@ goog.require('goog.events.EventTarget');
  */
 X.base = function() {
 
+  /**
+   * The className of this class.
+   * 
+   * @type {string}
+   * @protected
+   */
+  this._className = this._className || 'base';
+  
   //
   // register this class within the event system by calling the superclass
   // constructor
@@ -55,13 +63,14 @@ X.base = function() {
   // class attributes
   
   /**
-   * The className of this class.
+   * The uniqueId of this instance. Each class instance in XTK has a uniqueId.
    * 
-   * @type {string}
+   * @type {number}
    * @protected
    */
-  this._className = 'base';
+  this._id = window["X.counter"].uniqueId(this);
   
+
   /**
    * The 'dirty' flag of this object.
    * 

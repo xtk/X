@@ -60,18 +60,20 @@ X.progressbar = function(parent, initialvalue) {
     
   }
   
+  /**
+   * The className of this class.
+   * 
+   * @type {string}
+   * @protected
+   */
+  this._className = this._className || 'progressbar';    
+  
   //
   // call the standard constructor of goog.ui.ProgressBar
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'progressbar';
   
   /**
    * The parent element in the DOM tree of this progress bar.

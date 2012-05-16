@@ -79,16 +79,16 @@ X.renderer = function(container) {
         'Could not find the given container or it has an undefined size.');
     
   }
-  
-  //
-  // call the standard constructor of X.base
-  goog.base(this);
-  
+ 
   /**
    * @inheritDoc
    * @const
    */
-  this._className = 'renderer';
+  this._className = this._className || 'renderer';  
+  
+  //
+  // call the standard constructor of X.base
+  goog.base(this);
   
   /**
    * The HTML container of this renderer, E.g. a <div>.

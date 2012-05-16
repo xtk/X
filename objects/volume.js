@@ -46,18 +46,18 @@ goog.require('X.slice');
  */
 X.volume = function(volume) {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'volume';
+  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'volume';
   
   /**
    * The center of this volume.

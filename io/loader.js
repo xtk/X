@@ -52,17 +52,17 @@ goog.require('goog.structs.Map');
  */
 X.loader = function() {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'loader';  
+  
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'loader';
   
   /**
    * @private
@@ -113,7 +113,7 @@ X.loader.prototype.loadTexture = function(object) {
   }
   // setup the image object
   var image = new Image();
-  var currentTextureFilename = object.texture().file()._path;
+  var currentTextureFilename = object.texture()._file._path;
   image.src = currentTextureFilename;
   
   // we let the object point to this image
@@ -124,7 +124,7 @@ X.loader.prototype.loadTexture = function(object) {
       this.loadTextureCompleted.bind(this, object));
   
   // add this loading job to our jobs map
-  this.jobs_().set(object._id, false);
+  this.jobs_().set('texture'+object._id, false);
   
   // this is a very fast step so we count it as 30% of the total texture load
   // time
@@ -140,13 +140,13 @@ X.loader.prototype.loadTextureCompleted = function(object) {
   setTimeout(function() {
 
     // at this point the image for the texture was loaded properly
-    object.texture().file()._dirty = false;
+    object.texture()._file._dirty = false;
     
     // fire the modified event
     object.modified();
     
     // mark the loading job as completed
-    this.jobs_().set(object._id, true);
+    this.jobs_().set('texture'+object._id, true);
     
   }.bind(this), 100);
   
@@ -162,7 +162,7 @@ X.loader.prototype.loadColorTable = function(object) {
   }
   
   // get the associated file of the object
-  var filepath = object.colorTable().file()._path;
+  var filepath = object.colorTable()._file._path;
   
   // we use a simple XHR to get the file contents
   // this works for binary and for ascii files
@@ -193,7 +193,7 @@ X.loader.prototype.loadColorTable = function(object) {
   request.send(null);
   
   // add this loading job to our jobs map
-  this.jobs_().set(object.colorTable()._id, false);
+  this.jobs_().set('colortable'+object.colorTable()._id, false);
   
 };
 
@@ -209,7 +209,7 @@ X.loader.prototype.loadScalars = function(object) {
   }
   
   // get the associated file of the object
-  var filepath = object.scalars().file()._path;
+  var filepath = object.scalars()._file._path;
   
   // we use a simple XHR to get the file contents
   // this works for binary and for ascii files
@@ -240,14 +240,14 @@ X.loader.prototype.loadScalars = function(object) {
   request.send(null);
   
   // add this loading job to our jobs map
-  this.jobs_().set(object.scalars()._id, false);
+  this.jobs_().set('scalars'+object.scalars()._id, false);
   
 };
 
 
 X.loader.prototype.loadFile = function(object) {
 
-  if (!goog.isDefAndNotNull(object.file())) {
+  if (!goog.isDefAndNotNull(object._file)) {
     
     // should not happen :)
     throw new Error('Internal error during file loading.');
@@ -255,7 +255,7 @@ X.loader.prototype.loadFile = function(object) {
   }
   
   // jump out if we already process this job
-  if (this.jobs_().containsKey(object._id)) {
+  if (this.jobs_().containsKey('object'+object._id)) {
     
     return;
     
@@ -266,7 +266,7 @@ X.loader.prototype.loadFile = function(object) {
   object.normals().clear();
   
   // get the associated file of the object
-  var filepath = object.file()._path;
+  var filepath = object._file._path;
   
   // check if the file is supported
   var fileExtension = filepath.split('.').pop();
@@ -313,7 +313,7 @@ X.loader.prototype.loadFile = function(object) {
   request.send(null);
   
   // add this loading job to our jobs map
-  this.jobs_().set(object._id, false);
+  this.jobs_().set('object'+object._id, false);
   
 };
 //
@@ -397,7 +397,7 @@ X.loader.prototype.loadScalarsCompleted = function(request, object) {
   // something
   setTimeout(function() {
 
-    var filepath = object.scalars().file()._path;
+    var filepath = object.scalars()._file._path;
     
     var fileExtension = filepath.split('.').pop().toLowerCase();
     
@@ -429,7 +429,7 @@ X.loader.prototype.loadFileCompleted = function(request, object) {
   // something
   setTimeout(function() {
 
-    var filepath = object.file()._path;
+    var filepath = object._file._path;
     
     var fileExtension = filepath.split('.').pop().toLowerCase();
     
@@ -511,13 +511,13 @@ X.loader.prototype.parseFileCompleted = function(event) {
     var object = event._object;
     
     // the parsing is done here..
-    object.file()._dirty = false;
+    object._file._dirty = false;
     
     // fire the modified event
     object.modified();
     
     // mark the loading job as completed
-    this.jobs_().set(object._id, true);
+    this.jobs_().set('object'+object._id, true);
     
   }.bind(this), 100);
   
@@ -533,13 +533,13 @@ X.loader.prototype.parseScalarsCompleted = function(event) {
     var object = event._object;
     
     // the parsing is done here..
-    object.scalars().file()._dirty = false;
+    object.scalars()._file._dirty = false;
     
     // fire the modified event
     object.modified();
     
     // mark the loading job as completed
-    this.jobs_().set(object.scalars()._id, true);
+    this.jobs_().set('scalars'+object.scalars()._id, true);
     
   }.bind(this), 100);
   
@@ -555,13 +555,13 @@ X.loader.prototype.parseColorTableCompleted = function(event) {
     var object = event._object;
     
     // the parsing is done here..
-    object.colorTable().file()._dirty = false;
+    object.colorTable()._file._dirty = false;
     
     // fire the modified event
     object.modified();
     
     // mark the loading job as completed
-    this.jobs_().set(object.colorTable()._id, true);
+    this.jobs_().set('colortable'+object.colorTable()._id, true);
     
   }.bind(this), 100);
   

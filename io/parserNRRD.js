@@ -51,18 +51,18 @@ goog.require('JXG.Util.Unzip');
  */
 X.parserNRRD = function() {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'parserNRRD';  
+  
   //
   // call the standard constructor of X.parser
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'parserNRRD';
   
 };
 // inherit from X.parser

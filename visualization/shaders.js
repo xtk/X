@@ -43,18 +43,18 @@ goog.require('X.base');
  */
 X.shaders = function() {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'shader';    
+  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'shader';
   
   /**
    * The vertex shader source of this shader pair. By default, a basic shader

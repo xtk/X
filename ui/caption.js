@@ -73,18 +73,20 @@ X.caption = function(parent, x, y, interactor) {
     
   }
   
+  /**
+   * The className of this class.
+   * 
+   * @type {string}
+   * @protected
+   */
+  this._className = this._className || 'caption';    
+  
   //
   // call the standard constructor of goog.ui.Tooltip
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'caption';
   
   /**
    * The parent element in the DOM tree of this caption element.

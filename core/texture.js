@@ -43,26 +43,18 @@ goog.require('X.file');
  */
 X.texture = function() {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'texture';
+  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'texture';
-  
-  /**
-   * The uniqueId of this texture. Each texture in XTK has a uniqueId.
-   * 
-   * @type {number}
-   * @protected
-   */
-  this._id = window["X.counter"].uniqueId(this);
   
   /**
    * @type {X.file}

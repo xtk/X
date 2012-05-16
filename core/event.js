@@ -51,7 +51,7 @@ goog.require('goog.events.Event');
 
 
 /**
- * The superclass class for all events in XTK.
+ * The super class for all events in XTK.
  * 
  * @constructor
  * @param {string} type A type identifier for this event.
@@ -59,20 +59,20 @@ goog.require('goog.events.Event');
  */
 X.event = function(type) {
 
-  //
-  // call the default event constructor
-  goog.base(this, type);
-  
-  //
-  // class attributes
-  
   /**
    * The className of this class.
    * 
    * @type {string}
    * @protected
    */
-  this._className = 'event';
+  this._className = this._className || 'event';  
+  
+  //
+  // call the default event constructor
+  goog.base(this, type);
+  
+  //
+  // class attributes
   
 };
 // inherit from goog.events.Event

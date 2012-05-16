@@ -44,31 +44,18 @@ goog.require('X.file');
  */
 X.scalars = function() {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'scalars';  
+  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'scalars';
-  
-  // the global id counter
-  var counter = window["X.Counter"];
-  // ..get a new unique id
-  counter.increment();
-  
-  /**
-   * The uniqueId of this object. Each object in XTK has a uniqueId.
-   * 
-   * @type {number}
-   * @protected
-   */
-  this._id = counter.value();
   
   /**
    * The file containing the scalars.

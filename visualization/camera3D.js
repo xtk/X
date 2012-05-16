@@ -46,18 +46,18 @@ goog.require('X.event.RotateEvent');
  */
 X.camera3D = function(width, height) {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'camera3D';    
+  
   //
   // call the standard constructor of X.base
   goog.base(this, width, height);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'camera3D';
   
   /**
    * The field of view in degrees.

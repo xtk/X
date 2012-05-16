@@ -45,6 +45,12 @@ goog.require('goog.structs.Map');
  */
 X.colorTable = function() {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'colorTable';  
+  
   //
   // call the standard constructor of X.base
   goog.base(this);
@@ -53,31 +59,12 @@ X.colorTable = function() {
   // class attributes
   
   /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'colorTable';
-  
-  /**
    * The internal hash map to store the value-color mapping.
    * 
    * @type {!goog.structs.Map}
    * @protected
    */
   this._map = new goog.structs.Map();
-  
-  // the global id counter
-  var counter = window["X.Counter"];
-  // ..get a new unique id
-  counter.increment();
-  
-  /**
-   * The uniqueId of this object. Each object in XTK has a uniqueId.
-   * 
-   * @type {number}
-   * @protected
-   */
-  this._id = counter.value();
   
   /**
    * The file of this color table.

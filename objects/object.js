@@ -59,31 +59,18 @@ goog.require('X.transform');
  */
 X.object = function(object) {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'object';
+  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'object';
-  
-  // the global id counter
-  var counter = window["X.Counter"];
-  // ..get a new unique id
-  counter.increment();
-  
-  /**
-   * The uniqueId of this object. Each object in XTK has a uniqueId.
-   * 
-   * @type {number}
-   * @protected
-   */
-  this._id = counter.value();
   
   /**
    * The rendering type of this object, default is {X.object.types.TRIANGLES}.

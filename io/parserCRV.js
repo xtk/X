@@ -49,18 +49,18 @@ goog.require('X.triplets');
  */
 X.parserCRV = function() {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'parserCRV';  
+  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'parserCRV';
   
 };
 // inherit from X.parser

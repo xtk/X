@@ -44,18 +44,18 @@ goog.require('X.event.ScrollEvent');
  */
 X.interactor2D = function(element) {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'interactor2D';  
+  
   //
   // call the standard constructor of X.base
   goog.base(this, element);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'interactor2D';
   
 };
 // inherit from X.base

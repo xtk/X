@@ -44,18 +44,18 @@ goog.require('X.camera');
  */
 X.camera2D = function(width, height) {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'camera2D';    
+  
   //
   // call the standard constructor of X.base
   goog.base(this, width, height);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'camera2D';
   
 };
 // inherit from X.base

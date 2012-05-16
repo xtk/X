@@ -49,18 +49,18 @@ goog.require('goog.math.Vec3');
  */
 X.parserTRK = function() {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'parserTRK';  
+  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'parserTRK';
   
 };
 // inherit from X.parser

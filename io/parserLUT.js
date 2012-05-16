@@ -45,18 +45,18 @@ goog.require('X.triplets');
  */
 X.parserLUT = function() {
 
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = this._className || 'parserLUT';  
+  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = 'parserLUT';
   
 };
 // inherit from X.parser
