@@ -155,7 +155,7 @@ X.loader.prototype.loadTextureCompleted = function(object) {
 
 X.loader.prototype.loadColorTable = function(object) {
 
-  if (!goog.isDefAndNotNull(object.colortable())) {
+  if (!goog.isDefAndNotNull(object._colortable)) {
     
     // should not happen :)
     throw new Error('Internal error during file loading.');
@@ -163,7 +163,7 @@ X.loader.prototype.loadColorTable = function(object) {
   }
   
   // get the associated file of the object
-  var filepath = object.colortable()._file._path;
+  var filepath = object._colortable._file._path;
   
   // we use a simple XHR to get the file contents
   // this works for binary and for ascii files
@@ -194,7 +194,7 @@ X.loader.prototype.loadColorTable = function(object) {
   request.send(null);
   
   // add this loading job to our jobs map
-  this.jobs_().set(object.colortable()._id, false);
+  this.jobs_().set(object._colortable._id, false);
   
 };
 
@@ -263,8 +263,8 @@ X.loader.prototype.loadFile = function(object) {
   }
   
   // clear all points and normals of the object
-  object.points().clear();
-  object.normals().clear();
+  object._points.clear();
+  object._normals.clear();
   
   // get the associated file of the object
   var filepath = object._file._path;
@@ -386,7 +386,7 @@ X.loader.prototype.loadColorTableCompleted = function(request, object) {
     goog.events.listenOnce(lutParser, X.event.events.MODIFIED,
         this.parseColorTableCompleted.bind(this));
     
-    lutParser.parse(object, request.response, object.colortable());
+    lutParser.parse(object, request.response, object._colortable);
     
   }.bind(this), 100);
   
@@ -556,13 +556,13 @@ X.loader.prototype.parseColorTableCompleted = function(event) {
     var object = event._object;
     
     // the parsing is done here..
-    object.colortable()._file._dirty = false;
+    object._colortable._file._dirty = false;
     
     // fire the modified event
     object.modified();
     
     // mark the loading job as completed
-    this.jobs_().set(object.colortable()._id, true);
+    this.jobs_().set(object._colortable._id, true);
     
   }.bind(this), 100);
   

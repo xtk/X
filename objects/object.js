@@ -78,7 +78,7 @@ X.object = function(object) {
    * @type {X.object.types}
    * @protected
    */
-  this['_type'] = X.object.types.TRIANGLES;
+  this._type = X.object.types.TRIANGLES;
   
   /**
    * The transform of this object.
@@ -94,7 +94,7 @@ X.object = function(object) {
    * @type {!Array}
    * @public
    */
-  this['_color'] = [1, 1, 1];
+  this._color = [1, 1, 1];
   
   /**
    * The points of this object.
@@ -150,7 +150,7 @@ X.object = function(object) {
    * @type {number}
    * @public
    */
-  this['_opacity'] = 1.0;
+  this._opacity = 1.0;
   
   /**
    * The children of this object.
@@ -168,7 +168,7 @@ X.object = function(object) {
    * @type {boolean}
    * @public
    */
-  this['_visible'] = true;
+  this._visible = true;
   
   /**
    * The point size, only used in X.object.types.POINTS mode.
@@ -192,7 +192,7 @@ X.object = function(object) {
    * @type {?string}
    * @protected
    */
-  this['_caption'] = null;
+  this._caption = null;
   
   /**
    * The flag for the magic mode.
@@ -272,11 +272,11 @@ X.object.types = {
  */
 X.object.prototype.copy_ = function(object) {
 
-  this['_type'] = object['_type'];
+  this._type = object._type;
   
   this._transform._matrix = new X.matrix(object._transform._matrix.array_);
   
-  this['_color'] = object['_color'].slice();
+  this._color = object._color.slice();
   
   this._points = new X.triplets(object._points);
   
@@ -293,7 +293,7 @@ X.object.prototype.copy_ = function(object) {
     this._file = new X.file(new String(object._file._path).toString());
   }
   
-  this['_opacity'] = object['_opacity'];
+  this._opacity = object._opacity;
   
   // 
   // children
@@ -316,15 +316,15 @@ X.object.prototype.copy_ = function(object) {
     }
   }
   
-  this['_visible'] = object['_visible'];
+  this._visible = object._visible;
   
   this['_pointSize'] = object['_pointSize'];
   
   this['_lineWidth'] = object['_lineWidth'];
   
-  if (object['_caption']) {
+  if (object._caption) {
     // only if a caption is configured
-    this['_caption'] = new String(object['_caption']).toString();
+    this._caption = new String(object._caption).toString();
   }
   
   this['_magicMode'] = object['_magicMode'];
@@ -352,7 +352,7 @@ X.object.prototype.toCSG = function() {
     var normal3 = this._normals.get(p + 2);
     
     // get the object color
-    var color = this['_color'];
+    var color = this._color;
     
     // if point colors are defined on this X.object, use'em
     if ((this._colors.length > 0)) {
@@ -477,7 +477,7 @@ X.object.prototype.fromCSG = function(csg) {
   }.bind(this));
   
   // we only support CSG in TRIANGLES rendering mode
-  this.setType(X.object.types.TRIANGLES);
+  this._type = X.object.types.TRIANGLES;
   
 };
 
@@ -501,39 +501,15 @@ X.object.prototype.__defineGetter__('texture', function() {
 
 
 /**
- * Get the rendering type of this object.
- * 
- * @return {X.object.types} The rendering type.
- */
-X.object.prototype.type = function() {
-
-  return this['_type'];
-  
-};
-
-
-/**
- * Set the rendering type of this object.
- * 
- * @param {X.object.types} type The rendering type.
- */
-X.object.prototype.setType = function(type) {
-
-  this['_type'] = type;
-  
-};
-
-
-/**
  * Get the transform of this object.
  * 
  * @return {!X.transform} The transform.
  */
-X.object.prototype.transform = function() {
+X.object.prototype.__defineGetter__('transform', function() {
 
   return this._transform;
   
-};
+});
 
 
 /**
@@ -541,11 +517,11 @@ X.object.prototype.transform = function() {
  * 
  * @return {!X.triplets} The points.
  */
-X.object.prototype.points = function() {
+X.object.prototype.__defineGetter__('points', function() {
 
   return this._points;
   
-};
+});
 
 
 /**
@@ -553,11 +529,11 @@ X.object.prototype.points = function() {
  * 
  * @return {!X.triplets} The normals.
  */
-X.object.prototype.normals = function() {
+X.object.prototype.__defineGetter__('normals', function() {
 
   return this._normals;
   
-};
+});
 
 
 /**
@@ -565,11 +541,11 @@ X.object.prototype.normals = function() {
  * 
  * @return {!X.triplets} The point colors.
  */
-X.object.prototype.colors = function() {
+X.object.prototype.__defineGetter__('colors', function() {
 
   return this._colors;
   
-};
+});
 
 
 /**
@@ -577,87 +553,25 @@ X.object.prototype.colors = function() {
  * 
  * @return {!Array} The object color.
  */
-X.object.prototype.color = function() {
+X.object.prototype.__defineGetter__('color', function() {
 
-  return this['_color'];
+  return this._color;
   
-};
-
-
-/**
- * The color table associated with this object.
- * 
- * @return {?X.colortable} The color table.
- */
-X.object.prototype.colortable = function() {
-
-  return this._colortable;
-  
-};
-
-
-/**
- * Set the color table for this object.
- * 
- * @param {?X.colortable|string} colortable The new color table or a file path.
- * @throws {Error} An error if the color table is invalid.
- */
-X.object.prototype.setColorTable = function(colortable) {
-
-  if (!goog.isDefAndNotNull(colortable)) {
-    
-    // null colortables are allowed
-    this._colortable = null;
-    return;
-    
-  }
-  
-  if (goog.isString(colortable)) {
-    
-    // a string has to be converted to a new X.texture
-    var colortableFile = colortable;
-    colortable = new X.colortable();
-    colortable.file = colortableFile;
-    
-  }
-  
-  if (!(colortable instanceof X.colortable)) {
-    
-    throw new Error('Invalid colortable.');
-    
-  }
-  
-  this._colortable = colortable;
-  
-};
-
-
-/**
- * Get the mapping between texture and object coordinates.
- * 
- * @return {?Array} The texture coordinate map.
- */
-X.object.prototype.textureCoordinateMap = function() {
-
-  return this._textureCoordinateMap;
-  
-};
+});
 
 
 /**
  * Set the object color. This overrides any point colors.
  * 
- * @param {!number} r The Red value in the range of 0..1
- * @param {!number} g The Green value in the range of 0..1
- * @param {!number} b The Blue value in the range of 0..1
- * @throws {Error} An exception if the given color values are invalid.
+ * @param {!Array} color The object color as an array with length 3 and values
+ *          between 0..1.
+ * @throws {Error} An exception if the given color is invalid.
  */
-X.object.prototype.setColor = function(r, g, b) {
+X.object.prototype.__defineSetter__('color', function(color) {
 
   // we accept only numbers as arguments
-  if ((!goog.isNumber(r) && r < 0.0 && r > 1.0) ||
-      (!goog.isNumber(g) && g < 0.0 && g > 1.0) ||
-      (!goog.isNumber(b) && b < 0.0 && b > 1.0)) {
+  if (!goog.isDefAndNotNull(color) || !(color instanceof Array) ||
+      !(color.length != 3)) {
     
     throw new Error('Invalid color.');
     
@@ -672,19 +586,48 @@ X.object.prototype.setColor = function(r, g, b) {
     
     for (c = 0; c < numberOfChildren; c++) {
       
-      children[c].setColor(r, g, b);
+      children[c].color = color;
       
     }
     
   }
   
-  this['_color'][0] = r;
-  this['_color'][1] = g;
-  this['_color'][2] = b;
+  this._color = color;
   
   this._dirty = true;
   
+});
+
+
+/**
+ * The color table associated with this object.
+ * 
+ * @return {?X.colortable} The color table.
+ */
+X.object.prototype.__defineGetter__('colortable', function() {
+
+  if (!this._colortable) {
+    
+    this._colortable = new X.colortable();
+    
+  }
+  
+  return this._colortable;
+  
+});
+
+
+/**
+ * Get the mapping between texture and object coordinates.
+ * 
+ * @return {?Array} The texture coordinate map.
+ */
+X.object.prototype.textureCoordinateMap = function() {
+
+  return this._textureCoordinateMap;
+  
 };
+
 
 
 X.object.prototype.union = function(object) {
@@ -797,78 +740,11 @@ X.object.prototype.inverse = function(object) {
  * 
  * @return {number} The opacity in the range 0..1.
  */
-X.object.prototype.opacity = function() {
+X.object.prototype.__defineGetter__('opacity', function() {
 
-  return this['_opacity'];
+  return this._opacity;
   
-};
-
-
-/**
- * Get the caption of this object.
- * 
- * @return {?string} The caption of this object.
- */
-X.object.prototype.caption = function() {
-
-  return this['_caption'];
-  
-};
-
-
-/**
- * Set the caption for this object.
- * 
- * @param {?string} caption The caption for this object.
- */
-X.object.prototype.setCaption = function(caption) {
-
-  this['_caption'] = caption;
-  
-  this._dirty = true;
-  
-};
-
-
-/**
- * Set the visibility of this object.
- * 
- * @param {boolean} visible The object's new visibility.
- */
-X.object.prototype.setVisible = function(visible) {
-
-  if (this.hasChildren()) {
-    
-    // loop through the children and propagate the new visibility
-    var children = this.children();
-    var numberOfChildren = children.length;
-    var c = 0;
-    
-    for (c = 0; c < numberOfChildren; c++) {
-      
-      children[c].setVisible(visible);
-      
-    }
-    
-  }
-  
-  this['_visible'] = visible;
-  
-  this._dirty = true;
-  
-};
-
-
-/**
- * Get the visibility of this object.
- * 
- * @return {boolean} TRUE if the object is visible, FALSE otherwise.
- */
-X.object.prototype.visible = function() {
-
-  return this['_visible'];
-  
-};
+});
 
 
 /**
@@ -876,7 +752,7 @@ X.object.prototype.visible = function() {
  * 
  * @param {number} opacity The opacity value in the range 0..1.
  */
-X.object.prototype.setOpacity = function(opacity) {
+X.object.prototype.__defineSetter__('opacity', function(opacity) {
 
   // check if the given opacity is in the range 0..1
   if (!goog.isNumber(opacity) || opacity > 1.0 || opacity < 0.0) {
@@ -894,17 +770,88 @@ X.object.prototype.setOpacity = function(opacity) {
     
     for (c = 0; c < numberOfChildren; c++) {
       
-      children[c].setOpacity(opacity);
+      children[c].opacity = opacity;
       
     }
     
   }
   
-  this['_opacity'] = opacity;
+  this._opacity = opacity;
   
   this._dirty = true;
   
-};
+});
+
+
+/**
+ * Get the caption of this object.
+ * 
+ * @return {?string} The caption of this object.
+ * @public
+ */
+X.object.prototype.__defineGetter__('caption', function() {
+
+  return this._caption;
+  
+});
+
+
+/**
+ * Set the caption for this object.
+ * 
+ * @param {?string} caption The caption for this object.
+ * @public
+ */
+X.object.prototype.__defineSetter__('caption', function(caption) {
+
+  this._caption = caption;
+  
+  this._dirty = true;
+  
+});
+
+
+/**
+ * Set the visibility of this object.
+ * 
+ * @param {boolean} visible The object's new visibility.
+ * @public
+ */
+X.object.prototype.__defineSetter__('visible', function(visible) {
+
+  if (this.hasChildren()) {
+    
+    // loop through the children and propagate the new visibility
+    var children = this.children();
+    var numberOfChildren = children.length;
+    var c = 0;
+    
+    for (c = 0; c < numberOfChildren; c++) {
+      
+      children[c].visible = visible;
+      
+    }
+    
+  }
+  
+  this._visible = visible;
+  
+  this._dirty = true;
+  
+});
+
+
+/**
+ * Get the visibility of this object.
+ * 
+ * @return {boolean} TRUE if the object is visible, FALSE otherwise.
+ * @public
+ */
+X.object.prototype.__defineGetter__('visible', function() {
+
+  return this._visible;
+  
+});
 
 
 /**
@@ -913,7 +860,7 @@ X.object.prototype.setOpacity = function(opacity) {
  * @param {?string} filepath The file path/URL to load. If null, reset the
  *          associated file.
  */
-X.object.prototype.load = function(filepath) {
+X.object.prototype.__defineSetter__('file', function(filepath) {
 
   if (!goog.isDefAndNotNull(filepath)) {
     
@@ -926,20 +873,25 @@ X.object.prototype.load = function(filepath) {
   
   this._file = new X.file(filepath);
   
-
-};
+});
 
 
 /**
  * Get the associated X.file for this object.
  * 
- * @return {?X.file} The associated X.file or null if no file is associated.
+ * @return {string} The associated X.file or null if no file is associated.
  */
-X.object.prototype.file = function() {
+X.object.prototype.__defineGetter__('file', function() {
 
-  return this._file;
+  if (!this._file) {
+    
+    return '';
+    
+  }
   
-};
+  return this._file._path;
+  
+});
 
 
 /**
@@ -1168,13 +1120,13 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
   }
   
   // full opaque objects should always be rendered first
-  if (object1['_opacity'] == 1) {
+  if (object1._opacity == 1) {
     
     // always put object1 before object2
     return -1;
     
   }
-  if (object2['_opacity'] == 1) {
+  if (object2._opacity == 1) {
     
     // always put object2 before object1
     return 1;
@@ -1208,38 +1160,15 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.object', X.object);
-goog.exportSymbol('X.object.prototype.type', X.object.prototype.type);
-goog.exportSymbol('X.object.prototype.setType', X.object.prototype.setType);
-goog.exportSymbol('X.object.prototype.transform', X.object.prototype.transform);
-goog.exportSymbol('X.object.prototype.points', X.object.prototype.points);
-goog.exportSymbol('X.object.prototype.normals', X.object.prototype.normals);
-goog.exportSymbol('X.object.prototype.colortable',
-    X.object.prototype.colortable);
-goog.exportSymbol('X.object.prototype.setColorTable',
-    X.object.prototype.setColorTable);
 goog.exportSymbol('X.object.prototype.scalars', X.object.prototype.scalars);
 goog.exportSymbol('X.object.prototype.setScalars',
     X.object.prototype.setScalars);
-goog.exportSymbol('X.object.prototype.colors', X.object.prototype.colors);
-goog.exportSymbol('X.object.prototype.color', X.object.prototype.color);
-goog.exportSymbol('X.object.prototype.setColor', X.object.prototype.setColor);
-goog.exportSymbol('X.object.prototype.opacity', X.object.prototype.opacity);
-goog.exportSymbol('X.object.prototype.setOpacity',
-    X.object.prototype.setOpacity);
 goog.exportSymbol('X.object.prototype.lineWidth', X.object.prototype.lineWidth);
 goog.exportSymbol('X.object.prototype.setLineWidth',
     X.object.prototype.setLineWidth);
 goog.exportSymbol('X.object.prototype.pointSize', X.object.prototype.pointSize);
 goog.exportSymbol('X.object.prototype.setPointSize',
     X.object.prototype.setPointSize);
-goog.exportSymbol('X.object.prototype.load', X.object.prototype.load);
-goog.exportSymbol('X.object.prototype.file', X.object.prototype.file);
-goog.exportSymbol('X.object.prototype.caption', X.object.prototype.caption);
-goog.exportSymbol('X.object.prototype.visible', X.object.prototype.visible);
-goog.exportSymbol('X.object.prototype.setCaption',
-    X.object.prototype.setCaption);
-goog.exportSymbol('X.object.prototype.setVisible',
-    X.object.prototype.setVisible);
 goog.exportSymbol('X.object.prototype.magicMode', X.object.prototype.magicMode);
 goog.exportSymbol('X.object.prototype.setMagicMode',
     X.object.prototype.setMagicMode);

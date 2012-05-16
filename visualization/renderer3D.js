@@ -1120,7 +1120,7 @@ X.renderer3D.prototype.showCaption_ = function(x, y) {
   
   if (object) {
     
-    var caption = object.caption();
+    var caption = object._caption;
     
     if (caption) {
       
@@ -1246,12 +1246,12 @@ X.renderer3D.prototype.order_ = function() {
       // grab the first slice, attach the distance and opacity
       var firstSlice = _slices[0];
       firstSlice._distance = this.distanceToEye_(firstSlice);
-      firstSlice['_opacity'] = object['_opacity'];
+      firstSlice._opacity = object._opacity;
       
       // grab the last slice, attach the distance and opacity
       var lastSlice = _slices[numberOfSlices - 1];
       lastSlice._distance = this.distanceToEye_(lastSlice);
-      lastSlice['_opacity'] = object['_opacity'];
+      lastSlice._opacity = object._opacity;
       
       // get the distanceDifference the distanceStep
       // if these are > 0: the firstSlice is closer to the eye
@@ -1269,7 +1269,7 @@ X.renderer3D.prototype.order_ = function() {
             .round((firstSlice._distance + (s * distanceStep)) * 1000) / 1000;
         
         _slices[s]._distance = currentDistance;
-        _slices[s]['_opacity'] = object['_opacity'];
+        _slices[s]._opacity = object._opacity;
         
       }
       
@@ -1289,7 +1289,7 @@ X.renderer3D.prototype.order_ = function() {
     
     var object = objects[i];
     
-    if (!object['_visible']) {
+    if (!object._visible) {
       continue;
     }
     
@@ -1297,7 +1297,7 @@ X.renderer3D.prototype.order_ = function() {
     // a) opacity is 1
     // b) object is an X.slice since we take care of that when grabbing the
     // volume
-    if ((object['_opacity'] == 1) || (object instanceof X.slice)) {
+    if ((object._opacity == 1) || (object instanceof X.slice)) {
       
       continue;
       
@@ -1513,7 +1513,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       }
       
       // check visibility
-      if (!object['_visible'] || (volume && !volume['_visible'])) {
+      if (!object._visible || (volume && !volume._visible)) {
         
         // not visible, continue to the next one..
         continue;
@@ -1590,7 +1590,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         // in magicMode, this is always false!
         this.context.uniform1i(uUseObjectColor, useObjectColor);
         
-        var objectColor = object['_color'];
+        var objectColor = object._color;
         
         if (picking) {
           
@@ -1666,7 +1666,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       }
       
       // OPACITY
-      this.context.uniform1f(uObjectOpacity, parseFloat(object['_opacity']));
+      this.context.uniform1f(uObjectOpacity, parseFloat(object._opacity));
       
       // TEXTURE
       if (object._texture && texturePositionBuffer && !picking) {
@@ -1740,10 +1740,9 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         // opacity, only if volume rendering is active
         if (volume['_volumeRendering']) {
           
-          this.context
-              .uniform1f(uObjectOpacity, parseFloat(volume['_opacity']));
+          this.context.uniform1f(uObjectOpacity, parseFloat(volume._opacity));
           
-        } else if (labelmap && labelmap['_visible']) {
+        } else if (labelmap && labelmap._visible) {
           // only if we have an associated labelmap..
           
           // grab the id of the labelmap
@@ -1762,7 +1761,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
           this.context.uniform1i(uTextureSampler2, 1);
           
           // propagate label map opacity
-          this.context.uniform1f(uLabelMapOpacity, labelmap['_opacity']);
+          this.context.uniform1f(uLabelMapOpacity, labelmap._opacity);
           
         }
         
@@ -1775,7 +1774,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       
       // POINT SIZE
       var pointSize = 1;
-      if (object['_type'] == X.object.types.POINTS) {
+      if (object._type == X.object.types.POINTS) {
         pointSize = object['_pointSize'];
       }
       this.context.uniform1f(uPointSize, pointSize);
@@ -1784,14 +1783,14 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       // .. and draw with the object's DRAW MODE
       //
       var drawMode = -1;
-      if (object.type() == X.object.types.TRIANGLES) {
+      if (object._type == X.object.types.TRIANGLES) {
         
         drawMode = this.context.TRIANGLES;
         if (statisticsEnabled) {
           trianglesCounter += (vertexBuffer._itemCount / 3);
         }
         
-      } else if (object.type() == X.object.types.LINES) {
+      } else if (object._type == X.object.types.LINES) {
         
         this.context.lineWidth(object.lineWidth());
         
@@ -1800,21 +1799,21 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
           linesCounter += (vertexBuffer._itemCount / 2);
         }
         
-      } else if (object.type() == X.object.types.POINTS) {
+      } else if (object._type == X.object.types.POINTS) {
         
         drawMode = this.context.POINTS;
         if (statisticsEnabled) {
           pointsCounter += vertexBuffer._itemCount;
         }
         
-      } else if (object.type() == X.object.types.TRIANGLE_STRIPS) {
+      } else if (object._type == X.object.types.TRIANGLE_STRIPS) {
         
         drawMode = this.context.TRIANGLE_STRIP;
         if (statisticsEnabled) {
           trianglesCounter += (vertexBuffer._itemCount / 3);
         }
         
-      } else if (object.type() == X.object.types.POLYGONS) {
+      } else if (object._type == X.object.types.POLYGONS) {
         
         // TODO right now, this is hacked.. we need to use the Van Gogh
         // triangulation algorithm or something faster to properly convert

@@ -72,8 +72,8 @@ X.parserSTL.prototype.parse = function(object, data) {
   
   var numberOfLines = dataAsArray.length;
   
-  var p = object.points();
-  var n = object.normals();
+  var p = object._points;
+  var n = object._normals;
   
   //
   // LOOP THROUGH ALL LINES

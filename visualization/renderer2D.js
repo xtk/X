@@ -533,9 +533,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   this.context.drawImage(this.frameBuffer, _canvasCenterX, _canvasCenterY);
   
   // draw the labels with a configured opacity
-  if (_currentLabelMap && _volume._labelmap['_visible']) {
+  if (_currentLabelMap && _volume._labelmap._visible) {
     
-    var _labelOpacity = _volume._labelmap['_opacity'];
+    var _labelOpacity = _volume._labelmap._opacity;
     
     this.context.globalAlpha = _labelOpacity; // draw transparent depending on
     // opacity

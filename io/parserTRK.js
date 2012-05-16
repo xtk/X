@@ -72,9 +72,9 @@ goog.inherits(X.parserTRK, X.parser);
  */
 X.parserTRK.prototype.parse = function(object, data) {
 
-  var p = object.points();
-  var n = object.normals();
-  var c = object.colors();
+  var p = object._points;
+  var n = object._normals;
+  var c = object._colors;
   
   var offset = 0;
   
@@ -301,7 +301,7 @@ X.parserTRK.prototype.parse = function(object, data) {
   } // loop through fibers
   
   // set the object type to LINES
-  object.setType(X.object.types.LINES);
+  object._type = X.object.types.LINES;
   
   // attach the scalars
   var scalars = new X.scalars();

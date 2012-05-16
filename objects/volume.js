@@ -337,7 +337,7 @@ X.volume.prototype.create_ = function() {
       
       // only show the middle slice, hide everything else
       _slice._hideChildren = false;
-      _slice.setVisible(i == Math.floor(_indexCenter));
+      _slice.visible = (i == Math.floor(_indexCenter));
       _slice._hideChildren = true;
       
       // attach to all _slices with the correct slice index
@@ -381,24 +381,24 @@ X.volume.prototype.modified = function() {
         var _sliceX = this.children()[0].children()[parseInt(this['_indexX'],
             10)];
         _sliceX._hideChildren = false;
-        _sliceX.setVisible(false);
+        _sliceX.visible = false;
         _sliceX._hideChildren = true;
         var _sliceY = this.children()[1].children()[parseInt(this['_indexY'],
             10)];
         _sliceY._hideChildren = false;
-        _sliceY.setVisible(false);
+        _sliceY.visible = false;
         _sliceY._hideChildren = true;
         var _sliceZ = this.children()[2].children()[parseInt(this['_indexZ'],
             10)];
         _sliceZ._hideChildren = false;
-        _sliceZ.setVisible(false);
+        _sliceZ.visible = false;
         _sliceZ._hideChildren = true;
         
       } else {
         
         // hide the volume rendering slices
         var _child = this.children()[this._volumeRenderingDirection];
-        _child.setVisible(false);
+        _child.visible = false;
         
       }
       
@@ -458,15 +458,15 @@ X.volume.prototype.slicing_ = function() {
     // hide the old slice
     var _oldSlice = _child.children()[parseInt(oldIndex, 10)];
     _oldSlice._hideChildren = false;
-    _oldSlice.setVisible(false);
+    _oldSlice.visible = false;
     _oldSlice._hideChildren = true;
     // show the current slice and also show the borders if they exist by
     // deactivating the hideChildren flag
     var _currentSlice = _child.children()[parseInt(currentIndex, 10)];
     _currentSlice._hideChildren = false;
-    _currentSlice.setVisible(true);
+    _currentSlice.visible = true;
     _currentSlice._hideChildren = true;
-    _currentSlice.setOpacity(1.0);
+    _currentSlice._opacity = 1.0;
     
   }
   
@@ -538,13 +538,12 @@ X.volume.prototype.setVolumeRendering = function(volumeRendering) {
 /**
  * @inheritDoc
  */
-X.volume.prototype.setVisible = function(visible) {
+X.volume.prototype.__defineSetter__('visible', function(visible) {
 
   // we do not want to propagate to the children here
+  this._visible = visible;
   
-  this['_visible'] = visible;
-  
-};
+});
 
 
 /**
@@ -588,11 +587,11 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   
   // hide old volume rendering slices
   var _child = this.children()[this._volumeRenderingDirection];
-  _child.setVisible(false);
+  _child.visible = false;
   
   // show new volume rendering slices
   _child = this.children()[direction];
-  _child.setVisible(true);
+  _child.visible = true;
   
   // store the direction
   this._volumeRenderingDirection = direction;
@@ -603,12 +602,12 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
 
 /**
- * Return the label map of this volume. A new label map gets created if required
+ * Get the label map of this volume. A new label map gets created if required
  * (Singleton).
  * 
  * @return {!X.volume}
  */
-X.volume.prototype.labelmap = function() {
+X.volume.prototype.__defineGetter__('labelmap', function() {
 
   if (!this._labelmap) {
     
@@ -618,7 +617,7 @@ X.volume.prototype.labelmap = function() {
   
   return this._labelmap;
   
-};
+});
 
 
 /**
@@ -652,14 +651,11 @@ goog.exportSymbol('X.volume.prototype.dimensions',
     X.volume.prototype.dimensions);
 goog.exportSymbol('X.volume.prototype.scalarRange',
     X.volume.prototype.scalarRange);
-goog.exportSymbol('X.volume.prototype.setVisible',
-    X.volume.prototype.setVisible);
 goog.exportSymbol('X.volume.prototype.setCenter', X.volume.prototype.setCenter);
 goog.exportSymbol('X.volume.prototype.setVolumeRendering',
     X.volume.prototype.setVolumeRendering);
 goog.exportSymbol('X.volume.prototype.threshold', X.volume.prototype.threshold);
 goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);
-goog.exportSymbol('X.volume.prototype.labelmap', X.volume.prototype.labelmap);
 goog.exportSymbol('X.volume.prototype.borders', X.volume.prototype.borders);
 goog.exportSymbol('X.volume.prototype.setBorders',
     X.volume.prototype.setBorders);
