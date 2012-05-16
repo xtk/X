@@ -700,7 +700,7 @@ X.renderer3D.prototype.update_ = function(object) {
         
         // use rawData rather than loading an imagefile
         this.context.texImage2D(this.context.TEXTURE_2D, 0, this.context.RGBA,
-            texture.rawDataWidth(), texture.rawDataHeight(), 0,
+            texture._rawDataWidth, texture._rawDataHeight, 0,
             this.context.RGBA, this.context.UNSIGNED_BYTE, texture._rawData);
         
         this.context.texParameteri(this.context.TEXTURE_2D,

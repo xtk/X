@@ -60,7 +60,7 @@ X.scalars = function() {
   /**
    * The file containing the scalars.
    * 
-   * @type {?X.file|string}
+   * @type {?X.file}
    * @protected
    */
   this._file = null;
@@ -163,7 +163,7 @@ X.scalars.prototype.__defineGetter__('file', function() {
  *          path.
  * @public
  */
-X.colortable.prototype.__defineSetter__('file', function(file) {
+X.scalars.prototype.__defineSetter__('file', function(file) {
 
   if (!goog.isDefAndNotNull(file)) {
     

@@ -308,8 +308,8 @@ X.object.prototype.copy_ = function(object) {
       this['_newChild'] = this['_child'];
       
       // dynamic duck typing
-      var className = this['_child']._className;
-      eval("this['_newChild'] = new X." + className + "(this['_child']);");
+      var classname = this['_child']._classname;
+      eval("this['_newChild'] = new X." + classname + "(this['_child']);");
       
       this.children().push(this['_newChild']);
       
@@ -482,6 +482,23 @@ X.object.prototype.fromCSG = function(csg) {
 };
 
 
+/**
+ * Get the texture of this object.
+ * 
+ * @return {!X.texture} The texture.
+ */
+X.object.prototype.__defineGetter__('texture', function() {
+
+  if (!this._texture) {
+    
+    this._texture = new X.texture();
+    
+  }
+  
+  return this._texture;
+  
+});
+
 
 /**
  * Get the rendering type of this object.
@@ -563,54 +580,6 @@ X.object.prototype.colors = function() {
 X.object.prototype.color = function() {
 
   return this['_color'];
-  
-};
-
-
-/**
- * Get the object texture.
- * 
- * @return {?X.texture} The object texture.
- */
-X.object.prototype.texture = function() {
-
-  return this._texture;
-  
-};
-
-
-/**
- * Set the object texture. If null is passed, the object will have no texture.
- * 
- * @param {?X.texture|string} texture The new texture or an image file path.
- * @throws {Error} An exception if the given texture is invalid.
- */
-X.object.prototype.setTexture = function(texture) {
-
-  if (!goog.isDefAndNotNull(texture)) {
-    
-    // null textures are allowed
-    this._texture = null;
-    return;
-    
-  }
-  
-  if (goog.isString(texture)) {
-    
-    // a string has to be converted to a new X.texture
-    var textureFile = texture;
-    texture = new X.texture();
-    texture.setFile(textureFile);
-    
-  }
-  
-  if (!(texture instanceof X.texture)) {
-    
-    throw new Error('Invalid texture.');
-    
-  }
-  
-  this._texture = texture;
   
 };
 
@@ -1159,10 +1128,10 @@ X.object.prototype.setScalars = function(scalars) {
   
   if (goog.isString(scalars)) {
     
-    // a string has to be converted to a new X.texture
+    // a string has to be converted to a new X.scalars
     var scalarsFile = scalars;
     scalars = new X.scalars();
-    scalars._file = scalarsFile;
+    scalars._file = new X.file(scalarsFile);
     
   }
   
@@ -1244,9 +1213,6 @@ goog.exportSymbol('X.object.prototype.setType', X.object.prototype.setType);
 goog.exportSymbol('X.object.prototype.transform', X.object.prototype.transform);
 goog.exportSymbol('X.object.prototype.points', X.object.prototype.points);
 goog.exportSymbol('X.object.prototype.normals', X.object.prototype.normals);
-goog.exportSymbol('X.object.prototype.texture', X.object.prototype.texture);
-goog.exportSymbol('X.object.prototype.setTexture',
-    X.object.prototype.setTexture);
 goog.exportSymbol('X.object.prototype.colortable',
     X.object.prototype.colortable);
 goog.exportSymbol('X.object.prototype.setColorTable',

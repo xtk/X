@@ -113,11 +113,11 @@ X.loader.prototype.loadTexture = function(object) {
   }
   // setup the image object
   var image = new Image();
-  var currentTextureFilename = object.texture()._file._path;
+  var currentTextureFilename = object._texture._file._path;
   image.src = currentTextureFilename;
   
   // we let the object point to this image
-  object.texture().setImage(image);
+  object._texture._image = image;
   
   // handler after the image was completely loaded
   goog.events.listenOnce(image, goog.events.EventType.LOAD,
@@ -140,7 +140,8 @@ X.loader.prototype.loadTextureCompleted = function(object) {
   setTimeout(function() {
 
     // at this point the image for the texture was loaded properly
-    object.texture()._file._dirty = false;
+    object._texture._dirty = true;
+    object._texture._file._dirty = false;
     
     // fire the modified event
     object.modified();

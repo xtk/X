@@ -433,19 +433,18 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     
     // create the texture for slices in X-direction
     var pixelTexture = new X.texture();
-    pixelTexture.setRawData(textureForCurrentSlice);
-    pixelTexture.setRawDataWidth(colsCount);
-    pixelTexture.setRawDataHeight(rowsCount);
+    pixelTexture._rawData = textureForCurrentSlice;
+    pixelTexture._rawDataWidth = colsCount;
+    pixelTexture._rawDataHeight = rowsCount;
     
     currentSlice = object._slicesZ.children()[z];
-    currentSlice.setTexture(pixelTexture);
+    currentSlice._texture = pixelTexture;
     if (hasLabelMap) {
       
       // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      currentSlice._labelmap = object._labelmap._slicesZ.children()[z]
-          .texture();
+      currentSlice._labelmap = object._labelmap._slicesZ.children()[z]._texture;
       
     }
     
@@ -504,19 +503,18 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     }
     
     var pixelTexture = new X.texture();
-    pixelTexture.setRawData(textureForCurrentSlice);
-    pixelTexture.setRawDataWidth(colsCount);
-    pixelTexture.setRawDataHeight(slices);
+    pixelTexture._rawData = textureForCurrentSlice;
+    pixelTexture._rawDataWidth = colsCount;
+    pixelTexture._rawDataHeight = slices;
     
     currentSlice = object._slicesY.children()[row];
-    currentSlice.setTexture(pixelTexture);
+    currentSlice._texture = pixelTexture;
     if (hasLabelMap) {
       
       // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      currentSlice._labelmap = object._labelmap._slicesY.children()[row]
-          .texture();
+      currentSlice._labelmap = object._labelmap._slicesY.children()[row]._texture;
       
     }
     
@@ -571,19 +569,18 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     }
     
     var pixelTexture = new X.texture();
-    pixelTexture.setRawData(textureForCurrentSlice);
-    pixelTexture.setRawDataWidth(rowsCount);
-    pixelTexture.setRawDataHeight(slices);
+    pixelTexture._rawData = textureForCurrentSlice;
+    pixelTexture._rawDataWidth = rowsCount;
+    pixelTexture._rawDataHeight = slices;
     
     currentSlice = object._slicesX.children()[col];
-    currentSlice.setTexture(pixelTexture);
+    currentSlice._texture = pixelTexture;
     if (hasLabelMap) {
       
       // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      currentSlice._labelmap = object._labelmap._slicesX.children()[col]
-          .texture();
+      currentSlice._labelmap = object._labelmap._slicesX.children()[col]._texture;
       
     }
     
