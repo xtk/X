@@ -44,18 +44,18 @@ goog.require('X.base');
  */
 X.file = function(path) {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'file';  
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'file';
   
   /**
    * The file path.

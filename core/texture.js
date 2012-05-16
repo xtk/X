@@ -43,18 +43,18 @@ goog.require('X.file');
  */
 X.texture = function() {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'texture';
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'texture';
   
   /**
    * @type {X.file}
@@ -86,13 +86,6 @@ X.texture.filters = {
   // different filters for texture display
   SHARP: 'SHARP',
   SMOOTH: 'SMOOTH'
-};
-
-
-X.texture.prototype.id = function() {
-
-  return this._id;
-  
 };
 
 

@@ -44,18 +44,18 @@ goog.require('X.file');
  */
 X.scalars = function() {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'scalars';  
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'scalars';
   
   /**
    * The file containing the scalars.

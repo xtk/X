@@ -59,18 +59,18 @@ goog.require('X.transform');
  */
 X.object = function(object) {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'object';
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'object';
   
   /**
    * The rendering type of this object, default is {X.object.types.TRIANGLES}.
@@ -330,18 +330,6 @@ X.object.prototype.copy_ = function(object) {
   this['_magicMode'] = object['_magicMode'];
   
   this._dirty = true;
-  
-};
-
-
-/**
- * Return the unique id of the current X.object.
- * 
- * @return {number} The unique id of the current X.object.
- */
-X.object.prototype.id = function() {
-
-  return this._id;
   
 };
 
@@ -1251,7 +1239,6 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.object', X.object);
-goog.exportSymbol('X.object.prototype.id', X.object.prototype.id);
 goog.exportSymbol('X.object.prototype.type', X.object.prototype.type);
 goog.exportSymbol('X.object.prototype.setType', X.object.prototype.setType);
 goog.exportSymbol('X.object.prototype.transform', X.object.prototype.transform);

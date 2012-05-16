@@ -64,18 +64,18 @@ X.interactor = function(element) {
     
   }
   
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'interactor';  
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'interactor';
   
   /**
    * The observed DOM element of this interactor.

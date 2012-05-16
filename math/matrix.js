@@ -50,20 +50,20 @@ goog.require('goog.math.Vec3');
  */
 X.matrix = function(m, opt_n) {
 
-  /**
-   * The className of this class.
-   * 
-   * @type {string}
-   * @protected
-   */
-  this._className = this._className || 'matrix';  
-  
   //
   // call the standard constructor
   goog.base(this, m, opt_n);
   
   //
   // class attributes
+  
+  /**
+   * The className of this class.
+   * 
+   * @type {string}
+   * @protected
+   */
+  this._className = 'matrix';
   
 };
 // inherit from goog.math.Matrix

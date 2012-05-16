@@ -52,17 +52,17 @@ goog.require('goog.structs.Map');
  */
 X.loader = function() {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'loader';  
-  
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'loader';
   
   /**
    * @private
@@ -124,7 +124,7 @@ X.loader.prototype.loadTexture = function(object) {
       this.loadTextureCompleted.bind(this, object));
   
   // add this loading job to our jobs map
-  this.jobs_().set('texture'+object._id, false);
+  this.jobs_().set('texture' + object._id, false);
   
   // this is a very fast step so we count it as 30% of the total texture load
   // time
@@ -146,7 +146,7 @@ X.loader.prototype.loadTextureCompleted = function(object) {
     object.modified();
     
     // mark the loading job as completed
-    this.jobs_().set('texture'+object._id, true);
+    this.jobs_().set('texture' + object._id, true);
     
   }.bind(this), 100);
   
@@ -193,7 +193,7 @@ X.loader.prototype.loadColorTable = function(object) {
   request.send(null);
   
   // add this loading job to our jobs map
-  this.jobs_().set('colortable'+object.colorTable()._id, false);
+  this.jobs_().set('colortable' + object.colorTable()._id, false);
   
 };
 
@@ -240,7 +240,7 @@ X.loader.prototype.loadScalars = function(object) {
   request.send(null);
   
   // add this loading job to our jobs map
-  this.jobs_().set('scalars'+object.scalars()._id, false);
+  this.jobs_().set('scalars' + object.scalars()._id, false);
   
 };
 
@@ -255,7 +255,7 @@ X.loader.prototype.loadFile = function(object) {
   }
   
   // jump out if we already process this job
-  if (this.jobs_().containsKey('object'+object._id)) {
+  if (this.jobs_().containsKey('object' + object._id)) {
     
     return;
     
@@ -313,7 +313,7 @@ X.loader.prototype.loadFile = function(object) {
   request.send(null);
   
   // add this loading job to our jobs map
-  this.jobs_().set('object'+object._id, false);
+  this.jobs_().set('object' + object._id, false);
   
 };
 //
@@ -517,7 +517,7 @@ X.loader.prototype.parseFileCompleted = function(event) {
     object.modified();
     
     // mark the loading job as completed
-    this.jobs_().set('object'+object._id, true);
+    this.jobs_().set('object' + object._id, true);
     
   }.bind(this), 100);
   
@@ -539,7 +539,7 @@ X.loader.prototype.parseScalarsCompleted = function(event) {
     object.modified();
     
     // mark the loading job as completed
-    this.jobs_().set('scalars'+object.scalars()._id, true);
+    this.jobs_().set('scalars' + object.scalars()._id, true);
     
   }.bind(this), 100);
   
@@ -561,7 +561,7 @@ X.loader.prototype.parseColorTableCompleted = function(event) {
     object.modified();
     
     // mark the loading job as completed
-    this.jobs_().set('colortable'+object.colorTable()._id, true);
+    this.jobs_().set('colortable' + object.colorTable()._id, true);
     
   }.bind(this), 100);
   

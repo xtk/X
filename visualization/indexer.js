@@ -49,18 +49,18 @@ X.indexer = function() {
   //
   // Thanks!
   
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'indexer';    
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'indexer';
   
   /**
    * The unique objects.

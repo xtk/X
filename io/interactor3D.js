@@ -43,18 +43,18 @@ goog.require('X.interactor');
  */
 X.interactor3D = function(element) {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'interactor3D';  
-  
   //
   // call the standard constructor of X.base
   goog.base(this, element);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'interactor3D';
   
 };
 // inherit from X.base

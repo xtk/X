@@ -60,20 +60,20 @@ X.progressbar = function(parent, initialvalue) {
     
   }
   
-  /**
-   * The className of this class.
-   * 
-   * @type {string}
-   * @protected
-   */
-  this._className = this._className || 'progressbar';    
-  
   //
   // call the standard constructor of goog.ui.ProgressBar
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * The className of this class.
+   * 
+   * @type {string}
+   * @protected
+   */
+  this._className = 'progressbar';
   
   /**
    * The parent element in the DOM tree of this progress bar.
@@ -149,9 +149,11 @@ X.progressbar.prototype.init_ = function() {
 
   // enable relative positioning for the main container
   // this is required to place the progressBar in the center
-
-  if(this._parent.style.position == 'static' || this._parent.style.position == '')//only do this if the position style is static; this is the only time this hack is needed
-      this._parent.style.position = 'relative';
+  
+  if (this._parent.style.position == 'static' ||
+      this._parent.style.position == '') {
+    this._parent.style.position = 'relative';
+  }
   
   //
   // apply CSS styles to the document

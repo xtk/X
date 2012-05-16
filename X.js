@@ -46,34 +46,20 @@ var X = X || {};
  */
 X.counter = function() {
 
-  this._counters = [];
+  this._counter = 0;
   
   /**
-   * @param instance
-   * @return
+   * Get a unique id.
+   * 
+   * @return {number} A unique id
    */
-  this.uniqueId = function(instance) {
+  this.uniqueId = function() {
 
-    var className = instance._className;
-    
-    if (className in this._counters) {
-      
-      // we have already a counter for that
-      // so just increase it
-      this._counters[className] += 1;
-      
-    } else {
-      
-      // this is a new counter
-      this._counters[className] = 0;
-      
-    }
-    
-    // .. and return it
-    return this._counters[className];
+    // return a unique id
+    return this._counter++;
     
   };
-                      
+  
 };
 window["X.counter"] = new X.counter();
 

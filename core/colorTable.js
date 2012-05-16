@@ -45,18 +45,18 @@ goog.require('goog.structs.Map');
  */
 X.colorTable = function() {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'colorTable';  
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'colorTable';
   
   /**
    * The internal hash map to store the value-color mapping.

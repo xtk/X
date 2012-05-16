@@ -45,18 +45,18 @@ goog.require('X.renderer');
  */
 X.renderer2D = function(container, orientation) {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'renderer2D';  
-  
   //
   // call the standard constructor of X.renderer
   goog.base(this, container);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'renderer2D';
   
   /**
    * The orientation of this renderer.

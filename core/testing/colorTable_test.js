@@ -15,22 +15,6 @@ function testXcolorTableClassName() {
   
 }
 
-/**
- * Test for X.colorTable.id to test uniqueness.
- */
-function testXcolorTableId() {
-
-  var counter = window["X.Counter"];
-  var oldValue = counter.value();
-  
-  var c = new X.colorTable();
-  
-  // the counter should be increased by 1
-  var newValue = counter.value();
-  
-  assertEquals(newValue, oldValue + 1);
-  
-};
 
 /**
  * Test for X.colorTable.file

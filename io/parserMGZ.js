@@ -51,12 +51,6 @@ goog.require('JXG.Util.Unzip');
  * @extends X.parser
  */
 X.parserMGZ = function() {
-  
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'parserMGZ';  
 
   //
   // call the standard constructor of X.parser
@@ -64,6 +58,12 @@ X.parserMGZ = function() {
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'parserMGZ';
   
 };
 // inherit from X.parser

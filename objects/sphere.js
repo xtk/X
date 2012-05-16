@@ -61,18 +61,18 @@ X.sphere = function(center, radius) {
     
   }
   
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'sphere';    
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'sphere';
   
   this._center = center;
   

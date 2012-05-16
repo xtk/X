@@ -43,18 +43,18 @@ goog.require('X.event');
  */
 X.parser = function() {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'parser';  
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'parser';
   
 };
 // inherit from X.base

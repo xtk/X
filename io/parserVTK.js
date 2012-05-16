@@ -46,18 +46,18 @@ goog.require('X.triplets');
  */
 X.parserVTK = function() {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'parserVTK';  
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'parserVTK';
   
 };
 // inherit from X.parser

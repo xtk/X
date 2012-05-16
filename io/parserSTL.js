@@ -45,18 +45,18 @@ goog.require('X.triplets');
  */
 X.parserSTL = function() {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'parserSTL';  
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'parserSTL';
   
 };
 // inherit from X.parser

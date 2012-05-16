@@ -42,18 +42,18 @@ goog.require('X.base');
  */
 X.array = function(comparator) {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'array';  
-  
   //
   // call the standard constructor
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'array';
   
   this._array = [];
   

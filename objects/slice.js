@@ -45,18 +45,18 @@ goog.require('goog.math.Vec3');
  */
 X.slice = function(slice) {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'X.slice';    
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'slice';
   
   /**
    * The center of this slice as a 3d vector.

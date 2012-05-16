@@ -46,18 +46,18 @@ goog.require('X.volume');
  */
 X.labelMap = function(volume) {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'labelMap';  
-  
   //
   // call the standard constructor of X.volume
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'labelMap';
   
   this._volume = volume;
   

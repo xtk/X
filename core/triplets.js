@@ -46,18 +46,18 @@ goog.require('goog.structs.Map');
  */
 X.triplets = function(data) {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'triplets';  
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'triplets';
   
   this._minA = Infinity;
   this._maxA = -Infinity;

@@ -45,18 +45,18 @@ goog.require('goog.math.Vec3');
  */
 X.transform = function() {
 
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'transform';  
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'transform';
   
   /**
    * The transformation matrix.

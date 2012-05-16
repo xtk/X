@@ -57,18 +57,18 @@ X.camera = function(width, height) {
     
   }
   
-  /**
-   * @inheritDoc
-   * @const
-   */
-  this._className = this._className || 'camera';    
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
   
   //
   // class attributes
+  
+  /**
+   * @inheritDoc
+   * @const
+   */
+  this._className = 'camera';
   
   /**
    * The position of this camera, by default 0, 0, 100.

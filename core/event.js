@@ -59,20 +59,20 @@ goog.require('goog.events.Event');
  */
 X.event = function(type) {
 
-  /**
-   * The className of this class.
-   * 
-   * @type {string}
-   * @protected
-   */
-  this._className = this._className || 'event';  
-  
   //
   // call the default event constructor
   goog.base(this, type);
   
   //
   // class attributes
+  
+  /**
+   * The className of this class.
+   * 
+   * @type {string}
+   * @protected
+   */
+  this._className = 'event';
   
 };
 // inherit from goog.events.Event
