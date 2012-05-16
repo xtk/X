@@ -86,7 +86,7 @@ X.caption = function(parent, x, y, interactor) {
    * @type {string}
    * @protected
    */
-  this._className = 'caption';
+  this._classname = 'caption';
   
   /**
    * The parent element in the DOM tree of this caption element.

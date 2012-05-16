@@ -55,7 +55,7 @@ X.scalars = function() {
    * @inheritDoc
    * @const
    */
-  this._className = 'scalars';
+  this._classname = 'scalars';
   
   /**
    * The file containing the scalars.
@@ -163,7 +163,7 @@ X.scalars.prototype.__defineGetter__('file', function() {
  *          path.
  * @public
  */
-X.colorTable.prototype.__defineSetter__('file', function(file) {
+X.colortable.prototype.__defineSetter__('file', function(file) {
 
   if (!goog.isDefAndNotNull(file)) {
     

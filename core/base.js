@@ -60,7 +60,7 @@ X.base = function() {
    * @type {string}
    * @protected
    */
-  this._className = 'base';
+  this._classname = 'base';
   
   /**
    * The uniqueId of this instance. Each class instance in XTK has a uniqueId.
@@ -89,9 +89,22 @@ goog.inherits(X.base, goog.events.EventTarget);
  * @return {string} The className of this object.
  * @public
  */
-X.base.prototype.__defineGetter__('className', function() {
+X.base.prototype.__defineGetter__('classname', function() {
 
-  return this._className;
+  return this._classname;
+  
+});
+
+
+/**
+ * Get the id of this instance.
+ * 
+ * @return {string} The className of this object.
+ * @public
+ */
+X.base.prototype.__defineGetter__('id', function() {
+
+  return this._id;
   
 });
 

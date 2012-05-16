@@ -73,7 +73,7 @@ X.progressbar = function(parent, initialvalue) {
    * @type {string}
    * @protected
    */
-  this._className = 'progressbar';
+  this._classname = 'progressbar';
   
   /**
    * The parent element in the DOM tree of this progress bar.

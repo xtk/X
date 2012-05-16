@@ -40,7 +40,7 @@ goog.require('X.event');
 goog.require('X.interactor');
 goog.require('X.interactor2D');
 goog.require('X.interactor3D');
-goog.require('X.labelMap');
+goog.require('X.labelmap');
 goog.require('X.loader');
 goog.require('X.object');
 goog.require('X.progressbar');
@@ -88,7 +88,7 @@ X.renderer = function(container) {
    * @inheritDoc
    * @const
    */
-  this._className = 'renderer';
+  this._classname = 'renderer';
   
   /**
    * The HTML container of this renderer, E.g. a <div>.

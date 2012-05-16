@@ -57,7 +57,7 @@ X.volume = function(volume) {
    * @inheritDoc
    * @const
    */
-  this._className = 'volume';
+  this._classname = 'volume';
   
   /**
    * The center of this volume.
@@ -202,7 +202,7 @@ X.volume = function(volume) {
    * @type {?X.volume}
    * @private
    */
-  this._labelMap = null;
+  this._labelmap = null;
   
   /**
    * Flag to show borders or not.
@@ -251,7 +251,7 @@ X.volume.prototype.copy_ = function(volume) {
   this['_volumeRendering'] = volume['_volumeRendering'];
   this._volumeRenderingOld = volume._volumeRenderingOld;
   this._volumeRenderingDirection = volume._volumeRenderingDirection;
-  this._labelMap = volume._labelMap;
+  this._labelmap = volume._labelmap;
   this._borders = volume._borders;
   
   // call the superclass' modified method
@@ -608,15 +608,15 @@ X.volume.prototype.volumeRendering_ = function(direction) {
  * 
  * @return {!X.volume}
  */
-X.volume.prototype.labelMap = function() {
+X.volume.prototype.labelmap = function() {
 
-  if (!this._labelMap) {
+  if (!this._labelmap) {
     
-    this._labelMap = new X.labelMap(this);
+    this._labelmap = new X.labelmap(this);
     
   }
   
-  return this._labelMap;
+  return this._labelmap;
   
 };
 
@@ -659,7 +659,7 @@ goog.exportSymbol('X.volume.prototype.setVolumeRendering',
     X.volume.prototype.setVolumeRendering);
 goog.exportSymbol('X.volume.prototype.threshold', X.volume.prototype.threshold);
 goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);
-goog.exportSymbol('X.volume.prototype.labelMap', X.volume.prototype.labelMap);
+goog.exportSymbol('X.volume.prototype.labelmap', X.volume.prototype.labelmap);
 goog.exportSymbol('X.volume.prototype.borders', X.volume.prototype.borders);
 goog.exportSymbol('X.volume.prototype.setBorders',
     X.volume.prototype.setBorders);

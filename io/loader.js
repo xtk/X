@@ -62,7 +62,7 @@ X.loader = function() {
    * @inheritDoc
    * @const
    */
-  this._className = 'loader';
+  this._classname = 'loader';
   
   /**
    * @private
@@ -154,7 +154,7 @@ X.loader.prototype.loadTextureCompleted = function(object) {
 
 X.loader.prototype.loadColorTable = function(object) {
 
-  if (!goog.isDefAndNotNull(object.colorTable())) {
+  if (!goog.isDefAndNotNull(object.colortable())) {
     
     // should not happen :)
     throw new Error('Internal error during file loading.');
@@ -162,7 +162,7 @@ X.loader.prototype.loadColorTable = function(object) {
   }
   
   // get the associated file of the object
-  var filepath = object.colorTable()._file._path;
+  var filepath = object.colortable()._file._path;
   
   // we use a simple XHR to get the file contents
   // this works for binary and for ascii files
@@ -193,7 +193,7 @@ X.loader.prototype.loadColorTable = function(object) {
   request.send(null);
   
   // add this loading job to our jobs map
-  this.jobs_().set(object.colorTable()._id, false);
+  this.jobs_().set(object.colortable()._id, false);
   
 };
 
@@ -385,7 +385,7 @@ X.loader.prototype.loadColorTableCompleted = function(request, object) {
     goog.events.listenOnce(lutParser, X.event.events.MODIFIED,
         this.parseColorTableCompleted.bind(this));
     
-    lutParser.parse(object, request.response, object.colorTable());
+    lutParser.parse(object, request.response, object.colortable());
     
   }.bind(this), 100);
   
@@ -555,13 +555,13 @@ X.loader.prototype.parseColorTableCompleted = function(event) {
     var object = event._object;
     
     // the parsing is done here..
-    object.colorTable()._file._dirty = false;
+    object.colortable()._file._dirty = false;
     
     // fire the modified event
     object.modified();
     
     // mark the loading job as completed
-    this.jobs_().set(object.colorTable()._id, true);
+    this.jobs_().set(object.colortable()._id, true);
     
   }.bind(this), 100);
   

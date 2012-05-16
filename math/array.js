@@ -53,7 +53,7 @@ X.array = function(comparator) {
    * @inheritDoc
    * @const
    */
-  this._className = 'array';
+  this._classname = 'array';
   
   this._array = [];
   

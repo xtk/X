@@ -57,7 +57,7 @@ X.triplets = function(data) {
    * @inheritDoc
    * @const
    */
-  this._className = 'triplets';
+  this._classname = 'triplets';
   
   this._minA = Infinity;
   this._maxA = -Infinity;

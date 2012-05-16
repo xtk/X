@@ -56,7 +56,7 @@ X.slice = function(slice) {
    * @inheritDoc
    * @const
    */
-  this._className = 'slice';
+  this._classname = 'slice';
   
   /**
    * The center of this slice as a 3d vector.
@@ -122,7 +122,7 @@ X.slice = function(slice) {
    * @type {?X.texture}
    * @protected
    */
-  this._labelMap = null;
+  this._labelmap = null;
   
   /**
    * Flag to show borders or not.
@@ -168,7 +168,7 @@ X.slice.prototype.copy_ = function(slice) {
   this._width = slice._width;
   this._height = slice._height;
   this._volume = slice._volume;
-  this._labelMap = slice._labelMap;
+  this._labelmap = slice._labelmap;
   this._borders = slice._borders;
   this._borderColor = slice._borderColor;
   this._hideChildren = slice._hideChildren;
@@ -378,9 +378,9 @@ X.slice.prototype.create_ = function() {
   
 };
 
-X.slice.prototype.labelMap = function() {
+X.slice.prototype.labelmap = function() {
 
-  return this._labelMap;
+  return this._labelmap;
   
 };
 

@@ -57,7 +57,7 @@ X.camera3D = function(width, height) {
    * @inheritDoc
    * @const
    */
-  this._className = 'camera3D';
+  this._classname = 'camera3D';
   
   /**
    * The field of view in degrees.

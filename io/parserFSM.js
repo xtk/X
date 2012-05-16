@@ -61,7 +61,7 @@ X.parserFSM = function() {
    * @inheritDoc
    * @const
    */
-  this._className = 'parserFSM';
+  this._classname = 'parserFSM';
   
 };
 // inherit from X.parser

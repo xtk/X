@@ -54,7 +54,7 @@ X.texture = function() {
    * @inheritDoc
    * @const
    */
-  this._className = 'texture';
+  this._classname = 'texture';
   
   /**
    * @type {X.file}

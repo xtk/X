@@ -56,7 +56,7 @@ X.renderer2D = function(container, orientation) {
    * @inheritDoc
    * @const
    */
-  this._className = 'renderer2D';
+  this._classname = 'renderer2D';
   
   /**
    * The orientation of this renderer.
@@ -253,20 +253,20 @@ X.renderer2D.prototype.update_ = function(object) {
   // var id = object._id;
   // var texture = object._texture;
   var file = object._file;
-  var labelMap = object._labelMap; // here we access directly since we do not
-  // want to create one using the labelMap() singleton accessor
-  var colorTable = object._colorTable;
+  var labelmap = object._labelmap; // here we access directly since we do not
+  // want to create one using the labelmap() singleton accessor
+  var colortable = object._colortable;
   
   //
   // LABEL MAP
   //
-  if (goog.isDefAndNotNull(labelMap) && goog.isDefAndNotNull(labelMap._file) &&
-      labelMap._file._dirty) {
-    // a labelMap file is associated to this object and it is dirty..
+  if (goog.isDefAndNotNull(labelmap) && goog.isDefAndNotNull(labelmap._file) &&
+      labelmap._file._dirty) {
+    // a labelmap file is associated to this object and it is dirty..
     // background: we always want to parse label maps first
     
-    // run the update_ function on the labelMap object
-    this.update_(labelMap);
+    // run the update_ function on the labelmap object
+    this.update_(labelmap);
     
     // jump out
     return;
@@ -276,9 +276,9 @@ X.renderer2D.prototype.update_ = function(object) {
   //
   // COLOR TABLE
   //
-  if (goog.isDefAndNotNull(colorTable) &&
-      goog.isDefAndNotNull(colorTable._file) && colorTable._file._dirty) {
-    // a colorTable file is associated to this object and it is dirty..
+  if (goog.isDefAndNotNull(colortable) &&
+      goog.isDefAndNotNull(colortable._file) && colortable._file._dirty) {
+    // a colortable file is associated to this object and it is dirty..
     
     // start loading
     this.loader.loadColorTable(object);
@@ -432,7 +432,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // .. here is the current slice
   var _slice = this.slices[parseInt(_currentSlice, 10)];
   var _sliceData = _slice._texture._rawData;
-  var _currentLabelMap = _slice._labelMap;
+  var _currentLabelMap = _slice._labelmap;
   var _labelData = null;
   if (_currentLabelMap) {
     _labelData = _currentLabelMap._rawData;
@@ -456,10 +456,10 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // grab the current pixels
   var _imageData = _imageFBContext
       .getImageData(0, 0, _sliceWidth, _sliceHeight);
-  var _labelMapData = _labelFBContext.getImageData(0, 0, _sliceWidth,
+  var _labelmapData = _labelFBContext.getImageData(0, 0, _sliceWidth,
       _sliceHeight);
   var _pixels = _imageData.data;
-  var _labelPixels = _labelMapData.data;
+  var _labelPixels = _labelmapData.data;
   var _pixelsLength = _pixels.length;
   
   // threshold values
@@ -519,7 +519,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   
   // store the generated image data to the frame buffer context
   _imageFBContext.putImageData(_imageData, 0, 0);
-  _labelFBContext.putImageData(_labelMapData, 0, 0);
+  _labelFBContext.putImageData(_labelmapData, 0, 0);
   
 
 
@@ -533,9 +533,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   this.context.drawImage(this.frameBuffer, _canvasCenterX, _canvasCenterY);
   
   // draw the labels with a configured opacity
-  if (_currentLabelMap && _volume._labelMap['_visible']) {
+  if (_currentLabelMap && _volume._labelmap['_visible']) {
     
-    var _labelOpacity = _volume._labelMap['_opacity'];
+    var _labelOpacity = _volume._labelmap['_opacity'];
     
     this.context.globalAlpha = _labelOpacity; // draw transparent depending on
     // opacity

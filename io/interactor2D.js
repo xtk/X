@@ -55,7 +55,7 @@ X.interactor2D = function(element) {
    * @inheritDoc
    * @const
    */
-  this._className = 'interactor2D';
+  this._classname = 'interactor2D';
   
 };
 // inherit from X.base

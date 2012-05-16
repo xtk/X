@@ -54,7 +54,7 @@ X.parser = function() {
    * @inheritDoc
    * @const
    */
-  this._className = 'parser';
+  this._classname = 'parser';
   
 };
 // inherit from X.base
@@ -351,8 +351,8 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
   // number of cols in each slice in scan direction
   var colsCount = sizes[0];
   
-  // do we have a labelMap?
-  var hasLabelMap = object._labelMap != null;
+  // do we have a labelmap?
+  var hasLabelMap = object._labelmap != null;
   
   // slice dimensions in scan direction
   var numberPixelsPerSlice = rowsCount * colsCount;
@@ -396,13 +396,13 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
         var pixelValue_g = 0;
         var pixelValue_b = 0;
         var pixelValue_a = 0;
-        if (object._colorTable) {
+        if (object._colortable) {
           // color table!
-          var lookupValue = object._colorTable._map.get(Math.floor(pixelValue));
+          var lookupValue = object._colortable._map.get(Math.floor(pixelValue));
           
           // check for out of range and use the last label value in this case
           if (!lookupValue) {
-            lookupValue = object._colorTable._map.get(object._colorTable._map
+            lookupValue = object._colortable._map.get(object._colortable._map
                 .getCount() - 1);
           }
           
@@ -441,10 +441,10 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     currentSlice.setTexture(pixelTexture);
     if (hasLabelMap) {
       
-      // if this object has a labelMap,
+      // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      currentSlice._labelMap = object._labelMap._slicesZ.children()[z]
+      currentSlice._labelmap = object._labelmap._slicesZ.children()[z]
           .texture();
       
     }
@@ -472,13 +472,13 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
         var pixelValue_g = 0;
         var pixelValue_b = 0;
         var pixelValue_a = 0;
-        if (object._colorTable) {
+        if (object._colortable) {
           // color table!
-          var lookupValue = object._colorTable._map.get(Math.floor(pixelValue));
+          var lookupValue = object._colortable._map.get(Math.floor(pixelValue));
           
           // check for out of range and use the last label value in this case
           if (!lookupValue) {
-            lookupValue = object._colorTable._map.get(object._colorTable._map
+            lookupValue = object._colortable._map.get(object._colortable._map
                 .getCount() - 1);
           }
           
@@ -512,10 +512,10 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     currentSlice.setTexture(pixelTexture);
     if (hasLabelMap) {
       
-      // if this object has a labelMap,
+      // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      currentSlice._labelMap = object._labelMap._slicesY.children()[row]
+      currentSlice._labelmap = object._labelmap._slicesY.children()[row]
           .texture();
       
     }
@@ -539,13 +539,13 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
         var pixelValue_g = 0;
         var pixelValue_b = 0;
         var pixelValue_a = 0;
-        if (object._colorTable) {
+        if (object._colortable) {
           // color table!
-          var lookupValue = object._colorTable._map.get(Math.floor(pixelValue));
+          var lookupValue = object._colortable._map.get(Math.floor(pixelValue));
           
           // check for out of range and use the last label value in this case
           if (!lookupValue) {
-            lookupValue = object._colorTable._map.get(object._colorTable._map
+            lookupValue = object._colortable._map.get(object._colortable._map
                 .getCount() - 1);
           }
           
@@ -579,10 +579,10 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     currentSlice.setTexture(pixelTexture);
     if (hasLabelMap) {
       
-      // if this object has a labelMap,
+      // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      currentSlice._labelMap = object._labelMap._slicesX.children()[col]
+      currentSlice._labelmap = object._labelmap._slicesX.children()[col]
           .texture();
       
     }

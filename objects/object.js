@@ -37,7 +37,7 @@ goog.require('csgVertex');
 goog.require('csgPolygon');
 
 goog.require('X.base');
-goog.require('X.colorTable');
+goog.require('X.colortable');
 goog.require('X.file');
 goog.require('X.indexer');
 goog.require('X.scalars');
@@ -70,7 +70,7 @@ X.object = function(object) {
    * @inheritDoc
    * @const
    */
-  this._className = 'object';
+  this._classname = 'object';
   
   /**
    * The rendering type of this object, default is {X.object.types.TRIANGLES}.
@@ -212,10 +212,10 @@ X.object = function(object) {
   /**
    * The color table of this object.
    * 
-   * @type {?X.colorTable}
+   * @type {?X.colortable}
    * @protected
    */
-  this._colorTable = null;
+  this._colortable = null;
   
   /**
    * The scalars of this object.
@@ -618,11 +618,11 @@ X.object.prototype.setTexture = function(texture) {
 /**
  * The color table associated with this object.
  * 
- * @return {?X.colorTable} The color table.
+ * @return {?X.colortable} The color table.
  */
-X.object.prototype.colorTable = function() {
+X.object.prototype.colortable = function() {
 
-  return this._colorTable;
+  return this._colortable;
   
 };
 
@@ -630,35 +630,35 @@ X.object.prototype.colorTable = function() {
 /**
  * Set the color table for this object.
  * 
- * @param {?X.colorTable|string} colorTable The new color table or a file path.
+ * @param {?X.colortable|string} colortable The new color table or a file path.
  * @throws {Error} An error if the color table is invalid.
  */
-X.object.prototype.setColorTable = function(colorTable) {
+X.object.prototype.setColorTable = function(colortable) {
 
-  if (!goog.isDefAndNotNull(colorTable)) {
+  if (!goog.isDefAndNotNull(colortable)) {
     
-    // null colorTables are allowed
-    this._colorTable = null;
+    // null colortables are allowed
+    this._colortable = null;
     return;
     
   }
   
-  if (goog.isString(colorTable)) {
+  if (goog.isString(colortable)) {
     
     // a string has to be converted to a new X.texture
-    var colorTableFile = colorTable;
-    colorTable = new X.colorTable();
-    colorTable.file = colorTableFile;
+    var colortableFile = colortable;
+    colortable = new X.colortable();
+    colortable.file = colortableFile;
     
   }
   
-  if (!(colorTable instanceof X.colorTable)) {
+  if (!(colortable instanceof X.colortable)) {
     
-    throw new Error('Invalid colorTable.');
+    throw new Error('Invalid colortable.');
     
   }
   
-  this._colorTable = colorTable;
+  this._colortable = colortable;
   
 };
 
@@ -1247,8 +1247,8 @@ goog.exportSymbol('X.object.prototype.normals', X.object.prototype.normals);
 goog.exportSymbol('X.object.prototype.texture', X.object.prototype.texture);
 goog.exportSymbol('X.object.prototype.setTexture',
     X.object.prototype.setTexture);
-goog.exportSymbol('X.object.prototype.colorTable',
-    X.object.prototype.colorTable);
+goog.exportSymbol('X.object.prototype.colortable',
+    X.object.prototype.colortable);
 goog.exportSymbol('X.object.prototype.setColorTable',
     X.object.prototype.setColorTable);
 goog.exportSymbol('X.object.prototype.scalars', X.object.prototype.scalars);

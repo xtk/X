@@ -63,7 +63,7 @@ X.renderer3D = function(container) {
    * @inheritDoc
    * @const
    */
-  this._className = 'renderer3D';
+  this._classname = 'renderer3D';
   
   /**
    * The shader pair for this renderer.
@@ -506,21 +506,21 @@ X.renderer3D.prototype.update_ = function(object) {
   var texture = object._texture;
   var file = object._file;
   var transform = object._transform;
-  var colorTable = object._colorTable;
-  var labelMap = object._labelMap; // here we access directly since we do not
-  // want to create one using the labelMap() singleton accessor
+  var colortable = object._colortable;
+  var labelmap = object._labelmap; // here we access directly since we do not
+  // want to create one using the labelmap() singleton accessor
   var scalars = object._scalars; // same direct access policy
   
   //
   // LABEL MAP
   //
-  if (goog.isDefAndNotNull(labelMap) && goog.isDefAndNotNull(labelMap._file) &&
-      labelMap._file._dirty) {
-    // a labelMap file is associated to this object and it is dirty..
+  if (goog.isDefAndNotNull(labelmap) && goog.isDefAndNotNull(labelmap._file) &&
+      labelmap._file._dirty) {
+    // a labelmap file is associated to this object and it is dirty..
     // background: we always want to parse label maps first
     
-    // run the update_ function on the labelMap object
-    this.update_(labelMap);
+    // run the update_ function on the labelmap object
+    this.update_(labelmap);
     
     // jump out
     return;
@@ -531,10 +531,10 @@ X.renderer3D.prototype.update_ = function(object) {
   // this case can happen whenever a label map was already parsed (maybe in a
   // different renderer) and does not need additional file loading but just the
   // gl texture setup
-  if (goog.isDefAndNotNull(labelMap) && labelMap._dirty) {
+  if (goog.isDefAndNotNull(labelmap) && labelmap._dirty) {
     
-    // run the update_ function on the labelMap object without jumping out
-    this.update_(labelMap);
+    // run the update_ function on the labelmap object without jumping out
+    this.update_(labelmap);
     
   }
   
@@ -544,9 +544,9 @@ X.renderer3D.prototype.update_ = function(object) {
   // b) the object is based on an external file (vtk, stl...)
   // in these cases, we do not directly update the object but activate the
   // X.loader to get the externals and then let it call the update method
-  if (goog.isDefAndNotNull(colorTable) &&
-      goog.isDefAndNotNull(colorTable._file) && colorTable._file._dirty) {
-    // a colorTable file is associated to this object and it is dirty..
+  if (goog.isDefAndNotNull(colortable) &&
+      goog.isDefAndNotNull(colortable._file) && colortable._file._dirty) {
+    // a colortable file is associated to this object and it is dirty..
     
     // start loading
     this.loader.loadColorTable(object);
@@ -631,8 +631,8 @@ X.renderer3D.prototype.update_ = function(object) {
   //
   // This gets executed after all dynamic content has been loaded.
   
-  // check if this is an X.slice as part of a X.labelMap
-  var isLabelMap = (object instanceof X.slice && object._volume instanceof X.labelMap);
+  // check if this is an X.slice as part of a X.labelmap
+  var isLabelMap = (object instanceof X.slice && object._volume instanceof X.labelmap);
   
   //
   // TEXTURE
@@ -716,7 +716,7 @@ X.renderer3D.prototype.update_ = function(object) {
         
       }
       
-      // for labelMaps, we use NEAREST NEIGHBOR filtering
+      // for labelmaps, we use NEAREST NEIGHBOR filtering
       if (isLabelMap) {
         this.context.texParameteri(this.context.TEXTURE_2D,
             this.context.TEXTURE_MAG_FILTER, this.context.NEAREST);
@@ -765,10 +765,10 @@ X.renderer3D.prototype.update_ = function(object) {
   // SPECIAL CASE: LABELMAPS
   // 
   
-  // since we now have labelMap support, we process the textures (which is the
-  // only essential of labelMaps) first and ..
+  // since we now have labelmap support, we process the textures (which is the
+  // only essential of labelmaps) first and ..
   
-  // .. jump out if this is part of a labelMap
+  // .. jump out if this is part of a labelmap
   if (isLabelMap) {
     
     this.locked = false; // we gotta unlock here already
@@ -778,7 +778,7 @@ X.renderer3D.prototype.update_ = function(object) {
     return; // sayonara
     
     // this prevents storing of not required buffers, objects etc. since the
-    // labelMaps are only pseudo X.objects and never rendered directly but
+    // labelmaps are only pseudo X.objects and never rendered directly but
     // merged into an X.volume
     
   }
@@ -1732,9 +1732,9 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         this.context.uniform1f(uVolumeScalarMax, scalarRange[1]);
         
         // get the (optional) label map
-        var labelMap = volume._labelMap;
+        var labelmap = volume._labelmap;
         
-        // no labelMap by default
+        // no labelmap by default
         this.context.uniform1i(uUseLabelMapTexture, false);
         
         // opacity, only if volume rendering is active
@@ -1743,13 +1743,13 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
           this.context
               .uniform1f(uObjectOpacity, parseFloat(volume['_opacity']));
           
-        } else if (labelMap && labelMap['_visible']) {
-          // only if we have an associated labelMap..
+        } else if (labelmap && labelmap['_visible']) {
+          // only if we have an associated labelmap..
           
-          // grab the id of the labelMap
-          var labelMapTextureID = object._labelMap._id;
+          // grab the id of the labelmap
+          var labelmapTextureID = object._labelmap._id;
           
-          // we handle a second texture, actually the one for the labelMap
+          // we handle a second texture, actually the one for the labelmap
           this.context.uniform1i(uUseLabelMapTexture, true);
           
           // bind the texture
@@ -1758,11 +1758,11 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
           // grab the texture from the internal hash map using the id as
           // the key
           this.context.bindTexture(this.context.TEXTURE_2D, this.textures
-              .get(labelMapTextureID));
+              .get(labelmapTextureID));
           this.context.uniform1i(uTextureSampler2, 1);
           
           // propagate label map opacity
-          this.context.uniform1f(uLabelMapOpacity, labelMap['_opacity']);
+          this.context.uniform1f(uLabelMapOpacity, labelmap['_opacity']);
           
         }
         

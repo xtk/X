@@ -1,27 +1,27 @@
 goog.require('X.base');
 goog.require('X.file');
-goog.require('X.colorTable');
+goog.require('X.colortable');
 goog.require('goog.testing.jsunit');
 goog.require('goog.asserts');
 
 /**
- * Test for X.colorTable.className
+ * Test for X.colortable.className
  */
-function testXcolorTableClassName() {
+function testXcolortableClassName() {
 
-  c = new X.colorTable();
+  c = new X.colortable();
   
-  assertEquals(c.className, 'colorTable');
+  assertEquals(c.className, 'colortable');
   
 }
 
 
 /**
- * Test for X.colorTable.file
+ * Test for X.colortable.file
  */
-function testXcolorTableFile() {
+function testXcolortableFile() {
 
-  var c = new X.colorTable();
+  var c = new X.colortable();
   
   // be default, the file should be null
   assertEquals(c.file, null);
@@ -43,11 +43,11 @@ function testXcolorTableFile() {
 };
 
 /**
- * Test for X.colorTable.add
+ * Test for X.colortable.add
  */
-function testXcolorTableAdd() {
+function testXcolortableAdd() {
 
-  var c = new X.colorTable();
+  var c = new X.colortable();
   
   // define an example color table entry
   var colorValue = 0;
