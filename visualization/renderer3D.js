@@ -791,7 +791,7 @@ X.renderer3D.prototype.update_ = function(object) {
   // objects. This bounding box only changes if either the points or the
   // transform are dirty.
   if (points._dirty || transform._dirty) {
-    var transformationMatrix = transform.matrix();
+    var transformationMatrix = transform._matrix;
     
     var tMin = transformationMatrix.multiplyByVector(new goog.math.Vec3(points
         .minA(), points.minB(), points.minC()));

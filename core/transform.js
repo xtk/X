@@ -80,6 +80,39 @@ goog.inherits(X.transform, X.base);
 
 
 /**
+ * Get the transformation matrix.
+ * 
+ * @return {!X.matrix} The transformation matrix.
+ */
+X.transform.prototype.__defineGetter__('matrix', function() {
+
+  return this._matrix;
+  
+});
+
+
+/**
+ * Set the transformation matrix.
+ * 
+ * @param {!X.matrix} matrix The transformation matrix.
+ */
+X.transform.prototype.__defineSetter__('matrix', function(matrix) {
+
+  if (!goog.isDefAndNotNull(matrix) || !(matrix instanceof X.matrix)) {
+    
+    throw new Error('Invalid matrix.');
+    
+  }
+  
+  this._matrix = matrix;
+  this._glMatrix = new Float32Array(this._matrix.flatten());
+  
+  this._dirty = true;
+  
+});
+
+
+/**
  * Rotate around the X-axis.
  * 
  * @param {number} angle The angle to rotate in degrees.
@@ -224,53 +257,6 @@ X.transform.prototype.translateZ = function(distance) {
 
 
 /**
- * Get the transformation matrix.
- * 
- * @return {!X.matrix} The transformation matrix.
- */
-X.transform.prototype.matrix = function() {
-
-  return this._matrix;
-  
-};
-
-
-/**
- * Set the transformation matrix.
- * 
- * @param {!X.matrix} matrix The transformation matrix.
- */
-X.transform.prototype.setMatrix = function(matrix) {
-
-  var matrix_ = X.matrix.createIdentityMatrix(4);
-  
-  if (goog.isDefAndNotNull(matrix) && (matrix instanceof X.matrix)) {
-    
-    matrix_ = matrix;
-    
-  }
-  
-  this._matrix = matrix_;
-  this._glMatrix = new Float32Array(this._matrix.flatten());
-  
-  this._dirty = true;
-  
-};
-
-
-/**
- * Get the transformation matrix as a 'ready-to-use'-gl version.
- * 
- * @return {!Object} The transformation matrix as a Float32Array.
- */
-X.transform.prototype.glMatrix = function() {
-
-  return this._glMatrix;
-  
-};
-
-
-/**
  * Flip the matrix value at the given index.
  * 
  * @param {number} i The row index.
@@ -336,11 +322,6 @@ goog.exportSymbol('X.transform.prototype.translateY',
     X.transform.prototype.translateY);
 goog.exportSymbol('X.transform.prototype.translateZ',
     X.transform.prototype.translateZ);
-goog.exportSymbol('X.transform.prototype.matrix', X.transform.prototype.matrix);
-goog.exportSymbol('X.transform.prototype.glMatrix',
-    X.transform.prototype.glMatrix);
-goog.exportSymbol('X.transform.prototype.setMatrix',
-    X.transform.prototype.setMatrix);
 goog.exportSymbol('X.transform.prototype.flipX', X.transform.prototype.flipX);
 goog.exportSymbol('X.transform.prototype.flipY', X.transform.prototype.flipY);
 goog.exportSymbol('X.transform.prototype.flipZ', X.transform.prototype.flipZ);
