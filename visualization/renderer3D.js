@@ -1344,11 +1344,11 @@ X.renderer3D.prototype.pick = function(x, y) {
         this.context.UNSIGNED_BYTE, data);
     
     // grab the id
-    var r = Math.round(data[0] / 255 * 10);
-    var g = Math.round(data[1] / 255 * 10);
-    var b = Math.round(data[2] / 255 * 10);
+    var r = data[0];
+    var g = data[1];
+    var b = data[2];
     
-    return (r * 100 + g * 10 + b);
+    return (r + g * 255 + b * 255 * 255);
     
   } else {
     
@@ -1594,23 +1594,14 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         
         if (picking) {
           
-          if (id > 999) {
-            
-            throw new Error('Id out of bounds.');
-            
-          }
-          
-          // split the id
-          // f.e. 15:
-          // r = 0 / 10
-          // g = 1 / 10
-          // b = 5 / 10
-          var r = Math.floor(id * 0.01);
-          var g = Math.floor(id * 0.1) - r * 10;
-          var b = id - r * 100 - g * 10;
+          // encoding of the id to 3 bytes
+          var r = Math.floor((id % (255 * 255)) % 255);
+          var g = Math.floor((id % (255 * 255)) / 255);
+          var b = Math.floor(id / (255 * 255));
           
           // and set it as the color
-          objectColor = [r / 10, g / 10, b / 10];
+          objectColor = [r / 255, g / 255, b / 255];
+          
         }
         
         this.context.uniform3f(uObjectColor, parseFloat(objectColor[0]),
