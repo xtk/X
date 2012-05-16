@@ -68,7 +68,7 @@ X.base = function() {
    * @type {number}
    * @protected
    */
-  this._id = window["X.counter"].uniqueId(this);
+  this._id = window["X.counter"].uniqueId();
   
 
   /**

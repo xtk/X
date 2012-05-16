@@ -48,6 +48,7 @@ X.counter = function() {
 
   this._counter = 0;
   
+
   /**
    * Get a unique id.
    * 
@@ -61,7 +62,9 @@ X.counter = function() {
   };
   
 };
+
 window["X.counter"] = new X.counter();
+
 
 
 //
