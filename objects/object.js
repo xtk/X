@@ -169,16 +169,16 @@ X.object.prototype.copy_ = function(object) {
   
   this._visible = object._visible;
   
-  this['_pointSize'] = object['_pointSize'];
+  this._pointsize = object._pointsize;
   
-  this['_lineWidth'] = object['_lineWidth'];
+  this._linewidth = object._linewidth;
   
   if (object._caption) {
     // only if a caption is configured
     this._caption = new String(object._caption).toString();
   }
   
-  this['_magicMode'] = object['_magicMode'];
+  this._magicmode = object._magicmode;
   
   this._dirty = true;
   
@@ -333,7 +333,6 @@ X.object.prototype.fromCSG = function(csg) {
 };
 
 
-
 /**
  * The color table associated with this object.
  * 
@@ -350,19 +349,6 @@ X.object.prototype.__defineGetter__('colortable', function() {
   return this._colortable;
   
 });
-
-
-/**
- * Get the mapping between texture and object coordinates.
- * 
- * @return {?Array} The texture coordinate map.
- */
-X.object.prototype.textureCoordinateMap = function() {
-
-  return this._textureCoordinateMap;
-  
-};
-
 
 
 X.object.prototype.union = function(object) {
@@ -639,15 +625,6 @@ goog.exportSymbol('X.object', X.object);
 goog.exportSymbol('X.object.prototype.scalars', X.object.prototype.scalars);
 goog.exportSymbol('X.object.prototype.setScalars',
     X.object.prototype.setScalars);
-goog.exportSymbol('X.object.prototype.lineWidth', X.object.prototype.lineWidth);
-goog.exportSymbol('X.object.prototype.setLineWidth',
-    X.object.prototype.setLineWidth);
-goog.exportSymbol('X.object.prototype.pointSize', X.object.prototype.pointSize);
-goog.exportSymbol('X.object.prototype.setPointSize',
-    X.object.prototype.setPointSize);
-goog.exportSymbol('X.object.prototype.magicMode', X.object.prototype.magicMode);
-goog.exportSymbol('X.object.prototype.setMagicMode',
-    X.object.prototype.setMagicMode);
 goog.exportSymbol('X.object.prototype.intersect', X.object.prototype.intersect);
 goog.exportSymbol('X.object.prototype.inverse', X.object.prototype.inverse);
 goog.exportSymbol('X.object.prototype.subtract', X.object.prototype.subtract);

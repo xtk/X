@@ -34,7 +34,8 @@ goog.provide('X.displayable');
 goog.require('X.base');
 goog.require('X.transform');
 goog.require('X.triplets');
-
+goog.require('X.texture');
+goog.require('X.transform');
 
 
 /**
@@ -134,7 +135,7 @@ X.displayable = function() {
    * @type {number}
    * @protected
    */
-  this['_pointSize'] = 1;
+  this._pointsize = 1;
   
   /**
    * The line width, only used in X.displayable.types.LINES mode.
@@ -142,7 +143,7 @@ X.displayable = function() {
    * @type {number}
    * @protected
    */
-  this['_lineWidth'] = 1;
+  this._linewidth = 1;
   
   /**
    * The caption of this object.
@@ -158,7 +159,7 @@ X.displayable = function() {
    * @type {!boolean}
    * @protected
    */
-  this['_magicMode'] = false;
+  this._magicmode = false;
   
   /**
    * The opacity of this object.
@@ -390,6 +391,19 @@ X.displayable.prototype.__defineSetter__('caption', function(caption) {
 
 
 /**
+ * Get the visibility of this object.
+ * 
+ * @return {boolean} TRUE if the object is visible, FALSE otherwise.
+ * @public
+ */
+X.displayable.prototype.__defineGetter__('visible', function() {
+
+  return this._visible;
+  
+});
+
+
+/**
  * Set the visibility of this object.
  * 
  * @param {boolean} visible The object's new visibility.
@@ -420,14 +434,14 @@ X.displayable.prototype.__defineSetter__('visible', function(visible) {
 
 
 /**
- * Get the visibility of this object.
+ * Get the point size of this object. The point size is only used in
+ * X.displayable.types.POINTS rendering mode.
  * 
- * @return {boolean} TRUE if the object is visible, FALSE otherwise.
- * @public
+ * @return {!number} The point size.
  */
-X.displayable.prototype.__defineGetter__('visible', function() {
+X.displayable.prototype.__defineGetter__('pointsize', function() {
 
-  return this._visible;
+  return this._pointsize;
   
 });
 
@@ -439,7 +453,7 @@ X.displayable.prototype.__defineGetter__('visible', function() {
  * @param {!number} size The point size.
  * @throws {Error} An exception if the given size is invalid.
  */
-X.displayable.prototype.setPointSize = function(size) {
+X.displayable.prototype.__defineSetter__('pointsize', function(size) {
 
   if (!goog.isNumber(size)) {
     
@@ -447,24 +461,11 @@ X.displayable.prototype.setPointSize = function(size) {
     
   }
   
-  this['_pointSize'] = size;
+  this._pointsize = size;
   
   this._dirty = true;
   
-};
-
-
-/**
- * Get the point size of this object. The point size is only used in
- * X.displayable.types.POINTS rendering mode.
- * 
- * @return {!number} The point size.
- */
-X.displayable.prototype.pointSize = function() {
-
-  return this['_pointSize'];
-  
-};
+});
 
 
 /**
@@ -472,11 +473,11 @@ X.displayable.prototype.pointSize = function() {
  * 
  * @return {!boolean} The magic mode flag.
  */
-X.displayable.prototype.magicMode = function() {
+X.displayable.prototype.__defineGetter__('magicmode', function() {
 
-  return this['_magicMode'];
+  return this._magicmode;
   
-};
+});
 
 
 /**
@@ -484,18 +485,32 @@ X.displayable.prototype.magicMode = function() {
  * 
  * @param {!boolean} magicMode The magic mode flag.
  */
-X.displayable.prototype.setMagicMode = function(magicMode) {
+X.displayable.prototype.__defineSetter__('magicmode', function(magicmode) {
 
-  if (!goog.isBoolean(magicMode)) {
+  if (!goog.isBoolean(magicmode)) {
     
-    throw new Error('Invalid magicMode setting.');
+    throw new Error('Invalid magic mode setting.');
     
   }
   
-  this['_magicMode'] = magicMode;
+  this._magicmode = magicmode;
   
-};
+  this._dirty = true;
+  
+});
 
+
+/**
+ * Get the line width of this object. The line width is only used in
+ * X.displayable.types.LINES rendering mode.
+ * 
+ * @return {!number} The line width.
+ */
+X.displayable.prototype.__defineGetter__('linewidth', function() {
+
+  return this._linewidth;
+  
+});
 
 
 /**
@@ -505,7 +520,7 @@ X.displayable.prototype.setMagicMode = function(magicMode) {
  * @param {!number} width The line width.
  * @throws {Error} An exception if the given width is invalid.
  */
-X.displayable.prototype.setLineWidth = function(width) {
+X.displayable.prototype.__defineSetter__('linewidth', function(width) {
 
   if (!goog.isNumber(width)) {
     
@@ -513,21 +528,8 @@ X.displayable.prototype.setLineWidth = function(width) {
     
   }
   
-  this['_lineWidth'] = width;
+  this._linewidth = width;
   
   this._dirty = true;
   
-};
-
-
-/**
- * Get the line width of this object. The line width is only used in
- * X.displayable.types.LINES rendering mode.
- * 
- * @return {!number} The line width.
- */
-X.displayable.prototype.lineWidth = function() {
-
-  return this['_lineWidth'];
-  
-};
+});

@@ -1522,7 +1522,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       
       var id = object._id;
       
-      var magicMode = object['_magicMode'];
+      var magicMode = object._magicmode;
       
       var vertexBuffer = this.vertexBuffers.get(id);
       var normalBuffer = this.normalBuffers.get(id);
@@ -1775,7 +1775,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       // POINT SIZE
       var pointSize = 1;
       if (object._type == X.displayable.types.POINTS) {
-        pointSize = object['_pointSize'];
+        pointSize = object._pointsize;
       }
       this.context.uniform1f(uPointSize, pointSize);
       
@@ -1792,7 +1792,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         
       } else if (object._type == X.displayable.types.LINES) {
         
-        this.context.lineWidth(object.lineWidth());
+        this.context.lineWidth(object._lineWidth);
         
         drawMode = this.context.LINES;
         if (statisticsEnabled) {
