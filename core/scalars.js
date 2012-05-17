@@ -32,7 +32,7 @@ goog.provide('X.scalars');
 
 // requires
 goog.require('X.base');
-goog.require('X.file');
+goog.require('X.loadable');
 
 
 
@@ -56,14 +56,6 @@ X.scalars = function() {
    * @const
    */
   this._classname = 'scalars';
-  
-  /**
-   * The file containing the scalars.
-   * 
-   * @type {?X.file}
-   * @protected
-   */
-  this._file = null;
   
   /**
    * The array containing the scalars.
@@ -138,50 +130,12 @@ X.scalars = function() {
    */
   this._replaceMode = true;
   
+  // inject functionality
+  inject(this, new X.loadable()); // this object is loadable from a file
+  
 };
 // inherit from X.base
 goog.inherits(X.scalars, X.base);
-
-
-/**
- * Get the file of this scalar container.
- * 
- * @return {?X.file} The file of this scalar container.
- * @public
- */
-X.scalars.prototype.__defineGetter__('file', function() {
-
-  return this._file;
-  
-});
-
-
-/**
- * Set the file for this scalar container.
- * 
- * @param {?X.file|string} file The file path or an X.file object containing the
- *          path.
- * @public
- */
-X.scalars.prototype.__defineSetter__('file', function(file) {
-
-  if (!goog.isDefAndNotNull(file)) {
-    
-    // null files are allowed
-    this._file = null;
-    return;
-    
-  }
-  
-  if (goog.isString(file)) {
-    
-    file = new X.file(file);
-    
-  }
-  
-  this._file = file;
-  
-});
 
 
 /**
