@@ -65,7 +65,29 @@ X.counter = function() {
 
 window["X.counter"] = new X.counter();
 
+//
+// Injection mechanism for mixins (from
+// http://ejohn.org/blog/javascript-getters-and-setters/)
+//
+function inject(a, b) {
 
+  for ( var i in b) { // iterate over all properties
+    // get getter and setter functions
+    var g = b.__lookupGetter__(i), s = b.__lookupSetter__(i);
+    
+    if (g || s) { // if there is a getter or setter
+      if (g) {
+        a.__defineGetter__(i, g); // copy getter to new object
+      }
+      if (s) {
+        a.__defineSetter__(i, s); // copy setter to new object
+      }
+    } else {
+      a[i] = b[i]; // just copy the value; nothing special
+    }
+  }
+  return a; // return the altered object
+}
 
 //
 // BROWSER COMPATIBILITY FIXES GO HERE

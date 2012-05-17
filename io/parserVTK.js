@@ -85,7 +85,7 @@ X.parserVTK.prototype.parse = function(object, data) {
   
   // even if vtk files support multiple object types in the same file, we only
   // support one kind
-  this._objectType = X.object.types.TRIANGLES;
+  this._objectType = X.displayable.types.TRIANGLES;
   
   // this mode indicates that the next lines will be X,Y,Z coordinates
   this._pointsMode = false;
@@ -142,23 +142,23 @@ X.parserVTK.prototype.parse = function(object, data) {
   
 
   // now, configure the object according to the objectType
-  if (this._objectType == X.object.types.TRIANGLES) {
+  if (this._objectType == X.displayable.types.TRIANGLES) {
     
     this.configureTriangles(unorderedPoints, unorderedNormals, p, n);
     
-  } else if (this._objectType == X.object.types.TRIANGLE_STRIPS) {
+  } else if (this._objectType == X.displayable.types.TRIANGLE_STRIPS) {
     
     this.configureTriangleStrips(unorderedPoints, unorderedNormals, p, n);
     
-  } else if (this._objectType == X.object.types.LINES) {
+  } else if (this._objectType == X.displayable.types.LINES) {
     
     this.configureLines(unorderedPoints, unorderedNormals, p, n);
     
-  } else if (this._objectType == X.object.types.POINTS) {
+  } else if (this._objectType == X.displayable.types.POINTS) {
     
     this.configurePoints(unorderedPoints, unorderedNormals, p, n);
     
-  } else if (this._objectType == X.object.types.POLYGONS) {
+  } else if (this._objectType == X.displayable.types.POLYGONS) {
     
     this.configurePolygons(unorderedPoints, unorderedNormals, p, n);
     
@@ -225,9 +225,9 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     var numberOfElements = parseInt(lineFields[1], 10);
     
     if (numberOfElements >= 3) {
-      this._objectType = X.object.types.TRIANGLES;
+      this._objectType = X.displayable.types.TRIANGLES;
     } else if (numberOfElements == 1) {
-      this._objectType = X.object.types.POINTS;
+      this._objectType = X.displayable.types.POINTS;
     } else {
       
       throw new Error('VTK file not supported!');
@@ -248,7 +248,7 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     this._geometryMode = true;
     this._pointsMode = false;
     this._pointDataMode = false;
-    this._objectType = X.object.types.TRIANGLE_STRIPS;
+    this._objectType = X.displayable.types.TRIANGLE_STRIPS;
     
     // reset all former geometries since we only support 1 geometry type per
     // file (the last one specified)
@@ -264,7 +264,7 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     this._geometryMode = true;
     this._pointsMode = false;
     this._pointDataMode = false;
-    this._objectType = X.object.types.LINES;
+    this._objectType = X.displayable.types.LINES;
     
     // reset all former geometries since we only support 1 geometry type per
     // file (the last one specified)
@@ -281,7 +281,7 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     this._geometryMode = true;
     this._pointsMode = false;
     this._pointDataMode = false;
-    this._objectType = X.object.types.POLYGONS;
+    this._objectType = X.displayable.types.POLYGONS;
     
     // reset all former geometries since we only support 1 geometry type per
     // file (the last one specified)

@@ -38,13 +38,11 @@ goog.require('csgPolygon');
 
 goog.require('X.base');
 goog.require('X.colortable');
-goog.require('X.file');
+goog.require('X.displayable');
 goog.require('X.indexer');
+goog.require('X.loadable');
 goog.require('X.scalars');
 goog.require('X.triplets');
-goog.require('X.texture');
-goog.require('X.transform');
-
 
 
 /**
@@ -73,86 +71,6 @@ X.object = function(object) {
   this._classname = 'object';
   
   /**
-   * The rendering type of this object, default is {X.object.types.TRIANGLES}.
-   * 
-   * @type {X.object.types}
-   * @protected
-   */
-  this._type = X.object.types.TRIANGLES;
-  
-  /**
-   * The transform of this object.
-   * 
-   * @type {!X.transform}
-   * @protected
-   */
-  this._transform = new X.transform();
-  
-  /**
-   * The object color. By default, this is white.
-   * 
-   * @type {!Array}
-   * @public
-   */
-  this._color = [1, 1, 1];
-  
-  /**
-   * The points of this object.
-   * 
-   * @type {!X.triplets}
-   * @protected
-   */
-  this._points = new X.triplets();
-  
-  /**
-   * The normals of this object.
-   * 
-   * @type {!X.triplets}
-   * @protected
-   */
-  this._normals = new X.triplets();
-  
-  /**
-   * The point colors of this object.
-   * 
-   * @type {!X.triplets}
-   * @protected
-   */
-  this._colors = new X.triplets();
-  
-  /**
-   * The texture of this object.
-   * 
-   * @type {?X.texture}
-   * @protected
-   */
-  this._texture = null;
-  
-  /**
-   * The mapping between object and texture coordinates.
-   * 
-   * @type {?Array}
-   * @protected
-   */
-  this._textureCoordinateMap = null;
-  
-  /**
-   * The file of this object.
-   * 
-   * @type {?X.file}
-   * @protected
-   */
-  this._file = null;
-  
-  /**
-   * The opacity of this object.
-   * 
-   * @type {number}
-   * @public
-   */
-  this._opacity = 1.0;
-  
-  /**
    * The children of this object.
    * 
    * @type {?Array}
@@ -161,46 +79,6 @@ X.object = function(object) {
   this._children = null;
   
   this._hideChildren = false;
-  
-  /**
-   * The visibility of this object.
-   * 
-   * @type {boolean}
-   * @public
-   */
-  this._visible = true;
-  
-  /**
-   * The point size, only used in X.object.types.POINTS mode.
-   * 
-   * @type {number}
-   * @protected
-   */
-  this['_pointSize'] = 1;
-  
-  /**
-   * The line width, only used in X.object.types.LINES mode.
-   * 
-   * @type {number}
-   * @protected
-   */
-  this['_lineWidth'] = 1;
-  
-  /**
-   * The caption of this object.
-   * 
-   * @type {?string}
-   * @protected
-   */
-  this._caption = null;
-  
-  /**
-   * The flag for the magic mode.
-   * 
-   * @type {!boolean}
-   * @protected
-   */
-  this['_magicMode'] = false;
   
   if (goog.isDefAndNotNull(object)) {
     
@@ -225,42 +103,15 @@ X.object = function(object) {
    */
   this._scalars = null;
   
-  /**
-   * An array reflecting the point or vertex indices.
-   * 
-   * @type {!Array}
-   * @protected
-   */
-  this._pointIndices = [];
-  
-  /**
-   * This distance of this object to the viewer's eye.
-   * 
-   * @type {number}
-   * @protected
-   */
-  this._distance = 0;
-  
   this._dirty = true;
+  
+  // inject functionality
+  inject(this, new X.loadable()); // this object is loadable from a file
+  inject(this, new X.displayable()); // this object is displayable
   
 };
 // inherit from X.base
 goog.inherits(X.object, X.base);
-
-
-/**
- * Different render types for an X.object.
- * 
- * @enum {string}
- */
-X.object.types = {
-  // the render event
-  TRIANGLES: 'TRIANGLES',
-  TRIANGLE_STRIPS: 'TRIANGLE_STRIPS',
-  LINES: 'LINES',
-  POINTS: 'POINTS',
-  POLYGONS: 'POLYGONS'
-};
 
 
 /**
@@ -477,126 +328,10 @@ X.object.prototype.fromCSG = function(csg) {
   }.bind(this));
   
   // we only support CSG in TRIANGLES rendering mode
-  this._type = X.object.types.TRIANGLES;
+  this._type = X.displayable.types.TRIANGLES;
   
 };
 
-
-/**
- * Get the texture of this object.
- * 
- * @return {!X.texture} The texture.
- */
-X.object.prototype.__defineGetter__('texture', function() {
-
-  if (!this._texture) {
-    
-    this._texture = new X.texture();
-    
-  }
-  
-  return this._texture;
-  
-});
-
-
-/**
- * Get the transform of this object.
- * 
- * @return {!X.transform} The transform.
- */
-X.object.prototype.__defineGetter__('transform', function() {
-
-  return this._transform;
-  
-});
-
-
-/**
- * Get the points of this object.
- * 
- * @return {!X.triplets} The points.
- */
-X.object.prototype.__defineGetter__('points', function() {
-
-  return this._points;
-  
-});
-
-
-/**
- * Get the normals of this object.
- * 
- * @return {!X.triplets} The normals.
- */
-X.object.prototype.__defineGetter__('normals', function() {
-
-  return this._normals;
-  
-});
-
-
-/**
- * Get the point colors of this object.
- * 
- * @return {!X.triplets} The point colors.
- */
-X.object.prototype.__defineGetter__('colors', function() {
-
-  return this._colors;
-  
-});
-
-
-/**
- * Get the object color.
- * 
- * @return {!Array} The object color.
- */
-X.object.prototype.__defineGetter__('color', function() {
-
-  return this._color;
-  
-});
-
-
-/**
- * Set the object color. This overrides any point colors.
- * 
- * @param {!Array} color The object color as an array with length 3 and values
- *          between 0..1.
- * @throws {Error} An exception if the given color is invalid.
- */
-X.object.prototype.__defineSetter__('color', function(color) {
-
-  // we accept only numbers as arguments
-  if (!goog.isDefAndNotNull(color) || !(color instanceof Array) ||
-      !(color.length != 3)) {
-    
-    throw new Error('Invalid color.');
-    
-  }
-  
-  if (this.hasChildren()) {
-    
-    // loop through the children and propagate the new color
-    var children = this.children();
-    var numberOfChildren = children.length;
-    var c = 0;
-    
-    for (c = 0; c < numberOfChildren; c++) {
-      
-      children[c].color = color;
-      
-    }
-    
-  }
-  
-  this._color = color;
-  
-  this._dirty = true;
-  
-});
 
 
 /**
@@ -734,165 +469,6 @@ X.object.prototype.inverse = function(object) {
 };
 
 
-/**
- * Get the opacity of this object. If the object is fully opaque, this returns
- * 1.
- * 
- * @return {number} The opacity in the range 0..1.
- */
-X.object.prototype.__defineGetter__('opacity', function() {
-
-  return this._opacity;
-  
-});
-
-
-/**
- * Set the opacity of this object.
- * 
- * @param {number} opacity The opacity value in the range 0..1.
- */
-X.object.prototype.__defineSetter__('opacity', function(opacity) {
-
-  // check if the given opacity is in the range 0..1
-  if (!goog.isNumber(opacity) || opacity > 1.0 || opacity < 0.0) {
-    
-    throw new Error('Invalid opacity.');
-    
-  }
-  
-  if (this.hasChildren()) {
-    
-    // loop through the children and propagate the new opacity
-    var children = this.children();
-    var numberOfChildren = children.length;
-    var c = 0;
-    
-    for (c = 0; c < numberOfChildren; c++) {
-      
-      children[c].opacity = opacity;
-      
-    }
-    
-  }
-  
-  this._opacity = opacity;
-  
-  this._dirty = true;
-  
-});
-
-
-/**
- * Get the caption of this object.
- * 
- * @return {?string} The caption of this object.
- * @public
- */
-X.object.prototype.__defineGetter__('caption', function() {
-
-  return this._caption;
-  
-});
-
-
-/**
- * Set the caption for this object.
- * 
- * @param {?string} caption The caption for this object.
- * @public
- */
-X.object.prototype.__defineSetter__('caption', function(caption) {
-
-  this._caption = caption;
-  
-  this._dirty = true;
-  
-});
-
-
-/**
- * Set the visibility of this object.
- * 
- * @param {boolean} visible The object's new visibility.
- * @public
- */
-X.object.prototype.__defineSetter__('visible', function(visible) {
-
-  if (this.hasChildren()) {
-    
-    // loop through the children and propagate the new visibility
-    var children = this.children();
-    var numberOfChildren = children.length;
-    var c = 0;
-    
-    for (c = 0; c < numberOfChildren; c++) {
-      
-      children[c].visible = visible;
-      
-    }
-    
-  }
-  
-  this._visible = visible;
-  
-  this._dirty = true;
-  
-});
-
-
-/**
- * Get the visibility of this object.
- * 
- * @return {boolean} TRUE if the object is visible, FALSE otherwise.
- * @public
- */
-X.object.prototype.__defineGetter__('visible', function() {
-
-  return this._visible;
-  
-});
-
-
-/**
- * Load this object from a file path or reset the associated file path.
- * 
- * @param {?string} filepath The file path/URL to load. If null, reset the
- *          associated file.
- */
-X.object.prototype.__defineSetter__('file', function(filepath) {
-
-  if (!goog.isDefAndNotNull(filepath)) {
-    
-    // if path is null, we reset the associated X.file object
-    
-    this._file = null;
-    return;
-    
-  }
-  
-  this._file = new X.file(filepath);
-  
-});
-
-
-/**
- * Get the associated X.file for this object.
- * 
- * @return {string} The associated X.file or null if no file is associated.
- */
-X.object.prototype.__defineGetter__('file', function() {
-
-  if (!this._file) {
-    
-    return '';
-    
-  }
-  
-  return this._file._path;
-  
-});
-
 
 /**
  * Fire a modified event for this object.
@@ -945,106 +521,6 @@ X.object.prototype.hasChildren = function() {
   }
   
   return (this._children.length > 0);
-  
-};
-
-
-/**
- * Set the line width for this object. The line width is only used in
- * X.object.types.LINES rendering mode.
- * 
- * @param {!number} width The line width.
- * @throws {Error} An exception if the given width is invalid.
- */
-X.object.prototype.setLineWidth = function(width) {
-
-  if (!goog.isNumber(width)) {
-    
-    throw new Error('Invalid line width.');
-    
-  }
-  
-  this['_lineWidth'] = width;
-  
-  this._dirty = true;
-  
-};
-
-
-/**
- * Get the line width of this object. The line width is only used in
- * X.object.types.LINES rendering mode.
- * 
- * @return {!number} The line width.
- */
-X.object.prototype.lineWidth = function() {
-
-  return this['_lineWidth'];
-  
-};
-
-
-/**
- * Set the point size for this object. The point size is only used in
- * X.object.types.POINTS rendering mode.
- * 
- * @param {!number} size The point size.
- * @throws {Error} An exception if the given size is invalid.
- */
-X.object.prototype.setPointSize = function(size) {
-
-  if (!goog.isNumber(size)) {
-    
-    throw new Error('Invalid point size.');
-    
-  }
-  
-  this['_pointSize'] = size;
-  
-  this._dirty = true;
-  
-};
-
-
-/**
- * Get the point size of this object. The point size is only used in
- * X.object.types.POINTS rendering mode.
- * 
- * @return {!number} The point size.
- */
-X.object.prototype.pointSize = function() {
-
-  return this['_pointSize'];
-  
-};
-
-
-/**
- * Get the magic mode flag.
- * 
- * @return {!boolean} The magic mode flag.
- */
-X.object.prototype.magicMode = function() {
-
-  return this['_magicMode'];
-  
-};
-
-
-/**
- * Set the magic mode flag.
- * 
- * @param {!boolean} magicMode The magic mode flag.
- */
-X.object.prototype.setMagicMode = function(magicMode) {
-
-  if (!goog.isBoolean(magicMode)) {
-    
-    throw new Error('Invalid magicMode setting.');
-    
-  }
-  
-  this['_magicMode'] = magicMode;
   
 };
 

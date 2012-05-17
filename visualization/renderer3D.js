@@ -1774,7 +1774,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       
       // POINT SIZE
       var pointSize = 1;
-      if (object._type == X.object.types.POINTS) {
+      if (object._type == X.displayable.types.POINTS) {
         pointSize = object['_pointSize'];
       }
       this.context.uniform1f(uPointSize, pointSize);
@@ -1783,14 +1783,14 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       // .. and draw with the object's DRAW MODE
       //
       var drawMode = -1;
-      if (object._type == X.object.types.TRIANGLES) {
+      if (object._type == X.displayable.types.TRIANGLES) {
         
         drawMode = this.context.TRIANGLES;
         if (statisticsEnabled) {
           trianglesCounter += (vertexBuffer._itemCount / 3);
         }
         
-      } else if (object._type == X.object.types.LINES) {
+      } else if (object._type == X.displayable.types.LINES) {
         
         this.context.lineWidth(object.lineWidth());
         
@@ -1799,21 +1799,21 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
           linesCounter += (vertexBuffer._itemCount / 2);
         }
         
-      } else if (object._type == X.object.types.POINTS) {
+      } else if (object._type == X.displayable.types.POINTS) {
         
         drawMode = this.context.POINTS;
         if (statisticsEnabled) {
           pointsCounter += vertexBuffer._itemCount;
         }
         
-      } else if (object._type == X.object.types.TRIANGLE_STRIPS) {
+      } else if (object._type == X.displayable.types.TRIANGLE_STRIPS) {
         
         drawMode = this.context.TRIANGLE_STRIP;
         if (statisticsEnabled) {
           trianglesCounter += (vertexBuffer._itemCount / 3);
         }
         
-      } else if (object._type == X.object.types.POLYGONS) {
+      } else if (object._type == X.displayable.types.POLYGONS) {
         
         // TODO right now, this is hacked.. we need to use the Van Gogh
         // triangulation algorithm or something faster to properly convert

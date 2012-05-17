@@ -220,7 +220,7 @@ X.parserFSM.prototype.parse = function(object, data) {
   }
   
   // .. and set the objectType to triangles
-  object._type = X.object.types.TRIANGLES;
+  object._type = X.displayable.types.TRIANGLES;
   
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();

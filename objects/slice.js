@@ -369,7 +369,7 @@ X.slice.prototype.create_ = function() {
     borders._normals.add(0, 0, 0);
     borders._color = [this._borderColor[0], this._borderColor[1],
                       this._borderColor[2]];
-    borders._type = X.object.types.LINES;
+    borders._type = X.displayable.types.LINES;
     borders.setLineWidth(2);
     
     this.children().push(borders);

@@ -301,7 +301,7 @@ X.parserTRK.prototype.parse = function(object, data) {
   } // loop through fibers
   
   // set the object type to LINES
-  object._type = X.object.types.LINES;
+  object._type = X.displayable.types.LINES;
   
   // attach the scalars
   var scalars = new X.scalars();

@@ -32,6 +32,8 @@ goog.provide('X.parser');
 // requires
 goog.require('X.base');
 goog.require('X.event');
+goog.require('X.texture');
+goog.require('X.triplets');
 
 
 
