@@ -125,7 +125,8 @@ X.object.prototype.copy_ = function(object) {
 
   this._type = object._type;
   
-  // this._transform._matrix = new X.matrix(object._transform._matrix.array_);
+  this._transform = new X.transform();
+  this._transform._matrix = new X.matrix(object._transform._matrix.array_);
   
   this._color = object._color.slice();
   
@@ -179,6 +180,8 @@ X.object.prototype.copy_ = function(object) {
   }
   
   this._magicmode = object._magicmode;
+  
+  this._pointIndices = object._pointIndices.slice();
   
   this._dirty = true;
   
