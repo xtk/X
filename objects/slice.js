@@ -100,7 +100,6 @@ X.slice = function(slice) {
   
   /**
    * @inheritDoc
-   * @const
    */
   this._textureCoordinateMap = [
 

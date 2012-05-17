@@ -125,7 +125,7 @@ X.object.prototype.copy_ = function(object) {
 
   this._type = object._type;
   
-  this._transform._matrix = new X.matrix(object._transform._matrix.array_);
+  // this._transform._matrix = new X.matrix(object._transform._matrix.array_);
   
   this._color = object._color.slice();
   

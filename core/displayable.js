@@ -483,7 +483,7 @@ X.displayable.prototype.__defineGetter__('magicmode', function() {
 /**
  * Set the magic mode flag.
  * 
- * @param {!boolean} magicMode The magic mode flag.
+ * @param {!boolean} magicmode The magic mode flag.
  */
 X.displayable.prototype.__defineSetter__('magicmode', function(magicmode) {
 

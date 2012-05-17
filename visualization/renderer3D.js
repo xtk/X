@@ -505,7 +505,7 @@ X.renderer3D.prototype.update_ = function(object) {
   var colors = object._colors;
   var texture = object._texture;
   var file = object._file;
-  var transform = object._transform;
+  var transform = object.transform;
   var colortable = object._colortable;
   var labelmap = object._labelmap; // here we access directly since we do not
   // want to create one using the labelmap() singleton accessor
@@ -1792,7 +1792,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         
       } else if (object._type == X.displayable.types.LINES) {
         
-        this.context.lineWidth(object._lineWidth);
+        this.context.lineWidth(object._linewidth);
         
         drawMode = this.context.LINES;
         if (statisticsEnabled) {
