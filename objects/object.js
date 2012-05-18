@@ -101,10 +101,8 @@ X.object = function(object) {
   this._dirty = true;
   
   // inject functionality
-  console.time('inject');
   inject(this, new X.loadable()); // this object is loadable from a file
   inject(this, new X.displayable()); // this object is displayable
-  console.timeEnd('inject');
   
 };
 // inherit from X.base

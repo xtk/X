@@ -137,10 +137,3 @@ X.cube.prototype.create_ = function() {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.cube', X.cube);
-// goog.exportSymbol('X.cube.prototype.intersect',
-// X.constructable.prototype.intersect);
-// goog
-// .exportSymbol('X.cube.prototype.inverse', X.constructable.prototype.inverse);
-// goog.exportSymbol('X.cube.prototype.subtract',
-// X.constructable.prototype.subtract);
-// goog.exportSymbol('X.cube.prototype.union', X.constructable.prototype.union);

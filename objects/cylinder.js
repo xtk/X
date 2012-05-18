@@ -119,11 +119,3 @@ X.cylinder.prototype.create_ = function() {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.cylinder', X.cylinder);
-// goog.exportSymbol('X.cylinder.prototype.intersect',
-// X.constructable.prototype.intersect);
-// goog.exportSymbol('X.cylinder.prototype.inverse',
-// X.constructable.prototype.inverse);
-// goog.exportSymbol('X.cylinder.prototype.subtract',
-// X.constructable.prototype.subtract);
-// goog
-// .exportSymbol('X.cylinder.prototype.union', X.constructable.prototype.union);

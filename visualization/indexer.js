@@ -32,7 +32,7 @@ goog.provide('X.indexer');
 
 // requires
 goog.require('X.base');
-goog.require('goog.json');
+
 
 
 /**
@@ -105,7 +105,7 @@ X.indexer.prototype.add = function(object) {
     
   }
   
-  var key = goog.json.serialize(object);
+  var key = window.JSON.stringify(object);
   if (!(key in this._map)) {
     this._map[key] = this._unique.length;
     this._unique.push(object);

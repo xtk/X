@@ -305,3 +305,13 @@ X.constructable.prototype.inverse = function(object) {
   return result;
   
 };
+
+goog.exportSymbol('X.constructable', X.constructable);
+goog.exportSymbol('X.constructable.prototype.intersect',
+    X.constructable.prototype.intersect);
+goog.exportSymbol('X.constructable.prototype.inverse',
+    X.constructable.prototype.inverse);
+goog.exportSymbol('X.constructable.prototype.subtract',
+    X.constructable.prototype.subtract);
+goog.exportSymbol('X.constructable.prototype.union',
+    X.constructable.prototype.union);

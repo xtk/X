@@ -110,11 +110,3 @@ X.sphere.prototype.create_ = function() {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.sphere', X.sphere);
-// goog.exportSymbol('X.sphere.prototype.intersect',
-// X.constructable.prototype.intersect);
-// goog.exportSymbol('X.sphere.prototype.inverse',
-// X.constructable.prototype.inverse);
-// goog.exportSymbol('X.sphere.prototype.subtract',
-// X.constructable.prototype.subtract);
-// goog.exportSymbol('X.sphere.prototype.union',
-// X.constructable.prototype.union);
