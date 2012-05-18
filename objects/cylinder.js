@@ -33,6 +33,7 @@ goog.provide('X.cylinder');
 // requires
 goog.require('CSG.cylinder');
 goog.require('X.base');
+goog.require('X.constructable');
 goog.require('X.object');
 
 
@@ -91,6 +92,8 @@ X.cylinder = function(start, end, radius) {
   
   this._slices = 32;
   
+  inject(this, new X.constructable()); // this object is constructable
+  
   this.create_();
   
 };
@@ -116,3 +119,11 @@ X.cylinder.prototype.create_ = function() {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.cylinder', X.cylinder);
+// goog.exportSymbol('X.cylinder.prototype.intersect',
+// X.constructable.prototype.intersect);
+// goog.exportSymbol('X.cylinder.prototype.inverse',
+// X.constructable.prototype.inverse);
+// goog.exportSymbol('X.cylinder.prototype.subtract',
+// X.constructable.prototype.subtract);
+// goog
+// .exportSymbol('X.cylinder.prototype.union', X.constructable.prototype.union);

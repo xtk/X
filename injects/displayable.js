@@ -284,7 +284,7 @@ X.displayable.prototype.__defineSetter__('color', function(color) {
 
   // we accept only numbers as arguments
   if (!goog.isDefAndNotNull(color) || !(color instanceof Array) ||
-      !(color.length != 3)) {
+      (color.length != 3)) {
     
     throw new Error('Invalid color.');
     

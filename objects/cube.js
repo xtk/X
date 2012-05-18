@@ -33,6 +33,7 @@ goog.provide('X.cube');
 // requires
 goog.require('CSG.cube');
 goog.require('X.base');
+goog.require('X.constructable');
 goog.require('X.object');
 
 
@@ -111,6 +112,8 @@ X.cube = function(center, radiusX, radiusY, radiusZ) {
 
   ];
   
+  inject(this, new X.constructable()); // this object is constructable
+  
   this.create_();
   
 };
@@ -134,3 +137,10 @@ X.cube.prototype.create_ = function() {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.cube', X.cube);
+// goog.exportSymbol('X.cube.prototype.intersect',
+// X.constructable.prototype.intersect);
+// goog
+// .exportSymbol('X.cube.prototype.inverse', X.constructable.prototype.inverse);
+// goog.exportSymbol('X.cube.prototype.subtract',
+// X.constructable.prototype.subtract);
+// goog.exportSymbol('X.cube.prototype.union', X.constructable.prototype.union);

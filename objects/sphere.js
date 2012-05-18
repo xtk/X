@@ -33,6 +33,7 @@ goog.provide('X.sphere');
 // requires
 goog.require('CSG.sphere');
 goog.require('X.base');
+goog.require('X.constructable');
 goog.require('X.object');
 
 
@@ -82,6 +83,8 @@ X.sphere = function(center, radius) {
   
   this._stacks = 16;
   
+  inject(this, new X.constructable()); // this object is constructable
+  
   this.create_();
   
 };
@@ -107,3 +110,11 @@ X.sphere.prototype.create_ = function() {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.sphere', X.sphere);
+// goog.exportSymbol('X.sphere.prototype.intersect',
+// X.constructable.prototype.intersect);
+// goog.exportSymbol('X.sphere.prototype.inverse',
+// X.constructable.prototype.inverse);
+// goog.exportSymbol('X.sphere.prototype.subtract',
+// X.constructable.prototype.subtract);
+// goog.exportSymbol('X.sphere.prototype.union',
+// X.constructable.prototype.union);

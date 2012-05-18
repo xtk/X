@@ -189,7 +189,7 @@ X.triplets.prototype.add = function(a, b, c) {
 X.triplets.prototype.get = function(id) {
 
   if (!goog.isNumber(id) ||
-      (id < 0 || id * 3 > this._triplets.length || id == this.count())) {
+      (id < 0 || id * 3 > this._triplets.length || id == this._triplets.length / 3)) {
     
     throw new Error('Invalid id.');
     
