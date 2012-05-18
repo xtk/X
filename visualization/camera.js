@@ -31,10 +31,11 @@
 goog.provide('X.camera');
 
 // requires
+goog.require('X.base');
 goog.require('X.event.ZoomEvent');
 goog.require('X.event.PanEvent');
 goog.require('X.event.RenderEvent');
-goog.require('X.base');
+goog.require('X.interactor');
 goog.require('X.matrix');
 goog.require('goog.math.Vec3');
 
