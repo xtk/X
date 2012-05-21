@@ -233,6 +233,7 @@ goog.inherits(X.volume, X.object);
  */
 X.volume.prototype.copy_ = function(volume) {
 
+  window.console.log(volume);
   this._center = volume._center.slice();
   this._dimensions = volume._dimensions.slice();
   this._spacing = volume._spacing.slice();
@@ -336,7 +337,7 @@ X.volume.prototype.create_ = function() {
       _slice._volume = this;
       
       // only show the middle slice, hide everything else
-      _slice.visible = (i == Math.floor(_indexCenter));
+      _slice['visible'] = (i == Math.floor(_indexCenter));
       
       // attach to all _slices with the correct slice index
       slices.push(_slice);
@@ -377,19 +378,17 @@ X.volume.prototype.modified = function() {
         // first, hide possible slicing slices but only if volume rendering was
         // just switched on
         var _sliceX = this._children[0]._children[parseInt(this['_indexX'], 10)];
-        _sliceX.visible = false;
+        _sliceX['visible'] = false;
         var _sliceY = this._children[1]._children[parseInt(this['_indexY'], 10)];
-        _sliceY.visible = false;
+        _sliceY['visible'] = false;
         var _sliceZ = this._children[2]._children[parseInt(this['_indexZ'], 10)];
-        _sliceZ.visible = false;
-        
-        console.log('hide em all');
+        _sliceZ['visible'] = false;
         
       } else {
         
         // hide the volume rendering slices
         var _child = this._children[this._volumeRenderingDirection];
-        _child.visible = false;
+        _child['visible'] = false;
         
       }
       
@@ -448,12 +447,12 @@ X.volume.prototype.slicing_ = function() {
     
     // hide the old slice
     var _oldSlice = _child._children[parseInt(oldIndex, 10)];
-    _oldSlice.visible = false;
+    _oldSlice['visible'] = false;
     
     // show the current slice and also show the borders if they exist by
     // calling the setter of visible rather than accessing the _visible property
     var _currentSlice = _child._children[parseInt(currentIndex, 10)];
-    _currentSlice.visible = true;
+    _currentSlice['visible'] = true;
     _currentSlice._opacity = 1.0;
     
   }
@@ -575,7 +574,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   
   // hide old volume rendering slices
   var _child = this._children[this._volumeRenderingDirection];
-  _child.visible = false;
+  _child['visible'] = false;
   
   // show new volume rendering slices, but don't show the borders
   _child = this._children[direction];
@@ -584,7 +583,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   for (i = 0; i < _numberOfSlices; i++) {
     _child._children[i]._visible = true;
   }
-  // _child.visible = true;
+  // _child['visible'] = true;
   
   // store the direction
   this._volumeRenderingDirection = direction;

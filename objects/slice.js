@@ -139,8 +139,6 @@ X.slice = function(slice) {
    */
   this._borderColor = [1, 1, 1];
   
-  this._hideChildren = true;
-  
   if (goog.isDefAndNotNull(slice)) {
     
     // copy the properties of the given object over

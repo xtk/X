@@ -297,7 +297,7 @@ X.displayable.prototype.__defineSetter__('color', function(color) {
   
   for (c = 0; c < numberOfChildren; c++) {
     
-    children[c].color = color;
+    children[c]['color'] = color;
     
   }
   
@@ -343,7 +343,7 @@ X.displayable.prototype.__defineSetter__('opacity', function(opacity) {
   
   for (c = 0; c < numberOfChildren; c++) {
     
-    children[c].opacity = opacity;
+    children[c]['opacity'] = opacity;
     
   }
   
@@ -410,7 +410,7 @@ X.displayable.prototype.__defineSetter__('visible', function(visible) {
   
   for (c = 0; c < numberOfChildren; c++) {
     
-    children[c].visible = visible;
+    children[c]['visible'] = visible;
     
   }
   
