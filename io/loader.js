@@ -202,7 +202,7 @@ X.loader.prototype.loadColorTable = function(object) {
 
 X.loader.prototype.loadScalars = function(object) {
 
-  if (!goog.isDefAndNotNull(object.scalars())) {
+  if (!goog.isDefAndNotNull(object._scalars)) {
     
     // should not happen :)
     throw new Error('Internal error during file loading.');
@@ -210,7 +210,7 @@ X.loader.prototype.loadScalars = function(object) {
   }
   
   // get the associated file of the object
-  var filepath = object.scalars()._file._path;
+  var filepath = object._scalars._file._path;
   
   // we use a simple XHR to get the file contents
   // this works for binary and for ascii files
@@ -241,7 +241,7 @@ X.loader.prototype.loadScalars = function(object) {
   request.send(null);
   
   // add this loading job to our jobs map
-  this.jobs_().set(object.scalars()._id, false);
+  this.jobs_().set(object._scalars._id, false);
   
 };
 
@@ -398,7 +398,7 @@ X.loader.prototype.loadScalarsCompleted = function(request, object) {
   // something
   setTimeout(function() {
 
-    var filepath = object.scalars()._file._path;
+    var filepath = object._scalars._file._path;
     
     var fileExtension = filepath.split('.').pop().toLowerCase();
     
@@ -534,13 +534,13 @@ X.loader.prototype.parseScalarsCompleted = function(event) {
     var object = event._object;
     
     // the parsing is done here..
-    object.scalars()._file._dirty = false;
+    object._scalars._file._dirty = false;
     
     // fire the modified event
     object.modified();
     
     // mark the loading job as completed
-    this.jobs_().set(object.scalars()._id, true);
+    this.jobs_().set(object._scalars._id, true);
     
   }.bind(this), 100);
   

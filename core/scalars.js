@@ -196,7 +196,7 @@ X.scalars.prototype.__defineGetter__('lowerThreshold', function() {
 X.scalars.prototype.__defineSetter__('lowerThreshold',
     function(lowerThreshold) {
 
-      if (lowerThreshold <= this._min && lowerThreshold >= this._max) {
+      if (lowerThreshold >= this._min && lowerThreshold <= this._max) {
         
         this._lowerThreshold = lowerThreshold;
         
@@ -227,7 +227,7 @@ X.scalars.prototype.__defineGetter__('upperThreshold', function() {
 X.scalars.prototype.__defineSetter__('upperThreshold',
     function(upperThreshold) {
 
-      if (upperThreshold <= this._min && upperThreshold >= this._max) {
+      if (upperThreshold >= this._min && upperThreshold <= this._max) {
         
         this._upperThreshold = upperThreshold;
         
