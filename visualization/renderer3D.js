@@ -1230,7 +1230,7 @@ X.renderer3D.prototype.order_ = function() {
     // b) based on this we can minimize the expensive distance calculation to
     // the first and last slices
     // c) .. and get the distance for the other slices by simple multiplication
-    if (object instanceof X.volume && object['_volumeRendering']) {
+    if (object instanceof X.volume && object._volumeRendering) {
       
       var _volumeRenderingDirection = object._volumeRenderingDirection;
       
@@ -1735,7 +1735,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         this.context.uniform1i(uUseLabelMapTexture, false);
         
         // opacity, only if volume rendering is active
-        if (volume['_volumeRendering']) {
+        if (volume._volumeRendering) {
           
           this.context.uniform1f(uObjectOpacity, parseFloat(volume._opacity));
           

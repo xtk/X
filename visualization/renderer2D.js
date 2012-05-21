@@ -140,39 +140,23 @@ X.renderer2D.prototype.onScroll_ = function(event) {
   
   // grab the current volume
   var _volume = this.topLevelObjects[0];
-  // .. if there is none, exist right away
+  // .. if there is none, exit right away
   if (!_volume) {
     return;
   }
   
   // switch between different orientations
   var _orientation = this['orientation'];
-  var _dimIndex = 0; // for X
-  if (_orientation == 'Y') {
-    _dimIndex = 1;
-  } else if (_orientation == 'Z') {
-    _dimIndex = 2;
-  }
   
   if (event._up) {
     
-    // check if we are in the bounds
-    if (_volume['_index' + _orientation] < _volume._dimensions[_dimIndex] - 1) {
-      
-      // yes, scroll up
-      _volume['_index' + _orientation] = _volume['_index' + _orientation] + 1;
-      
-    }
+    // yes, scroll up
+    _volume['index' + _orientation] = _volume['index' + _orientation] + 1;
     
   } else {
     
-    // check if we are in the bounds
-    if (_volume['_index' + _orientation] > 0) {
-      
-      // yes, so scroll down
-      _volume['_index' + _orientation] = _volume['_index' + _orientation] - 1;
-      
-    }
+    // yes, so scroll down
+    _volume['index' + _orientation] = _volume['index' + _orientation] - 1;
     
   }
   
@@ -427,7 +411,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // grab the volume and current slice
   //
   var _volume = this.topLevelObjects[0];
-  var _currentSlice = _volume['_index' + this['orientation']];
+  var _currentSlice = _volume['index' + this['orientation']];
   
   // .. here is the current slice
   var _slice = this.slices[parseInt(_currentSlice, 10)];

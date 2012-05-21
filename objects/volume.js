@@ -90,7 +90,7 @@ X.volume = function(volume) {
    * @type {!number}
    * @public
    */
-  this['_indexX'] = 0;
+  this._indexX = 0;
   
   /**
    * The index of the formerly shown slice in X-direction.
@@ -106,7 +106,7 @@ X.volume = function(volume) {
    * @type {!number}
    * @public
    */
-  this['_indexY'] = 0;
+  this._indexY = 0;
   
   /**
    * The index of the formerly shown slice in Y-direction.
@@ -122,7 +122,7 @@ X.volume = function(volume) {
    * @type {!number}
    * @public
    */
-  this['_indexZ'] = 0;
+  this._indexZ = 0;
   
   /**
    * The index of the formerly shown slice in Z-direction.
@@ -162,7 +162,14 @@ X.volume = function(volume) {
    * @type {boolean}
    * @public
    */
-  this['_volumeRendering'] = false;
+  this._volumeRendering = false;
+  
+  /**
+   * The cached toggle for volume rendering or cross-sectional slicing.
+   * 
+   * @type {boolean}
+   * @public
+   */
   this._volumeRenderingOld = false;
   
   /**
@@ -216,11 +223,11 @@ X.volume.prototype.copy_ = function(volume) {
   this._center = volume._center.slice();
   this._dimensions = volume._dimensions.slice();
   this._spacing = volume._spacing.slice();
-  this['_indexX'] = volume['_indexX'];
+  this._indexX = volume._indexX;
   this._indexXold = volume._indexXold;
-  this['_indexY'] = volume['_indexY'];
+  this._indexY = volume._indexY;
   this._indexYold = volume._indexYold;
-  this['_indexZ'] = volume['_indexZ'];
+  this._indexZ = volume._indexZ;
   this._indexZold = volume._indexZold;
   this._slicesX = new X.object(volume._slicesX);
   this._slicesY = new X.object(volume._slicesY);
@@ -228,7 +235,7 @@ X.volume.prototype.copy_ = function(volume) {
   
   // TODO threshold
   
-  this['_volumeRendering'] = volume['_volumeRendering'];
+  this._volumeRendering = volume._volumeRendering;
   this._volumeRenderingOld = volume._volumeRenderingOld;
   this._volumeRenderingDirection = volume._volumeRenderingDirection;
   this._labelmap = volume._labelmap;
@@ -325,13 +332,13 @@ X.volume.prototype.create_ = function() {
     
     // by default, all the 'middle' slices are shown
     if (xyz == 0) {
-      this['_indexX'] = _indexCenter;
+      this._indexX = _indexCenter;
       this._indexXold = _indexCenter;
     } else if (xyz == 1) {
-      this['_indexY'] = _indexCenter;
+      this._indexY = _indexCenter;
       this._indexYold = _indexCenter;
     } else if (xyz == 2) {
-      this['_indexZ'] = _indexCenter;
+      this._indexZ = _indexCenter;
       this._indexZold = _indexCenter;
     }
   }
@@ -350,17 +357,17 @@ X.volume.prototype.modified = function() {
   // only do this if we already have children aka. the create_() method was
   // called
   if (this._children.length > 0) {
-    if (this['_volumeRendering'] != this._volumeRenderingOld) {
+    if (this._volumeRendering != this._volumeRenderingOld) {
       
-      if (this['_volumeRendering']) {
+      if (this._volumeRendering) {
         
         // first, hide possible slicing slices but only if volume rendering was
         // just switched on
-        var _sliceX = this._children[0]._children[parseInt(this['_indexX'], 10)];
+        var _sliceX = this._children[0]._children[parseInt(this._indexX, 10)];
         _sliceX['visible'] = false;
-        var _sliceY = this._children[1]._children[parseInt(this['_indexY'], 10)];
+        var _sliceY = this._children[1]._children[parseInt(this._indexY, 10)];
         _sliceY['visible'] = false;
-        var _sliceZ = this._children[2]._children[parseInt(this['_indexZ'], 10)];
+        var _sliceZ = this._children[2]._children[parseInt(this._indexZ, 10)];
         _sliceZ['visible'] = false;
         
       } else {
@@ -373,11 +380,11 @@ X.volume.prototype.modified = function() {
       
       // switch from slicing to volume rendering or vice versa
       this._dirty = true;
-      this._volumeRenderingOld = this['_volumeRendering'];
+      this._volumeRenderingOld = this._volumeRendering;
       
     }
     
-    if (this['_volumeRendering']) {
+    if (this._volumeRendering) {
       
       // prepare volume rendering
       this.volumeRendering_(this._volumeRenderingDirection);
@@ -411,17 +418,17 @@ X.volume.prototype.slicing_ = function() {
     
     // buffer the old indices
     if (xyz == 0) {
-      currentIndex = this['_indexX'];
+      currentIndex = this._indexX;
       oldIndex = this._indexXold;
-      this._indexXold = this['_indexX'];
+      this._indexXold = this._indexX;
     } else if (xyz == 1) {
-      currentIndex = this['_indexY'];
+      currentIndex = this._indexY;
       oldIndex = this._indexYold;
-      this._indexYold = this['_indexY'];
+      this._indexYold = this._indexY;
     } else if (xyz == 2) {
-      currentIndex = this['_indexZ'];
+      currentIndex = this._indexZ;
       oldIndex = this._indexZold;
-      this._indexZold = this['_indexZ'];
+      this._indexZold = this._indexZ;
     }
     
     // hide the old slice
@@ -443,12 +450,25 @@ X.volume.prototype.slicing_ = function() {
  * Get the dimensions of this volume.
  * 
  * @return {!Array} The dimensions of this volume.
+ * @public
  */
-X.volume.prototype.dimensions = function() {
+X.volume.prototype.__defineGetter__('dimensions', function() {
 
   return this._dimensions;
   
-};
+});
+
+
+/**
+ * Get the volume rendering setting of this X.volume.
+ * 
+ * @public
+ */
+X.volume.prototype.__defineGetter__('volumeRendering', function() {
+
+  return this._volumeRendering;
+  
+});
 
 
 /**
@@ -456,12 +476,14 @@ X.volume.prototype.dimensions = function() {
  * 
  * @param {boolean} volumeRendering If TRUE, display volume rendering, if FALSE
  *          display cross-sectional slices.
+ * @public
  */
-X.volume.prototype.setVolumeRendering = function(volumeRendering) {
+X.volume.prototype.__defineSetter__('volumeRendering',
+    function(volumeRendering) {
 
-  this['_volumeRendering'] = volumeRendering;
-  
-};
+      this._volumeRendering = volumeRendering;
+      
+    });
 
 
 /**
@@ -476,13 +498,27 @@ X.volume.prototype.__defineSetter__('visible', function(visible) {
 
 
 /**
+ * Get the center of this X.volume.
+ * 
+ * @return {!Array} The center.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('center', function() {
+
+  return this._center;
+  
+});
+
+
+/**
  * Set the center of this X.volume. This has to be called (for now) before a
  * volume data gets loaded aka. before the first X.renderer.render() call.
  * 
  * @param {!Array} center The new center.
  * @throws {Error} If the center is invalid.
+ * @public
  */
-X.volume.prototype.setCenter = function(center) {
+X.volume.prototype.__defineSetter__('center', function(center) {
 
   if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
       !(center.length == 3)) {
@@ -493,7 +529,148 @@ X.volume.prototype.setCenter = function(center) {
   
   this._center = center;
   
-};
+});
+
+
+/**
+ * Get the label map of this volume. A new label map gets created if required
+ * (Singleton).
+ * 
+ * @return {!X.volume}
+ * @public
+ */
+X.volume.prototype.__defineGetter__('labelmap', function() {
+
+  if (!this._labelmap) {
+    
+    this._labelmap = new X.labelmap(this);
+    
+  }
+  
+  return this._labelmap;
+  
+});
+
+
+/**
+ * Get the slice index in X-direction.
+ * 
+ * @return {!number} The slice index in X-direction.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('indexX', function() {
+
+  return this._indexX;
+  
+});
+
+
+/**
+ * Set the slice index in X-direction.
+ * 
+ * @param {!number} indexX The slice index in X-direction.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('indexX', function(indexX) {
+
+  if (goog.isNumber(indexX) && indexX >= 0 &&
+      indexX < this._slicesX._children.length) {
+    
+    this._indexX = indexX;
+    
+  }
+  
+});
+
+
+/**
+ * Get the slice index in Y-direction.
+ * 
+ * @return {!number} The slice index in Y-direction.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('indexY', function() {
+
+  return this._indexY;
+  
+});
+
+
+/**
+ * Set the slice index in Y-direction.
+ * 
+ * @param {!number} indexY The slice index in Y-direction.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('indexY', function(indexY) {
+
+  if (goog.isNumber(indexY) && indexY >= 0 &&
+      indexY < this._slicesY._children.length) {
+    
+    this._indexY = indexY;
+    
+  }
+  
+});
+
+
+/**
+ * Get the slice index in Z-direction.
+ * 
+ * @return {!number} The slice index in Z-direction.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('indexZ', function() {
+
+  return this._indexZ;
+  
+});
+
+
+/**
+ * Set the slice index in Z-direction.
+ * 
+ * @param {!number} indexZ The slice index in Z-direction.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('indexZ', function(indexZ) {
+
+  if (goog.isNumber(indexZ) && indexZ >= 0 &&
+      indexZ < this._slicesZ._children.length) {
+    
+    this._indexZ = indexZ;
+    
+  }
+  
+});
+
+
+/**
+ * Return the borders flag.
+ * 
+ * @return {boolean} TRUE if borders are enabled, FALSE otherwise.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('borders', function() {
+
+  return this._borders;
+  
+});
+
+
+/**
+ * Set the borders flag. Must be called before the volume gets created
+ * internally. After that, the borders can be modified using the children of
+ * each slice.
+ * 
+ * @param {boolean} borders TRUE to enable borders, FALSE to disable them.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('borders', function(borders) {
+
+  this._borders = borders;
+  
+});
 
 
 /**
@@ -503,10 +680,11 @@ X.volume.prototype.setCenter = function(center) {
  * 
  * @param {number} direction The direction of the volume rendering
  *          (0==x,1==y,2==z).
+ * @protected
  */
 X.volume.prototype.volumeRendering_ = function(direction) {
 
-  if ((!this['_volumeRendering']) ||
+  if ((!this._volumeRendering) ||
       (!this._dirty && direction == this._volumeRenderingDirection)) {
     
     // we do not have to do anything
@@ -535,58 +713,6 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 };
 
 
-/**
- * Get the label map of this volume. A new label map gets created if required
- * (Singleton).
- * 
- * @return {!X.volume}
- */
-X.volume.prototype.__defineGetter__('labelmap', function() {
-
-  if (!this._labelmap) {
-    
-    this._labelmap = new X.labelmap(this);
-    
-  }
-  
-  return this._labelmap;
-  
-});
-
-
-/**
- * Return the borders flag.
- * 
- * @return {boolean} TRUE if borders are enabled, FALSE otherwise.
- */
-X.volume.prototype.borders = function() {
-
-  return this._borders;
-  
-};
-
-
-/**
- * Set the borders flag. Must be called before the volume gets created
- * internally. After that, the borders can be modified using the children of
- * each slice.
- * 
- * @param {boolean} borders TRUE to enable borders, FALSE to disable them.
- */
-X.volume.prototype.setBorders = function(borders) {
-
-  this._borders = borders;
-  
-};
-
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.volume', X.volume);
-goog.exportSymbol('X.volume.prototype.dimensions',
-    X.volume.prototype.dimensions);
-goog.exportSymbol('X.volume.prototype.setCenter', X.volume.prototype.setCenter);
-goog.exportSymbol('X.volume.prototype.setVolumeRendering',
-    X.volume.prototype.setVolumeRendering);
 goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);
-goog.exportSymbol('X.volume.prototype.borders', X.volume.prototype.borders);
-goog.exportSymbol('X.volume.prototype.setBorders',
-    X.volume.prototype.setBorders);
