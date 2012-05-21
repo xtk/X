@@ -588,10 +588,10 @@ X.renderer3D.prototype.update_ = function(object) {
   // so on
   //
   // check if this object has children
-  if (object._dirty && object.children().length > 0) {
+  if (object._dirty && object._children.length > 0) {
     
     // loop through the children and recursively setup the object
-    var children = object.children();
+    var children = object._children;
     var numberOfChildren = children.length;
     var c = 0;
     
@@ -1234,11 +1234,11 @@ X.renderer3D.prototype.order_ = function() {
       
       var _volumeRenderingDirection = object._volumeRenderingDirection;
       
-      var _slices = object._slicesX.children();
+      var _slices = object._slicesX._children;
       if (_volumeRenderingDirection == 1) {
-        _slices = object._slicesY.children();
+        _slices = object._slicesY._children;
       } else if (_volumeRenderingDirection == 2) {
-        _slices = object._slicesZ.children();
+        _slices = object._slicesZ._children;
       }
       
       var numberOfSlices = _slices.length;

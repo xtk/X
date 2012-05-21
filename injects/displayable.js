@@ -290,18 +290,14 @@ X.displayable.prototype.__defineSetter__('color', function(color) {
     
   }
   
-  if (this.hasChildren()) {
+  // loop through the children and propagate the new color
+  var children = this._children;
+  var numberOfChildren = children.length;
+  var c = 0;
+  
+  for (c = 0; c < numberOfChildren; c++) {
     
-    // loop through the children and propagate the new color
-    var children = this.children();
-    var numberOfChildren = children.length;
-    var c = 0;
-    
-    for (c = 0; c < numberOfChildren; c++) {
-      
-      children[c].color = color;
-      
-    }
+    children[c].color = color;
     
   }
   
@@ -340,18 +336,14 @@ X.displayable.prototype.__defineSetter__('opacity', function(opacity) {
     
   }
   
-  if (this.hasChildren()) {
+  // loop through the children and propagate the new opacity
+  var children = this._children;
+  var numberOfChildren = children.length;
+  var c = 0;
+  
+  for (c = 0; c < numberOfChildren; c++) {
     
-    // loop through the children and propagate the new opacity
-    var children = this.children();
-    var numberOfChildren = children.length;
-    var c = 0;
-    
-    for (c = 0; c < numberOfChildren; c++) {
-      
-      children[c].opacity = opacity;
-      
-    }
+    children[c].opacity = opacity;
     
   }
   
@@ -411,18 +403,14 @@ X.displayable.prototype.__defineGetter__('visible', function() {
  */
 X.displayable.prototype.__defineSetter__('visible', function(visible) {
 
-  if (this.hasChildren()) {
+  // loop through the children and propagate the new visibility
+  var children = this._children;
+  var numberOfChildren = children.length;
+  var c = 0;
+  
+  for (c = 0; c < numberOfChildren; c++) {
     
-    // loop through the children and propagate the new visibility
-    var children = this.children();
-    var numberOfChildren = children.length;
-    var c = 0;
-    
-    for (c = 0; c < numberOfChildren; c++) {
-      
-      children[c].visible = visible;
-      
-    }
+    children[c].visible = visible;
     
   }
   

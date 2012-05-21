@@ -646,10 +646,10 @@ X.renderer.prototype.generateTree_ = function(object, level) {
   
   window.console.log(_output);
   
-  if (object.hasChildren()) {
+  if (object._children.length > 0) {
     
     // loop through the children
-    var _children = object.children();
+    var _children = object._children;
     var _numberOfChildren = _children.length;
     var _c = 0;
     

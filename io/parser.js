@@ -439,14 +439,14 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture._rawDataWidth = colsCount;
     pixelTexture._rawDataHeight = rowsCount;
     
-    currentSlice = object._slicesZ.children()[z];
+    currentSlice = object._slicesZ._children[z];
     currentSlice._texture = pixelTexture;
     if (hasLabelMap) {
       
       // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      currentSlice._labelmap = object._labelmap._slicesZ.children()[z]._texture;
+      currentSlice._labelmap = object._labelmap._slicesZ._children[z]._texture;
       
     }
     
@@ -509,14 +509,14 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture._rawDataWidth = colsCount;
     pixelTexture._rawDataHeight = slices;
     
-    currentSlice = object._slicesY.children()[row];
+    currentSlice = object._slicesY._children[row];
     currentSlice._texture = pixelTexture;
     if (hasLabelMap) {
       
       // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      currentSlice._labelmap = object._labelmap._slicesY.children()[row]._texture;
+      currentSlice._labelmap = object._labelmap._slicesY._children[row]._texture;
       
     }
     
@@ -575,14 +575,14 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     pixelTexture._rawDataWidth = rowsCount;
     pixelTexture._rawDataHeight = slices;
     
-    currentSlice = object._slicesX.children()[col];
+    currentSlice = object._slicesX._children[col];
     currentSlice._texture = pixelTexture;
     if (hasLabelMap) {
       
       // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      currentSlice._labelmap = object._labelmap._slicesX.children()[col]._texture;
+      currentSlice._labelmap = object._labelmap._slicesX._children[col]._texture;
       
     }
     

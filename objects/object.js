@@ -68,12 +68,10 @@ X.object = function(object) {
   /**
    * The children of this object.
    * 
-   * @type {?Array}
+   * @type {!Array}
    * @protected
    */
-  this._children = null;
-  
-  this._hideChildren = false;
+  this._children = new Array();
   
   if (goog.isDefAndNotNull(object)) {
     
@@ -144,7 +142,7 @@ X.object.prototype.copy_ = function(object) {
   
   // 
   // children
-  this.children().length = 0; // remove old ones
+  this._children.length = 0; // remove old ones
   var _oldChildren = object._children;
   if (_oldChildren) {
     var _oldChildrenLength = _oldChildren.length;
@@ -158,7 +156,7 @@ X.object.prototype.copy_ = function(object) {
       var classname = this['_child']._classname;
       eval("this['_newChild'] = new X." + classname + "(this['_child']);");
       
-      this.children().push(this['_newChild']);
+      this._children.push(this['_newChild']);
       
     }
   }
@@ -221,42 +219,11 @@ X.object.prototype.modified = function() {
  * 
  * @return {!Array} The children of this object which are again objects.
  */
-X.object.prototype.children = function() {
+X.object.prototype.__defineGetter__('children', function() {
 
-  if (!this._children) {
-    
-    this._children = new Array();
-    
-  }
-  
   return this._children;
   
-};
-
-
-/**
- * Check if this object has children.
- * 
- * @return {boolean} TRUE if this object has children, if not FALSE.
- */
-X.object.prototype.hasChildren = function() {
-
-  if (!this._children) {
-    
-    return false;
-    
-  }
-  
-  if (this._hideChildren) {
-    
-    return false;
-    
-  }
-  
-  return (this._children.length > 0);
-  
-};
-
+});
 
 
 /**

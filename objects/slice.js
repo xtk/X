@@ -371,7 +371,7 @@ X.slice.prototype.create_ = function() {
     borders._type = X.displayable.types.LINES;
     borders._linewidth = 2;
     
-    this.children().push(borders);
+    this._children.push(borders);
     
   }
   

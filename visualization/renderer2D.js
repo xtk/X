@@ -311,19 +311,19 @@ X.renderer2D.prototype.update_ = function(object) {
   // check the orientation and store a pointer to the slices
   if (this['orientation'] == 'X') {
     
-    this.slices = object._slicesX.children();
+    this.slices = object._slicesX._children;
     _sliceWidth = _dimensions[2];
     _sliceHeight = _dimensions[1];
     
   } else if (this['orientation'] == 'Y') {
     
-    this.slices = object._slicesY.children();
+    this.slices = object._slicesY._children;
     _sliceWidth = _dimensions[0];
     _sliceHeight = _dimensions[2];
     
   } else if (this['orientation'] == 'Z') {
     
-    this.slices = object._slicesZ.children();
+    this.slices = object._slicesZ._children;
     _sliceWidth = _dimensions[0];
     _sliceHeight = _dimensions[1];
     
