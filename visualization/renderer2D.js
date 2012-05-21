@@ -463,9 +463,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _pixelsLength = _pixels.length;
   
   // threshold values
-  var _maxScalarRange = _volume.scalarRange()[1];
-  var _lowerThreshold = _volume['_lowerThreshold'];
-  var _upperThreshold = _volume['_upperThreshold'];
+  var _maxScalarRange = _volume._max;
+  var _lowerThreshold = _volume._lowerThreshold;
+  var _upperThreshold = _volume._upperThreshold;
   
 
   // loop through the pixels and draw them to the invisible canvas

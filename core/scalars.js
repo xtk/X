@@ -33,6 +33,7 @@ goog.provide('X.scalars');
 // requires
 goog.require('X.base');
 goog.require('X.loadable');
+goog.require('X.thresholdable');
 
 
 
@@ -74,22 +75,6 @@ X.scalars = function() {
   this._glArray = null;
   
   /**
-   * The min. scalar.
-   * 
-   * @type {number}
-   * @protected
-   */
-  this._min = Infinity;
-  
-  /**
-   * The max. scalar.
-   * 
-   * @type {number}
-   * @protected
-   */
-  this._max = -Infinity;
-  
-  /**
    * The color to map the min. scalar.
    * 
    * @type {!Array}
@@ -106,22 +91,6 @@ X.scalars = function() {
   this._maxColor = [1, 0, 0];
   
   /**
-   * The lower threshold.
-   * 
-   * @type {number}
-   * @protected
-   */
-  this._lowerThreshold = -Infinity;
-  
-  /**
-   * The upper threshold.
-   * 
-   * @type {number}
-   * @protected
-   */
-  this._upperThreshold = Infinity;
-  
-  /**
    * Flag to replace the colors after thresholding. If FALSE, discard the
    * vertex.
    * 
@@ -132,6 +101,7 @@ X.scalars = function() {
   
   // inject functionality
   inject(this, new X.loadable()); // this object is loadable from a file
+  inject(this, new X.thresholdable()); // this object is thresholdable
   
 };
 // inherit from X.base
@@ -170,94 +140,6 @@ X.scalars.prototype.__defineSetter__('array', function(array) {
   
   // also, mark this dirty so the renderer can pick it up
   this._dirty = true;
-  
-});
-
-
-/**
- * Get the lower threshold.
- * 
- * @return {number} The lower threshold.
- * @public
- */
-X.scalars.prototype.__defineGetter__('lowerThreshold', function() {
-
-  return this._lowerThreshold;
-  
-});
-
-
-/**
- * Set the lower threshold if it is inside the min-max range.
- * 
- * @param {number} lowerThreshold
- * @public
- */
-X.scalars.prototype.__defineSetter__('lowerThreshold',
-    function(lowerThreshold) {
-
-      if (lowerThreshold >= this._min && lowerThreshold <= this._max) {
-        
-        this._lowerThreshold = lowerThreshold;
-        
-      }
-      
-    });
-
-
-/**
- * Get the upper threshold.
- * 
- * @return {number} The upper threshold.
- * @public
- */
-X.scalars.prototype.__defineGetter__('upperThreshold', function() {
-
-  return this._upperThreshold;
-  
-});
-
-
-/**
- * Set the upper threshold if it is inside the min-max range.
- * 
- * @param {number} upperThreshold
- * @public
- */
-X.scalars.prototype.__defineSetter__('upperThreshold',
-    function(upperThreshold) {
-
-      if (upperThreshold >= this._min && upperThreshold <= this._max) {
-        
-        this._upperThreshold = upperThreshold;
-        
-      }
-      
-    });
-
-
-/**
- * Get the min. scalar value.
- * 
- * @return {number} The min. scalar value.
- * @public
- */
-X.scalars.prototype.__defineGetter__('min', function() {
-
-  return this._min;
-  
-});
-
-
-/**
- * Get the max. scalar value.
- * 
- * @return {number} The max. scalar value.
- * @public
- */
-X.scalars.prototype.__defineGetter__('max', function() {
-
-  return this._max;
   
 });
 

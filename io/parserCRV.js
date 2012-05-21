@@ -223,8 +223,15 @@ X.parserCRV.prototype.parse = function(object, data) {
   // attach min, max curvature values and the whole shebang!
   object._scalars._min = minCurv[1];
   object._scalars._max = maxCurv[1];
-  object._scalars._lowerThreshold = minCurv[1];
-  object._scalars._upperThreshold = maxCurv[1];
+  // .. and set the default threshold
+  // only if the threshold was not already set
+  if (object._scalars._lowerThreshold == -Infinity) {
+    object._scalars._lowerThreshold = minCurv[1];
+  }
+  if (object._scalars._upperThreshold == Infinity) {
+    object._scalars._upperThreshold = maxCurv[1];
+  }
+  
   object._scalars._array = vertexCurvatures; // the un-ordered scalars
   object._scalars._glArray = orderedCurvatures; // the ordered, gl-Ready
   // now mark the scalars dirty

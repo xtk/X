@@ -1720,16 +1720,13 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         this.context.uniform1i(uUseTextureThreshold, true);
         
         // pass the lower threshold
-        this.context
-            .uniform1f(uVolumeLowerThreshold, volume['_lowerThreshold']);
+        this.context.uniform1f(uVolumeLowerThreshold, volume._lowerThreshold);
         // pass the upper threshold
-        this.context
-            .uniform1f(uVolumeUpperThreshold, volume['_upperThreshold']);
+        this.context.uniform1f(uVolumeUpperThreshold, volume._upperThreshold);
         
         // pass the scalar range
-        var scalarRange = volume._scalarRange;
-        this.context.uniform1f(uVolumeScalarMin, scalarRange[0]);
-        this.context.uniform1f(uVolumeScalarMax, scalarRange[1]);
+        this.context.uniform1f(uVolumeScalarMin, volume._min);
+        this.context.uniform1f(uVolumeScalarMax, volume._max);
         
         // get the (optional) label map
         var labelmap = volume._labelmap;

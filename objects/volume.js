@@ -33,6 +33,7 @@ goog.provide('X.volume');
 // requires
 goog.require('X.object');
 goog.require('X.slice');
+goog.require('X.thresholdable');
 
 
 
@@ -156,30 +157,6 @@ X.volume = function(volume) {
   this._slicesZ = new X.object();
   
   /**
-   * The upper threshold for this volume.
-   * 
-   * @type {number}
-   * @public
-   */
-  this['_lowerThreshold'] = 0;
-  
-  /**
-   * The upper threshold for this volume.
-   * 
-   * @type {number}
-   * @public
-   */
-  this['_upperThreshold'] = 1000;
-  
-  /**
-   * The scalar range of this volume.
-   * 
-   * @type {!Array}
-   * @protected
-   */
-  this._scalarRange = [0, 1000];
-  
-  /**
    * The toggle for volume rendering or cross-sectional slicing.
    * 
    * @type {boolean}
@@ -211,6 +188,8 @@ X.volume = function(volume) {
    * @protected
    */
   this._borders = true;
+  
+  inject(this, new X.thresholdable()); // this object is thresholdable
   
   if (goog.isDefAndNotNull(volume)) {
     
@@ -246,9 +225,9 @@ X.volume.prototype.copy_ = function(volume) {
   this._slicesX = new X.object(volume._slicesX);
   this._slicesY = new X.object(volume._slicesY);
   this._slicesZ = new X.object(volume._slicesZ);
-  this['_lowerThreshold'] = volume['_lowerThreshold'];
-  this['_upperThreshold'] = volume['_upperThreshold'];
-  this._scalarRange = volume._scalarRange.slice();
+  
+  // TODO threshold
+  
   this['_volumeRendering'] = volume['_volumeRendering'];
   this._volumeRenderingOld = volume._volumeRenderingOld;
   this._volumeRenderingDirection = volume._volumeRenderingDirection;
@@ -473,43 +452,6 @@ X.volume.prototype.dimensions = function() {
 
 
 /**
- * Get the scalar range of this volume.
- * 
- * @return {!Array} The scalar range of this volume.
- */
-X.volume.prototype.scalarRange = function() {
-
-  return this._scalarRange;
-  
-};
-
-
-/**
- * Threshold this volume. All pixel values smaller than lower or larger than
- * upper are ignored during rendering.
- * 
- * @param {!number} lower The lower threshold value.
- * @param {!number} upper The upper threshold value.
- * @throws {Error} If the specified range is invalid.
- */
-X.volume.prototype.threshold = function(lower, upper) {
-
-  if (!goog.isDefAndNotNull(lower) || !goog.isNumber(lower) ||
-      !goog.isDefAndNotNull(upper) || !goog.isNumber(upper) ||
-      (lower > upper) || (lower < this._scalarRange[0]) ||
-      (upper > this._scalarRange[1])) {
-    
-    throw new Error('Invalid threshold range.');
-    
-  }
-  
-  this['_lowerThreshold'] = lower;
-  this['_upperThreshold'] = upper;
-  
-};
-
-
-/**
  * Toggle volume rendering or cross-sectional slicing of this X.volume.
  * 
  * @param {boolean} volumeRendering If TRUE, display volume rendering, if FALSE
@@ -641,12 +583,9 @@ X.volume.prototype.setBorders = function(borders) {
 goog.exportSymbol('X.volume', X.volume);
 goog.exportSymbol('X.volume.prototype.dimensions',
     X.volume.prototype.dimensions);
-goog.exportSymbol('X.volume.prototype.scalarRange',
-    X.volume.prototype.scalarRange);
 goog.exportSymbol('X.volume.prototype.setCenter', X.volume.prototype.setCenter);
 goog.exportSymbol('X.volume.prototype.setVolumeRendering',
     X.volume.prototype.setVolumeRendering);
-goog.exportSymbol('X.volume.prototype.threshold', X.volume.prototype.threshold);
 goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);
 goog.exportSymbol('X.volume.prototype.borders', X.volume.prototype.borders);
 goog.exportSymbol('X.volume.prototype.setBorders',

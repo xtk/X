@@ -99,9 +99,16 @@ X.parserMGZ.prototype.parse = function(object, data, b_zipped) {
   var max = MRI.stats.max;
   
   // attach the scalar range to the volume
-  object._scalarRange = [min, max];
+  object._min = min;
+  object._max = max;
   // .. and set the default threshold
-  object.threshold(min, max);
+  // only if the threshold was not already set
+  if (object._lowerThreshold == -Infinity) {
+    object._lowerThreshold = min;
+  }
+  if (object._upperThreshold == Infinity) {
+    object._upperThreshold = max;
+  }
   
   object.create_();
   
