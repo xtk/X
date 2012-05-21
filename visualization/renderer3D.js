@@ -588,7 +588,7 @@ X.renderer3D.prototype.update_ = function(object) {
   // so on
   //
   // check if this object has children
-  if (object._dirty && object._children.length > 0) {
+  if (object._children.length > 0) {
     
     // loop through the children and recursively setup the object
     var children = object._children;

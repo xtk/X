@@ -73,13 +73,6 @@ X.object = function(object) {
    */
   this._children = new Array();
   
-  if (goog.isDefAndNotNull(object)) {
-    
-    // copy the properties of the given object over
-    this.copy_(object);
-    
-  }
-  
   /**
    * The color table of this object.
    * 
@@ -96,11 +89,16 @@ X.object = function(object) {
    */
   this._scalars = null;
   
-  this._dirty = true;
-  
   // inject functionality
   inject(this, new X.loadable()); // this object is loadable from a file
   inject(this, new X.displayable()); // this object is displayable
+  
+  if (goog.isDefAndNotNull(object)) {
+    
+    // copy the properties of the given object over
+    this.copy_(object);
+    
+  }
   
 };
 // inherit from X.base
@@ -181,7 +179,6 @@ X.object.prototype.copy_ = function(object) {
 };
 
 
-
 /**
  * The color table associated with this object.
  * 
@@ -200,17 +197,22 @@ X.object.prototype.__defineGetter__('colortable', function() {
 });
 
 
-
 /**
- * Fire a modified event for this object.
+ * The scalars associated with this object.
+ * 
+ * @return {?X.scalars} The scalars.
  */
-X.object.prototype.modified = function() {
+X.object.prototype.__defineGetter__('scalars', function() {
 
-  var modifiedEvent = new X.event.ModifiedEvent();
-  modifiedEvent._object = this;
-  this.dispatchEvent(modifiedEvent);
+  if (!this._scalars) {
+    
+    this._scalars = new X.scalars();
+    
+  }
   
-};
+  return this._scalars;
+  
+});
 
 
 /**
@@ -227,49 +229,13 @@ X.object.prototype.__defineGetter__('children', function() {
 
 
 /**
- * The scalars associated with this object.
- * 
- * @return {?X.scalars} The scalars.
+ * Fire a modified event for this object.
  */
-X.object.prototype.scalars = function() {
+X.object.prototype.modified = function() {
 
-  return this._scalars;
-  
-};
-
-
-/**
- * Set the scalars for this object.
- * 
- * @param {?X.scalars|string} scalars The new scalars or a file path.
- * @throws {Error} An error if the scalars are invalid.
- */
-X.object.prototype.setScalars = function(scalars) {
-
-  if (!goog.isDefAndNotNull(scalars)) {
-    
-    // null scalars are allowed
-    this._scalars = null;
-    return;
-    
-  }
-  
-  if (goog.isString(scalars)) {
-    
-    // a string has to be converted to a new X.scalars
-    var scalarsFile = scalars;
-    scalars = new X.scalars();
-    scalars._file = new X.file(scalarsFile);
-    
-  }
-  
-  if (!(scalars instanceof X.scalars)) {
-    
-    throw new Error('Invalid scalars.');
-    
-  }
-  
-  this._scalars = scalars;
+  var modifiedEvent = new X.event.ModifiedEvent();
+  modifiedEvent._object = this;
+  this.dispatchEvent(modifiedEvent);
   
 };
 
@@ -336,8 +302,4 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.object', X.object);
-goog.exportSymbol('X.object.prototype.scalars', X.object.prototype.scalars);
-goog.exportSymbol('X.object.prototype.setScalars',
-    X.object.prototype.setScalars);
-goog.exportSymbol('X.object.prototype.children', X.object.prototype.children);
 goog.exportSymbol('X.object.prototype.modified', X.object.prototype.modified);
