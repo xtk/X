@@ -336,6 +336,14 @@ X.event.ModifiedEvent = function() {
    */
   this._object = new X.object();
   
+  /**
+   * A container for an X.base derived instance.
+   * 
+   * @type{?X.base}
+   * @protected
+   */
+  this._container = null;
+  
 };
 // inherit from goog.events.Event
 goog.inherits(X.event.ModifiedEvent, X.event);

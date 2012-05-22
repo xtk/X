@@ -72,8 +72,10 @@ goog.inherits(X.parserMGZ, X.parser);
 /**
  * @inheritDoc
  */
-X.parserMGZ.prototype.parse = function(object, data, b_zipped) {
+X.parserMGZ.prototype.parse = function(container, object, data, flag) {
 
+  var b_zipped = flag;
+  
   // the position in the file
   var position = 0;
   
@@ -114,9 +116,10 @@ X.parserMGZ.prototype.parse = function(object, data, b_zipped) {
   
   this.reslice(object, MRI.v_data, _dimensions, min, max);
   
-  // all done..
+  // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
+  modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
   
 };

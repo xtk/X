@@ -70,7 +70,7 @@ goog.inherits(X.parserCRV, X.parser);
 /**
  * @inheritDoc
  */
-X.parserCRV.prototype.parse = function(object, data) {
+X.parserCRV.prototype.parse = function(container, object, data, flag) {
 
   var ind = object._pointIndices;
   
@@ -237,8 +237,10 @@ X.parserCRV.prototype.parse = function(object, data) {
   // now mark the scalars dirty
   object._scalars._dirty = true;
   
+  // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
+  modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
   
 };

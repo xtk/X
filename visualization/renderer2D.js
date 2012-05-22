@@ -265,7 +265,7 @@ X.renderer2D.prototype.update_ = function(object) {
     // a colortable file is associated to this object and it is dirty..
     
     // start loading
-    this.loader.loadColorTable(object);
+    this.loader.load(colortable, object);
     
     return;
     
@@ -278,7 +278,7 @@ X.renderer2D.prototype.update_ = function(object) {
     // this object is based on an external file and it is dirty..
     
     // start loading..
-    this.loader.loadFile(object);
+    this.loader.load(object, object);
     
     return;
     

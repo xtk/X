@@ -66,7 +66,7 @@ goog.inherits(X.parserSTL, X.parser);
 /**
  * @inheritDoc
  */
-X.parserSTL.prototype.parse = function(object, data) {
+X.parserSTL.prototype.parse = function(container, object, data, flag) {
 
   var dataAsArray = data.split('\n');
   
@@ -127,8 +127,10 @@ X.parserSTL.prototype.parse = function(object, data) {
     i++;
   }
   
+  // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
+  modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
   
 };

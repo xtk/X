@@ -70,7 +70,7 @@ goog.inherits(X.parserTRK, X.parser);
 /**
  * @inheritDoc
  */
-X.parserTRK.prototype.parse = function(object, data) {
+X.parserTRK.prototype.parse = function(container, object, data, flag) {
 
   var p = object._points;
   var n = object._normals;
@@ -316,8 +316,10 @@ X.parserTRK.prototype.parse = function(object, data) {
   scalars._dirty = true;
   object._scalars = scalars;
   
+  // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
+  modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
   
 };

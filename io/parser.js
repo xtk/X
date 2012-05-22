@@ -67,11 +67,14 @@ goog.inherits(X.parser, X.base);
  * Parse data and configure the given object. When complete, a
  * X.parser.ModifiedEvent is fired.
  * 
+ * @param {!X.base} container A container which holds the loaded data. This can
+ *          be an X.object as well.
  * @param {!X.object} object The object to configure.
  * @param {!String} data The data to parse.
+ * @param {*} flag An additional flag.
  * @throws {Error} An exception if something goes wrong.
  */
-X.parser.prototype.parse = function(object, data) {
+X.parser.prototype.parse = function(container, object, data, flag) {
 
   throw new Error('The function parse() should be overloaded.');
   

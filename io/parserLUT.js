@@ -66,8 +66,10 @@ goog.inherits(X.parserLUT, X.parser);
 /**
  * @inheritDoc
  */
-X.parserLUT.prototype.parse = function(object, data, colortable) {
+X.parserLUT.prototype.parse = function(container, object, data, flag) {
 
+  var colortable = container;
+  
   var dataAsArray = data.split('\n');
   
   var numberOfLines = dataAsArray.length;
@@ -118,8 +120,10 @@ X.parserLUT.prototype.parse = function(object, data, colortable) {
     
   }
   
+  // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
+  modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
   
 };

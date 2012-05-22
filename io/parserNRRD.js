@@ -72,7 +72,7 @@ goog.inherits(X.parserNRRD, X.parser);
 /**
  * @inheritDoc
  */
-X.parserNRRD.prototype.parse = function(object, data) {
+X.parserNRRD.prototype.parse = function(container, object, data, flag) {
 
   // the position in the file
   var position = 0;
@@ -162,9 +162,10 @@ X.parserNRRD.prototype.parse = function(object, data) {
   // and create the textures for each slice
   this.reslice(object, datastream, this.sizes, min, max);
   
-  // all done..
+  // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
+  modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
   
 };
