@@ -56,30 +56,10 @@ goog.require('goog.Timer');
  * The superclass for all renderers.
  * 
  * @constructor
- * @param {!Element} container The container (DOM Element) to place the renderer
- *          inside.
  * @extends X.base
  */
 X.renderer = function(container) {
 
-  // check if a container is passed
-  if (!goog.isDefAndNotNull(container)) {
-    
-    throw new Error('An ID to a valid container (<div>..) is required.');
-    
-  }
-  
-  // check if the passed container is really valid
-  var _container = goog.dom.getElement(container);
-  
-  if (!goog.dom.isElement(_container) || _container.clientWidth == 0 ||
-      _container.clientHeight == 0) {
-    
-    throw new Error(
-        'Could not find the given container or it has an undefined size.');
-    
-  }
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
@@ -93,10 +73,10 @@ X.renderer = function(container) {
   /**
    * The HTML container of this renderer, E.g. a <div>.
    * 
-   * @type {!Element}
+   * @type {!Element|HTMLBodyElement}
    * @public
    */
-  this['container'] = _container;
+  this._container = window.document.body;
   
   /**
    * The width of this renderer.
@@ -104,7 +84,7 @@ X.renderer = function(container) {
    * @type {!number}
    * @public
    */
-  this['width'] = this['container'].clientWidth;
+  this['width'] = this._container.clientWidth;
   
   /**
    * The height of this renderer.
@@ -112,7 +92,7 @@ X.renderer = function(container) {
    * @type {!number}
    * @public
    */
-  this['height'] = this['container'].clientHeight;
+  this['height'] = this._container.clientHeight;
   
   /**
    * The Canvas of this renderer.
@@ -292,6 +272,59 @@ X.renderer.prototype.onScroll_ = function(event) {
 
 
 /**
+ * Get the container of this renderer.
+ * 
+ * @return {!Element|HTMLBodyElement} The container of this renderer.
+ * @public
+ */
+X.renderer.prototype.__defineGetter__('container', function() {
+
+  return this._container;
+  
+});
+
+
+/**
+ * Set the container for this renderer. This has to happen before
+ * X.renderer.init() is called.
+ * 
+ * @param {!string|Element|HTMLBodyElement} container Either an ID to a DOM
+ *          container or the DOM element itself.
+ * @throws {Error} An error, if the given container is invalid.
+ * @public
+ */
+X.renderer.prototype.__defineSetter__('container', function(container) {
+
+  // check if a container is passed
+  if (!goog.isDefAndNotNull(container)) {
+    
+    throw new Error('An ID to a valid container (<div>..) is required.');
+    
+  }
+  
+  // check if the passed container is really valid
+  var _container = container;
+  
+  // if an id is given, try to get the corresponding DOM element
+  if (goog.isString(_container)) {
+    
+    _container = goog.dom.getElement(container);
+    
+  }
+  
+  // now we should have a valid DOM element
+  if (!goog.dom.isElement(_container)) {
+    
+    throw new Error('Could not find the given container.');
+    
+  }
+  
+  this._container = _container;
+  
+});
+
+
+/**
  * Resets the view according to the global bounding box of all associated
  * objects, the configured camera position as well as its focus _and_ triggers
  * re-rendering.
@@ -318,7 +351,7 @@ X.renderer.prototype.showProgressBar_ = function() {
     // loader is working
     if (!this.progressBar) {
       
-      this.progressBar = new X.progressbar(this['container'], 3);
+      this.progressBar = new X.progressbar(this._container, 3);
       
     }
     
@@ -383,13 +416,18 @@ X.renderer.prototype.init = function(_contextName) {
   // create the canvas
   var _canvas = goog.dom.createDom('canvas');
   
+  //
+  // append it to the container
+  goog.dom.appendChild(this._container, _canvas);
+  
+  // the container might have resized now, so update our width and height
+  // settings
+  this['width'] = this._container.clientWidth;
+  this['height'] = this._container.clientHeight;
+  
   // width and height can not be set using CSS but via object properties
   _canvas.width = this['width'];
   _canvas.height = this['height'];
-  
-  //
-  // append it to the container
-  goog.dom.appendChild(this['container'], _canvas);
   
 
   // --------------------------------------------------------------------------
@@ -422,7 +460,7 @@ X.renderer.prototype.init = function(_contextName) {
     var _msg = 'Sorry, ' +
         _contextName +
         ' context is <strong>not supported</strong> on this machine! See <a href="http://crash.goXTK.com" target="_blank">http://crash.goXTK.com</a> for requirements..';
-    this['container'].innerHTML = '<h3 style="' + _style +
+    this._container.innerHTML = '<h3 style="' + _style +
         '">Oooops..</h3><p style="' + _style + '">' + _msg + '</p>';
     
     // .. and throw an exception

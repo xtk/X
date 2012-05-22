@@ -40,7 +40,7 @@ goog.require('goog.ui.ProgressBar');
  * Create a progress bar.
  * 
  * @constructor
- * @param {!Element} parent The parent element in the DOM tree.
+ * @param {?Element} parent The parent element in the DOM tree.
  * @param {!number} initialvalue An initial value for this progress bar.
  * @extends goog.ui.ProgressBar
  */
@@ -78,7 +78,7 @@ X.progressbar = function(parent, initialvalue) {
   /**
    * The parent element in the DOM tree of this progress bar.
    * 
-   * @type {!Element}
+   * @type {?Element}
    * @protected
    */
   this._parent = parent;
