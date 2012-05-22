@@ -34,6 +34,7 @@ goog.require('X.event');
 goog.require('X.object');
 goog.require('X.parserCRV');
 goog.require('X.parserFSM');
+goog.require('X.parserIMAGE');
 goog.require('X.parserLUT');
 goog.require('X.parserMGZ');
 goog.require('X.parserNRRD');
@@ -41,6 +42,8 @@ goog.require('X.parserSTL');
 goog.require('X.parserTRK');
 goog.require('X.parserVTK');
 goog.require('goog.structs.Map');
+
+
 
 /**
  * This object loads external files in an asynchronous fashion. In addition, the
@@ -189,6 +192,7 @@ X.loader.prototype.load = function(container, object) {
   
   // configure the URL
   request.open('GET', filepath, true);
+  request.responseType = 'arraybuffer';
   request.overrideMimeType("text/plain; charset=x-user-defined");
   request.setRequestHeader("Content-Type", "text/plain");
   
@@ -361,5 +365,9 @@ X.loader.extensions = {
   'MGH': [X.parserMGZ, false],
   'MGZ': [X.parserMGZ, true],
   'TXT': [X.parserLUT, null],
-  'LUT': [X.parserLUT, null]
+  'LUT': [X.parserLUT, null],
+  'PNG': [X.parserIMAGE, 'png'],
+  'JPG': [X.parserIMAGE, 'jpeg'],
+  'JPEG': [X.parserIMAGE, 'jpeg'],
+  'GIF': [X.parserIMAGE, 'gif']
 };
