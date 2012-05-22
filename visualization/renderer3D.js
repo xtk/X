@@ -290,16 +290,9 @@ X.renderer3D.prototype.init = function() {
     this.context.blendEquation(this.context.FUNC_ADD);
     this.context.blendFunc(this.context.SRC_ALPHA,
         this.context.ONE_MINUS_SRC_ALPHA);
-    // this.context.blendFuncSeparate(this.context.SRC_ALPHA,
-    // this.context.ONE_MINUS_SRC_ALPHA, this.context.ONE,
-    // this.context.ZERO);
-    // this.context.blendFunc(this.context.DST_COLOR, this.context.ZERO);
-    // this.context.blendFunc(this.context.ONE_MINUS_SRC_ALPHA,
-    // this.context.SRC_ALPHA);
-    // // enable depth testing
+    // .. and depth test
     this.context.enable(this.context.DEPTH_TEST);
-    // // this.context.polygonOffset(1.0, 1.0);
-    // // .. with perspective rendering
+    // .. with perspective rendering
     this.context.depthFunc(this.context.LEQUAL);
     //    
     

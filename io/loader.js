@@ -106,7 +106,7 @@ X.loader.prototype.completed = function() {
 
 X.loader.prototype.loadTexture = function(object) {
 
-  if (!goog.isDefAndNotNull(object.texture())) {
+  if (!goog.isDefAndNotNull(object._texture)) {
     
     throw new Error('Internal error during texture loading.');
     

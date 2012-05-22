@@ -521,6 +521,15 @@ X.renderer.prototype.init = function(_contextName) {
  */
 X.renderer.prototype.add = function(object) {
 
+  // for constructable objects (e.g. cube, sphere, cylinder), we call the
+  // modified() function to generate the CSG representations
+  if (object instanceof X.cube || object instanceof X.sphere ||
+      object instanceof X.cylinder) {
+    
+    object.modified();
+    
+  }
+  
   // we know that objects which are directly added using this function are def.
   // top-level objects, meaning that they do not have a parent
   this.topLevelObjects.push(object);
