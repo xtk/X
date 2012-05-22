@@ -42,26 +42,10 @@ goog.require('X.object');
  * Create a displayable Sphere.
  * 
  * @constructor
- * @param {!Array} center The center position in 3D space as a 1-D Array with
- *          length 3.
- * @param {!number} radius The radius of the Sphere.
  * @extends X.object
  */
-X.sphere = function(center, radius) {
+X.sphere = function() {
 
-  if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
-      (center.length != 3)) {
-    
-    throw new Error('Invalid center.');
-    
-  }
-  
-  if (!goog.isNumber(radius)) {
-    
-    throw new Error('Invalid radius.');
-    
-  }
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
@@ -75,17 +59,39 @@ X.sphere = function(center, radius) {
    */
   this._classname = 'sphere';
   
-  this._center = center;
+  /**
+   * The center of this sphere in the world space.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._center = [0, 0, 0];
   
-  this._radius = radius;
+  /**
+   * The radius of this sphere.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._radius = 5;
   
+  /**
+   * The number of slices to generate the sphere shape.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._slices = 32;
   
+  /**
+   * The number of stacks to generate the sphere shape.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._stacks = 16;
   
   inject(this, new X.constructable()); // this object is constructable
-  
-  this.create_();
   
 };
 // inherit from X.object
@@ -93,11 +99,76 @@ goog.inherits(X.sphere, X.object);
 
 
 /**
- * Create the Sphere.
+ * Get the center of this sphere.
  * 
- * @private
+ * @return {!Array} The center as an array with length 3.
+ * @public
  */
-X.sphere.prototype.create_ = function() {
+X.sphere.prototype.__defineGetter__('center', function() {
+
+  return this._center;
+  
+});
+
+
+/**
+ * Set the center of this sphere.
+ * 
+ * @param {!Array} center The center as an array with length 3 ([X,Y,Z]).
+ * @throws {Error} An error, if the center is invalid.
+ * @public
+ */
+X.sphere.prototype.__defineSetter__('center', function(center) {
+
+  if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
+      (center.length != 3)) {
+    
+    throw new Error('Invalid center');
+    
+  }
+  
+  this._center = center;
+  
+});
+
+
+/**
+ * Get the radius of this sphere.
+ * 
+ * @return {!number} The radius.
+ * @public
+ */
+X.sphere.prototype.__defineGetter__('radius', function() {
+
+  return this._radius;
+  
+});
+
+
+/**
+ * Set the radius of this sphere.
+ * 
+ * @param {!number} radius The radius.
+ * @throws {Error} An error, if the given radius is invalid.
+ * @public
+ */
+X.sphere.prototype.__defineSetter__('radius', function(radius) {
+
+  if (!goog.isNumber(radius)) {
+    
+    throw new Error('Invalid radius.');
+    
+  }
+  
+  this._radius = radius;
+  
+});
+
+
+/**
+ * @inheritDoc
+ */
+X.sphere.prototype.modified = function() {
 
   this.fromCSG(new CSG.sphere({
     center: this._center,
@@ -106,7 +177,11 @@ X.sphere.prototype.create_ = function() {
     stacks: this._stacks
   }));
   
+  // call the super class
+  goog.base(this, 'modified');
+  
 };
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.sphere', X.sphere);
+goog.exportSymbol('X.sphere.prototype.modified', X.sphere.prototype.modified);

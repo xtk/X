@@ -73,7 +73,7 @@ X.cube = function() {
    * @type {!number}
    * @protected
    */
-  this._lengthX = 5;
+  this._lengthX = 20;
   
   /**
    * The edge length in Y-direction.
@@ -81,7 +81,7 @@ X.cube = function() {
    * @type {!number}
    * @protected
    */
-  this._lengthY = 5;
+  this._lengthY = 20;
   
   /**
    * The edge length in Z-direction.
@@ -89,7 +89,7 @@ X.cube = function() {
    * @type {!number}
    * @protected
    */
-  this._lengthZ = 5;
+  this._lengthZ = 20;
   
   /**
    * @inheritDoc
@@ -264,7 +264,7 @@ X.cube.prototype.modified = function() {
 
   this.fromCSG(new CSG.cube({
     center: this._center,
-    radius: [this._lengthX * 2, this._lengthY * 2, this._lengthZ * 2]
+    radius: [this._lengthX / 2, this._lengthY / 2, this._lengthZ / 2]
   }));
   
   // call the super class
