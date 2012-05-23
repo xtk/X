@@ -46,15 +46,13 @@ goog.require('goog.structs.Map');
  * Create a 3D renderer inside a given DOM Element.
  * 
  * @constructor
- * @param {!Element} container The container (DOM Element) to place the renderer
- *          inside.
  * @extends X.renderer
  */
-X.renderer3D = function(container) {
+X.renderer3D = function() {
 
   //
   // call the standard constructor of X.renderer
-  goog.base(this, container);
+  goog.base(this);
   
   //
   // class attributes

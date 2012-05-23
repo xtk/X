@@ -61,7 +61,7 @@ goog.require('goog.Timer');
  * @constructor
  * @extends X.base
  */
-X.renderer = function(container) {
+X.renderer = function() {
 
   //
   // call the standard constructor of X.base

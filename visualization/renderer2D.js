@@ -39,15 +39,13 @@ goog.require('X.renderer');
  * Create a 2D renderer inside a given DOM Element.
  * 
  * @constructor
- * @param {!Element} container The container (DOM Element) to place the renderer
- *          inside.
  * @extends X.renderer
  */
-X.renderer2D = function(container, orientation) {
+X.renderer2D = function(orientation) {
 
   //
   // call the standard constructor of X.renderer
-  goog.base(this, container);
+  goog.base(this);
   
   //
   // class attributes
@@ -182,7 +180,7 @@ X.renderer2D.prototype.init = function() {
   // use the background color of the container by setting transparency here
   this.context.fillStyle = "rgba(0,0,0,0)";
   // .. and size
-  this.context.fillRect(0, 0, this['width'], this['height']);
+  this.context.fillRect(0, 0, this['canvas'].width, this['canvas'].height);
   
   // create an invisible canvas as a framebuffer
   this.frameBuffer = goog.dom.createDom('canvas');
