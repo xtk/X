@@ -40,7 +40,7 @@ goog.require('X.base');
  * @constructor
  * @param {!String} data The data to parse.
  * @extends X.base
- * @throws {Error} If the arguments are invalid.
+ * @throws {Error} An error, if the data is invalid.
  */
 X.parserHelper = function(data) {
 
@@ -63,18 +63,77 @@ X.parserHelper = function(data) {
    */
   this._classname = 'parserHelper';
   
+  /**
+   * The data.
+   * 
+   * @type {!String}
+   * @protected
+   */
   this._data = data;
   
+  /**
+   * The pointer to the current byte.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._dataPointer = 0;
   
+  /**
+   * The current size for elements.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._elementSize = 1;
   
-  // helper 'static'-like defs.
-  this.sizeOfChar = 1;
-  this.sizeOfShort = 2;
-  this.sizeOfInt = 4;
-  this.sizeOfFloat = 4;
-  this.sizeOfDouble = 8;
+  /**
+   * Size of Char.
+   * 
+   * @type {!number}
+   * @const
+   */
+  this._sizeOfChar = 1;
+  
+  /**
+   * Size of Short.
+   * 
+   * @type {!number}
+   * @const
+   */
+  this._sizeOfShort = 2;
+  
+  /**
+   * Size of Int.
+   * 
+   * @type {!number}
+   * @const
+   */
+  this._sizeOfInt = 4;
+  
+  /**
+   * Size of Float.
+   * 
+   * @type {!number}
+   * @const
+   */
+  this._sizeOfFloat = 4;
+  
+  /**
+   * Size of Double.
+   * 
+   * @type {!number}
+   * @const
+   */
+  this._sizeOfDouble = 8;
+  
+  /**
+   * The current parse function as a void pointer.
+   * 
+   * @type {?Function}
+   * @protected
+   */
+  this._parseFunction = null;
   
 };
 // inherit from X.base
@@ -82,82 +141,14 @@ goog.inherits(X.parserHelper, X.base);
 
 
 /**
- * Returns the currently associated parse function of this class. Should be
- * overloaded.
+ * Set the current parseFunction.
  * 
- * @param {*=} f1
- * @param {*=} f2
- * @param {*=} f3
- * @return {*}
+ * @param {?Function} func The pointer to a parse function.
+ * @param {!number} elementSize The size for elements.
  */
-X.parserHelper.prototype.parseFunction = function(f1, f2, f3) {
-
-  // do nothing
-  
-};
-
-
-X.parserHelper.prototype.elementSize = function() {
-
-  return this._elementSize;
-  
-};
-
-
-X.parserHelper.prototype.setElementSize = function(elementSize) {
-
-  if (!goog.isNumber(elementSize)) {
-    
-    throw new Error('Invalid element size.');
-    
-  }
-  
-  this._elementSize = elementSize;
-  
-};
-
-
-X.parserHelper.prototype.data = function() {
-
-  return this._data;
-  
-};
-
-
-/**
- * @param data
- */
-X.parserHelper.prototype.setData = function(data) {
-
-  // TODO validation
-  
-  this._data = data;
-  
-};
-
-
-X.parserHelper.prototype.dataPointer = function() {
-
-  return this._dataPointer;
-  
-};
-
-
-/**
- * @param dataPointer
- */
-X.parserHelper.prototype.setDataPointer = function(dataPointer) {
-
-  // TODO validation
-  
-  this._dataPointer = dataPointer;
-  
-};
-
-
 X.parserHelper.prototype.setParseFunction = function(func, elementSize) {
 
-  this.parseFunction = func;
+  this._parseFunction = func;
   this._elementSize = elementSize;
   
 };
@@ -177,7 +168,7 @@ X.parserHelper.prototype.read = function(chunks) {
     
   }
   
-  var ret = this.parseFunction(this._data, this._dataPointer, chunks);
+  var ret = this._parseFunction(this._data, this._dataPointer, chunks);
   var arr_byte = ret[0];
   this._dataPointer += this._elementSize * chunks;
   if (chunks == 1) {
