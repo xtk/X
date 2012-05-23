@@ -242,7 +242,7 @@ X.volume.prototype.copy_ = function(volume) {
   this._borders = volume._borders;
   
   // call the superclass' modified method
-  X.volume.superClass_.copy_.call(this, volume);
+  goog.base(this, 'copy_', volume);
   
 };
 
@@ -401,7 +401,7 @@ X.volume.prototype.modified = function() {
   }
   
   // call the superclass' modified method
-  X.volume.superClass_.modified.call(this);
+  goog.base(this, 'modified');
   
 };
 

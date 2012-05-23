@@ -171,7 +171,7 @@ X.slice.prototype.copy_ = function(slice) {
   this._hideChildren = slice._hideChildren;
   
   // call the superclass' modified method
-  X.slice.superClass_.copy_.call(this, slice);
+  goog.base(this, 'copy_', slice);
   
 };
 
