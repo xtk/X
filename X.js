@@ -65,10 +65,17 @@ X.counter = function() {
 
 window["X.counter"] = new X.counter();
 
-//
-// Injection mechanism for mixins (from
-// http://ejohn.org/blog/javascript-getters-and-setters/)
-//
+
+/**
+ * Injection mechanism for mixins (from
+ * http://ejohn.org/blog/javascript-getters-and-setters/) which means copying
+ * properties, getters/setters and functions from a source object to a target.
+ * Works best on instances.
+ * 
+ * @param {Object} a The target object.
+ * @param {Object} b The source object.
+ * @return {Object} The altered object.
+ */
 function inject(a, b) {
 
   for ( var i in b) { // iterate over all properties
@@ -98,6 +105,7 @@ function inject(a, b) {
 // XTK's event mechanism. This hack fixes this.
 //
 if (!Function.prototype.bind) {
+  
   Function.prototype.bind = function(oThis) {
 
     if (typeof this !== "function") {
