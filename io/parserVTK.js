@@ -184,8 +184,10 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
   // KEYWORD CHECK / MODE SWITCH
   //
   // identify the section of the next coming lines using the vtk keywords
-  if (firstLineField == 'POINTS') {
-    
+  switch (firstLineField) {
+  
+  case 'POINTS':
+
     // this means that real X,Y,Z points are coming
     
     this._pointsMode = true;
@@ -195,8 +197,8 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     // go to next line
     return;
     
-  } else if (firstLineField == 'VERTICES') {
-    
+  case 'VERTICES':
+
     // this means that triangles or points are coming
     
     this._geometryMode = true;
@@ -222,8 +224,8 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     // go to next line
     return;
     
-  } else if (firstLineField == 'TRIANGLE_STRIPS') {
-    
+  case 'TRIANGLE_STRIPS':
+
     // this means that triangle_strips are coming
     
     this._geometryMode = true;
@@ -238,8 +240,8 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     // go to next line
     return;
     
-  } else if (firstLineField == 'LINES') {
-    
+  case 'LINES':
+
     // this means that lines are coming
     
     this._geometryMode = true;
@@ -254,8 +256,8 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     // go to next line
     return;
     
-  } else if (firstLineField == 'POLYGONS') {
-    
+  case 'POLYGONS':
+
     // this means that polygons are coming
     // we only support polygons which are triangles right now
     
@@ -271,8 +273,8 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     // go to next line
     return;
     
-  } else if (firstLineField == 'POINT_DATA') {
-    
+  case 'POINT_DATA':
+
     // this means point-data is coming
     // f.e. normals
     
