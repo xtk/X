@@ -84,5 +84,6 @@ X.labelmap.prototype.modified = function() {
 };
 
 
-// export symbols (required for advanced compilation)
+// export symbols (required for advanced compilation and in particular the copy
+// constructors with duck typing)
 goog.exportSymbol('X.labelmap', X.labelmap);

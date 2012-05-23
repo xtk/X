@@ -40,7 +40,7 @@ goog.require('goog.math.Vec3');
  * Create a displayable 2D slice/plane.
  * 
  * @constructor
- * @param {X.slice=} slice Another X.s;ice to use as a template.
+ * @param {X.slice=} slice Another X.slice to use as a template.
  * @extends X.object
  */
 X.slice = function(slice) {
@@ -375,12 +375,6 @@ X.slice.prototype.create_ = function() {
   
 };
 
-X.slice.prototype.labelmap = function() {
-
-  return this._labelmap;
-  
-};
-
-// export symbols (required for advanced compilation)
+// export symbols (required for advanced compilation and in particular the copy
+// constructors with duck typing)
 goog.exportSymbol('X.slice', X.slice);
-goog.exportSymbol('X.slice.prototype.setup', X.slice.prototype.setup);
