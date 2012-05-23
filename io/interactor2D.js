@@ -70,6 +70,9 @@ X.interactor2D.prototype.onMouseWheel_ = function(event) {
   goog.base(this, 'onMouseWheel_', event);
   
   // create a new scroll event
+  //
+  // the scroll event triggers scrolling through the slices in a 2D renderer. we
+  // can not use the zoom event here since we also zoom on right click.
   var e = new X.event.ScrollEvent();
   
   // make sure, deltaY is defined
