@@ -358,7 +358,7 @@ X.renderer2D.prototype.autoScale_ = function() {
   _autoScale = 10 * _autoScale - 10;
   
   // propagate scale (zoom) to the camera
-  var _view = this['camera']['view'];
+  var _view = this['camera']._view;
   _view.setValueAt(2, 3, _autoScale);
   
 };
@@ -390,7 +390,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _height = this['height'];
   
   // first grab the view matrix which is 4x4 in favor of the 3D renderer
-  var _view = this['camera']['view'];
+  var _view = this['camera']._view;
   
   // clear the canvas
   this.context.save();

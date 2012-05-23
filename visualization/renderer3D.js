@@ -1138,30 +1138,30 @@ X.renderer3D.prototype.orientVolume_ = function(volume) {
   // TODO once we have arbitary sliced volumes, we need to modify the vectors
   // here
   var centroidVector = new goog.math.Vec3(1, 0, 0);
-  var realCentroidVector = this['camera']['view']
+  var realCentroidVector = this['camera']._view
       .multiplyByVector(centroidVector);
   var distanceFromEyeX = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(-1, 0, 0);
-  realCentroidVector = this['camera']['view'].multiplyByVector(centroidVector);
+  realCentroidVector = this['camera']._view.multiplyByVector(centroidVector);
   var distanceFromEyeX2 = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   
   centroidVector = new goog.math.Vec3(0, 1, 0);
-  realCentroidVector = this['camera']['view'].multiplyByVector(centroidVector);
+  realCentroidVector = this['camera']._view.multiplyByVector(centroidVector);
   var distanceFromEyeY = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(0, -1, 0);
-  realCentroidVector = this['camera']['view'].multiplyByVector(centroidVector);
+  realCentroidVector = this['camera']._view.multiplyByVector(centroidVector);
   var distanceFromEyeY2 = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   
   centroidVector = new goog.math.Vec3(0, 0, 1);
-  realCentroidVector = this['camera']['view'].multiplyByVector(centroidVector);
+  realCentroidVector = this['camera']._view.multiplyByVector(centroidVector);
   var distanceFromEyeZ = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   centroidVector = new goog.math.Vec3(0, 0, -1);
-  realCentroidVector = this['camera']['view'].multiplyByVector(centroidVector);
+  realCentroidVector = this['camera']._view.multiplyByVector(centroidVector);
   var distanceFromEyeZ2 = goog.math.Vec3.distance(this['camera'].position,
       realCentroidVector);
   
@@ -1386,10 +1386,10 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       this.context.DEPTH_BUFFER_BIT);
   
   // grab the current perspective from the camera
-  var perspectiveMatrix = this['camera'].perspective;
+  var perspectiveMatrix = this['camera']._perspective;
   
   // grab the current view from the camera
-  var viewMatrix = this['camera'].glView;
+  var viewMatrix = this['camera']._glview;
   
   // propagate perspective and view matrices to the uniforms of
   // the shader
