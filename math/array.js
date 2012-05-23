@@ -55,8 +55,20 @@ X.array = function(comparator) {
    */
   this._classname = 'array';
   
+  /**
+   * The underlying array.
+   * 
+   * @type {!Array}
+   * @protected
+   */
   this._array = [];
   
+  /**
+   * The void pointer to a comparator function.
+   * 
+   * @type {Function}
+   * @protected
+   */
   this._comparator = comparator;
   
 };
@@ -64,6 +76,12 @@ X.array = function(comparator) {
 goog.inherits(X.array, X.base);
 
 
+/**
+ * Add an object to the array.
+ * 
+ * @param {*} object The object to add.
+ * @return {boolean} TRUE if everything went fine.
+ */
 X.array.prototype.add = function(object) {
 
   this._array.push(object);
@@ -73,6 +91,9 @@ X.array.prototype.add = function(object) {
 };
 
 
+/**
+ * Completely clear the array.
+ */
 X.array.prototype.clear = function() {
 
   this._array.length = 0;
@@ -80,10 +101,14 @@ X.array.prototype.clear = function() {
 };
 
 
+/**
+ * Swap two elements in the array.
+ * 
+ * @param {!number} index1 Index of element1.
+ * @param {!number} index2 Index of element2.
+ */
 X.array.prototype.swap_ = function(index1, index2) {
 
-  // window.console.log('swapping');
-  
   var tmp = this._array[index1];
   
   this._array[index1] = this._array[index2];
@@ -93,6 +118,13 @@ X.array.prototype.swap_ = function(index1, index2) {
 };
 
 
+/**
+ * Orderly insert an element. This is part of the in-place sorting.
+ * 
+ * @param {!number} begin The start index.
+ * @param {!number} end The end index.
+ * @param {*} v The value/object to insert.
+ */
 X.array.prototype.insert_ = function(begin, end, v) {
 
   // SOME COMPARISON
@@ -110,7 +142,13 @@ X.array.prototype.insert_ = function(begin, end, v) {
 };
 
 
-
+/**
+ * Merge component of the in-place sorting.
+ * 
+ * @param {!number} begin The start index.
+ * @param {!number} begin_right The start index from the right.
+ * @param {!number} end The end index.
+ */
 X.array.prototype.merge_inplace_ = function(begin, begin_right, end) {
 
   for (; begin < begin_right; ++begin) {
@@ -132,7 +170,12 @@ X.array.prototype.merge_inplace_ = function(begin, begin_right, end) {
 };
 
 
-
+/**
+ * Recursive function to perform in-place merge sort.
+ * 
+ * @param {!number} begin The start index.
+ * @param {!number} end The end index.
+ */
 X.array.prototype.msort_ = function(begin, end) {
 
   var size = end - begin;
@@ -152,13 +195,21 @@ X.array.prototype.msort_ = function(begin, end) {
 };
 
 
-
+/**
+ * Start the in-place merge sort on the complete array.
+ */
 X.array.prototype.sort = function() {
 
   this.msort_(0, this._array.length);
   
 };
 
+
+/**
+ * Get the complete array.
+ * 
+ * @return {!Array} The complete array.
+ */
 X.array.prototype.values = function() {
 
   return this._array;
