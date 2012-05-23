@@ -67,10 +67,19 @@ X.loader = function() {
   this._classname = 'loader';
   
   /**
+   * The hash map holding all the jobs and their status.
+   * 
+   * @type {!goog.structs.Map}
    * @protected
    */
   this._jobs = new goog.structs.Map();
   
+  /**
+   * The overall progress value in the range of 0 and 1.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._progress = 0;
   
 };
@@ -129,7 +138,7 @@ X.loader.prototype.addProgress = function(value) {
  * @return {!Array} An array holding the following information [filepath,
  *         extension in uppercase without the '.', the associated but
  *         uninstantiated parser for this file format, additional (optional)
- *         flags which are passed to the parser]
+ *         flags which are passed to the parser, the response type]
  * @throws {Error} An error, if the configured file format is not supported.
  */
 X.loader.prototype.checkFileFormat = function(container) {
@@ -148,7 +157,7 @@ X.loader.prototype.checkFileFormat = function(container) {
   }
   
   return [filepath, extension, X.loader.extensions[extension][0],
-          X.loader.extensions[extension][1]];
+          X.loader.extensions[extension][1], X.loader.extensions[extension][2]];
   
 };
 
@@ -172,7 +181,9 @@ X.loader.prototype.load = function(container, object) {
   }
   
   // check the file format which returns the filepath, extension and the parser
-  var filepath = this.checkFileFormat(container)[0];
+  var _checkresult = this.checkFileFormat(container);
+  var filepath = _checkresult[0];
+  var responseType = _checkresult[4];
   
   // we use a simple XHR to get the file contents
   // this works for binary and for ascii files
@@ -192,7 +203,10 @@ X.loader.prototype.load = function(container, object) {
   
   // configure the URL
   request.open('GET', filepath, true);
-  request.responseType = 'arraybuffer';
+  if (responseType) {
+    // set the response type if != null, else fall back to the default 'text'
+    request.responseType = responseType;
+  }
   request.overrideMimeType("text/plain; charset=x-user-defined");
   request.setRequestHeader("Content-Type", "text/plain");
   
@@ -297,57 +311,6 @@ X.loader.prototype.failed = function(request, container, object) {
 };
 
 
-
-X.loader.prototype.loadTexture = function(object) {
-
-  if (!goog.isDefAndNotNull(object._texture)) {
-    
-    throw new Error('Internal error during texture loading.');
-    
-  }
-  // setup the image object
-  var image = new Image();
-  var currentTextureFilename = object._texture._file._path;
-  image.src = currentTextureFilename;
-  
-  // we let the object point to this image
-  object._texture._image = image;
-  
-  // handler after the image was completely loaded
-  goog.events.listenOnce(image, goog.events.EventType.LOAD,
-      this.loadTextureCompleted.bind(this, object));
-  
-  // add this loading job to our jobs map
-  this._jobs.set(object._texture._id, false);
-  
-  // this is a very fast step so we count it as 30% of the total texture load
-  // time
-  this.addProgress(0.3);
-};
-
-X.loader.prototype.loadTextureCompleted = function(object) {
-
-  // here we add the rest of the setup step 0.7 and a full progress tick for the
-  // load completion
-  this.addProgress(1.7);
-  
-  setTimeout(function() {
-
-    // at this point the image for the texture was loaded properly
-    object._texture._dirty = true;
-    object._texture._file._dirty = false;
-    
-    // fire the modified event
-    object.modified();
-    
-    // mark the loading job as completed
-    this._jobs.set(object._texture._id, true);
-    
-  }.bind(this), 100);
-  
-};
-
-
 /**
  * Supported data types by extension.
  * 
@@ -355,19 +318,20 @@ X.loader.prototype.loadTextureCompleted = function(object) {
  */
 X.loader.extensions = {
   // support for the following extensions and the mapping to X.parsers as well
-  // as some custom flags
-  'STL': [X.parserSTL, null],
-  'VTK': [X.parserVTK, null],
-  'TRK': [X.parserTRK, null],
-  'FSM': [X.parserFSM, null],
-  'NRRD': [X.parserNRRD, null],
-  'CRV': [X.parserCRV, null],
-  'MGH': [X.parserMGZ, false],
-  'MGZ': [X.parserMGZ, true],
-  'TXT': [X.parserLUT, null],
-  'LUT': [X.parserLUT, null],
-  'PNG': [X.parserIMAGE, 'png'],
-  'JPG': [X.parserIMAGE, 'jpeg'],
-  'JPEG': [X.parserIMAGE, 'jpeg'],
-  'GIF': [X.parserIMAGE, 'gif']
+  // as some custom flags and the result type
+  'STL': [X.parserSTL, null, null],
+  'VTK': [X.parserVTK, null, null],
+  'TRK': [X.parserTRK, null, null],
+  'FSM': [X.parserFSM, null, null],
+  'NRRD': [X.parserNRRD, null, null],
+  'CRV': [X.parserCRV, null, null],
+  'MGH': [X.parserMGZ, false, null],
+  'MGZ': [X.parserMGZ, true, null],
+  'TXT': [X.parserLUT, null, null],
+  'LUT': [X.parserLUT, null, null],
+  'PNG': [X.parserIMAGE, 'png', 'arraybuffer'], // here we use the arraybuffer
+  // response type
+  'JPG': [X.parserIMAGE, 'jpeg', 'arraybuffer'],
+  'JPEG': [X.parserIMAGE, 'jpeg', 'arraybuffer'],
+  'GIF': [X.parserIMAGE, 'gif', 'arraybuffer']
 };

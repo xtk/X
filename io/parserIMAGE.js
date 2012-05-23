@@ -33,7 +33,6 @@ goog.provide('X.parserIMAGE');
 // requires
 goog.require('X.event');
 goog.require('X.parser');
-goog.require('goog.crypt.base64');
 
 
 
@@ -68,35 +67,25 @@ goog.inherits(X.parserIMAGE, X.parser);
  */
 X.parserIMAGE.prototype.parse = function(container, object, data, flag) {
 
-  var uInt8Array = new Uint8Array(data);
-  var i = uInt8Array.length;
+  if (!(data instanceof ArrayBuffer)) {
+    
+    throw new Error();
+    
+  }
+  
+  // convert data to a byte array
+  var bytebuffer = new Uint8Array(data);
+  var i = bytebuffer.length;
+  
+  // create a binary string of the bytebuffer
   var binaryString = new Array(i);
   while (i--) {
-    binaryString[i] = String.fromCharCode(uInt8Array[i]);
+    binaryString[i] = String.fromCharCode(bytebuffer[i]);
   }
-  var data = binaryString.join('');
+  var convertedData = binaryString.join('');
   
-  var base64 = window.btoa(data);
-  
-
-
-  // window.URL = window.URL || window.webkitURL; // Take care of vendor
-  // prefixes.
-  
-  // base64 encode the data stream
-  // also, apply unicode conversion from
-  // https://developer.mozilla.org/en/DOM/window.btoa
-  
-  // works with blob
-  // var _encodedData = window.URL.createObjectURL(data);
-  
-  // var _encodedData = window.btoa(unescape(encodeURIComponent(data)));//
-  // window.URL.createObjectURL(data);//
-  // window.btoa(unescape(encodeURIComponent(data)));
-  // var _encodedData = encode64(data);// goog.crypt.base64.encodeString(data,
-  // true);
-  
-  // window.console.log(_encodedData);
+  // encode the converted binary string
+  var encodedData = window.btoa(convertedData);
   
   // create a new image
   var _image = new Image();
@@ -105,13 +94,23 @@ X.parserIMAGE.prototype.parse = function(container, object, data, flag) {
   goog.events.listenOnce(_image, goog.events.EventType.LOAD,
       this.parseCompleted.bind(this, _image, container, object, data, flag));
   
-  // set the image data via a data url
-  _image.src = "data:image/" + flag + ";base64," + base64;
-  
-  this.parseCompleted(_image, container, object, data, flag);
+  // set the encoded data using a data uri
+  _image.src = "data:image/" + flag + ";base64," + encodedData;
   
 };
 
+
+/**
+ * The callback which gets called when the image was set up using data uri. We
+ * fire the modified event here to tell the X.loader that we are done.
+ * 
+ * @param {!Image} image The image container.
+ * @param {!X.base} container A container which holds the loaded data. This can
+ *          be an X.object as well.
+ * @param {!X.object} object The object to configure.
+ * @param {!String} data The data to parse.
+ * @param {*} flag An additional flag.
+ */
 X.parserIMAGE.prototype.parseCompleted = function(image, container, object,
     data, flag) {
 
