@@ -62,7 +62,7 @@ X.renderer2D = function(orientation) {
    * @type {string}
    * @protected
    */
-  this['orientation'] = orientation;
+  this._orientation = orientation;
   
   /**
    * A frame buffer for slice data.
@@ -70,7 +70,7 @@ X.renderer2D = function(orientation) {
    * @type {?Element}
    * @protected
    */
-  this.frameBuffer = null;
+  this._frameBuffer = null;
   
   /**
    * The rendering context of the slice frame buffer.
@@ -78,7 +78,7 @@ X.renderer2D = function(orientation) {
    * @type {?Object}
    * @protected
    */
-  this.frameBufferContext = null;
+  this._frameBufferContext = null;
   
   /**
    * A frame buffer for label data.
@@ -86,7 +86,7 @@ X.renderer2D = function(orientation) {
    * @type {?Element}
    * @protected
    */
-  this.labelFrameBuffer = null;
+  this._labelFrameBuffer = null;
   
   /**
    * The rendering context of the label frame buffer.
@@ -94,7 +94,7 @@ X.renderer2D = function(orientation) {
    * @type {?Object}
    * @protected
    */
-  this.labelFrameBufferContext = null;
+  this._labelFrameBufferContext = null;
   
   /**
    * The current slice width.
@@ -102,7 +102,7 @@ X.renderer2D = function(orientation) {
    * @type {number}
    * @protected
    */
-  this.sliceWidth = 0;
+  this._sliceWidth = 0;
   
   /**
    * The current slice height.
@@ -110,7 +110,7 @@ X.renderer2D = function(orientation) {
    * @type {number}
    * @protected
    */
-  this.sliceHeight = 0;
+  this._sliceHeight = 0;
   
 };
 // inherit from X.base
@@ -137,14 +137,14 @@ X.renderer2D.prototype.onScroll_ = function(event) {
   goog.base(this, 'onScroll_', event);
   
   // grab the current volume
-  var _volume = this.topLevelObjects[0];
+  var _volume = this._topLevelObjects[0];
   // .. if there is none, exit right away
   if (!_volume) {
     return;
   }
   
   // switch between different orientations
-  var _orientation = this['orientation'];
+  var _orientation = this._orientation;
   
   if (event._up) {
     
@@ -161,7 +161,7 @@ X.renderer2D.prototype.onScroll_ = function(event) {
   _volume.modified();
   
   // execute the callback
-  eval('this.onScroll();');
+  eval('this._onScroll();');
   
   // .. and trigger re-rendering
   this.render_(false, false);
@@ -178,23 +178,23 @@ X.renderer2D.prototype.init = function() {
   goog.base(this, 'init', '2d');
   
   // use the background color of the container by setting transparency here
-  this.context.fillStyle = "rgba(0,0,0,0)";
+  this._context.fillStyle = "rgba(0,0,0,0)";
   // .. and size
-  this.context.fillRect(0, 0, this['canvas'].width, this['canvas'].height);
+  this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
   
   // create an invisible canvas as a framebuffer
-  this.frameBuffer = goog.dom.createDom('canvas');
-  this.labelFrameBuffer = goog.dom.createDom('canvas');
+  this._frameBuffer = goog.dom.createDom('canvas');
+  this._labelFrameBuffer = goog.dom.createDom('canvas');
   //
   // 
   // try to apply nearest-neighbor interpolation -> does not work right now
   // so we ignore it
-  // this.labelFrameBuffer.style.imageRendering = 'optimizeSpeed';
-  // this.labelFrameBuffer.style.imageRendering = '-moz-crisp-edges';
-  // this.labelFrameBuffer.style.imageRendering = '-o-crisp-edges';
-  // this.labelFrameBuffer.style.imageRendering = '-webkit-optimize-contrast';
-  // this.labelFrameBuffer.style.imageRendering = 'optimize-contrast';
-  // this.labelFrameBuffer.style.msInterpolationMode = 'nearest-neighbor';
+  // this._labelFrameBuffer.style.imageRendering = 'optimizeSpeed';
+  // this._labelFrameBuffer.style.imageRendering = '-moz-crisp-edges';
+  // this._labelFrameBuffer.style.imageRendering = '-o-crisp-edges';
+  // this._labelFrameBuffer.style.imageRendering = '-webkit-optimize-contrast';
+  // this._labelFrameBuffer.style.imageRendering = 'optimize-contrast';
+  // this._labelFrameBuffer.style.msInterpolationMode = 'nearest-neighbor';
   
 };
 
@@ -263,7 +263,7 @@ X.renderer2D.prototype.update_ = function(object) {
     // a colortable file is associated to this object and it is dirty..
     
     // start loading
-    this.loader.load(colortable, object);
+    this._loader.load(colortable, object);
     
     return;
     
@@ -276,7 +276,7 @@ X.renderer2D.prototype.update_ = function(object) {
     // this object is based on an external file and it is dirty..
     
     // start loading..
-    this.loader.load(object, object);
+    this._loader.load(object, object);
     
     return;
     
@@ -291,27 +291,27 @@ X.renderer2D.prototype.update_ = function(object) {
   var _dimensions = object._dimensions;
   
   // check the orientation and store a pointer to the slices
-  if (this['orientation'] == 'X') {
+  if (this._orientation == 'X') {
     
-    this.slices = object._slicesX._children;
+    this._slices = object._slicesX._children;
     _sliceWidth = _dimensions[2];
     _sliceHeight = _dimensions[1];
     
-  } else if (this['orientation'] == 'Y') {
+  } else if (this._orientation == 'Y') {
     
-    this.slices = object._slicesY._children;
+    this._slices = object._slicesY._children;
     _sliceWidth = _dimensions[0];
     _sliceHeight = _dimensions[2];
     
-  } else if (this['orientation'] == 'Z') {
+  } else if (this._orientation == 'Z') {
     
-    this.slices = object._slicesZ._children;
+    this._slices = object._slicesZ._children;
     _sliceWidth = _dimensions[0];
     _sliceHeight = _dimensions[1];
     
   }
   
-  if (this['orientation'] == 'X') {
+  if (this._orientation == 'X') {
     
     // the X oriented texture is twisted ..
     var _newSliceWidth = _sliceHeight;
@@ -320,25 +320,25 @@ X.renderer2D.prototype.update_ = function(object) {
     
   }
   // .. and store the dimensions
-  this.sliceWidth = _sliceWidth;
-  this.sliceHeight = _sliceHeight;
+  this._sliceWidth = _sliceWidth;
+  this._sliceHeight = _sliceHeight;
   
   // update the invisible canvas to store the current slice
-  var _frameBuffer = this.frameBuffer;
+  var _frameBuffer = this._frameBuffer;
   _frameBuffer.width = _sliceWidth;
   _frameBuffer.height = _sliceHeight;
-  var _frameBuffer2 = this.labelFrameBuffer;
+  var _frameBuffer2 = this._labelFrameBuffer;
   _frameBuffer2.width = _sliceWidth;
   _frameBuffer2.height = _sliceHeight;
   // .. and the context
-  this.frameBufferContext = _frameBuffer.getContext('2d');
-  this.labelFrameBufferContext = _frameBuffer2.getContext('2d');
+  this._frameBufferContext = _frameBuffer.getContext('2d');
+  this._labelFrameBufferContext = _frameBuffer2.getContext('2d');
   
 
 
   // do the following only if the object is brand-new
   if (!existed) {
-    this.objects.add(object);
+    this._objects.add(object);
     this.autoScale_();
   }
   
@@ -351,14 +351,14 @@ X.renderer2D.prototype.update_ = function(object) {
 X.renderer2D.prototype.autoScale_ = function() {
 
   // let's auto scale for best fit
-  var _wScale = this['width'] / this.sliceWidth;
-  var _hScale = this['height'] / this.sliceHeight;
+  var _wScale = this._width / this._sliceWidth;
+  var _hScale = this._height / this._sliceHeight;
   
   var _autoScale = Math.min(_wScale, _hScale);
   _autoScale = 10 * _autoScale - 10;
   
   // propagate scale (zoom) to the camera
-  var _view = this['camera']._view;
+  var _view = this._camera._view;
   _view.setValueAt(2, 3, _autoScale);
   
 };
@@ -373,7 +373,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   goog.base(this, 'render_', picking, invoked);
   
   // only proceed if there are actually objects to render
-  var _objects = this.objects.values();
+  var _objects = this._objects.values();
   var _numberOfObjects = _objects.length;
   if (_numberOfObjects == 0) {
     // there is nothing to render
@@ -386,41 +386,41 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   //
   
   // viewport size
-  var _width = this['width'];
-  var _height = this['height'];
+  var _width = this._width;
+  var _height = this._height;
   
   // first grab the view matrix which is 4x4 in favor of the 3D renderer
-  var _view = this['camera']._view;
+  var _view = this._camera._view;
   
   // clear the canvas
-  this.context.save();
-  this.context.clearRect(-_width, -_height, 2 * _width, 2 * _height);
-  this.context.restore();
+  this._context.save();
+  this._context.clearRect(-_width, -_height, 2 * _width, 2 * _height);
+  this._context.restore();
   
   // transform the canvas according to the view matrix
   var _x = 1 * _view.getValueAt(0, 3);
   var _y = -1 * _view.getValueAt(1, 3); // we need to flip y here
   // .. this includes zoom
   var _normalizedScale = Math.max(1 + _view.getValueAt(2, 3) / 10, 0.6);
-  this.context.setTransform(_normalizedScale, 0, 0, _normalizedScale, _x, _y);
+  this._context.setTransform(_normalizedScale, 0, 0, _normalizedScale, _x, _y);
   
 
   //
   // grab the volume and current slice
   //
-  var _volume = this.topLevelObjects[0];
-  var _currentSlice = _volume['index' + this['orientation']];
+  var _volume = this._topLevelObjects[0];
+  var _currentSlice = _volume['index' + this._orientation];
   
   // .. here is the current slice
-  var _slice = this.slices[parseInt(_currentSlice, 10)];
+  var _slice = this._slices[parseInt(_currentSlice, 10)];
   var _sliceData = _slice._texture._rawData;
   var _currentLabelMap = _slice._labelmap;
   var _labelData = null;
   if (_currentLabelMap) {
     _labelData = _currentLabelMap._rawData;
   }
-  var _sliceWidth = this.sliceWidth;
-  var _sliceHeight = this.sliceHeight;
+  var _sliceWidth = this._sliceWidth;
+  var _sliceHeight = this._sliceHeight;
   
   // canvas center, taking zooming and panning in account
   var _canvasCenterX = (1 / (_normalizedScale * 2)) *
@@ -432,8 +432,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   //
   // FRAME BUFFERING
   //  
-  var _imageFBContext = this.frameBufferContext;
-  var _labelFBContext = this.labelFrameBufferContext;
+  var _imageFBContext = this._frameBufferContext;
+  var _labelFBContext = this._labelFrameBufferContext;
   
   // grab the current pixels
   var _imageData = _imageFBContext
@@ -511,17 +511,17 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   
   // draw the slice frame buffer (which equals the slice data) to the main
   // context
-  this.context.globalAlpha = 1.0; // draw fully opaque
-  this.context.drawImage(this.frameBuffer, _canvasCenterX, _canvasCenterY);
+  this._context.globalAlpha = 1.0; // draw fully opaque
+  this._context.drawImage(this._frameBuffer, _canvasCenterX, _canvasCenterY);
   
   // draw the labels with a configured opacity
   if (_currentLabelMap && _volume._labelmap._visible) {
     
     var _labelOpacity = _volume._labelmap._opacity;
     
-    this.context.globalAlpha = _labelOpacity; // draw transparent depending on
+    this._context.globalAlpha = _labelOpacity; // draw transparent depending on
     // opacity
-    this.context.drawImage(this.labelFrameBuffer, _canvasCenterX,
+    this._context.drawImage(this._labelFrameBuffer, _canvasCenterX,
         _canvasCenterY);
   }
   
