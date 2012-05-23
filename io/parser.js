@@ -123,9 +123,20 @@ X.parser.prototype.stats_calc = function(data) {
   return r.deviation = Math.sqrt(r.variance = s / t), r;
 };
 
+//
+// PARSE FUNCTIONS
+//
 // Some parse functions were inspired by Dan Ginsburg, Children's Hospital
 // Boston (see LICENSE)
 
+/**
+ * Parse a string from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} length The length of the string.
+ * @return {string} The parsed string.
+ */
 X.parser.prototype.parseString = function(data, offset, length) {
 
   return data.substr(offset, length);
@@ -133,6 +144,13 @@ X.parser.prototype.parseString = function(data, offset, length) {
 };
 
 
+/**
+ * Parse a Float32 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseFloat32 = function(data, offset) {
 
   var b3 = this.parseUChar8(data, offset), b2 = this.parseUChar8(data,
@@ -151,6 +169,13 @@ X.parser.prototype.parseFloat32 = function(data, offset) {
 };
 
 
+/**
+ * Parse an endian swaped Float32 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseFloat32EndianSwapped = function(data, offset) {
 
   var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
@@ -169,6 +194,15 @@ X.parser.prototype.parseFloat32EndianSwapped = function(data, offset) {
 };
 
 
+/**
+ * Parse an array of Float32 values from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
 X.parser.prototype.parseFloat32Array = function(data, offset, elements) {
 
   var arr = new Array();
@@ -188,6 +222,15 @@ X.parser.prototype.parseFloat32Array = function(data, offset, elements) {
 };
 
 
+/**
+ * Parse an array of endian swapped Float32 values from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
 X.parser.prototype.parseFloat32EndianSwappedArray = function(data, offset,
     elements) {
 
@@ -208,6 +251,13 @@ X.parser.prototype.parseFloat32EndianSwappedArray = function(data, offset,
 };
 
 
+/**
+ * Parse an UInt32 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseUInt32 = function(data, offset) {
 
   var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
@@ -217,6 +267,14 @@ X.parser.prototype.parseUInt32 = function(data, offset) {
   return (b3 << 24) + (b2 << 16) + (b1 << 8) + b0;
 };
 
+
+/**
+ * Parse an endian swaped UInt32 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseUInt32EndianSwapped = function(data, offset) {
 
   var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
@@ -227,6 +285,15 @@ X.parser.prototype.parseUInt32EndianSwapped = function(data, offset) {
 };
 
 
+/**
+ * Parse an array of endian swapped UInt32 values from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
 X.parser.prototype.parseUInt32EndianSwappedArray = function(data, offset,
     elements) {
 
@@ -247,6 +314,13 @@ X.parser.prototype.parseUInt32EndianSwappedArray = function(data, offset,
 };
 
 
+/**
+ * Parse an endian swaped UInt24 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseUInt24EndianSwapped = function(data, offset) {
 
   var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
@@ -256,6 +330,14 @@ X.parser.prototype.parseUInt24EndianSwapped = function(data, offset) {
   return ((b0 << 16) + (b1 << 8) + (b2)) & 0x00FFFFFF;
 };
 
+
+/**
+ * Parse an UInt16 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseUInt16 = function(data, offset) {
 
   var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
@@ -265,11 +347,20 @@ X.parser.prototype.parseUInt16 = function(data, offset) {
   
 };
 
+
+/**
+ * Parse an array of UInt16 values from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
 X.parser.prototype.parseUInt16Array = function(data, offset, elements) {
 
   var arr = new Array();
   
-
   var max = 0;
   var min = Infinity;
   
@@ -285,6 +376,13 @@ X.parser.prototype.parseUInt16Array = function(data, offset, elements) {
 };
 
 
+/**
+ * Parse an endian swapped UInt16 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseUInt16EndianSwapped = function(data, offset) {
 
   var b0 = this.parseUChar8(data, offset);
@@ -295,6 +393,15 @@ X.parser.prototype.parseUInt16EndianSwapped = function(data, offset) {
 };
 
 
+/**
+ * Parse an array of endian swapped UInt16 values from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
 X.parser.prototype.parseUInt16EndianSwappedArray = function(data, offset,
     elements) {
 
@@ -315,6 +422,13 @@ X.parser.prototype.parseUInt16EndianSwappedArray = function(data, offset,
 };
 
 
+/**
+ * Parse a signed Char8 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseSChar8 = function(data, offset) {
 
   var b = this.parseUChar8(data, offset);
@@ -322,12 +436,29 @@ X.parser.prototype.parseSChar8 = function(data, offset) {
   
 };
 
+
+/**
+ * Parse a unsigned Char8 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseUChar8 = function(data, offset) {
 
   return data.charCodeAt(offset) & 0xff;
 };
 
 
+/**
+ * Parse an array of unsigned Char8 values from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
 X.parser.prototype.parseUChar8Array = function(data, offset, elements) {
 
   var arr = new Array();
@@ -347,6 +478,18 @@ X.parser.prototype.parseUChar8Array = function(data, offset, elements) {
 };
 
 
+/**
+ * Reslice a data stream to fill the slices of an X.volume in X,Y and Z
+ * directions. The given volume (object) has to be created at this point
+ * according to the proper dimensions. This also takes care of a possible
+ * associated label map which has to be loaded before.
+ * 
+ * @param {!X.object} object The X.volume to fill.
+ * @param {!Array} datastream The datastream as an array.
+ * @param {!Array} sizes The sizes of the volume as an array [X,Y,Z].
+ * @param {!number} min The min. scalar intensity value.
+ * @param {!number} max The max. scalar intensity value.
+ */
 X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
 
   // number of slices in scan direction
