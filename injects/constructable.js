@@ -50,6 +50,11 @@ X.constructable = function() {
 };
 
 
+/**
+ * Convert this X.object to a CSG object.
+ * 
+ * @return {!CSG} The created CSG object.
+ */
 X.constructable.prototype.toCSG = function() {
 
   var numberOfPoints = this._points.count;
@@ -99,6 +104,12 @@ X.constructable.prototype.toCSG = function() {
 };
 
 
+/**
+ * Convert a CSG object to this X.object.
+ * 
+ * @param {!CSG} csg The CSG object.
+ * @throws {Error} An error if the given object is invalid.
+ */
 X.constructable.prototype.fromCSG = function(csg) {
 
   if (!goog.isDefAndNotNull(csg) || !(csg instanceof CSG)) {
@@ -198,6 +209,14 @@ X.constructable.prototype.fromCSG = function(csg) {
 };
 
 
+/**
+ * Union this X.object with either another X.object or a CSG object and return a
+ * new X.object.
+ * 
+ * @param {!CSG|X.object} object The other X.object or CSG object.
+ * @return {X.object} A new X.object.
+ * @throws {Error} An error if the given object is invalid.
+ */
 X.constructable.prototype.union = function(object) {
 
   if (!goog.isDefAndNotNull(object) ||
@@ -225,6 +244,14 @@ X.constructable.prototype.union = function(object) {
 };
 
 
+/**
+ * Subtract an X.object or a CSG object from this X.object and return a new
+ * X.object.
+ * 
+ * @param {!CSG|X.object} object The object to subtract.
+ * @return {X.object} A new X.object.
+ * @throws {Error} An error if the given object is invalid.
+ */
 X.constructable.prototype.subtract = function(object) {
 
   if (!goog.isDefAndNotNull(object) ||
@@ -252,6 +279,14 @@ X.constructable.prototype.subtract = function(object) {
 };
 
 
+/**
+ * Intersect an X.object or a CSG object with this X.object and return a new
+ * X.object.
+ * 
+ * @param {!CSG|X.object} object The object to use for the intersect operation.
+ * @return {X.object} A new X.object.
+ * @throws {Error} An error if the given object is invalid.
+ */
 X.constructable.prototype.intersect = function(object) {
 
   if (!goog.isDefAndNotNull(object) ||
@@ -280,27 +315,16 @@ X.constructable.prototype.intersect = function(object) {
 };
 
 
-X.constructable.prototype.inverse = function(object) {
+/**
+ * Inverse this X.object and return a new X.object.
+ * 
+ * @return {X.object} A new X.object.
+ */
+X.constructable.prototype.inverse = function() {
 
-  if (!goog.isDefAndNotNull(object) ||
-      (!(object instanceof CSG) && !(object instanceof X.object))) {
-    
-    throw new Error('Invalid object.');
-    
-  }
-  
-  var csg = object;
-  
-  // if we operate on another X.object, we gotta convert
-  if (object instanceof X.object) {
-    
-    csg = csg.toCSG();
-    
-  }
-  
   var result = new X.object();
   inject(result, new X.constructable()); // give a special injection
-  result.fromCSG(this.toCSG().inverse(csg));
+  result.fromCSG(this.toCSG().inverse());
   
   return result;
   
