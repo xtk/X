@@ -41,10 +41,10 @@ goog.require('X.triplets');
 
 
 /**
- * Create a displayable object. Objects may have points, colors, a texture, or
- * may be loaded from a file in addition to opacity and visibility settings. If
- * another X.object is passed to this constructor, the properties from this
- * X.object are used to configure the new one.
+ * Create a displayable object. Objects may have points, colors, a texture in
+ * addition to opacity and visibility settings. If another X.object is passed to
+ * this constructor, the properties from this X.object are used to configure the
+ * new one.
  * 
  * @constructor
  * @param {X.object=} object Another X.object to use as a template.
@@ -90,7 +90,6 @@ X.object = function(object) {
   this._scalars = null;
   
   // inject functionality
-  inject(this, new X.loadable()); // this object is loadable from a file
   inject(this, new X.displayable()); // this object is displayable
   
   if (goog.isDefAndNotNull(object)) {

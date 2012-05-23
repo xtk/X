@@ -196,6 +196,8 @@ X.volume = function(volume) {
    */
   this._borders = true;
   
+  // inject functionality
+  inject(this, new X.loadable()); // this object is loadable from a file
   inject(this, new X.thresholdable()); // this object is thresholdable
   
   if (goog.isDefAndNotNull(volume)) {
