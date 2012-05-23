@@ -256,6 +256,9 @@ X.volume.prototype.create_ = function() {
 
   // remove all old children
   this._children.length = 0;
+  this._slicesX._children.length = 0;
+  this._slicesY._children.length = 0;
+  this._slicesZ._children.length = 0;
   
   // add the new children
   this._children.push(this._slicesX);
