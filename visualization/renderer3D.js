@@ -449,7 +449,7 @@ X.renderer3D.prototype.addShaders = function(shaders) {
   
   _attributes.forEach(function(a) {
 
-    a = eval("X.shaders.attributes." + a);
+    a = X.shaders.attributes[a];
     this.attributePointers.set(a, this.context.getAttribLocation(
         this.shaderProgram, a));
     this.context.enableVertexAttribArray(this.attributePointers.get(a));
@@ -461,7 +461,7 @@ X.renderer3D.prototype.addShaders = function(shaders) {
   
   _uniforms.forEach(function(u) {
 
-    u = eval("X.shaders.uniforms." + u);
+    u = X.shaders.uniforms[u];
     this.uniformLocations.set(u, this.context.getUniformLocation(
         this.shaderProgram, u));
     

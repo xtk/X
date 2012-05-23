@@ -334,7 +334,7 @@ X.shaders.prototype.validate = function() {
   // shader
   var attributesValid = attributes.every(function(a) {
 
-    a = eval("X.shaders.attributes." + a);
+    a = X.shaders.attributes[a];
     return (this._vertexshaderSource.search(a) != -1) ||
         (this._fragmentshaderSource.search(a) != -1);
     
@@ -350,7 +350,7 @@ X.shaders.prototype.validate = function() {
   // shader
   var uniformsValid = uniforms.every(function(u) {
 
-    u = eval("X.shaders.uniforms." + u);
+    u = X.shaders.uniforms[u];
     return (this._vertexshaderSource.search(u) != -1) ||
         (this._fragmentshaderSource.search(u) != -1);
     
@@ -365,6 +365,3 @@ X.shaders.prototype.validate = function() {
   return true;
   
 };
-
-goog.exportSymbol('X.shaders.attributes', X.shaders.attributes);
-goog.exportSymbol('X.shaders.uniforms', X.shaders.uniforms);
