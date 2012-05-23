@@ -83,7 +83,7 @@ X.interactor = function(element) {
    * @type {!Element}
    * @protected
    */
-  this.element = element;
+  this._element = element;
   
   /**
    * The listener id for mouse wheel observation.
@@ -91,7 +91,7 @@ X.interactor = function(element) {
    * @type {?number}
    * @protected
    */
-  this.mouseWheelListener = null;
+  this._mouseWheelListener = null;
   
   /**
    * The listener id for mouse down observation.
@@ -99,7 +99,7 @@ X.interactor = function(element) {
    * @type {?number}
    * @protected
    */
-  this.mouseDownListener = null;
+  this._mouseDownListener = null;
   
   /**
    * The listener id for mouse up observation.
@@ -107,7 +107,7 @@ X.interactor = function(element) {
    * @type {?number}
    * @protected
    */
-  this.mouseUpListener = null;
+  this._mouseUpListener = null;
   
   /**
    * The listener id for mouse move observation.
@@ -115,7 +115,7 @@ X.interactor = function(element) {
    * @type {?number}
    * @protected
    */
-  this.mouseMoveListener = null;
+  this._mouseMoveListener = null;
   
   /**
    * The listener id for mouse out observation.
@@ -123,7 +123,7 @@ X.interactor = function(element) {
    * @type {?number}
    * @protected
    */
-  this.mouseOutListener = null;
+  this._mouseOutListener = null;
   
   /**
    * The browser independent mouse wheel handler.
@@ -131,7 +131,7 @@ X.interactor = function(element) {
    * @type {?goog.events.MouseWheelHandler}
    * @protected
    */
-  this.mouseWheelHandler = null;
+  this._mouseWheelHandler = null;
   
   /**
    * Indicates if the mouse is inside the element.
@@ -139,7 +139,7 @@ X.interactor = function(element) {
    * @type {boolean}
    * @protected
    */
-  this.mouseInside = true;
+  this._mouseInside = true;
   
   /**
    * Indicates if the left mouse button is pressed.
@@ -147,7 +147,7 @@ X.interactor = function(element) {
    * @type {boolean}
    * @protected
    */
-  this['leftButtonDown'] = false;
+  this._leftButtonDown = false;
   
   /**
    * Indicates if the middle mouse button is pressed.
@@ -155,7 +155,7 @@ X.interactor = function(element) {
    * @type {boolean}
    * @protected
    */
-  this['middleButtonDown'] = false;
+  this._middleButtonDown = false;
   
   /**
    * Indicates if the right mouse button is pressed.
@@ -163,7 +163,7 @@ X.interactor = function(element) {
    * @type {boolean}
    * @protected
    */
-  this['rightButtonDown'] = false;
+  this._rightButtonDown = false;
   
   /**
    * The previous mouse position.
@@ -171,7 +171,7 @@ X.interactor = function(element) {
    * @type {!goog.math.Vec2}
    * @protected
    */
-  this.lastMousePosition = new goog.math.Vec2(0, 0);
+  this._lastMousePosition = new goog.math.Vec2(0, 0);
   
   /**
    * The configuration of this interactor.
@@ -192,6 +192,42 @@ goog.inherits(X.interactor, X.base);
 
 
 /**
+ * Get the state of the left mouse button.
+ * 
+ * @return {boolean} TRUE if the button is pressed, FALSE otherwise.
+ */
+X.interactor.prototype.__defineGetter__('leftButtonDown', function() {
+
+  return this._leftButtonDown;
+  
+});
+
+
+/**
+ * Get the state of the middle mouse button.
+ * 
+ * @return {boolean} TRUE if the button is pressed, FALSE otherwise.
+ */
+X.interactor.prototype.__defineGetter__('middleButtonDown', function() {
+
+  return this._middleButtonDown;
+  
+});
+
+
+/**
+ * Get the state of the right mouse button.
+ * 
+ * @return {boolean} TRUE if the button is pressed, FALSE otherwise.
+ */
+X.interactor.prototype.__defineGetter__('rightButtonDown', function() {
+
+  return this._rightButtonDown;
+  
+});
+
+
+/**
  * Observe mouse wheel interaction on the associated DOM element.
  */
 X.interactor.prototype.init = function() {
@@ -200,39 +236,39 @@ X.interactor.prototype.init = function() {
     
     // we use the goog.events.MouseWheelHandler for a browser-independent
     // implementation
-    this.mouseWheelHandler = new goog.events.MouseWheelHandler(this.element);
+    this._mouseWheelHandler = new goog.events.MouseWheelHandler(this._element);
     
-    this.mouseWheelListener = goog.events.listen(this.mouseWheelHandler,
+    this._mouseWheelListener = goog.events.listen(this._mouseWheelHandler,
         goog.events.MouseWheelHandler.EventType.MOUSEWHEEL, this.onMouseWheel_
             .bind(this));
     
   } else {
     
     // remove all mouse wheel observers, if they exist..
-    goog.events.unlistenByKey(this.mouseWheelListener);
+    goog.events.unlistenByKey(this._mouseWheelListener);
     
-    this.mouseWheelHandler = null;
+    this._mouseWheelHandler = null;
     
   }
   
   if (this['config']['MOUSECLICKS_ENABLED']) {
     
     // mouse down
-    this.mouseDownListener = goog.events.listen(this.element,
+    this._mouseDownListener = goog.events.listen(this._element,
         goog.events.EventType.MOUSEDOWN, this.onMouseDown_.bind(this));
     
     // mouse up
-    this.mouseUpListener = goog.events.listen(this.element,
+    this._mouseUpListener = goog.events.listen(this._element,
         goog.events.EventType.MOUSEUP, this.onMouseUp_.bind(this));
     
   } else {
     
     // remove the observer, if it exists..
-    // goog.events.unlisten(this.element, goog.events.EventType.MOUSEDOWN);
-    goog.events.unlistenByKey(this.mouseDownListener);
+    // goog.events.unlisten(this._element, goog.events.EventType.MOUSEDOWN);
+    goog.events.unlistenByKey(this._mouseDownListener);
     
     // remove the observer, if it exists..
-    goog.events.unlistenByKey(this.mouseUpListener);
+    goog.events.unlistenByKey(this._mouseUpListener);
     
   }
   
@@ -242,7 +278,7 @@ X.interactor.prototype.init = function() {
     // found no way to use goog.events for that? tried everything..
     // according to http://help.dottoro.com/ljhwjsss.php, this method is
     // compatible with all browsers but opera
-    this.element.oncontextmenu = function() {
+    this._element.oncontextmenu = function() {
 
       return false;
       
@@ -251,7 +287,7 @@ X.interactor.prototype.init = function() {
   } else {
     
     // re-activate right-click context menu
-    this.element.oncontextmenu = null;
+    this._element.oncontextmenu = null;
   }
   
   if (this['config']['KEYBOARD_ENABLED']) {
@@ -272,17 +308,17 @@ X.interactor.prototype.init = function() {
   // we do make sure, we add them only once
   
   // remove the observer, if it exists..
-  goog.events.unlistenByKey(this.mouseMoveListener);
+  goog.events.unlistenByKey(this._mouseMoveListener);
   
   // remove the observer, if it exists..
-  goog.events.unlistenByKey(this.mouseOutListener);
+  goog.events.unlistenByKey(this._mouseOutListener);
   
   // mouse movement inside the element
-  this.mouseMoveListener = goog.events.listen(this.element,
+  this._mouseMoveListener = goog.events.listen(this._element,
       goog.events.EventType.MOUSEMOVE, this.onMouseMovementInside_.bind(this));
   
   // mouse movement outside the element
-  this.mouseOutListener = goog.events.listen(this.element,
+  this._mouseOutListener = goog.events.listen(this._element,
       goog.events.EventType.MOUSEOUT, this.onMouseMovementOutside_.bind(this));
   
 };
@@ -299,21 +335,21 @@ X.interactor.prototype.onMouseDown_ = function(event) {
   if (event.button == goog.events.BrowserEvent.MouseButton.LEFT) {
     
     // left button click
-    this['leftButtonDown'] = true;
+    this._leftButtonDown = true;
     
   } else if (event.button == goog.events.BrowserEvent.MouseButton.MIDDLE) {
     
     // middle button click
-    this['middleButtonDown'] = true;
+    this._middleButtonDown = true;
     
   } else if (event.button == goog.events.BrowserEvent.MouseButton.RIGHT) {
     
     // right button click
-    this['rightButtonDown'] = true;
+    this._rightButtonDown = true;
     
   }
   
-  eval("this.onMouseDown(this['leftButtonDown'],this['middleButtonDown'],this['rightButtonDown'])");
+  eval("this.onMouseDown(this._leftButtonDown,this._middleButtonDown,this._rightButtonDown)");
   
   // end all hovering since the scene can change and a caption might be
   // misplaced etc.
@@ -350,21 +386,21 @@ X.interactor.prototype.onMouseUp_ = function(event) {
   if (event.button == goog.events.BrowserEvent.MouseButton.LEFT) {
     
     // left button click
-    this['leftButtonDown'] = false;
+    this._leftButtonDown = false;
     
   } else if (event.button == goog.events.BrowserEvent.MouseButton.MIDDLE) {
     
     // middle button click
-    this['middleButtonDown'] = false;
+    this._middleButtonDown = false;
     
   } else if (event.button == goog.events.BrowserEvent.MouseButton.RIGHT) {
     
     // right button click
-    this['rightButtonDown'] = false;
+    this._rightButtonDown = false;
     
   }
   
-  eval("this.onMouseUp(this['leftButtonDown'],this['middleButtonDown'],this['rightButtonDown'])");
+  eval("this.onMouseUp(this._leftButtonDown,this._middleButtonDown,this._rightButtonDown)");
   
   // end all hovering since the scene can change and a caption might be
   // misplaced etc.
@@ -400,7 +436,7 @@ X.interactor.prototype.onMouseUp = function(left, middle, right) {
 X.interactor.prototype.onMouseMovementOutside_ = function(event) {
 
   // reset the click flags
-  this.mouseInside = false;
+  this._mouseInside = false;
   if (this['config']['KEYBOARD_ENABLED']) {
     
     // if we observe the keyboard, remove the observer here
@@ -409,13 +445,13 @@ X.interactor.prototype.onMouseMovementOutside_ = function(event) {
     
   }
   
-  this['leftButtonDown'] = false;
-  this['middleButtonDown'] = false;
-  this['rightButtonDown'] = false;
+  this._leftButtonDown = false;
+  this._middleButtonDown = false;
+  this._rightButtonDown = false;
   // end all hovering since the scene can change and a caption might be
   // misplaced etc.
   this.hoverEnd_();
-  this.lastMousePosition = new goog.math.Vec2(0, 0);
+  this._lastMousePosition = new goog.math.Vec2(0, 0);
   
   // prevent further handling by the browser
   event.preventDefault();
@@ -449,7 +485,7 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
   // advanced compilation
   eval("this.onMouseMove(this['mousemoveEvent'])");
   
-  this.mouseInside = true;
+  this._mouseInside = true;
   
   if (this['config']['KEYBOARD_ENABLED'] && window.onkeydown == null) {
     
@@ -469,10 +505,10 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
   var currentMousePosition = new goog.math.Vec2(event.offsetX, event.offsetY);
   
   // get the distance in terms of the last mouse move event
-  var distance = this.lastMousePosition.subtract(currentMousePosition);
+  var distance = this._lastMousePosition.subtract(currentMousePosition);
   
   // save the current mouse position as the last one
-  this.lastMousePosition = currentMousePosition.clone();
+  this._lastMousePosition = currentMousePosition.clone();
   
   // 
   // hovering, if enabled..
@@ -480,8 +516,7 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
   if (this['config']['HOVERING_ENABLED']) {
     
     if (Math.abs(distance.x) > 0 || Math.abs(distance.y) > 0 ||
-        this['middleButtonDown'] || this['leftButtonDown'] ||
-        this['rightButtonDown']) {
+        this._middleButtonDown || this._leftButtonDown || this._rightButtonDown) {
       
       // there was some mouse movement, let's cancel the hovering countdown
       this.hoverEnd_();
@@ -531,7 +566,7 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
   //
   // check which mouse buttons or keys are pressed
   //
-  if (this['leftButtonDown'] && !shiftDown) {
+  if (this._leftButtonDown && !shiftDown) {
     //
     // LEFT MOUSE BUTTON DOWN AND NOT SHIFT DOWN
     //
@@ -549,7 +584,7 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
     this.dispatchEvent(e);
     
 
-  } else if (this['middleButtonDown'] || (this['leftButtonDown'] && shiftDown)) {
+  } else if (this._middleButtonDown || (this._leftButtonDown && shiftDown)) {
     //
     // MIDDLE MOUSE BUTTON DOWN or LEFT MOUSE BUTTON AND SHIFT DOWN
     //
@@ -585,7 +620,7 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
     this.dispatchEvent(e);
     
 
-  } else if (this['rightButtonDown']) {
+  } else if (this._rightButtonDown) {
     //
     // RIGHT MOUSE BUTTON DOWN
     //
@@ -681,7 +716,7 @@ X.interactor.prototype.onKey_ = function(event) {
 
   // only listen to key events if the mouse is inside our element
   // this f.e. enables key event listening for multiple renderers
-  if (!this.mouseInside) {
+  if (!this._mouseInside) {
     
     return;
     
