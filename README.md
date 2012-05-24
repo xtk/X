@@ -10,19 +10,33 @@
 <li>CDash + Google Closure driven <a href="http://cdash.goxtk.com/index.php?project=XTK" target="_blank"><i>build and test system</i></a></li>
 </ul>
 
+
+
 #### Demos ####
-<a href="http://demos.goxtk.com/knee_atlas/"><img src="http://xtk.github.com/demos/knee_atlas/smallcaption2.png" alt="knee_atlas" title="Click me!"></a>
-<a href="http://demos.goxtk.com/brainfibers/"><img src="http://xtk.github.com/demos/brainfibers/smallcaption2.png" alt="brainfibers" title="Click me!"></a>
-<a href="http://demos.goxtk.com/aneurysm/"><img src="http://xtk.github.com/demos/aneurysm/smallcaption2.png" alt="aneurysm" title="Click me!"></a>
-<a href="http://demos.goxtk.com/brain_atlas/"><img src="http://xtk.github.com/demos/brain_atlas/smallcaption2.png" alt="brain_atlas" title="Click me!"></a>
-<br>
-<a href="http://www.mindboggle.info/"><img src="http://xtk.github.com/demos/mindboggle/smallcaption2.png" alt="mindboggle" title="Click me!"></a>
-<a href="http://demos.goxtk.com/daniels_brain/"><img src="http://xtk.github.com/demos/daniels_brain/smallcaption.png" alt="daniels_brain" title="Click me!"></a>
-<a href="http://demos.goxtk.com/babybrains/"><img src="http://xtk.github.com/demos/babybrains/smallcaption.png" alt="babybrains" title="Click me!"></a>
-<a href="http://ecm2.mathcs.emory.edu/aneurisk/"><img src="http://xtk.github.com/demos/aneuriskweb/smallcaption.png" alt="aneuriskweb" title="Click me!"></a>
+<table>
+<tr>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/knee_atlas/minicaption.png" alt="lesson00" title="Click me!"></a><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Knee Atlas</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/brainfibers/minicaption.png" alt="lesson00" title="Click me!"></a><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Fiber Atlas</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/aneurysm/minicaption.png" alt="lesson00" title="Click me!"></a><sup>&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Aneuriskweb</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/brain_atlas/minicaption.png" alt="lesson00" title="Click me!"></a><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Brain Atlas</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/mindboggle/minicaption.png" alt="lesson00" title="Click me!"></a><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Mindboggle</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/daniels_brain/minicaption.png" alt="lesson00" title="Click me!"></a><sup>&nbsp;&nbsp;&nbsp;<b><a href="">Daniel's Brain</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/babybrains/minicaption.png" alt="lesson00" title="Click me!"></a><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Babybrains</a></b></sup></td>
+</tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+
 
 #### Lessons ####
-
 <table>
 <tr>
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/lessons/00/minicaption.png" alt="lesson00" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/library/pure/xtk/lessons/tree/master/00/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
@@ -112,3 +126,16 @@ The X Toolkit (XTK) is licensed under the MIT License:
 <a href="http://childrenshospital.org/FNNDSC"><img src="http://xtk.github.com/chb_logo.png" alt="Boston Children's Hospital Boston" title="Children's Hospital"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="http://hms.harvard.edu"><img src="http://xtk.github.com/hms_logo.png" alt="Harvard Medical School" title="Harvard Medical School"></a>
  
+ 
+ 
+ 
+
+<a href="http://demos.goxtk.com/knee_atlas/"><img src="http://xtk.github.com/demos/knee_atlas/smallcaption2.png" alt="knee_atlas" title="Click me!"></a>
+<a href="http://demos.goxtk.com/brainfibers/"><img src="http://xtk.github.com/demos/brainfibers/smallcaption2.png" alt="brainfibers" title="Click me!"></a>
+<a href="http://demos.goxtk.com/aneurysm/"><img src="http://xtk.github.com/demos/aneurysm/smallcaption2.png" alt="aneurysm" title="Click me!"></a>
+<a href="http://demos.goxtk.com/brain_atlas/"><img src="http://xtk.github.com/demos/brain_atlas/smallcaption2.png" alt="brain_atlas" title="Click me!"></a>
+<br>
+<a href="http://www.mindboggle.info/"><img src="http://xtk.github.com/demos/mindboggle/smallcaption2.png" alt="mindboggle" title="Click me!"></a>
+<a href="http://demos.goxtk.com/daniels_brain/"><img src="http://xtk.github.com/demos/daniels_brain/smallcaption.png" alt="daniels_brain" title="Click me!"></a>
+<a href="http://demos.goxtk.com/babybrains/"><img src="http://xtk.github.com/demos/babybrains/smallcaption.png" alt="babybrains" title="Click me!"></a>
+<a href="http://ecm2.mathcs.emory.edu/aneurisk/"><img src="http://xtk.github.com/demos/aneuriskweb/smallcaption.png" alt="aneuriskweb" title="Click me!"></a>
