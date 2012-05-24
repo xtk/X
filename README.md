@@ -15,13 +15,13 @@
 #### Demos ####
 <table>
 <tr>
-<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/knee_atlas/minicaption.png" alt="lesson00" title="Click me!"></a><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Knee Atlas</a></b></sup></td>
-<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/brainfibers/minicaption.png" alt="lesson00" title="Click me!"></a><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Fiber Atlas</a></b></sup></td>
-<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/aneurysm/minicaption.png" alt="lesson00" title="Click me!"></a><sup>&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Aneuriskweb</a></b></sup></td>
-<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/brain_atlas/minicaption.png" alt="lesson00" title="Click me!"></a><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Brain Atlas</a></b></sup></td>
-<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/mindboggle/minicaption.png" alt="lesson00" title="Click me!"></a><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Mindboggle</a></b></sup></td>
-<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/daniels_brain/minicaption.png" alt="lesson00" title="Click me!"></a><sup>&nbsp;&nbsp;&nbsp;<b><a href="">Daniel's Brain</a></b></sup></td>
-<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/babybrains/minicaption.png" alt="lesson00" title="Click me!"></a><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Babybrains</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/knee_atlas/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Knee Atlas</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/brainfibers/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Fiber Atlas</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/aneurysm/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup>&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Aneuriskweb</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/brain_atlas/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Brain Atlas</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/mindboggle/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Mindboggle</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/daniels_brain/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup>&nbsp;&nbsp;&nbsp;<b><a href="">Daniel's Brain</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/demos/babybrains/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="">Babybrains</a></b></sup></td>
 </tr>
 </table>
 
