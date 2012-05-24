@@ -86,6 +86,7 @@ X.parser.prototype.parse = function(container, object, data, flag) {
  * deviation o prod o sum o min; minIndex o max; maxIndex
  * 
  * @param {*} data The numerical data array to process.
+ * @return {*} The results.
  */
 X.parser.prototype.stats_calc = function(data) {
 

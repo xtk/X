@@ -171,6 +171,12 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
 };
 
 
+/**
+ * Parse a NRRD file header.
+ * 
+ * @param {string} header The NRRD header to parse.
+ * @throws {Error} An error, if the NRRD header is not supported or invalid.
+ */
 X.parserNRRD.prototype.parseHeader = function(header) {
 
   var data, field, fn, i, l, lines, m, _i, _len, _results;
@@ -212,6 +218,12 @@ X.parserNRRD.prototype.parseHeader = function(header) {
   }
 };
 
+
+/**
+ * Functions for parsing the NRRD header fields.
+ * 
+ * @type {Object}
+ */
 X.parserNRRD.prototype.fieldFunctions = {
   'type': function(data) {
 

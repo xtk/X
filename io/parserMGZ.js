@@ -69,6 +69,7 @@ X.parserMGZ = function() {
 // inherit from X.parser
 goog.inherits(X.parserMGZ, X.parser);
 
+
 /**
  * @inheritDoc
  */
@@ -124,6 +125,14 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
   
 };
 
+
+/**
+ * Parse the data stream according to the MGH/MGZ file format and return an MRI
+ * structure which holds all parsed information.
+ * 
+ * @param {!String} data The data stream.
+ * @return {Object} The MRI structure which holds all parsed information.
+ */
 X.parserMGZ.prototype.parseStream = function(data) {
 
   var MRI = {

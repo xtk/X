@@ -1103,8 +1103,8 @@ X.renderer3D.prototype.update_ = function(object) {
  * object picking and shows a tooltip if an object with a caption exists at this
  * position.
  * 
- * @param {number} x
- * @param {number} y
+ * @param {number} x The x coordinate (viewport).
+ * @param {number} y The y coordinate (viewport).
  */
 X.renderer3D.prototype.showCaption_ = function(x, y) {
 
@@ -1184,6 +1184,12 @@ X.renderer3D.prototype.orientVolume_ = function(volume) {
 };
 
 
+/**
+ * Calculate the distance to the eye (camera) for one X.object.
+ * 
+ * @param {!X.object} object The X.object to use for calculation.
+ * @return {number} The distance to the eye.
+ */
 X.renderer3D.prototype.distanceToEye_ = function(object) {
 
   var centroid = object._points._centroid;
