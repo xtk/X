@@ -41,7 +41,7 @@ goog.require('X.renderer');
  * @constructor
  * @extends X.renderer
  */
-X.renderer2D = function(orientation) {
+X.renderer2D = function() {
 
   //
   // call the standard constructor of X.renderer
@@ -59,10 +59,10 @@ X.renderer2D = function(orientation) {
   /**
    * The orientation of this renderer.
    * 
-   * @type {string}
+   * @type {?string}
    * @protected
    */
-  this._orientation = orientation;
+  this._orientation = null;
   
   /**
    * A frame buffer for slice data.
@@ -170,10 +170,52 @@ X.renderer2D.prototype.onScroll_ = function(event) {
 
 
 /**
+ * Get the orientation of this renderer. Valid orientations are 'x','y','z' or
+ * null.
+ * 
+ * @return {?string} The orientation of this renderer.
+ */
+X.renderer2D.prototype.__defineGetter__('orientation', function() {
+
+  return this._orientation;
+  
+});
+
+
+/**
+ * Set the orientation for this renderer. Valid orientations are 'x','y' or 'z'.
+ * 
+ * @param {!string} orientation The orientation for this renderer: 'x','y' or
+ *          'z'.
+ * @throws {Error} An error, if the given orientation was wrong.
+ */
+X.renderer2D.prototype.__defineSetter__('orientation', function(orientation) {
+
+  orientation = orientation.toUpperCase();
+  
+  if (orientation != 'X' && orientation != 'Y' && orientation != 'Z') {
+    
+    throw new Error('Invalid orientation.');
+    
+  }
+  
+  this._orientation = orientation;
+  
+});
+
+
+/**
  * @inheritDoc
  */
 X.renderer2D.prototype.init = function() {
 
+  // make sure an orientation is configured
+  if (!this._orientation) {
+    
+    throw new Error('No 2D orientation set.');
+    
+  }
+  
   // call the superclass' init method
   goog.base(this, 'init', '2d');
   
