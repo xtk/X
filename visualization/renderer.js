@@ -818,7 +818,7 @@ X.renderer.prototype.render = function() {
     this.hideProgressBar_();
     
     // call the onShowtime function which can be overloaded
-    eval("this._onShowtime()");
+    eval("this.onShowtime()");
     this._loadingCompleted = true; // flag the renderer as 'initial
     // loading completed'
     
