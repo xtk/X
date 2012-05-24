@@ -25,10 +25,10 @@
 
 <table>
 <tr>
-<td><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/lessons/00/minicaption.png" alt="lesson00" title="Click me!"></a></td>
-<td><b>Lesson 00: Hello cube!</b><br>The most simple XTK lesson displays a white cube.<br><span align='right'><img src='http://xtk.github.com/fiddlelogo_small.png'></span></td>
-<td><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/lessons/00/minicaption.png" alt="lesson00" title="Click me!"></a></td>
-<td>Lesson 00</td>
+<td valign="middle"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/lessons/00/minicaption.png" alt="lesson00" title="Click me!"></a></td>
+<td valign="top"><b>Lesson 00: Hello cube!</b><br>The most simple XTK lesson displays a white cube.<br><span align='right'><img src='http://xtk.github.com/fiddlelogo_small.png'></span></td>
+<td valign="middle"><a href="http://lessons.goxtk.com/01/"><img src="http://xtk.github.com/lessons/01/minicaption.png" alt="lesson01" title="Click me!"></a></td>
+<td valign="top"><b>Lesson 01: Skin the cube and rotate it!</b><br>Skin the cube with an image and add some spinning..</td>
 </tr>
 </table>
 
