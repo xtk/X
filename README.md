@@ -67,7 +67,11 @@
 
 ## Download
 
-Get it right here: <a href="http://get.goXTK.com/xtk_edge.js">xtk_edge.js</a> !<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://get.goXTK.com/xtk_edge.js"><img src="http://xtk.github.com/xtkfile.png"></a><br>
+Get it right here: <b><a href="http://get.goXTK.com/xtk_edge.js">xtk_edge.js</a></b> or include it like this:
+```html
+<script type="text/javascript" src="http://get.goXTK.com/xtk_edge.js"></script>
+```
 
 ## Example Usage ##
 
@@ -87,7 +91,7 @@ r.add(skull);
 r.render();
 ```
 
-Click to see the <a href="http://lessons.goxtk.com/05/" target="_blank">live version</a>!
+Check out the <a href="http://lessons.goxtk.com/05/" target="_blank">live version</a>!
 
 ## API Documentation ##
 The full documentation of the API is available <a href="http://api.goXTK.com" target="_blank">here</a>.
@@ -96,7 +100,7 @@ The full documentation of the API is available <a href="http://api.goXTK.com" ta
 ...is available at <a href="http://wiki.goxtk.com" target="_blank"><b>Project X</b></a>, the X Toolkit wiki system.
 
 ## Need help? ##
-We use <a href="http://stackoverflow.com/questions/tagged/xtk">http://stackoverflow.com/questions/tagged/xtk</a> for user support. Please ask and tag ([xtk]) your question there!
+We use <a href="http://stackoverflow.com/questions/tagged/xtk">http://stackoverflow.com/questions/tagged/xtk</a> for user support. Please ask and tag (<b>[xtk]</b>) your question there!
 
 ## Contribute? ##
 Yes, please! See the <a href="https://github.com/xtk/X/wiki/X:DevelopersHeadsUp" target="_blank">Developer's Heads Up</a> and the <a href="https://github.com/xtk/X/wiki/X:Future" target="_blank">X:Future page</a>.
