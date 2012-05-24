@@ -161,7 +161,7 @@ X.renderer = function() {
    * @type {boolean}
    * @public
    */
-  this._initialLoadingCompleted = false;
+  this._loadingCompleted = false;
   
   /**
    * The progressBar of this renderer.
@@ -272,6 +272,46 @@ X.renderer.prototype.onScroll_ = function(event) {
   }
   
 };
+
+
+/**
+ * Get the interactor of this renderer. The interactor is null until this
+ * renderer is initialized.
+ * 
+ * @return {?X.interactor} The interactor.
+ */
+X.renderer.prototype.__defineGetter__('interactor', function() {
+
+  return this._interactor;
+  
+});
+
+
+/**
+ * Get the camera of this renderer. The camera is null until this renderer is
+ * initialized.
+ * 
+ * @return {?X.camera} The camera.
+ */
+X.renderer.prototype.__defineGetter__('camera', function() {
+
+  return this._camera;
+  
+});
+
+
+/**
+ * Check if the initial loading of all objects was completed. This value gets
+ * set immediately after the onShowtime function is executed.
+ * 
+ * @return {boolean} TRUE if all objects were completely loaded, FALSE else
+ *         wise.
+ */
+X.renderer.prototype.__defineGetter__('loadingCompleted', function() {
+
+  return this._loadingCompleted;
+  
+});
 
 
 /**
@@ -779,7 +819,7 @@ X.renderer.prototype.render = function() {
     
     // call the onShowtime function which can be overloaded
     eval("this._onShowtime()");
-    this._initialLoadingCompleted = true; // flag the renderer as 'initial
+    this._loadingCompleted = true; // flag the renderer as 'initial
     // loading completed'
     
     // .. we exit here since the hiding takes some time and automatically
