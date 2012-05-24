@@ -22,6 +22,24 @@
 <a href="http://ecm2.mathcs.emory.edu/aneurisk/"><img src="http://xtk.github.com/demos/aneuriskweb/smallcaption.png" alt="aneuriskweb" title="Click me!"></a>
 
 #### Lessons ####
+
+<table>
+<tr>
+<td><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/lessons/00/minicaption.png" alt="lesson00" title="Click me!"></a></td>
+<td><b>Lesson 00: Hello cube!</b><br>The most simple XTK lesson displays a white cube.<br><span align='right'><img src='http://xtk.github.com/fiddlelogo_small.png'></span></td>
+<td><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/lessons/00/minicaption.png" alt="lesson00" title="Click me!"></a></td>
+<td>Lesson 00</td>
+</tr>
+</table>
+
+
+ | | |
+----|----|----|----
+<a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/lessons/00/minicaption.png" alt="lesson00" title="Click me!"></a>|<b>Lesson 00: Hello cube!</b>|<a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/lessons/00/minicaption.png" alt="lesson00" title="Click me!"></a>|Lesson 00|
+
+
+
+#### Lessons ####
 <a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/lessons/00/smallcaption.png" alt="lesson00" title="Click me!"></a>
 <a href="http://lessons.goxtk.com/01/"><img src="http://xtk.github.com/lessons/01/smallcaption.png" alt="lesson01" title="Click me!"></a>
 <a href="http://lessons.goxtk.com/02/"><img src="http://xtk.github.com/lessons/02/smallcaption.png" alt="lesson02" title="Click me!"></a>
