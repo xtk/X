@@ -56,7 +56,7 @@ X.parserSTL = function() {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'parserSTL';
+  this._classname = 'parserSTL';
   
 };
 // inherit from X.parser
@@ -66,14 +66,14 @@ goog.inherits(X.parserSTL, X.parser);
 /**
  * @inheritDoc
  */
-X.parserSTL.prototype.parse = function(object, data) {
+X.parserSTL.prototype.parse = function(container, object, data, flag) {
 
   var dataAsArray = data.split('\n');
   
   var numberOfLines = dataAsArray.length;
   
-  var p = object.points();
-  var n = object.normals();
+  var p = object._points;
+  var n = object._normals;
   
   //
   // LOOP THROUGH ALL LINES
@@ -127,8 +127,10 @@ X.parserSTL.prototype.parse = function(object, data) {
     i++;
   }
   
+  // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
+  modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
   
 };

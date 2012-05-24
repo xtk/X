@@ -63,17 +63,20 @@ X.parserMGZ = function() {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'parserMGZ';
+  this._classname = 'parserMGZ';
   
 };
 // inherit from X.parser
 goog.inherits(X.parserMGZ, X.parser);
 
+
 /**
  * @inheritDoc
  */
-X.parserMGZ.prototype.parse = function(object, data, b_zipped) {
+X.parserMGZ.prototype.parse = function(container, object, data, flag) {
 
+  var b_zipped = flag;
+  
   // the position in the file
   var position = 0;
   
@@ -99,21 +102,37 @@ X.parserMGZ.prototype.parse = function(object, data, b_zipped) {
   var max = MRI.stats.max;
   
   // attach the scalar range to the volume
-  object._scalarRange = [min, max];
+  object._min = min;
+  object._max = max;
   // .. and set the default threshold
-  object.threshold(min, max);
+  // only if the threshold was not already set
+  if (object._lowerThreshold == -Infinity) {
+    object._lowerThreshold = min;
+  }
+  if (object._upperThreshold == Infinity) {
+    object._upperThreshold = max;
+  }
   
   object.create_();
   
   this.reslice(object, MRI.v_data, _dimensions, min, max);
   
-  // all done..
+  // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
+  modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
   
 };
 
+
+/**
+ * Parse the data stream according to the MGH/MGZ file format and return an MRI
+ * structure which holds all parsed information.
+ * 
+ * @param {!String} data The data stream.
+ * @return {Object} The MRI structure which holds all parsed information.
+ */
 X.parserMGZ.prototype.parseStream = function(data) {
 
   var MRI = {
@@ -191,7 +210,7 @@ X.parserMGZ.prototype.parseStream = function(data) {
   // syslog('Reading MGH/MGZ header');
   var dataptr = new X.parserHelper(data);
   dataptr.setParseFunction(this.parseUInt32EndianSwappedArray.bind(this),
-      dataptr.sizeOfInt);
+      dataptr._sizeOfInt);
   MRI.version = dataptr.read();
   MRI.ndim1 = dataptr.read();
   MRI.ndim2 = dataptr.read();
@@ -221,14 +240,14 @@ X.parserMGZ.prototype.parseStream = function(data) {
   }
   MRI.dof = dataptr.read();
   dataptr.setParseFunction(this.parseUInt16EndianSwappedArray.bind(this),
-      dataptr.sizeOfShort);
+      dataptr._sizeOfShort);
   MRI.rasgoodflag = dataptr.read();
   
   unused_space_size -= sizeof_short;
   
   if (MRI.rasgoodflag > 0) {
     dataptr.setParseFunction(this.parseFloat32EndianSwappedArray.bind(this),
-        dataptr.sizeOfFloat);
+        dataptr._sizeOfFloat);
     // Read in voxel size and RAS matrix
     unused_space_size -= USED_SPACE_SIZE;
     MRI.v_voxelsize[0] = dataptr.read();
@@ -255,8 +274,8 @@ X.parserMGZ.prototype.parseStream = function(data) {
     MRI.M_ras[1][3] = dataptr.read();
     MRI.M_ras[2][3] = dataptr.read();
   }
-  dataptr
-      .setParseFunction(this.parseUChar8Array.bind(this), dataptr.sizeOfChar);
+  dataptr.setParseFunction(this.parseUChar8Array.bind(this),
+      dataptr._sizeOfChar);
   dataptr.read(unused_space_size);
   var volsize = MRI.ndim1 * MRI.ndim2 * MRI.ndim3;
   
@@ -270,10 +289,10 @@ X.parserMGZ.prototype.parseStream = function(data) {
   MRI.v_data = a_ret;
   
   // Now for the final MRI parameters at the end of the data stream:
-  if (dataptr.dataPointer() + 4 * sizeof_float < dataptr.data().length) {
+  if (dataptr._dataPointer + 4 * sizeof_float < dataptr._data.length) {
     // syslog('Reading MGH/MGZ MRI parameters');
     dataptr.setParseFunction(this.parseFloat32EndianSwappedArray.bind(this),
-        dataptr.sizeOfFloat)
+        dataptr._sizeOfFloat)
     MRI.Tr = dataptr.read();
     MRI.flipangle = dataptr.read();
     MRI.Te = dataptr.read();

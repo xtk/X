@@ -57,7 +57,7 @@ X.camera3D = function(width, height) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'camera3D';
+  this._classname = 'camera3D';
   
   /**
    * The field of view in degrees.
@@ -65,7 +65,7 @@ X.camera3D = function(width, height) {
    * @type {!number}
    * @const
    */
-  this.fieldOfView = 45;
+  this._fieldOfView = 45;
   
   /**
    * The perspective matrix.
@@ -73,8 +73,8 @@ X.camera3D = function(width, height) {
    * @type {!Object}
    * @protected
    */
-  this.perspective = new Float32Array(this.calculatePerspective_(
-      this.fieldOfView, (width / height), 1, 10000).flatten());
+  this._perspective = new Float32Array(this.calculatePerspective_(
+      this._fieldOfView, (width / height), 1, 10000).flatten());
   
 };
 // inherit from X.base
@@ -219,7 +219,7 @@ X.camera3D.prototype.rotate = function(distance) {
   
   // perform the actual rotation calculation
   this.view = new X.matrix(this.view.multiply(rotateY.multiply(rotateX)));
-  this.glView = new Float32Array(this.view.flatten());
+  this._glview = new Float32Array(this.view.flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -245,7 +245,7 @@ X.camera3D.prototype.lookAt_ = function(cameraPosition, targetPoint) {
   zVector = zVector.normalize();
   
   // Y vector = up
-  var yVector = this['up'].clone();
+  var yVector = this._up.clone();
   
   // WARNING: there is a problem if yVector == zVector
   if (yVector.equals(zVector)) {

@@ -32,6 +32,8 @@ goog.provide('X.parser');
 // requires
 goog.require('X.base');
 goog.require('X.event');
+goog.require('X.texture');
+goog.require('X.triplets');
 
 
 
@@ -54,7 +56,7 @@ X.parser = function() {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'parser';
+  this._classname = 'parser';
   
 };
 // inherit from X.base
@@ -65,11 +67,14 @@ goog.inherits(X.parser, X.base);
  * Parse data and configure the given object. When complete, a
  * X.parser.ModifiedEvent is fired.
  * 
+ * @param {!X.base} container A container which holds the loaded data. This can
+ *          be an X.object as well.
  * @param {!X.object} object The object to configure.
  * @param {!String} data The data to parse.
+ * @param {*} flag An additional flag.
  * @throws {Error} An exception if something goes wrong.
  */
-X.parser.prototype.parse = function(object, data) {
+X.parser.prototype.parse = function(container, object, data, flag) {
 
   throw new Error('The function parse() should be overloaded.');
   
@@ -81,6 +86,7 @@ X.parser.prototype.parse = function(object, data) {
  * deviation o prod o sum o min; minIndex o max; maxIndex
  * 
  * @param {*} data The numerical data array to process.
+ * @return {*} The results.
  */
 X.parser.prototype.stats_calc = function(data) {
 
@@ -118,9 +124,20 @@ X.parser.prototype.stats_calc = function(data) {
   return r.deviation = Math.sqrt(r.variance = s / t), r;
 };
 
+//
+// PARSE FUNCTIONS
+//
 // Some parse functions were inspired by Dan Ginsburg, Children's Hospital
 // Boston (see LICENSE)
 
+/**
+ * Parse a string from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} length The length of the string.
+ * @return {string} The parsed string.
+ */
 X.parser.prototype.parseString = function(data, offset, length) {
 
   return data.substr(offset, length);
@@ -128,6 +145,13 @@ X.parser.prototype.parseString = function(data, offset, length) {
 };
 
 
+/**
+ * Parse a Float32 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseFloat32 = function(data, offset) {
 
   var b3 = this.parseUChar8(data, offset), b2 = this.parseUChar8(data,
@@ -146,6 +170,13 @@ X.parser.prototype.parseFloat32 = function(data, offset) {
 };
 
 
+/**
+ * Parse an endian swaped Float32 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseFloat32EndianSwapped = function(data, offset) {
 
   var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
@@ -164,6 +195,15 @@ X.parser.prototype.parseFloat32EndianSwapped = function(data, offset) {
 };
 
 
+/**
+ * Parse an array of Float32 values from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
 X.parser.prototype.parseFloat32Array = function(data, offset, elements) {
 
   var arr = new Array();
@@ -183,6 +223,15 @@ X.parser.prototype.parseFloat32Array = function(data, offset, elements) {
 };
 
 
+/**
+ * Parse an array of endian swapped Float32 values from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
 X.parser.prototype.parseFloat32EndianSwappedArray = function(data, offset,
     elements) {
 
@@ -203,6 +252,13 @@ X.parser.prototype.parseFloat32EndianSwappedArray = function(data, offset,
 };
 
 
+/**
+ * Parse an UInt32 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseUInt32 = function(data, offset) {
 
   var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
@@ -212,6 +268,14 @@ X.parser.prototype.parseUInt32 = function(data, offset) {
   return (b3 << 24) + (b2 << 16) + (b1 << 8) + b0;
 };
 
+
+/**
+ * Parse an endian swaped UInt32 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseUInt32EndianSwapped = function(data, offset) {
 
   var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
@@ -222,6 +286,15 @@ X.parser.prototype.parseUInt32EndianSwapped = function(data, offset) {
 };
 
 
+/**
+ * Parse an array of endian swapped UInt32 values from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
 X.parser.prototype.parseUInt32EndianSwappedArray = function(data, offset,
     elements) {
 
@@ -242,6 +315,13 @@ X.parser.prototype.parseUInt32EndianSwappedArray = function(data, offset,
 };
 
 
+/**
+ * Parse an endian swaped UInt24 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseUInt24EndianSwapped = function(data, offset) {
 
   var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
@@ -251,6 +331,14 @@ X.parser.prototype.parseUInt24EndianSwapped = function(data, offset) {
   return ((b0 << 16) + (b1 << 8) + (b2)) & 0x00FFFFFF;
 };
 
+
+/**
+ * Parse an UInt16 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseUInt16 = function(data, offset) {
 
   var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
@@ -260,11 +348,20 @@ X.parser.prototype.parseUInt16 = function(data, offset) {
   
 };
 
+
+/**
+ * Parse an array of UInt16 values from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
 X.parser.prototype.parseUInt16Array = function(data, offset, elements) {
 
   var arr = new Array();
   
-
   var max = 0;
   var min = Infinity;
   
@@ -280,6 +377,13 @@ X.parser.prototype.parseUInt16Array = function(data, offset, elements) {
 };
 
 
+/**
+ * Parse an endian swapped UInt16 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseUInt16EndianSwapped = function(data, offset) {
 
   var b0 = this.parseUChar8(data, offset);
@@ -290,6 +394,15 @@ X.parser.prototype.parseUInt16EndianSwapped = function(data, offset) {
 };
 
 
+/**
+ * Parse an array of endian swapped UInt16 values from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
 X.parser.prototype.parseUInt16EndianSwappedArray = function(data, offset,
     elements) {
 
@@ -310,6 +423,13 @@ X.parser.prototype.parseUInt16EndianSwappedArray = function(data, offset,
 };
 
 
+/**
+ * Parse a signed Char8 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseSChar8 = function(data, offset) {
 
   var b = this.parseUChar8(data, offset);
@@ -317,12 +437,29 @@ X.parser.prototype.parseSChar8 = function(data, offset) {
   
 };
 
+
+/**
+ * Parse a unsigned Char8 value from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
 X.parser.prototype.parseUChar8 = function(data, offset) {
 
   return data.charCodeAt(offset) & 0xff;
 };
 
 
+/**
+ * Parse an array of unsigned Char8 values from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
 X.parser.prototype.parseUChar8Array = function(data, offset, elements) {
 
   var arr = new Array();
@@ -342,6 +479,18 @@ X.parser.prototype.parseUChar8Array = function(data, offset, elements) {
 };
 
 
+/**
+ * Reslice a data stream to fill the slices of an X.volume in X,Y and Z
+ * directions. The given volume (object) has to be created at this point
+ * according to the proper dimensions. This also takes care of a possible
+ * associated label map which has to be loaded before.
+ * 
+ * @param {!X.object} object The X.volume to fill.
+ * @param {!Array} datastream The datastream as an array.
+ * @param {!Array} sizes The sizes of the volume as an array [X,Y,Z].
+ * @param {!number} min The min. scalar intensity value.
+ * @param {!number} max The max. scalar intensity value.
+ */
 X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
 
   // number of slices in scan direction
@@ -351,8 +500,8 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
   // number of cols in each slice in scan direction
   var colsCount = sizes[0];
   
-  // do we have a labelMap?
-  var hasLabelMap = object._labelMap != null;
+  // do we have a labelmap?
+  var hasLabelMap = object._labelmap != null;
   
   // slice dimensions in scan direction
   var numberPixelsPerSlice = rowsCount * colsCount;
@@ -396,13 +545,13 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
         var pixelValue_g = 0;
         var pixelValue_b = 0;
         var pixelValue_a = 0;
-        if (object._colorTable) {
+        if (object._colortable) {
           // color table!
-          var lookupValue = object._colorTable._map.get(Math.floor(pixelValue));
+          var lookupValue = object._colortable._map.get(Math.floor(pixelValue));
           
           // check for out of range and use the last label value in this case
           if (!lookupValue) {
-            lookupValue = object._colorTable._map.get(object._colorTable._map
+            lookupValue = object._colortable._map.get(object._colortable._map
                 .getCount() - 1);
           }
           
@@ -433,19 +582,18 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     
     // create the texture for slices in X-direction
     var pixelTexture = new X.texture();
-    pixelTexture.setRawData(textureForCurrentSlice);
-    pixelTexture.setRawDataWidth(colsCount);
-    pixelTexture.setRawDataHeight(rowsCount);
+    pixelTexture._rawData = textureForCurrentSlice;
+    pixelTexture._rawDataWidth = colsCount;
+    pixelTexture._rawDataHeight = rowsCount;
     
-    currentSlice = object._slicesZ.children()[z];
-    currentSlice.setTexture(pixelTexture);
+    currentSlice = object._slicesZ._children[z];
+    currentSlice._texture = pixelTexture;
     if (hasLabelMap) {
       
-      // if this object has a labelMap,
+      // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      currentSlice._labelMap = object._labelMap._slicesZ.children()[z]
-          .texture();
+      currentSlice._labelmap = object._labelmap._slicesZ._children[z]._texture;
       
     }
     
@@ -472,13 +620,13 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
         var pixelValue_g = 0;
         var pixelValue_b = 0;
         var pixelValue_a = 0;
-        if (object._colorTable) {
+        if (object._colortable) {
           // color table!
-          var lookupValue = object._colorTable._map.get(Math.floor(pixelValue));
+          var lookupValue = object._colortable._map.get(Math.floor(pixelValue));
           
           // check for out of range and use the last label value in this case
           if (!lookupValue) {
-            lookupValue = object._colorTable._map.get(object._colorTable._map
+            lookupValue = object._colortable._map.get(object._colortable._map
                 .getCount() - 1);
           }
           
@@ -504,19 +652,18 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     }
     
     var pixelTexture = new X.texture();
-    pixelTexture.setRawData(textureForCurrentSlice);
-    pixelTexture.setRawDataWidth(colsCount);
-    pixelTexture.setRawDataHeight(slices);
+    pixelTexture._rawData = textureForCurrentSlice;
+    pixelTexture._rawDataWidth = colsCount;
+    pixelTexture._rawDataHeight = slices;
     
-    currentSlice = object._slicesY.children()[row];
-    currentSlice.setTexture(pixelTexture);
+    currentSlice = object._slicesY._children[row];
+    currentSlice._texture = pixelTexture;
     if (hasLabelMap) {
       
-      // if this object has a labelMap,
+      // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      currentSlice._labelMap = object._labelMap._slicesY.children()[row]
-          .texture();
+      currentSlice._labelmap = object._labelmap._slicesY._children[row]._texture;
       
     }
     
@@ -539,13 +686,13 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
         var pixelValue_g = 0;
         var pixelValue_b = 0;
         var pixelValue_a = 0;
-        if (object._colorTable) {
+        if (object._colortable) {
           // color table!
-          var lookupValue = object._colorTable._map.get(Math.floor(pixelValue));
+          var lookupValue = object._colortable._map.get(Math.floor(pixelValue));
           
           // check for out of range and use the last label value in this case
           if (!lookupValue) {
-            lookupValue = object._colorTable._map.get(object._colorTable._map
+            lookupValue = object._colortable._map.get(object._colortable._map
                 .getCount() - 1);
           }
           
@@ -571,19 +718,18 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     }
     
     var pixelTexture = new X.texture();
-    pixelTexture.setRawData(textureForCurrentSlice);
-    pixelTexture.setRawDataWidth(rowsCount);
-    pixelTexture.setRawDataHeight(slices);
+    pixelTexture._rawData = textureForCurrentSlice;
+    pixelTexture._rawDataWidth = rowsCount;
+    pixelTexture._rawDataHeight = slices;
     
-    currentSlice = object._slicesX.children()[col];
-    currentSlice.setTexture(pixelTexture);
+    currentSlice = object._slicesX._children[col];
+    currentSlice._texture = pixelTexture;
     if (hasLabelMap) {
       
-      // if this object has a labelMap,
+      // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      currentSlice._labelMap = object._labelMap._slicesX.children()[col]
-          .texture();
+      currentSlice._labelmap = object._labelmap._slicesX._children[col]._texture;
       
     }
     

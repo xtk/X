@@ -31,10 +31,11 @@
 goog.provide('X.camera');
 
 // requires
+goog.require('X.base');
 goog.require('X.event.ZoomEvent');
 goog.require('X.event.PanEvent');
 goog.require('X.event.RenderEvent');
-goog.require('X.base');
+goog.require('X.interactor');
 goog.require('X.matrix');
 goog.require('goog.math.Vec3');
 
@@ -68,7 +69,7 @@ X.camera = function(width, height) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'camera';
+  this._classname = 'camera';
   
   /**
    * The position of this camera, by default 0, 0, 100.
@@ -76,7 +77,7 @@ X.camera = function(width, height) {
    * @type {!goog.math.Vec3}
    * @protected
    */
-  this['position'] = new goog.math.Vec3(0, 0, 100);
+  this._position = new goog.math.Vec3(0, 0, 100);
   
   /**
    * The focus point of this camera, by default 0, 0, 0.
@@ -84,7 +85,7 @@ X.camera = function(width, height) {
    * @type {!goog.math.Vec3}
    * @protected
    */
-  this['focus'] = new goog.math.Vec3(0, 0, 0);
+  this._focus = new goog.math.Vec3(0, 0, 0);
   
   /**
    * The unit vector pointing to the top of the three-dimensional space.
@@ -92,7 +93,7 @@ X.camera = function(width, height) {
    * @type {!goog.math.Vec3}
    * @protected
    */
-  this['up'] = new goog.math.Vec3(0, 1, 0);
+  this._up = new goog.math.Vec3(0, 1, 0);
   
   /**
    * The view matrix.
@@ -100,7 +101,7 @@ X.camera = function(width, height) {
    * @type {!X.matrix}
    * @protected
    */
-  this['view'] = this.lookAt_(this['position'], this['focus']);
+  this._view = this.lookAt_(this._position, this._focus);
   
   /**
    * The view matrix as a 'ready-to-use'-gl version.
@@ -108,7 +109,7 @@ X.camera = function(width, height) {
    * @type {!Object}
    * @protected
    */
-  this.glView = new Float32Array(this['view'].flatten());
+  this._glview = new Float32Array(this._view.flatten());
   
 };
 // inherit from X.base
@@ -185,13 +186,25 @@ X.camera.prototype.onPan_ = function(event) {
 
 
 /**
+ * Get the view matrix for the three-dimensional space.
+ * 
+ * @return {!X.matrix} The view matrix.
+ */
+X.camera.prototype.__defineGetter__('view', function() {
+
+  return this._view;
+  
+});
+
+
+/**
  * Set the view matrix for the three-dimensional space.
  * 
  * @param {!X.matrix} view The view matrix.
  * @throws {Error} An exception if the view matrix is invalid.
  * @public
  */
-X.camera.prototype.setView = function(view) {
+X.camera.prototype.__defineSetter__('view', function(view) {
 
   if (!goog.isDefAndNotNull(view) || !(view instanceof X.matrix)) {
     
@@ -199,82 +212,133 @@ X.camera.prototype.setView = function(view) {
     
   }
   
-  this['view'] = view;
-  this.glView = new Float32Array(this['view'].flatten());
+  this._view = view;
+  this._glview = new Float32Array(this._view.flatten());
   
-};
+});
+
+
+/**
+ * Get the position of this camera.
+ * 
+ * @return {!Array} The position as an array [X,Y,Z].
+ */
+X.camera.prototype.__defineGetter__('position', function() {
+
+  return [this._position.x, this._position.y, this._position.z];
+  
+});
 
 
 /**
  * Set the position of this camera. This forces a re-calculation of the view
  * matrix. This action _does not_ force an immediate render event automatically.
  * 
- * @param {!number} x The X component of the new camera position.
- * @param {!number} y The Y component of the new camera position.
- * @param {!number} z The Z component of the new camera position.
+ * @param {!Array} position The X,Y,Z components of the position as an array.
+ * @throws {Error} An error, if the position was invalid.
  * @public
  */
-X.camera.prototype.setPosition = function(x, y, z) {
+X.camera.prototype.__defineSetter__('position', function(position) {
 
-  if (!goog.isNumber(x) || !goog.isNumber(y) || !goog.isNumber(z)) {
+  if (!goog.isDefAndNotNull(position) || !(position instanceof Array) ||
+      (position.length != 3)) {
     
-    throw new Error('The position was invalid.');
+    throw new Error('Invalid position.');
     
   }
   
-  this['position'] = new goog.math.Vec3(x, y, z);
+  var x = position[0];
+  var y = position[1];
+  var z = position[2];
   
+  this._position = new goog.math.Vec3(x, y, z);
+  
+  // we need to reset to re-calculate the matrices
   this.reset();
   
-};
+});
 
 
 /**
- * Set the focus of this camera. This forces a re-calculation of the view
- * matrix. This action _does not_ force an immediate render event automatically.
+ * Get the focus (target point) of this camera.
  * 
- * @param {!number} x The X component of the new camera focus.
- * @param {!number} y The Y component of the new camera focus.
- * @param {!number} z The Z component of the new camera focus.
+ * @return {!Array} The focus as an array [X,Y,Z].
+ */
+X.camera.prototype.__defineGetter__('focus', function() {
+
+  return [this._focus.x, this._focus.y, this._focus.z];
+  
+});
+
+
+/**
+ * Set the focus (target point) of this camera. This forces a re-calculation of
+ * the view matrix. This action _does not_ force an immediate render event
+ * automatically.
+ * 
+ * @param {!Array} focus The X,Y,Z components of the focus as an array.
+ * @throws {Error} An error, if the focus was invalid.
  * @public
  */
-X.camera.prototype.setFocus = function(x, y, z) {
+X.camera.prototype.__defineSetter__('focus', function(focus) {
 
-  if (!goog.isNumber(x) || !goog.isNumber(y) || !goog.isNumber(z)) {
+  if (!goog.isDefAndNotNull(focus) || !(focus instanceof Array) ||
+      (focus.length != 3)) {
     
-    throw new Error('The focus was invalid.');
+    throw new Error('Invalid focus');
     
   }
   
-  this['focus'] = new goog.math.Vec3(x, y, z);
+  var x = focus[0];
+  var y = focus[1];
+  var z = focus[2];
   
+  this._focus = new goog.math.Vec3(x, y, z);
+  
+  // we need to reset to re-calculate the matrices
   this.reset();
   
-};
+});
+
+
+/**
+ * Get the up-vector of this camera.
+ * 
+ * @return {!Array} The up-vector as an array [X,Y,Z].
+ */
+X.camera.prototype.__defineGetter__('up', function() {
+
+  return [this._up.x, this._up.y, this._up.z];
+  
+});
 
 
 /**
  * Set the up-vector of this camera. This forces a re-calculation of the view
  * matrix. This action _does not_ force an immediate render event automatically.
  * 
- * @param {!number} x The X component of the new camera up-vector.
- * @param {!number} y The Y component of the new camera up-vector.
- * @param {!number} z The Z component of the new camera up-vector.
+ * @param {!Array} up The up vector as an array.
+ * @throws {Error} An error, if the up vector was invalid.
  * @public
  */
-X.camera.prototype.setUp = function(x, y, z) {
+X.camera.prototype.__defineSetter__('up', function(up) {
 
-  if (!goog.isNumber(x) || !goog.isNumber(y) || !goog.isNumber(z)) {
+  if (!goog.isDefAndNotNull(up) || !(up instanceof Array) || (up.length != 3)) {
     
-    throw new Error('The up-vector was invalid.');
+    throw new Error('Invalid up vector.');
     
   }
   
-  this['up'] = new goog.math.Vec3(x, y, z);
+  var x = up[0];
+  var y = up[1];
+  var z = up[2];
   
+  this._up = new goog.math.Vec3(x, y, z);
+  
+  // we need to reset to re-calculate the matrices
   this.reset();
   
-};
+});
 
 
 /**
@@ -283,8 +347,8 @@ X.camera.prototype.setUp = function(x, y, z) {
 X.camera.prototype.reset = function() {
 
   // update the view matrix and its gl versions
-  this['view'] = this.lookAt_(this['position'], this['focus']);
-  this.glView = new Float32Array(this['view'].flatten());
+  this._view = this.lookAt_(this._position, this._focus);
+  this._glview = new Float32Array(this._view.flatten());
   
 };
 
@@ -310,8 +374,8 @@ X.camera.prototype.pan = function(distance) {
   var identity = X.matrix.createIdentityMatrix(4);
   var panMatrix = identity.translate(distance3d);
   
-  this['view'] = new X.matrix(panMatrix.multiply(this['view']));
-  this.glView = new Float32Array(this['view'].flatten());
+  this._view = new X.matrix(panMatrix.multiply(this._view));
+  this._glview = new Float32Array(this._view.flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -342,8 +406,8 @@ X.camera.prototype.zoomIn = function(fast) {
   var identity = X.matrix.createIdentityMatrix(4);
   var zoomMatrix = identity.translate(zoomVector);
   
-  this['view'] = new X.matrix(zoomMatrix.multiply(this['view']));
-  this.glView = new Float32Array(this['view'].flatten());
+  this._view = new X.matrix(zoomMatrix.multiply(this._view));
+  this._glview = new Float32Array(this._view.flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -374,8 +438,8 @@ X.camera.prototype.zoomOut = function(fast) {
   var identity = X.matrix.createIdentityMatrix(4);
   var zoomMatrix = identity.translate(zoomVector);
   
-  this['view'] = new X.matrix(zoomMatrix.multiply(this['view']));
-  this.glView = new Float32Array(this['view'].flatten());
+  this._view = new X.matrix(zoomMatrix.multiply(this._view));
+  this._glview = new Float32Array(this._view.flatten());
   
   // fire a render event
   this.dispatchEvent(new X.event.RenderEvent());
@@ -408,11 +472,6 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.camera', X.camera);
-goog.exportSymbol('X.camera.prototype.setView', X.camera.prototype.setView);
-goog.exportSymbol('X.camera.prototype.setPosition',
-    X.camera.prototype.setPosition);
-goog.exportSymbol('X.camera.prototype.setFocus', X.camera.prototype.setFocus);
-goog.exportSymbol('X.camera.prototype.setUp', X.camera.prototype.setUp);
 goog.exportSymbol('X.camera.prototype.pan', X.camera.prototype.pan);
 goog.exportSymbol('X.camera.prototype.zoomIn', X.camera.prototype.zoomIn);
 goog.exportSymbol('X.camera.prototype.zoomOut', X.camera.prototype.zoomOut);

@@ -34,14 +34,16 @@ goog.require('X.event');
 goog.require('X.object');
 goog.require('X.parserCRV');
 goog.require('X.parserFSM');
+goog.require('X.parserIMAGE');
 goog.require('X.parserLUT');
 goog.require('X.parserMGZ');
 goog.require('X.parserNRRD');
 goog.require('X.parserSTL');
 goog.require('X.parserTRK');
 goog.require('X.parserVTK');
-goog.require('goog.events.EventType');
 goog.require('goog.structs.Map');
+
+
 
 /**
  * This object loads external files in an asynchronous fashion. In addition, the
@@ -62,279 +64,49 @@ X.loader = function() {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'loader';
+  this._classname = 'loader';
   
   /**
-   * @private
+   * The hash map holding all the jobs and their status.
+   * 
+   * @type {!goog.structs.Map}
+   * @protected
    */
-  this._jobs_ = null;
+  this._jobs = new goog.structs.Map();
   
-  this._progress_ = 0;
+  /**
+   * The overall progress value in the range of 0 and 1.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._progress = 0;
   
 };
 // inherit from X.base
 goog.inherits(X.loader, X.base);
 
 
-X.loader.prototype.jobs_ = function() {
-
-  if (!goog.isDefAndNotNull(this._jobs_)) {
-    
-    this._jobs_ = new goog.structs.Map();
-    
-  }
-  
-  return this._jobs_;
-  
-};
-
-
+/**
+ * Check if all loading is completed.
+ * 
+ * @return {boolean} TRUE if all loading is completed, FALSE else wise.
+ */
 X.loader.prototype.completed = function() {
 
-  if (!goog.isDefAndNotNull(this._jobs_)) {
-    
-    // there are no jobs (and they never were)
-    // this is a quick 'jump out'
-    return true;
-    
-  }
-  
   // now we check if all of our jobs are completed
-  return !this._jobs_.containsValue(false);
-  
-};
-
-X.loader.prototype.loadTexture = function(object) {
-
-  if (!goog.isDefAndNotNull(object.texture())) {
-    
-    throw new Error('Internal error during texture loading.');
-    
-  }
-  // setup the image object
-  var image = new Image();
-  var currentTextureFilename = object.texture().file().path();
-  image.src = currentTextureFilename;
-  
-  // we let the object point to this image
-  object.texture().setImage(image);
-  
-  // handler after the image was completely loaded
-  goog.events.listenOnce(image, goog.events.EventType.LOAD,
-      this.loadTextureCompleted.bind(this, object));
-  
-  // add this loading job to our jobs map
-  this.jobs_().set(object.id(), false);
-  
-  // this is a very fast step so we count it as 30% of the total texture load
-  // time
-  this.addProgress(0.3);
-};
-
-X.loader.prototype.loadTextureCompleted = function(object) {
-
-  // here we add the rest of the setup step 0.7 and a full progress tick for the
-  // load completion
-  this.addProgress(1.7);
-  
-  setTimeout(function() {
-
-    // at this point the image for the texture was loaded properly
-    object.texture().file().setClean();
-    
-    // fire the modified event
-    object.modified();
-    
-    // mark the loading job as completed
-    this.jobs_().set(object.id(), true);
-    
-  }.bind(this), 100);
-  
-};
-
-X.loader.prototype.loadColorTable = function(object) {
-
-  if (!goog.isDefAndNotNull(object.colorTable())) {
-    
-    // should not happen :)
-    throw new Error('Internal error during file loading.');
-    
-  }
-  
-  // get the associated file of the object
-  var filepath = object.colorTable().file().path();
-  
-  // we use a simple XHR to get the file contents
-  // this works for binary and for ascii files
-  var request = new XMLHttpRequest();
-  
-  // listen to progress events.. here, goog.events.listen did not work
-  // request.addEventListener('progress',
-  // this.loadFileProgress.bind(this, object), false);
-  
-  // listen to abort events
-  goog.events.listen(request, 'abort', this.loadFileFailed.bind(this, request,
-      object));
-  
-  // listen to error events
-  goog.events.listen(request, 'error', this.loadFileFailed.bind(this, request,
-      object));
-  
-  // listen to completed events
-  goog.events.listen(request, 'load', this.loadColorTableCompleted.bind(this,
-      request, object));
-  
-  // configure the URL
-  request.open('GET', filepath, true);
-  request.overrideMimeType("text/plain; charset=x-user-defined");
-  request.setRequestHeader("Content-Type", "text/plain");
-  
-  // .. and GO!
-  request.send(null);
-  
-  // add this loading job to our jobs map
-  this.jobs_().set(object.colorTable().id(), false);
+  return !this._jobs.containsValue(false);
   
 };
 
 
-
-X.loader.prototype.loadScalars = function(object) {
-
-  if (!goog.isDefAndNotNull(object.scalars())) {
-    
-    // should not happen :)
-    throw new Error('Internal error during file loading.');
-    
-  }
-  
-  // get the associated file of the object
-  var filepath = object.scalars().file().path();
-  
-  // we use a simple XHR to get the file contents
-  // this works for binary and for ascii files
-  var request = new XMLHttpRequest();
-  
-  // listen to progress events.. here, goog.events.listen did not work
-  // request.addEventListener('progress',
-  // this.loadFileProgress.bind(this, object), false);
-  
-  // listen to abort events
-  goog.events.listen(request, 'abort', this.loadFileFailed.bind(this, request,
-      object));
-  
-  // listen to error events
-  goog.events.listen(request, 'error', this.loadFileFailed.bind(this, request,
-      object));
-  
-  // listen to completed events
-  goog.events.listen(request, 'load', this.loadScalarsCompleted.bind(this,
-      request, object));
-  
-  // configure the URL
-  request.open('GET', filepath, true);
-  request.overrideMimeType("text/plain; charset=x-user-defined");
-  request.setRequestHeader("Content-Type", "text/plain");
-  
-  // .. and GO!
-  request.send(null);
-  
-  // add this loading job to our jobs map
-  this.jobs_().set(object.scalars().id(), false);
-  
-};
-
-
-X.loader.prototype.loadFile = function(object) {
-
-  if (!goog.isDefAndNotNull(object.file())) {
-    
-    // should not happen :)
-    throw new Error('Internal error during file loading.');
-    
-  }
-  
-  // jump out if we already process this job
-  if (this.jobs_().containsKey(object.id())) {
-    
-    return;
-    
-  }
-  
-  // clear all points and normals of the object
-  object.points().clear();
-  object.normals().clear();
-  
-  // get the associated file of the object
-  var filepath = object.file().path();
-  
-  // check if the file is supported
-  var fileExtension = filepath.split('.').pop();
-  fileExtension = fileExtension.toUpperCase();
-  
-  if (!(fileExtension == X.loader.extensions.TRK ||
-      fileExtension == X.loader.extensions.STL ||
-      fileExtension == X.loader.extensions.FSM ||
-      fileExtension == X.loader.extensions.VTK ||
-      fileExtension == X.loader.extensions.NRRD ||
-      fileExtension == X.loader.extensions.MGH || fileExtension == X.loader.extensions.MGZ)) {
-    
-    // file format is not supported
-    throw new Error('The ' + fileExtension + ' file format is not supported.');
-    
-  }
-  
-  // we use a simple XHR to get the file contents
-  // this works for binary and for ascii files
-  var request = new XMLHttpRequest();
-  
-  // listen to progress events.. here, goog.events.listen did not work
-  // request.addEventListener('progress',
-  // this.loadFileProgress.bind(this, object), false);
-  
-  // listen to abort events
-  goog.events.listen(request, 'abort', this.loadFileFailed.bind(this, request,
-      object));
-  
-  // listen to error events
-  goog.events.listen(request, 'error', this.loadFileFailed.bind(this, request,
-      object));
-  
-  // listen to completed events
-  goog.events.listen(request, 'load', this.loadFileCompleted.bind(this,
-      request, object));
-  
-  // configure the URL
-  request.open('GET', filepath, true);
-  request.overrideMimeType("text/plain; charset=x-user-defined");
-  request.setRequestHeader("Content-Type", "text/plain");
-  
-  // .. and GO!
-  request.send(null);
-  
-  // add this loading job to our jobs map
-  this.jobs_().set(object.id(), false);
-  
-};
-//
-// X.loader.prototype.loadFileProgress = function(object, event) {
-//
-// if (event.lengthComputable) {
-// var progress = event.loaded / event.total;
-//    
-// if (progress > 1) {
-//      
-// // sometimes this gives values > 1, we don't want that
-// progress = 1;
-//      
-// }
-//    
-// this.addProgress(progress);
-//    
-// }
-//  
-// };
-
+/**
+ * Add a value to the overall progress value. The given value is normalized
+ * according to the number of current jobs. After adding the value, a
+ * X.event.ProgressEvent is fired to inform the progress bar.
+ * 
+ * @param {!number} value The value to add.
+ */
 X.loader.prototype.addProgress = function(value) {
 
   // we have a three stage system during loading
@@ -346,222 +118,142 @@ X.loader.prototype.addProgress = function(value) {
   //
   // each stage adds progress from 0..1 with a total of 1 at the end
   // add a fake job to prevent the user starring at a full progress bar
-  this._progress_ += value / (this.jobs_().getCount()) / 3;
+  this._progress += value / (this._jobs.getCount()) / 3;
   
-  if (this._progress_ > 1) {
-    
-    this._progress_ = 1;
-    
-  }
+  // clamp progress to 0..1
+  this._progress = Math.min(1, this._progress);
   
+  // fire a progress event so the progressbar can display something
   var progressEvent = new X.event.ProgressEvent();
-  progressEvent._value = this._progress_;
+  progressEvent._value = this._progress;
   this.dispatchEvent(progressEvent);
   
 };
 
 
-X.loader.prototype.progress = function() {
+/**
+ * Check if the given container is configured with a valid file format.
+ * 
+ * @param {!X.base} container A container which has an X.file() attached.
+ * @return {!Array} An array holding the following information [filepath,
+ *         extension in uppercase without the '.', the associated but
+ *         uninstantiated parser for this file format, additional (optional)
+ *         flags which are passed to the parser, the response type]
+ * @throws {Error} An error, if the configured file format is not supported.
+ */
+X.loader.prototype.checkFileFormat = function(container) {
 
-  return this._progress_;
+  // get the associated file of the object
+  var filepath = container._file._path;
+  
+  // grab the file extension
+  var extension = filepath.split('.').pop().toUpperCase();
+  
+  // check if the file format is supported
+  if (!(extension in X.loader.extensions)) {
+    
+    throw new Error('The ' + extension + ' file format is not supported.');
+    
+  }
+  
+  return [filepath, extension, X.loader.extensions[extension][0],
+          X.loader.extensions[extension][1], X.loader.extensions[extension][2]];
   
 };
 
 
-X.loader.prototype.loadFileFailed = function(request, object) {
+/**
+ * Download a file associated to a container via Ajax. Callbacks are executed
+ * depending on the success of the request.
+ * 
+ * @param {!X.base} container The container which has a X.file() attached.
+ * @param {!X.object} object The X.object which is the parent of the container
+ *          or equals it.
+ * @throws {Error} An error, if the given objects were invalid.
+ */
+X.loader.prototype.load = function(container, object) {
 
-  throw new Error('Could not get the file.');
+  if (!container || !object) {
+    
+    // should not happen
+    throw new Error('No container or object to load.');
+    
+  }
+  
+  // check the file format which returns the filepath, extension and the parser
+  var _checkresult = this.checkFileFormat(container);
+  var filepath = _checkresult[0];
+  var responseType = _checkresult[4];
+  
+  // we use a simple XHR to get the file contents
+  // this works for binary and for ascii files
+  var request = new XMLHttpRequest();
+  
+  // listen to abort events
+  goog.events.listen(request, 'abort', this.failed.bind(this, request,
+      container, object));
+  
+  // listen to error events
+  goog.events.listen(request, 'error', this.failed.bind(this, request,
+      container, object));
+  
+  // listen to completed events which triggers parsing
+  goog.events.listen(request, 'load', this.parse.bind(this, request, container,
+      object));
+  
+  // configure the URL
+  request.open('GET', filepath, true);
+  if (responseType) {
+    // set the response type if != null, else fall back to the default 'text'
+    request.responseType = responseType;
+  }
+  request.overrideMimeType("text/plain; charset=x-user-defined");
+  request.setRequestHeader("Content-Type", "text/plain");
+  
+  // .. and GO!
+  request.send(null);
+  
+  // add this loading job to our jobs map
+  this._jobs.set(container._id, false);
   
 };
 
-X.loader.prototype.loadColorTableCompleted = function(request, object) {
 
-  // we use a timeout here to let the progress bar be able to breath and show
-  // something
-  setTimeout(function() {
+/**
+ * Trigger parsing of a data stream. This is the callback for successful
+ * downloading. A single-shot listener is configured for a X.event.ModifiedEvent
+ * which then triggers the complete callback.
+ * 
+ * @param {!XMLHttpRequest} request The original XHR.
+ * @param {!X.base} container The container which has a X.file() attached.
+ * @param {!X.object} object The X.object which is the parent of the container
+ *          or equals it.
+ */
+X.loader.prototype.parse = function(request, container, object) {
 
-    var lutParser = new X.parserLUT();
-    
-    goog.events.listenOnce(lutParser, X.event.events.MODIFIED,
-        this.parseColorTableCompleted.bind(this));
-    
-    lutParser.parse(object, request.response, object.colorTable());
-    
-  }.bind(this), 100);
-  
-};
-
-X.loader.prototype.loadScalarsCompleted = function(request, object) {
-
-  // we use a timeout here to let the progress bar be able to breath and show
-  // something
-  setTimeout(function() {
-
-    var filepath = object.scalars().file().path();
-    
-    var fileExtension = filepath.split('.').pop().toLowerCase();
-    
-    if (fileExtension == 'crv') {
-      
-      var crvParser = new X.parserCRV();
-      
-      goog.events.listenOnce(crvParser, X.event.events.MODIFIED,
-          this.parseScalarsCompleted.bind(this));
-      
-      crvParser.parse(object, request.response);
-      
-    } else {
-      
-      throw new Error('Only .CRV files supported.');
-      
-    }
-    
-  }.bind(this), 100);
-  
-};
-
-X.loader.prototype.loadFileCompleted = function(request, object) {
-
-  // loading completed, add progress
+  // downloading completed, add progress
   this.addProgress(1.0);
   
   // we use a timeout here to let the progress bar be able to breath and show
   // something
   setTimeout(function() {
 
-    var filepath = object.file().path();
+    // check the file format which returns the filepath, extension and the
+    // parser
+    var _checkresult = this.checkFileFormat(container);
+    var parser = _checkresult[2]; // the (uninstantiated) parser
+    var flags = _checkresult[3]; // some (optional) custom flags
     
-    var fileExtension = filepath.split('.').pop().toLowerCase();
+    // instantiate the parser
+    var _parser = new parser;
     
-    // setup a parser depending on the fileExtension
-    // at this point, we already know that the file format is supported
+    // listen once to a modified event
+    goog.events.listenOnce(_parser, X.event.events.MODIFIED, this.complete
+        .bind(this));
     
-    if (fileExtension == 'stl') {
-      
-      var stlParser = new X.parserSTL();
-      
-      goog.events.listenOnce(stlParser, X.event.events.MODIFIED,
-          this.parseFileCompleted.bind(this));
-      
-      stlParser.parse(object, request.response);
-      
-    } else if (fileExtension == 'vtk') {
-      
-      var vtkParser = new X.parserVTK();
-      
-      goog.events.listenOnce(vtkParser, X.event.events.MODIFIED,
-          this.parseFileCompleted.bind(this));
-      
-      vtkParser.parse(object, request.response);
-      
-    } else if (fileExtension == 'trk') {
-      
-      var trkParser = new X.parserTRK();
-      
-      goog.events.listenOnce(trkParser, X.event.events.MODIFIED,
-          this.parseFileCompleted.bind(this));
-      
-      trkParser.parse(object, request.response);
-      
-    } else if (fileExtension == 'fsm') {
-      
-      var fsmParser = new X.parserFSM();
-      
-      goog.events.listenOnce(fsmParser, X.event.events.MODIFIED,
-          this.parseFileCompleted.bind(this));
-      
-      fsmParser.parse(object, request.response);
-      
-    } else if (fileExtension == 'nrrd') {
-      
-      var nrrdParser = new X.parserNRRD();
-      
-      goog.events.listenOnce(nrrdParser, X.event.events.MODIFIED,
-          this.parseFileCompleted.bind(this));
-      
-      nrrdParser.parse(object, request.response);
-      
-    } else if (fileExtension == 'mgh' || fileExtension == 'mgz') {
-      
-      var mgzParser = new X.parserMGZ();
-      
-      goog.events.listenOnce(mgzParser, X.event.events.MODIFIED,
-          this.parseFileCompleted.bind(this));
-      
-      mgzParser.parse(object, request.response, (fileExtension == 'mgz'));
-      
-    }
-    
-
-  }.bind(this), 100);
-  
-
-
-};
-
-
-X.loader.prototype.parseFileCompleted = function(event) {
-
-  this.addProgress(1.0);
-  
-  // we use a timeout here to let the progress bar be able to breath and show
-  // something
-  setTimeout(function() {
-
-    var object = event._object;
-    
-    // the parsing is done here..
-    object.file().setClean();
-    
-    // fire the modified event
-    object.modified();
-    
-    // mark the loading job as completed
-    this.jobs_().set(object.id(), true);
-    
-  }.bind(this), 100);
-  
-};
-
-
-X.loader.prototype.parseScalarsCompleted = function(event) {
-
-  // we use a timeout here to let the progress bar be able to breath and show
-  // something
-  setTimeout(function() {
-
-    var object = event._object;
-    
-    // the parsing is done here..
-    object.scalars().file().setClean();
-    
-    // fire the modified event
-    object.modified();
-    
-    // mark the loading job as completed
-    this.jobs_().set(object.scalars().id(), true);
-    
-  }.bind(this), 100);
-  
-};
-
-
-X.loader.prototype.parseColorTableCompleted = function(event) {
-
-  // we use a timeout here to let the progress bar be able to breath and show
-  // something
-  setTimeout(function() {
-
-    var object = event._object;
-    
-    // the parsing is done here..
-    object.colorTable().file().setClean();
-    
-    // fire the modified event
-    object.modified();
-    
-    // mark the loading job as completed
-    this.jobs_().set(object.colorTable().id(), true);
+    // call the parse function and pass in the container, the object and the
+    // data stream and some additional value
+    _parser.parse(container, object, request.response, flags);
     
   }.bind(this), 100);
   
@@ -569,18 +261,77 @@ X.loader.prototype.parseColorTableCompleted = function(event) {
 
 
 /**
+ * The complete callback which gets executed after successful parsing of a data
+ * stream. A X.event.ModifiedEvent is fired to inform the X.renderer that the
+ * loading was completed.
+ * 
+ * @param {!X.event.ModifiedEvent} event The modified event holding container
+ *          and object.
+ */
+X.loader.prototype.complete = function(event) {
+
+  // parsing completed, add progress
+  this.addProgress(1.0);
+  
+  // we use a timeout here to let the progress bar be able to breath and show
+  // something
+  setTimeout(function() {
+
+    var container = event._container;
+    var object = event._object;
+    
+    // mark the container's file as clean
+    container._file._dirty = false;
+    
+    // fire the modified event on the object
+    object.modified();
+    
+    // mark the loading job as completed
+    this._jobs.set(container._id, true);
+    
+  }.bind(this), 100);
+  
+};
+
+
+/**
+ * The failure callback which gets executed if anything goes wrong during
+ * downloading. It always throws an error.
+ * 
+ * @param {!XMLHttpRequest} request The original XHR.
+ * @param {!X.base} container The container which has a X.file() attached.
+ * @param {!X.object} object The X.object which is the parent of the container
+ *          or equals it.
+ * @throws {Error} An error, stating that something went wrong.
+ */
+X.loader.prototype.failed = function(request, container, object) {
+
+  throw new Error('Loading failed: ', container, object);
+  
+};
+
+
+/**
  * Supported data types by extension.
  * 
- * @enum {string}
+ * @enum {Array}
  */
 X.loader.extensions = {
-  // support for the following extensions
-  STL: 'STL',
-  VTK: 'VTK',
-  TRK: 'TRK',
-  FSM: 'FSM',
-  NRRD: 'NRRD',
-  CRV: 'CRV',
-  MGH: 'MGH',
-  MGZ: 'MGZ'
+  // support for the following extensions and the mapping to X.parsers as well
+  // as some custom flags and the result type
+  'STL': [X.parserSTL, null, null],
+  'VTK': [X.parserVTK, null, null],
+  'TRK': [X.parserTRK, null, null],
+  'FSM': [X.parserFSM, null, null],
+  'NRRD': [X.parserNRRD, null, null],
+  'CRV': [X.parserCRV, null, null],
+  'MGH': [X.parserMGZ, false, null],
+  'MGZ': [X.parserMGZ, true, null],
+  'TXT': [X.parserLUT, null, null],
+  'LUT': [X.parserLUT, null, null],
+  'PNG': [X.parserIMAGE, 'png', 'arraybuffer'], // here we use the arraybuffer
+  // response type
+  'JPG': [X.parserIMAGE, 'jpeg', 'arraybuffer'],
+  'JPEG': [X.parserIMAGE, 'jpeg', 'arraybuffer'],
+  'GIF': [X.parserIMAGE, 'gif', 'arraybuffer']
 };

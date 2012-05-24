@@ -1,72 +1,53 @@
 goog.require('X.base');
 goog.require('X.file');
-goog.require('X.colorTable');
+goog.require('X.colortable');
 goog.require('goog.testing.jsunit');
 goog.require('goog.asserts');
 
 /**
- * Test for X.colorTable.className
+ * Test for X.colortable.className
  */
-function testXcolorTableClassName() {
+function testXcolortableClassName() {
 
-  c = new X.colorTable();
+  c = new X.colortable();
   
-  assertEquals(c.className(), 'colorTable');
+  assertEquals(c.className, 'colortable');
   
 }
 
-/**
- * Test for X.colorTable.id to test uniqueness.
- */
-function testXcolorTableId() {
-
-  var counter = window["X.Counter"];
-  var oldValue = counter.value();
-  
-  var c = new X.colorTable();
-  
-  // the counter should be increased by 1
-  var newValue = counter.value();
-  
-  assertEquals(newValue, oldValue + 1);
-  
-}
 
 /**
- * Test for X.colorTable.file
+ * Test for X.colortable.file
  */
-function testXcolorTableFile() {
+function testXcolortableFile() {
 
-  var c = new X.colorTable();
+  var c = new X.colortable();
   
   // be default, the file should be null
-  assertEquals(c.file(), null);
+  assertEquals(c.file, null);
   
   // let's try to set the file by string
-  c.setFile('/dev/null');
+  c.file = '/dev/null';
   
   // .. this should be converted internally to an X.file object
-  assertTrue(c.file() instanceof X.file);
+  assertTrue(c.file instanceof X.file);
   
   // let's try to set the file using X.file directly
   var f = new X.file('/dev/null');
   
-  c.setFile(f);
+  c.file = f;
   
   // .. should be the same
-  assertEquals(c.file(), f);
+  assertEquals(c.file, f);
   
-}
+};
 
 /**
- * Test for X.colorTable.add
+ * Test for X.colortable.add
  */
-function testXcolorTableAdd() {
+function testXcolortableAdd() {
 
-  var c = new X.colorTable();
-  
-  // a fresh colorTable should not be dirty
-  assertFalse(c.dirty());
+  var c = new X.colortable();
   
   // define an example color table entry
   var colorValue = 0;
@@ -88,4 +69,4 @@ function testXcolorTableAdd() {
   assertEquals(returnedColor[3], colorB);
   assertEquals(returnedColor[4], colorA);
   
-}
+};

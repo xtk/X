@@ -28,25 +28,27 @@
  */
 
 // provides
-goog.provide('X.camera2D');
+goog.provide('X.labelmap');
 
 // requires
-goog.require('X.camera');
+goog.require('X.volume');
+
 
 
 /**
- * Create a 2D camera.
+ * Pseudo-class for a X.labelmap which derives from X.volume and is used to
+ * distinguish between a volume and a label map. An X.labelmap will never be
+ * rendered separately - but an X.volume object can be used to display solely a
+ * label map.
  * 
  * @constructor
- * @param {number} width The width of the camera's viewport.
- * @param {number} height The height of the camera's viewport.
- * @extends X.camera
+ * @extends X.volume
  */
-X.camera2D = function(width, height) {
+X.labelmap = function(volume) {
 
   //
-  // call the standard constructor of X.base
-  goog.base(this, width, height);
+  // call the standard constructor of X.volume
+  goog.base(this);
   
   //
   // class attributes
@@ -55,8 +57,33 @@ X.camera2D = function(width, height) {
    * @inheritDoc
    * @const
    */
-  this._classname = 'camera2D';
+  this._classname = 'labelmap';
+  
+  this._volume = volume;
   
 };
-// inherit from X.base
-goog.inherits(X.camera2D, X.camera);
+// inherit from X.volume
+goog.inherits(X.labelmap, X.volume);
+
+
+/**
+ * Re-show the slices or re-activate the volume rendering for this volume.
+ * 
+ * @inheritDoc
+ */
+X.labelmap.prototype.modified = function() {
+
+  // .. and fire our own modified event
+  var modifiedEvent = new X.event.ModifiedEvent();
+  modifiedEvent._object = this;
+  this.dispatchEvent(modifiedEvent);
+  
+  // call the X.volumes' modified method
+  this._volume.modified();
+  
+};
+
+
+// export symbols (required for advanced compilation and in particular the copy
+// constructors with duck typing)
+goog.exportSymbol('X.labelmap', X.labelmap);

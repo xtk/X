@@ -33,6 +33,7 @@ goog.provide('X.cube');
 // requires
 goog.require('CSG.cube');
 goog.require('X.base');
+goog.require('X.constructable');
 goog.require('X.object');
 
 
@@ -41,29 +42,10 @@ goog.require('X.object');
  * Create a displayable cube.
  * 
  * @constructor
- * @param {!Array} center The center position in 3D space as a 1-D Array with
- *          length 3.
- * @param {!number} radiusX The radius of the box in X-direction.
- * @param {!number} radiusY The radius of the box in Y-direction.
- * @param {!number} radiusZ The radius of the box in Z-direction.
  * @extends X.object
  */
-X.cube = function(center, radiusX, radiusY, radiusZ) {
+X.cube = function() {
 
-  if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
-      (center.length != 3)) {
-    
-    throw new Error('Invalid center.');
-    
-  }
-  
-  if (!goog.isNumber(radiusX) || !goog.isNumber(radiusY) ||
-      !goog.isNumber(radiusZ)) {
-    
-    throw new Error('Invalid radii.');
-    
-  }
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
@@ -75,15 +57,39 @@ X.cube = function(center, radiusX, radiusY, radiusZ) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'cube';
+  this._classname = 'cube';
   
-  this._center = center;
+  /**
+   * The center of this cube in the world space.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._center = [0, 0, 0];
   
-  this._radiusX = radiusX;
+  /**
+   * The edge length in X-direction.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._lengthX = 20;
   
-  this._radiusY = radiusY;
+  /**
+   * The edge length in Y-direction.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._lengthY = 20;
   
-  this._radiusZ = radiusZ;
+  /**
+   * The edge length in Z-direction.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._lengthZ = 20;
   
   /**
    * @inheritDoc
@@ -111,7 +117,7 @@ X.cube = function(center, radiusX, radiusY, radiusZ) {
 
   ];
   
-  this.create_();
+  inject(this, new X.constructable()); // this object is constructable
   
 };
 // inherit from X.object
@@ -119,18 +125,153 @@ goog.inherits(X.cube, X.object);
 
 
 /**
- * Create the sphere.
+ * Get the center of this cube.
  * 
- * @private
+ * @return {!Array} The center as an array with length 3.
+ * @public
  */
-X.cube.prototype.create_ = function() {
+X.cube.prototype.__defineGetter__('center', function() {
+
+  return this._center;
+  
+});
+
+
+/**
+ * Set the center of this cube.
+ * 
+ * @param {!Array} center The center as an array with length 3 ([X,Y,Z]).
+ * @throws {Error} An error, if the center is invalid.
+ * @public
+ */
+X.cube.prototype.__defineSetter__('center', function(center) {
+
+  if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
+      (center.length != 3)) {
+    
+    throw new Error('Invalid center');
+    
+  }
+  
+  this._center = center;
+  
+});
+
+
+/**
+ * Get the edge length in X-direction.
+ * 
+ * @return {!number} The edge length in X-direction.
+ * @public
+ */
+X.cube.prototype.__defineGetter__('lengthX', function() {
+
+  return this._lengthX;
+  
+});
+
+
+/**
+ * Set the edge length in X-direction.
+ * 
+ * @param {!number} lengthX The edge length in X-direction.
+ * @throws {Error} An error, if the given length is invalid.
+ * @public
+ */
+X.cube.prototype.__defineSetter__('lengthX', function(lengthX) {
+
+  if (!goog.isNumber(lengthX)) {
+    
+    throw new Error('Invalid lengthX.');
+    
+  }
+  
+  this._lengthX = lengthX;
+  
+});
+
+
+/**
+ * Get the edge length in Y-direction.
+ * 
+ * @return {!number} The edge length in Y-direction.
+ * @public
+ */
+X.cube.prototype.__defineGetter__('lengthY', function() {
+
+  return this._lengthY;
+  
+});
+
+
+/**
+ * Set the edge length in Y-direction.
+ * 
+ * @param {!number} lengthY The edge length in Y-direction.
+ * @throws {Error} An error, if the given length is invalid.
+ * @public
+ */
+X.cube.prototype.__defineSetter__('lengthY', function(lengthY) {
+
+  if (!goog.isNumber(lengthY)) {
+    
+    throw new Error('Invalid lengthY.');
+    
+  }
+  
+  this._lengthY = lengthY;
+  
+});
+
+
+/**
+ * Get the edge length in Z-direction.
+ * 
+ * @return {!number} The edge length in Z-direction.
+ * @public
+ */
+X.cube.prototype.__defineGetter__('lengthZ', function() {
+
+  return this._lengthZ;
+  
+});
+
+
+/**
+ * Set the edge length in Z-direction.
+ * 
+ * @param {!number} lengthZ The edge length in Z-direction.
+ * @throws {Error} An error, if the given length is invalid.
+ * @public
+ */
+X.cube.prototype.__defineSetter__('lengthZ', function(lengthZ) {
+
+  if (!goog.isNumber(lengthZ)) {
+    
+    throw new Error('Invalid lengthZ.');
+    
+  }
+  
+  this._lengthZ = lengthZ;
+  
+});
+
+
+/**
+ * @inheritDoc
+ */
+X.cube.prototype.modified = function() {
 
   this.fromCSG(new CSG.cube({
     center: this._center,
-    radius: [this._radiusX, this._radiusY, this._radiusZ]
+    radius: [this._lengthX / 2, this._lengthY / 2, this._lengthZ / 2]
   }));
+  
+  // call the super class
+  goog.base(this, 'modified');
   
 };
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.cube', X.cube);
+goog.exportSymbol('X.cube.prototype.modified', X.cube.prototype.modified);

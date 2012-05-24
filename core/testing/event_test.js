@@ -19,7 +19,7 @@ function testXeventClassName() {
   // create test event
   var e = new X.event('test');
   
-  assertEquals(e['className'], 'event');
+  assertEquals(e.className, 'event');
   
 }
 
@@ -219,7 +219,7 @@ function testXeventModifiedEvent() {
   assertEquals(me.type, me2.type);
   
   // check the className of the associated object
-  assertEquals(me._object.className(), 'object');
+  assertEquals(me._object.className, 'object');
   
 
 }

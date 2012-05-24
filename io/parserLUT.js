@@ -56,7 +56,7 @@ X.parserLUT = function() {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'parserLUT';
+  this._classname = 'parserLUT';
   
 };
 // inherit from X.parser
@@ -66,8 +66,10 @@ goog.inherits(X.parserLUT, X.parser);
 /**
  * @inheritDoc
  */
-X.parserLUT.prototype.parse = function(object, data, colorTable) {
+X.parserLUT.prototype.parse = function(container, object, data, flag) {
 
+  var colortable = container;
+  
   var dataAsArray = data.split('\n');
   
   var numberOfLines = dataAsArray.length;
@@ -113,13 +115,15 @@ X.parserLUT.prototype.parse = function(object, data, colorTable) {
     lineFields[5] = parseInt(lineFields[5], 10) / 255; // a
     
     // .. push it
-    colorTable.add(parseInt(lineFields[0], 10), lineFields[1], lineFields[2],
+    colortable.add(parseInt(lineFields[0], 10), lineFields[1], lineFields[2],
         lineFields[3], lineFields[4], lineFields[5], 10);
     
   }
   
+  // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
+  modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
   
 };

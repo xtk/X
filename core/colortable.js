@@ -28,26 +28,25 @@
  */
 
 // provides
-goog.provide('X.labelMap');
+goog.provide('X.colortable');
 
 // requires
-goog.require('X.volume');
+goog.require('X.base');
+goog.require('X.loadable');
+goog.require('goog.structs.Map');
 
 
 
 /**
- * Pseudo-class for a X.labelmap which derives from X.volume and is used to
- * distinguish between a volume and a label map. An X.labelmap will never be
- * rendered separately - but an X.volume object can be used to display solely a
- * label map.
+ * Create a container for a colortable.
  * 
  * @constructor
- * @extends X.volume
+ * @extends X.base
  */
-X.labelMap = function(volume) {
+X.colortable = function() {
 
   //
-  // call the standard constructor of X.volume
+  // call the standard constructor of X.base
   goog.base(this);
   
   //
@@ -57,32 +56,46 @@ X.labelMap = function(volume) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'labelMap';
+  this._classname = 'colortable';
   
-  this._volume = volume;
+  /**
+   * The internal hash map to store the value-color mapping.
+   * 
+   * @type {!goog.structs.Map}
+   * @protected
+   */
+  this._map = new goog.structs.Map();
+  
+  // inject functionality
+  inject(this, new X.loadable()); // this object is loadable from a file
   
 };
-// inherit from X.volume
-goog.inherits(X.labelMap, X.volume);
+// inherit from X.base
+goog.inherits(X.colortable, X.base);
 
 
 /**
- * Re-show the slices or re-activate the volume rendering for this volume.
+ * Add an entry to this color table.
  * 
- * @inheritDoc
+ * @param value
+ * @param label
+ * @param r
+ * @param g
+ * @param b
+ * @param a
+ * @throws {Error} If the given values are invalid.
  */
-X.labelMap.prototype.modified = function() {
+X.colortable.prototype.add = function(value, label, r, g, b, a) {
 
-  // .. and fire our own modified event
-  var modifiedEvent = new X.event.ModifiedEvent();
-  modifiedEvent._object = this;
-  this.dispatchEvent(modifiedEvent);
+  if (!goog.isNumber(value) || !goog.isNumber(r) || !goog.isNumber(g) ||
+      !goog.isNumber(b) || !goog.isNumber(a)) {
+    
+    throw new Error('Invalid color table entry.');
+    
+  }
   
-  // call the X.volumes' modified method
-  this._volume.modified();
+  this._map.set(value, [label, r, g, b, a]);
+  
+  this._dirty = true;
   
 };
-
-
-// export symbols (required for advanced compilation)
-goog.exportSymbol('X.labelMap', X.labelMap);

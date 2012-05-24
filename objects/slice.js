@@ -40,7 +40,7 @@ goog.require('goog.math.Vec3');
  * Create a displayable 2D slice/plane.
  * 
  * @constructor
- * @param {X.slice=} slice Another X.s;ice to use as a template.
+ * @param {X.slice=} slice Another X.slice to use as a template.
  * @extends X.object
  */
 X.slice = function(slice) {
@@ -56,7 +56,7 @@ X.slice = function(slice) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'slice';
+  this._classname = 'slice';
   
   /**
    * The center of this slice as a 3d vector.
@@ -100,7 +100,6 @@ X.slice = function(slice) {
   
   /**
    * @inheritDoc
-   * @const
    */
   this._textureCoordinateMap = [
 
@@ -122,7 +121,7 @@ X.slice = function(slice) {
    * @type {?X.texture}
    * @protected
    */
-  this._labelMap = null;
+  this._labelmap = null;
   
   /**
    * Flag to show borders or not.
@@ -139,8 +138,6 @@ X.slice = function(slice) {
    * @protected
    */
   this._borderColor = [1, 1, 1];
-  
-  this._hideChildren = true;
   
   if (goog.isDefAndNotNull(slice)) {
     
@@ -168,13 +165,13 @@ X.slice.prototype.copy_ = function(slice) {
   this._width = slice._width;
   this._height = slice._height;
   this._volume = slice._volume;
-  this._labelMap = slice._labelMap;
+  this._labelmap = slice._labelmap;
   this._borders = slice._borders;
   this._borderColor = slice._borderColor;
   this._hideChildren = slice._hideChildren;
   
   // call the superclass' modified method
-  X.slice.superClass_.copy_.call(this, slice);
+  goog.base(this, 'copy_', slice);
   
 };
 
@@ -270,7 +267,7 @@ X.slice.prototype.setup = function(center, front, up, width, height, borders,
  */
 X.slice.prototype.create_ = function() {
 
-  this.points().clear();
+  this._points.clear();
   
   // get an orthogonal vector using front x up
   var frontVector = new goog.math.Vec3(this._front[0], this._front[1],
@@ -330,60 +327,54 @@ X.slice.prototype.create_ = function() {
   var point5 = point1;
   
   // left triangle
-  this.points().add(point0.x, point0.y, point0.z); // 0
-  this.points().add(point1.x, point1.y, point1.z); // 1
-  this.points().add(point2.x, point2.y, point2.z); // 2
+  this._points.add(point0.x, point0.y, point0.z); // 0
+  this._points.add(point1.x, point1.y, point1.z); // 1
+  this._points.add(point2.x, point2.y, point2.z); // 2
   
   // right triangle
-  this.points().add(point3.x, point3.y, point3.z); // 3
-  this.points().add(point4.x, point4.y, point4.z); // 4
-  this.points().add(point5.x, point5.y, point5.z); // 5
+  this._points.add(point3.x, point3.y, point3.z); // 3
+  this._points.add(point4.x, point4.y, point4.z); // 4
+  this._points.add(point5.x, point5.y, point5.z); // 5
   
   // add the normals based on the orientation (we don't really need them since
   // we assume each Slice has a texture)
-  this.normals().add(frontVector.x, frontVector.y, frontVector.z);
-  this.normals().add(frontVector.x, frontVector.y, frontVector.z);
-  this.normals().add(frontVector.x, frontVector.y, frontVector.z);
-  this.normals().add(frontVector.x, frontVector.y, frontVector.z);
-  this.normals().add(frontVector.x, frontVector.y, frontVector.z);
-  this.normals().add(frontVector.x, frontVector.y, frontVector.z);
+  this._normals.add(frontVector.x, frontVector.y, frontVector.z);
+  this._normals.add(frontVector.x, frontVector.y, frontVector.z);
+  this._normals.add(frontVector.x, frontVector.y, frontVector.z);
+  this._normals.add(frontVector.x, frontVector.y, frontVector.z);
+  this._normals.add(frontVector.x, frontVector.y, frontVector.z);
+  this._normals.add(frontVector.x, frontVector.y, frontVector.z);
   
   // add some borders, if enabled
   if (this._borders) {
     var borders = new X.object();
-    borders.points().add(point0.x, point0.y, point0.z); // 0
-    borders.points().add(point1.x, point1.y, point1.z); // 1
-    borders.points().add(point1.x, point1.y, point1.z); // 1
-    borders.points().add(point4.x, point4.y, point4.z); // 4
-    borders.points().add(point4.x, point4.y, point4.z); // 4
-    borders.points().add(point2.x, point2.y, point2.z); // 2
-    borders.points().add(point2.x, point2.y, point2.z); // 2
-    borders.points().add(point0.x, point0.y, point0.z); // 0
-    borders.normals().add(0, 0, 0);
-    borders.normals().add(0, 0, 0);
-    borders.normals().add(0, 0, 0);
-    borders.normals().add(0, 0, 0);
-    borders.normals().add(0, 0, 0);
-    borders.normals().add(0, 0, 0);
-    borders.normals().add(0, 0, 0);
-    borders.normals().add(0, 0, 0);
-    borders.setColor(this._borderColor[0], this._borderColor[1],
-        this._borderColor[2]);
-    borders.setType(X.object.types.LINES);
-    borders.setLineWidth(2);
+    borders._points.add(point0.x, point0.y, point0.z); // 0
+    borders._points.add(point1.x, point1.y, point1.z); // 1
+    borders._points.add(point1.x, point1.y, point1.z); // 1
+    borders._points.add(point4.x, point4.y, point4.z); // 4
+    borders._points.add(point4.x, point4.y, point4.z); // 4
+    borders._points.add(point2.x, point2.y, point2.z); // 2
+    borders._points.add(point2.x, point2.y, point2.z); // 2
+    borders._points.add(point0.x, point0.y, point0.z); // 0
+    borders._normals.add(0, 0, 0);
+    borders._normals.add(0, 0, 0);
+    borders._normals.add(0, 0, 0);
+    borders._normals.add(0, 0, 0);
+    borders._normals.add(0, 0, 0);
+    borders._normals.add(0, 0, 0);
+    borders._normals.add(0, 0, 0);
+    borders._normals.add(0, 0, 0);
+    borders._color = [this._borderColor[0], this._borderColor[1],
+                      this._borderColor[2]];
+    borders._type = X.displayable.types.LINES;
+    borders._linewidth = 2;
     
-    this.children().push(borders);
+    this._children.push(borders);
     
   }
   
 };
 
-X.slice.prototype.labelMap = function() {
-
-  return this._labelMap;
-  
-};
-
-// export symbols (required for advanced compilation)
+// export symbols (required for advanced compilation and in particular the copy
+// constructors with duck typing)
 goog.exportSymbol('X.slice', X.slice);
-goog.exportSymbol('X.slice.prototype.setup', X.slice.prototype.setup);

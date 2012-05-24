@@ -51,7 +51,7 @@ goog.require('goog.events.Event');
 
 
 /**
- * The superclass class for all events in XTK.
+ * The super class for all events in XTK.
  * 
  * @constructor
  * @param {string} type A type identifier for this event.
@@ -72,7 +72,7 @@ X.event = function(type) {
    * @type {string}
    * @protected
    */
-  this['className'] = 'event';
+  this._classname = 'event';
   
 };
 // inherit from goog.events.Event
@@ -173,14 +173,6 @@ X.event.RotateEvent = function() {
    */
   this._distance = new goog.math.Vec2(0, 0);
   
-  /**
-   * The angle in degrees to pan around the last mouse position in screen space.
-   * 
-   * @type {!number}
-   * @protected
-   */
-  this._angle = 0;
-  
 };
 // inherit from goog.events.Event
 goog.inherits(X.event.RotateEvent, X.event);
@@ -272,7 +264,20 @@ X.event.HoverEvent = function() {
   // call the default event constructor
   goog.base(this, X.event.events.HOVER);
   
+  /**
+   * The x coordinate.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._x = 0;
+  
+  /**
+   * The y coordinate.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._y = 0;
   
 };
@@ -330,6 +335,14 @@ X.event.ModifiedEvent = function() {
    * @protected
    */
   this._object = new X.object();
+  
+  /**
+   * A container for an X.base derived instance.
+   * 
+   * @type{?X.base}
+   * @protected
+   */
+  this._container = null;
   
 };
 // inherit from goog.events.Event

@@ -54,36 +54,47 @@ X.texture = function() {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'texture';
-  
-  // the global id counter
-  var counter = window["X.Counter"];
-  // ..get a new unique id
-  counter.increment();
+  this._classname = 'texture';
   
   /**
-   * The uniqueId of this texture. Each texture in XTK has a uniqueId.
+   * The file of this texture.
+   * 
+   * @type {?X.file}
+   * @protected
+   */
+  this._file = null;
+  
+  /**
+   * The (optional) HTML Image element.
+   * 
+   * @type {?Element}
+   * @protected
+   */
+  this._image = null;
+  
+  /**
+   * The raw data of this texture as a uint8 array.
+   * 
+   * @type {?Object}
+   * @protected
+   */
+  this._rawData = null;
+  
+  /**
+   * The width of the raw data.
    * 
    * @type {number}
    * @protected
    */
-  this['_id'] = counter.value();
+  this._rawDataWidth = 0;
   
   /**
-   * @type {X.file}
+   * The height of the raw data.
+   * 
+   * @type {number}
+   * @protected
    */
-  this._file = null;
-  
-  this._filter = X.texture.filters.SHARP;
-  
-  this._image = null;
-  
-  this._rawData = null;
-  this._rawDataWidth = 0;
   this._rawDataHeight = 0;
-  
-  // mark as dirty by default
-  this._dirty = true;
   
 };
 // inherit from X.base
@@ -91,43 +102,26 @@ goog.inherits(X.texture, X.base);
 
 
 /**
- * Different filters for an X.texture.
+ * Get the file of this texture container.
  * 
- * @enum {string}
+ * @return {?X.file} The file of this texture container.
+ * @public
  */
-X.texture.filters = {
-  // different filters for texture display
-  SHARP: 'SHARP',
-  SMOOTH: 'SMOOTH'
-};
-
-
-X.texture.prototype.id = function() {
-
-  return this['_id'];
-  
-};
-
-
-/**
- * Get the image file of this texture.
- * 
- * @return {?X.file} The image file of this texture.
- */
-X.texture.prototype.file = function() {
+X.texture.prototype.__defineGetter__('file', function() {
 
   return this._file;
   
-};
+});
 
 
 /**
- * Set the image file for this texture.
+ * Set the file for this texture container.
  * 
- * @param {?X.file|string} file The image file path or an X.file object
- *          containing the path.
+ * @param {?X.file|string} file The file path or an X.file object containing the
+ *          path.
+ * @public
  */
-X.texture.prototype.setFile = function(file) {
+X.texture.prototype.__defineSetter__('file', function(file) {
 
   if (!goog.isDefAndNotNull(file)) {
     
@@ -145,61 +139,6 @@ X.texture.prototype.setFile = function(file) {
   
   this._file = file;
   
-};
+});
 
-
-X.texture.prototype.image = function() {
-
-  return this._image;
-  
-};
-
-
-X.texture.prototype.setImage = function(image) {
-
-  this._image = image;
-  
-};
-
-
-X.texture.prototype.rawData = function() {
-
-  return this._rawData;
-  
-};
-
-
-X.texture.prototype.setRawData = function(rawData) {
-
-  this._rawData = rawData;
-  this._dirty = true;
-  
-};
-
-X.texture.prototype.rawDataHeight = function() {
-
-  return this._rawDataHeight;
-  
-};
-
-
-X.texture.prototype.setRawDataHeight = function(rawDataHeight) {
-
-  this._rawDataHeight = rawDataHeight;
-  this._dirty = true;
-  
-};
-
-X.texture.prototype.rawDataWidth = function() {
-
-  return this._rawDataWidth;
-  
-};
-
-
-X.texture.prototype.setRawDataWidth = function(rawDataWidth) {
-
-  this._rawDataWidth = rawDataWidth;
-  this._dirty = true;
-  
-};
+goog.exportSymbol('X.texture', X.texture);

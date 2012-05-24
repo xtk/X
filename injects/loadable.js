@@ -28,35 +28,67 @@
  */
 
 // provides
-goog.provide('X.camera2D');
+goog.provide('X.loadable');
 
 // requires
-goog.require('X.camera');
+goog.require('X.base');
+goog.require('X.file');
+
 
 
 /**
- * Create a 2D camera.
+ * Injective mix-in for all loadable objects.
  * 
  * @constructor
- * @param {number} width The width of the camera's viewport.
- * @param {number} height The height of the camera's viewport.
- * @extends X.camera
  */
-X.camera2D = function(width, height) {
+X.loadable = function() {
 
-  //
-  // call the standard constructor of X.base
-  goog.base(this, width, height);
-  
-  //
-  // class attributes
-  
   /**
-   * @inheritDoc
-   * @const
+   * The file of this loadable object.
+   * 
+   * @type {?X.file}
+   * @protected
    */
-  this._classname = 'camera2D';
+  this._file = null;
   
 };
-// inherit from X.base
-goog.inherits(X.camera2D, X.camera);
+
+
+/**
+ * Load this object from a file path or reset the associated file path.
+ * 
+ * @param {?string} filepath The file path/URL to load. If null, reset the
+ *          associated file.
+ */
+X.loadable.prototype.__defineSetter__('file', function(filepath) {
+
+  if (!goog.isDefAndNotNull(filepath)) {
+    
+    // if path is null, we reset the associated X.file object
+    
+    this._file = null;
+    return;
+    
+  }
+  
+  this._file = new X.file(filepath);
+  
+});
+
+
+/**
+ * Get the associated X.file for this object.
+ * 
+ * @return {string} The associated X.file or null if no file is associated.
+ */
+X.loadable.prototype.__defineGetter__('file', function() {
+
+  if (!this._file) {
+    
+    return '';
+    
+  }
+  
+  return this._file._path;
+  
+});

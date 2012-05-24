@@ -60,7 +60,7 @@ X.parserTRK = function() {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'parserTRK';
+  this._classname = 'parserTRK';
   
 };
 // inherit from X.parser
@@ -70,11 +70,11 @@ goog.inherits(X.parserTRK, X.parser);
 /**
  * @inheritDoc
  */
-X.parserTRK.prototype.parse = function(object, data) {
+X.parserTRK.prototype.parse = function(container, object, data, flag) {
 
-  var p = object.points();
-  var n = object.normals();
-  var c = object.colors();
+  var p = object._points;
+  var n = object._normals;
+  var c = object._colors;
   
   var offset = 0;
   
@@ -187,12 +187,12 @@ X.parserTRK.prototype.parse = function(object, data) {
     // we need to get the bounding box of the whole .trk file before we add the
     // points to properly setup normals
     
-    var cMinX = currentPoints.minA();
-    var cMaxX = currentPoints.maxA();
-    var cMinY = currentPoints.minB();
-    var cMaxY = currentPoints.maxB();
-    var cMinZ = currentPoints.minC();
-    var cMaxZ = currentPoints.maxC();
+    var cMinX = currentPoints._minA;
+    var cMaxX = currentPoints._maxA;
+    var cMinY = currentPoints._minB;
+    var cMaxY = currentPoints._maxB;
+    var cMinZ = currentPoints._minC;
+    var cMaxZ = currentPoints._maxC;
     
     if (!minX || cMinX < minX) {
       minX = cMinX;
@@ -233,7 +233,7 @@ X.parserTRK.prototype.parse = function(object, data) {
     
     // grab the current points of this fiber
     var points = fibers[i];
-    var numberOfPoints = points.count();
+    var numberOfPoints = points.count;
     // grab the length of this fiber
     var length = lengths[i];
     
@@ -301,22 +301,25 @@ X.parserTRK.prototype.parse = function(object, data) {
   } // loop through fibers
   
   // set the object type to LINES
-  object.setType(X.object.types.LINES);
+  object._type = X.displayable.types.LINES;
   
   // attach the scalars
   var scalars = new X.scalars();
   scalars._min = minLength;
   scalars._max = maxLength;
-  scalars['_minThreshold'] = minLength;
-  scalars['_maxThreshold'] = maxLength;
-  scalars.setGlArray(scalarArray); // the ordered, gl-Ready
+  scalars._lowerThreshold = minLength;
+  scalars._upperThreshold = maxLength;
+  scalars._glArray = scalarArray; // the ordered, gl-Ready
   // version - use the setter to mark the scalars dirty
   scalars._replaceMode = false; // we don't want to replace - we want to
   // discard!
+  scalars._dirty = true;
   object._scalars = scalars;
   
+  // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
+  modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
   
 };

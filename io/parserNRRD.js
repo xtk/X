@@ -62,7 +62,7 @@ X.parserNRRD = function() {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'parserNRRD';
+  this._classname = 'parserNRRD';
   
 };
 // inherit from X.parser
@@ -72,7 +72,7 @@ goog.inherits(X.parserNRRD, X.parser);
 /**
  * @inheritDoc
  */
-X.parserNRRD.prototype.parse = function(object, data) {
+X.parserNRRD.prototype.parse = function(container, object, data, flag) {
 
   // the position in the file
   var position = 0;
@@ -144,9 +144,16 @@ X.parserNRRD.prototype.parse = function(object, data) {
   
 
   // attach the scalar range to the volume
-  object._scalarRange = [min, max];
+  object._min = min;
+  object._max = max;
   // .. and set the default threshold
-  object.threshold(min, max);
+  // only if the threshold was not already set
+  if (object._lowerThreshold == -Infinity) {
+    object._lowerThreshold = min;
+  }
+  if (object._upperThreshold == Infinity) {
+    object._upperThreshold = max;
+  }
   
   // create the object
   object.create_();
@@ -155,14 +162,21 @@ X.parserNRRD.prototype.parse = function(object, data) {
   // and create the textures for each slice
   this.reslice(object, datastream, this.sizes, min, max);
   
-  // all done..
+  // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
+  modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
   
 };
 
 
+/**
+ * Parse a NRRD file header.
+ * 
+ * @param {string} header The NRRD header to parse.
+ * @throws {Error} An error, if the NRRD header is not supported or invalid.
+ */
 X.parserNRRD.prototype.parseHeader = function(header) {
 
   var data, field, fn, i, l, lines, m, _i, _len, _results;
@@ -204,6 +218,12 @@ X.parserNRRD.prototype.parseHeader = function(header) {
   }
 };
 
+
+/**
+ * Functions for parsing the NRRD header fields.
+ * 
+ * @type {Object}
+ */
 X.parserNRRD.prototype.fieldFunctions = {
   'type': function(data) {
 

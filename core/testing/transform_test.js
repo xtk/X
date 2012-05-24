@@ -6,13 +6,13 @@ goog.require('goog.testing.asserts');
 
 
 /**
- * Test for X.transform.className()
+ * Test for X.transform.className
  */
 function testXtransformClassName() {
 
   var t = new X.transform();
   
-  assertEquals(t.className(), 'transform');
+  assertEquals(t.className, 'transform');
   
 }
 

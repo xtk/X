@@ -28,25 +28,24 @@
  */
 
 // provides
-goog.provide('X.camera2D');
+goog.provide('X.fibers');
 
 // requires
-goog.require('X.camera');
+goog.require('X.object');
+
 
 
 /**
- * Create a 2D camera.
+ * Create fibers. Fibers are displayable objects and can be loaded from a file.
  * 
  * @constructor
- * @param {number} width The width of the camera's viewport.
- * @param {number} height The height of the camera's viewport.
- * @extends X.camera
+ * @extends X.object
  */
-X.camera2D = function(width, height) {
+X.fibers = function() {
 
   //
-  // call the standard constructor of X.base
-  goog.base(this, width, height);
+  // call the standard constructor of X.object
+  goog.base(this);
   
   //
   // class attributes
@@ -55,8 +54,14 @@ X.camera2D = function(width, height) {
    * @inheritDoc
    * @const
    */
-  this._classname = 'camera2D';
+  this._classname = 'fibers';
+  
+  // inject functionality
+  inject(this, new X.loadable()); // this object is loadable from a file
   
 };
-// inherit from X.base
-goog.inherits(X.camera2D, X.camera);
+// inherit from X.object
+goog.inherits(X.fibers, X.object);
+
+// export symbols (required for advanced compilation)
+goog.exportSymbol('X.fibers', X.fibers);

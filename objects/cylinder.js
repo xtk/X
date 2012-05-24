@@ -33,6 +33,7 @@ goog.provide('X.cylinder');
 // requires
 goog.require('CSG.cylinder');
 goog.require('X.base');
+goog.require('X.constructable');
 goog.require('X.object');
 
 
@@ -41,35 +42,10 @@ goog.require('X.object');
  * Create a displayable cylinder.
  * 
  * @constructor
- * @param {!Array} start The start position in 3D space as a 1-D Array with
- *          length 3.
- * @param {!Array} end The end position in 3D space as a 1-D Array with length
- *          3.
- * @param {!number} radius The radius of the cylinder.
  * @extends X.object
  */
-X.cylinder = function(start, end, radius) {
+X.cylinder = function() {
 
-  if (!goog.isDefAndNotNull(start) || !(start instanceof Array) ||
-      (start.length != 3)) {
-    
-    throw new Error('Invalid start position.');
-    
-  }
-  
-  if (!goog.isDefAndNotNull(end) || !(end instanceof Array) ||
-      (end.length != 3)) {
-    
-    throw new Error('Invalid end position.');
-    
-  }
-  
-  if (!goog.isNumber(radius)) {
-    
-    throw new Error('Invalid radius.');
-    
-  }
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
@@ -81,17 +57,41 @@ X.cylinder = function(start, end, radius) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'cylinder';
+  this._classname = 'cylinder';
   
-  this._start = start;
+  /**
+   * The start point of this cylinder.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._start = [-10, -10, -10];
   
-  this._end = end;
+  /**
+   * The end point of this cylinder.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._end = [10, 10, 10];
   
-  this._radius = radius;
+  /**
+   * The radius of this cylinder.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._radius = 10;
   
+  /**
+   * The number of slices to generate the cylinder shape.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._slices = 32;
   
-  this.create_();
+  inject(this, new X.constructable()); // this object is constructable
   
 };
 // inherit from X.object
@@ -99,11 +99,110 @@ goog.inherits(X.cylinder, X.object);
 
 
 /**
- * Create the cylinder.
+ * Get the start point of this cylinder.
  * 
- * @private
+ * @return {!Array} The start point as an array with length 3.
+ * @public
  */
-X.cylinder.prototype.create_ = function() {
+X.cylinder.prototype.__defineGetter__('start', function() {
+
+  return this._start;
+  
+});
+
+
+/**
+ * Set the start point of this cylinder.
+ * 
+ * @param {!Array} start The start point as an array with length 3 ([X,Y,Z]).
+ * @throws {Error} An error, if the start point is invalid.
+ * @public
+ */
+X.cylinder.prototype.__defineSetter__('start', function(start) {
+
+  if (!goog.isDefAndNotNull(start) || !(start instanceof Array) ||
+      (start.length != 3)) {
+    
+    throw new Error('Invalid start');
+    
+  }
+  
+  this._start = start;
+  
+});
+
+
+/**
+ * Get the end point of this cylinder.
+ * 
+ * @return {!Array} The end point as an array with length 3.
+ * @public
+ */
+X.cylinder.prototype.__defineGetter__('end', function() {
+
+  return this._end;
+  
+});
+
+
+/**
+ * Set the end point of this cylinder.
+ * 
+ * @param {!Array} end The end point as an array with length 3 ([X,Y,Z]).
+ * @throws {Error} An error, if the end point is invalid.
+ * @public
+ */
+X.cylinder.prototype.__defineSetter__('end', function(end) {
+
+  if (!goog.isDefAndNotNull(end) || !(end instanceof Array) ||
+      (end.length != 3)) {
+    
+    throw new Error('Invalid end');
+    
+  }
+  
+  this._end = end;
+  
+});
+
+
+/**
+ * Get the radius of this cylinder.
+ * 
+ * @return {!number} The radius.
+ * @public
+ */
+X.cylinder.prototype.__defineGetter__('radius', function() {
+
+  return this._radius;
+  
+});
+
+
+/**
+ * Set the radius of this cylinder.
+ * 
+ * @param {!number} radius The radius.
+ * @throws {Error} An error, if the given radius is invalid.
+ * @public
+ */
+X.cylinder.prototype.__defineSetter__('radius', function(radius) {
+
+  if (!goog.isNumber(radius)) {
+    
+    throw new Error('Invalid radius.');
+    
+  }
+  
+  this._radius = radius;
+  
+});
+
+
+/**
+ * @inheritDoc
+ */
+X.cylinder.prototype.modified = function() {
 
   this.fromCSG(new CSG.cylinder({
     start: this._start,
@@ -112,7 +211,12 @@ X.cylinder.prototype.create_ = function() {
     slices: this._slices
   }));
   
+  // call the super class
+  goog.base(this, 'modified');
+  
 };
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.cylinder', X.cylinder);
+goog.exportSymbol('X.cylinder.prototype.modified',
+    X.cylinder.prototype.modified);

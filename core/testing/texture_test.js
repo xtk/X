@@ -10,26 +10,10 @@ function testXtextureClassName() {
 
   t = new X.texture();
   
-  assertEquals(t.className(), 'texture');
+  assertEquals(t.className, 'texture');
   
 }
 
-/**
- * Test for X.texture.id to test uniqueness.
- */
-function testXtextureId() {
-
-  var counter = window["X.Counter"];
-  var oldValue = counter.value();
-  
-  var t = new X.texture();
-  
-  // the counter should be increased by 1
-  var newValue = counter.value();
-  
-  assertEquals(newValue, oldValue + 1);
-  
-}
 
 /**
  * Test for X.texture.file

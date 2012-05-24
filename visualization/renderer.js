@@ -36,14 +36,17 @@ goog.require('X.base');
 goog.require('X.camera');
 goog.require('X.camera2D');
 goog.require('X.camera3D');
+goog.require('X.cube');
+goog.require('X.cylinder');
 goog.require('X.event');
 goog.require('X.interactor');
 goog.require('X.interactor2D');
 goog.require('X.interactor3D');
-goog.require('X.labelMap');
+goog.require('X.labelmap');
 goog.require('X.loader');
 goog.require('X.object');
 goog.require('X.progressbar');
+goog.require('X.sphere');
 goog.require('X.volume');
 goog.require('goog.dom');
 goog.require('goog.events');
@@ -56,30 +59,10 @@ goog.require('goog.Timer');
  * The superclass for all renderers.
  * 
  * @constructor
- * @param {!Element} container The container (DOM Element) to place the renderer
- *          inside.
  * @extends X.base
  */
-X.renderer = function(container) {
+X.renderer = function() {
 
-  // check if a container is passed
-  if (!goog.isDefAndNotNull(container)) {
-    
-    throw new Error('An ID to a valid container (<div>..) is required.');
-    
-  }
-  
-  // check if the passed container is really valid
-  var _container = goog.dom.getElement(container);
-  
-  if (!goog.dom.isElement(_container) || _container.clientWidth == 0 ||
-      _container.clientHeight == 0) {
-    
-    throw new Error(
-        'Could not find the given container or it has an undefined size.');
-    
-  }
-  
   //
   // call the standard constructor of X.base
   goog.base(this);
@@ -88,15 +71,15 @@ X.renderer = function(container) {
    * @inheritDoc
    * @const
    */
-  this['className'] = 'renderer';
+  this.__classname = 'renderer';
   
   /**
    * The HTML container of this renderer, E.g. a <div>.
    * 
-   * @type {!Element}
+   * @type {!Element|HTMLBodyElement}
    * @public
    */
-  this['container'] = _container;
+  this._container = window.document.body;
   
   /**
    * The width of this renderer.
@@ -104,7 +87,7 @@ X.renderer = function(container) {
    * @type {!number}
    * @public
    */
-  this['width'] = this['container'].clientWidth;
+  this._width = this._container.clientWidth;
   
   /**
    * The height of this renderer.
@@ -112,7 +95,7 @@ X.renderer = function(container) {
    * @type {!number}
    * @public
    */
-  this['height'] = this['container'].clientHeight;
+  this._height = this._container.clientHeight;
   
   /**
    * The Canvas of this renderer.
@@ -120,7 +103,7 @@ X.renderer = function(container) {
    * @type {?Element}
    * @public
    */
-  this['canvas'] = null;
+  this._canvas = null;
   
   /**
    * The camera of this renderer.
@@ -128,7 +111,7 @@ X.renderer = function(container) {
    * @type {?X.camera}
    * @protected
    */
-  this['camera'] = null;
+  this._camera = null;
   
   /**
    * The interactor of this renderer.
@@ -136,7 +119,7 @@ X.renderer = function(container) {
    * @type {?X.interactor}
    * @protected
    */
-  this['interactor'] = null;
+  this._interactor = null;
   
   /**
    * An X.array containing the displayable objects of this renderer. The object
@@ -145,7 +128,7 @@ X.renderer = function(container) {
    * @type {!X.array}
    * @protected
    */
-  this.objects = new X.array(X.object.OPACITY_COMPARATOR);
+  this._objects = new X.array(X.object.OPACITY_COMPARATOR);
   
   /**
    * An array containing the topLevel objects (which do not have parents) of
@@ -154,7 +137,7 @@ X.renderer = function(container) {
    * @type {!Array}
    * @protected
    */
-  this.topLevelObjects = new Array();
+  this._topLevelObjects = new Array();
   
   /**
    * The loader associated with this renderer.
@@ -162,7 +145,7 @@ X.renderer = function(container) {
    * @type {?X.loader}
    * @protected
    */
-  this.loader = null;
+  this._loader = null;
   
   /**
    * A locked flag for synchronizing.
@@ -170,7 +153,7 @@ X.renderer = function(container) {
    * @type {boolean}
    * @protected
    */
-  this.locked = false;
+  this._locked = false;
   
   /**
    * A flag to show if the initial loading was completed.
@@ -178,7 +161,7 @@ X.renderer = function(container) {
    * @type {boolean}
    * @public
    */
-  this['initialLoadingCompleted'] = false;
+  this._loadingCompleted = false;
   
   /**
    * The progressBar of this renderer.
@@ -186,7 +169,7 @@ X.renderer = function(container) {
    * @type {?X.progressbar}
    * @protected
    */
-  this.progressBar = null;
+  this._progressBar = null;
   
   /**
    * The rendering context of this renderer.
@@ -194,7 +177,7 @@ X.renderer = function(container) {
    * @type {?Object}
    * @protected
    */
-  this.context = null;
+  this._context = null;
   
   /**
    * The configuration of this renderer.
@@ -222,10 +205,10 @@ goog.inherits(X.renderer, X.base);
  */
 X.renderer.prototype.onProgress = function(event) {
 
-  if (this.progressBar) {
+  if (this._progressBar) {
     
     var _progress = event._value;
-    this.progressBar.setValue(_progress * 100);
+    this._progressBar.setValue(_progress * 100);
     
   }
   
@@ -292,13 +275,106 @@ X.renderer.prototype.onScroll_ = function(event) {
 
 
 /**
+ * Get the interactor of this renderer. The interactor is null until this
+ * renderer is initialized.
+ * 
+ * @return {?X.interactor} The interactor.
+ */
+X.renderer.prototype.__defineGetter__('interactor', function() {
+
+  return this._interactor;
+  
+});
+
+
+/**
+ * Get the camera of this renderer. The camera is null until this renderer is
+ * initialized.
+ * 
+ * @return {?X.camera} The camera.
+ */
+X.renderer.prototype.__defineGetter__('camera', function() {
+
+  return this._camera;
+  
+});
+
+
+/**
+ * Check if the initial loading of all objects was completed. This value gets
+ * set immediately after the onShowtime function is executed.
+ * 
+ * @return {boolean} TRUE if all objects were completely loaded, FALSE else
+ *         wise.
+ */
+X.renderer.prototype.__defineGetter__('loadingCompleted', function() {
+
+  return this._loadingCompleted;
+  
+});
+
+
+/**
+ * Get the container of this renderer.
+ * 
+ * @return {!Element|HTMLBodyElement} The container of this renderer.
+ * @public
+ */
+X.renderer.prototype.__defineGetter__('container', function() {
+
+  return this._container;
+  
+});
+
+
+/**
+ * Set the container for this renderer. This has to happen before
+ * X.renderer.init() is called.
+ * 
+ * @param {!string|Element|HTMLBodyElement} container Either an ID to a DOM
+ *          container or the DOM element itself.
+ * @throws {Error} An error, if the given container is invalid.
+ * @public
+ */
+X.renderer.prototype.__defineSetter__('container', function(container) {
+
+  // check if a container is passed
+  if (!goog.isDefAndNotNull(container)) {
+    
+    throw new Error('An ID to a valid container (<div>..) is required.');
+    
+  }
+  
+  // check if the passed container is really valid
+  var _container = container;
+  
+  // if an id is given, try to get the corresponding DOM element
+  if (goog.isString(_container)) {
+    
+    _container = goog.dom.getElement(container);
+    
+  }
+  
+  // now we should have a valid DOM element
+  if (!goog.dom.isElement(_container)) {
+    
+    throw new Error('Could not find the given container.');
+    
+  }
+  
+  this._container = _container;
+  
+});
+
+
+/**
  * Resets the view according to the global bounding box of all associated
  * objects, the configured camera position as well as its focus _and_ triggers
  * re-rendering.
  */
 X.renderer.prototype.resetViewAndRender = function() {
 
-  this['camera'].reset();
+  this._camera.reset();
   this.render_(false, false);
   
 };
@@ -316,9 +392,9 @@ X.renderer.prototype.showProgressBar_ = function() {
     
     // create a progress bar here if this is the first render request and the
     // loader is working
-    if (!this.progressBar) {
+    if (!this._progressBar) {
       
-      this.progressBar = new X.progressbar(this['container'], 3);
+      this._progressBar = new X.progressbar(this._container, 3);
       
     }
     
@@ -337,21 +413,21 @@ X.renderer.prototype.hideProgressBar_ = function() {
   // only do the following if the progressBar was not turned off
   if (this['config']['PROGRESSBAR_ENABLED']) {
     
-    if (this.progressBar && !this._readyCheckTimer2) {
+    if (this._progressBar && !this.__readyCheckTimer2) {
       
       // show a green, full progress bar
-      this.progressBar.done();
+      this._progressBar.done();
       
       // wait for a short time
-      this._readyCheckTimer2 = goog.Timer.callOnce(function() {
+      this.__readyCheckTimer2 = goog.Timer.callOnce(function() {
 
-        this._readyCheckTimer2 = null;
+        this.__readyCheckTimer2 = null;
         
-        if (this.progressBar) {
+        if (this._progressBar) {
           
           // we are done, kill the progressbar
-          this.progressBar.kill();
-          this.progressBar = null;
+          this._progressBar.kill();
+          this._progressBar = null;
           
         }
         
@@ -383,13 +459,18 @@ X.renderer.prototype.init = function(_contextName) {
   // create the canvas
   var _canvas = goog.dom.createDom('canvas');
   
-  // width and height can not be set using CSS but via object properties
-  _canvas.width = this['width'];
-  _canvas.height = this['height'];
-  
   //
   // append it to the container
-  goog.dom.appendChild(this['container'], _canvas);
+  goog.dom.appendChild(this._container, _canvas);
+  
+  // the container might have resized now, so update our width and height
+  // settings
+  this._width = this._container.clientWidth;
+  this._height = this._container.clientHeight;
+  
+  // width and height can not be set using CSS but via object properties
+  _canvas.width = this._width;
+  _canvas.height = this._height;
   
 
   // --------------------------------------------------------------------------
@@ -422,7 +503,7 @@ X.renderer.prototype.init = function(_contextName) {
     var _msg = 'Sorry, ' +
         _contextName +
         ' context is <strong>not supported</strong> on this machine! See <a href="http://crash.goXTK.com" target="_blank">http://crash.goXTK.com</a> for requirements..';
-    this['container'].innerHTML = '<h3 style="' + _style +
+    this._container.innerHTML = '<h3 style="' + _style +
         '">Oooops..</h3><p style="' + _style + '">' + _msg + '</p>';
     
     // .. and throw an exception
@@ -433,22 +514,22 @@ X.renderer.prototype.init = function(_contextName) {
   //
   // Step 1b: Configure the X.loader
   //
-  this.loader = new X.loader();
+  this._loader = new X.loader();
   
   // listen to a progress event which gets fired during loading whenever
   // progress was made
-  goog.events.listen(this.loader, X.event.events.PROGRESS, this.onProgress
+  goog.events.listen(this._loader, X.event.events.PROGRESS, this.onProgress
       .bind(this));
   
   //
   // Step 1c: Register the created canvas to this instance
   //
-  this['canvas'] = _canvas;
+  this._canvas = _canvas;
   
   //
   // Step 1d: Register the created context to this instance
   //
-  this.context = _context;
+  this._context = _context;
   
   //
   // Step2: Configure the context and the viewport
@@ -456,12 +537,12 @@ X.renderer.prototype.init = function(_contextName) {
   
   //
   // create a new interactor
-  var _interactor = new X.interactor3D(this['canvas']);
+  var _interactor = new X.interactor3D(this._canvas);
   
   // in the 2d case, create a 2d interactor (of course..)
   if (_contextName == '2d') {
     
-    _interactor = new X.interactor2D(this['canvas']);
+    _interactor = new X.interactor2D(this._canvas);
     
   }
   // initialize it and..
@@ -479,18 +560,18 @@ X.renderer.prototype.init = function(_contextName) {
   
 
   // .. and finally register it to this instance
-  this['interactor'] = _interactor;
+  this._interactor = _interactor;
   
   //
   // create a new camera
   // width and height are required to calculate the perspective
-  var _camera = new X.camera3D(this['width'], this['height']);
+  var _camera = new X.camera3D(this._width, this._height);
   
   if (_contextName == '2d') {
-    _camera = new X.camera2D(this['width'], this['height']);
+    _camera = new X.camera2D(this._width, this._height);
   }
   // observe the interactor for user interactions (mouse-movements etc.)
-  _camera.observe(this['interactor']);
+  _camera.observe(this._interactor);
   // ..listen to render requests from the camera
   // these get fired after user-interaction and camera re-positioning to re-draw
   // all objects
@@ -501,7 +582,7 @@ X.renderer.prototype.init = function(_contextName) {
   // attach all created objects as class attributes
   // should be one of the last things to do here since we use these attributes
   // to check if the initialization was completed successfully
-  this['camera'] = _camera;
+  this._camera = _camera;
   
 
   //
@@ -521,9 +602,18 @@ X.renderer.prototype.init = function(_contextName) {
  */
 X.renderer.prototype.add = function(object) {
 
+  // for constructable objects (e.g. cube, sphere, cylinder), we call the
+  // modified() function to generate the CSG representations
+  if (object instanceof X.cube || object instanceof X.sphere ||
+      object instanceof X.cylinder) {
+    
+    object.modified();
+    
+  }
+  
   // we know that objects which are directly added using this function are def.
   // top-level objects, meaning that they do not have a parent
-  this.topLevelObjects.push(object);
+  this._topLevelObjects.push(object);
   
   this.update_(object);
   
@@ -542,7 +632,7 @@ X.renderer.prototype.add = function(object) {
  */
 X.renderer.prototype.update_ = function(object) {
 
-  if (!this['canvas'] || !this.context) {
+  if (!this._canvas || !this._context) {
     
     throw new Error('The renderer was not initialized properly.');
     
@@ -582,13 +672,13 @@ X.renderer.prototype.get = function(id) {
   }
   
   // loop through objects and try to find the id
-  var _objects = this.objects.values();
+  var _objects = this._objects.values();
   var _numberOfObjects = _objects.length;
   
   var _k = 0;
   for (_k = 0; _k < _numberOfObjects; _k++) {
     
-    if (_objects[_k]['_id'] == id) {
+    if (_objects[_k]._id == id) {
       
       // found!
       return _objects[_k];
@@ -610,12 +700,12 @@ X.renderer.prototype.get = function(id) {
  */
 X.renderer.prototype.printScene = function() {
 
-  var _numberOfTopLevelObjects = this.topLevelObjects.length;
+  var _numberOfTopLevelObjects = this._topLevelObjects.length;
   
   var _y;
   for (_y = 0; _y < _numberOfTopLevelObjects; _y++) {
     
-    var _topLevelObject = this.topLevelObjects[_y];
+    var _topLevelObject = this._topLevelObjects[_y];
     
     this.generateTree_(_topLevelObject, 0);
     
@@ -642,14 +732,14 @@ X.renderer.prototype.generateTree_ = function(object, level) {
     
   }
   
-  _output += object['_id'];
+  _output += object._id;
   
   window.console.log(_output);
   
-  if (object.hasChildren()) {
+  if (object._children.length > 0) {
     
     // loop through the children
-    var _children = object.children();
+    var _children = object._children;
     var _numberOfChildren = _children.length;
     var _c = 0;
     
@@ -673,7 +763,7 @@ X.renderer.prototype.generateTree_ = function(object, level) {
  */
 X.renderer.prototype.render = function() {
 
-  if (!this['canvas'] || !this.context) {
+  if (!this._canvas || !this._context) {
     
     throw new Error('The renderer was not initialized properly.');
     
@@ -692,7 +782,7 @@ X.renderer.prototype.render = function() {
   // already there
   // f.e., if we are in a setInterval-configured render loop, we do not want to
   // create multiple single-shot timers
-  if (goog.isDefAndNotNull(this.readyCheckTimer)) {
+  if (goog.isDefAndNotNull(this._readyCheckTimer)) {
     
     return;
     
@@ -701,16 +791,16 @@ X.renderer.prototype.render = function() {
   //
   // LOADING..
   //
-  if (!this.loader.completed()) {
+  if (!this._loader.completed()) {
     
     // we are not ready yet.. the loader is still working;
     
     this.showProgressBar_();
     
     // let's check again in a short time
-    this.readyCheckTimer = goog.Timer.callOnce(function() {
+    this._readyCheckTimer = goog.Timer.callOnce(function() {
 
-      this.readyCheckTimer = null; // destroy the timer
+      this._readyCheckTimer = null; // destroy the timer
       
       // try to render now..
       // if the loader is ready it will work, else wise another single-shot gets
@@ -721,15 +811,15 @@ X.renderer.prototype.render = function() {
     
     return; // .. and jump out
     
-  } else if (this.progressBar) {
+  } else if (this._progressBar) {
     
     // we are ready! yahoooo!
     // this means the X.loader is done..
     this.hideProgressBar_();
     
     // call the onShowtime function which can be overloaded
-    eval("this.onShowtime()");
-    this['_initialLoadingCompleted'] = true; // flag the renderer as 'initial
+    eval("this._onShowtime()");
+    this._loadingCompleted = true; // flag the renderer as 'initial
     // loading completed'
     
     // .. we exit here since the hiding takes some time and automatically
@@ -787,28 +877,28 @@ X.renderer.prototype.render_ = function(picking, invoked) {
 X.renderer.prototype.destroy = function() {
 
   // remove all objects
-  this.objects.clear();
-  delete this.objects;
-  this.topLevelObjects.length = 0;
-  delete this.topLevelObjects;
+  this._objects.clear();
+  delete this._objects;
+  this._topLevelObjects.length = 0;
+  delete this._topLevelObjects;
   
   // remove loader, camera and interactor
-  delete this.loader;
-  this.loader = null;
+  delete this._loader;
+  this._loader = null;
   
-  delete this['camera'];
-  this['camera'] = null;
+  delete this._camera;
+  this._camera = null;
   
-  delete this['interactor'];
-  this['interactor'] = null;
+  delete this._interactor;
+  this._interactor = null;
   
   // remove the rendering context
-  delete this.context;
-  this.context = null;
+  delete this._context;
+  this._context = null;
   
   // remove the canvas from the dom tree
-  goog.dom.removeNode(this['canvas']);
-  delete this['canvas'];
-  this['canvas'] = null;
+  goog.dom.removeNode(this._canvas);
+  delete this._canvas;
+  this._canvas = null;
   
 };

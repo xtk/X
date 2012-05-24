@@ -30,7 +30,7 @@
 // entry point
 // namespace
 goog.provide('X');
-
+goog.provide('X.counter');
 
 /**
  * The XTK namespace.
@@ -39,28 +39,62 @@ goog.provide('X');
  */
 var X = X || {};
 
-window["X.Counter"] = (function() {
+/**
+ * The counter class, keeping track of instance ids.
+ * 
+ * @constructor
+ */
+X.counter = function() {
 
-  var privateCounter = 0;
-  function changeBy(val) {
+  this._counter = 0;
+  
 
-    privateCounter += val;
-  }
-  return {
-    increment: function() {
+  /**
+   * Get a unique id.
+   * 
+   * @return {number} A unique id
+   */
+  this.uniqueId = function() {
 
-      changeBy(1);
-    },
-    decrement: function() {
-
-      changeBy(-1);
-    },
-    value: function() {
-
-      return privateCounter;
-    }
+    // return a unique id
+    return this._counter++;
+    
   };
-})();
+  
+};
+
+window["X.counter"] = new X.counter();
+
+
+/**
+ * Injection mechanism for mixins (from
+ * http://ejohn.org/blog/javascript-getters-and-setters/) which means copying
+ * properties, getters/setters and functions from a source object to a target.
+ * Works best on instances.
+ * 
+ * @param {Object} a The target object.
+ * @param {Object} b The source object.
+ * @return {Object} The altered object.
+ */
+function inject(a, b) {
+
+  for ( var i in b) { // iterate over all properties
+    // get getter and setter functions
+    var g = b.__lookupGetter__(i), s = b.__lookupSetter__(i);
+    
+    if (g || s) { // if there is a getter or setter
+      if (g) {
+        a.__defineGetter__(i, g); // copy getter to new object
+      }
+      if (s) {
+        a.__defineSetter__(i, s); // copy setter to new object
+      }
+    } else {
+      a[i] = b[i]; // just copy the value; nothing special
+    }
+  }
+  return a; // return the altered object
+}
 
 //
 // BROWSER COMPATIBILITY FIXES GO HERE
@@ -71,6 +105,7 @@ window["X.Counter"] = (function() {
 // XTK's event mechanism. This hack fixes this.
 //
 if (!Function.prototype.bind) {
+  
   Function.prototype.bind = function(oThis) {
 
     if (typeof this !== "function") {
