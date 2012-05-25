@@ -411,7 +411,7 @@ X.renderer2D.prototype.autoScale_ = function() {
  */
 X.renderer2D.prototype.render_ = function(picking, invoked) {
 
-  // call the update_ method of the superclass
+  // call the render_ method of the superclass
   goog.base(this, 'render_', picking, invoked);
   
   // only proceed if there are actually objects to render
