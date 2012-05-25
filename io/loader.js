@@ -327,6 +327,7 @@ X.loader.extensions = {
   'SMOOTHWM': 	[X.parserFSM, null, null],
   'SPHERE': 	[X.parserFSM, null, null],
   'PIAL': 		[X.parserFSM, null, null],
+  'ORIG': 		[X.parserFSM, null, null],
   'NRRD': [X.parserNRRD, null, null],
   'CRV': [X.parserCRV, null, null],
   'MGH': [X.parserMGZ, false, null],
