@@ -23,9 +23,9 @@
 <table>
 <tr>
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/00/"><img src="http://xtk.github.com/lessons/00/minicaption.png" alt="lesson00" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/library/pure/xtk/lessons/tree/master/00/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
-<td valign="top"><a href="http://lessons.goxtk.com/00/"><b>Lesson 00: Hello cube!</b></a><br>The most simple XTK lesson displays a white cube.</td>
+<td valign="top" width="326"><a href="http://lessons.goxtk.com/00/"><b>Lesson 00: Hello cube!</b></a><br>The most simple XTK lesson displays a white cube.</td>
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/01/"><img src="http://xtk.github.com/lessons/01/minicaption.png" alt="lesson01" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/library/pure/xtk/lessons/tree/master/01/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
-<td valign="top"><a href="http://lessons.goxtk.com/01/"><b>Lesson 01: Skin the cube and rotate it!</b></a><br>This one adds a texture to the cube and activates spinning.</td>
+<td valign="top" width="326"><a href="http://lessons.goxtk.com/01/"><b>Lesson 01: Skin the cube and rotate it!</b></a><br>This one adds a texture to the cube and activates spinning.</td>
 </tr>
 <tr>
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/02/"><img src="http://xtk.github.com/lessons/02/minicaption.png" alt="lesson02" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/library/pure/xtk/lessons/tree/master/02/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
