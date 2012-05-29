@@ -53,15 +53,15 @@
 </tr>
 <tr>
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/10/"><img src="http://xtk.github.com/lessons/10/minicaption.png" alt="lesson10" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/library/pure/xtk/lessons/tree/master/10/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
-<td valign="top"><a href="http://lessons.goxtk.com/10/"><b>Lesson 10: Slice it!</b></a><br>Load a .NRRD single-file dicom volume and a segmentation mesh from a .VTK file.</td>
+<td valign="top"><a href="http://lessons.goxtk.com/10/"><b>Lesson 10: Slice it!</b></a><br>Load a .NRRD single-file DICOM volume and a segmentation mesh from a .VTK file.</td>
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/11/"><img src="http://xtk.github.com/lessons/11/minicaption.png" alt="lesson11" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/library/pure/xtk/lessons/tree/master/11/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
-<td valign="top"><a href="http://lessons.goxtk.com/11/"><b>Lesson 11: Slice it with colors!</b></a><br>This one loads a .NRRD single-file dicom volume and the corresponding segmentation as a label map colorized using a color lookup-table.</td>
+<td valign="top"><a href="http://lessons.goxtk.com/11/"><b>Lesson 11: Slice it with colors!</b></a><br>This one loads a .NRRD single-file DICOM volume and the corresponding segmentation as a label map colorized using a color lookup-table.</td>
 </tr>
 <tr>
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/12/"><img src="http://xtk.github.com/lessons/12/minicaption.png" alt="lesson12" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/library/pure/xtk/lessons/tree/master/12/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
 <td valign="top"><a href="http://lessons.goxtk.com/12/"><b>Lesson 12: Curvature!</b></a><br>Here we load a freesurfer mesh and different curvature (.CRV) values as an overlay.</td>
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/13/"><img src="http://xtk.github.com/lessons/13/minicaption.png" alt="lesson13" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/library/pure/xtk/lessons/tree/master/13/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
-<td valign="top"><a href="http://lessons.goxtk.com/13/"><b>Lesson 13: I want 2D!</b></a><br>This adds a texture to the cube and activates spinning.</td>
+<td valign="top"><a href="http://lessons.goxtk.com/13/"><b>Lesson 13: I want 2D!</b></a><br>This lesson links three 2D renderers to one 3D renderer and loads a .NRRD single-file DICOM and a label map.</td>
 </tr>
 </table>
 
