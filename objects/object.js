@@ -89,6 +89,13 @@ X.object = function(object) {
    */
   this._scalars = null;
   
+   /**
+   * The dirty tag of this object.
+   * 
+   * @inherit Doc
+   */
+  this._dirty = true; 
+  
   // inject functionality
   inject(this, new X.displayable()); // this object is displayable
   
