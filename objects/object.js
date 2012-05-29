@@ -147,7 +147,7 @@ X.object.prototype.copy_ = function(object) {
     for (i = 0; i < _oldChildrenLength; i++) {
       
       // dynamic duck typing
-      var classname = this['_child']._classname;
+      var classname = _oldChildren[i]._classname;
       this._children.push(new X[classname](_oldChildren[i]));
       
     }
