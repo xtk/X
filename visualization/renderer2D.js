@@ -161,7 +161,7 @@ X.renderer2D.prototype.onScroll_ = function(event) {
   _volume.modified();
   
   // execute the callback
-  eval('this._onScroll();');
+  eval('this.onScroll();');
   
   // .. and trigger re-rendering
   this.render_(false, false);
