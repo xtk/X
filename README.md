@@ -59,7 +59,7 @@
 </tr>
 <tr>
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/12/"><img src="http://xtk.github.com/lessons/12/minicaption.png" alt="lesson12" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/library/pure/xtk/lessons/tree/master/12/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
-<td valign="top"><a href="http://lessons.goxtk.com/12/"><b>Lesson 12: Curvature!</b></a><br>Here we load a freesurfer mesh and different curvature (.CRV) values as an overlay.</td>
+<td valign="top"><a href="http://lessons.goxtk.com/12/"><b>Lesson 12: Curvature!</b></a><br>Here we load a freesurfer mesh (.SMOOTHWM) and different curvature (.CRV) values as an overlay.</td>
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/13/"><img src="http://xtk.github.com/lessons/13/minicaption.png" alt="lesson13" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/library/pure/xtk/lessons/tree/master/13/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
 <td valign="top"><a href="http://lessons.goxtk.com/13/"><b>Lesson 13: I want 2D!</b></a><br>This lesson links three 2D renderers to one 3D renderer and loads a .NRRD single-file DICOM and a label map.</td>
 </tr>
