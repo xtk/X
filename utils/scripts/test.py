@@ -137,7 +137,6 @@ def getBrowser( xtkLibDir, browserString ):
 def runTests( xtkTestFile, xtkLibDir, browserString ):
 
   print 'RUNNING OFFSCREEN TESTING..'
-  return ' '
 
   browser = getBrowser( xtkLibDir, browserString )
 
