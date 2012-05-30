@@ -357,7 +357,8 @@ X.interactor.prototype.onMouseDown_ = function(event) {
     
   }
   
-  eval("this.onMouseDown(this._leftButtonDown,this._middleButtonDown,this._rightButtonDown)");
+  eval("this.onMouseDown(" + this._leftButtonDown + "," +
+      this._middleButtonDown + "," + this._rightButtonDown + ")");
   
   // end all hovering since the scene can change and a caption might be
   // misplaced etc.
@@ -408,7 +409,8 @@ X.interactor.prototype.onMouseUp_ = function(event) {
     
   }
   
-  eval("this.onMouseUp(this._leftButtonDown,this._middleButtonDown,this._rightButtonDown)");
+  eval("this.onMouseUp(" + this._leftButtonDown + "," + this._middleButtonDown +
+      "," + this._rightButtonDown + ")");
   
   // end all hovering since the scene can change and a caption might be
   // misplaced etc.
