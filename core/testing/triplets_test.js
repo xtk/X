@@ -5,13 +5,13 @@ goog.require('goog.testing.asserts');
 
 
 /**
- * Test for X.triplets.className
+ * Test for X.triplets.classname
  */
-function testXtripletsClassName() {
+function testXtripletsClassname() {
 
   var t = new X.triplets();
   
-  assertEquals(t.className, 'triplets');
+  assertEquals(t.classname, 'triplets');
   
 }
 

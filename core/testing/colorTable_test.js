@@ -1,6 +1,12 @@
 goog.require('X.base');
-goog.require('X.file');
-goog.require('X.colortable');
+if (X.DEV !== undefined) {
+  
+  // only require if we are testing the DEV tree
+  goog.require('X.file');
+  goog.require('X.colortable');
+  
+}
+
 goog.require('goog.testing.jsunit');
 goog.require('goog.asserts');
 
@@ -9,6 +15,11 @@ goog.require('goog.asserts');
  */
 function testXcolortableClassname() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   c = new X.colortable();
   
   // check for the classname
@@ -22,6 +33,11 @@ function testXcolortableClassname() {
  */
 function testXcolortableFile() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   var c = new X.colortable();
   
   // be default, the file should be null
@@ -41,6 +57,11 @@ function testXcolortableFile() {
  */
 function testXcolortableAdd() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   var c = new X.colortable();
   
   // define an example color table entry

@@ -1,14 +1,18 @@
-goog.require('X.base');
-goog.require('X.event');
-goog.require('X.event.events');
-goog.require('X.event.ZoomEvent');
-goog.require('X.event.RotateEvent');
-goog.require('X.event.PanEvent');
-goog.require('X.event.RenderEvent');
-goog.require('X.event.HoverEvent');
-goog.require('X.event.HoverEndEvent');
-goog.require('X.event.ResetViewEvent');
-goog.require('X.event.ModifiedEvent');
+if (X.DEV !== undefined) {
+  
+  goog.require('X.base');
+  goog.require('X.event');
+  goog.require('X.event.events');
+  goog.require('X.event.ZoomEvent');
+  goog.require('X.event.RotateEvent');
+  goog.require('X.event.PanEvent');
+  goog.require('X.event.RenderEvent');
+  goog.require('X.event.HoverEvent');
+  goog.require('X.event.HoverEndEvent');
+  goog.require('X.event.ResetViewEvent');
+  goog.require('X.event.ModifiedEvent');
+  
+}
 goog.require('goog.testing.jsunit');
 
 /**
@@ -16,6 +20,11 @@ goog.require('goog.testing.jsunit');
  */
 function testXeventUniqueId() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   var id = "abcdef";
   
   // transform to unique string
@@ -33,6 +42,11 @@ function testXeventUniqueId() {
  */
 function testXeventPanEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var pe = new X.event.PanEvent();
   var pe2 = new X.event.PanEvent();
@@ -62,6 +76,11 @@ function testXeventPanEvent() {
  */
 function testXeventRotateEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var re = new X.event.RotateEvent();
   var re2 = new X.event.RotateEvent();
@@ -91,6 +110,11 @@ function testXeventRotateEvent() {
  */
 function testXeventZoomEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var ze = new X.event.ZoomEvent();
   var ze2 = new X.event.ZoomEvent();
@@ -122,6 +146,11 @@ function testXeventZoomEvent() {
  */
 function testXeventScrollEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create a new ScrollEvent
   var se = new X.event.ScrollEvent();
   var se2 = new X.event.ScrollEvent();
@@ -146,6 +175,11 @@ function testXeventScrollEvent() {
  */
 function testXeventRenderEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var re = new X.event.RenderEvent();
   var re2 = new X.event.RenderEvent();
@@ -160,6 +194,11 @@ function testXeventRenderEvent() {
  */
 function testXeventHoverEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var he = new X.event.HoverEvent();
   var he2 = new X.event.HoverEvent();
@@ -186,6 +225,11 @@ function testXeventHoverEvent() {
  */
 function testXeventHoverEndEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var hee = new X.event.HoverEndEvent();
   var hee2 = new X.event.HoverEndEvent();
@@ -201,6 +245,11 @@ function testXeventHoverEndEvent() {
  */
 function testXeventResetViewEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var rve = new X.event.ResetViewEvent();
   var rve2 = new X.event.ResetViewEvent();
@@ -215,6 +264,11 @@ function testXeventResetViewEvent() {
  */
 function testXeventModifiedEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var me = new X.event.ModifiedEvent();
   var me2 = new X.event.ModifiedEvent();
@@ -233,6 +287,11 @@ function testXeventModifiedEvent() {
  */
 function testXeventProgressEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var pe = new X.event.ProgressEvent();
   var pe2 = new X.event.ProgressEvent();

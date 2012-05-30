@@ -1,5 +1,8 @@
 goog.require('X.base');
-goog.require('X.file');
+if (X.DEV !== undefined) {
+  // X.file is not available in build
+  goog.require('X.file');
+}
 goog.require('X.texture');
 goog.require('goog.testing.jsunit');
 
@@ -44,6 +47,11 @@ function testXtextureImage() {
   
   var t = new X.texture();
   
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   t.image = i;
   
   // .. should be the same
@@ -62,6 +70,11 @@ function testXtextureRawData() {
   var arr = new Uint8Array(256 * 256);
   
   var t = new X.texture();
+  
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
   
   t._rawData = arr;
   t._rawDataHeight = height;

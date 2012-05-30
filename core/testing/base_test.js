@@ -19,6 +19,11 @@ function testXbaseClassname() {
  */
 function testXbaseId() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // buffer the old id
   var oldId = window["X.counter"].uniqueId();
   
