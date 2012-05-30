@@ -1,6 +1,7 @@
 # imports
 #
 import os, sys
+import shutil
 
 def calculate( namespace, dir, buildtool ):
     print '+++++++++++++++++++++++++++++++'
@@ -9,8 +10,15 @@ def calculate( namespace, dir, buildtool ):
     print 'Build Tool Dir: ' + buildtool
     output = dir + os.sep + 'doc' + os.sep
     print 'Output: ' + output
+
+    # remove output dir contents
+    shutil.rmtree( output )
+
     # create ouput folder if it doesn't exist
     if not os.path.exists( output ): os.makedirs( output )
+
+    # also create the symbol subdir
+    os.mkdir( output + os.sep + "symbols" )
 
     #
     # generate build command
@@ -20,7 +28,7 @@ def calculate( namespace, dir, buildtool ):
     command += ' ' + buildtool + os.sep + 'app' + os.sep + 'run.js'
     command += ' -d=' + output
     # exlude
-    command += ' -E=lib -E=doc'
+    command += ' -E=lib -E=doc -E=utils -E=testing'
     # recursive level
     command += ' -r=10'
     # template
