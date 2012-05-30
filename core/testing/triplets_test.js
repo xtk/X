@@ -21,8 +21,11 @@ function testXtripletsClassname() {
 function testXtripletsAdd() {
 
   var t = new X.triplets();
-  // a fresh X.triplets container should be clean
-  assertFalse(t.dirty());
+  
+  if (X.DEV !== undefined) {
+    // a fresh X.triplets container should be clean
+    assertFalse(t._dirty);
+  }
   
   var t0 = [1, 2, 3];
   var t1 = [4, 5, 6];
@@ -33,8 +36,10 @@ function testXtripletsAdd() {
   t.add(t1[0], t1[1], t1[2]);
   t.add(t2[0], t2[1], t2[2]);
   
-  // the triplets container should be dirty now
-  assertTrue(t.dirty());
+  if (X.DEV !== undefined) {
+    // the triplets container should be dirty now
+    assertTrue(t._dirty);
+  }
   
   // check if we can get the exact values again
   assertArrayEquals(t.get(0), t0);
@@ -91,8 +96,10 @@ function testXtripletsGet() {
   assertArrayEquals(t.get(1), t1);
   assertArrayEquals(t.get(2), t2);
   
-  // the triplets container should be dirty now
-  assertTrue(t.dirty());
+  if (X.DEV !== undefined) {
+    // the triplets container should be dirty now
+    assertTrue(t._dirty);
+  }
   
   // it should still throw errors on invalid ids
   exceptionThrown = false;
@@ -142,36 +149,6 @@ function testXtripletsRemove() {
 }
 
 /**
- * Test for X.triplets.all()
- */
-function testXtripletsAll() {
-
-  var t = new X.triplets();
-  
-  var _caseNumber = 100;
-  var _baseline = [];
-  
-  var i;
-  for (i = 0; i < _caseNumber; i++) {
-    
-    // add a lot of triplets
-    var a = Math.random(i);
-    var b = Math.random(i);
-    var c = Math.random(i);
-    
-    t.add(a, b, c);
-    
-    // add them to our baseline as well
-    _baseline.push(a, b, c);
-    
-  }
-  
-  // request all triplets and compare to our baseline
-  assertArrayEquals(_baseline, t.all());
-  
-}
-
-/**
  * Test for X.triplets.clear()
  */
 function testXtripletsClear() {
@@ -196,16 +173,16 @@ function testXtripletsClear() {
   t.clear();
   
   // the container should be empty now
-  assertEquals(t.length(), 0);
-  assertEquals(t.count(), 0);
+  assertEquals(t.length, 0);
+  assertEquals(t.count, 0);
   
   // add another triplet
   var t0 = [1, 2, 3];
   t.add(t0[0], t0[1], t0[2]);
   
   // the count and length should be adjusted
-  assertEquals(t.length(), 3);
-  assertEquals(t.count(), 1);
+  assertEquals(t.length, 3);
+  assertEquals(t.count, 1);
   
 }
 
@@ -217,7 +194,7 @@ function testXtripletsCount() {
   var t = new X.triplets();
   
   // the empty container should have count 0
-  assertEquals(t.count(), 0);
+  assertEquals(t.count, 0);
   
   var _caseNumber = parseInt((Math.random() * 10) + 1, 10);
   
@@ -233,7 +210,7 @@ function testXtripletsCount() {
     
   }
   
-  assertEquals(t.count(), _caseNumber);
+  assertEquals(t.count, _caseNumber);
   
 }
 
@@ -245,7 +222,7 @@ function testXtripletsLength() {
   var t = new X.triplets();
   
   // the empty container should have count 0
-  assertEquals(t.length(), 0);
+  assertEquals(t.length, 0);
   
   var _caseNumber = parseInt((Math.random() * 10) + 1, 10);
   
@@ -261,6 +238,6 @@ function testXtripletsLength() {
     
   }
   
-  assertEquals(t.length(), _caseNumber * 3);
+  assertEquals(t.length, _caseNumber * 3);
   
 }
