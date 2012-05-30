@@ -1,33 +1,30 @@
-goog.require('X.base');
-goog.require('X.event');
-goog.require('X.event.events');
-goog.require('X.event.ZoomEvent');
-goog.require('X.event.RotateEvent');
-goog.require('X.event.PanEvent');
-goog.require('X.event.RenderEvent');
-goog.require('X.event.HoverEvent');
-goog.require('X.event.HoverEndEvent');
-goog.require('X.event.ResetViewEvent');
-goog.require('X.event.ModifiedEvent');
-goog.require('goog.testing.jsunit');
-
-/**
- * Test for X.event.className
- */
-function testXeventClassName() {
-
-  // create test event
-  var e = new X.event('test');
+if (X.DEV !== undefined) {
   
-  assertEquals(e.className, 'event');
+  goog.require('X.base');
+  goog.require('X.event');
+  goog.require('X.event.events');
+  goog.require('X.event.ZoomEvent');
+  goog.require('X.event.RotateEvent');
+  goog.require('X.event.PanEvent');
+  goog.require('X.event.RenderEvent');
+  goog.require('X.event.HoverEvent');
+  goog.require('X.event.HoverEndEvent');
+  goog.require('X.event.ResetViewEvent');
+  goog.require('X.event.ModifiedEvent');
   
 }
+goog.require('goog.testing.jsunit');
 
 /**
  * Test for X.event.uniqueId
  */
 function testXeventUniqueId() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   var id = "abcdef";
   
   // transform to unique string
@@ -45,6 +42,11 @@ function testXeventUniqueId() {
  */
 function testXeventPanEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var pe = new X.event.PanEvent();
   var pe2 = new X.event.PanEvent();
@@ -74,6 +76,11 @@ function testXeventPanEvent() {
  */
 function testXeventRotateEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var re = new X.event.RotateEvent();
   var re2 = new X.event.RotateEvent();
@@ -96,14 +103,6 @@ function testXeventRotateEvent() {
   assertEquals(re._distance.x, _x);
   assertEquals(re._distance.y, _y);
   
-  // assign an angle
-  var _angle = 15;
-  re2._angle = _angle;
-  
-  // check it
-  assertEquals(re._angle, 0); // default
-  assertEquals(re2._angle, 15);
-  
 }
 
 /**
@@ -111,6 +110,11 @@ function testXeventRotateEvent() {
  */
 function testXeventZoomEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var ze = new X.event.ZoomEvent();
   var ze2 = new X.event.ZoomEvent();
@@ -138,10 +142,44 @@ function testXeventZoomEvent() {
 }
 
 /**
+ * Test for the X.event.ScrollEvent
+ */
+function testXeventScrollEvent() {
+
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
+  // create a new ScrollEvent
+  var se = new X.event.ScrollEvent();
+  var se2 = new X.event.ScrollEvent();
+  
+  // .. should be always the same type
+  assertEquals(se.type, se2.type);
+  
+  var _up = true;
+  var _up2 = false;
+  
+  se._up = _up;
+  se2._up = _up2;
+  
+  // check the assignments
+  assertTrue(se._up);
+  assertFalse(se2._up);
+  
+}
+
+/**
  * Test the X.event.RenderEvent
  */
 function testXeventRenderEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var re = new X.event.RenderEvent();
   var re2 = new X.event.RenderEvent();
@@ -156,6 +194,11 @@ function testXeventRenderEvent() {
  */
 function testXeventHoverEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var he = new X.event.HoverEvent();
   var he2 = new X.event.HoverEvent();
@@ -182,6 +225,11 @@ function testXeventHoverEvent() {
  */
 function testXeventHoverEndEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var hee = new X.event.HoverEndEvent();
   var hee2 = new X.event.HoverEndEvent();
@@ -197,6 +245,11 @@ function testXeventHoverEndEvent() {
  */
 function testXeventResetViewEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var rve = new X.event.ResetViewEvent();
   var rve2 = new X.event.ResetViewEvent();
@@ -211,6 +264,11 @@ function testXeventResetViewEvent() {
  */
 function testXeventModifiedEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var me = new X.event.ModifiedEvent();
   var me2 = new X.event.ModifiedEvent();
@@ -219,7 +277,7 @@ function testXeventModifiedEvent() {
   assertEquals(me.type, me2.type);
   
   // check the className of the associated object
-  assertEquals(me._object.className, 'object');
+  assertEquals(me._object.classname, 'object');
   
 
 }
@@ -229,6 +287,11 @@ function testXeventModifiedEvent() {
  */
 function testXeventProgressEvent() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   // create new pan events
   var pe = new X.event.ProgressEvent();
   var pe2 = new X.event.ProgressEvent();

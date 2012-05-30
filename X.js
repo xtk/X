@@ -40,6 +40,19 @@ goog.provide('X.counter');
 var X = X || {};
 
 /**
+ * Can be used to check if the XTK library was compiled.
+ * 
+ * <pre>
+ * if (X.DEV === undefined) {
+ *   // xtk was compiled
+ * }
+ * </pre>
+ * 
+ * @type {boolean}
+ */
+X.DEV = true;
+
+/**
  * The counter class, keeping track of instance ids.
  * 
  * @constructor

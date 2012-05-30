@@ -6,13 +6,13 @@ goog.require('goog.testing.asserts');
 
 
 /**
- * Test for X.transform.className
+ * Test for X.transform.classname
  */
-function testXtransformClassName() {
+function testXtransformClassname() {
 
   var t = new X.transform();
   
-  assertEquals(t.className, 'transform');
+  assertEquals(t.classname, 'transform');
   
 }
 
@@ -32,7 +32,7 @@ function testXtransformMatrix() {
                                     0, 1];
   
   // by default, the transform should have an identity matrix associated
-  var currentMatrix = t.matrix();
+  var currentMatrix = t.matrix;
   // check if the matrices match
   assertArrayEquals(currentMatrix.toArray(), _identityBaseLine);
   // check if the flattened version matches the baseline
@@ -44,31 +44,37 @@ function testXtransformMatrix() {
                               8, 12, 16.5];
   
   // set the custom matrix
-  t.setMatrix(_testMatrix);
+  t.matrix = _testMatrix;
   
   // compare it
-  assertArrayEquals(t.matrix().toArray(), _testMatrix.toArray());
-  assertArrayEquals(t.matrix().flatten(), _testMatrixFlattened);
+  assertArrayEquals(t.matrix.toArray(), _testMatrix.toArray());
+  assertArrayEquals(t.matrix.flatten(), _testMatrixFlattened);
   
+
   // the transform should be dirty now
-  assertTrue(t.dirty());
   
+
 }
 
 /**
- * Test for X.transform.glMatrix()
+ * Test for X.transform._glMatrix
  */
 function testXtransformGlMatrix() {
 
   // create new transform
   var t = new X.transform();
   
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   var _identityBaseLineFlattened = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0,
                                                      0, 1, 0, 0, 0, 0, 1]);
   
   // by default, the transform should have an identity matrix associated
   // since this is the gl version, it should be a 1D Float32Array
-  var currentMatrix = t.glMatrix();
+  var currentMatrix = t._glMatrix;
   assertTrue(currentMatrix instanceof Float32Array);
   // check if the flattened version matches the baseline
   assertObjectEquals(currentMatrix, _identityBaseLineFlattened);
@@ -79,14 +85,14 @@ function testXtransformGlMatrix() {
                                         11, 15.5, 4, 8, 12, 16.5]);
   
   // set the custom matrix whcih should modify the gl-version as well
-  t.setMatrix(_testMatrix);
+  t.matrix = _testMatrix;
   
   // compare the gl versions..
-  assertObjectEquals(t.glMatrix(), _glTestMatrix);
+  assertObjectEquals(t._glMatrix, _glTestMatrix);
   
   // the transform should be dirty now
-  assertTrue(t.dirty());
   
+
 }
 
 /**
@@ -103,7 +109,7 @@ function testXtransformFlipX() {
   // flip the X coordinates
   t.flipX();
   
-  assertArrayEquals(t.matrix().toArray(), _identityBaselineFlipped.toArray());
+  assertArrayEquals(t.matrix.toArray(), _identityBaselineFlipped.toArray());
   
   var testPoint = [[10], [20], [30], [1]];
   var flippedTestPointBaseline = [[-10], [20], [30], [1]];
@@ -111,7 +117,7 @@ function testXtransformFlipX() {
   
   // the multiplication with the flipped matrix shoudl yield the same point as
   // our flippedTestPoint when multiplied
-  var flippedTestPoint = new X.matrix(t.matrix().multiply(testPointMatrix));
+  var flippedTestPoint = new X.matrix(t.matrix.multiply(testPointMatrix));
   
 
   assertEquals(flippedTestPointBaseline[0][0], flippedTestPoint
@@ -122,7 +128,6 @@ function testXtransformFlipX() {
       .getValueAt(2, 0));
   
   // the transform should be dirty now
-  assertTrue(t.dirty());
   
 }
 
@@ -140,7 +145,7 @@ function testXtransformFlipY() {
   // flip the Y coordinates
   t.flipY();
   
-  assertArrayEquals(t.matrix().toArray(), _identityBaselineFlipped.toArray());
+  assertArrayEquals(t.matrix.toArray(), _identityBaselineFlipped.toArray());
   
   var testPoint = [[10], [20], [30], [1]];
   var flippedTestPointBaseline = [[10], [-20], [30], [1]];
@@ -148,7 +153,7 @@ function testXtransformFlipY() {
   
   // the multiplication with the flipped matrix shoudl yield the same point as
   // our flippedTestPoint when multiplied
-  var flippedTestPoint = new X.matrix(t.matrix().multiply(testPointMatrix));
+  var flippedTestPoint = new X.matrix(t.matrix.multiply(testPointMatrix));
   
 
   assertEquals(flippedTestPointBaseline[0][0], flippedTestPoint
@@ -159,7 +164,6 @@ function testXtransformFlipY() {
       .getValueAt(2, 0));
   
   // the transform should be dirty now
-  assertTrue(t.dirty());
   
 }
 
@@ -177,7 +181,7 @@ function testXtransformFlipZ() {
   // flip the Z coordinates
   t.flipZ();
   
-  assertArrayEquals(t.matrix().toArray(), _identityBaselineFlipped.toArray());
+  assertArrayEquals(t.matrix.toArray(), _identityBaselineFlipped.toArray());
   
   var testPoint = [[10], [20], [30], [1]];
   var flippedTestPointBaseline = [[10], [20], [-30], [1]];
@@ -185,7 +189,7 @@ function testXtransformFlipZ() {
   
   // the multiplication with the flipped matrix shoudl yield the same point as
   // our flippedTestPoint when multiplied
-  var flippedTestPoint = new X.matrix(t.matrix().multiply(testPointMatrix));
+  var flippedTestPoint = new X.matrix(t.matrix.multiply(testPointMatrix));
   
   assertEquals(flippedTestPointBaseline[0][0], flippedTestPoint
       .getValueAt(0, 0));
@@ -195,7 +199,6 @@ function testXtransformFlipZ() {
       .getValueAt(2, 0));
   
   // the transform should be dirty now
-  assertTrue(t.dirty());
   
 }
 
@@ -220,10 +223,15 @@ function testXtransformTranslateX() {
   t.translateX(newX);
   
   // compare the resulting matrix to the baseline
-  assertArrayEquals(t.matrix().toArray(), _translatedIdentityBaseline.toArray());
+  assertArrayEquals(t.matrix.toArray(), _translatedIdentityBaseline.toArray());
+  
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
   
   // check also the gl version
-  assertObjectEquals(t.glMatrix(), _translatedIdentityBaselineGl);
+  assertObjectEquals(t._glMatrix, _translatedIdentityBaselineGl);
   
 }
 
@@ -248,10 +256,15 @@ function testXtransformTranslateY() {
   t.translateY(newY);
   
   // compare the resulting matrix to the baseline
-  assertArrayEquals(t.matrix().toArray(), _translatedIdentityBaseline.toArray());
+  assertArrayEquals(t.matrix.toArray(), _translatedIdentityBaseline.toArray());
+  
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
   
   // check also the gl version
-  assertObjectEquals(t.glMatrix(), _translatedIdentityBaselineGl);
+  assertObjectEquals(t._glMatrix, _translatedIdentityBaselineGl);
   
 }
 
@@ -276,10 +289,15 @@ function testXtransformTranslateZ() {
   t.translateY(newZ);
   
   // compare the resulting matrix to the baseline
-  assertArrayEquals(t.matrix().toArray(), _translatedIdentityBaseline.toArray());
+  assertArrayEquals(t.matrix.toArray(), _translatedIdentityBaseline.toArray());
+  
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
   
   // check also the gl version
-  assertObjectEquals(t.glMatrix(), _translatedIdentityBaselineGl);
+  assertObjectEquals(t._glMatrix, _translatedIdentityBaselineGl);
   
 }
 
@@ -316,10 +334,15 @@ function testXtransformRotateX() {
   t.rotateX(degrees);
   
   // compare the resulting matrix to the baseline
-  assertArrayEquals(t.matrix().toArray(), _rotatedIdentityBaseline.toArray());
+  assertArrayEquals(t.matrix.toArray(), _rotatedIdentityBaseline.toArray());
+  
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
   
   // check the gl version
-  assertObjectEquals(t.glMatrix(), _rotatedIdentityBaselineGl);
+  assertObjectEquals(t._glMatrix, _rotatedIdentityBaselineGl);
   
 }
 
@@ -356,10 +379,15 @@ function testXtransformRotateY() {
   t.rotateY(degrees);
   
   // compare the resulting matrix to the baseline
-  assertArrayEquals(t.matrix().toArray(), _rotatedIdentityBaseline.toArray());
+  assertArrayEquals(t.matrix.toArray(), _rotatedIdentityBaseline.toArray());
+  
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
   
   // check the gl version
-  assertObjectEquals(t.glMatrix(), _rotatedIdentityBaselineGl);
+  assertObjectEquals(t._glMatrix, _rotatedIdentityBaselineGl);
   
 }
 
@@ -395,9 +423,14 @@ function testXtransformRotateZ() {
   t.rotateZ(degrees);
   
   // compare the resulting matrix to the baseline
-  assertArrayEquals(t.matrix().toArray(), _rotatedIdentityBaseline.toArray());
+  assertArrayEquals(t.matrix.toArray(), _rotatedIdentityBaseline.toArray());
+  
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
   
   // check the gl version
-  assertObjectEquals(t.glMatrix(), _rotatedIdentityBaselineGl);
+  assertObjectEquals(t._glMatrix, _rotatedIdentityBaselineGl);
   
 }

@@ -1,17 +1,29 @@
 goog.require('X.base');
-goog.require('X.file');
-goog.require('X.colortable');
+if (X.DEV !== undefined) {
+  
+  // only require if we are testing the DEV tree
+  goog.require('X.file');
+  goog.require('X.colortable');
+  
+}
+
 goog.require('goog.testing.jsunit');
 goog.require('goog.asserts');
 
 /**
- * Test for X.colortable.className
+ * Test for X.colortable.classname
  */
-function testXcolortableClassName() {
+function testXcolortableClassname() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   c = new X.colortable();
   
-  assertEquals(c.className, 'colortable');
+  // check for the classname
+  assertEquals(c.classname, 'colortable');
   
 }
 
@@ -21,24 +33,22 @@ function testXcolortableClassName() {
  */
 function testXcolortableFile() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   var c = new X.colortable();
   
   // be default, the file should be null
-  assertEquals(c.file, null);
+  assertEquals(c.file, '');
   
   // let's try to set the file by string
   c.file = '/dev/null';
   
   // .. this should be converted internally to an X.file object
-  assertTrue(c.file instanceof X.file);
-  
-  // let's try to set the file using X.file directly
-  var f = new X.file('/dev/null');
-  
-  c.file = f;
-  
-  // .. should be the same
-  assertEquals(c.file, f);
+  // but should still return a string
+  assertEquals('/dev/null', c.file);
   
 };
 
@@ -47,6 +57,11 @@ function testXcolortableFile() {
  */
 function testXcolortableAdd() {
 
+  if (X.DEV === undefined) {
+    // jump out if we are testing the BUILD tree
+    return;
+  }
+  
   var c = new X.colortable();
   
   // define an example color table entry

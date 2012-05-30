@@ -137,6 +137,7 @@ def getBrowser( xtkLibDir, browserString ):
 def runTests( xtkTestFile, xtkLibDir, browserString ):
 
   print 'RUNNING OFFSCREEN TESTING..'
+  return ' '
 
   browser = getBrowser( xtkLibDir, browserString )
 
@@ -191,7 +192,7 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
 
     # wait until loading fully completed
     timer = 0
-    while not browser.execute_script( 'return test_renderer._initialLoadingCompleted' ) and timer < 5:
+    while not browser.execute_script( 'return test_renderer.loadingCompleted' ) and timer < 5:
       time.sleep( 1 ) # loading did not complete yet
       timer += 1
     time.sleep( 1 )
@@ -272,37 +273,49 @@ def compareImages( image1, image2 ):
   i1 = png.Reader( image1 )
   i2 = png.Reader( image2 )
 
-  #print image1, image2
+  import numpy
+  import itertools
 
-  # the pixels from png are iterators, so we just compare them
-  from itertools import izip_longest, tee
-  sentinel = object()
-  pixels1 = i1.read()
-  pixels2 = i2.read()
+  pixelsIterator1 = i1.asRGBA()
+  pixelsIterator2 = i2.asRGBA()
+
+  # make 2d arrays
+  image1 = numpy.vstack( itertools.imap( numpy.uint16, pixelsIterator1[2] ) )
+  image2 = numpy.vstack( itertools.imap( numpy.uint16, pixelsIterator2[2] ) )
+
+  rms1 = numpy.sqrt( numpy.mean( image1 ** 2 ) )
+  rms2 = numpy.sqrt( numpy.mean( image2 ** 2 ) )
+
+  return numpy.abs( rms1 - rms2 ) <= 0.1
+
   # return true if identical, false otherwise
   #return all( a == b for a, b in izip_longest( pixels1[2], pixels2[2], fillvalue=sentinel ) )
-
-  sum1 = 0
-  sum2 = 0
-
-  for p in list( pixels1[2] ):
-    cnt = 1
-    for rgba in p:
-
-      if cnt % 4 != 0:
-        # skip every 4th
-        sum1 += rgba
-
-      cnt += 1
-
-
-  for p2 in list( pixels2[2] ):
-    cnt = 1
-    for rgba in p2:
-      if cnt % 4 != 0:
-        # skip every 4th
-        sum2 += rgba
-
-      cnt += 1
-
-  return ( ( float( sum1 ) / float( sum2 ) ) > 0.8 )
+#
+#  rs = []
+#  gs = []
+#  bs = []
+#
+#  sum1 = 0
+#  sum2 = 0
+#
+#  for p in list( pixels1[2] ):
+#    cnt = 1
+#    for rgba in p:
+#
+#      if cnt % 4 != 0:
+#         skip every 4th
+#        sum1 += rgba
+#
+#      cnt += 1
+#
+#
+#  for p2 in list( pixels2[2] ):
+#    cnt = 1
+#    for rgba in p2:
+#      if cnt % 4 != 0:
+#         skip every 4th
+#        sum2 += rgba
+#
+#      cnt += 1
+#
+#  return ( ( float( sum1 ) / float( sum2 ) ) > 0.8 )

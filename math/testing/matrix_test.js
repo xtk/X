@@ -37,6 +37,11 @@ function testXmatrixTranslate() {
   //
   var matrix = X.matrix.createIdentityMatrix(4);
   
+  if (X.DEV === undefined) {
+    // jump out if we test the BUILD tree
+    return;
+  }
+  
   // create 1x3 vector
   //
   // 6
@@ -86,6 +91,11 @@ function testXmatrixMultiplyByVector() {
   // 0 0 0 1
   //
   var matrix = X.matrix.createIdentityMatrix(4);
+  
+  if (X.DEV === undefined) {
+    // jump out if we test the BUILD tree
+    return;
+  }
   
   // create a 1x3 vector
   var vector = new goog.math.Vec3(7, 8, 9);

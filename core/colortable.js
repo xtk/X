@@ -77,13 +77,13 @@ goog.inherits(X.colortable, X.base);
 /**
  * Add an entry to this color table.
  * 
- * @param value
- * @param label
- * @param r
- * @param g
- * @param b
- * @param a
- * @throws {Error} If the given values are invalid.
+ * @param {!number} value The number to map to a color.
+ * @param {!string} label The label.
+ * @param {!number} r The red component.
+ * @param {!number} g The green component.
+ * @param {!number} b The blue component.
+ * @param {!number} a The alpha component.
+ * @throws {Error} An error, if the given values are invalid.
  */
 X.colortable.prototype.add = function(value, label, r, g, b, a) {
 
