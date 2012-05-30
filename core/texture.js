@@ -31,7 +31,7 @@ goog.provide('X.texture');
 
 // requires
 goog.require('X.base');
-goog.require('X.file');
+goog.require('X.loadable');
 
 
 
@@ -96,49 +96,11 @@ X.texture = function() {
    */
   this._rawDataHeight = 0;
   
+  // inject functionality
+  inject(this, new X.loadable()); // this object is loadable from a file
+  
 };
 // inherit from X.base
 goog.inherits(X.texture, X.base);
-
-
-/**
- * Get the file of this texture container.
- * 
- * @return {?X.file} The file of this texture container.
- * @public
- */
-X.texture.prototype.__defineGetter__('file', function() {
-
-  return this._file;
-  
-});
-
-
-/**
- * Set the file for this texture container.
- * 
- * @param {?X.file|string} file The file path or an X.file object containing the
- *          path.
- * @public
- */
-X.texture.prototype.__defineSetter__('file', function(file) {
-
-  if (!goog.isDefAndNotNull(file)) {
-    
-    // null files are allowed
-    this._file = null;
-    return;
-    
-  }
-  
-  if (goog.isString(file)) {
-    
-    file = new X.file(file);
-    
-  }
-  
-  this._file = file;
-  
-});
 
 goog.exportSymbol('X.texture', X.texture);
