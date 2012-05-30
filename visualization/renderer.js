@@ -816,7 +816,9 @@ X.renderer.prototype.render = function() {
     // we are ready! yahoooo!
     
     // call the onShowtime function which can be overloaded
-    eval("this.onShowtime()");
+    if (!this._loadingCompleted) {
+      eval("this.onShowtime()");
+    }
     
     // if we have a progress bar
     if (this._progressBar) {
