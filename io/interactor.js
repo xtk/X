@@ -166,6 +166,14 @@ X.interactor = function(element) {
   this._rightButtonDown = false;
   
   /**
+   * The current mouse position.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._mousePosition = [0, 0];
+  
+  /**
    * The previous mouse position.
    * 
    * @type {!goog.math.Vec2}
@@ -413,7 +421,19 @@ X.interactor.prototype.onMouseUp_ = function(event) {
 
 
 /**
- * /** Overload this function to execute code on mouse up (button release).
+ * Get the current mouse position (offsetX, offsetY) relative to the viewport.
+ * 
+ * @return {!Array} The mouse position as an array [x,y].
+ */
+X.interactor.prototype.__defineGetter__('mousePosition', function() {
+
+  return this._mousePosition;
+  
+});
+
+
+/**
+ * Overload this function to execute code on mouse up (button release).
  * 
  * @param {boolean} left TRUE if the left button triggered this event.
  * @param {boolean} middle TRUE if the middle button triggered this event.
@@ -502,7 +522,9 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
   var shiftDown = event.shiftKey;
   
   // grab the current mouse position
-  var currentMousePosition = new goog.math.Vec2(event.offsetX, event.offsetY);
+  this._mousePosition = [event.offsetX, event.offsetY];
+  var currentMousePosition = new goog.math.Vec2(this._mousePosition[0],
+      this._mousePosition[1]);
   
   // get the distance in terms of the last mouse move event
   var distance = this._lastMousePosition.subtract(currentMousePosition);
