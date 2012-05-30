@@ -817,7 +817,11 @@ X.renderer.prototype.render = function() {
     
     // call the onShowtime function which can be overloaded
     if (!this._loadingCompleted) {
+      
       eval("this.onShowtime()");
+      this._loadingCompleted = true; // flag the renderer as 'initial
+      // loading completed'
+      
     }
     
     // if we have a progress bar
@@ -836,9 +840,6 @@ X.renderer.prototype.render = function() {
   //
   // END OF LOADING
   //
-  
-  this._loadingCompleted = true; // flag the renderer as 'initial
-  // loading completed'
   
   //
   // CURTAIN UP! LET THE SHOW BEGIN..
