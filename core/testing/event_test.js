@@ -12,18 +12,6 @@ goog.require('X.event.ModifiedEvent');
 goog.require('goog.testing.jsunit');
 
 /**
- * Test for X.event.className
- */
-function testXeventClassName() {
-
-  // create test event
-  var e = new X.event('test');
-  
-  assertEquals(e.className, 'event');
-  
-}
-
-/**
  * Test for X.event.uniqueId
  */
 function testXeventUniqueId() {
@@ -96,14 +84,6 @@ function testXeventRotateEvent() {
   assertEquals(re._distance.x, _x);
   assertEquals(re._distance.y, _y);
   
-  // assign an angle
-  var _angle = 15;
-  re2._angle = _angle;
-  
-  // check it
-  assertEquals(re._angle, 0); // default
-  assertEquals(re2._angle, 15);
-  
 }
 
 /**
@@ -134,6 +114,30 @@ function testXeventZoomEvent() {
   assertFalse(ze2._in);
   assertFalse(ze._fast);
   assertTrue(ze2._fast);
+  
+}
+
+/**
+ * Test for the X.event.ScrollEvent
+ */
+function testXeventScrollEvent() {
+
+  // create a new ScrollEvent
+  var se = new X.event.ScrollEvent();
+  var se2 = new X.event.ScrollEvent();
+  
+  // .. should be always the same type
+  assertEquals(se.type, se2.type);
+  
+  var _up = true;
+  var _up2 = false;
+  
+  se._up = _up;
+  se2._up = _up2;
+  
+  // check the assignments
+  assertTrue(se._up);
+  assertFalse(se2._up);
   
 }
 
@@ -219,7 +223,7 @@ function testXeventModifiedEvent() {
   assertEquals(me.type, me2.type);
   
   // check the className of the associated object
-  assertEquals(me._object.className, 'object');
+  assertEquals(me._object.classname, 'object');
   
 
 }
