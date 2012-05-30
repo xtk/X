@@ -5,9 +5,9 @@ goog.require('goog.testing.jsunit');
 goog.require('goog.asserts');
 
 /**
- * Test for X.colortable.className
+ * Test for X.colortable.classname
  */
-function testXcolortableClassName() {
+function testXcolortableClassname() {
 
   c = new X.colortable();
   
@@ -33,14 +33,6 @@ function testXcolortableFile() {
   // .. this should be converted internally to an X.file object
   // but should still return a string
   assertEquals('/dev/null', c.file);
-  
-  // let's try to set the file using X.file directly
-  var f = new X.file('/dev/null');
-  
-  c.file = f;
-  
-  // .. should be the same
-  assertEquals(c.file, f);
   
 };
 
