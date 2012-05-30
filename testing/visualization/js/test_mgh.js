@@ -30,6 +30,8 @@ window.onload = function() {
   // add the object
   test_renderer.add(volume);
   
+  test_renderer.camera.position = [60, 40, 100];
+  
   // .. and render it
   test_renderer.render();
   

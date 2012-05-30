@@ -167,13 +167,6 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
 
   # list of tests
   tests = ['test_trk.html', 'test_vtk.html', 'test_nrrd.html', 'test_vr.html', 'test_labelmap.html', 'test_shapes.html', 'test_mgh.html', 'test_mgz.html']
-  tests_build = ['test_trk_build.html', 'test_vtk_build.html', 'test_nrrd_build.html', 'test_vr_build.html', 'test_labelmap_build.html', 'test_shapes_build.html', 'test_mgh_build.html', 'test_mgz_build.html']
-
-  # distinguish between build and dev tree
-  if againstBuild:
-    real_tests = tests_build
-  else:
-    real_tests = tests
 
   testURL = "file://" + xtkLibDir + "/../testing/visualization/"
   baselineDir = os.path.abspath( xtkLibDir + "/../testing/visualization/baselines/" )
@@ -184,9 +177,12 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
   output = ''
 
   # loop through the tests
-  for t in real_tests:
+  for t in tests:
 
     # open the test
+    url = testURL + t
+    if againstBuild:
+      url += '?build'
     browser.get( testURL + t )
 
     # wait until loading fully completed
@@ -203,7 +199,7 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
     browser.save_screenshot( tmpfile )
 
     # baseline
-    baseline = os.path.join( baselineDir, testFileId.replace( '_build', '' ) + '_baseline.png' )
+    baseline = os.path.join( baselineDir, testFileId + '_baseline.png' )
 
     # compare temp. file vs. baseline
     testPassed = compareImages( tmpfile, baseline )
@@ -214,9 +210,9 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
       testPassed = "PASSED : " + tmpfile + " : " + baseline + " : "
     else:
       testPassed = "FAILED : " + tmpfile + " : " + baseline + " : "
-      testPassed += "\n" + timestamp + "  ERROR in Visualization" + testId.replace( '_build', '' ) + '\nComparison against baseline failed.\n'
+      testPassed += "\n" + timestamp + "  ERROR in Visualization" + testId + '\nComparison against baseline failed.\n'
 
-    output += timestamp + "  Visualization" + testId.replace( '_build', '' ) + ' : ' + testPassed + '\n'
+    output += timestamp + "  Visualization" + testId + ' : ' + testPassed + '\n'
 
   browser.close()
 
