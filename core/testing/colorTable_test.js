@@ -11,7 +11,8 @@ function testXcolortableClassName() {
 
   c = new X.colortable();
   
-  assertEquals(c.className, 'colortable');
+  // check for the classname
+  assertEquals(c.classname, 'colortable');
   
 }
 
@@ -24,13 +25,14 @@ function testXcolortableFile() {
   var c = new X.colortable();
   
   // be default, the file should be null
-  assertEquals(c.file, null);
+  assertEquals(c.file, '');
   
   // let's try to set the file by string
   c.file = '/dev/null';
   
   // .. this should be converted internally to an X.file object
-  assertTrue(c.file instanceof X.file);
+  // but should still return a string
+  assertEquals('/dev/null', c.file);
   
   // let's try to set the file using X.file directly
   var f = new X.file('/dev/null');
