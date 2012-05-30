@@ -811,25 +811,32 @@ X.renderer.prototype.render = function() {
     
     return; // .. and jump out
     
-  } else if (this._progressBar) {
+  } else {
     
     // we are ready! yahoooo!
-    // this means the X.loader is done..
-    this.hideProgressBar_();
     
     // call the onShowtime function which can be overloaded
     eval("this.onShowtime()");
-    this._loadingCompleted = true; // flag the renderer as 'initial
-    // loading completed'
     
-    // .. we exit here since the hiding takes some time and automatically
-    // triggers the rendering when done
-    return;
+    // if we have a progress bar
+    if (this._progressBar) {
+      
+      // this means the X.loader is done..
+      this.hideProgressBar_();
+      
+      // .. we exit here since the hiding takes some time and automatically
+      // triggers the rendering when done
+      return;
+      
+    }
     
   }
   //
   // END OF LOADING
   //
+  
+  this._loadingCompleted = true; // flag the renderer as 'initial
+  // loading completed'
   
   //
   // CURTAIN UP! LET THE SHOW BEGIN..

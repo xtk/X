@@ -30,33 +30,13 @@
 <head>
 <title>XTK TEST: .TRK FILE</title>
 
+<link rel="stylesheet" type="text/css" href="css/default.css">
 <script type="text/javascript" src="../../lib/closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="js/default.js"></script>
 <script type="text/javascript" src="../../xtk-deps.js"></script>
 
-<script type="text/javascript">
 
-  goog.require('X.renderer3D');
-  goog.require('X.fibers');
 
-  var run = function() {
-    
-    // create a new test_renderer
-    test_renderer = new X.renderer3D();
-    test_renderer.init();
+<script type="text/javascript" src="js/test_trk.js"></script>
 
-    // load a .vtk file
-    var fibers = new X.fibers();
-    fibers.file = 'data/smalltrack.trk';
-
-    
-    // add the object
-    test_renderer.add(fibers);
-
-    // .. and render it
-    test_renderer.render();
-    
-  };
-</script>
-
-<body onload="run()" style="background-color:#000;margin:0px;">
-</body>
+<body></body>
