@@ -10,6 +10,6 @@ function testXfileClassName() {
   // create test file
   var f = new X.file('/dev/null');
   
-  assertEquals(f.className, 'file');
+  assertEquals(f.classname, 'file');
   
 };
