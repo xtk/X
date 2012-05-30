@@ -213,7 +213,7 @@ X.triplets.prototype.get = function(id) {
 X.triplets.prototype.remove = function(id) {
 
   if (!goog.isNumber(id) ||
-      (id < 0 || id * 3 > this._triplets.length || id == this.count())) {
+      (id < 0 || id * 3 > this._triplets.length || id == this.count)) {
     
     throw new Error('Invalid id.');
     
