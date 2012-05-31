@@ -1118,8 +1118,8 @@ X.renderer3D.prototype.showCaption_ = function(x, y) {
     
     if (caption) {
       
-      var t = new X.caption(this['container'], this['container'].offsetLeft +
-          x + 10, this['container'].offsetTop + y + 10, this._interactor);
+      var t = new X.caption(this._container, this._container.offsetLeft +
+          x + 10, this._container.offsetTop + y + 10, this._interactor);
       t.setHtml(caption);
       
     }
