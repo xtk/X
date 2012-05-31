@@ -695,11 +695,6 @@ X.renderer3D.prototype.update_ = function(object) {
             0, this._context.RGBA, this._context.UNSIGNED_BYTE,
             texture._rawData);
         
-        this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_WRAP_S, this._context.CLAMP_TO_EDGE);
-        this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_WRAP_T, this._context.CLAMP_TO_EDGE);
-        
       } else {
         
         // use an imageFile for the texture
@@ -708,6 +703,11 @@ X.renderer3D.prototype.update_ = function(object) {
             this._context.UNSIGNED_BYTE, glTexture.image);
         
       }
+      
+      this._context.texParameteri(this._context.TEXTURE_2D,
+          this._context.TEXTURE_WRAP_S, this._context.CLAMP_TO_EDGE);
+      this._context.texParameteri(this._context.TEXTURE_2D,
+          this._context.TEXTURE_WRAP_T, this._context.CLAMP_TO_EDGE);
       
       // for labelmaps, we use NEAREST NEIGHBOR filtering
       if (isLabelMap) {
