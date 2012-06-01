@@ -135,8 +135,28 @@ def getBrowser( xtkLibDir, browserString ):
 
   return browser
 
+def coverageServer( xtkLibDir, action='start' ):
+
+  system = platform.system()
+
+  if system == 'Darwin':
+    jsCoverageExecutable = xtkLibDir + os.sep + 'jscoverage/mac' + os.sep + 'jscoverage-server'
+  elif system == 'Windows':
+    jsCoverageExecutable = xtkLibDir + os.sep + 'jscoverage/windows' + os.sep + 'jscoverage-server'
+  elif system == 'Linux':
+    jsCoverageExecutable = xtkLibDir + os.sep + 'jscoverage/linux' + os.sep + 'jscoverage-server'
+
+  if action == 'stop':
+    # stop the server
+    os.system( jsCoverageExecutable + " --shutdown" )
+  else:
+    # start the server
+    xtkDir = xtkLibDir + os.sep + ".." + os.sep
+    os.system( jsCoverageExecutable + " --document-root=" + xtkDir + " --no-instrument=/lib/ --no-instrument=/testing/ --no-instrument=/utils/ --no-instrument=/core/testing/ --no-instrument=/math/testing/ --no-instrument=xtk-deps.js &" )
+
+
 def runTests( xtkTestFile, xtkLibDir, browserString ):
-  return ' '
+
   print 'RUNNING OFFSCREEN TESTING..'
 
   browser = getBrowser( xtkLibDir, browserString )
@@ -144,24 +164,55 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
   if not browser:
     return None
 
-  # we don't need os.sep here since it's a url
-  browser.get( "file://" + xtkTestFile )
+  if xtkTestFile.find( 'build' ) == -1:
+    # this is against the DEV tree
+
+    # start coverage server
+    coverageServer( xtkLibDir )
+    browser.get( "http://localhost:8080/jscoverage.html" )
+
+    # now some selenium fun
+    locationfield = browser.find_element_by_id( 'location' )
+    locationfield.clear()
+
+    # fill in url
+    actions = ActionChains( browser )
+    actions.click( locationfield )
+    actions.send_keys( 'testing/xtk_tests.html' )
+    actions.send_keys( Keys.TAB )
+    #actions.send_keys( Keys.TAB )
+    actions.send_keys( Keys.RETURN )
+    actions.perform()
+
+    browser.switch_to_frame( browser.find_elements_by_tag_name( "iframe" )[0] )
+
+  else:
+    # we don't need os.sep here since it's a url
+    browser.get( "file://" + xtkTestFile )
 
   time.sleep( 3 )
 
   result = browser.execute_script( 'return window.G_testRunner.getReport(true);' )
 
-  browser.close()
+  time.sleep( 1 )
+
+  #browser.close()
 
   print 'RUNNING OFFSCREEN TESTING.. DONE!'
 
-  return result
+ # if xtkTestFile.find( 'build' ) == -1:
+    # this is against the DEV tree
 
-def testVisualization( xtkLibDir, browserString, againstBuild=False ):
+    # stop coverage server
+    #coverageServer( xtkLibDir, 'stop' )
+
+  #return result
+
+#def testVisualization( xtkLibDir, browserString, againstBuild=False ):
 
   print 'RUNNING VISUAL TESTING..'
 
-  browser = getBrowser( xtkLibDir, browserString )
+  #browser = getBrowser( xtkLibDir, browserString )
 
   if not browser:
     return None
@@ -169,7 +220,8 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
   # list of tests
   tests = ['test_trk.html', 'test_vtk.html', 'test_nrrd.html', 'test_vr.html', 'test_labelmap.html', 'test_shapes.html', 'test_mgh.html', 'test_mgz.html']
 
-  testURL = "file://" + xtkLibDir + "/../testing/visualization/"
+  #testURL = "file://" + xtkLibDir + "/../testing/visualization/"
+  testURL = "testing/visualization/"
   baselineDir = os.path.abspath( xtkLibDir + "/../testing/visualization/baselines/" )
 
   # we test the visualization with a fixed window size
@@ -182,9 +234,29 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
 
     # open the test
     url = testURL + t
-    if againstBuild:
-      url += '?build'
-    browser.get( testURL + t )
+    #if againstBuild:
+    #  url += '?build'
+
+    #browser.get( testURL + t )
+    browser.switch_to_default_content()
+
+
+    # now some selenium fun
+    locationfield = browser.find_element_by_id( 'location' )
+    locationfield.clear()
+
+    # fill in url
+    actions = ActionChains( browser )
+    actions.click( locationfield )
+    actions.send_keys( url )
+    actions.send_keys( Keys.TAB )
+    actions.send_keys( Keys.TAB )
+    actions.send_keys( Keys.RETURN )
+    actions.perform()
+
+    browser.switch_to_window( browser.window_handles[-1] )
+
+    #browser.switch_to_frame( browser.find_elements_by_tag_name( "iframe" )[0] )
 
     # wait until loading fully completed
     timer = 0
@@ -242,8 +314,15 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
       actions.click_and_hold( None )
       for i in range( 100 ):
         actions.move_to_element_with_offset( canvas, 10, 0 );
+        actions.release( canvas )
       for i in range( 100 ):
+        actions.click_and_hold( None )
         actions.move_to_element_with_offset( canvas, 0, -10 );
+        actions.release( canvas )
+      for i in range( 100 ):
+        actions.click_and_hold( None )
+        actions.move_to_element_with_offset( canvas, 0, 10 );
+        actions.release( canvas )
 
       # zoom      
 
@@ -276,11 +355,15 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
 
     output += timestamp + "  Visualization" + testId + ' : ' + testPassed + '\n'
 
-  browser.close()
+    browser.switch_to_window( browser.window_handles[0] )
+
+  #browser.close()
 
   _now = datetime.now()
   timestamp = str( _now.hour ).zfill( 2 ) + ':' + str( _now.minute ).zfill( 2 ) + ':' + str( _now.second ).zfill( 2 ) + '.' + str( _now.microsecond / 1000 ).zfill( 3 )
   result = output + timestamp + '  Done\n'
+
+  print output
 
   print 'RUNNING VISUAL TESTING.. DONE!'
 
