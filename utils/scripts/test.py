@@ -20,6 +20,7 @@ import selenium
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver import ActionChains
 
 
 def chromeDriverExecutable( xtkLibDir ):
@@ -135,7 +136,7 @@ def getBrowser( xtkLibDir, browserString ):
   return browser
 
 def runTests( xtkTestFile, xtkLibDir, browserString ):
-
+  return ' '
   print 'RUNNING OFFSCREEN TESTING..'
 
   browser = getBrowser( xtkLibDir, browserString )
@@ -191,6 +192,67 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
       time.sleep( 1 ) # loading did not complete yet
       timer += 1
     time.sleep( 1 )
+
+    # perform interaction tests, if we are using chrome
+    if  browserString == 'chrome':
+      canvas = browser.find_element_by_tag_name( 'canvas' )
+
+      actions = ActionChains( browser )
+      actions.click( canvas )
+
+      #
+      # keyboard events
+      #
+
+      # rotate      
+      for i in range( 30 ):
+        actions.send_keys( Keys.ARROW_RIGHT )
+      for i in range( 30 ):
+        actions.send_keys( Keys.ARROW_UP )
+      for i in range( 30 ):
+        actions.send_keys( Keys.ARROW_LEFT )
+      for i in range( 30 ):
+        actions.send_keys( Keys.ARROW_DOWN )
+
+      # zoom
+      for i in range( 50 ):
+        actions.key_down( Keys.LEFT_ALT )
+        actions.send_keys( Keys.ARROW_LEFT )
+
+      for i in range( 25 ):
+        actions.key_down( Keys.LEFT_ALT )
+        actions.send_keys( Keys.ARROW_RIGHT )
+
+      # pan
+      actions.key_down( Keys.LEFT_SHIFT )
+      actions.send_keys( Keys.ARROW_RIGHT, Keys.ARROW_RIGHT, Keys.ARROW_RIGHT )
+      actions.key_down( Keys.LEFT_SHIFT )
+      actions.send_keys( Keys.ARROW_LEFT, Keys.ARROW_LEFT, Keys.ARROW_LEFT )
+      actions.key_down( Keys.LEFT_SHIFT )
+      actions.send_keys( Keys.ARROW_UP, Keys.ARROW_UP, Keys.ARROW_UP )
+      actions.key_down( Keys.LEFT_SHIFT )
+      actions.send_keys( Keys.ARROW_DOWN, Keys.ARROW_DOWN )
+
+      #
+      # mouse
+      #
+      actions.click( canvas )
+
+      # rotate
+      actions.click_and_hold( None )
+      for i in range( 100 ):
+        actions.move_to_element_with_offset( canvas, 10, 0 );
+      for i in range( 100 ):
+        actions.move_to_element_with_offset( canvas, 0, -10 );
+
+      # zoom      
+
+      # pan
+
+
+      actions.perform()
+
+
 
     # create a screenshot and save it to a temp. file
     testId = os.path.splitext( t )[0]
