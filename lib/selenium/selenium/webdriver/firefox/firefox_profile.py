@@ -12,29 +12,26 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import with_statement
 
 import base64
 import copy
 import os
 import re
 import shutil
-import sys
 import tempfile
 import zipfile
 from cStringIO import StringIO
 from xml.dom import minidom
 from distutils import dir_util
-from selenium.webdriver.common.proxy import Proxy, ProxyType
+from selenium.webdriver.common.proxy import ProxyType
+from selenium.common.exceptions import WebDriverException
+
 
 WEBDRIVER_EXT = "webdriver.xpi"
 EXTENSION_NAME = "fxdriver@googlecode.com"
 
 class FirefoxProfile(object):
-
-    if sys.platform == "darwin":
-        native_events = "false"
-    else:
-        native_events = "true"
 
     ANONYMOUS_PROFILE_NAME   = "WEBDRIVER_ANONYMOUS_PROFILE"
     DEFAULT_PREFERENCES = {
@@ -87,7 +84,8 @@ class FirefoxProfile(object):
         "javascript.options.showInConsole": "true",
         "browser.dom.window.dump.enabled": "true",
         "webdriver_accept_untrusted_certs": "true",
-        "webdriver_enable_native_events": native_events,
+        "webdriver_enable_native_events": "true",
+        "webdriver_assume_untrusted_issuer": "true",
         "dom.max_script_run_time": "30",
         }
 
@@ -108,7 +106,8 @@ class FirefoxProfile(object):
         else:
             newprof = os.path.join(tempfile.mkdtemp(),
                 "webdriver-py-profilecopy")
-            shutil.copytree(self.profile_dir, newprof)
+            shutil.copytree(self.profile_dir, newprof,
+                ignore=shutil.ignore_patterns("parent.lock", "lock", ".parentlock"))
             self.profile_dir = newprof
             self._read_existing_userjs()
         self.extensionsDir = os.path.join(self.profile_dir, "extensions")
@@ -160,25 +159,42 @@ class FirefoxProfile(object):
         """
         Sets the port that WebDriver will be running on
         """
+        if not isinstance(port, int):
+            raise WebDriverException("Port needs to be an integer")
         self._port = port
-        self.default_preferences["webdriver_firefox_port"] =  str(self._port)
+        self.set_preference("webdriver_firefox_port", self._port)
 
     @property
     def accept_untrusted_certs(self):
-        return bool(
+        return self._santise_pref(
             self.default_preferences["webdriver_accept_untrusted_certs"])
 
     @accept_untrusted_certs.setter
     def accept_untrusted_certs(self, value):
-        self.default_preferences["webdriver_accept_untrusted_certs"] = str(value)
+        if value not in [True, False]:
+            raise WebDriverException("Please pass in a Boolean to this call")
+        self.set_preference("webdriver_accept_untrusted_certs", value)
+
+    @property
+    def assume_untrusted_cert_issuer(self):
+        return self._santise_pref(self.default_preferences["webdriver_assume_untrusted_issuer"])
+
+    @assume_untrusted_cert_issuer.setter
+    def assume_untrusted_cert_issuer(self, value):
+        if value not in [True, False]:
+            raise WebDriverException("Please pass in a Boolean to this call")
+
+        self.set_preference("webdriver_assume_untrusted_issuer", value)
 
     @property
     def native_events_enabled(self):
-        return bool(self.default_preferences['webdriver_enable_native_events'])
+        return self._santise_pref(self.default_preferences['webdriver_enable_native_events'])
 
     @native_events_enabled.setter
     def native_events_enabled(self, value):
-        self.default_preferences['webdriver_enable_native_events'] = str(value)
+        if value not in [True, False]:
+            raise WebDriverException("Please pass in a Boolean to this call")
+        self.set_preference("webdriver_enable_native_events", value)
 
     @property
     def encoded(self):
@@ -214,7 +230,13 @@ class FirefoxProfile(object):
             self.set_preference("network.proxy.autoconfig_url", proxy.proxy_autoconfig_url)
 
     #Private Methods
-
+    def _santise_pref(self, item):
+        if item == 'true':
+            return True
+        elif item == 'false':
+            return False
+        else:
+            return item
     def _set_manual_proxy_preference(self, key, setting):
         if setting is None or setting is '':
             return
@@ -234,20 +256,18 @@ class FirefoxProfile(object):
         """
         writes the current user prefs dictionary to disk
         """
-        f = open(self.userPrefs, "w")
-        for pref in user_prefs.keys():
-            f.write('user_pref("%s", %s);\n' % (pref, user_prefs[pref]))
-
-        f.close()
+        with open(self.userPrefs, "w") as f:
+            for key, value in user_prefs.items():
+                f.write('user_pref("%s", %s);\n' % (key, value))
 
     def _read_existing_userjs(self):
+        userjs_path = os.path.join(self.profile_dir, 'user.js')
+        PREF_RE = re.compile(r'user_pref\("(.*)",\s(.*)\)')
         try:
-            f = open(os.path.join(self.profile_dir, 'user.js'), "r")
-            tmp_usr = f.readlines()
-            f.close()
-            for usr in tmp_usr:
-                matches = re.search('user_pref\("(.*)",\s(.*)\)', usr)
-                self.default_preferences[matches.group(1)] = matches.group(2)
+            with open(userjs_path) as f:
+                for usr in f:
+                    matches = re.search(PREF_RE, usr)
+                    self.default_preferences[matches.group(1)] = matches.group(2)
         except:
             # The profile given hasn't had any changes made, i.e no users.js
             pass
@@ -274,9 +294,8 @@ class FirefoxProfile(object):
                     if not os.path.isdir(os.path.dirname(os.path.join(tmpdir, name))):
                         os.makedirs(os.path.dirname(os.path.join(tmpdir, name)))
                     data = compressed_file.read(name)
-                    f = open(os.path.join(tmpdir, name), 'wb')
-                    f.write(data)
-                    f.close()
+                    with open(os.path.join(tmpdir, name), 'wb') as f:
+                        f.write(data)
             xpifile = addon
             addon = tmpdir
 

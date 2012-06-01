@@ -180,6 +180,7 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/element/$id/value'),
             Command.SEND_KEYS_TO_ACTIVE_ELEMENT:
                 ('POST', '/session/$sessionId/keys'),
+            Command.UPLOAD_FILE: ('POST', "/session/$sessionId/file"),
             Command.GET_ELEMENT_VALUE:
                 ('GET', '/session/$sessionId/element/$id/value'),
             Command.GET_ELEMENT_TAG_NAME:
@@ -228,6 +229,8 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/timeouts/async_script'),
             Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY:
                 ('GET', '/session/$sessionId/element/$id/css/$propertyName'),
+            Command.SET_TIMEOUTS:
+                ('POST', '/session/$sessionId/timeouts'),
             Command.DISMISS_ALERT:
                 ('POST', '/session/$sessionId/dismiss_alert'),
             Command.ACCEPT_ALERT:
@@ -254,6 +257,8 @@ class RemoteConnection(object):
                 ('GET', '/session/$sessionId/window/$windowHandle/position'),
             Command.SET_WINDOW_POSITION:
                 ('POST', '/session/$sessionId/window/$windowHandle/position'),
+            Command.MAXIMIZE_WINDOW:
+                ('POST', '/session/$sessionId/window/$windowHandle/maximize'),
             Command.SET_SCREEN_ORIENTATION:
                 ('POST', '/session/$sessionId/orientation'),
             Command.GET_SCREEN_ORIENTATION:
