@@ -213,8 +213,8 @@ if( options.continuous ):
 # CDASH
 if os.path.exists( 'XTKUpdate.xml' ): os.remove( 'XTKUpdate.xml' )
 if os.path.exists( 'XTKConf.xml' ): os.remove( 'XTKConf.xml' )
-if os.path.exists( 'XTKBuild.xml' ): os.remove( 'XTKBuild.xml' )
-if os.path.exists( 'XTKTest.xml' ): os.remove( 'XTKTest.xml' )
+#if os.path.exists( 'XTKBuild.xml' ): os.remove( 'XTKBuild.xml' )
+#if os.path.exists( 'XTKTest.xml' ): os.remove( 'XTKTest.xml' )
 # log files
 if os.path.exists( 'xtk_build.log' ): os.remove( 'xtk_build.log' )
 if os.path.exists( 'xtk_test.log' ): os.remove( 'xtk_test.log' )

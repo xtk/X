@@ -441,6 +441,7 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
   f2.write( xml.toxml() )
   f2.close()
 
+  browser.quit()
 
   return [result_unit, result]
 
