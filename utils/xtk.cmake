@@ -1,8 +1,8 @@
 set(CTEST_PROJECT_NAME         "xtk")
 set(CTEST_NIGHTLY_START_TIME   "01:00:00 CET")
 set(CTEST_DROP_METHOD "http")
-set(CTEST_DROP_SITE "cdash.goxtk.com")
-set(CTEST_DROP_LOCATION "/submit.php?project=xtk")
+set(CTEST_DROP_SITE "my.cdash.org")
+set(CTEST_DROP_LOCATION "/submit.php?project=XTK")
 set(CTEST_DROP_SITE_CDASH TRUE)
 
 set(CTEST_SOURCE_DIRECTORY ".")
@@ -26,5 +26,9 @@ endif(EXISTS "XTKBuild.xml")
 if(EXISTS "XTKTest.xml")
   SET(filestosubmit ${filestosubmit} "XTKTest.xml")
 endif(EXISTS "XTKTest.xml")
+
+if(EXISTS "XTKCoverage.xml")
+  SET(filestosubmit ${filestosubmit} "XTKCoverage.xml")
+endif(EXISTS "XTKCoverage.xml")
 
 ctest_submit(FILES ${filestosubmit})

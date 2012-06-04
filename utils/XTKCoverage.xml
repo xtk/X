@@ -1,0 +1,2477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="Linux-g++4.2" BuildStamp="20080914-0100-Nightly" Name="dash16.kitware" Generator="ctest2.5-20070215">
+<Coverage>
+	<StartDateTime>Sep 14 04:19 EDT</StartDateTime>
+	<File Name="demo.cxx" FullPath="./Example/Demo/demo.cxx" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="hello.cxx" FullPath="./Example/Hello/hello.cxx" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmCPackComponentGroup.h" FullPath="./Source/CPack/cmCPackComponentGroup.h" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>5</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.67</CoverageMetric>
+	</File>
+	<File Name="cmCPackDebGenerator.cxx" FullPath="./Source/CPack/cmCPackDebGenerator.cxx" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>198</LOCUnTested>
+		<PercentCoverage>1.00</PercentCoverage>
+		<CoverageMetric>0.06</CoverageMetric>
+	</File>
+	<File Name="cmCPackDebGenerator.h" FullPath="./Source/CPack/cmCPackDebGenerator.h" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.83</CoverageMetric>
+	</File>
+	<File Name="cmCPackGenerator.cxx" FullPath="./Source/CPack/cmCPackGenerator.cxx" Covered="true">
+		<LOCTested>292</LOCTested>
+		<LOCUnTested>319</LOCUnTested>
+		<PercentCoverage>47.79</PercentCoverage>
+		<CoverageMetric>0.49</CoverageMetric>
+	</File>
+	<File Name="cmCPackGenerator.h" FullPath="./Source/CPack/cmCPackGenerator.h" Covered="true">
+		<LOCTested>1</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>25.00</PercentCoverage>
+		<CoverageMetric>0.79</CoverageMetric>
+	</File>
+	<File Name="cmCPackGeneratorFactory.cxx" FullPath="./Source/CPack/cmCPackGeneratorFactory.cxx" Covered="true">
+		<LOCTested>32</LOCTested>
+		<LOCUnTested>5</LOCUnTested>
+		<PercentCoverage>86.49</PercentCoverage>
+		<CoverageMetric>0.89</CoverageMetric>
+	</File>
+	<File Name="cmCPackGeneratorFactory.h" FullPath="./Source/CPack/cmCPackGeneratorFactory.h" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>75.00</PercentCoverage>
+		<CoverageMetric>0.93</CoverageMetric>
+	</File>
+	<File Name="cmCPackLog.cxx" FullPath="./Source/CPack/cmCPackLog.cxx" Covered="true">
+		<LOCTested>56</LOCTested>
+		<LOCUnTested>55</LOCUnTested>
+		<PercentCoverage>50.45</PercentCoverage>
+		<CoverageMetric>0.55</CoverageMetric>
+	</File>
+	<File Name="cmCPackLog.h" FullPath="./Source/CPack/cmCPackLog.h" Covered="true">
+		<LOCTested>7</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>70.00</PercentCoverage>
+		<CoverageMetric>0.85</CoverageMetric>
+	</File>
+	<File Name="cmCPackNSISGenerator.cxx" FullPath="./Source/CPack/cmCPackNSISGenerator.cxx" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>409</LOCUnTested>
+		<PercentCoverage>0.49</PercentCoverage>
+		<CoverageMetric>0.03</CoverageMetric>
+	</File>
+	<File Name="cmCPackNSISGenerator.h" FullPath="./Source/CPack/cmCPackNSISGenerator.h" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.77</CoverageMetric>
+	</File>
+	<File Name="cmCPackRPMGenerator.cxx" FullPath="./Source/CPack/cmCPackRPMGenerator.cxx" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>13</LOCUnTested>
+		<PercentCoverage>13.33</PercentCoverage>
+		<CoverageMetric>0.48</CoverageMetric>
+	</File>
+	<File Name="cmCPackRPMGenerator.h" FullPath="./Source/CPack/cmCPackRPMGenerator.h" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.83</CoverageMetric>
+	</File>
+	<File Name="cmCPackSTGZGenerator.cxx" FullPath="./Source/CPack/cmCPackSTGZGenerator.cxx" Covered="true">
+		<LOCTested>46</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>93.88</PercentCoverage>
+		<CoverageMetric>0.95</CoverageMetric>
+	</File>
+	<File Name="cmCPackSTGZGenerator.h" FullPath="./Source/CPack/cmCPackSTGZGenerator.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmCPackTGZGenerator.cxx" FullPath="./Source/CPack/cmCPackTGZGenerator.cxx" Covered="true">
+		<LOCTested>91</LOCTested>
+		<LOCUnTested>16</LOCUnTested>
+		<PercentCoverage>85.05</PercentCoverage>
+		<CoverageMetric>0.86</CoverageMetric>
+	</File>
+	<File Name="cmCPackTGZGenerator.h" FullPath="./Source/CPack/cmCPackTGZGenerator.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmCPackTarBZip2Generator.cxx" FullPath="./Source/CPack/cmCPackTarBZip2Generator.cxx" Covered="true">
+		<LOCTested>33</LOCTested>
+		<LOCUnTested>15</LOCUnTested>
+		<PercentCoverage>68.75</PercentCoverage>
+		<CoverageMetric>0.74</CoverageMetric>
+	</File>
+	<File Name="cmCPackTarBZip2Generator.h" FullPath="./Source/CPack/cmCPackTarBZip2Generator.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmCPackTarCompressGenerator.cxx" FullPath="./Source/CPack/cmCPackTarCompressGenerator.cxx" Covered="true">
+		<LOCTested>66</LOCTested>
+		<LOCUnTested>20</LOCUnTested>
+		<PercentCoverage>76.74</PercentCoverage>
+		<CoverageMetric>0.79</CoverageMetric>
+	</File>
+	<File Name="cmCPackTarCompressGenerator.h" FullPath="./Source/CPack/cmCPackTarCompressGenerator.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmCPackZIPGenerator.cxx" FullPath="./Source/CPack/cmCPackZIPGenerator.cxx" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>40</LOCUnTested>
+		<PercentCoverage>4.76</PercentCoverage>
+		<CoverageMetric>0.23</CoverageMetric>
+	</File>
+	<File Name="cmCPackZIPGenerator.h" FullPath="./Source/CPack/cmCPackZIPGenerator.h" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.83</CoverageMetric>
+	</File>
+	<File Name="cpack.cxx" FullPath="./Source/CPack/cpack.cxx" Covered="true">
+		<LOCTested>137</LOCTested>
+		<LOCUnTested>56</LOCUnTested>
+		<PercentCoverage>70.98</PercentCoverage>
+		<CoverageMetric>0.72</CoverageMetric>
+	</File>
+	<File Name="cmCTestBuildAndTestHandler.cxx" FullPath="./Source/CTest/cmCTestBuildAndTestHandler.cxx" Covered="true">
+		<LOCTested>179</LOCTested>
+		<LOCUnTested>58</LOCUnTested>
+		<PercentCoverage>75.53</PercentCoverage>
+		<CoverageMetric>0.77</CoverageMetric>
+	</File>
+	<File Name="cmCTestBuildAndTestHandler.h" FullPath="./Source/CTest/cmCTestBuildAndTestHandler.h" Covered="true">
+		<LOCTested>1</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>50.00</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmCTestBuildCommand.cxx" FullPath="./Source/CTest/cmCTestBuildCommand.cxx" Covered="true">
+		<LOCTested>36</LOCTested>
+		<LOCUnTested>11</LOCUnTested>
+		<PercentCoverage>76.60</PercentCoverage>
+		<CoverageMetric>0.81</CoverageMetric>
+	</File>
+	<File Name="cmCTestBuildCommand.h" FullPath="./Source/CTest/cmCTestBuildCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>90.91</PercentCoverage>
+		<CoverageMetric>0.95</CoverageMetric>
+	</File>
+	<File Name="cmCTestBuildHandler.cxx" FullPath="./Source/CTest/cmCTestBuildHandler.cxx" Covered="true">
+		<LOCTested>296</LOCTested>
+		<LOCUnTested>75</LOCUnTested>
+		<PercentCoverage>79.78</PercentCoverage>
+		<CoverageMetric>0.80</CoverageMetric>
+	</File>
+	<File Name="cmCTestBuildHandler.h" FullPath="./Source/CTest/cmCTestBuildHandler.h" Covered="true">
+		<LOCTested>4</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>80.00</PercentCoverage>
+		<CoverageMetric>0.93</CoverageMetric>
+	</File>
+	<File Name="cmCTestCommand.h" FullPath="./Source/CTest/cmCTestCommand.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>66.67</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmCTestConfigureCommand.cxx" FullPath="./Source/CTest/cmCTestConfigureCommand.cxx" Covered="true">
+		<LOCTested>25</LOCTested>
+		<LOCUnTested>11</LOCUnTested>
+		<PercentCoverage>69.44</PercentCoverage>
+		<CoverageMetric>0.76</CoverageMetric>
+	</File>
+	<File Name="cmCTestConfigureCommand.h" FullPath="./Source/CTest/cmCTestConfigureCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>92.31</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmCTestConfigureHandler.cxx" FullPath="./Source/CTest/cmCTestConfigureHandler.cxx" Covered="true">
+		<LOCTested>41</LOCTested>
+		<LOCUnTested>10</LOCUnTested>
+		<PercentCoverage>80.39</PercentCoverage>
+		<CoverageMetric>0.84</CoverageMetric>
+	</File>
+	<File Name="cmCTestConfigureHandler.h" FullPath="./Source/CTest/cmCTestConfigureHandler.h" Covered="true">
+		<LOCTested>1</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>50.00</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmCTestCoverageCommand.cxx" FullPath="./Source/CTest/cmCTestCoverageCommand.cxx" Covered="true">
+		<LOCTested>7</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>77.78</PercentCoverage>
+		<CoverageMetric>0.89</CoverageMetric>
+	</File>
+	<File Name="cmCTestCoverageCommand.h" FullPath="./Source/CTest/cmCTestCoverageCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>92.31</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmCTestCoverageHandler.cxx" FullPath="./Source/CTest/cmCTestCoverageHandler.cxx" Covered="true">
+		<LOCTested>313</LOCTested>
+		<LOCUnTested>431</LOCUnTested>
+		<PercentCoverage>42.07</PercentCoverage>
+		<CoverageMetric>0.43</CoverageMetric>
+	</File>
+	<File Name="cmCTestCoverageHandler.h" FullPath="./Source/CTest/cmCTestCoverageHandler.h" Covered="true">
+		<LOCTested>1</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>50.00</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmCTestEmptyBinaryDirectoryCommand.cxx" FullPath="./Source/CTest/cmCTestEmptyBinaryDirectoryCommand.cxx" Covered="true">
+		<LOCTested>6</LOCTested>
+		<LOCUnTested>6</LOCUnTested>
+		<PercentCoverage>50.00</PercentCoverage>
+		<CoverageMetric>0.73</CoverageMetric>
+	</File>
+	<File Name="cmCTestEmptyBinaryDirectoryCommand.h" FullPath="./Source/CTest/cmCTestEmptyBinaryDirectoryCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>92.31</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmCTestGenericHandler.cxx" FullPath="./Source/CTest/cmCTestGenericHandler.cxx" Covered="true">
+		<LOCTested>53</LOCTested>
+		<LOCUnTested>21</LOCUnTested>
+		<PercentCoverage>71.62</PercentCoverage>
+		<CoverageMetric>0.75</CoverageMetric>
+	</File>
+	<File Name="cmCTestGenericHandler.h" FullPath="./Source/CTest/cmCTestGenericHandler.h" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>88.89</PercentCoverage>
+		<CoverageMetric>0.95</CoverageMetric>
+	</File>
+	<File Name="cmCTestHandlerCommand.cxx" FullPath="./Source/CTest/cmCTestHandlerCommand.cxx" Covered="true">
+		<LOCTested>58</LOCTested>
+		<LOCUnTested>12</LOCUnTested>
+		<PercentCoverage>82.86</PercentCoverage>
+		<CoverageMetric>0.85</CoverageMetric>
+	</File>
+	<File Name="cmCTestHandlerCommand.h" FullPath="./Source/CTest/cmCTestHandlerCommand.h" Covered="true">
+		<LOCTested>1</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>50.00</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmCTestMemCheckCommand.cxx" FullPath="./Source/CTest/cmCTestMemCheckCommand.cxx" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmCTestMemCheckCommand.h" FullPath="./Source/CTest/cmCTestMemCheckCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>92.31</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmCTestMemCheckHandler.cxx" FullPath="./Source/CTest/cmCTestMemCheckHandler.cxx" Covered="true">
+		<LOCTested>192</LOCTested>
+		<LOCUnTested>205</LOCUnTested>
+		<PercentCoverage>48.36</PercentCoverage>
+		<CoverageMetric>0.50</CoverageMetric>
+	</File>
+	<File Name="cmCTestMemCheckHandler.h" FullPath="./Source/CTest/cmCTestMemCheckHandler.h" Covered="true">
+		<LOCTested>1</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>50.00</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmCTestMultiProcessHandler.cxx" FullPath="./Source/CTest/cmCTestMultiProcessHandler.cxx" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>131</LOCUnTested>
+		<PercentCoverage>1.50</PercentCoverage>
+		<CoverageMetric>0.08</CoverageMetric>
+	</File>
+	<File Name="cmCTestMultiProcessHandler.h" FullPath="./Source/CTest/cmCTestMultiProcessHandler.h" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>13</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.43</CoverageMetric>
+	</File>
+	<File Name="cmCTestReadCustomFilesCommand.cxx" FullPath="./Source/CTest/cmCTestReadCustomFilesCommand.cxx" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>80.00</PercentCoverage>
+		<CoverageMetric>0.90</CoverageMetric>
+	</File>
+	<File Name="cmCTestReadCustomFilesCommand.h" FullPath="./Source/CTest/cmCTestReadCustomFilesCommand.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>91.67</PercentCoverage>
+		<CoverageMetric>0.95</CoverageMetric>
+	</File>
+	<File Name="cmCTestRunScriptCommand.cxx" FullPath="./Source/CTest/cmCTestRunScriptCommand.cxx" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>12</LOCUnTested>
+		<PercentCoverage>14.29</PercentCoverage>
+		<CoverageMetric>0.50</CoverageMetric>
+	</File>
+	<File Name="cmCTestRunScriptCommand.h" FullPath="./Source/CTest/cmCTestRunScriptCommand.h" Covered="true">
+		<LOCTested>7</LOCTested>
+		<LOCUnTested>6</LOCUnTested>
+		<PercentCoverage>53.85</PercentCoverage>
+		<CoverageMetric>0.74</CoverageMetric>
+	</File>
+	<File Name="cmCTestScriptHandler.cxx" FullPath="./Source/CTest/cmCTestScriptHandler.cxx" Covered="true">
+		<LOCTested>226</LOCTested>
+		<LOCUnTested>197</LOCUnTested>
+		<PercentCoverage>53.43</PercentCoverage>
+		<CoverageMetric>0.55</CoverageMetric>
+	</File>
+	<File Name="cmCTestScriptHandler.h" FullPath="./Source/CTest/cmCTestScriptHandler.h" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.91</CoverageMetric>
+	</File>
+	<File Name="cmCTestSleepCommand.cxx" FullPath="./Source/CTest/cmCTestSleepCommand.cxx" Covered="true">
+		<LOCTested>17</LOCTested>
+		<LOCUnTested>4</LOCUnTested>
+		<PercentCoverage>80.95</PercentCoverage>
+		<CoverageMetric>0.87</CoverageMetric>
+	</File>
+	<File Name="cmCTestSleepCommand.h" FullPath="./Source/CTest/cmCTestSleepCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>92.31</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmCTestStartCommand.cxx" FullPath="./Source/CTest/cmCTestStartCommand.cxx" Covered="true">
+		<LOCTested>32</LOCTested>
+		<LOCUnTested>15</LOCUnTested>
+		<PercentCoverage>68.09</PercentCoverage>
+		<CoverageMetric>0.74</CoverageMetric>
+	</File>
+	<File Name="cmCTestStartCommand.h" FullPath="./Source/CTest/cmCTestStartCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>92.31</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmCTestSubmitCommand.cxx" FullPath="./Source/CTest/cmCTestSubmitCommand.cxx" Covered="true">
+		<LOCTested>37</LOCTested>
+		<LOCUnTested>12</LOCUnTested>
+		<PercentCoverage>75.51</PercentCoverage>
+		<CoverageMetric>0.80</CoverageMetric>
+	</File>
+	<File Name="cmCTestSubmitCommand.h" FullPath="./Source/CTest/cmCTestSubmitCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>92.31</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmCTestSubmitHandler.cxx" FullPath="./Source/CTest/cmCTestSubmitHandler.cxx" Covered="true">
+		<LOCTested>183</LOCTested>
+		<LOCUnTested>303</LOCUnTested>
+		<PercentCoverage>37.65</PercentCoverage>
+		<CoverageMetric>0.39</CoverageMetric>
+	</File>
+	<File Name="cmCTestSubmitHandler.h" FullPath="./Source/CTest/cmCTestSubmitHandler.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>66.67</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmCTestTestCommand.cxx" FullPath="./Source/CTest/cmCTestTestCommand.cxx" Covered="true">
+		<LOCTested>35</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>92.11</PercentCoverage>
+		<CoverageMetric>0.94</CoverageMetric>
+	</File>
+	<File Name="cmCTestTestCommand.h" FullPath="./Source/CTest/cmCTestTestCommand.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>91.67</PercentCoverage>
+		<CoverageMetric>0.95</CoverageMetric>
+	</File>
+	<File Name="cmCTestTestHandler.cxx" FullPath="./Source/CTest/cmCTestTestHandler.cxx" Covered="true">
+		<LOCTested>590</LOCTested>
+		<LOCUnTested>400</LOCUnTested>
+		<PercentCoverage>59.60</PercentCoverage>
+		<CoverageMetric>0.60</CoverageMetric>
+	</File>
+	<File Name="cmCTestTestHandler.h" FullPath="./Source/CTest/cmCTestTestHandler.h" Covered="true">
+		<LOCTested>4</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>80.00</PercentCoverage>
+		<CoverageMetric>0.93</CoverageMetric>
+	</File>
+	<File Name="cmCTestUpdateCommand.cxx" FullPath="./Source/CTest/cmCTestUpdateCommand.cxx" Covered="true">
+		<LOCTested>23</LOCTested>
+		<LOCUnTested>12</LOCUnTested>
+		<PercentCoverage>65.71</PercentCoverage>
+		<CoverageMetric>0.73</CoverageMetric>
+	</File>
+	<File Name="cmCTestUpdateCommand.h" FullPath="./Source/CTest/cmCTestUpdateCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>92.31</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmCTestUpdateHandler.cxx" FullPath="./Source/CTest/cmCTestUpdateHandler.cxx" Covered="true">
+		<LOCTested>262</LOCTested>
+		<LOCUnTested>225</LOCUnTested>
+		<PercentCoverage>53.80</PercentCoverage>
+		<CoverageMetric>0.55</CoverageMetric>
+	</File>
+	<File Name="cmCTestUpdateHandler.h" FullPath="./Source/CTest/cmCTestUpdateHandler.h" Covered="true">
+		<LOCTested>4</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>80.00</PercentCoverage>
+		<CoverageMetric>0.93</CoverageMetric>
+	</File>
+	<File Name="cmProcess.cxx" FullPath="./Source/CTest/cmProcess.cxx" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>127</LOCUnTested>
+		<PercentCoverage>1.55</PercentCoverage>
+		<CoverageMetric>0.09</CoverageMetric>
+	</File>
+	<File Name="cmProcess.h" FullPath="./Source/CTest/cmProcess.h" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>4</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.71</CoverageMetric>
+	</File>
+	<File Name="cmAddCustomCommandCommand.cxx" FullPath="./Source/cmAddCustomCommandCommand.cxx" Covered="true">
+		<LOCTested>121</LOCTested>
+		<LOCUnTested>28</LOCUnTested>
+		<PercentCoverage>81.21</PercentCoverage>
+		<CoverageMetric>0.82</CoverageMetric>
+	</File>
+	<File Name="cmAddCustomCommandCommand.h" FullPath="./Source/cmAddCustomCommandCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmAddCustomTargetCommand.cxx" FullPath="./Source/cmAddCustomTargetCommand.cxx" Covered="true">
+		<LOCTested>54</LOCTested>
+		<LOCUnTested>15</LOCUnTested>
+		<PercentCoverage>78.26</PercentCoverage>
+		<CoverageMetric>0.81</CoverageMetric>
+	</File>
+	<File Name="cmAddCustomTargetCommand.h" FullPath="./Source/cmAddCustomTargetCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmAddDefinitionsCommand.cxx" FullPath="./Source/cmAddDefinitionsCommand.cxx" Covered="true">
+		<LOCTested>5</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>83.33</PercentCoverage>
+		<CoverageMetric>0.94</CoverageMetric>
+	</File>
+	<File Name="cmAddDefinitionsCommand.h" FullPath="./Source/cmAddDefinitionsCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmAddDependenciesCommand.cxx" FullPath="./Source/cmAddDependenciesCommand.cxx" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>5</LOCUnTested>
+		<PercentCoverage>68.75</PercentCoverage>
+		<CoverageMetric>0.81</CoverageMetric>
+	</File>
+	<File Name="cmAddDependenciesCommand.h" FullPath="./Source/cmAddDependenciesCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmAddExecutableCommand.cxx" FullPath="./Source/cmAddExecutableCommand.cxx" Covered="true">
+		<LOCTested>33</LOCTested>
+		<LOCUnTested>22</LOCUnTested>
+		<PercentCoverage>60.00</PercentCoverage>
+		<CoverageMetric>0.66</CoverageMetric>
+	</File>
+	<File Name="cmAddExecutableCommand.h" FullPath="./Source/cmAddExecutableCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmAddLibraryCommand.cxx" FullPath="./Source/cmAddLibraryCommand.cxx" Covered="true">
+		<LOCTested>53</LOCTested>
+		<LOCUnTested>24</LOCUnTested>
+		<PercentCoverage>68.83</PercentCoverage>
+		<CoverageMetric>0.72</CoverageMetric>
+	</File>
+	<File Name="cmAddLibraryCommand.h" FullPath="./Source/cmAddLibraryCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmAddSubDirectoryCommand.cxx" FullPath="./Source/cmAddSubDirectoryCommand.cxx" Covered="true">
+		<LOCTested>33</LOCTested>
+		<LOCUnTested>14</LOCUnTested>
+		<PercentCoverage>70.21</PercentCoverage>
+		<CoverageMetric>0.75</CoverageMetric>
+	</File>
+	<File Name="cmAddSubDirectoryCommand.h" FullPath="./Source/cmAddSubDirectoryCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmAddTestCommand.cxx" FullPath="./Source/cmAddTestCommand.cxx" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>83.33</PercentCoverage>
+		<CoverageMetric>0.91</CoverageMetric>
+	</File>
+	<File Name="cmAddTestCommand.h" FullPath="./Source/cmAddTestCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmAuxSourceDirectoryCommand.cxx" FullPath="./Source/cmAuxSourceDirectoryCommand.cxx" Covered="true">
+		<LOCTested>33</LOCTested>
+		<LOCUnTested>4</LOCUnTested>
+		<PercentCoverage>89.19</PercentCoverage>
+		<CoverageMetric>0.91</CoverageMetric>
+	</File>
+	<File Name="cmAuxSourceDirectoryCommand.h" FullPath="./Source/cmAuxSourceDirectoryCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmBootstrapCommands.cxx" FullPath="./Source/cmBootstrapCommands.cxx" Covered="true">
+		<LOCTested>71</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmBreakCommand.cxx" FullPath="./Source/cmBreakCommand.cxx" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmBreakCommand.h" FullPath="./Source/cmBreakCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmBuildCommand.cxx" FullPath="./Source/cmBuildCommand.cxx" Covered="true">
+		<LOCTested>13</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>81.25</PercentCoverage>
+		<CoverageMetric>0.88</CoverageMetric>
+	</File>
+	<File Name="cmBuildCommand.h" FullPath="./Source/cmBuildCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmBuildNameCommand.cxx" FullPath="./Source/cmBuildNameCommand.cxx" Covered="true">
+		<LOCTested>23</LOCTested>
+		<LOCUnTested>10</LOCUnTested>
+		<PercentCoverage>69.70</PercentCoverage>
+		<CoverageMetric>0.77</CoverageMetric>
+	</File>
+	<File Name="cmBuildNameCommand.h" FullPath="./Source/cmBuildNameCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmCMakeMinimumRequired.cxx" FullPath="./Source/cmCMakeMinimumRequired.cxx" Covered="true">
+		<LOCTested>27</LOCTested>
+		<LOCUnTested>18</LOCUnTested>
+		<PercentCoverage>60.00</PercentCoverage>
+		<CoverageMetric>0.67</CoverageMetric>
+	</File>
+	<File Name="cmCMakeMinimumRequired.h" FullPath="./Source/cmCMakeMinimumRequired.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmCMakePolicyCommand.cxx" FullPath="./Source/cmCMakePolicyCommand.cxx" Covered="true">
+		<LOCTested>37</LOCTested>
+		<LOCUnTested>38</LOCUnTested>
+		<PercentCoverage>49.33</PercentCoverage>
+		<CoverageMetric>0.55</CoverageMetric>
+	</File>
+	<File Name="cmCMakePolicyCommand.h" FullPath="./Source/cmCMakePolicyCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmCPluginAPI.cxx" FullPath="./Source/cmCPluginAPI.cxx" Covered="true">
+		<LOCTested>241</LOCTested>
+		<LOCUnTested>166</LOCUnTested>
+		<PercentCoverage>59.21</PercentCoverage>
+		<CoverageMetric>0.60</CoverageMetric>
+	</File>
+	<File Name="cmCTest.cxx" FullPath="./Source/cmCTest.cxx" Covered="true">
+		<LOCTested>777</LOCTested>
+		<LOCUnTested>438</LOCUnTested>
+		<PercentCoverage>63.95</PercentCoverage>
+		<CoverageMetric>0.64</CoverageMetric>
+	</File>
+	<File Name="cmCTest.h" FullPath="./Source/cmCTest.h" Covered="true">
+		<LOCTested>21</LOCTested>
+		<LOCUnTested>8</LOCUnTested>
+		<PercentCoverage>72.41</PercentCoverage>
+		<CoverageMetric>0.79</CoverageMetric>
+	</File>
+	<File Name="cmCacheManager.cxx" FullPath="./Source/cmCacheManager.cxx" Covered="true">
+		<LOCTested>302</LOCTested>
+		<LOCUnTested>130</LOCUnTested>
+		<PercentCoverage>69.91</PercentCoverage>
+		<CoverageMetric>0.71</CoverageMetric>
+	</File>
+	<File Name="cmCacheManager.h" FullPath="./Source/cmCacheManager.h" Covered="true">
+		<LOCTested>22</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmCommand.h" FullPath="./Source/cmCommand.h" Covered="true">
+		<LOCTested>18</LOCTested>
+		<LOCUnTested>10</LOCUnTested>
+		<PercentCoverage>64.29</PercentCoverage>
+		<CoverageMetric>0.74</CoverageMetric>
+	</File>
+	<File Name="cmCommandArgumentParserHelper.cxx" FullPath="./Source/cmCommandArgumentParserHelper.cxx" Covered="true">
+		<LOCTested>132</LOCTested>
+		<LOCUnTested>25</LOCUnTested>
+		<PercentCoverage>84.08</PercentCoverage>
+		<CoverageMetric>0.85</CoverageMetric>
+	</File>
+	<File Name="cmCommandArgumentParserHelper.h" FullPath="./Source/cmCommandArgumentParserHelper.h" Covered="true">
+		<LOCTested>5</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>83.33</PercentCoverage>
+		<CoverageMetric>0.94</CoverageMetric>
+	</File>
+	<File Name="cmCommandArgumentsHelper.cxx" FullPath="./Source/cmCommandArgumentsHelper.cxx" Covered="true">
+		<LOCTested>107</LOCTested>
+		<LOCUnTested>25</LOCUnTested>
+		<PercentCoverage>81.06</PercentCoverage>
+		<CoverageMetric>0.82</CoverageMetric>
+	</File>
+	<File Name="cmCommandArgumentsHelper.h" FullPath="./Source/cmCommandArgumentsHelper.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>92.31</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmCommands.cxx" FullPath="./Source/cmCommands.cxx" Covered="true">
+		<LOCTested>30</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmComputeComponentGraph.cxx" FullPath="./Source/cmComputeComponentGraph.cxx" Covered="true">
+		<LOCTested>66</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmComputeComponentGraph.h" FullPath="./Source/cmComputeComponentGraph.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmComputeLinkDepends.cxx" FullPath="./Source/cmComputeLinkDepends.cxx" Covered="true">
+		<LOCTested>220</LOCTested>
+		<LOCUnTested>97</LOCUnTested>
+		<PercentCoverage>69.40</PercentCoverage>
+		<CoverageMetric>0.70</CoverageMetric>
+	</File>
+	<File Name="cmComputeLinkDepends.h" FullPath="./Source/cmComputeLinkDepends.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmComputeLinkInformation.cxx" FullPath="./Source/cmComputeLinkInformation.cxx" Covered="true">
+		<LOCTested>403</LOCTested>
+		<LOCUnTested>146</LOCUnTested>
+		<PercentCoverage>73.41</PercentCoverage>
+		<CoverageMetric>0.74</CoverageMetric>
+	</File>
+	<File Name="cmComputeLinkInformation.h" FullPath="./Source/cmComputeLinkInformation.h" Covered="true">
+		<LOCTested>7</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmComputeTargetDepends.cxx" FullPath="./Source/cmComputeTargetDepends.cxx" Covered="true">
+		<LOCTested>102</LOCTested>
+		<LOCUnTested>50</LOCUnTested>
+		<PercentCoverage>67.11</PercentCoverage>
+		<CoverageMetric>0.69</CoverageMetric>
+	</File>
+	<File Name="cmComputeTargetDepends.h" FullPath="./Source/cmComputeTargetDepends.h" Covered="true">
+		<LOCTested>1</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmConfigureFileCommand.cxx" FullPath="./Source/cmConfigureFileCommand.cxx" Covered="true">
+		<LOCTested>32</LOCTested>
+		<LOCUnTested>8</LOCUnTested>
+		<PercentCoverage>80.00</PercentCoverage>
+		<CoverageMetric>0.84</CoverageMetric>
+	</File>
+	<File Name="cmConfigureFileCommand.h" FullPath="./Source/cmConfigureFileCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmCoreTryCompile.cxx" FullPath="./Source/cmCoreTryCompile.cxx" Covered="true">
+		<LOCTested>153</LOCTested>
+		<LOCUnTested>49</LOCUnTested>
+		<PercentCoverage>75.74</PercentCoverage>
+		<CoverageMetric>0.77</CoverageMetric>
+	</File>
+	<File Name="cmCoreTryCompile.h" FullPath="./Source/cmCoreTryCompile.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmCreateTestSourceList.cxx" FullPath="./Source/cmCreateTestSourceList.cxx" Covered="true">
+		<LOCTested>80</LOCTested>
+		<LOCUnTested>9</LOCUnTested>
+		<PercentCoverage>89.89</PercentCoverage>
+		<CoverageMetric>0.91</CoverageMetric>
+	</File>
+	<File Name="cmCreateTestSourceList.h" FullPath="./Source/cmCreateTestSourceList.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmCustomCommand.cxx" FullPath="./Source/cmCustomCommand.cxx" Covered="true">
+		<LOCTested>48</LOCTested>
+		<LOCUnTested>5</LOCUnTested>
+		<PercentCoverage>90.57</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmCustomCommand.h" FullPath="./Source/cmCustomCommand.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmData.h" FullPath="./Source/cmData.h" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.83</CoverageMetric>
+	</File>
+	<File Name="cmDefinePropertyCommand.cxx" FullPath="./Source/cmDefinePropertyCommand.cxx" Covered="true">
+		<LOCTested>31</LOCTested>
+		<LOCUnTested>27</LOCUnTested>
+		<PercentCoverage>53.45</PercentCoverage>
+		<CoverageMetric>0.60</CoverageMetric>
+	</File>
+	<File Name="cmDefinePropertyCommand.h" FullPath="./Source/cmDefinePropertyCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmDepends.cxx" FullPath="./Source/cmDepends.cxx" Covered="true">
+		<LOCTested>75</LOCTested>
+		<LOCUnTested>16</LOCUnTested>
+		<PercentCoverage>82.42</PercentCoverage>
+		<CoverageMetric>0.84</CoverageMetric>
+	</File>
+	<File Name="cmDepends.h" FullPath="./Source/cmDepends.h" Covered="true">
+		<LOCTested>6</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmDependsC.cxx" FullPath="./Source/cmDependsC.cxx" Covered="true">
+		<LOCTested>236</LOCTested>
+		<LOCUnTested>13</LOCUnTested>
+		<PercentCoverage>94.78</PercentCoverage>
+		<CoverageMetric>0.95</CoverageMetric>
+	</File>
+	<File Name="cmDependsC.h" FullPath="./Source/cmDependsC.h" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmDependsFortran.cxx" FullPath="./Source/cmDependsFortran.cxx" Covered="true">
+		<LOCTested>122</LOCTested>
+		<LOCUnTested>322</LOCUnTested>
+		<PercentCoverage>27.48</PercentCoverage>
+		<CoverageMetric>0.29</CoverageMetric>
+	</File>
+	<File Name="cmDependsJava.cxx" FullPath="./Source/cmDependsJava.cxx" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>11</LOCUnTested>
+		<PercentCoverage>15.38</PercentCoverage>
+		<CoverageMetric>0.52</CoverageMetric>
+	</File>
+	<File Name="cmDocumentVariables.cxx" FullPath="./Source/cmDocumentVariables.cxx" Covered="true">
+		<LOCTested>194</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmDocumentation.cxx" FullPath="./Source/cmDocumentation.cxx" Covered="true">
+		<LOCTested>490</LOCTested>
+		<LOCUnTested>171</LOCUnTested>
+		<PercentCoverage>74.13</PercentCoverage>
+		<CoverageMetric>0.75</CoverageMetric>
+	</File>
+	<File Name="cmDocumentation.h" FullPath="./Source/cmDocumentation.h" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>75.00</PercentCoverage>
+		<CoverageMetric>0.93</CoverageMetric>
+	</File>
+	<File Name="cmDocumentationFormatter.cxx" FullPath="./Source/cmDocumentationFormatter.cxx" Covered="true">
+		<LOCTested>62</LOCTested>
+		<LOCUnTested>5</LOCUnTested>
+		<PercentCoverage>92.54</PercentCoverage>
+		<CoverageMetric>0.94</CoverageMetric>
+	</File>
+	<File Name="cmDocumentationFormatter.h" FullPath="./Source/cmDocumentationFormatter.h" Covered="true">
+		<LOCTested>5</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmDocumentationFormatterDocbook.cxx" FullPath="./Source/cmDocumentationFormatterDocbook.cxx" Covered="true">
+		<LOCTested>100</LOCTested>
+		<LOCUnTested>4</LOCUnTested>
+		<PercentCoverage>96.15</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmDocumentationFormatterDocbook.h" FullPath="./Source/cmDocumentationFormatterDocbook.h" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmDocumentationFormatterHTML.cxx" FullPath="./Source/cmDocumentationFormatterHTML.cxx" Covered="true">
+		<LOCTested>111</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>99.11</PercentCoverage>
+		<CoverageMetric>0.99</CoverageMetric>
+	</File>
+	<File Name="cmDocumentationFormatterHTML.h" FullPath="./Source/cmDocumentationFormatterHTML.h" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmDocumentationFormatterMan.cxx" FullPath="./Source/cmDocumentationFormatterMan.cxx" Covered="true">
+		<LOCTested>29</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmDocumentationFormatterMan.h" FullPath="./Source/cmDocumentationFormatterMan.h" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmDocumentationFormatterText.cxx" FullPath="./Source/cmDocumentationFormatterText.cxx" Covered="true">
+		<LOCTested>76</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>98.70</PercentCoverage>
+		<CoverageMetric>0.99</CoverageMetric>
+	</File>
+	<File Name="cmDocumentationFormatterText.h" FullPath="./Source/cmDocumentationFormatterText.h" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmDocumentationFormatterUsage.cxx" FullPath="./Source/cmDocumentationFormatterUsage.cxx" Covered="true">
+		<LOCTested>26</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmDocumentationFormatterUsage.h" FullPath="./Source/cmDocumentationFormatterUsage.h" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmDocumentationSection.cxx" FullPath="./Source/cmDocumentationSection.cxx" Covered="true">
+		<LOCTested>18</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmDocumentationSection.h" FullPath="./Source/cmDocumentationSection.h" Covered="true">
+		<LOCTested>13</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmDumpDocumentation.cxx" FullPath="./Source/cmDumpDocumentation.cxx" Covered="true">
+		<LOCTested>36</LOCTested>
+		<LOCUnTested>21</LOCUnTested>
+		<PercentCoverage>63.16</PercentCoverage>
+		<CoverageMetric>0.69</CoverageMetric>
+	</File>
+	<File Name="cmDynamicLoader.cxx" FullPath="./Source/cmDynamicLoader.cxx" Covered="true">
+		<LOCTested>34</LOCTested>
+		<LOCUnTested>9</LOCUnTested>
+		<PercentCoverage>79.07</PercentCoverage>
+		<CoverageMetric>0.83</CoverageMetric>
+	</File>
+	<File Name="cmELF.cxx" FullPath="./Source/cmELF.cxx" Covered="true">
+		<LOCTested>125</LOCTested>
+		<LOCUnTested>216</LOCUnTested>
+		<PercentCoverage>36.66</PercentCoverage>
+		<CoverageMetric>0.38</CoverageMetric>
+	</File>
+	<File Name="cmELF.h" FullPath="./Source/cmELF.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>50.00</PercentCoverage>
+		<CoverageMetric>0.86</CoverageMetric>
+	</File>
+	<File Name="cmElseCommand.cxx" FullPath="./Source/cmElseCommand.cxx" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.77</CoverageMetric>
+	</File>
+	<File Name="cmElseCommand.h" FullPath="./Source/cmElseCommand.h" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>80.00</PercentCoverage>
+		<CoverageMetric>0.90</CoverageMetric>
+	</File>
+	<File Name="cmElseIfCommand.cxx" FullPath="./Source/cmElseIfCommand.cxx" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.77</CoverageMetric>
+	</File>
+	<File Name="cmElseIfCommand.h" FullPath="./Source/cmElseIfCommand.h" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>80.00</PercentCoverage>
+		<CoverageMetric>0.90</CoverageMetric>
+	</File>
+	<File Name="cmEnableLanguageCommand.cxx" FullPath="./Source/cmEnableLanguageCommand.cxx" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>83.33</PercentCoverage>
+		<CoverageMetric>0.91</CoverageMetric>
+	</File>
+	<File Name="cmEnableLanguageCommand.h" FullPath="./Source/cmEnableLanguageCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmEnableTestingCommand.cxx" FullPath="./Source/cmEnableTestingCommand.cxx" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmEnableTestingCommand.h" FullPath="./Source/cmEnableTestingCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmEndForEachCommand.cxx" FullPath="./Source/cmEndForEachCommand.cxx" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.77</CoverageMetric>
+	</File>
+	<File Name="cmEndForEachCommand.h" FullPath="./Source/cmEndForEachCommand.h" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>72.73</PercentCoverage>
+		<CoverageMetric>0.86</CoverageMetric>
+	</File>
+	<File Name="cmEndFunctionCommand.cxx" FullPath="./Source/cmEndFunctionCommand.cxx" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.77</CoverageMetric>
+	</File>
+	<File Name="cmEndFunctionCommand.h" FullPath="./Source/cmEndFunctionCommand.h" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>72.73</PercentCoverage>
+		<CoverageMetric>0.86</CoverageMetric>
+	</File>
+	<File Name="cmEndIfCommand.cxx" FullPath="./Source/cmEndIfCommand.cxx" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>6</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.62</CoverageMetric>
+	</File>
+	<File Name="cmEndIfCommand.h" FullPath="./Source/cmEndIfCommand.h" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>80.00</PercentCoverage>
+		<CoverageMetric>0.90</CoverageMetric>
+	</File>
+	<File Name="cmEndMacroCommand.cxx" FullPath="./Source/cmEndMacroCommand.cxx" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.77</CoverageMetric>
+	</File>
+	<File Name="cmEndMacroCommand.h" FullPath="./Source/cmEndMacroCommand.h" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>72.73</PercentCoverage>
+		<CoverageMetric>0.86</CoverageMetric>
+	</File>
+	<File Name="cmEndWhileCommand.cxx" FullPath="./Source/cmEndWhileCommand.cxx" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.77</CoverageMetric>
+	</File>
+	<File Name="cmEndWhileCommand.h" FullPath="./Source/cmEndWhileCommand.h" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>72.73</PercentCoverage>
+		<CoverageMetric>0.86</CoverageMetric>
+	</File>
+	<File Name="cmExecProgramCommand.cxx" FullPath="./Source/cmExecProgramCommand.cxx" Covered="true">
+		<LOCTested>69</LOCTested>
+		<LOCUnTested>7</LOCUnTested>
+		<PercentCoverage>90.79</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmExecProgramCommand.h" FullPath="./Source/cmExecProgramCommand.h" Covered="true">
+		<LOCTested>13</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmExecuteProcessCommand.cxx" FullPath="./Source/cmExecuteProcessCommand.cxx" Covered="true">
+		<LOCTested>110</LOCTested>
+		<LOCUnTested>65</LOCUnTested>
+		<PercentCoverage>62.86</PercentCoverage>
+		<CoverageMetric>0.65</CoverageMetric>
+	</File>
+	<File Name="cmExecuteProcessCommand.h" FullPath="./Source/cmExecuteProcessCommand.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmExecutionStatus.h" FullPath="./Source/cmExecutionStatus.h" Covered="true">
+		<LOCTested>16</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>88.89</PercentCoverage>
+		<CoverageMetric>0.93</CoverageMetric>
+	</File>
+	<File Name="cmExportBuildFileGenerator.cxx" FullPath="./Source/cmExportBuildFileGenerator.cxx" Covered="true">
+		<LOCTested>37</LOCTested>
+		<LOCUnTested>19</LOCUnTested>
+		<PercentCoverage>66.07</PercentCoverage>
+		<CoverageMetric>0.71</CoverageMetric>
+	</File>
+	<File Name="cmExportBuildFileGenerator.h" FullPath="./Source/cmExportBuildFileGenerator.h" Covered="true">
+		<LOCTested>5</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmExportCommand.cxx" FullPath="./Source/cmExportCommand.cxx" Covered="true">
+		<LOCTested>41</LOCTested>
+		<LOCUnTested>34</LOCUnTested>
+		<PercentCoverage>54.67</PercentCoverage>
+		<CoverageMetric>0.60</CoverageMetric>
+	</File>
+	<File Name="cmExportCommand.h" FullPath="./Source/cmExportCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmExportFileGenerator.cxx" FullPath="./Source/cmExportFileGenerator.cxx" Covered="true">
+		<LOCTested>127</LOCTested>
+		<LOCUnTested>13</LOCUnTested>
+		<PercentCoverage>90.71</PercentCoverage>
+		<CoverageMetric>0.91</CoverageMetric>
+	</File>
+	<File Name="cmExportFileGenerator.h" FullPath="./Source/cmExportFileGenerator.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmExportInstallFileGenerator.cxx" FullPath="./Source/cmExportInstallFileGenerator.cxx" Covered="true">
+		<LOCTested>79</LOCTested>
+		<LOCUnTested>32</LOCUnTested>
+		<PercentCoverage>71.17</PercentCoverage>
+		<CoverageMetric>0.74</CoverageMetric>
+	</File>
+	<File Name="cmExportInstallFileGenerator.h" FullPath="./Source/cmExportInstallFileGenerator.h" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmExportLibraryDependencies.cxx" FullPath="./Source/cmExportLibraryDependencies.cxx" Covered="true">
+		<LOCTested>53</LOCTested>
+		<LOCUnTested>38</LOCUnTested>
+		<PercentCoverage>58.24</PercentCoverage>
+		<CoverageMetric>0.62</CoverageMetric>
+	</File>
+	<File Name="cmExportLibraryDependencies.h" FullPath="./Source/cmExportLibraryDependencies.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmExprParser.cxx" FullPath="./Source/cmExprParser.cxx" Covered="true">
+		<LOCTested>100</LOCTested>
+		<LOCUnTested>112</LOCUnTested>
+		<PercentCoverage>47.17</PercentCoverage>
+		<CoverageMetric>0.50</CoverageMetric>
+	</File>
+	<File Name="cmExprParserHelper.cxx" FullPath="./Source/cmExprParserHelper.cxx" Covered="true">
+		<LOCTested>36</LOCTested>
+		<LOCUnTested>15</LOCUnTested>
+		<PercentCoverage>70.59</PercentCoverage>
+		<CoverageMetric>0.75</CoverageMetric>
+	</File>
+	<File Name="cmExprParserHelper.h" FullPath="./Source/cmExprParserHelper.h" Covered="true">
+		<LOCTested>1</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>50.00</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmExternalMakefileProjectGenerator.cxx" FullPath="./Source/cmExternalMakefileProjectGenerator.cxx" Covered="true">
+		<LOCTested>7</LOCTested>
+		<LOCUnTested>13</LOCUnTested>
+		<PercentCoverage>35.00</PercentCoverage>
+		<CoverageMetric>0.57</CoverageMetric>
+	</File>
+	<File Name="cmExternalMakefileProjectGenerator.h" FullPath="./Source/cmExternalMakefileProjectGenerator.h" Covered="true">
+		<LOCTested>4</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>66.67</PercentCoverage>
+		<CoverageMetric>0.88</CoverageMetric>
+	</File>
+	<File Name="cmExtraCodeBlocksGenerator.cxx" FullPath="./Source/cmExtraCodeBlocksGenerator.cxx" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>138</LOCUnTested>
+		<PercentCoverage>7.38</PercentCoverage>
+		<CoverageMetric>0.13</CoverageMetric>
+	</File>
+	<File Name="cmExtraCodeBlocksGenerator.h" FullPath="./Source/cmExtraCodeBlocksGenerator.h" Covered="true">
+		<LOCTested>6</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmExtraEclipseCDT4Generator.cxx" FullPath="./Source/cmExtraEclipseCDT4Generator.cxx" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>220</LOCUnTested>
+		<PercentCoverage>4.35</PercentCoverage>
+		<CoverageMetric>0.08</CoverageMetric>
+	</File>
+	<File Name="cmExtraEclipseCDT4Generator.h" FullPath="./Source/cmExtraEclipseCDT4Generator.h" Covered="true">
+		<LOCTested>6</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmFLTKWrapUICommand.cxx" FullPath="./Source/cmFLTKWrapUICommand.cxx" Covered="true">
+		<LOCTested>61</LOCTested>
+		<LOCUnTested>18</LOCUnTested>
+		<PercentCoverage>77.22</PercentCoverage>
+		<CoverageMetric>0.80</CoverageMetric>
+	</File>
+	<File Name="cmFLTKWrapUICommand.h" FullPath="./Source/cmFLTKWrapUICommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmFileCommand.cxx" FullPath="./Source/cmFileCommand.cxx" Covered="true">
+		<LOCTested>651</LOCTested>
+		<LOCUnTested>458</LOCUnTested>
+		<PercentCoverage>58.70</PercentCoverage>
+		<CoverageMetric>0.59</CoverageMetric>
+	</File>
+	<File Name="cmFileCommand.h" FullPath="./Source/cmFileCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmFileTimeComparison.cxx" FullPath="./Source/cmFileTimeComparison.cxx" Covered="true">
+		<LOCTested>42</LOCTested>
+		<LOCUnTested>12</LOCUnTested>
+		<PercentCoverage>77.78</PercentCoverage>
+		<CoverageMetric>0.81</CoverageMetric>
+	</File>
+	<File Name="cmFindBase.cxx" FullPath="./Source/cmFindBase.cxx" Covered="true">
+		<LOCTested>198</LOCTested>
+		<LOCUnTested>42</LOCUnTested>
+		<PercentCoverage>82.50</PercentCoverage>
+		<CoverageMetric>0.83</CoverageMetric>
+	</File>
+	<File Name="cmFindBase.h" FullPath="./Source/cmFindBase.h" Covered="true">
+		<LOCTested>4</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmFindCommon.cxx" FullPath="./Source/cmFindCommon.cxx" Covered="true">
+		<LOCTested>147</LOCTested>
+		<LOCUnTested>25</LOCUnTested>
+		<PercentCoverage>85.47</PercentCoverage>
+		<CoverageMetric>0.86</CoverageMetric>
+	</File>
+	<File Name="cmFindCommon.h" FullPath="./Source/cmFindCommon.h" Covered="true">
+		<LOCTested>1</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmFindFileCommand.cxx" FullPath="./Source/cmFindFileCommand.cxx" Covered="true">
+		<LOCTested>6</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmFindFileCommand.h" FullPath="./Source/cmFindFileCommand.h" Covered="true">
+		<LOCTested>7</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmFindLibraryCommand.cxx" FullPath="./Source/cmFindLibraryCommand.cxx" Covered="true">
+		<LOCTested>68</LOCTested>
+		<LOCUnTested>70</LOCUnTested>
+		<PercentCoverage>49.28</PercentCoverage>
+		<CoverageMetric>0.53</CoverageMetric>
+	</File>
+	<File Name="cmFindLibraryCommand.h" FullPath="./Source/cmFindLibraryCommand.h" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmFindPackageCommand.cxx" FullPath="./Source/cmFindPackageCommand.cxx" Covered="true">
+		<LOCTested>622</LOCTested>
+		<LOCUnTested>94</LOCUnTested>
+		<PercentCoverage>86.87</PercentCoverage>
+		<CoverageMetric>0.87</CoverageMetric>
+	</File>
+	<File Name="cmFindPackageCommand.h" FullPath="./Source/cmFindPackageCommand.h" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmFindPathCommand.cxx" FullPath="./Source/cmFindPathCommand.cxx" Covered="true">
+		<LOCTested>51</LOCTested>
+		<LOCUnTested>49</LOCUnTested>
+		<PercentCoverage>51.00</PercentCoverage>
+		<CoverageMetric>0.55</CoverageMetric>
+	</File>
+	<File Name="cmFindPathCommand.h" FullPath="./Source/cmFindPathCommand.h" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmFindProgramCommand.cxx" FullPath="./Source/cmFindProgramCommand.cxx" Covered="true">
+		<LOCTested>31</LOCTested>
+		<LOCUnTested>17</LOCUnTested>
+		<PercentCoverage>64.58</PercentCoverage>
+		<CoverageMetric>0.71</CoverageMetric>
+	</File>
+	<File Name="cmFindProgramCommand.h" FullPath="./Source/cmFindProgramCommand.h" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmForEachCommand.cxx" FullPath="./Source/cmForEachCommand.cxx" Covered="true">
+		<LOCTested>78</LOCTested>
+		<LOCUnTested>12</LOCUnTested>
+		<PercentCoverage>86.67</PercentCoverage>
+		<CoverageMetric>0.88</CoverageMetric>
+	</File>
+	<File Name="cmForEachCommand.h" FullPath="./Source/cmForEachCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmFunctionBlocker.h" FullPath="./Source/cmFunctionBlocker.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>50.00</PercentCoverage>
+		<CoverageMetric>0.86</CoverageMetric>
+	</File>
+	<File Name="cmFunctionCommand.cxx" FullPath="./Source/cmFunctionCommand.cxx" Covered="true">
+		<LOCTested>81</LOCTested>
+		<LOCUnTested>23</LOCUnTested>
+		<PercentCoverage>77.88</PercentCoverage>
+		<CoverageMetric>0.80</CoverageMetric>
+	</File>
+	<File Name="cmFunctionCommand.h" FullPath="./Source/cmFunctionCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmGeneratedFileStream.cxx" FullPath="./Source/cmGeneratedFileStream.cxx" Covered="true">
+		<LOCTested>56</LOCTested>
+		<LOCUnTested>38</LOCUnTested>
+		<PercentCoverage>59.57</PercentCoverage>
+		<CoverageMetric>0.63</CoverageMetric>
+	</File>
+	<File Name="cmGetCMakePropertyCommand.cxx" FullPath="./Source/cmGetCMakePropertyCommand.cxx" Covered="true">
+		<LOCTested>27</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>93.10</PercentCoverage>
+		<CoverageMetric>0.95</CoverageMetric>
+	</File>
+	<File Name="cmGetCMakePropertyCommand.h" FullPath="./Source/cmGetCMakePropertyCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmGetDirectoryPropertyCommand.cxx" FullPath="./Source/cmGetDirectoryPropertyCommand.cxx" Covered="true">
+		<LOCTested>31</LOCTested>
+		<LOCUnTested>9</LOCUnTested>
+		<PercentCoverage>77.50</PercentCoverage>
+		<CoverageMetric>0.82</CoverageMetric>
+	</File>
+	<File Name="cmGetDirectoryPropertyCommand.h" FullPath="./Source/cmGetDirectoryPropertyCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmGetFilenameComponentCommand.cxx" FullPath="./Source/cmGetFilenameComponentCommand.cxx" Covered="true">
+		<LOCTested>36</LOCTested>
+		<LOCUnTested>12</LOCUnTested>
+		<PercentCoverage>75.00</PercentCoverage>
+		<CoverageMetric>0.79</CoverageMetric>
+	</File>
+	<File Name="cmGetFilenameComponentCommand.h" FullPath="./Source/cmGetFilenameComponentCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmGetPropertyCommand.cxx" FullPath="./Source/cmGetPropertyCommand.cxx" Covered="true">
+		<LOCTested>67</LOCTested>
+		<LOCUnTested>78</LOCUnTested>
+		<PercentCoverage>46.21</PercentCoverage>
+		<CoverageMetric>0.50</CoverageMetric>
+	</File>
+	<File Name="cmGetPropertyCommand.h" FullPath="./Source/cmGetPropertyCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmGetSourceFilePropertyCommand.cxx" FullPath="./Source/cmGetSourceFilePropertyCommand.cxx" Covered="true">
+		<LOCTested>14</LOCTested>
+		<LOCUnTested>5</LOCUnTested>
+		<PercentCoverage>73.68</PercentCoverage>
+		<CoverageMetric>0.83</CoverageMetric>
+	</File>
+	<File Name="cmGetSourceFilePropertyCommand.h" FullPath="./Source/cmGetSourceFilePropertyCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmGetTargetPropertyCommand.cxx" FullPath="./Source/cmGetTargetPropertyCommand.cxx" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>85.71</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmGetTargetPropertyCommand.h" FullPath="./Source/cmGetTargetPropertyCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmGetTestPropertyCommand.cxx" FullPath="./Source/cmGetTestPropertyCommand.cxx" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>85.71</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmGetTestPropertyCommand.h" FullPath="./Source/cmGetTestPropertyCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmGlobalGenerator.cxx" FullPath="./Source/cmGlobalGenerator.cxx" Covered="true">
+		<LOCTested>658</LOCTested>
+		<LOCUnTested>221</LOCUnTested>
+		<PercentCoverage>74.86</PercentCoverage>
+		<CoverageMetric>0.75</CoverageMetric>
+	</File>
+	<File Name="cmGlobalGenerator.h" FullPath="./Source/cmGlobalGenerator.h" Covered="true">
+		<LOCTested>20</LOCTested>
+		<LOCUnTested>14</LOCUnTested>
+		<PercentCoverage>58.82</PercentCoverage>
+		<CoverageMetric>0.68</CoverageMetric>
+	</File>
+	<File Name="cmGlobalUnixMakefileGenerator3.cxx" FullPath="./Source/cmGlobalUnixMakefileGenerator3.cxx" Covered="true">
+		<LOCTested>376</LOCTested>
+		<LOCUnTested>50</LOCUnTested>
+		<PercentCoverage>88.26</PercentCoverage>
+		<CoverageMetric>0.89</CoverageMetric>
+	</File>
+	<File Name="cmGlobalUnixMakefileGenerator3.h" FullPath="./Source/cmGlobalUnixMakefileGenerator3.h" Covered="true">
+		<LOCTested>19</LOCTested>
+		<LOCUnTested>4</LOCUnTested>
+		<PercentCoverage>82.61</PercentCoverage>
+		<CoverageMetric>0.88</CoverageMetric>
+	</File>
+	<File Name="cmGraphAdjacencyList.h" FullPath="./Source/cmGraphAdjacencyList.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmHexFileConverter.cxx" FullPath="./Source/cmHexFileConverter.cxx" Covered="true">
+		<LOCTested>82</LOCTested>
+		<LOCUnTested>27</LOCUnTested>
+		<PercentCoverage>75.23</PercentCoverage>
+		<CoverageMetric>0.77</CoverageMetric>
+	</File>
+	<File Name="cmIfCommand.cxx" FullPath="./Source/cmIfCommand.cxx" Covered="true">
+		<LOCTested>294</LOCTested>
+		<LOCUnTested>49</LOCUnTested>
+		<PercentCoverage>85.71</PercentCoverage>
+		<CoverageMetric>0.86</CoverageMetric>
+	</File>
+	<File Name="cmIfCommand.h" FullPath="./Source/cmIfCommand.h" Covered="true">
+		<LOCTested>13</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>92.86</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmIncludeCommand.cxx" FullPath="./Source/cmIncludeCommand.cxx" Covered="true">
+		<LOCTested>27</LOCTested>
+		<LOCUnTested>16</LOCUnTested>
+		<PercentCoverage>62.79</PercentCoverage>
+		<CoverageMetric>0.70</CoverageMetric>
+	</File>
+	<File Name="cmIncludeCommand.h" FullPath="./Source/cmIncludeCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmIncludeDirectoryCommand.cxx" FullPath="./Source/cmIncludeDirectoryCommand.cxx" Covered="true">
+		<LOCTested>44</LOCTested>
+		<LOCUnTested>5</LOCUnTested>
+		<PercentCoverage>89.80</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmIncludeDirectoryCommand.h" FullPath="./Source/cmIncludeDirectoryCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmIncludeExternalMSProjectCommand.cxx" FullPath="./Source/cmIncludeExternalMSProjectCommand.cxx" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>5</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.67</CoverageMetric>
+	</File>
+	<File Name="cmIncludeExternalMSProjectCommand.h" FullPath="./Source/cmIncludeExternalMSProjectCommand.h" Covered="true">
+		<LOCTested>7</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>77.78</PercentCoverage>
+		<CoverageMetric>0.89</CoverageMetric>
+	</File>
+	<File Name="cmIncludeRegularExpressionCommand.cxx" FullPath="./Source/cmIncludeRegularExpressionCommand.cxx" Covered="true">
+		<LOCTested>6</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>75.00</PercentCoverage>
+		<CoverageMetric>0.89</CoverageMetric>
+	</File>
+	<File Name="cmIncludeRegularExpressionCommand.h" FullPath="./Source/cmIncludeRegularExpressionCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmInstallCommand.cxx" FullPath="./Source/cmInstallCommand.cxx" Covered="true">
+		<LOCTested>433</LOCTested>
+		<LOCUnTested>220</LOCUnTested>
+		<PercentCoverage>66.31</PercentCoverage>
+		<CoverageMetric>0.67</CoverageMetric>
+	</File>
+	<File Name="cmInstallCommand.h" FullPath="./Source/cmInstallCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmInstallCommandArguments.cxx" FullPath="./Source/cmInstallCommandArguments.cxx" Covered="true">
+		<LOCTested>71</LOCTested>
+		<LOCUnTested>5</LOCUnTested>
+		<PercentCoverage>93.42</PercentCoverage>
+		<CoverageMetric>0.94</CoverageMetric>
+	</File>
+	<File Name="cmInstallCommandArguments.h" FullPath="./Source/cmInstallCommandArguments.h" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmInstallDirectoryGenerator.cxx" FullPath="./Source/cmInstallDirectoryGenerator.cxx" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmInstallExportGenerator.cxx" FullPath="./Source/cmInstallExportGenerator.cxx" Covered="true">
+		<LOCTested>61</LOCTested>
+		<LOCUnTested>13</LOCUnTested>
+		<PercentCoverage>82.43</PercentCoverage>
+		<CoverageMetric>0.85</CoverageMetric>
+	</File>
+	<File Name="cmInstallFilesCommand.cxx" FullPath="./Source/cmInstallFilesCommand.cxx" Covered="true">
+		<LOCTested>62</LOCTested>
+		<LOCUnTested>4</LOCUnTested>
+		<PercentCoverage>93.94</PercentCoverage>
+		<CoverageMetric>0.95</CoverageMetric>
+	</File>
+	<File Name="cmInstallFilesCommand.h" FullPath="./Source/cmInstallFilesCommand.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmInstallFilesGenerator.cxx" FullPath="./Source/cmInstallFilesGenerator.cxx" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmInstallGenerator.cxx" FullPath="./Source/cmInstallGenerator.cxx" Covered="true">
+		<LOCTested>100</LOCTested>
+		<LOCUnTested>15</LOCUnTested>
+		<PercentCoverage>86.96</PercentCoverage>
+		<CoverageMetric>0.88</CoverageMetric>
+	</File>
+	<File Name="cmInstallGenerator.h" FullPath="./Source/cmInstallGenerator.h" Covered="true">
+		<LOCTested>13</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmInstallProgramsCommand.cxx" FullPath="./Source/cmInstallProgramsCommand.cxx" Covered="true">
+		<LOCTested>45</LOCTested>
+		<LOCUnTested>5</LOCUnTested>
+		<PercentCoverage>90.00</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmInstallProgramsCommand.h" FullPath="./Source/cmInstallProgramsCommand.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmInstallScriptGenerator.cxx" FullPath="./Source/cmInstallScriptGenerator.cxx" Covered="true">
+		<LOCTested>15</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmInstallTargetGenerator.cxx" FullPath="./Source/cmInstallTargetGenerator.cxx" Covered="true">
+		<LOCTested>188</LOCTested>
+		<LOCUnTested>93</LOCUnTested>
+		<PercentCoverage>66.90</PercentCoverage>
+		<CoverageMetric>0.68</CoverageMetric>
+	</File>
+	<File Name="cmInstallTargetGenerator.h" FullPath="./Source/cmInstallTargetGenerator.h" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmInstallTargetsCommand.cxx" FullPath="./Source/cmInstallTargetsCommand.cxx" Covered="true">
+		<LOCTested>16</LOCTested>
+		<LOCUnTested>9</LOCUnTested>
+		<PercentCoverage>64.00</PercentCoverage>
+		<CoverageMetric>0.74</CoverageMetric>
+	</File>
+	<File Name="cmInstallTargetsCommand.h" FullPath="./Source/cmInstallTargetsCommand.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmLinkDirectoriesCommand.cxx" FullPath="./Source/cmLinkDirectoriesCommand.cxx" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmLinkDirectoriesCommand.h" FullPath="./Source/cmLinkDirectoriesCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmLinkLibrariesCommand.cxx" FullPath="./Source/cmLinkLibrariesCommand.cxx" Covered="true">
+		<LOCTested>7</LOCTested>
+		<LOCUnTested>11</LOCUnTested>
+		<PercentCoverage>38.89</PercentCoverage>
+		<CoverageMetric>0.61</CoverageMetric>
+	</File>
+	<File Name="cmLinkLibrariesCommand.h" FullPath="./Source/cmLinkLibrariesCommand.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmListCommand.cxx" FullPath="./Source/cmListCommand.cxx" Covered="true">
+		<LOCTested>224</LOCTested>
+		<LOCUnTested>65</LOCUnTested>
+		<PercentCoverage>77.51</PercentCoverage>
+		<CoverageMetric>0.78</CoverageMetric>
+	</File>
+	<File Name="cmListCommand.h" FullPath="./Source/cmListCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmListFileCache.cxx" FullPath="./Source/cmListFileCache.cxx" Covered="true">
+		<LOCTested>100</LOCTested>
+		<LOCUnTested>37</LOCUnTested>
+		<PercentCoverage>72.99</PercentCoverage>
+		<CoverageMetric>0.75</CoverageMetric>
+	</File>
+	<File Name="cmListFileCache.h" FullPath="./Source/cmListFileCache.h" Covered="true">
+		<LOCTested>15</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmLoadCacheCommand.cxx" FullPath="./Source/cmLoadCacheCommand.cxx" Covered="true">
+		<LOCTested>74</LOCTested>
+		<LOCUnTested>13</LOCUnTested>
+		<PercentCoverage>85.06</PercentCoverage>
+		<CoverageMetric>0.87</CoverageMetric>
+	</File>
+	<File Name="cmLoadCacheCommand.h" FullPath="./Source/cmLoadCacheCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmLoadCommandCommand.cxx" FullPath="./Source/cmLoadCommandCommand.cxx" Covered="true">
+		<LOCTested>76</LOCTested>
+		<LOCUnTested>45</LOCUnTested>
+		<PercentCoverage>62.81</PercentCoverage>
+		<CoverageMetric>0.66</CoverageMetric>
+	</File>
+	<File Name="cmLoadCommandCommand.h" FullPath="./Source/cmLoadCommandCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmLocalGenerator.cxx" FullPath="./Source/cmLocalGenerator.cxx" Covered="true">
+		<LOCTested>763</LOCTested>
+		<LOCUnTested>441</LOCUnTested>
+		<PercentCoverage>63.37</PercentCoverage>
+		<CoverageMetric>0.64</CoverageMetric>
+	</File>
+	<File Name="cmLocalGenerator.h" FullPath="./Source/cmLocalGenerator.h" Covered="true">
+		<LOCTested>15</LOCTested>
+		<LOCUnTested>4</LOCUnTested>
+		<PercentCoverage>78.95</PercentCoverage>
+		<CoverageMetric>0.86</CoverageMetric>
+	</File>
+	<File Name="cmLocalUnixMakefileGenerator3.cxx" FullPath="./Source/cmLocalUnixMakefileGenerator3.cxx" Covered="true">
+		<LOCTested>734</LOCTested>
+		<LOCUnTested>145</LOCUnTested>
+		<PercentCoverage>83.50</PercentCoverage>
+		<CoverageMetric>0.84</CoverageMetric>
+	</File>
+	<File Name="cmLocalUnixMakefileGenerator3.h" FullPath="./Source/cmLocalUnixMakefileGenerator3.h" Covered="true">
+		<LOCTested>14</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmMacroCommand.cxx" FullPath="./Source/cmMacroCommand.cxx" Covered="true">
+		<LOCTested>116</LOCTested>
+		<LOCUnTested>27</LOCUnTested>
+		<PercentCoverage>81.12</PercentCoverage>
+		<CoverageMetric>0.82</CoverageMetric>
+	</File>
+	<File Name="cmMacroCommand.h" FullPath="./Source/cmMacroCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmMakeDepend.cxx" FullPath="./Source/cmMakeDepend.cxx" Covered="true">
+		<LOCTested>95</LOCTested>
+		<LOCUnTested>74</LOCUnTested>
+		<PercentCoverage>56.21</PercentCoverage>
+		<CoverageMetric>0.59</CoverageMetric>
+	</File>
+	<File Name="cmMakeDepend.h" FullPath="./Source/cmMakeDepend.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmMakeDirectoryCommand.cxx" FullPath="./Source/cmMakeDirectoryCommand.cxx" Covered="true">
+		<LOCTested>5</LOCTested>
+		<LOCUnTested>6</LOCUnTested>
+		<PercentCoverage>45.45</PercentCoverage>
+		<CoverageMetric>0.71</CoverageMetric>
+	</File>
+	<File Name="cmMakeDirectoryCommand.h" FullPath="./Source/cmMakeDirectoryCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmMakefile.cxx" FullPath="./Source/cmMakefile.cxx" Covered="true">
+		<LOCTested>1065</LOCTested>
+		<LOCUnTested>377</LOCUnTested>
+		<PercentCoverage>73.86</PercentCoverage>
+		<CoverageMetric>0.74</CoverageMetric>
+	</File>
+	<File Name="cmMakefile.h" FullPath="./Source/cmMakefile.h" Covered="true">
+		<LOCTested>76</LOCTested>
+		<LOCUnTested>5</LOCUnTested>
+		<PercentCoverage>93.83</PercentCoverage>
+		<CoverageMetric>0.95</CoverageMetric>
+	</File>
+	<File Name="cmMakefileExecutableTargetGenerator.cxx" FullPath="./Source/cmMakefileExecutableTargetGenerator.cxx" Covered="true">
+		<LOCTested>179</LOCTested>
+		<LOCUnTested>42</LOCUnTested>
+		<PercentCoverage>81.00</PercentCoverage>
+		<CoverageMetric>0.82</CoverageMetric>
+	</File>
+	<File Name="cmMakefileExecutableTargetGenerator.h" FullPath="./Source/cmMakefileExecutableTargetGenerator.h" Covered="true">
+		<LOCTested>1</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmMakefileLibraryTargetGenerator.cxx" FullPath="./Source/cmMakefileLibraryTargetGenerator.cxx" Covered="true">
+		<LOCTested>311</LOCTested>
+		<LOCUnTested>132</LOCUnTested>
+		<PercentCoverage>70.20</PercentCoverage>
+		<CoverageMetric>0.71</CoverageMetric>
+	</File>
+	<File Name="cmMakefileLibraryTargetGenerator.h" FullPath="./Source/cmMakefileLibraryTargetGenerator.h" Covered="true">
+		<LOCTested>1</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmMakefileTargetGenerator.cxx" FullPath="./Source/cmMakefileTargetGenerator.cxx" Covered="true">
+		<LOCTested>574</LOCTested>
+		<LOCUnTested>101</LOCUnTested>
+		<PercentCoverage>85.04</PercentCoverage>
+		<CoverageMetric>0.85</CoverageMetric>
+	</File>
+	<File Name="cmMakefileTargetGenerator.h" FullPath="./Source/cmMakefileTargetGenerator.h" Covered="true">
+		<LOCTested>5</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>83.33</PercentCoverage>
+		<CoverageMetric>0.94</CoverageMetric>
+	</File>
+	<File Name="cmMakefileUtilityTargetGenerator.cxx" FullPath="./Source/cmMakefileUtilityTargetGenerator.cxx" Covered="true">
+		<LOCTested>25</LOCTested>
+		<LOCUnTested>4</LOCUnTested>
+		<PercentCoverage>86.21</PercentCoverage>
+		<CoverageMetric>0.90</CoverageMetric>
+	</File>
+	<File Name="cmMakefileUtilityTargetGenerator.h" FullPath="./Source/cmMakefileUtilityTargetGenerator.h" Covered="true">
+		<LOCTested>1</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmMarkAsAdvancedCommand.cxx" FullPath="./Source/cmMarkAsAdvancedCommand.cxx" Covered="true">
+		<LOCTested>22</LOCTested>
+		<LOCUnTested>4</LOCUnTested>
+		<PercentCoverage>84.62</PercentCoverage>
+		<CoverageMetric>0.89</CoverageMetric>
+	</File>
+	<File Name="cmMarkAsAdvancedCommand.h" FullPath="./Source/cmMarkAsAdvancedCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmMathCommand.cxx" FullPath="./Source/cmMathCommand.cxx" Covered="true">
+		<LOCTested>15</LOCTested>
+		<LOCUnTested>10</LOCUnTested>
+		<PercentCoverage>60.00</PercentCoverage>
+		<CoverageMetric>0.71</CoverageMetric>
+	</File>
+	<File Name="cmMathCommand.h" FullPath="./Source/cmMathCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmMessageCommand.cxx" FullPath="./Source/cmMessageCommand.cxx" Covered="true">
+		<LOCTested>20</LOCTested>
+		<LOCUnTested>8</LOCUnTested>
+		<PercentCoverage>71.43</PercentCoverage>
+		<CoverageMetric>0.79</CoverageMetric>
+	</File>
+	<File Name="cmMessageCommand.h" FullPath="./Source/cmMessageCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmObject.h" FullPath="./Source/cmObject.h" Covered="true">
+		<LOCTested>4</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>66.67</PercentCoverage>
+		<CoverageMetric>0.88</CoverageMetric>
+	</File>
+	<File Name="cmOptionCommand.cxx" FullPath="./Source/cmOptionCommand.cxx" Covered="true">
+		<LOCTested>18</LOCTested>
+		<LOCUnTested>8</LOCUnTested>
+		<PercentCoverage>69.23</PercentCoverage>
+		<CoverageMetric>0.78</CoverageMetric>
+	</File>
+	<File Name="cmOptionCommand.h" FullPath="./Source/cmOptionCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmOrderDirectories.cxx" FullPath="./Source/cmOrderDirectories.cxx" Covered="true">
+		<LOCTested>164</LOCTested>
+		<LOCUnTested>53</LOCUnTested>
+		<PercentCoverage>75.58</PercentCoverage>
+		<CoverageMetric>0.77</CoverageMetric>
+	</File>
+	<File Name="cmOrderDirectories.h" FullPath="./Source/cmOrderDirectories.h" Covered="true">
+		<LOCTested>1</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmOutputRequiredFilesCommand.cxx" FullPath="./Source/cmOutputRequiredFilesCommand.cxx" Covered="true">
+		<LOCTested>94</LOCTested>
+		<LOCUnTested>16</LOCUnTested>
+		<PercentCoverage>85.45</PercentCoverage>
+		<CoverageMetric>0.87</CoverageMetric>
+	</File>
+	<File Name="cmOutputRequiredFilesCommand.h" FullPath="./Source/cmOutputRequiredFilesCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmPolicies.cxx" FullPath="./Source/cmPolicies.cxx" Covered="true">
+		<LOCTested>92</LOCTested>
+		<LOCUnTested>68</LOCUnTested>
+		<PercentCoverage>57.50</PercentCoverage>
+		<CoverageMetric>0.60</CoverageMetric>
+	</File>
+	<File Name="cmProjectCommand.cxx" FullPath="./Source/cmProjectCommand.cxx" Covered="true">
+		<LOCTested>24</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>92.31</PercentCoverage>
+		<CoverageMetric>0.94</CoverageMetric>
+	</File>
+	<File Name="cmProjectCommand.h" FullPath="./Source/cmProjectCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmProperty.cxx" FullPath="./Source/cmProperty.cxx" Covered="true">
+		<LOCTested>17</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>94.44</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmProperty.h" FullPath="./Source/cmProperty.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmPropertyDefinition.cxx" FullPath="./Source/cmPropertyDefinition.cxx" Covered="true">
+		<LOCTested>17</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>94.44</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmPropertyDefinition.h" FullPath="./Source/cmPropertyDefinition.h" Covered="true">
+		<LOCTested>7</LOCTested>
+		<LOCUnTested>4</LOCUnTested>
+		<PercentCoverage>63.64</PercentCoverage>
+		<CoverageMetric>0.81</CoverageMetric>
+	</File>
+	<File Name="cmPropertyDefinitionMap.cxx" FullPath="./Source/cmPropertyDefinitionMap.cxx" Covered="true">
+		<LOCTested>44</LOCTested>
+		<LOCUnTested>6</LOCUnTested>
+		<PercentCoverage>88.00</PercentCoverage>
+		<CoverageMetric>0.90</CoverageMetric>
+	</File>
+	<File Name="cmPropertyDefinitionMap.h" FullPath="./Source/cmPropertyDefinitionMap.h" Covered="true">
+		<LOCTested>1</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmPropertyMap.cxx" FullPath="./Source/cmPropertyMap.cxx" Covered="true">
+		<LOCTested>28</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>90.32</PercentCoverage>
+		<CoverageMetric>0.93</CoverageMetric>
+	</File>
+	<File Name="cmPropertyMap.h" FullPath="./Source/cmPropertyMap.h" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmQTWrapCPPCommand.cxx" FullPath="./Source/cmQTWrapCPPCommand.cxx" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>46</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.18</CoverageMetric>
+	</File>
+	<File Name="cmQTWrapCPPCommand.h" FullPath="./Source/cmQTWrapCPPCommand.h" Covered="true">
+		<LOCTested>7</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>77.78</PercentCoverage>
+		<CoverageMetric>0.89</CoverageMetric>
+	</File>
+	<File Name="cmQTWrapUICommand.cxx" FullPath="./Source/cmQTWrapUICommand.cxx" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>81</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.11</CoverageMetric>
+	</File>
+	<File Name="cmQTWrapUICommand.h" FullPath="./Source/cmQTWrapUICommand.h" Covered="true">
+		<LOCTested>7</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>77.78</PercentCoverage>
+		<CoverageMetric>0.89</CoverageMetric>
+	</File>
+	<File Name="cmRemoveCommand.cxx" FullPath="./Source/cmRemoveCommand.cxx" Covered="true">
+		<LOCTested>25</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>92.59</PercentCoverage>
+		<CoverageMetric>0.95</CoverageMetric>
+	</File>
+	<File Name="cmRemoveCommand.h" FullPath="./Source/cmRemoveCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmRemoveDefinitionsCommand.cxx" FullPath="./Source/cmRemoveDefinitionsCommand.cxx" Covered="true">
+		<LOCTested>5</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>83.33</PercentCoverage>
+		<CoverageMetric>0.94</CoverageMetric>
+	</File>
+	<File Name="cmRemoveDefinitionsCommand.h" FullPath="./Source/cmRemoveDefinitionsCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmReturnCommand.cxx" FullPath="./Source/cmReturnCommand.cxx" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmReturnCommand.h" FullPath="./Source/cmReturnCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmSeparateArgumentsCommand.cxx" FullPath="./Source/cmSeparateArgumentsCommand.cxx" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>72.73</PercentCoverage>
+		<CoverageMetric>0.86</CoverageMetric>
+	</File>
+	<File Name="cmSeparateArgumentsCommand.h" FullPath="./Source/cmSeparateArgumentsCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmSetCommand.cxx" FullPath="./Source/cmSetCommand.cxx" Covered="true">
+		<LOCTested>60</LOCTested>
+		<LOCUnTested>7</LOCUnTested>
+		<PercentCoverage>89.55</PercentCoverage>
+		<CoverageMetric>0.91</CoverageMetric>
+	</File>
+	<File Name="cmSetCommand.h" FullPath="./Source/cmSetCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmSetDirectoryPropertiesCommand.cxx" FullPath="./Source/cmSetDirectoryPropertiesCommand.cxx" Covered="true">
+		<LOCTested>15</LOCTested>
+		<LOCUnTested>9</LOCUnTested>
+		<PercentCoverage>62.50</PercentCoverage>
+		<CoverageMetric>0.74</CoverageMetric>
+	</File>
+	<File Name="cmSetDirectoryPropertiesCommand.h" FullPath="./Source/cmSetDirectoryPropertiesCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmSetPropertyCommand.cxx" FullPath="./Source/cmSetPropertyCommand.cxx" Covered="true">
+		<LOCTested>96</LOCTested>
+		<LOCUnTested>63</LOCUnTested>
+		<PercentCoverage>60.38</PercentCoverage>
+		<CoverageMetric>0.63</CoverageMetric>
+	</File>
+	<File Name="cmSetPropertyCommand.h" FullPath="./Source/cmSetPropertyCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmSetSourceFilesPropertiesCommand.cxx" FullPath="./Source/cmSetSourceFilesPropertiesCommand.cxx" Covered="true">
+		<LOCTested>56</LOCTested>
+		<LOCUnTested>11</LOCUnTested>
+		<PercentCoverage>83.58</PercentCoverage>
+		<CoverageMetric>0.86</CoverageMetric>
+	</File>
+	<File Name="cmSetSourceFilesPropertiesCommand.h" FullPath="./Source/cmSetSourceFilesPropertiesCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmSetTargetPropertiesCommand.cxx" FullPath="./Source/cmSetTargetPropertiesCommand.cxx" Covered="true">
+		<LOCTested>31</LOCTested>
+		<LOCUnTested>12</LOCUnTested>
+		<PercentCoverage>72.09</PercentCoverage>
+		<CoverageMetric>0.77</CoverageMetric>
+	</File>
+	<File Name="cmSetTargetPropertiesCommand.h" FullPath="./Source/cmSetTargetPropertiesCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmSetTestsPropertiesCommand.cxx" FullPath="./Source/cmSetTestsPropertiesCommand.cxx" Covered="true">
+		<LOCTested>39</LOCTested>
+		<LOCUnTested>12</LOCUnTested>
+		<PercentCoverage>76.47</PercentCoverage>
+		<CoverageMetric>0.80</CoverageMetric>
+	</File>
+	<File Name="cmSetTestsPropertiesCommand.h" FullPath="./Source/cmSetTestsPropertiesCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmSiteNameCommand.cxx" FullPath="./Source/cmSiteNameCommand.cxx" Covered="true">
+		<LOCTested>31</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>91.18</PercentCoverage>
+		<CoverageMetric>0.93</CoverageMetric>
+	</File>
+	<File Name="cmSiteNameCommand.h" FullPath="./Source/cmSiteNameCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmSourceFile.cxx" FullPath="./Source/cmSourceFile.cxx" Covered="true">
+		<LOCTested>142</LOCTested>
+		<LOCUnTested>19</LOCUnTested>
+		<PercentCoverage>88.20</PercentCoverage>
+		<CoverageMetric>0.89</CoverageMetric>
+	</File>
+	<File Name="cmSourceFile.h" FullPath="./Source/cmSourceFile.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>66.67</PercentCoverage>
+		<CoverageMetric>0.92</CoverageMetric>
+	</File>
+	<File Name="cmSourceFileLocation.cxx" FullPath="./Source/cmSourceFileLocation.cxx" Covered="true">
+		<LOCTested>92</LOCTested>
+		<LOCUnTested>21</LOCUnTested>
+		<PercentCoverage>81.42</PercentCoverage>
+		<CoverageMetric>0.83</CoverageMetric>
+	</File>
+	<File Name="cmSourceFileLocation.h" FullPath="./Source/cmSourceFileLocation.h" Covered="true">
+		<LOCTested>6</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmSourceGroup.cxx" FullPath="./Source/cmSourceGroup.cxx" Covered="true">
+		<LOCTested>38</LOCTested>
+		<LOCUnTested>43</LOCUnTested>
+		<PercentCoverage>46.91</PercentCoverage>
+		<CoverageMetric>0.53</CoverageMetric>
+	</File>
+	<File Name="cmSourceGroupCommand.cxx" FullPath="./Source/cmSourceGroupCommand.cxx" Covered="true">
+		<LOCTested>46</LOCTested>
+		<LOCUnTested>11</LOCUnTested>
+		<PercentCoverage>80.70</PercentCoverage>
+		<CoverageMetric>0.84</CoverageMetric>
+	</File>
+	<File Name="cmSourceGroupCommand.h" FullPath="./Source/cmSourceGroupCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmStandardIncludes.h" FullPath="./Source/cmStandardIncludes.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmStringCommand.cxx" FullPath="./Source/cmStringCommand.cxx" Covered="true">
+		<LOCTested>236</LOCTested>
+		<LOCUnTested>128</LOCUnTested>
+		<PercentCoverage>64.84</PercentCoverage>
+		<CoverageMetric>0.66</CoverageMetric>
+	</File>
+	<File Name="cmStringCommand.h" FullPath="./Source/cmStringCommand.h" Covered="true">
+		<LOCTested>14</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmSubdirCommand.cxx" FullPath="./Source/cmSubdirCommand.cxx" Covered="true">
+		<LOCTested>15</LOCTested>
+		<LOCUnTested>11</LOCUnTested>
+		<PercentCoverage>57.69</PercentCoverage>
+		<CoverageMetric>0.69</CoverageMetric>
+	</File>
+	<File Name="cmSubdirCommand.h" FullPath="./Source/cmSubdirCommand.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmSubdirDependsCommand.cxx" FullPath="./Source/cmSubdirDependsCommand.cxx" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmSubdirDependsCommand.h" FullPath="./Source/cmSubdirDependsCommand.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmSystemTools.cxx" FullPath="./Source/cmSystemTools.cxx" Covered="true">
+		<LOCTested>463</LOCTested>
+		<LOCUnTested>493</LOCUnTested>
+		<PercentCoverage>48.43</PercentCoverage>
+		<CoverageMetric>0.49</CoverageMetric>
+	</File>
+	<File Name="cmSystemTools.h" FullPath="./Source/cmSystemTools.h" Covered="true">
+		<LOCTested>15</LOCTested>
+		<LOCUnTested>7</LOCUnTested>
+		<PercentCoverage>68.18</PercentCoverage>
+		<CoverageMetric>0.78</CoverageMetric>
+	</File>
+	<File Name="cmTarget.cxx" FullPath="./Source/cmTarget.cxx" Covered="true">
+		<LOCTested>973</LOCTested>
+		<LOCUnTested>244</LOCUnTested>
+		<PercentCoverage>79.95</PercentCoverage>
+		<CoverageMetric>0.80</CoverageMetric>
+	</File>
+	<File Name="cmTarget.h" FullPath="./Source/cmTarget.h" Covered="true">
+		<LOCTested>44</LOCTested>
+		<LOCUnTested>2</LOCUnTested>
+		<PercentCoverage>95.65</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmTargetLinkLibrariesCommand.cxx" FullPath="./Source/cmTargetLinkLibrariesCommand.cxx" Covered="true">
+		<LOCTested>52</LOCTested>
+		<LOCUnTested>30</LOCUnTested>
+		<PercentCoverage>63.41</PercentCoverage>
+		<CoverageMetric>0.67</CoverageMetric>
+	</File>
+	<File Name="cmTargetLinkLibrariesCommand.h" FullPath="./Source/cmTargetLinkLibrariesCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmTest.cxx" FullPath="./Source/cmTest.cxx" Covered="true">
+		<LOCTested>37</LOCTested>
+		<LOCUnTested>10</LOCUnTested>
+		<PercentCoverage>78.72</PercentCoverage>
+		<CoverageMetric>0.82</CoverageMetric>
+	</File>
+	<File Name="cmTest.h" FullPath="./Source/cmTest.h" Covered="true">
+		<LOCTested>5</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmTryCompileCommand.cxx" FullPath="./Source/cmTryCompileCommand.cxx" Covered="true">
+		<LOCTested>7</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>87.50</PercentCoverage>
+		<CoverageMetric>0.94</CoverageMetric>
+	</File>
+	<File Name="cmTryCompileCommand.h" FullPath="./Source/cmTryCompileCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmTryRunCommand.cxx" FullPath="./Source/cmTryRunCommand.cxx" Covered="true">
+		<LOCTested>65</LOCTested>
+		<LOCUnTested>95</LOCUnTested>
+		<PercentCoverage>40.62</PercentCoverage>
+		<CoverageMetric>0.44</CoverageMetric>
+	</File>
+	<File Name="cmTryRunCommand.h" FullPath="./Source/cmTryRunCommand.h" Covered="true">
+		<LOCTested>9</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmUnsetCommand.cxx" FullPath="./Source/cmUnsetCommand.cxx" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>10</LOCUnTested>
+		<PercentCoverage>50.00</PercentCoverage>
+		<CoverageMetric>0.67</CoverageMetric>
+	</File>
+	<File Name="cmUnsetCommand.h" FullPath="./Source/cmUnsetCommand.h" Covered="true">
+		<LOCTested>10</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmUseMangledMesaCommand.cxx" FullPath="./Source/cmUseMangledMesaCommand.cxx" Covered="true">
+		<LOCTested>42</LOCTested>
+		<LOCUnTested>20</LOCUnTested>
+		<PercentCoverage>67.74</PercentCoverage>
+		<CoverageMetric>0.72</CoverageMetric>
+	</File>
+	<File Name="cmUseMangledMesaCommand.h" FullPath="./Source/cmUseMangledMesaCommand.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmUtilitySourceCommand.cxx" FullPath="./Source/cmUtilitySourceCommand.cxx" Covered="true">
+		<LOCTested>31</LOCTested>
+		<LOCUnTested>12</LOCUnTested>
+		<PercentCoverage>72.09</PercentCoverage>
+		<CoverageMetric>0.77</CoverageMetric>
+	</File>
+	<File Name="cmUtilitySourceCommand.h" FullPath="./Source/cmUtilitySourceCommand.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmVariableRequiresCommand.cxx" FullPath="./Source/cmVariableRequiresCommand.cxx" Covered="true">
+		<LOCTested>16</LOCTested>
+		<LOCUnTested>16</LOCUnTested>
+		<PercentCoverage>50.00</PercentCoverage>
+		<CoverageMetric>0.62</CoverageMetric>
+	</File>
+	<File Name="cmVariableRequiresCommand.h" FullPath="./Source/cmVariableRequiresCommand.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmVariableWatch.cxx" FullPath="./Source/cmVariableWatch.cxx" Covered="true">
+		<LOCTested>27</LOCTested>
+		<LOCUnTested>8</LOCUnTested>
+		<PercentCoverage>77.14</PercentCoverage>
+		<CoverageMetric>0.82</CoverageMetric>
+	</File>
+	<File Name="cmVariableWatch.h" FullPath="./Source/cmVariableWatch.h" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmVariableWatchCommand.cxx" FullPath="./Source/cmVariableWatchCommand.cxx" Covered="true">
+		<LOCTested>57</LOCTested>
+		<LOCUnTested>13</LOCUnTested>
+		<PercentCoverage>81.43</PercentCoverage>
+		<CoverageMetric>0.84</CoverageMetric>
+	</File>
+	<File Name="cmVariableWatchCommand.h" FullPath="./Source/cmVariableWatchCommand.h" Covered="true">
+		<LOCTested>11</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmVersion.cxx" FullPath="./Source/cmVersion.cxx" Covered="true">
+		<LOCTested>8</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmVersion.h" FullPath="./Source/cmVersion.h" Covered="true">
+		<LOCTested>3</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmWhileCommand.cxx" FullPath="./Source/cmWhileCommand.cxx" Covered="true">
+		<LOCTested>39</LOCTested>
+		<LOCUnTested>8</LOCUnTested>
+		<PercentCoverage>82.98</PercentCoverage>
+		<CoverageMetric>0.86</CoverageMetric>
+	</File>
+	<File Name="cmWhileCommand.h" FullPath="./Source/cmWhileCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>92.31</PercentCoverage>
+		<CoverageMetric>0.96</CoverageMetric>
+	</File>
+	<File Name="cmWriteFileCommand.cxx" FullPath="./Source/cmWriteFileCommand.cxx" Covered="true">
+		<LOCTested>23</LOCTested>
+		<LOCUnTested>11</LOCUnTested>
+		<PercentCoverage>67.65</PercentCoverage>
+		<CoverageMetric>0.75</CoverageMetric>
+	</File>
+	<File Name="cmWriteFileCommand.h" FullPath="./Source/cmWriteFileCommand.h" Covered="true">
+		<LOCTested>12</LOCTested>
+		<LOCUnTested>0</LOCUnTested>
+		<PercentCoverage>100.00</PercentCoverage>
+		<CoverageMetric>1.00</CoverageMetric>
+	</File>
+	<File Name="cmXMLParser.cxx" FullPath="./Source/cmXMLParser.cxx" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>82</LOCUnTested>
+		<PercentCoverage>2.38</PercentCoverage>
+		<CoverageMetric>0.13</CoverageMetric>
+	</File>
+	<File Name="cmake.cxx" FullPath="./Source/cmake.cxx" Covered="true">
+		<LOCTested>990</LOCTested>
+		<LOCUnTested>839</LOCUnTested>
+		<PercentCoverage>54.13</PercentCoverage>
+		<CoverageMetric>0.54</CoverageMetric>
+	</File>
+	<File Name="cmake.h" FullPath="./Source/cmake.h" Covered="true">
+		<LOCTested>37</LOCTested>
+		<LOCUnTested>3</LOCUnTested>
+		<PercentCoverage>92.50</PercentCoverage>
+		<CoverageMetric>0.94</CoverageMetric>
+	</File>
+	<File Name="cmakemain.cxx" FullPath="./Source/cmakemain.cxx" Covered="true">
+		<LOCTested>115</LOCTested>
+		<LOCUnTested>46</LOCUnTested>
+		<PercentCoverage>71.43</PercentCoverage>
+		<CoverageMetric>0.73</CoverageMetric>
+	</File>
+	<File Name="cmakewizard.cxx" FullPath="./Source/cmakewizard.cxx" Covered="true">
+		<LOCTested>2</LOCTested>
+		<LOCUnTested>75</LOCUnTested>
+		<PercentCoverage>2.60</PercentCoverage>
+		<CoverageMetric>0.14</CoverageMetric>
+	</File>
+	<File Name="cmakewizard.h" FullPath="./Source/cmakewizard.h" Covered="true">
+		<LOCTested>0</LOCTested>
+		<LOCUnTested>1</LOCUnTested>
+		<PercentCoverage>0.00</PercentCoverage>
+		<CoverageMetric>0.91</CoverageMetric>
+	</File>
+	<File Name="ctest.cxx" FullPath="./Source/ctest.cxx" Covered="true">
+		<LOCTested>32</LOCTested>
+		<LOCUnTested>4</LOCUnTested>
+		<PercentCoverage>88.89</PercentCoverage>
+		<CoverageMetric>0.91</CoverageMetric>
+	</File>
+	<LOCTested>24365</LOCTested>
+	<LOCUntested>12395</LOCUntested>
+	<LOC>36760</LOC>
+	<PercentCoverage>66.28</PercentCoverage>
+	<EndDateTime>Sep 14 04:20 EDT</EndDateTime>
+<ElapsedMinutes>1.00</ElapsedMinutes></Coverage>
+</Site>

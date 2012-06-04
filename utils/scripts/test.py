@@ -383,11 +383,72 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
 
   summaryTable = browser.execute_script( 'return document.getElementById("summaryTable").innerHTML;' )
 
+  # parse the summary table
+  data = summaryTable.replace( '\n', '' ).split( '</tr>' )
+  secondLine = data[1]
+  totalNumberOfFiles = secondLine.split( '<span>' )[1].split( '</span>' )[0]
+  totalLines = secondLine.split( '"numeric">' )[1].split( '</td>' )[0]
+  totalTestedLines = secondLine.split( '"numeric">' )[2].split( '</td>' )[0]
+  totalCoverage = secondLine.split( '"pct">' )[1].split( '%' )[0]
 
+  for i in range( 2, len( data ) - 1 ):
+
+    line = data[i]
+    fileName = line.split( '"#">' )[1].split( '</a>' )[0]
+    lines = int( line.split( '"numeric">' )[1].split( '</td>' )[0] )
+    testedLines = int( line.split( '"numeric">' )[2].split( '</td>' )[0] )
+    untestedLines = lines - testedLines
+    coveragePercent = line.split( '"pct">' )[1].split( '%' )[0]
+
+  # create XML
+  from socket import getfqdn
+  # WRITE XML
+  from xml.dom import minidom
+  # GET DATE
+  #from cElementTree.SimpleXMLWriter import XMLWriter
+  import string
+
+  xml = minidom.Document()
+
+  system_info = os.uname()
+
+  siteElement = xml.createElement( 'Site' )
+  systeminfo = os.uname()
+  siteElement.setAttribute( 'BuildName', system_info[0] + '-' + system_info[2] )
+
+  hostname = getfqdn()
+
+  buildtype = 'debug'
+  buildstamp = '1' + '-' + buildtype
+  siteElement.setAttribute( 'BuildStamp', buildstamp )
+  siteElement.setAttribute( 'Name', hostname )
+  siteElement.setAttribute( 'Hostname', hostname )
+
+  xml.appendChild( siteElement )
+
+  buildElement = xml.createElement( 'Coverage' )
+  siteElement.appendChild( buildElement )
+
+  fillxml( xml, buildElement, 'StartDateTime', time.strftime( "%b %d %H:%M %Z", time.gmtime() ) )
+  fillxml( xml, buildElement, 'EndDateTime', time.strftime( "%b %d %H:%M %Z", time.gmtime() ) )
+
+  fillxml( xml, buildElement, 'LOCTested', str( totalTestedLines ) )
+  fillxml( xml, buildElement, 'LOCUntested', str( int( totalLines ) - int( totalTestedLines ) ) )
+  fillxml( xml, buildElement, 'LOC', str( int( totalLines ) ) )
+  fillxml( xml, buildElement, 'PercentCoverage', str( totalCoverage ) )
+
+  f2 = open( 'XTKCoverage.xml', 'w' )
+  f2.write( xml.toxml() )
+  f2.close()
 
 
   return [result_unit, result]
 
+def fillxml( xml, parent, elementname, content ):
+  element = xml.createElement( elementname )
+  parent.appendChild( element )
+  elementcontent = xml.createTextNode( content )
+  element.appendChild( elementcontent )
 
 def testLessons( xtkLibDir, browserString='chrome' ):
 
