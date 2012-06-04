@@ -62,11 +62,11 @@ def calculate( xtkTestFile, xtkLibDir ):
   display.start()
   chrome_results = runTests( xtkTestFile, xtkLibDir, browserString )
   display.stop()
-  if chrome_results:
-    visualization_test_results = testVisualization( xtkLibDir, browserString, xtkTestFile.find( 'build' ) != -1 )
+  if chrome_results[0]:
+    visualization_test_results = chrome_results[1]#testVisualization( xtkLibDir, browserString, xtkTestFile.find( 'build' ) != -1 )
     if visualization_test_results:
       # merge the outputs
-      chrome_results_array = chrome_results.split( '\n' )
+      chrome_results_array = chrome_results[0].split( '\n' )
       chrome_results_array_without_done = chrome_results_array[0:-2]
       chrome_results_array_without_done.extend( visualization_test_results.split( '\n' ) )
       chrome_results = "\n".join( chrome_results_array_without_done )
@@ -77,6 +77,7 @@ def calculate( xtkTestFile, xtkLibDir ):
     print 'Could not run any ' + browserString + ' tests!'
   print
 
+  a = """
   print '======== FIREFOX RESULTS ========'
   browserString = 'firefox'
   display = Display( visible=0, size=( 1024, 768 ) )
@@ -97,7 +98,7 @@ def calculate( xtkTestFile, xtkLibDir ):
   else:
     print 'Could not run any ' + browserString + ' tests!'
   print
-
+"""
 
   # write to logfile the results
   with open( "xtk_test.log", "a" ) as f:
@@ -107,6 +108,9 @@ def calculate( xtkTestFile, xtkLibDir ):
       f.write( 'chrome not found\n' )
     else:
       f.write( chrome_results )
+
+  return True
+"""
     # firefox
     f.write( "\nfirefox\n" )
     if not firefox_results:
@@ -115,7 +119,7 @@ def calculate( xtkTestFile, xtkLibDir ):
       f.write( firefox_results )
 
   return True
-
+"""
 
 def getBrowser( xtkLibDir, browserString ):
 
@@ -180,11 +184,13 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
     actions.click( locationfield )
     actions.send_keys( 'testing/xtk_tests.html' )
     actions.send_keys( Keys.TAB )
-    #actions.send_keys( Keys.TAB )
+    actions.send_keys( Keys.TAB )
     actions.send_keys( Keys.RETURN )
     actions.perform()
 
-    browser.switch_to_frame( browser.find_elements_by_tag_name( "iframe" )[0] )
+    browser.switch_to_window( browser.window_handles[-1] )
+
+    #browser.switch_to_frame( browser.find_elements_by_tag_name( "iframe" )[0] )
 
   else:
     # we don't need os.sep here since it's a url
@@ -192,9 +198,10 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
 
   time.sleep( 3 )
 
-  result = browser.execute_script( 'return window.G_testRunner.getReport(true);' )
+  result_unit = browser.execute_script( 'return window.G_testRunner.getReport(true);' )
 
   time.sleep( 1 )
+  browser.switch_to_window( browser.window_handles[0] )
 
   #browser.close()
 
@@ -218,7 +225,7 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
     return None
 
   # list of tests
-  tests = ['test_trk.html', 'test_vtk.html', 'test_nrrd.html', 'test_vr.html', 'test_labelmap.html', 'test_shapes.html', 'test_mgh.html', 'test_mgz.html']
+  tests = ['test_trk.html']#, 'test_vtk.html', 'test_nrrd.html', 'test_vr.html', 'test_labelmap.html', 'test_shapes.html', 'test_mgh.html', 'test_mgz.html']
 
   #testURL = "file://" + xtkLibDir + "/../testing/visualization/"
   testURL = "testing/visualization/"
@@ -311,23 +318,23 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
       actions.click( canvas )
 
       # rotate
-      actions.click_and_hold( None )
-      for i in range( 100 ):
+      for i in range( 30 ):
+        actions.click_and_hold( None )
         actions.move_to_element_with_offset( canvas, 10, 0 );
         actions.release( canvas )
-      for i in range( 100 ):
+      for i in range( 30 ):
         actions.click_and_hold( None )
         actions.move_to_element_with_offset( canvas, 0, -10 );
-        actions.release( canvas )
-      for i in range( 100 ):
-        actions.click_and_hold( None )
-        actions.move_to_element_with_offset( canvas, 0, 10 );
         actions.release( canvas )
 
       # zoom      
 
       # pan
-
+      for i in range( 10 ):
+        actions.key_down( Keys.LEFT_SHIFT )
+        actions.click_and_hold( None )
+        actions.move_to_element_with_offset( canvas, 0, 10 );
+        actions.release( canvas )
 
       actions.perform()
 
@@ -367,7 +374,19 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
 
   print 'RUNNING VISUAL TESTING.. DONE!'
 
-  return result
+  browser.switch_to_window( browser.window_handles[0] )
+  browser.execute_script( 'jscoverage_storeButton_click();' )
+
+  time.sleep( 1 )
+
+  browser.execute_script( 'jscoverage_recalculateSummaryTab();' )
+
+  summaryTable = browser.execute_script( 'return document.getElementById("summaryTable").innerHTML;' )
+
+
+
+
+  return [result_unit, result]
 
 
 def testLessons( xtkLibDir, browserString='chrome' ):
