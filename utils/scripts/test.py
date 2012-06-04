@@ -225,7 +225,7 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
     return None
 
   # list of tests
-  tests = ['test_trk.html']#, 'test_vtk.html', 'test_nrrd.html', 'test_vr.html', 'test_labelmap.html', 'test_shapes.html', 'test_mgh.html', 'test_mgz.html']
+  tests = ['test_trk.html', 'test_vtk.html', 'test_nrrd.html', 'test_vr.html', 'test_labelmap.html', 'test_shapes.html', 'test_mgh.html', 'test_mgz.html']
 
   #testURL = "file://" + xtkLibDir + "/../testing/visualization/"
   testURL = "testing/visualization/"
@@ -391,6 +391,8 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
   totalTestedLines = secondLine.split( '"numeric">' )[2].split( '</td>' )[0]
   totalCoverage = secondLine.split( '"pct">' )[1].split( '%' )[0]
 
+  covFiles = []
+
   for i in range( 2, len( data ) - 1 ):
 
     line = data[i]
@@ -399,6 +401,8 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
     testedLines = int( line.split( '"numeric">' )[2].split( '</td>' )[0] )
     untestedLines = lines - testedLines
     coveragePercent = line.split( '"pct">' )[1].split( '%' )[0]
+
+    covFiles.append( [fileName, lines, testedLines, untestedLines, coveragePercent] )
 
   # create XML
   from socket import getfqdn
@@ -418,8 +422,13 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
 
   hostname = getfqdn()
 
-  buildtype = 'debug'
-  buildstamp = '1' + '-' + buildtype
+  buildtype = 'Experimental'
+  now = datetime.now()
+  buildtime = str( now.year ) + str( now.month ) + str( now.day ) + "-" + str( now.minute ) + str( now.second )
+
+
+  #buildstamp = '20120603-0100-Nightly'# + '-' + buildtype
+  buildstamp = buildtime + '-' + buildtype
   siteElement.setAttribute( 'BuildStamp', buildstamp )
   siteElement.setAttribute( 'Name', hostname )
   siteElement.setAttribute( 'Hostname', hostname )
@@ -431,6 +440,25 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
 
   fillxml( xml, buildElement, 'StartDateTime', time.strftime( "%b %d %H:%M %Z", time.gmtime() ) )
   fillxml( xml, buildElement, 'EndDateTime', time.strftime( "%b %d %H:%M %Z", time.gmtime() ) )
+
+  for f in covFiles:
+
+    fileName = f[0]
+    lines = f[1]
+    testedLines = f[2]
+    untestedLines = f[3]
+    coveragePercent = f[4]
+
+    fileElement = xml.createElement( 'File' )
+    fileElement.setAttribute( 'Name', os.path.split( fileName )[1] )
+    fileElement.setAttribute( 'FullPath', fileName )
+    fileElement.setAttribute( 'Covered', 'true' )
+    buildElement.appendChild( fileElement )
+
+    fillxml( xml, fileElement, 'LOCTested', str( testedLines ) )
+    fillxml( xml, fileElement, 'LOCUntested', str( untestedLines ) )
+    fillxml( xml, fileElement, 'PercentCoverage', str( coveragePercent ) )
+
 
   fillxml( xml, buildElement, 'LOCTested', str( totalTestedLines ) )
   fillxml( xml, buildElement, 'LOCUntested', str( int( totalLines ) - int( totalTestedLines ) ) )
