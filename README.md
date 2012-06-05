@@ -106,7 +106,7 @@ We use <a href="http://stackoverflow.com/questions/tagged/xtk">http://stackoverf
 Yes, please! See the <a href="https://github.com/xtk/X/wiki/X:DevelopersHeadsUp" target="_blank">Developer's Heads Up</a> and the <a href="https://github.com/xtk/X/wiki/X:Future" target="_blank">X:Future page</a>.
 
 ## License ##
-Copyright (c) 2012 The X Toolkit Developers <dev@goXTK.com>
+Copyright (c) 2012 The X Toolkit Developers  \<dev@goXTK.com>
 
 The X Toolkit (XTK) is licensed under the MIT License:
   <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a>
