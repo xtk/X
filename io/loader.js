@@ -185,6 +185,16 @@ X.loader.prototype.load = function(container, object) {
   var filepath = _checkresult[0];
   var responseType = _checkresult[4];
   
+  if (container._filedata != null) {
+    
+    // we have raw file data attached and therefor can skip the loading
+    this.parse(null, container, object);
+    
+    // .. and jump out
+    return;
+    
+  }
+  
   // we use a simple XHR to get the file contents
   // this works for binary and for ascii files
   var request = new XMLHttpRequest();
@@ -224,7 +234,7 @@ X.loader.prototype.load = function(container, object) {
  * downloading. A single-shot listener is configured for a X.event.ModifiedEvent
  * which then triggers the complete callback.
  * 
- * @param {!XMLHttpRequest} request The original XHR.
+ * @param {?XMLHttpRequest} request The original XHR.
  * @param {!X.base} container The container which has a X.file() attached.
  * @param {!X.object} object The X.object which is the parent of the container
  *          or equals it.
@@ -251,9 +261,18 @@ X.loader.prototype.parse = function(request, container, object) {
     goog.events.listenOnce(_parser, X.event.events.MODIFIED, this.complete
         .bind(this));
     
+    // check if we have loaded data or attached raw data
+    var _data = container._filedata;
+    if (!_data) {
+      
+      // use the loaded data
+      _data = request.response;
+      
+    }
+    
     // call the parse function and pass in the container, the object and the
     // data stream and some additional value
-    _parser.parse(container, object, request.response, flags);
+    _parser.parse(container, object, _data, flags);
     
   }.bind(this), 100);
   

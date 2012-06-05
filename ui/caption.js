@@ -42,7 +42,7 @@ goog.require('goog.ui.Tooltip');
  * Create a caption element (similar to a tooltip).
  * 
  * @constructor
- * @param {!Element} parent The parent element in the DOM tree.
+ * @param {?Element} parent The parent element in the DOM tree.
  * @param {!number} x The X-coordinate of the upper left caption corner.
  * @param {!number} y The Y-coordinate of the upper left caption corner.
  * @param {?X.interactor} interactor The interactor for listening to the

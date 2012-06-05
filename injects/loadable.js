@@ -51,6 +51,14 @@ X.loadable = function() {
    */
   this._file = null;
   
+  /**
+   * The file data.
+   * 
+   * @type {?string}
+   * @protected
+   */
+  this._filedata = null;
+  
 };
 
 
@@ -79,7 +87,7 @@ X.loadable.prototype.__defineSetter__('file', function(filepath) {
 /**
  * Get the associated X.file for this object.
  * 
- * @return {string} The associated X.file or null if no file is associated.
+ * @return {string} The associated file path or null if no file is associated.
  */
 X.loadable.prototype.__defineGetter__('file', function() {
 
@@ -90,5 +98,30 @@ X.loadable.prototype.__defineGetter__('file', function() {
   }
   
   return this._file._path;
+  
+});
+
+
+/**
+ * Get the possibly attached file data for this object.
+ * 
+ * @return {?string} The associated file data or null if none is attached.
+ */
+X.loadable.prototype.__defineGetter__('filedata', function() {
+
+  return this._filedata;
+  
+});
+
+
+/**
+ * Set raw file data for this object. Doing so, skips any additional loading and
+ * just parses this raw data.
+ * 
+ * @param {?string} filedata The raw file data to parse.
+ */
+X.loadable.prototype.__defineSetter__('filedata', function(filedata) {
+
+  this._filedata = filedata;
   
 });

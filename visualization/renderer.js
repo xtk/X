@@ -71,7 +71,7 @@ X.renderer = function() {
    * @inheritDoc
    * @const
    */
-  this.__classname = 'renderer';
+  this._classname = 'renderer';
   
   /**
    * The HTML container of this renderer, E.g. a <div>.
