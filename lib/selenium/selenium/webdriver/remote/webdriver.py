@@ -23,7 +23,7 @@ from errorhandler import ErrorHandler
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
-from selenium.common.exceptions import WebDriverException
+
 
 class WebDriver(object):
     """
@@ -50,8 +50,10 @@ class WebDriver(object):
         """
         if desired_capabilities is None:
             raise WebDriverException("Desired Capabilities can't be None")
+        if not isinstance(desired_capabilities, dict):
+            raise WebDriverException("Desired Capabilities must be a dictionary")
         self.command_executor = command_executor
-        if type(self.command_executor) is str:
+        if type(self.command_executor) is str or type(self.command_executor) is unicode:
             self.command_executor = RemoteConnection(command_executor)
         self.session_id = None
         self.capabilities = {}
@@ -464,6 +466,12 @@ class WebDriver(object):
         """
         return self.execute(Command.GET_WINDOW_HANDLES)['value']
 
+    def maximize_window(self):
+        """
+        Maximizes the current window that webdriver is using
+        """
+        self.execute(Command.MAXIMIZE_WINDOW, {"windowHandle": "current"})
+
     #Target Locators
     def switch_to_active_element(self):
         """
@@ -633,6 +641,20 @@ class WebDriver(object):
         """
         self.execute(Command.SET_SCRIPT_TIMEOUT,
             {'ms': float(time_to_wait) * 1000})
+
+    def set_page_load_timeout(self, time_to_wait):
+        """
+        Set the amount of time to wait for a page load to complete 
+           before throwing an error.
+
+        :Args:
+         - time_to_wait: The amount of time to wait
+
+        :Usage:
+            driver.set_page_load_timeout(30)
+        """
+        self.execute(Command.SET_TIMEOUTS,
+            {'ms': float(time_to_wait) * 1000, 'type':'page load'})
 
     def find_element(self, by=By.ID, value=None):
         """
