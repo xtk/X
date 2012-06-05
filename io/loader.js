@@ -180,6 +180,9 @@ X.loader.prototype.load = function(container, object) {
     
   }
   
+  // add this loading job to our jobs map
+  this._jobs.set(container._id, false);
+  
   // check the file format which returns the filepath, extension and the parser
   var _checkresult = this.checkFileFormat(container);
   var filepath = _checkresult[0];
@@ -223,9 +226,6 @@ X.loader.prototype.load = function(container, object) {
   // .. and GO!
   request.send(null);
   
-  // add this loading job to our jobs map
-  this._jobs.set(container._id, false);
-  
 };
 
 
@@ -263,7 +263,7 @@ X.loader.prototype.parse = function(request, container, object) {
     
     // check if we have loaded data or attached raw data
     var _data = container._filedata;
-    if (!_data) {
+    if (_data == null) {
       
       // use the loaded data
       _data = request.response;
