@@ -58,10 +58,10 @@ def calculate( xtkTestFile, xtkLibDir ):
 
   print '======== GOOGLE CHROME RESULTS ========'
   browserString = 'chrome'
-  display = Display( visible=0, size=( 1024, 768 ) )
-  display.start()
+  #display = Display( visible=0, size=( 1024, 768 ) )
+  #display.start()
   chrome_results = runTests( xtkTestFile, xtkLibDir, browserString )
-  display.stop()
+  #display.stop()
   if chrome_results[0]:
     visualization_test_results = chrome_results[1]#testVisualization( xtkLibDir, browserString, xtkTestFile.find( 'build' ) != -1 )
     if visualization_test_results:
