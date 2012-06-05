@@ -20,6 +20,7 @@ import selenium
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver import ActionChains
 
 
 def chromeDriverExecutable( xtkLibDir ):
@@ -61,11 +62,11 @@ def calculate( xtkTestFile, xtkLibDir ):
   display.start()
   chrome_results = runTests( xtkTestFile, xtkLibDir, browserString )
   display.stop()
-  if chrome_results:
-    visualization_test_results = testVisualization( xtkLibDir, browserString, xtkTestFile.find( 'build' ) != -1 )
+  if chrome_results[0]:
+    visualization_test_results = chrome_results[1]#testVisualization( xtkLibDir, browserString, xtkTestFile.find( 'build' ) != -1 )
     if visualization_test_results:
       # merge the outputs
-      chrome_results_array = chrome_results.split( '\n' )
+      chrome_results_array = chrome_results[0].split( '\n' )
       chrome_results_array_without_done = chrome_results_array[0:-2]
       chrome_results_array_without_done.extend( visualization_test_results.split( '\n' ) )
       chrome_results = "\n".join( chrome_results_array_without_done )
@@ -76,6 +77,7 @@ def calculate( xtkTestFile, xtkLibDir ):
     print 'Could not run any ' + browserString + ' tests!'
   print
 
+  a = """
   print '======== FIREFOX RESULTS ========'
   browserString = 'firefox'
   display = Display( visible=0, size=( 1024, 768 ) )
@@ -96,7 +98,7 @@ def calculate( xtkTestFile, xtkLibDir ):
   else:
     print 'Could not run any ' + browserString + ' tests!'
   print
-
+"""
 
   # write to logfile the results
   with open( "xtk_test.log", "a" ) as f:
@@ -106,6 +108,9 @@ def calculate( xtkTestFile, xtkLibDir ):
       f.write( 'chrome not found\n' )
     else:
       f.write( chrome_results )
+
+  return True
+"""
     # firefox
     f.write( "\nfirefox\n" )
     if not firefox_results:
@@ -114,7 +119,7 @@ def calculate( xtkTestFile, xtkLibDir ):
       f.write( firefox_results )
 
   return True
-
+"""
 
 def getBrowser( xtkLibDir, browserString ):
 
@@ -134,6 +139,26 @@ def getBrowser( xtkLibDir, browserString ):
 
   return browser
 
+def coverageServer( xtkLibDir, action='start' ):
+
+  system = platform.system()
+
+  if system == 'Darwin':
+    jsCoverageExecutable = xtkLibDir + os.sep + 'jscoverage/mac' + os.sep + 'jscoverage-server'
+  elif system == 'Windows':
+    jsCoverageExecutable = xtkLibDir + os.sep + 'jscoverage/windows' + os.sep + 'jscoverage-server'
+  elif system == 'Linux':
+    jsCoverageExecutable = xtkLibDir + os.sep + 'jscoverage/linux' + os.sep + 'jscoverage-server'
+
+  if action == 'stop':
+    # stop the server
+    os.system( jsCoverageExecutable + " --shutdown" )
+  else:
+    # start the server
+    xtkDir = xtkLibDir + os.sep + ".." + os.sep
+    os.system( jsCoverageExecutable + " --document-root=" + xtkDir + " --no-instrument=/lib/ --no-instrument=/testing/ --no-instrument=/utils/ --no-instrument=/core/testing/ --no-instrument=/math/testing/ --no-instrument=xtk-deps.js &" )
+
+
 def runTests( xtkTestFile, xtkLibDir, browserString ):
 
   print 'RUNNING OFFSCREEN TESTING..'
@@ -143,24 +168,58 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
   if not browser:
     return None
 
-  # we don't need os.sep here since it's a url
-  browser.get( "file://" + xtkTestFile )
+  if xtkTestFile.find( 'build' ) == -1:
+    # this is against the DEV tree
+
+    # start coverage server
+    coverageServer( xtkLibDir )
+    browser.get( "http://localhost:8080/jscoverage.html" )
+
+    # now some selenium fun
+    locationfield = browser.find_element_by_id( 'location' )
+    locationfield.clear()
+
+    # fill in url
+    actions = ActionChains( browser )
+    actions.click( locationfield )
+    actions.send_keys( 'testing/xtk_tests.html' )
+    actions.send_keys( Keys.TAB )
+    actions.send_keys( Keys.TAB )
+    actions.send_keys( Keys.RETURN )
+    actions.perform()
+
+    browser.switch_to_window( browser.window_handles[-1] )
+
+    #browser.switch_to_frame( browser.find_elements_by_tag_name( "iframe" )[0] )
+
+  else:
+    # we don't need os.sep here since it's a url
+    browser.get( "file://" + xtkTestFile )
 
   time.sleep( 3 )
 
-  result = browser.execute_script( 'return window.G_testRunner.getReport(true);' )
+  result_unit = browser.execute_script( 'return window.G_testRunner.getReport(true);' )
 
-  browser.close()
+  time.sleep( 1 )
+  browser.switch_to_window( browser.window_handles[0] )
+
+  #browser.close()
 
   print 'RUNNING OFFSCREEN TESTING.. DONE!'
 
-  return result
+ # if xtkTestFile.find( 'build' ) == -1:
+    # this is against the DEV tree
 
-def testVisualization( xtkLibDir, browserString, againstBuild=False ):
+    # stop coverage server
+    #coverageServer( xtkLibDir, 'stop' )
+
+  #return result
+
+#def testVisualization( xtkLibDir, browserString, againstBuild=False ):
 
   print 'RUNNING VISUAL TESTING..'
 
-  browser = getBrowser( xtkLibDir, browserString )
+  #browser = getBrowser( xtkLibDir, browserString )
 
   if not browser:
     return None
@@ -168,7 +227,8 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
   # list of tests
   tests = ['test_trk.html', 'test_vtk.html', 'test_nrrd.html', 'test_vr.html', 'test_labelmap.html', 'test_shapes.html', 'test_mgh.html', 'test_mgz.html']
 
-  testURL = "file://" + xtkLibDir + "/../testing/visualization/"
+  #testURL = "file://" + xtkLibDir + "/../testing/visualization/"
+  testURL = "testing/visualization/"
   baselineDir = os.path.abspath( xtkLibDir + "/../testing/visualization/baselines/" )
 
   # we test the visualization with a fixed window size
@@ -181,9 +241,29 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
 
     # open the test
     url = testURL + t
-    if againstBuild:
-      url += '?build'
-    browser.get( testURL + t )
+    #if againstBuild:
+    #  url += '?build'
+
+    #browser.get( testURL + t )
+    browser.switch_to_default_content()
+
+
+    # now some selenium fun
+    locationfield = browser.find_element_by_id( 'location' )
+    locationfield.clear()
+
+    # fill in url
+    actions = ActionChains( browser )
+    actions.click( locationfield )
+    actions.send_keys( url )
+    actions.send_keys( Keys.TAB )
+    actions.send_keys( Keys.TAB )
+    actions.send_keys( Keys.RETURN )
+    actions.perform()
+
+    browser.switch_to_window( browser.window_handles[-1] )
+
+    #browser.switch_to_frame( browser.find_elements_by_tag_name( "iframe" )[0] )
 
     # wait until loading fully completed
     timer = 0
@@ -191,6 +271,74 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
       time.sleep( 1 ) # loading did not complete yet
       timer += 1
     time.sleep( 1 )
+
+    # perform interaction tests, if we are using chrome
+    if  browserString == 'chrome':
+      canvas = browser.find_element_by_tag_name( 'canvas' )
+
+      actions = ActionChains( browser )
+      actions.click( canvas )
+
+      #
+      # keyboard events
+      #
+
+      # rotate      
+      for i in range( 30 ):
+        actions.send_keys( Keys.ARROW_RIGHT )
+      for i in range( 30 ):
+        actions.send_keys( Keys.ARROW_UP )
+      for i in range( 30 ):
+        actions.send_keys( Keys.ARROW_LEFT )
+      for i in range( 30 ):
+        actions.send_keys( Keys.ARROW_DOWN )
+
+      # zoom
+      for i in range( 50 ):
+        actions.key_down( Keys.LEFT_ALT )
+        actions.send_keys( Keys.ARROW_LEFT )
+
+      for i in range( 25 ):
+        actions.key_down( Keys.LEFT_ALT )
+        actions.send_keys( Keys.ARROW_RIGHT )
+
+      # pan
+      actions.key_down( Keys.LEFT_SHIFT )
+      actions.send_keys( Keys.ARROW_RIGHT, Keys.ARROW_RIGHT, Keys.ARROW_RIGHT )
+      actions.key_down( Keys.LEFT_SHIFT )
+      actions.send_keys( Keys.ARROW_LEFT, Keys.ARROW_LEFT, Keys.ARROW_LEFT )
+      actions.key_down( Keys.LEFT_SHIFT )
+      actions.send_keys( Keys.ARROW_UP, Keys.ARROW_UP, Keys.ARROW_UP )
+      actions.key_down( Keys.LEFT_SHIFT )
+      actions.send_keys( Keys.ARROW_DOWN, Keys.ARROW_DOWN )
+
+      #
+      # mouse
+      #
+      actions.click( canvas )
+
+      # rotate
+      for i in range( 30 ):
+        actions.click_and_hold( None )
+        actions.move_to_element_with_offset( canvas, 10, 0 );
+        actions.release( canvas )
+      for i in range( 30 ):
+        actions.click_and_hold( None )
+        actions.move_to_element_with_offset( canvas, 0, -10 );
+        actions.release( canvas )
+
+      # zoom      
+
+      # pan
+      for i in range( 10 ):
+        actions.key_down( Keys.LEFT_SHIFT )
+        actions.click_and_hold( None )
+        actions.move_to_element_with_offset( canvas, 0, 10 );
+        actions.release( canvas )
+
+      actions.perform()
+
+
 
     # create a screenshot and save it to a temp. file
     testId = os.path.splitext( t )[0]
@@ -214,16 +362,122 @@ def testVisualization( xtkLibDir, browserString, againstBuild=False ):
 
     output += timestamp + "  Visualization" + testId + ' : ' + testPassed + '\n'
 
-  browser.close()
+    browser.switch_to_window( browser.window_handles[0] )
+
+  #browser.close()
 
   _now = datetime.now()
   timestamp = str( _now.hour ).zfill( 2 ) + ':' + str( _now.minute ).zfill( 2 ) + ':' + str( _now.second ).zfill( 2 ) + '.' + str( _now.microsecond / 1000 ).zfill( 3 )
   result = output + timestamp + '  Done\n'
 
+  print output
+
   print 'RUNNING VISUAL TESTING.. DONE!'
 
-  return result
+  browser.switch_to_window( browser.window_handles[0] )
+  browser.execute_script( 'jscoverage_storeButton_click();' )
 
+  time.sleep( 1 )
+
+  browser.execute_script( 'jscoverage_recalculateSummaryTab();' )
+
+  summaryTable = browser.execute_script( 'return document.getElementById("summaryTable").innerHTML;' )
+
+  # parse the summary table
+  data = summaryTable.replace( '\n', '' ).split( '</tr>' )
+  secondLine = data[1]
+  totalNumberOfFiles = secondLine.split( '<span>' )[1].split( '</span>' )[0]
+  totalLines = secondLine.split( '"numeric">' )[1].split( '</td>' )[0]
+  totalTestedLines = secondLine.split( '"numeric">' )[2].split( '</td>' )[0]
+  totalCoverage = secondLine.split( '"pct">' )[1].split( '%' )[0]
+
+  covFiles = []
+
+  for i in range( 2, len( data ) - 1 ):
+
+    line = data[i]
+    fileName = line.split( '"#">' )[1].split( '</a>' )[0]
+    lines = int( line.split( '"numeric">' )[1].split( '</td>' )[0] )
+    testedLines = int( line.split( '"numeric">' )[2].split( '</td>' )[0] )
+    untestedLines = lines - testedLines
+    coveragePercent = line.split( '"pct">' )[1].split( '%' )[0]
+
+    covFiles.append( [fileName, lines, testedLines, untestedLines, coveragePercent] )
+
+  # create XML
+  from socket import getfqdn
+  # WRITE XML
+  from xml.dom import minidom
+  # GET DATE
+  #from cElementTree.SimpleXMLWriter import XMLWriter
+  import string
+
+  xml = minidom.Document()
+
+  system_info = os.uname()
+
+  siteElement = xml.createElement( 'Site' )
+  systeminfo = os.uname()
+  siteElement.setAttribute( 'BuildName', system_info[0] + '-' + system_info[2] )
+
+  hostname = getfqdn()
+
+  buildtype = 'Experimental'
+  now = datetime.now()
+  buildtime = str( now.year ) + str( now.month ) + str( now.day ) + "-" + str( now.minute ) + str( now.second )
+
+
+  #buildstamp = '20120603-0100-Nightly'# + '-' + buildtype
+  buildstamp = buildtime + '-' + buildtype
+  siteElement.setAttribute( 'BuildStamp', buildstamp )
+  siteElement.setAttribute( 'Name', hostname )
+  siteElement.setAttribute( 'Hostname', hostname )
+
+  xml.appendChild( siteElement )
+
+  buildElement = xml.createElement( 'Coverage' )
+  siteElement.appendChild( buildElement )
+
+  fillxml( xml, buildElement, 'StartDateTime', time.strftime( "%b %d %H:%M %Z", time.gmtime() ) )
+  fillxml( xml, buildElement, 'EndDateTime', time.strftime( "%b %d %H:%M %Z", time.gmtime() ) )
+
+  for f in covFiles:
+
+    fileName = f[0]
+    lines = f[1]
+    testedLines = f[2]
+    untestedLines = f[3]
+    coveragePercent = f[4]
+
+    fileElement = xml.createElement( 'File' )
+    fileElement.setAttribute( 'Name', os.path.split( fileName )[1] )
+    fileElement.setAttribute( 'FullPath', fileName )
+    fileElement.setAttribute( 'Covered', 'true' )
+    buildElement.appendChild( fileElement )
+
+    fillxml( xml, fileElement, 'LOCTested', str( testedLines ) )
+    fillxml( xml, fileElement, 'LOCUntested', str( untestedLines ) )
+    fillxml( xml, fileElement, 'PercentCoverage', str( coveragePercent ) )
+
+
+  fillxml( xml, buildElement, 'LOCTested', str( totalTestedLines ) )
+  fillxml( xml, buildElement, 'LOCUntested', str( int( totalLines ) - int( totalTestedLines ) ) )
+  fillxml( xml, buildElement, 'LOC', str( int( totalLines ) ) )
+  fillxml( xml, buildElement, 'PercentCoverage', str( totalCoverage ) )
+
+  f2 = open( 'XTKCoverage.xml', 'w' )
+  f2.write( xml.toxml() )
+  f2.close()
+
+  browser.quit()
+
+  return [result_unit, result]
+
+def fillxml( xml, parent, elementname, content ):
+  element = xml.createElement( elementname )
+  parent.appendChild( element )
+  elementcontent = xml.createTextNode( content )
+  element.appendChild( elementcontent )
 
 def testLessons( xtkLibDir, browserString='chrome' ):
 
