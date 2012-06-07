@@ -218,7 +218,7 @@ X.renderer3D = function() {
    * 
    * @enum {boolean}
    */
-  this['config'] = {
+  this._config = {
     'PROGRESSBAR_ENABLED': true,
     'PICKING_ENABLED': true,
     'ORDERING_ENABLED': true,
@@ -228,6 +228,26 @@ X.renderer3D = function() {
 };
 // inherit from X.renderer
 goog.inherits(X.renderer3D, X.renderer);
+
+
+/**
+ * Access the configuration of this renderer. Possible settings and there
+ * default values are:
+ * 
+ * <pre>
+ *  config.PROGRESSBAR_ENABLED: true
+ *  config.PICKING_ENABLED: true
+ *  config.ORDERING_ENABLED: true
+ *  config.STATISTICS_ENABLED: false
+ * </pre>
+ * 
+ * @return {Object} The configuration.
+ */
+X.renderer3D.prototype.__defineGetter__('config', function() {
+
+  return this._config;
+  
+});
 
 
 /**
@@ -299,7 +319,7 @@ X.renderer3D.prototype.init = function() {
     this._context.clear(this._context.COLOR_BUFFER_BIT |
         this._context.DEPTH_BUFFER_BIT);
     
-    if (this['config']['PICKING_ENABLED']) {
+    if (this._config['PICKING_ENABLED']) {
       //
       // create a frame buffer for the picking functionality
       //
@@ -1118,8 +1138,8 @@ X.renderer3D.prototype.showCaption_ = function(x, y) {
     
     if (caption) {
       
-      var t = new X.caption(this._container, this._container.offsetLeft +
-          x + 10, this._container.offsetTop + y + 10, this._interactor);
+      var t = new X.caption(this._container, this._container.offsetLeft + x +
+          10, this._container.offsetTop + y + 10, this._interactor);
       t.setHtml(caption);
       
     }
@@ -1331,7 +1351,7 @@ X.renderer3D.prototype.order_ = function() {
  */
 X.renderer3D.prototype.pick = function(x, y) {
 
-  if (this['config']['PICKING_ENABLED']) {
+  if (this._config['PICKING_ENABLED']) {
     
     // render again with picking turned on which renders the scene in a
     // framebuffer
@@ -1431,13 +1451,13 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   // re-order the objects, but only if enabled.
   // this ordering should be disabled if the objects' opacity settings are not
   // used or if a large number of objects are associated
-  if (this['config']['ORDERING_ENABLED']) {
+  if (this._config['ORDERING_ENABLED']) {
     
     this.order_();
     
   }
   
-  var statisticsEnabled = (!picking && goog.isDefAndNotNull(invoked) && invoked && this['config']['STATISTICS_ENABLED']);
+  var statisticsEnabled = (!picking && goog.isDefAndNotNull(invoked) && invoked && this._config['STATISTICS_ENABLED']);
   if (statisticsEnabled) {
     
     // for statistics

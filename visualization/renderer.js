@@ -184,7 +184,7 @@ X.renderer = function() {
    * 
    * @enum {boolean}
    */
-  this['config'] = {
+  this._config = {
     'PROGRESSBAR_ENABLED': true
   };
   
@@ -272,6 +272,23 @@ X.renderer.prototype.onScroll_ = function(event) {
   }
   
 };
+
+
+/**
+ * Access the configuration of this renderer. Possible settings and there
+ * default values are:
+ * 
+ * <pre>
+ * config.PROGRESSBAR_ENABLED: true
+ * </pre>
+ * 
+ * @return {Object} The configuration.
+ */
+X.renderer.prototype.__defineGetter__('config', function() {
+
+  return this._config;
+  
+});
 
 
 /**
@@ -388,7 +405,7 @@ X.renderer.prototype.resetViewAndRender = function() {
 X.renderer.prototype.showProgressBar_ = function() {
 
   // only do the following if the progressBar was not turned off
-  if (this['config']['PROGRESSBAR_ENABLED']) {
+  if (this._config['PROGRESSBAR_ENABLED']) {
     
     // create a progress bar here if this is the first render request and the
     // loader is working
@@ -411,7 +428,7 @@ X.renderer.prototype.showProgressBar_ = function() {
 X.renderer.prototype.hideProgressBar_ = function() {
 
   // only do the following if the progressBar was not turned off
-  if (this['config']['PROGRESSBAR_ENABLED']) {
+  if (this._config['PROGRESSBAR_ENABLED']) {
     
     if (this._progressBar && !this.__readyCheckTimer2) {
       
