@@ -191,13 +191,13 @@ for j in jsFiles:
           # check for getters/setters
           if identifier[0:len( DEFINEGETTER )] == DEFINEGETTER:
             # a getter
-            identifier = identifier[len( DEFINEGETTER ):].split( "'" )[1]
+            identifier = identifier[len( DEFINEGETTER ):].split( "'" )[1] + '_get'
             type = TYPES['getter']
             privacy = PRIVACY['public']
 
           elif identifier[0:len( DEFINESETTER )] == DEFINESETTER:
             # a setter
-            identifier = identifier[len( DEFINESETTER ):].split( "'" )[1]
+            identifier = identifier[len( DEFINESETTER ):].split( "'" )[1] + '_set'
             type = TYPES['setter']
             privacy = PRIVACY['public']
 
@@ -206,7 +206,7 @@ for j in jsFiles:
           classes[classname] = {}
 
         # add the current symbol
-        classes[classname][identifier] = {'privacy':privacy, 'type':type, 'doc':jsdocBuffer}
+        classes[classname][identifier] = {'public':privacy, 'type':type, 'doc':jsdocBuffer}
 
         totalSymbols += 1
 
@@ -218,7 +218,7 @@ for j in jsFiles:
         queryIdentifier = False
 
   # add to files
-  filename = os.path.basename( filename )
+  #filename = os.path.basename( filename )
   files[filename] = classes
 
   #
@@ -233,7 +233,7 @@ for j in jsFiles:
         # check all detected exports      
         if e == s:
           # this is an exported symbol, mark it as public
-          files[filename][c][s]['privacy'] = 1
+          files[filename][c][s]['public'] = 1
 
       # check if the symbol is public, else wise discard it
 #      if files[filename][c][s]['privacy'] != 1:
@@ -241,10 +241,54 @@ for j in jsFiles:
 
 
 
-pp = pprint.PrettyPrinter( indent=2 )
-pp.pprint( files )
 
-pp.pprint( inheritances )
+def findClass( classname ):
+  '''
+  '''
+  for f in files:
+    if files[f].has_key( classname ):
+
+      return files[f][classname]
+
+
+def inherit( classname, level=0 ):
+  '''
+  '''
+  if inheritances.has_key( classname ):
+
+    for i in inheritances[classname]:
+
+      print level, i
+      inherit( i, level + 1 )
+      updateWithoutConstructor( findClass( classname ), findClass( i ) )
+
+
+def updateWithoutConstructor( dic1, dic2 ):
+  '''
+  '''
+  if not dic1 or not dic2:
+    return
+
+  extendingDic = dic2.copy()
+  for s in dic2:
+    if dic2[s]['type'] == 0:
+      del extendingDic[ s ]
+
+  dic1.update( extendingDic )
+
+
+
+#updateWithoutConstructor( files['../objects/sphere.js']['sphere'], files['../objects/object.js']['object'] )
+#updateWithoutConstructor( files['../objects/sphere.js']['sphere'], files['../injects/constructable.js']['constructable'] )
+
+#pp.pprint( files['../objects/sphere.js']['sphere'] )
+
+for i in inheritances:
+  inherit( i )
+
+pp = pprint.PrettyPrinter( indent=2 )
+pp.pprint( findClass( 'renderer3D' ) )
+
 
 print
 print 'Total Symbols Count:', totalSymbols
