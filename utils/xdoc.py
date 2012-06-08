@@ -11,8 +11,8 @@ import treescan
 JSDOCSTART = '/**'
 JSDOCEND = '*/'
 CONSTRUCTORJSDOC = '@constructor'
+EXTENDSJSDOC = '@extends'
 GOOGEXPORT = 'goog.exportSymbol('
-GOOGINHERITS = 'goog.inherits('
 THIS = 'this'
 PROTOTYPE = 'prototype'
 DEFINESETTER = '__defineSetter__'
@@ -89,22 +89,6 @@ for j in jsFiles:
     if line:
       # ignore blank lines
 
-      # check for GOOGINHERITS
-      if line[0:len( GOOGINHERITS )] == GOOGINHERITS:
-        inherits = line[len( GOOGINHERITS ):].split( ',' )[1].rstrip( ');' ).strip()
-
-        # strip the namespace
-        inherits = inherits.replace( NAMESPACE + '.', '' )
-
-        # check if we have a classname, then update the inheritance table
-        if classname:
-          # add to inheritances
-          if not inheritances.has_key( classname ):
-            inheritances[classname] = []
-
-          inheritances[classname].append( inherits )
-
-
       # check for GOOGEXPORT
       if line[0:len( GOOGEXPORT )] == GOOGEXPORT:
         exports.append( line[len( GOOGEXPORT ):].split( ',' )[0].strip( "'" ).split( '.' )[-1] )
@@ -120,6 +104,17 @@ for j in jsFiles:
       if jsdocActive:
         # this is part of the JSDOC
         jsdocBuffer += '\n' + line
+
+        # check for special jsdoc tags inside the comments
+
+        # @extends
+        extends = line.find( EXTENDSJSDOC )
+        if extends != -1:
+          inherits = line[extends + len( EXTENDSJSDOC ):].strip()
+
+          # strip the namespace
+          inherits = inherits.replace( NAMESPACE + '.', '' )
+
 
       if jsdocActive and line[0:len( JSDOCEND )] == JSDOCEND:
         # end of JSDOC
@@ -162,6 +157,15 @@ for j in jsFiles:
             # this is a constructor
             type = TYPES['constructor']
             classname = identifier
+
+            # check if we have a parent class, then update the inheritance table
+            if inherits:
+              # add to inheritances
+              if not inheritances.has_key( classname ):
+                inheritances[classname] = []
+
+              inheritances[classname].append( inherits )
+
 
           else:
             # this is a static method
