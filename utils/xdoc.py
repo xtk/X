@@ -22,6 +22,64 @@ NAMESPACE = 'X'
 TYPES = {'constructor':0, 'static':1, 'function':2, 'getter':3, 'setter':4, 'property':5}
 PRIVACY = {'private':0, 'public':1}
 
+
+
+
+def __findClass( classname ):
+  '''
+  '''
+  for f in files:
+    if files[f].has_key( classname ):
+
+      return files[f][classname]
+
+def __updatePrivacy( classname ):
+  '''
+  '''
+  objectclass = __findClass ( classname )
+
+  if exportations.has_key( classname ):
+    for e in exportations[classname]:
+
+      for s in objectclass.keys():
+
+        if e == s:
+          # this is an exported symbol, mark it as public
+          objectclass[s]['public'] = 1
+
+def __inheritSymbols( classname1, classname2 ):
+  '''
+  '''
+  dic1 = __findClass( classname1 )
+  dic2 = __findClass( classname2 )
+
+  if not dic1 or not dic2:
+    return
+
+  extendingDic = dic2.copy()
+  for s in dic2:
+    if dic2[s]['type'] == 0:
+      # we don't want to inherit constructors
+      del extendingDic[ s ]
+
+  dic1.update( extendingDic )
+
+def inherit( classname, level=0 ):
+  '''
+  '''
+  if inheritances.has_key( classname ):
+
+    for i in inheritances[classname]:
+
+      # start recursion
+      inherit( i, level + 1 )
+
+      __inheritSymbols( classname, i )
+      __updatePrivacy( classname )
+
+
+
+
 #
 # Loop through all files and create symbol table
 # 
@@ -30,6 +88,7 @@ totalSymbols = 0
 
 files = {}
 inheritances = {}
+exportations = {}
 #files = {'':['', {}, []]}
 #classes = {'classname':{'name': [privacy, type, jsdoc]], []}
 
@@ -220,82 +279,84 @@ for j in jsFiles:
   # add to files
   #filename = os.path.basename( filename )
   files[filename] = classes
+  exportations[classname] = exports
 
   #
   # mark all exported symbols automatically as public
   #
-  for c in files[filename].keys():
+  for c in classes.keys():
     # check all detected classes
-    for s in files[filename][c].keys():
-      # check all detected symbols
-
-      for e in exports:
-        # check all detected exports      
-        if e == s:
-          # this is an exported symbol, mark it as public
-          files[filename][c][s]['public'] = 1
-
-      # check if the symbol is public, else wise discard it
-#      if files[filename][c][s]['privacy'] != 1:
-#        del files[filename][c][s]
+    __updatePrivacy( c )
 
 
+#
+# now all files have been parsed
+#
 
-
-def findClass( classname ):
-  '''
-  '''
-  for f in files:
-    if files[f].has_key( classname ):
-
-      return files[f][classname]
-
-
-def inherit( classname, level=0 ):
-  '''
-  '''
-  if inheritances.has_key( classname ):
-
-    for i in inheritances[classname]:
-
-      print level, i
-      inherit( i, level + 1 )
-      updateWithoutConstructor( findClass( classname ), findClass( i ) )
-
-
-def updateWithoutConstructor( dic1, dic2 ):
-  '''
-  '''
-  if not dic1 or not dic2:
-    return
-
-  extendingDic = dic2.copy()
-  for s in dic2:
-    if dic2[s]['type'] == 0:
-      del extendingDic[ s ]
-
-  dic1.update( extendingDic )
-
-
-
-#updateWithoutConstructor( files['../objects/sphere.js']['sphere'], files['../objects/object.js']['object'] )
-#updateWithoutConstructor( files['../objects/sphere.js']['sphere'], files['../injects/constructable.js']['constructable'] )
-
-#pp.pprint( files['../objects/sphere.js']['sphere'] )
-
+# map symbols along the inheritance tree
 for i in inheritances:
   inherit( i )
 
-pp = pprint.PrettyPrinter( indent=2 )
-pp.pprint( findClass( 'renderer3D' ) )
+#pp = pprint.PrettyPrinter( indent=2 )
+#pp.pprint( __findClass( 'renderer3D' ) )
+
+outputDir = '/tmp/xdoc'
+os.mkdir( outputDir )
+import shutil
+shutil.copy( 'xdoc.css', outputDir )
+
+for f in files:
+
+  for c in files[f]:
+
+    symbols = files[f][c]
+
+    # load the template
+    with open( 'xdoc.html', 'r' ) as t:
+      output = t.read()
+
+    title = 'The X Toolkit API'
+    classname = c # the classname
+    content = ''
+
+    for s in symbols:
+
+      jsdoc = symbols[s]['doc']
+      #jsdoc = jsdoc.replace( '\n', '<br>' )
+      public = symbols[s]['public']
+
+      if public:
+        # this is a public symbol
+        content += '<div class="public">\n'
+      else:
+        # this is a private symbol
+        content += '<div class="private">\n'
+
+      content += '<pre>' + jsdoc + '</pre>' + '\n'
+
+      identifier = s.replace( '_get', '' ).replace( '_set', '' )
+      #prefix = NAMESPACE + '.'
+      identifierCode = identifier
+
+      # TYPES = {'constructor':0, 'static':1, 'function':2, 'getter':3, 'setter':4, 'property':5}
+      if symbols[s]['type'] == 0:
+        identifierCode = 'var ' + classname[0] + ' = new <span class="identifier">' + NAMESPACE + '.' + classname + '()</span>;'
+
+
+      content += '<span class="code">' + identifierCode + '</span><br>'
+      content += '</div>'
+
+    # modify template
+    output = output.replace( '${TITLE}', title )
+    output = output.replace( '${CLASSNAME}', classname )
+    output = output.replace( '${CONTENT}', content )
+
+    with open( outputDir + os.sep + c + '.html', 'w' ) as outputf:
+
+      outputf.write( output )
+
+
 
 
 print
 print 'Total Symbols Count:', totalSymbols
-
-
-#  if jsdoc.has_key( e ):
-#    print jsdoc[e]
-#    print e
-#    print
-##    print 'could not find ' + e

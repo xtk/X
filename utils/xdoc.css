@@ -1,0 +1,42 @@
+.public {
+	padding: 10px;
+	margin-left: 220px;
+	background: #F5F5FF;
+	border-left: 1px solid #E5E5EE;
+}
+
+.private {
+	background: #FFE0E0;
+	padding: 10px;
+	margin-left: 220px;
+	border-left: 1px solid #E5E5EE;
+}
+
+.menu {
+	float: left;
+	width: 200px;
+	background-color: #fff;
+	height: 100%
+}
+
+body {
+	font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif,
+		serif;
+}
+
+pre {
+	font-size: 15px;
+	line-height: 22px;
+	color: darkslateblue;
+	font-style: oblique;
+}
+
+.code {
+	font-size: 15px;
+	line-height: 18px;
+	font-family: Menlo, Monaco, Consolas, "Lucida Console", monospace;
+}
+
+.identifier {
+	font-weight: bolder;
+}
