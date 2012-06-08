@@ -44,6 +44,8 @@ goog.require('X.thresholdable');
  * @constructor
  * @param {X.volume=} volume Another X.volume to use as a template.
  * @extends X.object
+ * @mixin X.loadable
+ * @mixin X.thresholdable
  */
 X.volume = function(volume) {
 

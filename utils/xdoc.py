@@ -12,6 +12,7 @@ JSDOCSTART = '/**'
 JSDOCEND = '*/'
 CONSTRUCTORJSDOC = '@constructor'
 EXTENDSJSDOC = '@extends'
+MIXINJSDOC = '@mixin'
 GOOGEXPORT = 'goog.exportSymbol('
 THIS = 'this'
 PROTOTYPE = 'prototype'
@@ -74,7 +75,7 @@ for j in jsFiles:
 
   # class information
   classname = ''
-  inherits = ''
+  inherits = []
   exports = []
 
   # symbol information
@@ -110,11 +111,22 @@ for j in jsFiles:
         # @extends
         extends = line.find( EXTENDSJSDOC )
         if extends != -1:
-          inherits = line[extends + len( EXTENDSJSDOC ):].strip()
+          inheritsClass = line[extends + len( EXTENDSJSDOC ):].strip()
 
           # strip the namespace
-          inherits = inherits.replace( NAMESPACE + '.', '' )
+          inheritsClass = inheritsClass.replace( NAMESPACE + '.', '' )
 
+          inherits.append( inheritsClass )
+
+        # @mixin
+        mixin = line.find( MIXINJSDOC )
+        if mixin != -1:
+          inheritsClass = line[mixin + len( MIXINJSDOC ):].strip()
+
+          # strip the namespace
+          inheritsClass = inheritsClass.replace( NAMESPACE + '.', '' )
+
+          inherits.append( inheritsClass )
 
       if jsdocActive and line[0:len( JSDOCEND )] == JSDOCEND:
         # end of JSDOC
@@ -158,13 +170,14 @@ for j in jsFiles:
             type = TYPES['constructor']
             classname = identifier
 
-            # check if we have a parent class, then update the inheritance table
-            if inherits:
+            # check if we have parent classes, then update the inheritance table
+            if len( inherits ) > 0:
               # add to inheritances
               if not inheritances.has_key( classname ):
                 inheritances[classname] = []
 
-              inheritances[classname].append( inherits )
+              inheritances[classname].extend( inherits )
+              inherits = [] # reset the inheritances
 
 
           else:
