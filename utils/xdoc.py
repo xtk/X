@@ -300,9 +300,11 @@ for i in inheritances:
 #pp = pprint.PrettyPrinter( indent=2 )
 #pp.pprint( __findClass( 'renderer3D' ) )
 
+import shutil
+shutil.rmtree( '/tmp/xdoc' )
 outputDir = '/tmp/xdoc'
 os.mkdir( outputDir )
-import shutil
+
 shutil.copy( 'xdoc.css', outputDir )
 
 for f in files:
@@ -340,8 +342,22 @@ for f in files:
 
       # TYPES = {'constructor':0, 'static':1, 'function':2, 'getter':3, 'setter':4, 'property':5}
       if symbols[s]['type'] == 0:
-        identifierCode = 'var ' + classname[0] + ' = new <span class="identifier">' + NAMESPACE + '.' + classname + '()</span>;'
+        identifierCode = 'var ' + classname[0] + ' = new <span class="identifier">' + NAMESPACE + '.' + identifier + '();</span>;'
 
+      elif symbols[s]['type'] == 1:
+        identifierCode = NAMESPACE + '.' + classname + '.<span class="identifier">' + identifier + '();</span>'
+
+      elif symbols[s]['type'] == 2:
+        identifierCode = classname[0] + '.<span class="identifier">' + identifier + '</span>();';
+
+      elif symbols[s]['type'] == 3:
+        identifierCode = 'var _' + identifier + ' = ' + classname[0] + '.<span class="identifier">' + identifier + ';</span>'
+
+      elif symbols[s]['type'] == 4:
+        identifierCode = classname[0] + '.<span class="identifier">' + identifier + '</span> = ' + '$SOMEVALUE;';
+
+      elif symbols[s]['type'] == 5:
+        identifierCode = classname[0] + '.<span class="identifier">' + identifier + '</span> = ' + '$SOMEVALUE;';
 
       content += '<span class="code">' + identifierCode + '</span><br>'
       content += '</div>'
@@ -360,3 +376,5 @@ for f in files:
 
 print
 print 'Total Symbols Count:', totalSymbols
+
+print sorted( files.keys() )
