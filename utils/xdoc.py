@@ -19,7 +19,7 @@ PROTOTYPE = 'prototype'
 DEFINESETTER = '__defineSetter__'
 DEFINEGETTER = '__defineGetter__'
 NAMESPACE = 'X'
-TYPES = {'constructor':0, 'static':1, 'function':2, 'getter':3, 'setter':4, 'property':5}
+TYPES = {'constructor':0, 'static':5, 'function':3, 'gettersetter':2, 'property':1}
 PRIVACY = {'private':0, 'public':1}
 
 
@@ -251,13 +251,13 @@ for j in jsFiles:
           if identifier[0:len( DEFINEGETTER )] == DEFINEGETTER:
             # a getter
             identifier = identifier[len( DEFINEGETTER ):].split( "'" )[1] + '_get'
-            type = TYPES['getter']
+            type = TYPES['gettersetter']
             privacy = PRIVACY['public']
 
           elif identifier[0:len( DEFINESETTER )] == DEFINESETTER:
             # a setter
             identifier = identifier[len( DEFINESETTER ):].split( "'" )[1] + '_set'
-            type = TYPES['setter']
+            type = TYPES['gettersetter']
             privacy = PRIVACY['public']
 
         if not classes.has_key( classname ):
@@ -311,6 +311,10 @@ for f in files:
 
   for c in files[f]:
 
+    if not c:
+      # skip empty classnames
+      continue
+
     symbols = files[f][c]
 
     # load the template
@@ -321,7 +325,12 @@ for f in files:
     classname = c # the classname
     content = ''
 
-    for s in symbols:
+    # sort the symbols, first by type then by name
+    symbolList = []
+    symbolList = sorted( symbols.keys(), key=lambda x: ( symbols[x]['type'], x ) )
+    print symbolList
+
+    for s in symbolList:
 
       jsdoc = symbols[s]['doc']
       #jsdoc = jsdoc.replace( '\n', '<br>' )
@@ -336,35 +345,37 @@ for f in files:
 
       content += '<pre>' + jsdoc + '</pre>' + '\n'
 
-      identifier = s.replace( '_get', '' ).replace( '_set', '' )
+      identifier = s
       #prefix = NAMESPACE + '.'
       identifierCode = identifier
 
-      # TYPES = {'constructor':0, 'static':1, 'function':2, 'getter':3, 'setter':4, 'property':5}
-      if symbols[s]['type'] == 0:
-        identifierCode = 'var ' + classname[0] + ' = new <span class="identifier">' + NAMESPACE + '.' + identifier + '();</span>;'
+      # check different types
+      if symbols[s]['type'] == TYPES['constructor']:
+        identifierCode = 'var ' + classname[0] + ' = new <span class="identifier">' + NAMESPACE + '.' + identifier + '()</span>;'
 
-      elif symbols[s]['type'] == 1:
-        identifierCode = NAMESPACE + '.' + classname + '.<span class="identifier">' + identifier + '();</span>'
+      elif symbols[s]['type'] == TYPES['static']:
+        identifierCode = NAMESPACE + '.' + classname + '.<span class="identifier">' + identifier + '()</span>;'
 
-      elif symbols[s]['type'] == 2:
+      elif symbols[s]['type'] == TYPES['function']:
         identifierCode = classname[0] + '.<span class="identifier">' + identifier + '</span>();';
 
-      elif symbols[s]['type'] == 3:
-        identifierCode = 'var _' + identifier + ' = ' + classname[0] + '.<span class="identifier">' + identifier + ';</span>'
+      elif symbols[s]['type'] == TYPES['gettersetter'] and s.find( '_get' ) != -1:
+        identifierCode = 'var _' + identifier + ' = ' + classname[0] + '.<span class="identifier">' + identifier + '</span>;'
 
-      elif symbols[s]['type'] == 4:
+      elif symbols[s]['type'] == TYPES['gettersetter'] and s.find( '_set' ) != -1:
         identifierCode = classname[0] + '.<span class="identifier">' + identifier + '</span> = ' + '$SOMEVALUE;';
 
-      elif symbols[s]['type'] == 5:
+      elif symbols[s]['type'] == TYPES['property']:
         identifierCode = classname[0] + '.<span class="identifier">' + identifier + '</span> = ' + '$SOMEVALUE;';
+
+      identifierCode = identifierCode.replace( '_get', '' ).replace( '_set', '' )
 
       content += '<span class="code">' + identifierCode + '</span><br>'
       content += '</div>'
 
     # modify template
     output = output.replace( '${TITLE}', title )
-    output = output.replace( '${CLASSNAME}', classname )
+    output = output.replace( '${CLASSNAME}', NAMESPACE + '.' + classname )
     output = output.replace( '${CONTENT}', content )
 
     with open( outputDir + os.sep + c + '.html', 'w' ) as outputf:
@@ -377,4 +388,3 @@ for f in files:
 print
 print 'Total Symbols Count:', totalSymbols
 
-print sorted( files.keys() )
