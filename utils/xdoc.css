@@ -10,13 +10,71 @@
 	padding: 10px;
 	margin-left: 220px;
 	border-left: 1px solid #E5E5EE;
+	display: none;
+}
+
+.public_quicklink {
+	padding: 5px;
+}
+
+.private_quicklink {
+	padding: 5px;
+	display: none;
+}
+
+#toolbox {
+	position: fixed;
+	top: 0px;
+	right: 0px;
+	font-size: 12px;
+	width: 130px;
+	background-color: #F5F5FF;
+	padding: 10px;
+	height: 100%;
+	overflow:scroll;
+}
+
+#toolbox a:link {
+	color: blue;
+	text-decoration: none;
+}
+
+#toolbox a:visited {
+	color: darkblue;
+	text-decoration: none;
+}
+
+#toolbox a:hover {
+	color: red;
+	text-decoration: none;
 }
 
 .menu {
 	float: left;
 	width: 200px;
 	background-color: #fff;
-	height: 100%
+	height: 100%;
+	padding: 12px;
+  font-size: 12px;
+}
+
+.menuitem {
+	padding: 5px;
+}
+
+.menuitem a:link {
+  color: blue;
+  text-decoration: none;
+}
+
+.menuitem a:visited {
+  color: darkblue;
+  text-decoration: none;
+}
+
+.menuitem a:hover {
+  color: red;
+  text-decoration: none;
 }
 
 body {

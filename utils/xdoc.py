@@ -13,12 +13,16 @@ JSDOCEND = '*/'
 CONSTRUCTORJSDOC = '@constructor'
 EXTENDSJSDOC = '@extends'
 MIXINJSDOC = '@mixin'
+PARAMJSDOC = '@param'
+RETURNJSDOC = '@return'
+TYPEJSDOC = '@type'
 GOOGEXPORT = 'goog.exportSymbol('
 THIS = 'this'
 PROTOTYPE = 'prototype'
 DEFINESETTER = '__defineSetter__'
 DEFINEGETTER = '__defineGetter__'
 NAMESPACE = 'X'
+REPO_URL = 'https://github.com/xtk/X/blob/master/X/'
 TYPES = {'constructor':0, 'static':5, 'function':3, 'gettersetter':2, 'property':1}
 PRIVACY = {'private':0, 'public':1}
 
@@ -62,6 +66,10 @@ def __inheritSymbols( classname1, classname2 ):
       # we don't want to inherit constructors
       del extendingDic[ s ]
 
+    elif dic1.has_key( s ) and dic1[s]['doc'].find( '@inheritDoc' ) == -1:
+      # if we re-comment the method, do not inherit it
+      del extendingDic[ s ]
+
   dic1.update( extendingDic )
 
 def inherit( classname, level=0 ):
@@ -87,10 +95,12 @@ def inherit( classname, level=0 ):
 totalSymbols = 0
 
 files = {}
+allclasses = [] # we only need a list here
 inheritances = {}
 exportations = {}
-#files = {'':['', {}, []]}
-#classes = {'classname':{'name': [privacy, type, jsdoc]], []}
+
+# holding all files which have constructors
+leftMenu = {}
 
 # ignore these files
 excludePaths = ['lib', 'testing', 'deps', 'utils']
@@ -140,6 +150,8 @@ for j in jsFiles:
   # symbol information
   type = -1
   privacy = 0 # by default private
+  params = []
+  returns = []
 
 
   # forward loop through file
@@ -163,9 +175,20 @@ for j in jsFiles:
 
       if jsdocActive:
         # this is part of the JSDOC
-        jsdocBuffer += '\n' + line
+        jsdocBuffer += '\n' + line.replace( '<pre>', '' ).replace( '</pre>', '' )
 
         # check for special jsdoc tags inside the comments
+
+        # @param
+        param = line.find( PARAMJSDOC )
+        if param != -1:
+          paramName = line[param + len( PARAMJSDOC ):].strip().split( ' ' )[1]
+          params.append( '$' + paramName )
+
+        # @return
+        return_ = line.find( RETURNJSDOC )
+        if return_ != -1:
+          returns.append( True )
 
         # @extends
         extends = line.find( EXTENDSJSDOC )
@@ -229,6 +252,20 @@ for j in jsFiles:
             type = TYPES['constructor']
             classname = identifier
 
+            # we have the current filename here as j
+            subfolder = os.path.dirname( j ).split( os.sep )[-1]
+
+            # ignore toplevel files
+            if not subfolder == '..':
+
+              # check if we have already files from this subfolder
+              if not leftMenu.has_key( subfolder ):
+                leftMenu[subfolder] = []
+
+              # add this file if it does not exist
+              if leftMenu[subfolder].count( classname ) == 0:
+                leftMenu[subfolder].append( classname )
+
             # check if we have parent classes, then update the inheritance table
             if len( inherits ) > 0:
               # add to inheritances
@@ -238,6 +275,8 @@ for j in jsFiles:
               inheritances[classname].extend( inherits )
               inherits = [] # reset the inheritances
 
+            # always add to classes
+            allclasses.append( classname )
 
           else:
             # this is a static method
@@ -265,7 +304,7 @@ for j in jsFiles:
           classes[classname] = {}
 
         # add the current symbol
-        classes[classname][identifier] = {'public':privacy, 'type':type, 'doc':jsdocBuffer}
+        classes[classname][identifier] = {'public':privacy, 'type':type, 'doc':jsdocBuffer, 'params':params, 'returns':returns}
 
         totalSymbols += 1
 
@@ -273,6 +312,8 @@ for j in jsFiles:
         jsdocBuffer = ''
         type = -1
         privacy = 0
+        returns = []
+        params = []
         # clear the state switches
         queryIdentifier = False
 
@@ -287,7 +328,6 @@ for j in jsFiles:
   for c in classes.keys():
     # check all detected classes
     __updatePrivacy( c )
-
 
 #
 # now all files have been parsed
@@ -307,6 +347,18 @@ os.mkdir( outputDir )
 
 shutil.copy( 'xdoc.css', outputDir )
 
+
+# left menu
+leftMenuContent = ''
+for folder in sorted( leftMenu.iterkeys() ):
+  leftMenuContent += '<b>' + folder.upper() + '</b><br>'
+  for classname in sorted( leftMenu[folder], key=str.lower ):
+    leftMenuContent += '<span class="menuitem"><a href="' + classname + '.html">' + NAMESPACE + '.' + classname + '</a></span><br>'
+  leftMenuContent += '<br>'
+
+#
+# main content loop
+#
 for f in files:
 
   for c in files[f]:
@@ -324,24 +376,38 @@ for f in files:
     title = 'The X Toolkit API'
     classname = c # the classname
     content = ''
+    hasPublic = False
 
     # sort the symbols, first by type then by name
     symbolList = []
     symbolList = sorted( symbols.keys(), key=lambda x: ( symbols[x]['type'], x ) )
-    print symbolList
+
+    # quicklinks
+    constructors = ''
+    properties = ''
+    getterssetters = ''
+    functions = ''
+    static = ''
+
 
     for s in symbolList:
 
       jsdoc = symbols[s]['doc']
-      #jsdoc = jsdoc.replace( '\n', '<br>' )
       public = symbols[s]['public']
 
+      privacy = 'private'
       if public:
         # this is a public symbol
-        content += '<div class="public">\n'
+        content += '<div class="public" id="' + s + '">\n'
+        privacy = 'public'
+        hasPublic = True
       else:
         # this is a private symbol
-        content += '<div class="private">\n'
+        content += '<div class="private" id="' + s + '">\n'
+
+      for symb in allclasses:
+
+        jsdoc = jsdoc.replace( NAMESPACE + '.' + symb, '<a href="' + symb + '.html">' + NAMESPACE + '.' + symb + '</a>' )
 
       content += '<pre>' + jsdoc + '</pre>' + '\n'
 
@@ -353,20 +419,35 @@ for f in files:
       if symbols[s]['type'] == TYPES['constructor']:
         identifierCode = 'var ' + classname[0] + ' = new <span class="identifier">' + NAMESPACE + '.' + identifier + '()</span>;'
 
+        constructors += '<span class="' + privacy + '_quicklink"><a href="#' + s + '">' + NAMESPACE + '.' + identifier + '</a><br></span>'
+
       elif symbols[s]['type'] == TYPES['static']:
         identifierCode = NAMESPACE + '.' + classname + '.<span class="identifier">' + identifier + '()</span>;'
 
+        static += '<span class="' + privacy + '_quicklink"><a href="#' + s + '">' + identifier + '</a><br></span>'
+
       elif symbols[s]['type'] == TYPES['function']:
-        identifierCode = classname[0] + '.<span class="identifier">' + identifier + '</span>();';
+
+        _returnVar = ''
+        if symbols[s]['returns']:
+          _returnVar = 'var ' + identifier + ' = ';
+
+        identifierCode = _returnVar + classname[0] + '.<span class="identifier">' + identifier + '</span>(' + ', '.join( map( str.upper, symbols[s]['params'] ) ) + ');';
+
+        functions += '<span class="' + privacy + '_quicklink"><a href="#' + s + '">' + identifier + '</a><br></span>'
 
       elif symbols[s]['type'] == TYPES['gettersetter'] and s.find( '_get' ) != -1:
         identifierCode = 'var _' + identifier + ' = ' + classname[0] + '.<span class="identifier">' + identifier + '</span>;'
 
+        getterssetters += '<span class="' + privacy + '_quicklink"><a href="#' + s + '">' + identifier.replace( '_get', '' ).replace( '_set', '' ) + '</a><br></span>'
+
       elif symbols[s]['type'] == TYPES['gettersetter'] and s.find( '_set' ) != -1:
-        identifierCode = classname[0] + '.<span class="identifier">' + identifier + '</span> = ' + '$SOMEVALUE;';
+        identifierCode = classname[0] + '.<span class="identifier">' + identifier + '</span> = ' + map( str.upper, symbols[s]['params'] )[0] + ';';
 
       elif symbols[s]['type'] == TYPES['property']:
-        identifierCode = classname[0] + '.<span class="identifier">' + identifier + '</span> = ' + '$SOMEVALUE;';
+        identifierCode = classname[0] + '.<span class="identifier">' + identifier + '</span> = $' + identifier.upper() + ';';
+
+        properties += '<span class="' + privacy + '_quicklink"><a href="#' + s + '">' + identifier + '</a><br></span>'
 
       identifierCode = identifierCode.replace( '_get', '' ).replace( '_set', '' )
 
@@ -376,6 +457,22 @@ for f in files:
     # modify template
     output = output.replace( '${TITLE}', title )
     output = output.replace( '${CLASSNAME}', NAMESPACE + '.' + classname )
+    output = output.replace( '${SOURCELINK}', REPO_URL + f )
+
+    # right menu
+    output = output.replace( '${CONSTRUCTORS}', constructors )
+    output = output.replace( '${PROPERTIES}', properties )
+    output = output.replace( '${GETTERSSETTERS}', getterssetters )
+    output = output.replace( '${FUNCTIONS}', functions )
+    output = output.replace( '${STATIC}', static )
+
+
+    output = output.replace( '${MENU}', leftMenuContent )
+
+    # print note if this class has nothing public
+    if not hasPublic:
+      content = '<i>This class has no public members.</i><br><br>' + content
+
     output = output.replace( '${CONTENT}', content )
 
     with open( outputDir + os.sep + c + '.html', 'w' ) as outputf:
@@ -383,8 +480,5 @@ for f in files:
       outputf.write( output )
 
 
-
-
-print
-print 'Total Symbols Count:', totalSymbols
+print 'Total Symbols Documented:', totalSymbols
 

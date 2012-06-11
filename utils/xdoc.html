@@ -1,16 +1,75 @@
 <html>
 <head>
- <title>${TITLE}</title>
- <link href="xdoc.css" rel="stylesheet" type="text/css">
+<title>${TITLE}</title>
+<link href="xdoc.css" rel="stylesheet" type="text/css">
+<script type="text/javascript">
+
+  // don't show internals by default
+  var displayInternals = false;
+
+  var toggleInternals = function() {
+    
+    // toggle the display variable
+    displayInternals = !displayInternals;
+
+    if (!document.styleSheets)
+      return;
+    var thecss = new Array();
+    
+    if (document.styleSheets[0].cssRules) thecss = document.styleSheets[0].cssRules;
+    else thecss = document.styleSheets[0].rules;
+    
+    for (i = 0; i < thecss.length; i++) {
+      
+      if (thecss[i].selectorText.toLowerCase() == '.private') {
+        
+        if (displayInternals) {
+          thecss[i].style.cssText += "display: block;";
+          document.getElementById('togglBtn').innerHTML = 'Hide Internals'
+        } else {
+          thecss[i].style.cssText += "display: none;";
+          document.getElementById('togglBtn').innerHTML = 'Show Internals'
+        }
+      
+      } else if (thecss[i].selectorText.toLowerCase() == '.private_quicklink') {
+        
+        if (displayInternals) {
+          thecss[i].style.cssText += "display: inline;";
+        } else {
+          thecss[i].style.cssText += "display: none;";
+        }
+        
+      }
+       
+    }
+    
+  }
+  
+</script>
 </head>
 
-<body style="margin:0">
-<h1>${TITLE}</h1>
-<div class="menu">${MENU}</div>
-<div class="content">
-<h2>${CLASSNAME}</h2>
-${CONTENT}
-</div>
+<body>
+	<h1>${TITLE}</h1>
+	<div class="menu">${MENU}</div>
+	<div class="content">
+		<h2>${CLASSNAME}</h2>
+		<div id="toolbox">
+		<center><button id="togglBtn" type="button" onclick="javascript:toggleInternals();">Show Internals</button></center><br><br>
+		<b>CONSTRUCTORS</b><br>
+		${CONSTRUCTORS}<br>
+		<b>PROPERTIES</b><br>
+		${PROPERTIES}<br>
+		<b>GETTERS/SETTERS</b><br>
+		${GETTERSSETTERS}<br>
+		<b>FUNCTIONS</b><br>
+		${FUNCTIONS}<br>
+		<b>STATIC</b><br>
+		${STATIC}<br><br><br>
+		<center><small><a href="${SOURCELINK}" target="_blank">SOURCECODE</a><br></small></center>
+		</div>
+		${CONTENT}
+	</div>
+	<br><br><br>
 </body>
 
 </html>
