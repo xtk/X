@@ -15,6 +15,10 @@ from _core import *
 #
 if __name__ == "__main__":
   entrypoint = Entrypoint( description='Perform a build of ' + SOFTWARE_SHORT + '.' )
+
+  # add debug flag
+  entrypoint.add( 'd', 'debug', 'enable debug mode during compilation' )
+
   options = entrypoint.parse( sys.argv )
 
   builder = Builder()

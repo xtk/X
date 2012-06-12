@@ -6,10 +6,14 @@
 
 import os
 import sys
+import tempfile
+
 
 # STRINGS
 SOFTWARE = 'The X Toolkit'
 SOFTWARE_SHORT = 'XTK'
+
+NAMESPACE = 'X'
 
 LICENSE_HEADER = '''/*
  * 
@@ -61,3 +65,5 @@ CLOSURELIBRARY_PYTHON_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PATH
 CLOSURECOMPILER_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/closure-library/compiler-latest/compiler.jar' ) )
 
 BUILD_OUTPUT_PATH = os.path.normpath( XBUILD_PATH + os.sep + SOFTWARE_SHORT.lower() + '.js' )
+
+TEMP_PATH = tempfile.gettempdir()
