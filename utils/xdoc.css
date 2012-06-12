@@ -28,25 +28,10 @@
 	right: 0px;
 	font-size: 12px;
 	width: 130px;
-	background-color: #F5F5FF;
+	background-color: whiteSmoke;
 	padding: 10px;
 	height: 100%;
-	overflow:scroll;
-}
-
-#toolbox a:link {
-	color: blue;
-	text-decoration: none;
-}
-
-#toolbox a:visited {
-	color: darkblue;
-	text-decoration: none;
-}
-
-#toolbox a:hover {
-	color: red;
-	text-decoration: none;
+	overflow: scroll;
 }
 
 .menu {
@@ -55,31 +40,31 @@
 	background-color: #fff;
 	height: 100%;
 	padding: 12px;
-  font-size: 12px;
+	font-size: 12px;
 }
 
 .menuitem {
 	padding: 5px;
 }
 
-.menuitem a:link {
-  color: blue;
-  text-decoration: none;
-}
-
-.menuitem a:visited {
-  color: darkblue;
-  text-decoration: none;
-}
-
-.menuitem a:hover {
-  color: red;
-  text-decoration: none;
-}
-
 body {
 	font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif,
 		serif;
+}
+
+body a:link {
+	color: blue;
+	text-decoration: none;
+}
+
+body a:visited {
+	color: blue;
+	text-decoration: none;
+}
+
+body a:hover {
+	color: red;
+	text-decoration: none;
 }
 
 pre {

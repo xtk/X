@@ -85,8 +85,35 @@ def inherit( classname, level=0 ):
       __inheritSymbols( classname, i )
       __updatePrivacy( classname )
 
+def inheritanceChart( classname, level=0 ):
+  '''
+  '''
+  output = ""
 
+  # attach namespace  
+  classnameString = classname
+  if classname.find( '.' ) == -1:
+    classnameString = NAMESPACE + '.' + classname
 
+  if inheritances.has_key( classname ):
+
+    for i in inheritances[classname]:
+
+      # start recursion
+      output += inheritanceChart( i, level + 1 )
+
+      # attach namespace
+      iString = i
+      if i.find( '.' ) == -1:
+        iString = NAMESPACE + '.' + i
+
+      output += '["' + classnameString + '","' + iString + '",' + 'null],\n'
+
+  else:
+
+    output += '[{v:"' + classnameString + '",f:"<font color=green>' + classnameString + '</font>"},null,null],\n'
+
+  return output
 
 #
 # Loop through all files and create symbol table
@@ -422,7 +449,11 @@ for f in files:
         constructors += '<span class="' + privacy + '_quicklink"><a href="#' + s + '">' + NAMESPACE + '.' + identifier + '</a><br></span>'
 
       elif symbols[s]['type'] == TYPES['static']:
-        identifierCode = NAMESPACE + '.' + classname + '.<span class="identifier">' + identifier + '()</span>;'
+        _returnVar = ''
+        if symbols[s]['returns']:
+          _returnVar = 'var ' + identifier + ' = ';
+
+        identifierCode = _returnVar + NAMESPACE + '.' + classname + '.<span class="identifier">' + identifier + '</span>(' + ', '.join( map( str.upper, symbols[s]['params'] ) ) + ');';
 
         static += '<span class="' + privacy + '_quicklink"><a href="#' + s + '">' + identifier + '</a><br></span>'
 
@@ -459,6 +490,9 @@ for f in files:
     output = output.replace( '${CLASSNAME}', NAMESPACE + '.' + classname )
     output = output.replace( '${SOURCELINK}', REPO_URL + f )
 
+    diagram = inheritanceChart( classname )
+    output = output.replace( '${DIAGRAM}', diagram )
+
     # right menu
     output = output.replace( '${CONSTRUCTORS}', constructors )
     output = output.replace( '${PROPERTIES}', properties )
@@ -479,6 +513,9 @@ for f in files:
 
       outputf.write( output )
 
-
 print 'Total Symbols Documented:', totalSymbols
 
+#d = ''
+#for x in inheritances:
+#  d += inheritanceChart( x )
+#print d
