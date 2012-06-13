@@ -373,6 +373,7 @@ outputDir = '/tmp/xdoc'
 os.mkdir( outputDir )
 
 shutil.copy( 'xdoc.css', outputDir )
+shutil.copy( 'xdoc.png', outputDir )
 
 
 # left menu
@@ -512,6 +513,40 @@ for f in files:
     with open( outputDir + os.sep + c + '.html', 'w' ) as outputf:
 
       outputf.write( output )
+
+
+# create index.html
+
+# load the template
+with open( 'xdoc.html', 'r' ) as t:
+  output = t.read()
+
+# modify template
+output = output.replace( '${TITLE}', title )
+output = output.replace( '${CLASSNAME}', '' )
+output = output.replace( '${SOURCELINK}', REPO_URL )
+
+diagram = inheritanceChart( classname )
+output = output.replace( '${DIAGRAM}', '' )
+
+# right menu
+output = output.replace( '${CONSTRUCTORS}', '' )
+output = output.replace( '${PROPERTIES}', '' )
+output = output.replace( '${GETTERSSETTERS}', '' )
+output = output.replace( '${FUNCTIONS}', '' )
+output = output.replace( '${STATIC}', '' )
+
+output = output.replace( '${MENU}', leftMenuContent )
+
+content = '<center><br><br><br><br><img src="xdoc.png"><br><br>'
+content += 'XTK is a WebGL framework providing an easy-to-use API to visualize scientific data on the web.<br>No background or knowledge in Computer Graphics is required.<br><br><a href="http://goXTK.com" target="_blank">http://goXTK.com</a></center>'
+
+output = output.replace( '${CONTENT}', content )
+
+with open( outputDir + os.sep + 'index.html', 'w' ) as outputf:
+
+  outputf.write( output )
+
 
 print 'Total Symbols Documented:', totalSymbols
 
