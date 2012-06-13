@@ -62,6 +62,7 @@ XBUILD_PATH = os.path.abspath( os.path.dirname( sys.argv[0] ) )
 SOFTWARE_PATH = os.path.normpath( XBUILD_PATH + os.sep + '..' + os.sep )
 CLOSURELIBRARY_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/closure-library/closure/' ) )
 CLOSURELIBRARY_PYTHON_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PATH, 'bin/build/' ) )
+CLOSUREBUILDER_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PYTHON_PATH, 'closurebuilder.py' ) )
 CLOSURECOMPILER_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/closure-library/compiler-latest/compiler.jar' ) )
 
 BUILD_OUTPUT_PATH = os.path.normpath( XBUILD_PATH + os.sep + SOFTWARE_SHORT.lower() + '.js' )

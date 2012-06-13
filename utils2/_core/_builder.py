@@ -6,6 +6,7 @@
 
 import os
 import sys
+import subprocess
 
 import config
 from _jsfilefinder import JSFileFinder
@@ -13,7 +14,7 @@ from _jsfilefinder import JSFileFinder
 
 class ColorPrompt( object ):
   '''
-  This color prompt can handle stdout and stderr piping and colorize the text.
+  This color prompt colorizes text depending on its content.
   '''
   YELLOW = '\033[33m'
   PURPLE = '\033[35m'
@@ -21,13 +22,9 @@ class ColorPrompt( object ):
   ORANGE = '\033[93m'
   _CLEAR = '\033[0m'
 
-
   def write( self, line ):
     '''
     '''
-    sys.stdout = sys.__stdout__
-    sys.stderr = sys.__stderr__
-
     line = line.strip( '\n' )
     color = ''
 
@@ -47,8 +44,6 @@ class ColorPrompt( object ):
 
     print color + line + self._CLEAR
 
-    sys.stdout = self
-    sys.stderr = self
 
 #
 #
@@ -65,11 +60,7 @@ class Builder( object ):
     filefinder = JSFileFinder()
     jsfiles = filefinder.run()
 
-    # we need to import some closure python classes here
-    sys.path.append( config.CLOSURELIBRARY_PYTHON_PATH )
-    import closurebuilder
-
-    arguments = [sys.argv[0]]
+    arguments = []
 
     # add js files
     for j in jsfiles:
@@ -99,23 +90,17 @@ class Builder( object ):
       arguments.extend( ['-f', '--debug'] )
       arguments.extend( ['-f', '--formatting=PRETTY_PRINT'] )
 
-    # we use the arguments now as sys.argv
-    sys.argv = arguments
-
-    # we pipe the stdout and stderr to our colorprompt
-    sys.stdout = ColorPrompt()
-    sys.stderr = ColorPrompt()
 
     #
-    # call the builder
+    # call the compiler (through the closure builder)
     #
-    closurebuilder.main()
+    command = [config.CLOSUREBUILDER_PATH]
+    command.extend( arguments )
 
-    # reset the pipes
-    sys.stdout = sys.__stdout__
-    sys.stderr = sys.__stderr__
+    process = subprocess.Popen( command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.STDOUT )
 
+    # fancy displaying using the color prompt
+    colorPrompt = ColorPrompt()
 
-
-
-
+    for line in process.stdout:
+      colorPrompt.write( line )
