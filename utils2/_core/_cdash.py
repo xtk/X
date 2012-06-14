@@ -40,7 +40,7 @@ class CDash( object ):
   def run( self, options=None ):
     '''
     options
-      ['type', log]
+      [type, log]
     '''
     # create the CDash XML elements
 
@@ -59,7 +59,7 @@ class CDash( object ):
     # and attach the site element to the xml document
     self.__xml.appendChild( siteElement )
 
-    self.submit( self.__xml.toxml() )
+    return self.__xml.toxml()
 
 
   def submit( self, _data ):
