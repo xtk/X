@@ -90,6 +90,7 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
     _data = data.substr(position);
   }
   
+
   var MRI = this.parseStream(_data);
   // object.MRI = MRI;
   var _dimensions = [MRI.ndim1, MRI.ndim2, MRI.ndim3];
@@ -98,8 +99,8 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
   var _spacing = MRI.v_voxelsize;
   object._spacing = _spacing;
   
-  var min = MRI.stats.min;
-  var max = MRI.stats.max;
+  var min = MRI.min;
+  var max = MRI.max;
   
   // attach the scalar range to the volume
   object._min = min;
@@ -153,7 +154,9 @@ X.parserMGZ.prototype.parseStream = function(data) {
     v_voxelsize: [],
     v_data: [], // data as single vector
     V_data: [], // data as volume
-    stats: null
+    stats: null,
+    min: 0,
+    max: 0
   };
   
   var MRItype = {
@@ -274,6 +277,7 @@ X.parserMGZ.prototype.parseStream = function(data) {
     MRI.M_ras[1][3] = dataptr.read();
     MRI.M_ras[2][3] = dataptr.read();
   }
+  
   dataptr.setParseFunction(this.parseUChar8Array.bind(this),
       dataptr._sizeOfChar);
   dataptr.read(unused_space_size);
@@ -283,29 +287,44 @@ X.parserMGZ.prototype.parseStream = function(data) {
   // syslog(sprintf('Accessing %d %s vals (%d bytes)', volsize,
   // MRI.MRIdatatype.name,
   // volsize*MRI.MRIdatatype.size));
-  dataptr
-      .setParseFunction(MRI.MRIdatatype.func_arrayRead, MRI.MRIdatatype.size);
-  var a_ret = dataptr.read(volsize);
-  MRI.v_data = a_ret;
   
+
+  // dataptr
+  // .setParseFunction(MRI.MRIdatatype.func_arrayRead, MRI.MRIdatatype.size);
+  // var a_ret = dataptr.read(volsize);
+  
+  //
+  // we can grab the min max values like this and skip the stats further down
+  //
+  var a_ret = MRI.MRIdatatype.func_arrayRead(data, dataptr._dataPointer,
+      volsize);
+  MRI.v_data = a_ret[0];
+  MRI.min = a_ret[2];
+  MRI.max = a_ret[1];
+  
+  // increase the data pointr
+  dataptr._dataPointer += dataptr._elementSize * MRI.MRIdatatype.size;
+  
+
   // Now for the final MRI parameters at the end of the data stream:
   if (dataptr._dataPointer + 4 * sizeof_float < dataptr._data.length) {
     // syslog('Reading MGH/MGZ MRI parameters');
     dataptr.setParseFunction(this.parseFloat32EndianSwappedArray.bind(this),
-        dataptr._sizeOfFloat)
+        dataptr._sizeOfFloat);
     MRI.Tr = dataptr.read();
     MRI.flipangle = dataptr.read();
     MRI.Te = dataptr.read();
     MRI.Ti = dataptr.read();
   }
   
+  // console.time('stats')
   // syslog('Calculating data/image stats...');
-  MRI.stats = this.stats_calc(MRI.v_data);
+  // MRI.stats = this.stats_calc(MRI.v_data);
   // syslog('FreeSurfer MGH/MGZ data stream END.');
-  
+  // console.timeEnd('stats')
   return MRI;
   
-}
+};
 
 
 // export symbols (required for advanced compilation)
