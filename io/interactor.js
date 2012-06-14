@@ -671,6 +671,8 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
 
 /**
  * Stop the hover countdown and fire a X.event.HoverEndEvent.
+ *
+ * @protected
  */
 X.interactor.prototype.hoverEnd_ = function() {
 
