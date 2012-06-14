@@ -4,12 +4,15 @@
 # (c) 2012 The XTK Developers <dev@goXTK.com>
 #
 
+import hashlib
 import os
 import sys
 from socket import getfqdn
 from xml.dom import minidom
 from datetime import datetime
 from time import time, gmtime, strftime
+
+import _colors
 
 #
 #
@@ -56,18 +59,27 @@ class CDash( object ):
     # and attach the site element to the xml document
     self.__xml.appendChild( siteElement )
 
-    self.submit()
+    self.submit( self.__xml.toxml() )
 
 
-  def submit( self ):
+  def submit( self, _data ):
     '''
+    Submit data to CDash via HTTP PUT.
     '''
+
+    # md5 hash the _data
+    md5 = hashlib.md5( _data ).hexdigest()
+
     import urllib2
     opener = urllib2.build_opener( urllib2.HTTPHandler )
-    request = urllib2.Request( 'http://x.babymri.org/cdash/submit.php?project=XTK', data=self.__xml.toxml() )
-    request.add_header( 'Content-Type', 'text/xml' )
+    request = urllib2.Request( config.CDASH_SUBMIT_URL + '&MD5=' + md5, data=_data )
     request.get_method = lambda: 'PUT'
     url = opener.open( request )
+    response = url.read()
+
+    # check if the submission was successful
+    if response.find( '<status>OK</status>' ) == -1:
+      print Colors.RED + 'Error: Could not upload to CDash.' + Colors._CLEAR
 
 
   def fillBuildElement( self, buildElement, log ):
@@ -142,7 +154,7 @@ class CDash( object ):
     siteElement = xml.createElement( 'Site' )
     # .. and the attributes for it
     siteElement.setAttribute( 'BuildName', os_platform + '-' + os_version )
-    siteElement.setAttribute( 'BuildStamp', buildtime + 'Nightly' )
+    siteElement.setAttribute( 'BuildStamp', buildtime + '-Nightly' )
     siteElement.setAttribute( 'Hostname', hostname )
     siteElement.setAttribute( 'Name', hostname )
 

@@ -58,6 +58,9 @@ LICENSE_HEADER = '''/*
 
 # PATHS
 EXCLUDES_PATH = ['lib', 'testing', 'deps', 'utils']
+
+CDASH_SUBMIT_URL = 'http://x.babymri.org/cdash/submit.php?project=' + SOFTWARE_SHORT
+
 XBUILD_PATH = os.path.abspath( os.path.dirname( sys.argv[0] ) )
 SOFTWARE_PATH = os.path.normpath( XBUILD_PATH + os.sep + '..' + os.sep )
 CLOSURELIBRARY_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/closure-library/closure/' ) )
