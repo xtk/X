@@ -165,7 +165,7 @@ X.displayable = function() {
    * The opacity of this object.
    * 
    * @type {number}
-   * @public
+   * @protected
    */
   this._opacity = 1.0;
   
