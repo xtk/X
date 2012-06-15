@@ -126,3 +126,5 @@ class Builder( object ):
 
     with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Build.xml' ), 'w' ) as f:
       f.write( xmlfile )
+
+    print Colors.ORANGE + 'Compiled file ' + Colors.CYAN + config.BUILD_OUTPUT_PATH + Colors.ORANGE + ' written. ' + Colors._CLEAR
