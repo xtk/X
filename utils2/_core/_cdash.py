@@ -13,6 +13,7 @@ from datetime import datetime
 from time import time, gmtime, strftime
 
 import _colors
+import config
 
 #
 #
@@ -80,6 +81,7 @@ class CDash( object ):
     # check if the submission was successful
     if response.find( '<status>OK</status>' ) == -1:
       print Colors.RED + 'Error: Could not upload to CDash.' + Colors._CLEAR
+      sys.exit( 2 )
 
 
   def fillBuildElement( self, buildElement, log ):

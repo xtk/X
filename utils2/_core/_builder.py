@@ -124,5 +124,5 @@ class Builder( object ):
     cdasher = CDash()
     xmlfile = cdasher.run( ['Build', log] )
 
-    with open( os.path.join( config.TEMP_PATH, SOFTWARE_SHORT + '_Build.xml'.'w' ) ) as f:
+    with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Build.xml' ), 'w' ) as f:
       f.write( xmlfile )

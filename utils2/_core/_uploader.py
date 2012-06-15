@@ -29,13 +29,29 @@ class Uploader( object ):
     # now we create a dashboard submission file
     cdasher = CDash()
 
-    print Colors.CYAN + 'Loading Build Report..' + Colors._CLEAR
-
-    if os.path.isfile( path )
-
     #
     # build
-    cdasher.run( ['Build', log] )
+    #
+    print Colors.CYAN + 'Loading Build Report..' + Colors._CLEAR
+    buildReport = os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Build.xml' )
+
+    if os.path.isfile( buildReport ):
+      # found a build report
+      print Colors.ORANGE + 'Found Build Report!' + Colors._CLEAR
+
+      with open( buildReport, 'r' ) as f:
+        cdasher.submit( f.read() )
+
+      print Colors.ORANGE + '..Successfully uploaded.' + Colors._CLEAR
+
+    else:
+      # not found
+      print Colors.ORANGE + 'Not Found!' + Colors._CLEAR
+      buildReport = None
 
     #
     # test
+
+    # delete old reports
+    if buildReport:
+      os.unlink( buildReport )
