@@ -35,7 +35,6 @@ goog.require('X.base');
 goog.require('X.transform');
 goog.require('X.triplets');
 goog.require('X.texture');
-goog.require('X.transform');
 
 
 /**
