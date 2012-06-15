@@ -77,7 +77,7 @@ X.renderer = function() {
    * The HTML container of this renderer, E.g. a <div>.
    * 
    * @type {!Element|HTMLBodyElement}
-   * @public
+   * @protected
    */
   this._container = window.document.body;
   
