@@ -12,6 +12,8 @@ import tempfile
 # STRINGS
 SOFTWARE = 'The X Toolkit'
 SOFTWARE_SHORT = 'XTK'
+SOFTWARE_DESCRIPTION = 'XTK is a WebGL framework providing an easy-to-use API to visualize scientific data on the web.<br>No background or knowledge in Computer Graphics is required.'
+SOFTWARE_HOMEPAGE = 'http://goXTK.com'
 
 NAMESPACE = 'X'
 
@@ -59,10 +61,13 @@ LICENSE_HEADER = '''/*
 # PATHS
 EXCLUDES_PATH = ['lib', 'testing', 'deps', 'utils']
 
+REPOSITORY_URL = 'https://github.com/xtk/X/blob/master/'
+
 CDASH_SUBMIT_URL = 'http://x.babymri.org/cdash/submit.php?project=' + SOFTWARE_SHORT
 
 XBUILD_PATH = os.path.abspath( os.path.dirname( sys.argv[0] ) )
 SOFTWARE_PATH = os.path.normpath( XBUILD_PATH + os.sep + '..' + os.sep )
+
 CLOSURELIBRARY_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/closure-library/closure/' ) )
 CLOSURELIBRARY_PYTHON_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PATH, 'bin/build/' ) )
 CLOSUREBUILDER_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PYTHON_PATH, 'closurebuilder.py' ) )
@@ -70,7 +75,10 @@ CLOSUREDEPSWRITER_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PYTHON_P
 CLOSURECOMPILER_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/closure-library/compiler-latest/compiler.jar' ) )
 CLOSUREGOOGBASE_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PATH, 'goog/base.js' ) )
 
-BUILD_OUTPUT_PATH = os.path.normpath( XBUILD_PATH + os.sep + SOFTWARE_SHORT.lower() + '.js' )
-DEPS_OUTPUT_PATH = os.path.normpath( SOFTWARE_PATH + os.sep + SOFTWARE_SHORT.lower() + '-deps.js' )
+DOC_TEMPLATES_PATH = os.path.normpath( os.path.join( XBUILD_PATH, '_core', 'templates/' ) )
+
+BUILD_OUTPUT_PATH = os.path.normpath( os.path.join( XBUILD_PATH , SOFTWARE_SHORT.lower() + '.js' ) )
+DEPS_OUTPUT_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH , SOFTWARE_SHORT.lower() + '-deps.js' ) )
+DOC_OUTPUT_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH , 'doc/' ) )
 
 TEMP_PATH = tempfile.gettempdir()
