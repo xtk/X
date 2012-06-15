@@ -66,8 +66,11 @@ SOFTWARE_PATH = os.path.normpath( XBUILD_PATH + os.sep + '..' + os.sep )
 CLOSURELIBRARY_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/closure-library/closure/' ) )
 CLOSURELIBRARY_PYTHON_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PATH, 'bin/build/' ) )
 CLOSUREBUILDER_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PYTHON_PATH, 'closurebuilder.py' ) )
+CLOSUREDEPSWRITER_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PYTHON_PATH, 'depswriter.py' ) )
 CLOSURECOMPILER_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/closure-library/compiler-latest/compiler.jar' ) )
+CLOSUREGOOGBASE_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PATH, 'goog/base.js' ) )
 
 BUILD_OUTPUT_PATH = os.path.normpath( XBUILD_PATH + os.sep + SOFTWARE_SHORT.lower() + '.js' )
+DEPS_OUTPUT_PATH = os.path.normpath( SOFTWARE_PATH + os.sep + SOFTWARE_SHORT.lower() + '-deps.js' )
 
 TEMP_PATH = tempfile.gettempdir()
