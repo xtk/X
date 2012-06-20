@@ -267,6 +267,20 @@ X.renderer3D.prototype.onHover_ = function(event) {
 /**
  * @inheritDoc
  */
+X.renderer3D.prototype.onResize_ = function() {
+
+  goog.base(this, 'onResize_');
+// modify perspective
+//  this._camera._perspective = new Float32Array(this._camera.calculatePerspective_(this._camera._fieldOfView, (this._canvas.width / this._canvas.height), 1, 10000).flatten());
+ // redraw
+ this.resetViewAndRender();
+ 
+};
+
+
+/**
+ * @inheritDoc
+ */
 X.renderer3D.prototype.init = function() {
 
   // call the superclass' init method

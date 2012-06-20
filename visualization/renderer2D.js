@@ -170,6 +170,20 @@ X.renderer2D.prototype.onScroll_ = function(event) {
 
 
 /**
+ * @inheritDoc
+ */
+X.renderer2D.prototype.onResize_ = function() {
+  
+  goog.base(this, 'onResize_');
+  this.resetViewAndRender();
+//  window.console.log(goog.dom.getParent(this._container));
+// redraw
+ //
+ 
+};
+
+
+/**
  * Get the orientation of this renderer. Valid orientations are 'x','y','z' or
  * null.
  * 

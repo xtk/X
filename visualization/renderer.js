@@ -255,6 +255,23 @@ X.renderer.prototype.onHover_ = function(event) {
 
 
 /**
+ * @protected
+ */
+X.renderer.prototype.onResize_ = function() {
+  
+  var container = goog.dom.getElement(this._container);
+  this._width = container.clientWidth;
+  this._height = container.clientHeight;
+
+  var canvas = goog.dom.getFirstElementChild(this._container);
+  canvas.width = this._width;
+  canvas.height = this._height;
+  
+  this._canvas = canvas;
+};
+
+
+/**
  * The callback for X.event.events.SCROLL events which indicate scrolling of the
  * viewport.
  * 
@@ -558,7 +575,6 @@ X.renderer.prototype.init = function(_contextName) {
   goog.events.listen(_interactor, X.event.events.SCROLL, this.onScroll_
       .bind(this));
   
-
   // .. and finally register it to this instance
   this._interactor = _interactor;
   
@@ -584,7 +600,9 @@ X.renderer.prototype.init = function(_contextName) {
   // to check if the initialization was completed successfully
   this._camera = _camera;
   
-
+  // .. listen to resizeEvents
+  goog.events.listen(window, goog.events.EventType.RESIZE, this.onResize_, false, this);
+  
   //
   //
   // .. the rest should be performed in the subclasses
