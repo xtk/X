@@ -258,16 +258,32 @@ X.renderer.prototype.onHover_ = function(event) {
  * @protected
  */
 X.renderer.prototype.onResize_ = function() {
-  
+
+  // grab the new width and height of the container
   var container = goog.dom.getElement(this._container);
   this._width = container.clientWidth;
   this._height = container.clientHeight;
-
-  var canvas = goog.dom.getFirstElementChild(this._container);
+  
+  // propagate it to the canvas
+  var canvas = goog.dom.getElement(this._canvas);
   canvas.width = this._width;
   canvas.height = this._height;
   
-  this._canvas = canvas;
+  if (this instanceof X.renderer3D) {
+    
+    // modify 3d viewport
+    this._context.viewport(0, 0, this._width, this._height);
+    
+    // modify perspective
+    this._camera._perspective = new Float32Array(this._camera
+        .calculatePerspective_(this._camera._fieldOfView,
+            (this._canvas.width / this._canvas.height), 1, 10000).flatten());
+    
+  }
+  
+  // .. and re-draw
+  this.resetViewAndRender();
+  
 };
 
 
@@ -618,7 +634,8 @@ X.renderer.prototype.init = function(_contextName) {
   this._camera = _camera;
   
   // .. listen to resizeEvents
-  goog.events.listen(window, goog.events.EventType.RESIZE, this.onResize_, false, this);
+  goog.events.listen(window, goog.events.EventType.RESIZE, this.onResize_,
+      false, this);
   
   //
   //
