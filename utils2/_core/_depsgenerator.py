@@ -29,7 +29,7 @@ class DepsGenerator( object ):
 
     # grab all js files
     filefinder = JSFileFinder()
-    jsfiles = filefinder.run()
+    jsfiles = filefinder.run( ['USE_INCLUDES'] )
 
     arguments = []
 

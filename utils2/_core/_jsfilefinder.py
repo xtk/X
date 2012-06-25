@@ -41,6 +41,12 @@ class JSFileFinder( object ):
           # ignore this guy
           ignore = True
 
+      if options and options[0] == 'USE_INCLUDES':
+        for i in config.INCLUDES_PATH:
+          if j.find( i ) != -1:
+            # force inclusion for this guy
+            ignore = False
+
       if not ignore:
         # add this guy to the valid files
         jsFiles.append( j )
