@@ -1,0 +1,325 @@
+<html>
+<head>
+<title>The X Toolkit API</title>
+<link href="doc.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load('visualization', '1', {packages: ['orgchart']});
+</script>
+<script type="text/javascript">
+
+  // don't show internals by default
+  var displayInternals = false;
+
+  var toggleInternals = function() {
+    
+    // toggle the display variable
+    displayInternals = !displayInternals;
+
+    if (!document.styleSheets)
+      return;
+    var thecss = new Array();
+    
+    if (document.styleSheets[0].cssRules) thecss = document.styleSheets[0].cssRules;
+    else thecss = document.styleSheets[0].rules;
+    
+    for (i = 0; i < thecss.length; i++) {
+      
+      if (thecss[i].selectorText.toLowerCase() == '.private') {
+        
+        if (displayInternals) {
+          thecss[i].style.cssText += "display: block;";
+          document.getElementById('togglBtn').innerHTML = 'Hide Internals'
+        } else {
+          thecss[i].style.cssText += "display: none;";
+          document.getElementById('togglBtn').innerHTML = 'Show Internals'
+        }
+      
+      } else if (thecss[i].selectorText.toLowerCase() == '.private_quicklink') {
+        
+        if (displayInternals) {
+          thecss[i].style.cssText += "display: inline;";
+        } else {
+          thecss[i].style.cssText += "display: none;";
+        }
+        
+      }
+       
+    }
+    
+  }
+  
+  function drawVisualization() {
+    // Create and populate the data table.
+    var data = google.visualization.arrayToDataTable([
+     [{v:"goog.events.EventTarget",f:"<font color=green>goog.events.EventTarget</font>"},null,null],
+["X.base","goog.events.EventTarget",null],
+["X.parser","X.base",null],
+["X.parserSTL","X.parser",null],
+
+    ]);
+  
+    // Create and draw the visualization.
+    new google.visualization.OrgChart(document.getElementById('diagram')).
+        draw(data, {allowHtml: true, size:'small', color:'#f3f3f3'});
+  }
+  
+
+  google.setOnLoadCallback(drawVisualization);  
+  
+</script>
+</head>
+
+<body>
+	<h1>The X Toolkit API</h1>
+	<div class="menu"><b>X</b><br><span class="menuitem"><a href="counter.html">X.counter</a></span><br><br><b>CORE</b><br><span class="menuitem"><a href="base.html">X.base</a></span><br><span class="menuitem"><a href="colortable.html">X.colortable</a></span><br><span class="menuitem"><a href="event.html">X.event</a></span><br><span class="menuitem"><a href="file.html">X.file</a></span><br><span class="menuitem"><a href="HoverEndEvent.html">X.HoverEndEvent</a></span><br><span class="menuitem"><a href="HoverEvent.html">X.HoverEvent</a></span><br><span class="menuitem"><a href="ModifiedEvent.html">X.ModifiedEvent</a></span><br><span class="menuitem"><a href="PanEvent.html">X.PanEvent</a></span><br><span class="menuitem"><a href="ProgressEvent.html">X.ProgressEvent</a></span><br><span class="menuitem"><a href="RenderEvent.html">X.RenderEvent</a></span><br><span class="menuitem"><a href="ResetViewEvent.html">X.ResetViewEvent</a></span><br><span class="menuitem"><a href="RotateEvent.html">X.RotateEvent</a></span><br><span class="menuitem"><a href="scalars.html">X.scalars</a></span><br><span class="menuitem"><a href="ScrollEvent.html">X.ScrollEvent</a></span><br><span class="menuitem"><a href="texture.html">X.texture</a></span><br><span class="menuitem"><a href="transform.html">X.transform</a></span><br><span class="menuitem"><a href="triplets.html">X.triplets</a></span><br><span class="menuitem"><a href="ZoomEvent.html">X.ZoomEvent</a></span><br><br><b>INJECTS</b><br><span class="menuitem"><a href="constructable.html">X.constructable</a></span><br><span class="menuitem"><a href="displayable.html">X.displayable</a></span><br><span class="menuitem"><a href="loadable.html">X.loadable</a></span><br><span class="menuitem"><a href="thresholdable.html">X.thresholdable</a></span><br><br><b>IO</b><br><span class="menuitem"><a href="interactor.html">X.interactor</a></span><br><span class="menuitem"><a href="interactor2D.html">X.interactor2D</a></span><br><span class="menuitem"><a href="interactor3D.html">X.interactor3D</a></span><br><span class="menuitem"><a href="loader.html">X.loader</a></span><br><span class="menuitem"><a href="parser.html">X.parser</a></span><br><span class="menuitem"><a href="parserCRV.html">X.parserCRV</a></span><br><span class="menuitem"><a href="parserFSM.html">X.parserFSM</a></span><br><span class="menuitem"><a href="parserHelper.html">X.parserHelper</a></span><br><span class="menuitem"><a href="parserIMAGE.html">X.parserIMAGE</a></span><br><span class="menuitem"><a href="parserLUT.html">X.parserLUT</a></span><br><span class="menuitem"><a href="parserMGZ.html">X.parserMGZ</a></span><br><span class="menuitem"><a href="parserNRRD.html">X.parserNRRD</a></span><br><span class="menuitem"><a href="parserSTL.html">X.parserSTL</a></span><br><span class="menuitem"><a href="parserTRK.html">X.parserTRK</a></span><br><span class="menuitem"><a href="parserVTK.html">X.parserVTK</a></span><br><br><b>MATH</b><br><span class="menuitem"><a href="array.html">X.array</a></span><br><span class="menuitem"><a href="matrix.html">X.matrix</a></span><br><br><b>OBJECTS</b><br><span class="menuitem"><a href="cube.html">X.cube</a></span><br><span class="menuitem"><a href="cylinder.html">X.cylinder</a></span><br><span class="menuitem"><a href="fibers.html">X.fibers</a></span><br><span class="menuitem"><a href="labelmap.html">X.labelmap</a></span><br><span class="menuitem"><a href="mesh.html">X.mesh</a></span><br><span class="menuitem"><a href="object.html">X.object</a></span><br><span class="menuitem"><a href="slice.html">X.slice</a></span><br><span class="menuitem"><a href="sphere.html">X.sphere</a></span><br><span class="menuitem"><a href="volume.html">X.volume</a></span><br><br><b>UI</b><br><span class="menuitem"><a href="caption.html">X.caption</a></span><br><span class="menuitem"><a href="progressbar.html">X.progressbar</a></span><br><br><b>VISUALIZATION</b><br><span class="menuitem"><a href="buffer.html">X.buffer</a></span><br><span class="menuitem"><a href="camera.html">X.camera</a></span><br><span class="menuitem"><a href="camera2D.html">X.camera2D</a></span><br><span class="menuitem"><a href="camera3D.html">X.camera3D</a></span><br><span class="menuitem"><a href="indexer.html">X.indexer</a></span><br><span class="menuitem"><a href="renderer.html">X.renderer</a></span><br><span class="menuitem"><a href="renderer2D.html">X.renderer2D</a></span><br><span class="menuitem"><a href="renderer3D.html">X.renderer3D</a></span><br><span class="menuitem"><a href="shaders.html">X.shaders</a></span><br><br></div>
+	<div id="diagram"></div>
+	<div class="content">
+		<h2>X.parserSTL</h2>
+		<div class="public" id="parserSTL">
+<pre>/**
+* Create a parser for the ascii .STL format.
+*
+* @constructor
+* @extends <a href="parser.html">X.parser</a>
+*/</pre>
+<span class="code">var p = new <span class="identifier">X.parserSTL()</span>;</span><br></div><div class="private" id="_classname">
+<pre>/**
+* The className of this class.
+*
+* @type {string}
+* @protected
+*/</pre>
+<span class="code">p.<span class="identifier">_classname</span> = $_CLASSNAME;</span><br></div><div class="private" id="_dirty">
+<pre>/**
+* The 'dirty' flag of this object.
+*
+* @type {boolean}
+* @protected
+*/</pre>
+<span class="code">p.<span class="identifier">_dirty</span> = $_DIRTY;</span><br></div><div class="private" id="_id">
+<pre>/**
+* The uniqueId of this instance. Each class instance in XTK has a uniqueId.
+*
+* @type {number}
+* @protected
+*/</pre>
+<span class="code">p.<span class="identifier">_id</span> = $_ID;</span><br></div><div class="public" id="classname_get">
+<pre>/**
+* Get the className of this object.
+*
+* @return {string} The className of this object.
+* @public
+*/</pre>
+<span class="code">var _classname = p.<span class="identifier">classname</span>;</span><br></div><div class="public" id="id_get">
+<pre>/**
+* Get the id of this instance.
+*
+* @return {string} The className of this object.
+* @public
+*/</pre>
+<span class="code">var _id = p.<span class="identifier">id</span>;</span><br></div><div class="public" id="parse">
+<pre>/**
+* Parse data and configure the given object. When complete, a
+* <a href="parser.html">X.parser</a>.ModifiedEvent is fired.
+*
+* @param {!<a href="base.html">X.base</a>} container A container which holds the loaded data. This can
+*          be an <a href="object.html">X.object</a> as well.
+* @param {!<a href="object.html">X.object</a>} object The object to configure.
+* @param {!String} data The data to parse.
+* @param {*} flag An additional flag.
+* @throws {Error} An exception if something goes wrong.
+*/</pre>
+<span class="code">p.<span class="identifier">parse</span>($CONTAINER, $OBJECT, $DATA, $FLAG);</span><br></div><div class="private" id="parseFloat32">
+<pre>/**
+* Parse a Float32 value from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @return {!number} The parsed value.
+*/</pre>
+<span class="code">var parseFloat32 = p.<span class="identifier">parseFloat32</span>($DATA, $OFFSET);</span><br></div><div class="private" id="parseFloat32Array">
+<pre>/**
+* Parse an array of Float32 values from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @param {!number} elements The number of elements.
+* @return {!Array} An array consisting of [the actual values as an array, the
+*         max value, the min value].
+*/</pre>
+<span class="code">var parseFloat32Array = p.<span class="identifier">parseFloat32Array</span>($DATA, $OFFSET, $ELEMENTS);</span><br></div><div class="private" id="parseFloat32EndianSwapped">
+<pre>/**
+* Parse an endian swaped Float32 value from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @return {!number} The parsed value.
+*/</pre>
+<span class="code">var parseFloat32EndianSwapped = p.<span class="identifier">parseFloat32EndianSwapped</span>($DATA, $OFFSET);</span><br></div><div class="private" id="parseFloat32EndianSwappedArray">
+<pre>/**
+* Parse an array of endian swapped Float32 values from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @param {!number} elements The number of elements.
+* @return {!Array} An array consisting of [the actual values as an array, the
+*         max value, the min value].
+*/</pre>
+<span class="code">var parseFloat32EndianSwappedArray = p.<span class="identifier">parseFloat32EndianSwappedArray</span>($DATA, $OFFSET, $ELEMENTS);</span><br></div><div class="private" id="parseLine">
+<pre>/**
+* Parses a line of .STL data and modifies the given <a href="triplets.html">X.triplets</a> containers.
+*
+* @param {!<a href="triplets.html">X.triplets</a>} p The object's points as a <a href="triplets.html">X.triplets</a> container.
+* @param {!<a href="triplets.html">X.triplets</a>} n The object's normals as a <a href="triplets.html">X.triplets</a> container.
+* @param {!string} line The line to parse.
+* @protected
+*/</pre>
+<span class="code">p.<span class="identifier">parseLine</span>($P, $N, $LINE);</span><br></div><div class="private" id="parseSChar8">
+<pre>/**
+* Parse a signed Char8 value from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @return {!number} The parsed value.
+*/</pre>
+<span class="code">var parseSChar8 = p.<span class="identifier">parseSChar8</span>($DATA, $OFFSET);</span><br></div><div class="private" id="parseString">
+<pre>/**
+* Parse a string from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @param {!number} length The length of the string.
+* @return {string} The parsed string.
+*/</pre>
+<span class="code">var parseString = p.<span class="identifier">parseString</span>($DATA, $OFFSET, $LENGTH);</span><br></div><div class="private" id="parseUChar8">
+<pre>/**
+* Parse a unsigned Char8 value from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @return {!number} The parsed value.
+*/</pre>
+<span class="code">var parseUChar8 = p.<span class="identifier">parseUChar8</span>($DATA, $OFFSET);</span><br></div><div class="private" id="parseUChar8Array">
+<pre>/**
+* Parse an array of unsigned Char8 values from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @param {!number} elements The number of elements.
+* @return {!Array} An array consisting of [the actual values as an array, the
+*         max value, the min value].
+*/</pre>
+<span class="code">var parseUChar8Array = p.<span class="identifier">parseUChar8Array</span>($DATA, $OFFSET, $ELEMENTS);</span><br></div><div class="private" id="parseUInt16">
+<pre>/**
+* Parse an UInt16 value from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @return {!number} The parsed value.
+*/</pre>
+<span class="code">var parseUInt16 = p.<span class="identifier">parseUInt16</span>($DATA, $OFFSET);</span><br></div><div class="private" id="parseUInt16Array">
+<pre>/**
+* Parse an array of UInt16 values from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @param {!number} elements The number of elements.
+* @return {!Array} An array consisting of [the actual values as an array, the
+*         max value, the min value].
+*/</pre>
+<span class="code">var parseUInt16Array = p.<span class="identifier">parseUInt16Array</span>($DATA, $OFFSET, $ELEMENTS);</span><br></div><div class="private" id="parseUInt16EndianSwapped">
+<pre>/**
+* Parse an endian swapped UInt16 value from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @return {!number} The parsed value.
+*/</pre>
+<span class="code">var parseUInt16EndianSwapped = p.<span class="identifier">parseUInt16EndianSwapped</span>($DATA, $OFFSET);</span><br></div><div class="private" id="parseUInt16EndianSwappedArray">
+<pre>/**
+* Parse an array of endian swapped UInt16 values from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @param {!number} elements The number of elements.
+* @return {!Array} An array consisting of [the actual values as an array, the
+*         max value, the min value].
+*/</pre>
+<span class="code">var parseUInt16EndianSwappedArray = p.<span class="identifier">parseUInt16EndianSwappedArray</span>($DATA, $OFFSET, $ELEMENTS);</span><br></div><div class="private" id="parseUInt24EndianSwapped">
+<pre>/**
+* Parse an endian swaped UInt24 value from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @return {!number} The parsed value.
+*/</pre>
+<span class="code">var parseUInt24EndianSwapped = p.<span class="identifier">parseUInt24EndianSwapped</span>($DATA, $OFFSET);</span><br></div><div class="private" id="parseUInt32">
+<pre>/**
+* Parse an UInt32 value from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @return {!number} The parsed value.
+*/</pre>
+<span class="code">var parseUInt32 = p.<span class="identifier">parseUInt32</span>($DATA, $OFFSET);</span><br></div><div class="private" id="parseUInt32EndianSwapped">
+<pre>/**
+* Parse an endian swaped UInt32 value from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @return {!number} The parsed value.
+*/</pre>
+<span class="code">var parseUInt32EndianSwapped = p.<span class="identifier">parseUInt32EndianSwapped</span>($DATA, $OFFSET);</span><br></div><div class="private" id="parseUInt32EndianSwappedArray">
+<pre>/**
+* Parse an array of endian swapped UInt32 values from some data.
+*
+* @param {!String} data The data to parse.
+* @param {!number} offset An offset index.
+* @param {!number} elements The number of elements.
+* @return {!Array} An array consisting of [the actual values as an array, the
+*         max value, the min value].
+*/</pre>
+<span class="code">var parseUInt32EndianSwappedArray = p.<span class="identifier">parseUInt32EndianSwappedArray</span>($DATA, $OFFSET, $ELEMENTS);</span><br></div><div class="private" id="reslice">
+<pre>/**
+* Reslice a data stream to fill the slices of an <a href="volume.html">X.volume</a> in X,Y and Z
+* directions. The given volume (object) has to be created at this point
+* according to the proper dimensions. This also takes care of a possible
+* associated label map which has to be loaded before.
+*
+* @param {!<a href="object.html">X.object</a>} object The <a href="volume.html">X.volume</a> to fill.
+* @param {!Array} datastream The datastream as an array.
+* @param {!Array} sizes The sizes of the volume as an array [X,Y,Z].
+* @param {!number} min The min. scalar intensity value.
+* @param {!number} max The max. scalar intensity value.
+*/</pre>
+<span class="code">p.<span class="identifier">reslice</span>($OBJECT, $DATASTREAM, $SIZES, $MIN, $MAX);</span><br></div><div class="private" id="stats_calc">
+<pre>/**
+* Process a numerical array and calculate some basic stats: o mean o variance o
+* deviation o prod o sum o min; minIndex o max; maxIndex
+*
+* @param {*} data The numerical data array to process.
+* @return {*} The results.
+*/</pre>
+<span class="code">var stats_calc = p.<span class="identifier">stats_calc</span>($DATA);</span><br></div>
+	</div>
+
+  <div id="toolbox">
+  <center><button id="togglBtn" type="button" onclick="javascript:toggleInternals();">Show Internals</button></center><br><br>
+  <b>CONSTRUCTORS</b><br>
+  <span class="public_quicklink"><a href="#parserSTL">X.parserSTL</a><br></span><br>
+  <b>PROPERTIES</b><br>
+  <span class="private_quicklink"><a href="#_classname">_classname</a><br></span><span class="private_quicklink"><a href="#_dirty">_dirty</a><br></span><span class="private_quicklink"><a href="#_id">_id</a><br></span><br>
+  <b>GETTERS/SETTERS</b><br>
+  <span class="public_quicklink"><a href="#classname_get">classname</a><br></span><span class="public_quicklink"><a href="#id_get">id</a><br></span><br>
+  <b>FUNCTIONS</b><br>
+  <span class="public_quicklink"><a href="#parse">parse</a><br></span><span class="private_quicklink"><a href="#parseFloat32">parseFloat32</a><br></span><span class="private_quicklink"><a href="#parseFloat32Array">parseFloat32Array</a><br></span><span class="private_quicklink"><a href="#parseFloat32EndianSwapped">parseFloat32EndianSwapped</a><br></span><span class="private_quicklink"><a href="#parseFloat32EndianSwappedArray">parseFloat32EndianSwappedArray</a><br></span><span class="private_quicklink"><a href="#parseLine">parseLine</a><br></span><span class="private_quicklink"><a href="#parseSChar8">parseSChar8</a><br></span><span class="private_quicklink"><a href="#parseString">parseString</a><br></span><span class="private_quicklink"><a href="#parseUChar8">parseUChar8</a><br></span><span class="private_quicklink"><a href="#parseUChar8Array">parseUChar8Array</a><br></span><span class="private_quicklink"><a href="#parseUInt16">parseUInt16</a><br></span><span class="private_quicklink"><a href="#parseUInt16Array">parseUInt16Array</a><br></span><span class="private_quicklink"><a href="#parseUInt16EndianSwapped">parseUInt16EndianSwapped</a><br></span><span class="private_quicklink"><a href="#parseUInt16EndianSwappedArray">parseUInt16EndianSwappedArray</a><br></span><span class="private_quicklink"><a href="#parseUInt24EndianSwapped">parseUInt24EndianSwapped</a><br></span><span class="private_quicklink"><a href="#parseUInt32">parseUInt32</a><br></span><span class="private_quicklink"><a href="#parseUInt32EndianSwapped">parseUInt32EndianSwapped</a><br></span><span class="private_quicklink"><a href="#parseUInt32EndianSwappedArray">parseUInt32EndianSwappedArray</a><br></span><span class="private_quicklink"><a href="#reslice">reslice</a><br></span><span class="private_quicklink"><a href="#stats_calc">stats_calc</a><br></span><br>
+  <b>STATIC</b><br>
+  <br><br><br>
+  <center><small><a href="https://github.com/xtk/X/blob/master/io/parserSTL.js" target="_blank">SOURCECODE</a><br></small></center>
+  </div>	
+	
+	<br><br><br>
+</body>
+
+</html>

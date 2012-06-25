@@ -42,6 +42,7 @@ goog.require('goog.structs.Map');
  * 
  * @constructor
  * @extends X.base
+ * @mixin X.loadable
  */
 X.colortable = function() {
 

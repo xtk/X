@@ -40,6 +40,7 @@ goog.require('X.loadable');
  * 
  * @constructor
  * @extends X.base
+ * @mixin X.loadable
  */
 X.texture = function() {
 
