@@ -12,6 +12,7 @@ import config
 from _cdash import CDash
 from _colors import Colors
 from _jsfilefinder import JSFileFinder
+from _licenser import Licenser
 
 #
 #
@@ -126,5 +127,9 @@ class Builder( object ):
 
     with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Build.xml' ), 'w' ) as f:
       f.write( xmlfile )
+
+    # and attach the license
+    licenser = Licenser()
+    licenser.run()
 
     print Colors.ORANGE + 'Compiled file ' + Colors.CYAN + config.BUILD_OUTPUT_PATH + Colors.ORANGE + ' written. ' + Colors._CLEAR
