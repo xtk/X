@@ -63,10 +63,13 @@ class CDash( object ):
     return self.__xml.toxml()
 
 
-  def submit( self, _data ):
+  def submit( self, _data, type='Experimental' ):
     '''
     Submit data to CDash via HTTP PUT.
     '''
+
+    # set the ${BUILDTYPE} in _data
+    _data = _data.replace( '${BUILDTYPE}', type )
 
     # md5 hash the _data
     md5 = hashlib.md5( _data ).hexdigest()
@@ -156,7 +159,7 @@ class CDash( object ):
     siteElement = xml.createElement( 'Site' )
     # .. and the attributes for it
     siteElement.setAttribute( 'BuildName', os_platform + '-' + os_version )
-    siteElement.setAttribute( 'BuildStamp', buildtime + '-Nightly' )
+    siteElement.setAttribute( 'BuildStamp', buildtime + '-${BUILDTYPE}' )
     siteElement.setAttribute( 'Hostname', hostname )
     siteElement.setAttribute( 'Name', hostname )
 
