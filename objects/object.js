@@ -49,6 +49,7 @@ goog.require('X.triplets');
  * @constructor
  * @param {X.object=} object Another X.object to use as a template.
  * @extends X.base
+ * @mixin X.displayable
  */
 X.object = function(object) {
 

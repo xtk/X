@@ -42,6 +42,8 @@ goog.require('X.thresholdable');
  * 
  * @constructor
  * @extends X.base
+ * @mixin X.loadable
+ * @mixin X.thresholdable
  */
 X.scalars = function() {
 

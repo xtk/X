@@ -43,6 +43,7 @@ goog.require('X.object');
  * 
  * @constructor
  * @extends X.object
+ * @mixin X.constructable
  */
 X.cylinder = function() {
 

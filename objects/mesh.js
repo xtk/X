@@ -40,6 +40,7 @@ goog.require('X.object');
  * 
  * @constructor
  * @extends X.object
+ * @mixin X.loadable
  */
 X.mesh = function() {
 

@@ -184,7 +184,7 @@ X.renderer = function() {
    * 
    * @enum {boolean}
    */
-  this['config'] = {
+  this._config = {
     'PROGRESSBAR_ENABLED': true
   };
   
@@ -255,6 +255,39 @@ X.renderer.prototype.onHover_ = function(event) {
 
 
 /**
+ * @protected
+ */
+X.renderer.prototype.onResize_ = function() {
+
+  // grab the new width and height of the container
+  var container = goog.dom.getElement(this._container);
+  this._width = container.clientWidth;
+  this._height = container.clientHeight;
+  
+  // propagate it to the canvas
+  var canvas = goog.dom.getElement(this._canvas);
+  canvas.width = this._width;
+  canvas.height = this._height;
+  
+  if (this instanceof X.renderer3D) {
+    
+    // modify 3d viewport
+    this._context.viewport(0, 0, this._width, this._height);
+    
+    // modify perspective
+    this._camera._perspective = new Float32Array(this._camera
+        .calculatePerspective_(this._camera._fieldOfView,
+            (this._canvas.width / this._canvas.height), 1, 10000).flatten());
+    
+  }
+  
+  // .. and re-draw
+  this.resetViewAndRender();
+  
+};
+
+
+/**
  * The callback for X.event.events.SCROLL events which indicate scrolling of the
  * viewport.
  * 
@@ -272,6 +305,23 @@ X.renderer.prototype.onScroll_ = function(event) {
   }
   
 };
+
+
+/**
+ * Access the configuration of this renderer. Possible settings and there
+ * default values are:
+ * 
+ * <pre>
+ * config.PROGRESSBAR_ENABLED: true
+ * </pre>
+ * 
+ * @return {Object} The configuration.
+ */
+X.renderer.prototype.__defineGetter__('config', function() {
+
+  return this._config;
+  
+});
 
 
 /**
@@ -388,7 +438,7 @@ X.renderer.prototype.resetViewAndRender = function() {
 X.renderer.prototype.showProgressBar_ = function() {
 
   // only do the following if the progressBar was not turned off
-  if (this['config']['PROGRESSBAR_ENABLED']) {
+  if (this._config['PROGRESSBAR_ENABLED']) {
     
     // create a progress bar here if this is the first render request and the
     // loader is working
@@ -411,7 +461,7 @@ X.renderer.prototype.showProgressBar_ = function() {
 X.renderer.prototype.hideProgressBar_ = function() {
 
   // only do the following if the progressBar was not turned off
-  if (this['config']['PROGRESSBAR_ENABLED']) {
+  if (this._config['PROGRESSBAR_ENABLED']) {
     
     if (this._progressBar && !this.__readyCheckTimer2) {
       
@@ -558,7 +608,6 @@ X.renderer.prototype.init = function(_contextName) {
   goog.events.listen(_interactor, X.event.events.SCROLL, this.onScroll_
       .bind(this));
   
-
   // .. and finally register it to this instance
   this._interactor = _interactor;
   
@@ -584,7 +633,10 @@ X.renderer.prototype.init = function(_contextName) {
   // to check if the initialization was completed successfully
   this._camera = _camera;
   
-
+  // .. listen to resizeEvents
+  goog.events.listen(window, goog.events.EventType.RESIZE, this.onResize_,
+      false, this);
+  
   //
   //
   // .. the rest should be performed in the subclasses

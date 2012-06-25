@@ -1,589 +1,96 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		
-		<title>JsDoc Reference - Index</title>
-		<meta name="generator" content="JsDoc Toolkit" />
-		
-		<style type="text/css">
-		/* default.css */
-body
-{
-	font: 12px "Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
-	width: 800px;
-}
+<html>
+<head>
+<title>The X Toolkit API</title>
+<link href="doc.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load('visualization', '1', {packages: ['orgchart']});
+</script>
+<script type="text/javascript">
 
-#header
-{
-	font-size: 300%;
-	font-weight: bold;
-	width: 790px;
-	height: 80px;
-	padding: 0px;
-	margin: 0px;
-}
+  // don't show internals by default
+  var displayInternals = false;
 
-h1
-{
-	font-size: 150%;
-	font-weight: bold;
-	padding: 0;
-	margin: 1em 0 0 .3em;
-}
+  var toggleInternals = function() {
+    
+    // toggle the display variable
+    displayInternals = !displayInternals;
 
-hr
-{
-	border: none 0;
-	border-top: 1px solid #7F8FB1;
-	height: 1px;
-}
+    if (!document.styleSheets)
+      return;
+    var thecss = new Array();
+    
+    if (document.styleSheets[0].cssRules) thecss = document.styleSheets[0].cssRules;
+    else thecss = document.styleSheets[0].rules;
+    
+    for (i = 0; i < thecss.length; i++) {
+      
+      if (thecss[i].selectorText.toLowerCase() == '.private') {
+        
+        if (displayInternals) {
+          thecss[i].style.cssText += "display: block;";
+          document.getElementById('togglBtn').innerHTML = 'Hide Internals'
+        } else {
+          thecss[i].style.cssText += "display: none;";
+          document.getElementById('togglBtn').innerHTML = 'Show Internals'
+        }
+      
+      } else if (thecss[i].selectorText.toLowerCase() == '.private_quicklink') {
+        
+        if (displayInternals) {
+          thecss[i].style.cssText += "display: inline;";
+        } else {
+          thecss[i].style.cssText += "display: none;";
+        }
+        
+      }
+       
+    }
+    
+  }
+  
+  function drawVisualization() {
+    // Create and populate the data table.
+    var data = google.visualization.arrayToDataTable([
+     
+    ]);
+  
+    // Create and draw the visualization.
+    new google.visualization.OrgChart(document.getElementById('diagram')).
+        draw(data, {allowHtml: true, size:'small', color:'#f3f3f3'});
+  }
+  
 
-pre.code
-{
-	display: block;
-	padding: 8px;
-	border: 1px dashed #ccc;
-}
+  google.setOnLoadCallback(drawVisualization);  
+  
+</script>
+</head>
 
-#index
-{
-	float: left;
-	width: 160px;
-	left: 8px;
-	background-color: #F3F3F3;
-	padding: 8px;
-}
+<body>
+	<h1>The X Toolkit API</h1>
+	<div class="menu"><b>X</b><br><span class="menuitem"><a href="counter.html">X.counter</a></span><br><br><b>CORE</b><br><span class="menuitem"><a href="base.html">X.base</a></span><br><span class="menuitem"><a href="colortable.html">X.colortable</a></span><br><span class="menuitem"><a href="event.html">X.event</a></span><br><span class="menuitem"><a href="file.html">X.file</a></span><br><span class="menuitem"><a href="HoverEndEvent.html">X.HoverEndEvent</a></span><br><span class="menuitem"><a href="HoverEvent.html">X.HoverEvent</a></span><br><span class="menuitem"><a href="ModifiedEvent.html">X.ModifiedEvent</a></span><br><span class="menuitem"><a href="PanEvent.html">X.PanEvent</a></span><br><span class="menuitem"><a href="ProgressEvent.html">X.ProgressEvent</a></span><br><span class="menuitem"><a href="RenderEvent.html">X.RenderEvent</a></span><br><span class="menuitem"><a href="ResetViewEvent.html">X.ResetViewEvent</a></span><br><span class="menuitem"><a href="RotateEvent.html">X.RotateEvent</a></span><br><span class="menuitem"><a href="scalars.html">X.scalars</a></span><br><span class="menuitem"><a href="ScrollEvent.html">X.ScrollEvent</a></span><br><span class="menuitem"><a href="texture.html">X.texture</a></span><br><span class="menuitem"><a href="transform.html">X.transform</a></span><br><span class="menuitem"><a href="triplets.html">X.triplets</a></span><br><span class="menuitem"><a href="ZoomEvent.html">X.ZoomEvent</a></span><br><br><b>INJECTS</b><br><span class="menuitem"><a href="constructable.html">X.constructable</a></span><br><span class="menuitem"><a href="displayable.html">X.displayable</a></span><br><span class="menuitem"><a href="loadable.html">X.loadable</a></span><br><span class="menuitem"><a href="thresholdable.html">X.thresholdable</a></span><br><br><b>IO</b><br><span class="menuitem"><a href="interactor.html">X.interactor</a></span><br><span class="menuitem"><a href="interactor2D.html">X.interactor2D</a></span><br><span class="menuitem"><a href="interactor3D.html">X.interactor3D</a></span><br><span class="menuitem"><a href="loader.html">X.loader</a></span><br><span class="menuitem"><a href="parser.html">X.parser</a></span><br><span class="menuitem"><a href="parserCRV.html">X.parserCRV</a></span><br><span class="menuitem"><a href="parserFSM.html">X.parserFSM</a></span><br><span class="menuitem"><a href="parserHelper.html">X.parserHelper</a></span><br><span class="menuitem"><a href="parserIMAGE.html">X.parserIMAGE</a></span><br><span class="menuitem"><a href="parserLUT.html">X.parserLUT</a></span><br><span class="menuitem"><a href="parserMGZ.html">X.parserMGZ</a></span><br><span class="menuitem"><a href="parserNRRD.html">X.parserNRRD</a></span><br><span class="menuitem"><a href="parserSTL.html">X.parserSTL</a></span><br><span class="menuitem"><a href="parserTRK.html">X.parserTRK</a></span><br><span class="menuitem"><a href="parserVTK.html">X.parserVTK</a></span><br><br><b>MATH</b><br><span class="menuitem"><a href="array.html">X.array</a></span><br><span class="menuitem"><a href="matrix.html">X.matrix</a></span><br><br><b>OBJECTS</b><br><span class="menuitem"><a href="cube.html">X.cube</a></span><br><span class="menuitem"><a href="cylinder.html">X.cylinder</a></span><br><span class="menuitem"><a href="fibers.html">X.fibers</a></span><br><span class="menuitem"><a href="labelmap.html">X.labelmap</a></span><br><span class="menuitem"><a href="mesh.html">X.mesh</a></span><br><span class="menuitem"><a href="object.html">X.object</a></span><br><span class="menuitem"><a href="slice.html">X.slice</a></span><br><span class="menuitem"><a href="sphere.html">X.sphere</a></span><br><span class="menuitem"><a href="volume.html">X.volume</a></span><br><br><b>UI</b><br><span class="menuitem"><a href="caption.html">X.caption</a></span><br><span class="menuitem"><a href="progressbar.html">X.progressbar</a></span><br><br><b>VISUALIZATION</b><br><span class="menuitem"><a href="buffer.html">X.buffer</a></span><br><span class="menuitem"><a href="camera.html">X.camera</a></span><br><span class="menuitem"><a href="camera2D.html">X.camera2D</a></span><br><span class="menuitem"><a href="camera3D.html">X.camera3D</a></span><br><span class="menuitem"><a href="indexer.html">X.indexer</a></span><br><span class="menuitem"><a href="renderer.html">X.renderer</a></span><br><span class="menuitem"><a href="renderer2D.html">X.renderer2D</a></span><br><span class="menuitem"><a href="renderer3D.html">X.renderer3D</a></span><br><span class="menuitem"><a href="shaders.html">X.shaders</a></span><br><br></div>
+	<div id="diagram"></div>
+	<div class="content">
+		<h2></h2>
+		<center><br><br><br><br><img src="doc.png"><br><br>XTK is a WebGL framework providing an easy-to-use API to visualize scientific data on the web.<br>No background or knowledge in Computer Graphics is required.<br><br><a href="http://goXTK.com" target="_blank">http://goXTK.com</a></center>
+	</div>
 
-#content
-{
-	margin-left: 190px;
-	width: 600px;
-}
+  <div id="toolbox">
+  <center><button id="togglBtn" type="button" onclick="javascript:toggleInternals();">Show Internals</button></center><br><br>
+  <b>CONSTRUCTORS</b><br>
+  <br>
+  <b>PROPERTIES</b><br>
+  <br>
+  <b>GETTERS/SETTERS</b><br>
+  <br>
+  <b>FUNCTIONS</b><br>
+  <br>
+  <b>STATIC</b><br>
+  <br><br><br>
+  <center><small><a href="https://github.com/xtk/X/blob/master/" target="_blank">SOURCECODE</a><br></small></center>
+  </div>	
+	
+	<br><br><br>
+</body>
 
-.classList
-{
-	list-style-type: none;
-	padding: 0;
-	margin: 0 0 0 8px;
-	font-family: arial, sans-serif;
-	font-size: 1em;
-	overflow: auto;
-}
-
-.classList li
-{
-	padding: 0;
-	margin: 0 0 8px 0;
-}
-
-.summaryTable { width: 100%; }
-
-h1.classTitle
-{
-	font-size:170%;
-	line-height:130%;
-}
-
-h2 { font-size: 110%; }
-caption, div.sectionTitle
-{
-	background-color: #7F8FB1;
-	color: #fff;
-	font-size:130%;
-	text-align: left;
-	padding: 2px 6px 2px 6px;
-	border: 1px #7F8FB1 solid;
-}
-
-div.sectionTitle { margin-bottom: 8px; }
-.summaryTable thead { display: none; }
-
-.summaryTable td
-{
-	vertical-align: top;
-	padding: 4px;
-	border-bottom: 1px #7F8FB1 solid;
-	border-right: 1px #7F8FB1 solid;
-}
-
-/*col#summaryAttributes {}*/
-.summaryTable td.attributes
-{
-	border-left: 1px #7F8FB1 solid;
-	width: 140px;
-	text-align: right;
-}
-
-td.attributes, .fixedFont
-{
-	line-height: 15px;
-	color: #002EBE;
-	font-family: "Courier New",Courier,monospace;
-	font-size: 13px;
-}
-
-.summaryTable td.nameDescription
-{
-	text-align: left;
-	font-size: 13px;
-	line-height: 15px;
-}
-
-.summaryTable td.nameDescription, .description
-{
-	line-height: 15px;
-	padding: 4px;
-	padding-left: 4px;
-}
-
-.summaryTable { margin-bottom: 8px; }
-
-ul.inheritsList
-{
-	list-style: square;
-	margin-left: 20px;
-	padding-left: 0;
-}
-
-.detailList {
-	margin-left: 20px;
-	line-height: 15px;
-}
-.detailList dt { margin-left: 20px; }
-
-.detailList .heading
-{
-	font-weight: bold;
-	padding-bottom: 6px;
-	margin-left: 0;
-}
-
-.light, td.attributes, .light a:link, .light a:visited
-{
-	color: #777;
-	font-style: italic;
-}
-
-.fineprint
-{
-	text-align: right;
-	font-size: 10px;
-}
-
-		</style>
-	</head>
-	
-	<body>
-		<div id="header">
-<img src="x.png" border=0 style="vertical-align:middle">
-<span>The X Toolkit API</span>
-</div>
-
-		
-		<div id="index">
-			<div align="center"><a href="index.html">Class Index</a>
-| <a href="files.html">File Index</a></div>
-<hr />
-<h2>Classes</h2>
-<ul class="classList">
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-  
-	
-</ul>
-<ul class="classList">
-	<h2>CORE</h2><li><a href="symbols/X.base.html">X.base</a></li><li><a href="symbols/X.colorTable.html">X.colorTable</a></li><li><a href="symbols/X.event.html">X.event</a></li><li><a href="symbols/X.event.HoverEndEvent.html">X.event.HoverEndEvent</a></li><li><a href="symbols/X.event.HoverEvent.html">X.event.HoverEvent</a></li><li><a href="symbols/X.event.ModifiedEvent.html">X.event.ModifiedEvent</a></li><li><a href="symbols/X.event.PanEvent.html">X.event.PanEvent</a></li><li><a href="symbols/X.event.ProgressEvent.html">X.event.ProgressEvent</a></li><li><a href="symbols/X.event.RenderEvent.html">X.event.RenderEvent</a></li><li><a href="symbols/X.event.ResetViewEvent.html">X.event.ResetViewEvent</a></li><li><a href="symbols/X.event.RotateEvent.html">X.event.RotateEvent</a></li><li><a href="symbols/X.event.ZoomEvent.html">X.event.ZoomEvent</a></li><li><a href="symbols/X.file.html">X.file</a></li><li><a href="symbols/X.scalars.html">X.scalars</a></li><li><a href="symbols/X.texture.html">X.texture</a></li><li><a href="symbols/X.transform.html">X.transform</a></li><li><a href="symbols/X.triplets.html">X.triplets</a></li><h2>IO</h2><li><a href="symbols/X.interactor.html">X.interactor</a></li><li><a href="symbols/X.loader.html">X.loader</a></li><li><a href="symbols/X.parser.html">X.parser</a></li><li><a href="symbols/X.parserCRV.html">X.parserCRV</a></li><li><a href="symbols/X.parserFSM.html">X.parserFSM</a></li><li><a href="symbols/X.parserHelper.html">X.parserHelper</a></li><li><a href="symbols/X.parserLUT.html">X.parserLUT</a></li><li><a href="symbols/X.parserMGZ.html">X.parserMGZ</a></li><li><a href="symbols/X.parserNRRD.html">X.parserNRRD</a></li><li><a href="symbols/X.parserSTL.html">X.parserSTL</a></li><li><a href="symbols/X.parserTRK.html">X.parserTRK</a></li><li><a href="symbols/X.parserVTK.html">X.parserVTK</a></li><h2>MATH</h2><li><a href="symbols/X.matrix.html">X.matrix</a></li><h2>OBJECTS</h2><li><a href="symbols/X.cube.html">X.cube</a></li><li><a href="symbols/X.cylinder.html">X.cylinder</a></li><li><a href="symbols/X.labelMap.html">X.labelMap</a></li><li><a href="symbols/X.object.html">X.object</a></li><li><a href="symbols/X.slice.html">X.slice</a></li><li><a href="symbols/X.sphere.html">X.sphere</a></li><li><a href="symbols/X.volume.html">X.volume</a></li><h2>UI</h2><li><a href="symbols/X.caption.html">X.caption</a></li><li><a href="symbols/X.progressbar.html">X.progressbar</a></li><h2>VISUALIZATION</h2><li><a href="symbols/X.buffer.html">X.buffer</a></li><li><a href="symbols/X.camera.html">X.camera</a></li><li><a href="symbols/X.indexer.html">X.indexer</a></li><li><a href="symbols/X.renderer.html">X.renderer</a></li><li><a href="symbols/X.shaders.html">X.shaders</a></li>
-
-</ul>
-<hr />
-
-		</div>
-		
-		<div id="content">
-			<h1 class="classTitle">Class Index</h1>
-			
-			
-			<div>
-				<h2><a href="symbols/_global_.html">_global_</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/Function.html">Function</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/Function%23bind-fNOP.html">Function#bind-fNOP</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.base.html">X.base</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.buffer.html">X.buffer</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.camera.html">X.camera</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.caption.html">X.caption</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.colorTable.html">X.colorTable</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.cube.html">X.cube</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.cylinder.html">X.cylinder</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.event.html">X.event</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.event.HoverEndEvent.html">X.event.HoverEndEvent</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.event.HoverEvent.html">X.event.HoverEvent</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.event.ModifiedEvent.html">X.event.ModifiedEvent</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.event.PanEvent.html">X.event.PanEvent</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.event.ProgressEvent.html">X.event.ProgressEvent</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.event.RenderEvent.html">X.event.RenderEvent</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.event.ResetViewEvent.html">X.event.ResetViewEvent</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.event.RotateEvent.html">X.event.RotateEvent</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.event.ZoomEvent.html">X.event.ZoomEvent</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.file.html">X.file</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.indexer.html">X.indexer</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.interactor.html">X.interactor</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.labelMap.html">X.labelMap</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.loader.html">X.loader</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.matrix.html">X.matrix</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.object.html">X.object</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.parser.html">X.parser</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.parserCRV.html">X.parserCRV</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.parserFSM.html">X.parserFSM</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.parserHelper.html">X.parserHelper</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.parserLUT.html">X.parserLUT</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.parserMGZ.html">X.parserMGZ</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.parserNRRD.html">X.parserNRRD</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.parserSTL.html">X.parserSTL</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.parserTRK.html">X.parserTRK</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.parserVTK.html">X.parserVTK</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.progressbar.html">X.progressbar</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.renderer.html">X.renderer</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.scalars.html">X.scalars</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.shaders.html">X.shaders</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.slice.html">X.slice</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.sphere.html">X.sphere</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.texture.html">X.texture</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.transform.html">X.transform</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.triplets.html">X.triplets</a></h2>
-				
-			</div>
-			<hr />
-			
-			<div>
-				<h2><a href="symbols/X.volume.html">X.volume</a></h2>
-				
-			</div>
-			<hr />
-			
-			
-		</div>
-		<div class="fineprint" style="clear:both">
-			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blankt">JsDoc Toolkit</a> 2.4.0 on Thu Apr 12 2012 23:02:15 GMT-0400 (EDT)
-		</div>
-	</body>
 </html>

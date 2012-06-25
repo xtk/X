@@ -1,0 +1,57 @@
+#
+# The XBUILD uploader.
+#
+# (c) 2012 The XTK Developers <dev@goXTK.com>
+#
+
+import os
+import sys
+import subprocess
+
+import config
+from _cdash import CDash
+from _colors import Colors
+
+#
+#
+#
+class Uploader( object ):
+  '''
+  '''
+
+  def run( self, options=None ):
+    '''
+    Performs the action.
+    '''
+
+    print 'Uploading results for ' + config.SOFTWARE_SHORT + '...'
+
+    # now we create a dashboard submission file
+    cdasher = CDash()
+
+    #
+    # build
+    #
+    print Colors.CYAN + 'Loading Build Report..' + Colors._CLEAR
+    buildReport = os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Build.xml' )
+
+    if os.path.isfile( buildReport ):
+      # found a build report
+      print Colors.ORANGE + 'Found Build Report!' + Colors._CLEAR
+
+      with open( buildReport, 'r' ) as f:
+        cdasher.submit( f.read() )
+
+      print Colors.ORANGE + '..Successfully uploaded.' + Colors._CLEAR
+
+    else:
+      # not found
+      print Colors.ORANGE + 'Not Found!' + Colors._CLEAR
+      buildReport = None
+
+    #
+    # test
+
+    # delete old reports
+    if buildReport:
+      os.unlink( buildReport )
