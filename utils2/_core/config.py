@@ -60,6 +60,7 @@ LICENSE_HEADER = '''/*
 
 # PATHS
 EXCLUDES_PATH = ['lib', 'testing', 'deps', 'utils']
+INCLUDES_PATH = ['csg', 'JXG'] # force inclusion of sub folders in an excluded directory for dependency generation
 
 REPOSITORY_URL = 'https://github.com/xtk/X/blob/master/'
 
