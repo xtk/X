@@ -18,8 +18,8 @@ class Licenser( object ):
     '''
     Performs the action.
     '''
-    with open( BUILD_OUTPUT_PATH, 'r+' ) as f:
+    with open( config.BUILD_OUTPUT_PATH, 'r+' ) as f:
 
       old = f.read() # read everything in the file
       f.seek( 0 ) # rewind
-      f.write( LICENSE_HEADER + '\n' + old ) # write the license before
+      f.write( config.LICENSE_HEADER + '\n' + old ) # write the license before
