@@ -26,6 +26,14 @@ class Uploader( object ):
 
     print 'Uploading results for ' + config.SOFTWARE_SHORT + '...'
 
+    # check which submission type
+    submissiontype = 'Experimental'
+    if options.continuous:
+      submissiontype = 'Continuous'
+    elif options.nightly:
+      submissiontype = 'Nightly'
+
+
     # now we create a dashboard submission file
     cdasher = CDash()
 
@@ -40,9 +48,9 @@ class Uploader( object ):
       print Colors.ORANGE + 'Found Build Report!' + Colors._CLEAR
 
       with open( buildReport, 'r' ) as f:
-        cdasher.submit( f.read() )
+        cdasher.submit( f.read(), submissiontype )
 
-      print Colors.ORANGE + '..Successfully uploaded.' + Colors._CLEAR
+      print Colors.ORANGE + '..Successfully uploaded as ' + Colors.CYAN + submissiontype + Colors.ORANGE + '.' + Colors._CLEAR
 
     else:
       # not found

@@ -33,10 +33,10 @@ class Entrypoint( object ):
     self.add( 'v', 'verbose', 'enable verbose output' )
 
 
-  def add( self, short, long, helpText ):
+  def add( self, short, long, helpText, defaultSetting=False ):
     '''
     '''
-    self.__entrypoint.add_argument( '-' + short, '--' + long, action='store_true', dest=long, default=False, help=helpText )
+    self.__entrypoint.add_argument( '-' + short, '--' + long, action='store_true', dest=long, default=defaultSetting, help=helpText )
 
   def parse( self, args ):
     '''
