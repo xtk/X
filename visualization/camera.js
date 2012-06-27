@@ -363,7 +363,11 @@ X.camera.prototype.reset = function() {
  */
 X.camera.prototype.pan = function(distance) {
 
-  if (!(distance instanceof goog.math.Vec2)) {
+  if ((distance instanceof Array) && (distance.length == 2)) {
+    
+    distance = new goog.math.Vec2(distance[0], distance[1]);
+    
+  } else if (!(distance instanceof goog.math.Vec2)) {
     
     throw new Error('Invalid distance vector for pan operation.');
     
