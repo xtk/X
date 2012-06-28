@@ -65,34 +65,78 @@ X.shaders = function() {
    */
   this._vertexshaderSource = '';
   var t = '';
-  t += 'precision mediump float;'
-      + "attribute vec3 vertexPosition,vertexNormal,vertexColor;"
-      + "attribute vec2 vertexTexturePos;"
-      + "attribute float vertexScalar;"
-      + "uniform mat4 view,perspective,objectTransform;"
-      + "uniform bool useObjectColor,useScalars,scalarsReplaceMode;"
-      + "uniform vec3 center,objectColor,scalarsMinColor,scalarsMaxColor;"
-      + "uniform float scalarsMin,scalarsMax,pointSize,scalarsMinThreshold,scalarsMaxThreshold;"
-      + "varying float fDiscardNow;"
-      + "varying vec4 fVertexPosition;"
-      + "varying vec2 fragmentTexturePos;"
-      + "varying vec3 fragmentColor,fVertexNormal,fTransformedVertexNormal;"
-      + "void main()"
-      + "{"
-      + "fTransformedVertexNormal=mat3(view[0].xyz,view[1].xyz,view[2].xyz)*mat3(objectTransform[0].xyz,objectTransform[1].xyz,objectTransform[2].xyz)*vertexNormal;"
-      + "fVertexNormal=vertexNormal;" + "fDiscardNow=0.;"
-      + "vec3 v=vertexPosition-center;"
-      + "fVertexPosition=view*objectTransform*vec4(v,1.);"
-      + "fragmentTexturePos=vertexTexturePos;" + "if(useScalars)" + "{"
-      + "float f=vertexScalar;"
-      + "if(f<scalarsMinThreshold||f>scalarsMaxThreshold)" + "{"
-      + "if(scalarsReplaceMode)" + "fragmentColor=objectColor;" + "else"
-      + " fDiscardNow=1.;" + "}" + "else" + "{" + "if(scalarsReplaceMode)"
-      + "fragmentColor=f*scalarsMaxColor+(1.-f)*scalarsMinColor;" + "else"
-      + " fragmentColor=vertexColor;" + "}" + "}" + "else"
-      + " if(useObjectColor)" + "fragmentColor=objectColor;" + "else"
-      + " fragmentColor=vertexColor;" + "gl_PointSize=pointSize;"
-      + "gl_Position=perspective*fVertexPosition;" + "}";
+  t += 'precision mediump float;\n';
+  t += '\n';
+  t += 'attribute vec3 vertexPosition;\n';
+  t += 'attribute vec3 vertexNormal;\n';
+  t += 'attribute vec3 vertexColor;\n';
+  t += 'attribute vec2 vertexTexturePos;\n';
+  t += 'attribute float vertexScalar;\n';
+  t += '\n';
+  t += 'uniform mat4 view;\n';
+  t += 'uniform mat4 perspective;\n';
+  t += 'uniform vec3 center;\n';
+  t += 'uniform mat4 objectTransform;\n';
+  t += 'uniform bool useObjectColor;\n';
+  t += 'uniform bool useScalars;\n';
+  t += 'uniform bool scalarsReplaceMode;\n';
+  t += 'uniform float scalarsMin;\n';
+  t += 'uniform float scalarsMax;\n';
+  t += 'uniform vec3 scalarsMinColor;\n';
+  t += 'uniform vec3 scalarsMaxColor;\n';
+  t += 'uniform float scalarsMinThreshold;\n';
+  t += 'uniform float scalarsMaxThreshold;\n';
+  t += 'uniform vec3 objectColor;\n';
+  t += 'uniform float pointSize;\n';
+  t += '\n';
+  t += 'varying float fDiscardNow;\n';
+  t += 'varying vec4 fVertexPosition;\n';
+  t += 'varying vec3 fragmentColor;\n';
+  t += 'varying vec2 fragmentTexturePos;\n';
+  t += 'varying vec3 fVertexNormal;\n';
+  t += 'varying vec3 fTransformedVertexNormal;\n';
+  t += '\n';
+  t += 'void main(void) {\n';
+  // setup varying -> fragment shader
+  // use the old mat3 constructor to be compatible with mac/safari
+  t += '  fTransformedVertexNormal = mat3(view[0].xyz,view[1].xyz,view[2].xyz) * ';
+  t += 'mat3(objectTransform[0].xyz,objectTransform[1].xyz,objectTransform[2].xyz) * ';
+  t += 'vertexNormal;\n';
+  t += '  fVertexNormal = vertexNormal;\n';
+  t += '  fDiscardNow = 0.0;\n'; // don't discard by default
+  // t += ' vec4 gVertexPosition = vec4(fVertexPosition.xyz - focus, 1.0);\n';
+  t += '  vec3 vertexPosition2 = vertexPosition - center;\n';
+  t += '  fVertexPosition = view * objectTransform * vec4(vertexPosition2, 1.0);\n';
+  t += '  fragmentTexturePos = vertexTexturePos;\n';
+  t += '  if (useScalars) {\n'; // use scalar overlays
+  t += '    float scalarValue = vertexScalar;\n'; // ..and threshold
+  t += '    if (scalarValue < scalarsMinThreshold || scalarValue > scalarsMaxThreshold) {\n';
+  t += '      if (scalarsReplaceMode) {\n';
+  t += '        fragmentColor = objectColor;\n'; // outside threshold
+  t += '      } else {\n';
+  t += '        fDiscardNow = 1.0;\n';
+  // if we don't replace the colors, just
+  // discard this vertex (fiber length
+  // thresholding f.e.)
+  t += '      }\n';
+  t += '    } else {\n';
+  t += '      if (scalarsReplaceMode) {\n';
+  t += '        fragmentColor = scalarValue * scalarsMaxColor + (1.0 - scalarValue) * scalarsMinColor;\n';
+  t += '      } else {\n';
+  t += '        fragmentColor = vertexColor;\n'; // if we don't replace and
+  // didn't discard, just use
+  // the point color here
+  t += '      }\n';
+  t += '    }\n';
+  t += '  } else if (useObjectColor) {\n';
+  t += '    fragmentColor = objectColor;\n';
+  t += '  } else {\n';
+  t += '    fragmentColor = vertexColor;\n';
+  t += '  }\n';
+  // setup vertex Point Size and Position in the GL context
+  t += '  gl_PointSize = pointSize;\n';
+  t += '  gl_Position = perspective * fVertexPosition;\n';
+  t += '}\n';
   this._vertexshaderSource = t;
   
   /**
@@ -103,67 +147,93 @@ X.shaders = function() {
    * @protected
    */
   this._fragmentshaderSource = '';
-  // The uncompiled fragment shader is in fragment.shader.
-  // compilation via http://www.ctrl-alt-test.fr/minifier/index
-  //
-  var t2 = "precision mediump float;"
-      + "uniform bool usePicking,useTexture,useTextureThreshold,useLabelMapTexture;"
-      + "uniform sampler2D textureSampler,textureSampler2;"
-      + "uniform float objectOpacity,labelmapOpacity,volumeLowerThreshold,volumeUpperThreshold,volumeScalarMin,volumeScalarMax;"
-      + "varying float fDiscardNow;"
-      + "varying vec4 fVertexPosition;"
-      + "varying vec3 fragmentColor,fVertexNormal,fTransformedVertexNormal;"
-      + "varying vec2 fragmentTexturePos;"
-      + "void main()"
-      + "{"
-      + "if(fDiscardNow>0.)"
-      + "{"
-      + "discard;"
-      + "}"
-      + "if(usePicking)"
-      + "gl_FragColor=vec4(fragmentColor,1.);"
-      + "else"
-      + " if(useTexture)"
-      + "{"
-      + "vec4 f=texture2D(textureSampler,fragmentTexturePos),v=f;"
-      + "if(useLabelMapTexture)"
-      + "{"
-      + "vec4 r=texture2D(textureSampler2,fragmentTexturePos);"
-      + "if(r.w>0.)"
-      + "{"
-      + "if(labelmapOpacity<1.)"
-      + "v=mix(r,v,1.-labelmapOpacity);"
-      + "else"
-      + " v=r;"
-      + "}"
-      + "}"
-      + "if(useTextureThreshold)"
-      + "{"
-      + "float r=volumeLowerThreshold/volumeScalarMax,l=volumeUpperThreshold/volumeScalarMax;"
-      + "if(f.x<r||f.x>l)"
-      + "{"
-      + "discard;"
-      + "}"
-      + "}"
-      + "gl_FragColor=v;"
-      + "gl_FragColor.w=objectOpacity;"
-      + "}"
-      + "else"
-      + "{"
-      + "vec3 f=normalize(fTransformedVertexNormal);"
-      + "if(fVertexNormal==vec3(0.,0.,0.))"
-      + "{"
-      + "gl_FragColor=vec4(fragmentColor,1.);"
-      + "return;"
-      + "}"
-      + "vec3 v=vec3(0.,0.,1.),r=vec3(0,0,-10);"
-      + "r=normalize(r);"
-      + "vec3 l=normalize(-fVertexPosition.xyz),u=reflect(-r,f);"
-      + "float d=pow(max(dot(u,l),0.),10.),o=.8*max(dot(f,v),0.),t=.3;"
-      + "gl_FragColor=vec4(fragmentColor*t+fragmentColor*o+vec3(.2,.2,.2)*d,objectOpacity);"
-      + "}" + "}";
+  var t2 = '';
+  // android only guarantees medium precision
+  t2 += 'precision mediump float;\n';
+  t2 += '\n';
+  t2 += 'uniform bool usePicking;\n';
+  t2 += 'uniform bool useTexture;\n';
+  t2 += 'uniform bool useTextureThreshold;\n';
+  t2 += 'uniform bool useLabelMapTexture;\n'; // which activates textureSampler2
+  t2 += 'uniform sampler2D textureSampler;\n';
+  t2 += 'uniform sampler2D textureSampler2;\n';
+  t2 += 'uniform float objectOpacity;\n';
+  t2 += 'uniform float labelmapOpacity;\n';
+  t2 += 'uniform float volumeLowerThreshold;\n';
+  t2 += 'uniform float volumeUpperThreshold;\n';
+  t2 += 'uniform float volumeScalarMin;\n';
+  t2 += 'uniform float volumeScalarMax;\n';
+  t2 += '\n';
+  t2 += 'varying float fDiscardNow;\n';
+  t2 += 'varying vec4 fVertexPosition;\n';
+  t2 += 'varying vec3 fragmentColor;\n';
+  t2 += 'varying vec2 fragmentTexturePos;\n';
+  t2 += 'varying vec3 fVertexNormal;\n';
+  t2 += 'varying vec3 fTransformedVertexNormal;\n';
+  t2 += '\n';
+  t2 += 'void main(void) {\n';
+  t2 += ' if (fDiscardNow > 0.0) {\n';
+  t2 += '   discard;\n'; // really discard now
+  t2 += ' }\n';
+  // in picking mode, we don't want any extras but just the plain color
+  t2 += ' if (usePicking) {\n';
+  t2 += '   gl_FragColor = vec4(fragmentColor, 1.0);\n';
+  t2 += ' } else if (useTexture) {\n';
+  t2 += '   vec4 texture1 = texture2D(textureSampler,fragmentTexturePos);\n';
+  t2 += '   vec4 textureSum = texture1;\n';
+  t2 += '   if (useLabelMapTexture) {\n'; // special case for label maps
+  t2 += '     vec4 texture2 = texture2D(textureSampler2,fragmentTexturePos);\n';
+  t2 += '     if (texture2.a > 0.0) {\n'; // check if this is the background
+  // label
+  t2 += '       if (labelmapOpacity < 1.0) {\n'; // transparent label map
+  t2 += '         textureSum = mix(texture2, textureSum, 1.0 - labelmapOpacity);\n';
+  t2 += '       } else {\n';
+  t2 += '         textureSum = texture2;\n'; // fully opaque label map so we
+  t2 += '       }\n';
+  t2 += '     }\n';
+  t2 += '   }\n';
+  // threshold functionality for 1-channel volumes
+  t2 += '   if (useTextureThreshold) {\n';
+  t2 += '     float _volumeLowerThreshold = (volumeLowerThreshold / volumeScalarMax);\n';
+  t2 += '     float _volumeUpperThreshold = (volumeUpperThreshold / volumeScalarMax);\n';
+  t2 += '     if (texture1.r < _volumeLowerThreshold ||\n';
+  t2 += '         texture1.r > _volumeUpperThreshold) {\n';
+  t2 += '       discard;\n';
+  t2 += '     };\n';
+  t2 += '   };\n';
+  t2 += '   gl_FragColor = textureSum;\n';
+  t2 += '   gl_FragColor.a = objectOpacity;\n';
+  t2 += ' } else {\n';
+  // configure advanced lighting
+  t2 += '   vec3 nNormal = normalize(fTransformedVertexNormal);\n';
+  // .. ignore the lightning if the normals are 0,0,0
+  t2 += '   if (fVertexNormal == vec3(0.0,0.0,0.0)) {\n';
+  t2 += '     gl_FragColor = vec4(fragmentColor,1.0);\n';
+  t2 += '     return;\n';
+  t2 += '   }\n';
+  t2 += '   vec3 light = vec3(0.0, 0.0, 1.0);\n';
+  // t2 += ' vec3 lightDirection = vec3(-10.0, 4.0, -20.0);\n';
+  // I liked the following better
+  t2 += '   vec3 lightDirection = vec3(0,0,-10);\n';
+  t2 += '   lightDirection = normalize(lightDirection);\n';
+  t2 += '   vec3 eyeDirection = normalize(-fVertexPosition.xyz);\n';
+  t2 += '   vec3 reflectionDirection = reflect(-lightDirection, nNormal);\n';
+  // t2 += ' vec3 reflectionDirection = nNormal;\n'; <-- to disable reflection
+  // configure specular (10.0 is material property), diffuse and ambient
+  t2 += '   float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 10.0);\n';
+  t2 += '   float diffuse = 0.8 * max(dot(nNormal, light), 0.0);\n';
+  t2 += '   float ambient = 0.3;\n';
+  // .. and now setup the fragment color using these three values and the
+  // opacity
+  t2 += '   gl_FragColor = vec4(fragmentColor * ambient +\n';
+  t2 += '                       fragmentColor * diffuse +\n';
+  t2 += '                       vec3(0.2, 0.2, 0.2) * specular,\n';
+  t2 += '                       objectOpacity);\n';
+  t2 += ' }\n';
+  t2 += '}\n';
   this._fragmentshaderSource = t2;
   
+
 };
 // inherit from X.base
 goog.inherits(X.shaders, X.base);
