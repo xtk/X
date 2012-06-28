@@ -163,6 +163,8 @@ X.shaders = function() {
   t2 += 'uniform float volumeUpperThreshold;\n';
   t2 += 'uniform float volumeScalarMin;\n';
   t2 += 'uniform float volumeScalarMax;\n';
+  t2 += 'uniform vec3 volumeScalarMinColor;\n';
+  t2 += 'uniform vec3 volumeScalarMaxColor;\n';
   t2 += '\n';
   t2 += 'varying float fDiscardNow;\n';
   t2 += 'varying vec4 fVertexPosition;\n';
@@ -181,6 +183,8 @@ X.shaders = function() {
   t2 += ' } else if (useTexture) {\n';
   t2 += '   vec4 texture1 = texture2D(textureSampler,fragmentTexturePos);\n';
   t2 += '   vec4 textureSum = texture1;\n';
+  // map volume scalars to a linear color gradient
+  t2 += '   textureSum = textureSum.r * vec4(volumeScalarMaxColor,1) + (1.0 - textureSum.r) * vec4(volumeScalarMinColor,1);\n';
   t2 += '   if (useLabelMapTexture) {\n'; // special case for label maps
   t2 += '     vec4 texture2 = texture2D(textureSampler2,fragmentTexturePos);\n';
   t2 += '     if (texture2.a > 0.0) {\n'; // check if this is the background
@@ -188,7 +192,7 @@ X.shaders = function() {
   t2 += '       if (labelmapOpacity < 1.0) {\n'; // transparent label map
   t2 += '         textureSum = mix(texture2, textureSum, 1.0 - labelmapOpacity);\n';
   t2 += '       } else {\n';
-  t2 += '         textureSum = texture2;\n'; // fully opaque label map so we
+  t2 += '         textureSum = texture2;\n'; // fully opaque label map
   t2 += '       }\n';
   t2 += '     }\n';
   t2 += '   }\n';
@@ -288,7 +292,9 @@ X.shaders.uniforms = {
   VOLUMELOWERTHRESHOLD: 'volumeLowerThreshold',
   VOLUMEUPPERTHRESHOLD: 'volumeUpperThreshold',
   VOLUMESCALARMIN: 'volumeScalarMin',
-  VOLUMESCALARMAX: 'volumeScalarMax'
+  VOLUMESCALARMAX: 'volumeScalarMax',
+  VOLUMESCALARMINCOLOR: 'volumeScalarMinColor',
+  VOLUMESCALARMAXCOLOR: 'volumeScalarMaxColor'
 };
 
 

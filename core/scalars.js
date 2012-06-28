@@ -77,22 +77,6 @@ X.scalars = function() {
   this._glArray = null;
   
   /**
-   * The color to map the min. scalar.
-   * 
-   * @type {!Array}
-   * @protected
-   */
-  this._minColor = [0, 1, 0];
-  
-  /**
-   * The color to map the max. scalar.
-   * 
-   * @type {!Array}
-   * @protected
-   */
-  this._maxColor = [1, 0, 0];
-  
-  /**
    * Flag to replace the colors after thresholding. If FALSE, discard the
    * vertex.
    * 
@@ -104,6 +88,16 @@ X.scalars = function() {
   // inject functionality
   inject(this, new X.loadable()); // this object is loadable from a file
   inject(this, new X.thresholdable()); // this object is thresholdable
+  
+  /**
+   * @inheritDoc
+   */
+  this._minColor = [0, 1, 0];
+  
+  /**
+   * @inheritDoc
+   */
+  this._maxColor = [1, 0, 0];
   
 };
 // inherit from X.base
@@ -142,74 +136,6 @@ X.scalars.prototype.__defineSetter__('array', function(array) {
   
   // also, mark this dirty so the renderer can pick it up
   this._dirty = true;
-  
-});
-
-
-/**
- * Get the min color which is used to map the scalars to colors in a linear
- * fashion.
- * 
- * @return {!Array} An array holding the r,g,b components of the color.
- * @public
- */
-X.scalars.prototype.__defineGetter__('minColor', function() {
-
-  return this._minColor;
-  
-});
-
-
-/**
- * Set the min color to linear map the scalars to colors.
- * 
- * @param {!Array} minColor The color corresponding to the min. scalar value.
- * @public
- */
-X.scalars.prototype.__defineSetter__('minColor', function(minColor) {
-
-  if (!goog.isDefAndNotNull(minColor) || !(minColor instanceof Array) ||
-      (minColor.length != 3)) {
-    
-    throw new Error('Invalid min. color.');
-    
-  }
-  
-  this._minColor = minColor;
-  
-});
-
-
-/**
- * Get the max color which is used to map the scalars to colors in a linear
- * fashion.
- * 
- * @return {!Array} An array holding the r,g,b components of the color.
- * @public
- */
-X.scalars.prototype.__defineGetter__('maxColor', function() {
-
-  return this._maxColor;
-  
-});
-
-
-/**
- * Set the max color to linear map the scalars to colors.
- * 
- * @param {!Array} maxColor The color corresponding to the min. scalar value.
- * @public
- */
-X.scalars.prototype.__defineSetter__('maxColor', function(maxColor) {
-
-  if (!goog.isDefAndNotNull(maxColor) || !(maxColor instanceof Array) ||
-      (maxColor.length != 3)) {
-    
-    throw new Error('Invalid max. color.');
-    
-  }
-  
-  this._maxColor = maxColor;
   
 });
 

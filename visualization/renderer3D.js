@@ -1508,6 +1508,10 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       .get(X.shaders.uniforms.VOLUMEUPPERTHRESHOLD);
   var uVolumeScalarMin = uLocations.get(X.shaders.uniforms.VOLUMESCALARMIN);
   var uVolumeScalarMax = uLocations.get(X.shaders.uniforms.VOLUMESCALARMAX);
+  var uVolumeScalarMinColor = uLocations
+      .get(X.shaders.uniforms.VOLUMESCALARMINCOLOR);
+  var uVolumeScalarMaxColor = uLocations
+      .get(X.shaders.uniforms.VOLUMESCALARMAXCOLOR);
   var uObjectTransform = uLocations.get(X.shaders.uniforms.OBJECTTRANSFORM);
   var uPointSize = uLocations.get(X.shaders.uniforms.POINTSIZE);
   
@@ -1747,6 +1751,14 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         // pass the scalar range
         this._context.uniform1f(uVolumeScalarMin, volume._min);
         this._context.uniform1f(uVolumeScalarMax, volume._max);
+        
+        // pass the colors for scalar mapping
+        var minColor = volume._minColor;
+        var maxColor = volume._maxColor;
+        this._context.uniform3f(uVolumeScalarMinColor, parseFloat(minColor[0]),
+            parseFloat(minColor[1]), parseFloat(minColor[2]));
+        this._context.uniform3f(uVolumeScalarMaxColor, parseFloat(maxColor[0]),
+            parseFloat(maxColor[1]), parseFloat(maxColor[2]));
         
         // get the (optional) label map
         var labelmap = volume._labelmap;
