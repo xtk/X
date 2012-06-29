@@ -1508,6 +1508,8 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       .get(X.shaders.uniforms.VOLUMEUPPERTHRESHOLD);
   var uVolumeScalarMin = uLocations.get(X.shaders.uniforms.VOLUMESCALARMIN);
   var uVolumeScalarMax = uLocations.get(X.shaders.uniforms.VOLUMESCALARMAX);
+  var uVolumeWindowLow = uLocations.get(X.shaders.uniforms.VOLUMEWINDOWLOW);
+  var uVolumeWindowHigh = uLocations.get(X.shaders.uniforms.VOLUMEWINDOWHIGH);
   var uVolumeScalarMinColor = uLocations
       .get(X.shaders.uniforms.VOLUMESCALARMINCOLOR);
   var uVolumeScalarMaxColor = uLocations
@@ -1759,6 +1761,10 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
             parseFloat(minColor[1]), parseFloat(minColor[2]));
         this._context.uniform3f(uVolumeScalarMaxColor, parseFloat(maxColor[0]),
             parseFloat(maxColor[1]), parseFloat(maxColor[2]));
+        
+        // pass the w/l
+        this._context.uniform1f(uVolumeWindowLow, volume._windowLow);
+        this._context.uniform1f(uVolumeWindowHigh, volume._windowHigh);
         
         // get the (optional) label map
         var labelmap = volume._labelmap;

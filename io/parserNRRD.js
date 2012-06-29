@@ -144,8 +144,8 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   
 
   // attach the scalar range to the volume
-  object._min = min;
-  object._max = max;
+  object._min = object._windowLow = min;
+  object._max = object._windowHigh = max;
   // .. and set the default threshold
   // only if the threshold was not already set
   if (object._lowerThreshold == -Infinity) {

@@ -165,6 +165,8 @@ X.shaders = function() {
   t2 += 'uniform float volumeScalarMax;\n';
   t2 += 'uniform vec3 volumeScalarMinColor;\n';
   t2 += 'uniform vec3 volumeScalarMaxColor;\n';
+  t2 += 'uniform float volumeWindowLow;\n';
+  t2 += 'uniform float volumeWindowHigh;\n';
   t2 += '\n';
   t2 += 'varying float fDiscardNow;\n';
   t2 += 'varying vec4 fVertexPosition;\n';
@@ -183,6 +185,13 @@ X.shaders = function() {
   t2 += ' } else if (useTexture) {\n';
   t2 += '   vec4 texture1 = texture2D(textureSampler,fragmentTexturePos);\n';
   t2 += '   vec4 textureSum = texture1;\n';
+  // perform window level
+  t2 += ' float _windowLow = (volumeWindowLow / volumeScalarMax);\n';
+  t2 += ' float _windowHigh = (volumeWindowHigh / volumeScalarMax);\n';
+  t2 += '   vec3 _minrange = vec3(_windowLow,_windowLow,_windowLow);\n';
+  t2 += '   vec3 _maxrange = vec3(_windowHigh,_windowHigh,_windowHigh);\n';
+  t2 += '   vec3 fac = _maxrange - _minrange;\n';
+  t2 += '   textureSum = vec4((textureSum.r - _minrange)/fac,1);\n';
   // map volume scalars to a linear color gradient
   t2 += '   textureSum = textureSum.r * vec4(volumeScalarMaxColor,1) + (1.0 - textureSum.r) * vec4(volumeScalarMinColor,1);\n';
   t2 += '   if (useLabelMapTexture) {\n'; // special case for label maps
@@ -294,7 +303,9 @@ X.shaders.uniforms = {
   VOLUMESCALARMIN: 'volumeScalarMin',
   VOLUMESCALARMAX: 'volumeScalarMax',
   VOLUMESCALARMINCOLOR: 'volumeScalarMinColor',
-  VOLUMESCALARMAXCOLOR: 'volumeScalarMaxColor'
+  VOLUMESCALARMAXCOLOR: 'volumeScalarMaxColor',
+  VOLUMEWINDOWLOW: 'volumeWindowLow',
+  VOLUMEWINDOWHIGH: 'volumeWindowHigh'
 };
 
 

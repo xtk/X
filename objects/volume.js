@@ -198,6 +198,22 @@ X.volume = function(volume) {
    */
   this._borders = true;
   
+  /**
+   * The lower window border.
+   * 
+   * @type {!number}
+   * @private
+   */
+  this._windowLow = Infinity;
+  
+  /**
+   * The upper window border.
+   * 
+   * @type {!number}
+   * @private
+   */
+  this._windowHigh = -Infinity;
+  
   // inject functionality
   inject(this, new X.loadable()); // this object is loadable from a file
   inject(this, new X.thresholdable()); // this object is thresholdable
@@ -648,6 +664,58 @@ X.volume.prototype.__defineSetter__('indexZ', function(indexZ) {
     this._indexZ = indexZ;
     
   }
+  
+});
+
+
+/**
+ * Return the lower window border for window/level adjustment.
+ * 
+ * @return {!number} The lower window border.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('windowLow', function() {
+
+  return this._windowLow;
+  
+});
+
+
+/**
+ * Set the lower window border for window/level adjustment.
+ * 
+ * @param {!number} windowLow The new lower window border.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('windowLow', function(windowLow) {
+
+  this._windowLow = windowLow;
+  
+});
+
+
+/**
+ * Return the upper window border for window/level adjustment.
+ * 
+ * @return {!number} The upper window border.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('windowHigh', function() {
+
+  return this._windowHigh;
+  
+});
+
+
+/**
+ * Set the upper window border for window/level adjustment.
+ * 
+ * @param {!number} windowHigh The new upper window border.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('windowHigh', function(windowHigh) {
+
+  this._windowHigh = windowHigh;
   
 });
 
