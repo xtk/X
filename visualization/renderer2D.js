@@ -32,7 +32,7 @@ goog.provide('X.renderer2D');
 
 // requires
 goog.require('X.renderer');
-
+goog.require('goog.math.Vec3');
 
 
 /**
@@ -505,13 +505,25 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     // grab the pixel intensity
     var _intensity = _sliceData[_index] / 255 * _maxScalarRange;
     
+    // apply window/level
+    
+
     // apply thresholding
     if (_intensity >= _lowerThreshold && _intensity <= _upperThreshold) {
       
       // current intensity is inside the threshold range so use the real
       // intensity
-      _color = [_sliceData[_index], _sliceData[_index + 1],
-                _sliceData[_index + 2], _sliceData[_index + 3]];
+      
+      // map volume scalars to a linear color gradient
+      var maxColor = new goog.math.Vec3(_volume._maxColor[0],
+          _volume._maxColor[1], _volume._maxColor[2]);
+      var minColor = new goog.math.Vec3(_volume._minColor[0],
+          _volume._minColor[1], _volume._minColor[2]);
+      _color = maxColor.scale(_sliceData[_index]).add(
+          minColor.scale(255 - _sliceData[_index]));
+      // .. and back to an array
+      _color = [Math.floor(_color.x), Math.floor(_color.y),
+                Math.floor(_color.z), 255];
       
       if (_currentLabelMap) {
         
