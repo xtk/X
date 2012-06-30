@@ -180,6 +180,7 @@ X.progressbar.prototype.init_ = function() {
   pbElement.style.position = 'absolute';
   pbElement.style.top = (this._parent.clientHeight - 5) / 2;
   pbElement.style.left = (this._parent.clientWidth - 100) / 2;
+  pbElement.classList.add('xtk-progress-bar');
   
 };
 
@@ -205,6 +206,7 @@ X.progressbar.prototype.done = function() {
   pbElement.style.position = 'absolute';
   pbElement.style.top = top;
   pbElement.style.left = left;
+  pbElement.classList.add('xtk-progress-bar');
   
   // get the actual progress element of the progressBar
   var pbBar = goog.dom.getFirstElementChild(pbElement);
