@@ -504,10 +504,15 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     
     // grab the pixel intensity
     var _intensity = _sliceData[_index] / 255 * _maxScalarRange;
+    var _origIntensity = _sliceData[_index];
     
     // apply window/level
+    var _windowLow = _volume._windowLow / _maxScalarRange;
+    var _windowHigh = _volume._windowHigh / _maxScalarRange;
+    var _fac = _windowHigh - _windowLow;
+    _origIntensity = (_origIntensity / 255 - _windowLow) / _fac;
+    _origIntensity = _origIntensity * 255;
     
-
     // apply thresholding
     if (_intensity >= _lowerThreshold && _intensity <= _upperThreshold) {
       
@@ -519,8 +524,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
           _volume._maxColor[1], _volume._maxColor[2]);
       var minColor = new goog.math.Vec3(_volume._minColor[0],
           _volume._minColor[1], _volume._minColor[2]);
-      _color = maxColor.scale(_sliceData[_index]).add(
-          minColor.scale(255 - _sliceData[_index]));
+      _color = maxColor.scale(_origIntensity).add(
+          minColor.scale(255 - _origIntensity));
       // .. and back to an array
       _color = [Math.floor(_color.x), Math.floor(_color.y),
                 Math.floor(_color.z), 255];
