@@ -164,7 +164,7 @@ X.renderer2D.prototype.onScroll_ = function(event) {
   eval('this.onScroll();');
   
   // .. and trigger re-rendering
-  this.render_(false, false);
+  // this.render_(false, false);
   
 };
 
@@ -252,7 +252,7 @@ X.renderer2D.prototype.resetViewAndRender = function() {
   // .. and perform auto scaling
   this.autoScale_();
   // .. render
-  this.render_(false, false);
+  // this.render_(false, false);
   
 };
 

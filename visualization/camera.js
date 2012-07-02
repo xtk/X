@@ -382,7 +382,7 @@ X.camera.prototype.pan = function(distance) {
   this._glview = new Float32Array(this._view.flatten());
   
   // fire a render event
-  this.dispatchEvent(new X.event.RenderEvent());
+  // this.dispatchEvent(new X.event.RenderEvent());
   
 };
 
@@ -414,7 +414,7 @@ X.camera.prototype.zoomIn = function(fast) {
   this._glview = new Float32Array(this._view.flatten());
   
   // fire a render event
-  this.dispatchEvent(new X.event.RenderEvent());
+  // this.dispatchEvent(new X.event.RenderEvent());
   
 };
 
@@ -446,7 +446,7 @@ X.camera.prototype.zoomOut = function(fast) {
   this._glview = new Float32Array(this._view.flatten());
   
   // fire a render event
-  this.dispatchEvent(new X.event.RenderEvent());
+  // this.dispatchEvent(new X.event.RenderEvent());
   
 };
 
