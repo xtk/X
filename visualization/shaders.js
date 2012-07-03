@@ -153,7 +153,7 @@ X.shaders = function() {
   t2 += '\n';
   t2 += 'uniform bool usePicking;\n';
   t2 += 'uniform bool useTexture;\n';
-  t2 += 'uniform bool useTextureThreshold;\n';
+  t2 += 'uniform bool volumeTexture;\n';
   t2 += 'uniform bool useLabelMapTexture;\n'; // which activates textureSampler2
   t2 += 'uniform sampler2D textureSampler;\n';
   t2 += 'uniform sampler2D textureSampler2;\n';
@@ -186,14 +186,16 @@ X.shaders = function() {
   t2 += '   vec4 texture1 = texture2D(textureSampler,fragmentTexturePos);\n';
   t2 += '   vec4 textureSum = texture1;\n';
   // perform window level
-  t2 += ' float _windowLow = (volumeWindowLow / volumeScalarMax);\n';
-  t2 += ' float _windowHigh = (volumeWindowHigh / volumeScalarMax);\n';
-  t2 += '   vec3 _minrange = vec3(_windowLow,_windowLow,_windowLow);\n';
-  t2 += '   vec3 _maxrange = vec3(_windowHigh,_windowHigh,_windowHigh);\n';
-  t2 += '   vec3 fac = _maxrange - _minrange;\n';
-  t2 += '   textureSum = vec4((textureSum.r - _minrange)/fac,1);\n';
+  t2 += '   if (volumeTexture) {\n';
+  t2 += '     float _windowLow = (volumeWindowLow / volumeScalarMax);\n';
+  t2 += '     float _windowHigh = (volumeWindowHigh / volumeScalarMax);\n';
+  t2 += '     vec3 _minrange = vec3(_windowLow,_windowLow,_windowLow);\n';
+  t2 += '     vec3 _maxrange = vec3(_windowHigh,_windowHigh,_windowHigh);\n';
+  t2 += '     vec3 fac = _maxrange - _minrange;\n';
+  t2 += '     textureSum = vec4((textureSum.r - _minrange)/fac,1);\n';
   // map volume scalars to a linear color gradient
-  t2 += '   textureSum = textureSum.r * vec4(volumeScalarMaxColor,1) + (1.0 - textureSum.r) * vec4(volumeScalarMinColor,1);\n';
+  t2 += '     textureSum = textureSum.r * vec4(volumeScalarMaxColor,1) + (1.0 - textureSum.r) * vec4(volumeScalarMinColor,1);\n';
+  t2 += '   }\n';
   t2 += '   if (useLabelMapTexture) {\n'; // special case for label maps
   t2 += '     vec4 texture2 = texture2D(textureSampler2,fragmentTexturePos);\n';
   t2 += '     if (texture2.a > 0.0) {\n'; // check if this is the background
@@ -206,7 +208,7 @@ X.shaders = function() {
   t2 += '     }\n';
   t2 += '   }\n';
   // threshold functionality for 1-channel volumes
-  t2 += '   if (useTextureThreshold) {\n';
+  t2 += '   if (volumeTexture) {\n';
   t2 += '     float _volumeLowerThreshold = (volumeLowerThreshold / volumeScalarMax);\n';
   t2 += '     float _volumeUpperThreshold = (volumeUpperThreshold / volumeScalarMax);\n';
   t2 += '     if (texture1.r < _volumeLowerThreshold ||\n';
@@ -293,7 +295,6 @@ X.shaders.uniforms = {
   NORMAL: 'normal',
   USEPICKING: 'usePicking',
   USETEXTURE: 'useTexture',
-  USETEXTURETHRESHOLD: 'useTextureThreshold',
   USELABELMAPTEXTURE: 'useLabelMapTexture',
   LABELMAPOPACITY: 'labelmapOpacity',
   TEXTURESAMPLER: 'textureSampler',
@@ -305,7 +306,8 @@ X.shaders.uniforms = {
   VOLUMESCALARMINCOLOR: 'volumeScalarMinColor',
   VOLUMESCALARMAXCOLOR: 'volumeScalarMaxColor',
   VOLUMEWINDOWLOW: 'volumeWindowLow',
-  VOLUMEWINDOWHIGH: 'volumeWindowHigh'
+  VOLUMEWINDOWHIGH: 'volumeWindowHigh',
+  VOLUMETEXTURE: 'volumeTexture'
 };
 
 

@@ -1496,8 +1496,6 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   var uObjectOpacity = uLocations.get(X.shaders.uniforms.OBJECTOPACITY);
   var uLabelMapOpacity = uLocations.get(X.shaders.uniforms.LABELMAPOPACITY);
   var uUseTexture = uLocations.get(X.shaders.uniforms.USETEXTURE);
-  var uUseTextureThreshold = uLocations
-      .get(X.shaders.uniforms.USETEXTURETHRESHOLD);
   var uUseLabelMapTexture = uLocations
       .get(X.shaders.uniforms.USELABELMAPTEXTURE);
   var uTextureSampler = uLocations.get(X.shaders.uniforms.TEXTURESAMPLER);
@@ -1514,6 +1512,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       .get(X.shaders.uniforms.VOLUMESCALARMINCOLOR);
   var uVolumeScalarMaxColor = uLocations
       .get(X.shaders.uniforms.VOLUMESCALARMAXCOLOR);
+  var uVolumeTexture = uLocations.get(X.shaders.uniforms.VOLUMETEXTURE);
   var uObjectTransform = uLocations.get(X.shaders.uniforms.OBJECTTRANSFORM);
   var uPointSize = uLocations.get(X.shaders.uniforms.POINTSIZE);
   
@@ -1721,8 +1720,8 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         this._context.vertexAttribPointer(aTexturePosition,
             texturePositionBuffer._itemSize, this._context.FLOAT, false, 0, 0);
         
-        // by default, don't use thresholding
-        this._context.uniform1i(uUseTextureThreshold, false);
+        // by default, no X.volume texture
+        this._context.uniform1i(uVolumeTexture, false);
         
       } else {
         
@@ -1742,8 +1741,8 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       // this is the case if we have a volume here..
       if (volume) {
         
-        // enable texture thresholding for volumes
-        this._context.uniform1i(uUseTextureThreshold, true);
+        // this is a X.volume texture
+        this._context.uniform1i(uVolumeTexture, false);
         
         // pass the lower threshold
         this._context.uniform1f(uVolumeLowerThreshold, volume._lowerThreshold);
