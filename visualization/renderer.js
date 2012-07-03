@@ -848,6 +848,8 @@ X.renderer.prototype.render = function() {
     
   }
   
+
+
   //
   // LOADING..
   //
@@ -905,6 +907,10 @@ X.renderer.prototype.render = function() {
   //
   // CURTAIN UP! LET THE SHOW BEGIN..
   //
+  
+  // this starts the rendering loops
+  window.requestAnimationFrame(this.render.bind(this, this._canvas));
+  eval("this.onRender()");
   this.render_(false, true);
   
 };
@@ -917,6 +923,17 @@ X.renderer.prototype.render = function() {
  * @public
  */
 X.renderer.prototype.onShowtime = function() {
+
+  // do nothing
+};
+
+
+/**
+ * Overload this function to execute code on each rendering call.
+ * 
+ * @public
+ */
+X.renderer.prototype.onRender = function() {
 
   // do nothing
 };
