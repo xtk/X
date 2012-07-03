@@ -222,7 +222,7 @@ X.camera3D.prototype.rotate = function(distance) {
   this._glview = new Float32Array(this.view.flatten());
   
   // fire a render event
-  this.dispatchEvent(new X.event.RenderEvent());
+  // this.dispatchEvent(new X.event.RenderEvent());
   
 };
 

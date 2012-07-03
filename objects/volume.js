@@ -506,6 +506,9 @@ X.volume.prototype.__defineSetter__('volumeRendering',
 
       this._volumeRendering = volumeRendering;
       
+      // fire a modified event
+      this.modified();
+      
     });
 
 
@@ -601,6 +604,9 @@ X.volume.prototype.__defineSetter__('indexX', function(indexX) {
     
     this._indexX = indexX;
     
+    // fire a modified event
+    this.modified();
+    
   }
   
 });
@@ -632,6 +638,9 @@ X.volume.prototype.__defineSetter__('indexY', function(indexY) {
     
     this._indexY = indexY;
     
+    // fire a modified event
+    this.modified();
+    
   }
   
 });
@@ -662,6 +671,9 @@ X.volume.prototype.__defineSetter__('indexZ', function(indexZ) {
       indexZ < this._slicesZ._children.length) {
     
     this._indexZ = indexZ;
+    
+    // fire a modified event
+    this.modified();
     
   }
   

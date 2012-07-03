@@ -164,7 +164,7 @@ X.renderer2D.prototype.onScroll_ = function(event) {
   eval('this.onScroll();');
   
   // .. and trigger re-rendering
-  this.render_(false, false);
+  // this.render_(false, false);
   
 };
 
@@ -252,7 +252,7 @@ X.renderer2D.prototype.resetViewAndRender = function() {
   // .. and perform auto scaling
   this.autoScale_();
   // .. render
-  this.render_(false, false);
+  // this.render_(false, false);
   
 };
 
@@ -592,6 +592,8 @@ goog.exportSymbol('X.renderer2D.prototype.init', X.renderer2D.prototype.init);
 goog.exportSymbol('X.renderer2D.prototype.add', X.renderer2D.prototype.add);
 goog.exportSymbol('X.renderer2D.prototype.onShowtime',
     X.renderer2D.prototype.onShowtime);
+goog.exportSymbol('X.renderer2D.prototype.onRender',
+    X.renderer2D.prototype.onRender);
 goog.exportSymbol('X.renderer2D.prototype.onScroll',
     X.renderer2D.prototype.onScroll);
 goog.exportSymbol('X.renderer2D.prototype.get', X.renderer2D.prototype.get);

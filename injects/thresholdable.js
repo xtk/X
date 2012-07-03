@@ -119,6 +119,8 @@ X.thresholdable.prototype.__defineSetter__('lowerThreshold', function(
     
     this._lowerThreshold = lowerThreshold;
     
+    // no modified event since the rendering loop always checks it
+    
   }
   
 });
@@ -149,6 +151,8 @@ X.thresholdable.prototype.__defineSetter__('upperThreshold', function(
   if (upperThreshold >= this._min && upperThreshold <= this._max) {
     
     this._upperThreshold = upperThreshold;
+    
+    // no modified event since the rendering loop always checks it
     
   }
   
@@ -213,6 +217,8 @@ X.thresholdable.prototype.__defineSetter__('minColor', function(minColor) {
   
   this._minColor = minColor;
   
+  // no modified event since the rendering loop always checks it
+  
 });
 
 
@@ -246,5 +252,7 @@ X.thresholdable.prototype.__defineSetter__('maxColor', function(maxColor) {
   }
   
   this._maxColor = maxColor;
+  
+  // no modified event since the rendering loop always checks it
   
 });
