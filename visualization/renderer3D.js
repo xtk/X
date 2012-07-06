@@ -1742,7 +1742,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       if (volume) {
         
         // this is a X.volume texture
-        this._context.uniform1i(uVolumeTexture, false);
+        this._context.uniform1i(uVolumeTexture, true);
         
         // pass the lower threshold
         this._context.uniform1f(uVolumeLowerThreshold, volume._lowerThreshold);
