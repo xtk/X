@@ -62,10 +62,6 @@ X.parserLBL = function() {
 // inherit from X.parser
 goog.inherits(X.parserLBL, X.parser);
 
-function cprintd(str_left, val) {
-	console.log(sprintf('%20s%25s\n', str_left, sprintf('[ %d ]', val)));
-}
-
 function new_array(length, val) {
 	val = typeof val !== 'undefined' ? val : 0;
 	var array = [];
@@ -104,19 +100,15 @@ X.parserLBL.prototype.parse = function(container, object, data, flag) {
   // values where the label is defined, otherwise also initialize
   // non-label vertices to zero.
   if(object._scalars._array) {
-	  arr_vertexCurvature = object._scalars._array;
+	  arr_vertexCurvatures = object._scalars._array;
   }  else {
 	  arr_vertexCurvatures = new_array(numVertices, 0);
   }
   for(i=0; i<arr_label.length; i++) {
 	  arr_vertexCurvatures[arr_label[i]] = 1.0;
-//	  cprintd(sprintf('%d', i), arr_label[i]);
   }
   
-  console.log('j = %d, size arr_label = %d', j, arr_label.length);
-  
   var ind = object._pointIndices;
-  console.log('size object._pointIndices = %d', ind.length);
 
   // we need point indices here, so fail if there aren't any
   if (ind.length == 0) {
