@@ -62,131 +62,69 @@ X.parserLBL = function() {
 // inherit from X.parser
 goog.inherits(X.parserLBL, X.parser);
 
+function cprintd(str_left, val) {
+	console.log(sprintf('%20s%25s\n', str_left, sprintf('[ %d ]', val)));
+}
+
+function new_array(length, val) {
+	val = typeof val !== 'undefined' ? val : 0;
+	var array = [];
+    var i = 0;
+    while (i < length) {
+        array[i++] = val;
+    }
+    return array;
+}
 
 /**
  * @inheritDoc
  */
 X.parserLBL.prototype.parse = function(container, object, data, flag) {
 
-  var ind = object._pointIndices;
+  var dataAsArray = data.split('\n');
+  var numberOfLines = dataAsArray.length;
+  var arr_label	= new Array(numberOfLines-3);
+
+  var i = 0;
+  var j = 0;
+  var vertex = 0;
   
+  var numVertices = object._points.count;
+  var arr_vertexCurvatures;
+
+  // Start at the 3rd line, i.e. the 2nd index and create an array
+  // of vertices that belong to this label
+  for(i=2; i<numberOfLines-1; i++, j++) {
+	  vertex = this.parseLine(dataAsArray[i]);
+	  arr_label[i-2] = vertex;
+  }
+  
+  // Now tag the label vertices. If an existing overlay exists, i.e.
+  // object._scalars._array is non-null, then only change the vertex
+  // values where the label is defined, otherwise also initialize
+  // non-label vertices to zero.
+  if(object._scalars._array) {
+	  arr_vertexCurvature = object._scalars._array;
+  }  else {
+	  arr_vertexCurvatures = new_array(numVertices, 0);
+  }
+  for(i=0; i<arr_label.length; i++) {
+	  arr_vertexCurvatures[arr_label[i]] = 1.0;
+//	  cprintd(sprintf('%d', i), arr_label[i]);
+  }
+  
+  console.log('j = %d, size arr_label = %d', j, arr_label.length);
+  
+  var ind = object._pointIndices;
+  console.log('size object._pointIndices = %d', ind.length);
+
   // we need point indices here, so fail if there aren't any
   if (ind.length == 0) {
     
     throw new Error('No _pointIndices defined on the X.object.');
     
   }
-  
-  var currentOffset = 0;
-  
-  var magicNumber = this.parseUInt24EndianSwapped(data, currentOffset);
-  currentOffset += 3;
-  
-  // This hackery is the fact that the new version defines this
-  // as a magic number to identify the new file type
-  if (magicNumber != 16777215) {
-    alert("Can't load curvature file, invalid magic number.");
-    return;
-  }
-  
-  var numVertices = this.parseUInt32EndianSwapped(data, currentOffset);
-  
-  currentOffset += 4;
-  var fnum = this.parseUInt32EndianSwapped(data, currentOffset);
-  currentOffset += 4;
-  var valsPerVertex = this.parseUInt32EndianSwapped(data, currentOffset);
-  currentOffset += 4;
-  
-  var numPosValues = 0;
-  var numNegValues = 0;
-  var negSum = 0.0;
-  var posSum = 0.0;
-  var posMean = 0.0;
-  var negMean = 0.0;
-  var posStdDev = 0.0;
-  var negStdDev = 0.0;
-  var sum = 0.0;
-  var mean = 0.0;
-  var stdDev = 0.0;
-  var numValues = 0;
-  var vertexCurvatures = new Array(numVertices);
-  var minCurv = new Array(2);
-  var maxCurv = new Array(2);
-  
-  var k;
-  for (k = 0; k < numVertices; k++) {
-    var curv = this.parseFloat32EndianSwapped(data, currentOffset);
-    currentOffset += 4;
-    if (k == 0) {
-      minCurv[0] = maxCurv[0] = curv;
-    }
-    if (curv >= 0.0) {
-      numPosValues++;
-      posSum += curv;
-    } else {
-      numNegValues++;
-      negSum += curv;
-    }
-    
-    sum += curv;
-    numValues++;
-    
-    maxCurv[0] = Math.max(curv, maxCurv[0]);
-    minCurv[0] = Math.min(curv, minCurv[0]);
-    
-    vertexCurvatures[k] = curv;
-  }
-  
-  if (numPosValues != 0) {
-    posMean = posSum / numPosValues;
-  }
-  
-  if (numNegValues != 0) {
-    negMean = negSum / numNegValues;
-  }
-  
-  if (numValues != 0) {
-    mean = sum / numValues;
-  }
-  
-
-  posSum = 0.0;
-  negSum = 0.0;
-  sum = 0.0;
-  
-  var i;
-  for (i = 0; i < numVertices; i++) {
-    var curv = vertexCurvatures[i];
-    var diffSq = 0;
-    if (curv >= 0.0) {
-      diffSq = Math.pow((curv - posMean), 2);
-      posSum += diffSq;
-    } else {
-      diffSq = Math.pow((curv - negMean), 2);
-      negSum += diffSq;
-    }
-    
-    diffSq = Math.pow((curv - mean), 2);
-    sum += diffSq;
-  }
-  
-  if (numPosValues > 1) {
-    posStdDev = Math.sqrt(posSum / (numPosValues - 1));
-  }
-  
-  if (numNegValues > 1) {
-    negStdDev = Math.sqrt(negSum / (numNegValues - 1));
-  }
-  
-  if (numValues > 1) {
-    stdDev = Math.sqrt(sum / (numValues - 1));
-  }
-  
-  // Store also 2.5 standard deviations from each mean. This is
-  // a more reasonable range to render with
-  minCurv[1] = negMean - 2.5 * negStdDev;
-  maxCurv[1] = posMean + 2.5 * posStdDev;
-  
+   
   //
   // now order the curvature values based on the indices
   //
@@ -207,7 +145,7 @@ X.parserLBL.prototype.parse = function(container, object, data, flag) {
     }
     
     // grab the current scalar
-    var currentScalar = vertexCurvatures[currentIndex];
+    var currentScalar = arr_vertexCurvatures[currentIndex];
     
     // add the scalar 3x since we need to match the point array length
     orderedCurvatures.push(currentScalar);
@@ -216,19 +154,7 @@ X.parserLBL.prototype.parse = function(container, object, data, flag) {
     
   }
   
-  // attach min, max curvature values and the whole shebang!
-  object._scalars._min = minCurv[1];
-  object._scalars._max = maxCurv[1];
-  // .. and set the default threshold
-  // only if the threshold was not already set
-  if (object._scalars._lowerThreshold == -Infinity) {
-    object._scalars._lowerThreshold = minCurv[1];
-  }
-  if (object._scalars._upperThreshold == Infinity) {
-    object._scalars._upperThreshold = maxCurv[1];
-  }
-  
-  object._scalars._array = vertexCurvatures; // the un-ordered scalars
+  object._scalars._array = arr_vertexCurvatures; // the un-ordered scalars
   object._scalars._glArray = orderedCurvatures; // the ordered, gl-Ready
   // now mark the scalars dirty
   object._scalars._dirty = true;
@@ -241,6 +167,27 @@ X.parserLBL.prototype.parse = function(container, object, data, flag) {
   
 };
 
+/**
+ * Parses a line of label-file data -- the only important field is the first.
+ * 
+ * 
+ * @param {!string} line to parse.
+ * @return {!number} vertex index
+ * @protected
+ */
+X.parserLBL.prototype.parseLine = function(line) {
+
+  // trim the line
+  line = line.replace(/^\s+|\s+$/g, '');
+  
+  // split to array
+  var lineFields = line.split(' ');
+
+  // return the vertex index
+  return parseInt(lineFields[0]);
+};
+
+
 // export symbols (required for advanced compilation)
-goog.exportSymbol('X.parserLBL', X.parserCRV);
+goog.exportSymbol('X.parserLBL', X.parserLBL);
 goog.exportSymbol('X.parserLBL.prototype.parse', X.parserLBL.prototype.parse);
