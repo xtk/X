@@ -268,6 +268,34 @@ X.parser.prototype.parseUInt32 = function(data, offset) {
   return (b3 << 24) + (b2 << 16) + (b1 << 8) + b0;
 };
 
+/**
+ * Parse an array of UInt32 values from some data.
+ *
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
+X.parser.prototype.parseUInt32Array = function(data, offset,
+                                               elements) {
+
+    var arr = new Array();
+
+    var max = 0;
+    var min = Infinity;
+
+    var i;
+    for (i = 0; i < elements; i++) {
+        var val = this.parseUInt32(data, offset + (i * 4));
+        arr[i] = val;
+        max = Math.max(max, val);
+        min = Math.min(min, val);
+    }
+
+    return [arr, max, min];
+};
+
 
 /**
  * Parse an endian swaped UInt32 value from some data.
@@ -437,6 +465,32 @@ X.parser.prototype.parseSChar8 = function(data, offset) {
   
 };
 
+/**
+ * Parse an array of signed Char8 values from some data.
+ *
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
+X.parser.prototype.parseSChar8Array = function(data, offset, elements) {
+
+    var arr = new Array();
+
+    var max = 0;
+    var min = Infinity;
+
+    var i;
+    for (i = 0; i < elements; i++) {
+        var val = this.parseSChar8(data, offset + (i));
+        arr[i] = val;
+        max = Math.max(max, val);
+        min = Math.min(min, val);
+    }
+
+    return [arr, max, min];
+};
 
 /**
  * Parse a unsigned Char8 value from some data.
