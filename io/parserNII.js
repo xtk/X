@@ -24,15 +24,11 @@
  *      'Free' as in 'free speech', not as in 'free beer'.
  *                                         - Richard M. Stallman
  * 
- * CREDITS
- * 
- *   - the .NRRD Fileparser is based on a version of Michael Lauer (https://github.com/mrlauer/webgl-sandbox)
- *     which did not support gzip/gz encoding or other types than int/short, so we added that :)
- *   
+ *
  */
 
 // provides
-goog.provide('X.parserNifti1');
+goog.provide('X.parserNII');
 
 // requires
 goog.require('X.event');
@@ -50,7 +46,7 @@ goog.require('JXG.Util.Unzip');
  * @constructor
  * @extends X.parser
  */
-X.parserNifti1 = function() {
+X.parserNII = function() {
 
   //
   // call the standard constructor of X.parser
@@ -63,17 +59,17 @@ X.parserNifti1 = function() {
    * @inheritDoc
    * @const
    */
-  this._classname = 'parserNifti1';
+  this._classname = 'parserNII';
   
 };
 // inherit from X.parser
-goog.inherits(X.parserNifti1, X.parser);
+goog.inherits(X.parserNII, X.parser);
 
 
 /**
  * @inheritDoc
  */
-X.parserNifti1.prototype.parse = function(container, object, data, flag) {
+X.parserNII.prototype.parse = function(container, object, data, flag) {
 
   var b_zipped = flag;
   
@@ -134,7 +130,7 @@ X.parserNifti1.prototype.parse = function(container, object, data, flag) {
  * @param {!String} data The data stream.
  * @return {Object} The MRI structure which holds all parsed information.
  */
-X.parserNifti1.prototype.parseStream = function(data) {
+X.parserNII.prototype.parseStream = function(data) {
 
   var MRI = {
     sizeof_hdr: 0,
@@ -326,6 +322,6 @@ X.parserNifti1.prototype.parseStream = function(data) {
 
 
 // export symbols (required for advanced compilation)
-goog.exportSymbol('X.parserNifti1', X.parserNifti1);
-goog.exportSymbol('X.parserNifti1.prototype.parse',
-                  X.parserNifti1.prototype.parse);
+goog.exportSymbol('X.parserNII', X.parserNII);
+goog.exportSymbol('X.parserNII.prototype.parse',
+                  X.parserNII.prototype.parse);
