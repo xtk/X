@@ -349,6 +349,8 @@ X.loader.extensions = {
   'PIAL': [X.parserFSM, null, null],
   'ORIG': [X.parserFSM, null, null],
   'NRRD': [X.parserNRRD, null, null],
+  'NII': [X.parserNII, false, null],
+  'NII.GZ': [X.parserNII, true, null],
   'CRV': [X.parserCRV, null, null],
   'MGH': [X.parserMGZ, false, null],
   'MGZ': [X.parserMGZ, true, null],
