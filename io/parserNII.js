@@ -88,11 +88,12 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   
 
   var MRI = this.parseStream(_data);
+  
   // object.MRI = MRI;
-  var _dimensions = [MRI.ndim1, MRI.ndim2, MRI.ndim3];
+  var _dimensions = [MRI.dim[1], MRI.dim[2], MRI.dim[3]];
   object._dimensions = _dimensions;
   
-  var _spacing = MRI.v_voxelsize;
+  var _spacing = [MRI.pixdim[1], MRI.pixdim[2], MRI.pixdim[3]];
   object._spacing = _spacing;
   
   var min = MRI.min;
@@ -112,7 +113,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   
   object.create_();
   
-  this.reslice(object, MRI.v_data, _dimensions, min, max);
+  this.reslice(object, MRI.data, _dimensions, min, max);
   
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
@@ -225,11 +226,7 @@ X.parserNII.prototype.parseStream = function(data) {
   dataptr.setParseFunction(this.parseUInt16Array.bind(this),
       dataptr._sizeOfShort);
   MRI.dim = dataptr.read(8);
-  var volsize = 0;
-  var i;
-  for (i = 1; i < MRI.dim[0]; i++) {
-    volsize += MRI.dim[i];
-  }
+  var volsize = MRI.dim[1] * MRI.dim[2] * MRI.dim[3];
   
   dataptr.setParseFunction(this.parseFloat32Array.bind(this),
       dataptr._sizeOfFloat);
@@ -303,6 +300,8 @@ X.parserNII.prototype.parseStream = function(data) {
   case 768:
     MRI.MRIdatatype = MRItype.MRI_UINT32;
     break;
+  default:
+    throw new Error('Unsupported NII data type.');
   }
   
   // dataptr
@@ -315,8 +314,9 @@ X.parserNII.prototype.parseStream = function(data) {
   var a_ret = MRI.MRIdatatype.func_arrayRead(data, dataptr._dataPointer,
       volsize);
   MRI.data = a_ret[0];
+  MRI.min = a_ret[2];
+  MRI.max = a_ret[1];
   
-
   // console.time('stats')
   // syslog('Calculating data/image stats...');
   // MRI.stats = this.stats_calc(MRI.v_data);
