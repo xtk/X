@@ -225,6 +225,10 @@ X.parserNII.prototype.parseStream = function(data) {
     dataptr.setParseFunction(this.parseUInt16Array.bind(this),
             dataptr._sizeOfShort);
     MRI.dim = dataptr.read(8);
+    var volsize = 0;
+    var i;
+    for(i=1;i<MRI.dim[0];i++)
+       volsize += dim[i]
     dataptr.setParseFunction(this.parseFloat32Array.bind(this),
             dataptr._sizeOfFloat);
     MRI.intent_p1 = dataptr.read();
