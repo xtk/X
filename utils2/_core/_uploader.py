@@ -59,7 +59,28 @@ class Uploader( object ):
 
     #
     # test
+    #
+    print Colors.CYAN + 'Loading Testing Report..' + Colors._CLEAR
+    testReport = os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Test.xml' )
+
+    if os.path.isfile( testReport ):
+      # found a build report
+      print Colors.ORANGE + 'Found Testing Report!' + Colors._CLEAR
+
+      with open( testReport, 'r' ) as f:
+        cdasher.submit( f.read(), submissiontype )
+
+      print Colors.ORANGE + '..Successfully uploaded as ' + Colors.CYAN + submissiontype + Colors.ORANGE + '.' + Colors._CLEAR
+
+    else:
+      # not found
+      print Colors.ORANGE + 'Not Found!' + Colors._CLEAR
+      testReport = None
 
     # delete old reports
     if buildReport:
       os.unlink( buildReport )
+
+    if testReport:
+      print testReport
+      #os.unlink( testReport )

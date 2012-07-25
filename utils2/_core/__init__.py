@@ -1,4 +1,5 @@
 from _builder import Builder
+from _tester import Tester
 from _depsgenerator import DepsGenerator
 from _documenter import Documenter
 from _entrypoint import Entrypoint
