@@ -74,8 +74,6 @@ X.parserBINSTL.prototype.parse = function(container, object, data, flag) {
     
     // Following the header is a 4 byte unsigned integer indicating the number of triangular facets in the file. 
     var triangle_count = this.parseUInt32(data, 80);
-    
-    window.console["debug"]("triangle count:" + triangle_count);
 
     var i = 0;
 
