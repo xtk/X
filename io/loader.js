@@ -35,6 +35,7 @@ goog.require('X.object');
 goog.require('X.parserCRV');
 goog.require('X.parserFSM');
 goog.require('X.parserIMAGE');
+goog.require('X.parserLBL');
 goog.require('X.parserLUT');
 goog.require('X.parserMGZ');
 goog.require('X.parserNII');
@@ -357,6 +358,7 @@ X.loader.extensions = {
   // // ending with .gz, later we have to fix
   // // that
   'CRV': [X.parserCRV, null, null],
+  'LABEL': [X.parserLBL, null, null],
   'MGH': [X.parserMGZ, false, null],
   'MGZ': [X.parserMGZ, true, null],
   'TXT': [X.parserLUT, null, null],
