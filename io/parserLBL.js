@@ -176,7 +176,7 @@ X.parserLBL.prototype.parseLine = function(line) {
   var lineFields = line.split(' ');
 
   // return the vertex index
-  return parseInt(lineFields[0]);
+  return parseInt(lineFields[0],10);
 };
 
 
