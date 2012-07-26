@@ -159,9 +159,17 @@ X.renderer = function() {
    * A flag to show if the initial loading was completed.
    * 
    * @type {boolean}
-   * @public
+   * @protected
    */
   this._loadingCompleted = false;
+  
+  /**
+   * A flag to indicate that the onShowtime callback is about to be called.
+   * 
+   * @type {boolean}
+   * @protected
+   */
+  this._onShowtime = false;
   
   /**
    * The progressBar of this renderer.
@@ -425,7 +433,7 @@ X.renderer.prototype.__defineSetter__('container', function(container) {
 X.renderer.prototype.resetViewAndRender = function() {
 
   this._camera.reset();
-  this.render_(false, false);
+  // this.render_(false, false);
   
 };
 
@@ -624,8 +632,8 @@ X.renderer.prototype.init = function(_contextName) {
   // ..listen to render requests from the camera
   // these get fired after user-interaction and camera re-positioning to re-draw
   // all objects
-  goog.events.listen(_camera, X.event.events.RENDER, this.render_.bind(this,
-      false, false));
+  // goog.events.listen(_camera, X.event.events.RENDER, this.render_.bind(this,
+  // false, false));
   
   //
   // attach all created objects as class attributes
@@ -840,6 +848,8 @@ X.renderer.prototype.render = function() {
     
   }
   
+
+
   //
   // LOADING..
   //
@@ -868,8 +878,9 @@ X.renderer.prototype.render = function() {
     // we are ready! yahoooo!
     
     // call the onShowtime function which can be overloaded
-    if (!this._loadingCompleted) {
+    if (!this._loadingCompleted && !this._onShowtime) {
       
+      this._onShowtime = true;
       eval("this.onShowtime()");
       this._loadingCompleted = true; // flag the renderer as 'initial
       // loading completed'
@@ -896,6 +907,10 @@ X.renderer.prototype.render = function() {
   //
   // CURTAIN UP! LET THE SHOW BEGIN..
   //
+  
+  // this starts the rendering loops
+  window.requestAnimationFrame(this.render.bind(this, this._canvas));
+  eval("this.onRender()");
   this.render_(false, true);
   
 };
@@ -908,6 +923,17 @@ X.renderer.prototype.render = function() {
  * @public
  */
 X.renderer.prototype.onShowtime = function() {
+
+  // do nothing
+};
+
+
+/**
+ * Overload this function to execute code on each rendering call.
+ * 
+ * @public
+ */
+X.renderer.prototype.onRender = function() {
 
   // do nothing
 };

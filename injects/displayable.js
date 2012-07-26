@@ -304,6 +304,8 @@ X.displayable.prototype.__defineSetter__('color', function(color) {
   
   this._dirty = true;
   
+  // no modified event since the rendering loop always checks it
+  
 });
 
 
@@ -350,6 +352,8 @@ X.displayable.prototype.__defineSetter__('opacity', function(opacity) {
   
   this._dirty = true;
   
+  // no modified event since the rendering loop always checks it
+  
 });
 
 
@@ -377,6 +381,8 @@ X.displayable.prototype.__defineSetter__('caption', function(caption) {
   this._caption = caption;
   
   this._dirty = true;
+  
+  // no modified event since the picking function always checks it
   
 });
 
@@ -417,6 +423,8 @@ X.displayable.prototype.__defineSetter__('visible', function(visible) {
   
   this._dirty = true;
   
+  // no modified event since the rendering loop always checks it
+  
 });
 
 
@@ -452,6 +460,8 @@ X.displayable.prototype.__defineSetter__('pointsize', function(size) {
   
   this._dirty = true;
   
+  // no modified event since the rendering loop always checks it
+  
 });
 
 
@@ -483,6 +493,8 @@ X.displayable.prototype.__defineSetter__('magicmode', function(magicmode) {
   this._magicmode = magicmode;
   
   this._dirty = true;
+  
+  // no modified event since the rendering loop always checks it
   
 });
 
@@ -518,5 +530,7 @@ X.displayable.prototype.__defineSetter__('linewidth', function(width) {
   this._linewidth = width;
   
   this._dirty = true;
+  
+  // no modified event since the rendering loop always checks it
   
 });

@@ -37,6 +37,7 @@ goog.require('X.parserFSM');
 goog.require('X.parserIMAGE');
 goog.require('X.parserLUT');
 goog.require('X.parserMGZ');
+goog.require('X.parserNII');
 goog.require('X.parserNRRD');
 goog.require('X.parserSTL');
 goog.require('X.parserBINSTL');
@@ -300,9 +301,6 @@ X.loader.prototype.complete = function(event) {
     var container = event._container;
     var object = event._object;
     
-    // mark the container as dirty untill the renderer treats it
-    container._dirty = true;
-    
     // mark the container's file as clean
     container._file._dirty = false;
     
@@ -354,6 +352,10 @@ X.loader.extensions = {
   'PIAL': [X.parserFSM, null, null],
   'ORIG': [X.parserFSM, null, null],
   'NRRD': [X.parserNRRD, null, null],
+  'NII': [X.parserNII, false, null],
+  // 'GZ': [X.parserNII, false, null], // right now nii.gz is the only format
+  // // ending with .gz, later we have to fix
+  // // that
   'CRV': [X.parserCRV, null, null],
   'MGH': [X.parserMGZ, false, null],
   'MGZ': [X.parserMGZ, true, null],

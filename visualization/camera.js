@@ -363,7 +363,11 @@ X.camera.prototype.reset = function() {
  */
 X.camera.prototype.pan = function(distance) {
 
-  if (!(distance instanceof goog.math.Vec2)) {
+  if ((distance instanceof Array) && (distance.length == 2)) {
+    
+    distance = new goog.math.Vec2(distance[0], distance[1]);
+    
+  } else if (!(distance instanceof goog.math.Vec2)) {
     
     throw new Error('Invalid distance vector for pan operation.');
     
@@ -378,7 +382,7 @@ X.camera.prototype.pan = function(distance) {
   this._glview = new Float32Array(this._view.flatten());
   
   // fire a render event
-  this.dispatchEvent(new X.event.RenderEvent());
+  // this.dispatchEvent(new X.event.RenderEvent());
   
 };
 
@@ -410,7 +414,7 @@ X.camera.prototype.zoomIn = function(fast) {
   this._glview = new Float32Array(this._view.flatten());
   
   // fire a render event
-  this.dispatchEvent(new X.event.RenderEvent());
+  // this.dispatchEvent(new X.event.RenderEvent());
   
 };
 
@@ -442,7 +446,7 @@ X.camera.prototype.zoomOut = function(fast) {
   this._glview = new Float32Array(this._view.flatten());
   
   // fire a render event
-  this.dispatchEvent(new X.event.RenderEvent());
+  // this.dispatchEvent(new X.event.RenderEvent());
   
 };
 

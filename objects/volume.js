@@ -198,6 +198,22 @@ X.volume = function(volume) {
    */
   this._borders = true;
   
+  /**
+   * The lower window border.
+   * 
+   * @type {!number}
+   * @private
+   */
+  this._windowLow = Infinity;
+  
+  /**
+   * The upper window border.
+   * 
+   * @type {!number}
+   * @private
+   */
+  this._windowHigh = -Infinity;
+  
   // inject functionality
   inject(this, new X.loadable()); // this object is loadable from a file
   inject(this, new X.thresholdable()); // this object is thresholdable
@@ -359,8 +375,12 @@ X.volume.prototype.create_ = function() {
  * 
  * @inheritDoc
  */
-X.volume.prototype.modified = function() {
+X.volume.prototype.modified = function(propagateEvent) {
 
+  // by default, propagate event should be true
+  propagateEvent = typeof propagateEvent !== 'undefined' ? propagateEvent
+      : true;
+  
   // only do this if we already have children aka. the create_() method was
   // called
   if (this._children.length > 0) {
@@ -405,7 +425,12 @@ X.volume.prototype.modified = function() {
   }
   
   // call the superclass' modified method
-  goog.base(this, 'modified');
+  if (propagateEvent) {
+    
+    // but only if propagateEvent is not turned off
+    goog.base(this, 'modified');
+    
+  }
   
 };
 
@@ -489,6 +514,9 @@ X.volume.prototype.__defineSetter__('volumeRendering',
     function(volumeRendering) {
 
       this._volumeRendering = volumeRendering;
+      
+      // fire a modified event without propagation for fast switching
+      this.modified(false);
       
     });
 
@@ -585,6 +613,9 @@ X.volume.prototype.__defineSetter__('indexX', function(indexX) {
     
     this._indexX = indexX;
     
+    // fire a modified event without propagation for fast slicing
+    this.modified(false);
+    
   }
   
 });
@@ -615,6 +646,9 @@ X.volume.prototype.__defineSetter__('indexY', function(indexY) {
       indexY < this._slicesY._children.length) {
     
     this._indexY = indexY;
+    
+    // fire a modified event without propagation for fast slicing
+    this.modified(false);
     
   }
   
@@ -647,7 +681,62 @@ X.volume.prototype.__defineSetter__('indexZ', function(indexZ) {
     
     this._indexZ = indexZ;
     
+    // fire a modified event without propagation for fast slicing
+    this.modified(false);
+    
   }
+  
+});
+
+
+/**
+ * Return the lower window border for window/level adjustment.
+ * 
+ * @return {!number} The lower window border.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('windowLow', function() {
+
+  return this._windowLow;
+  
+});
+
+
+/**
+ * Set the lower window border for window/level adjustment.
+ * 
+ * @param {!number} windowLow The new lower window border.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('windowLow', function(windowLow) {
+
+  this._windowLow = windowLow;
+  
+});
+
+
+/**
+ * Return the upper window border for window/level adjustment.
+ * 
+ * @return {!number} The upper window border.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('windowHigh', function() {
+
+  return this._windowHigh;
+  
+});
+
+
+/**
+ * Set the upper window border for window/level adjustment.
+ * 
+ * @param {!number} windowHigh The new upper window border.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('windowHigh', function(windowHigh) {
+
+  this._windowHigh = windowHigh;
   
 });
 

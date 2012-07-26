@@ -74,6 +74,22 @@ X.thresholdable = function() {
    */
   this._upperThreshold = Infinity;
   
+  /**
+   * The color to map the min. scalar.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._minColor = [0, 0, 0];
+  
+  /**
+   * The color to map the max. scalar.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._maxColor = [1, 1, 1];
+  
 };
 
 
@@ -102,6 +118,8 @@ X.thresholdable.prototype.__defineSetter__('lowerThreshold', function(
   if (lowerThreshold >= this._min && lowerThreshold <= this._max) {
     
     this._lowerThreshold = lowerThreshold;
+    
+    // no modified event since the rendering loop always checks it
     
   }
   
@@ -134,6 +152,8 @@ X.thresholdable.prototype.__defineSetter__('upperThreshold', function(
     
     this._upperThreshold = upperThreshold;
     
+    // no modified event since the rendering loop always checks it
+    
   }
   
 });
@@ -161,5 +181,78 @@ X.thresholdable.prototype.__defineGetter__('min', function() {
 X.thresholdable.prototype.__defineGetter__('max', function() {
 
   return this._max;
+  
+});
+
+
+
+/**
+ * Get the min color which is used to map the scalars to colors in a linear
+ * fashion.
+ * 
+ * @return {!Array} An array holding the r,g,b components of the color.
+ * @public
+ */
+X.thresholdable.prototype.__defineGetter__('minColor', function() {
+
+  return this._minColor;
+  
+});
+
+
+/**
+ * Set the min color to linear map the scalars to colors.
+ * 
+ * @param {!Array} minColor The color corresponding to the min. scalar value.
+ * @public
+ */
+X.thresholdable.prototype.__defineSetter__('minColor', function(minColor) {
+
+  if (!goog.isDefAndNotNull(minColor) || !(minColor instanceof Array) ||
+      (minColor.length != 3)) {
+    
+    throw new Error('Invalid min. color.');
+    
+  }
+  
+  this._minColor = minColor;
+  
+  // no modified event since the rendering loop always checks it
+  
+});
+
+
+/**
+ * Get the max color which is used to map the scalars to colors in a linear
+ * fashion.
+ * 
+ * @return {!Array} An array holding the r,g,b components of the color.
+ * @public
+ */
+X.thresholdable.prototype.__defineGetter__('maxColor', function() {
+
+  return this._maxColor;
+  
+});
+
+
+/**
+ * Set the max color to linear map the scalars to colors.
+ * 
+ * @param {!Array} maxColor The color corresponding to the min. scalar value.
+ * @public
+ */
+X.thresholdable.prototype.__defineSetter__('maxColor', function(maxColor) {
+
+  if (!goog.isDefAndNotNull(maxColor) || !(maxColor instanceof Array) ||
+      (maxColor.length != 3)) {
+    
+    throw new Error('Invalid max. color.');
+    
+  }
+  
+  this._maxColor = maxColor;
+  
+  // no modified event since the rendering loop always checks it
   
 });

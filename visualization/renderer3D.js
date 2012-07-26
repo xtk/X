@@ -1496,8 +1496,6 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   var uObjectOpacity = uLocations.get(X.shaders.uniforms.OBJECTOPACITY);
   var uLabelMapOpacity = uLocations.get(X.shaders.uniforms.LABELMAPOPACITY);
   var uUseTexture = uLocations.get(X.shaders.uniforms.USETEXTURE);
-  var uUseTextureThreshold = uLocations
-      .get(X.shaders.uniforms.USETEXTURETHRESHOLD);
   var uUseLabelMapTexture = uLocations
       .get(X.shaders.uniforms.USELABELMAPTEXTURE);
   var uTextureSampler = uLocations.get(X.shaders.uniforms.TEXTURESAMPLER);
@@ -1508,6 +1506,13 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       .get(X.shaders.uniforms.VOLUMEUPPERTHRESHOLD);
   var uVolumeScalarMin = uLocations.get(X.shaders.uniforms.VOLUMESCALARMIN);
   var uVolumeScalarMax = uLocations.get(X.shaders.uniforms.VOLUMESCALARMAX);
+  var uVolumeWindowLow = uLocations.get(X.shaders.uniforms.VOLUMEWINDOWLOW);
+  var uVolumeWindowHigh = uLocations.get(X.shaders.uniforms.VOLUMEWINDOWHIGH);
+  var uVolumeScalarMinColor = uLocations
+      .get(X.shaders.uniforms.VOLUMESCALARMINCOLOR);
+  var uVolumeScalarMaxColor = uLocations
+      .get(X.shaders.uniforms.VOLUMESCALARMAXCOLOR);
+  var uVolumeTexture = uLocations.get(X.shaders.uniforms.VOLUMETEXTURE);
   var uObjectTransform = uLocations.get(X.shaders.uniforms.OBJECTTRANSFORM);
   var uPointSize = uLocations.get(X.shaders.uniforms.POINTSIZE);
   
@@ -1715,8 +1720,8 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         this._context.vertexAttribPointer(aTexturePosition,
             texturePositionBuffer._itemSize, this._context.FLOAT, false, 0, 0);
         
-        // by default, don't use thresholding
-        this._context.uniform1i(uUseTextureThreshold, false);
+        // by default, no X.volume texture
+        this._context.uniform1i(uVolumeTexture, false);
         
       } else {
         
@@ -1736,8 +1741,8 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       // this is the case if we have a volume here..
       if (volume) {
         
-        // enable texture thresholding for volumes
-        this._context.uniform1i(uUseTextureThreshold, true);
+        // this is a X.volume texture
+        this._context.uniform1i(uVolumeTexture, true);
         
         // pass the lower threshold
         this._context.uniform1f(uVolumeLowerThreshold, volume._lowerThreshold);
@@ -1747,6 +1752,18 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         // pass the scalar range
         this._context.uniform1f(uVolumeScalarMin, volume._min);
         this._context.uniform1f(uVolumeScalarMax, volume._max);
+        
+        // pass the colors for scalar mapping
+        var minColor = volume._minColor;
+        var maxColor = volume._maxColor;
+        this._context.uniform3f(uVolumeScalarMinColor, parseFloat(minColor[0]),
+            parseFloat(minColor[1]), parseFloat(minColor[2]));
+        this._context.uniform3f(uVolumeScalarMaxColor, parseFloat(maxColor[0]),
+            parseFloat(maxColor[1]), parseFloat(maxColor[2]));
+        
+        // pass the w/l
+        this._context.uniform1f(uVolumeWindowLow, volume._windowLow);
+        this._context.uniform1f(uVolumeWindowHigh, volume._windowHigh);
         
         // get the (optional) label map
         var labelmap = volume._labelmap;
@@ -1906,6 +1923,8 @@ goog.exportSymbol('X.renderer3D.prototype.init', X.renderer3D.prototype.init);
 goog.exportSymbol('X.renderer3D.prototype.add', X.renderer3D.prototype.add);
 goog.exportSymbol('X.renderer3D.prototype.onShowtime',
     X.renderer3D.prototype.onShowtime);
+goog.exportSymbol('X.renderer3D.prototype.onRender',
+    X.renderer3D.prototype.onRender);
 goog.exportSymbol('X.renderer3D.prototype.get', X.renderer3D.prototype.get);
 goog.exportSymbol('X.renderer3D.prototype.render',
     X.renderer3D.prototype.render);
