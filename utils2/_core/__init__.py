@@ -6,6 +6,7 @@ from _entrypoint import Entrypoint
 from _jsfilefinder import JSFileFinder
 from _colors import Colors
 from _uploader import Uploader
+from _cdash import CDash
 
 from config import *
 

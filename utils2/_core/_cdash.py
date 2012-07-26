@@ -155,6 +155,12 @@ class CDash( object ):
     # create the test list
     test_list_element = xml.createElement( 'TestList' )
 
+    for t in tests:
+      # .. add to the overall list
+      test_list_element.appendChild( self.createXMLNode( 'Test', t[0] ) )
+
+    testingElement.appendChild( test_list_element )
+
     # create entries for each test
     for t in tests:
 
@@ -204,11 +210,6 @@ class CDash( object ):
 
       # .. add it to 'Testing'
       testingElement.appendChild( test_element )
-
-      # .. add to the overall list
-      test_list_element.appendChild( self.createXMLNode( 'Test', test_name ) )
-
-    testingElement.appendChild( test_list_element )
 
     return testingElement
 
