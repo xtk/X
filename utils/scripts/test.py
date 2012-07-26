@@ -225,7 +225,7 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
     return None
 
   # list of tests
-  tests = ['test_trk.html', 'test_vtk.html', 'test_nrrd.html', 'test_vr.html', 'test_labelmap.html', 'test_shapes.html', 'test_mgh.html', 'test_mgz.html']
+  tests = ['test_trk.html', 'test_vtk.html', 'test_nrrd.html', 'test_vr.html', 'test_labelmap.html', 'test_shapes.html', 'test_mgh.html', 'test_mgz.html', 'test_stl.html', 'test_binstl.html']
 
   #testURL = "file://" + xtkLibDir + "/../testing/visualization/"
   testURL = "testing/visualization/"
