@@ -40,6 +40,7 @@ goog.require('X.parserMGZ');
 goog.require('X.parserNII');
 goog.require('X.parserNRRD');
 goog.require('X.parserSTL');
+goog.require('X.parserBINSTL');
 goog.require('X.parserTRK');
 goog.require('X.parserVTK');
 goog.require('goog.structs.Map');
@@ -340,6 +341,7 @@ X.loader.extensions = {
   // support for the following extensions and the mapping to X.parsers as well
   // as some custom flags and the result type
   'STL': [X.parserSTL, null, null],
+  'BINSTL': [X.parserBINSTL, null, null],
   'VTK': [X.parserVTK, null, null],
   'TRK': [X.parserTRK, null, null],
   // FSM, INFLATED, SMOOTHWM, SPHERE, PIAL and ORIG are all freesurfer meshes
