@@ -158,8 +158,6 @@ X.renderer2D.prototype.onScroll_ = function(event) {
     
   }
   
-  _volume.modified();
-  
   // execute the callback
   eval('this.onScroll();');
   

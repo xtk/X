@@ -34,7 +34,7 @@ class CDash( object ):
     Returns an xml node with the given name, containing the given value
     '''
     el = self.__xml.createElement( name )
-    el.appendChild( self.__xml.createTextNode( value ) )
+    el.appendChild( self.__xml.createTextNode( str( value ) ) )
     return el
 
 
@@ -53,6 +53,8 @@ class CDash( object ):
 
     if options[0] == 'Build':
       nestedElement = self.fillBuildElement( nestedElement, options[1] )
+    elif options[0] == 'Testing':
+      nestedElement = self.fillTestingElement( nestedElement, options[1] )
 
     # now attach the nested element to the site element
     siteElement.appendChild( nestedElement )
@@ -89,7 +91,7 @@ class CDash( object ):
 
   def fillBuildElement( self, buildElement, log ):
     '''
-    Checks for build warnings or errors and creates the proper elements.
+    Checks for build warnings or errors in the error log and creates the proper XML elements.
     '''
 
     xml = self.__xml
@@ -108,7 +110,7 @@ class CDash( object ):
         #
         # create <Error>
         #
-        element = xml.createElement( 'Warning' )
+        element = xml.createElement( 'Error' )
 
       else:
         # no error or warning here
@@ -132,6 +134,84 @@ class CDash( object ):
       buildElement.appendChild( element )
 
     return buildElement
+
+
+  def fillTestingElement( self, testingElement, tests ):
+    '''
+    Parses tests and creates the proper XML elements.
+    
+    'tests' is a list in this format:
+    
+     [
+     
+      # The name, Passed/Failed, Testlog, Execution Time [ms], ResultImage, BaselineImage
+      ['Testname 1', 'passed', 'Testlog\n\nDone', 200, None, None],
+      ['Testname 2', 'failed', 'Testlog\n\nblabla', 5599, None, None]
+     
+     ]
+    '''
+    xml = self.__xml
+
+    # create the test list
+    test_list_element = xml.createElement( 'TestList' )
+
+    for t in tests:
+      # .. add to the overall list
+      test_list_element.appendChild( self.createXMLNode( 'Test', t[0] ) )
+
+    testingElement.appendChild( test_list_element )
+
+    # create entries for each test
+    for t in tests:
+
+      test_name = t[0]
+      test_status = t[1]
+      test_log = t[2]
+      test_execution_time = t[3]
+      test_result_image = t[4]
+      test_baseline_image = t[5]
+
+
+      # now parse each test
+      test_element = xml.createElement( 'Test' )
+
+      # passed/failed
+      test_element.setAttribute( 'Status', test_status )
+
+      # name      
+      test_element.appendChild( self.createXMLNode( 'Name', test_name ) )
+
+      # results
+
+      # first the test log
+      results_element = xml.createElement( 'Results' )
+      log_element = xml.createElement( 'Measurement' )
+      log_element.appendChild( self.createXMLNode( 'Value', test_log ) )
+
+      results_element.appendChild( log_element )
+
+      # then the execution time
+      execution_time_element = xml.createElement( 'NamedMeasurement' )
+      execution_time_element.setAttribute( 'name', 'Execution Time' )
+      execution_time_element.setAttribute( 'type', 'numeric/double' )
+      execution_time_element.appendChild( self.createXMLNode( 'Value', test_execution_time ) )
+
+      results_element.appendChild( execution_time_element )
+
+      # TODO images
+
+      accurate_time_element = xml.createElement( 'NamedMeasurement' )
+      accurate_time_element.setAttribute( 'name', 'Accurate Execution Time' )
+      accurate_time_element.setAttribute( 'type', 'text/string' )
+      accurate_time_element.appendChild( self.createXMLNode( 'Value', test_execution_time ) )
+
+      # .. append the results
+      test_element.appendChild( results_element )
+
+      # .. add it to 'Testing'
+      testingElement.appendChild( test_element )
+
+    return testingElement
 
 
   def createSiteElement( self ):
@@ -185,20 +265,30 @@ class CDash( object ):
     nestedElement.appendChild( self.createXMLNode( 'StartDateTime', strftime( "%b %d %H:%M %Z", gmtime() ) ) )
 
     #
-    # <StartBuildTime>
-    nestedElement.appendChild( self.createXMLNode( 'StartBuildTime', str ( time() ) ) )
-
-    #
-    # <BuildCommand>
-    nestedElement.appendChild( self.createXMLNode( 'BuildCommand', ' '.join( sys.argv ) ) )
-
-    #
     # <EndDateTime>
     nestedElement.appendChild( self.createXMLNode( 'EndDateTime', strftime( "%b %d %H:%M %Z", gmtime() ) ) )
 
-    #
-    # <EndBuildTime>
-    nestedElement.appendChild( self.createXMLNode( 'EndBuildTime', str ( time() ) ) )
+    if type == 'Build':
+      #
+      # <StartBuildTime>
+      nestedElement.appendChild( self.createXMLNode( 'StartBuildTime', str ( time() ) ) )
+
+      #
+      # <BuildCommand>
+      nestedElement.appendChild( self.createXMLNode( 'BuildCommand', ' '.join( sys.argv ) ) )
+
+      #
+      # <EndBuildTime>
+      nestedElement.appendChild( self.createXMLNode( 'EndBuildTime', str ( time() ) ) )
+
+    if type == 'Testing':
+      #
+      # <StartTestTime>
+      nestedElement.appendChild( self.createXMLNode( 'StartTestTime', str ( time() ) ) )
+
+      #
+      # <EndTestTime>
+      nestedElement.appendChild( self.createXMLNode( 'EndTestTime', str ( time() ) ) )
 
     #
     # <ElapsedMinutes>

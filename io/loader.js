@@ -38,8 +38,10 @@ goog.require('X.parserIMAGE');
 goog.require('X.parserLBL');
 goog.require('X.parserLUT');
 goog.require('X.parserMGZ');
+goog.require('X.parserNII');
 goog.require('X.parserNRRD');
 goog.require('X.parserSTL');
+goog.require('X.parserBINSTL');
 goog.require('X.parserTRK');
 goog.require('X.parserVTK');
 goog.require('goog.structs.Map');
@@ -340,6 +342,7 @@ X.loader.extensions = {
   // support for the following extensions and the mapping to X.parsers as well
   // as some custom flags and the result type
   'STL': [X.parserSTL, null, null],
+  'BINSTL': [X.parserBINSTL, null, null],
   'VTK': [X.parserVTK, null, null],
   'TRK': [X.parserTRK, null, null],
   // FSM, INFLATED, SMOOTHWM, SPHERE, PIAL and ORIG are all freesurfer meshes
@@ -350,6 +353,10 @@ X.loader.extensions = {
   'PIAL': [X.parserFSM, null, null],
   'ORIG': [X.parserFSM, null, null],
   'NRRD': [X.parserNRRD, null, null],
+  'NII': [X.parserNII, false, null],
+  // 'GZ': [X.parserNII, false, null], // right now nii.gz is the only format
+  // // ending with .gz, later we have to fix
+  // // that
   'CRV': [X.parserCRV, null, null],
   'LABEL': [X.parserLBL, null, null],
   'MGH': [X.parserMGZ, false, null],
