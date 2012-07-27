@@ -25,7 +25,7 @@ window.onload = function() {
   
   // load a .vtk file
   var surface = new X.mesh();
-  surface.file = 'data/cube.binstl';
+  surface.file = 'data/cube_bin.stl';
   surface.color = [1, 0, 0];
   
   // add the object
