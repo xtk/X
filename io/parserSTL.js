@@ -1,11 +1,30 @@
 /*
- * xxxxxxx xxxxxxx x:::::x x:::::x x:::::x x:::::x x:::::xx:::::x x::::::::::x
- * x::::::::x x::::::::x x::::::::::x x:::::xx:::::x x:::::x x:::::x x:::::x
- * x:::::x THE xxxxxxx xxxxxxx TOOLKIT http://www.goXTK.com Copyright (c) 2012
- * The X Toolkit Developers <dev@goXTK.com> The X Toolkit (XTK) is licensed
- * under the MIT License: http://www.opensource.org/licenses/mit-license.php
- * "Free software" is a matter of liberty, not price. "Free" as in "free
- * speech", not as in "free beer". - Richard M. Stallman
+ * 
+ *                  xxxxxxx      xxxxxxx
+ *                   x:::::x    x:::::x 
+ *                    x:::::x  x:::::x  
+ *                     x:::::xx:::::x   
+ *                      x::::::::::x    
+ *                       x::::::::x     
+ *                       x::::::::x     
+ *                      x::::::::::x    
+ *                     x:::::xx:::::x   
+ *                    x:::::x  x:::::x  
+ *                   x:::::x    x:::::x 
+ *              THE xxxxxxx      xxxxxxx TOOLKIT
+ *                    
+ *                  http://www.goXTK.com
+ *                   
+ * Copyright (c) 2012 The X Toolkit Developers <dev@goXTK.com>
+ *                   
+ *    The X Toolkit (XTK) is licensed under the MIT License:
+ *      http://www.opensource.org/licenses/mit-license.php
+ * 
+ *      "Free software" is a matter of liberty, not price.
+ *      "Free" as in "free speech", not as in "free beer".
+ *                                         - Richard M. Stallman
+ * 
+ * 
  */
 
 // provides
@@ -41,6 +60,7 @@ X.parserSTL = function() {
 // inherit from X.parser
 goog.inherits(X.parserSTL, X.parser);
 
+
 /**
  * @inheritDoc
  */
@@ -50,22 +70,24 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
   // or the number of triangles for binary data
   var _size = 0;
   
+  var _parseFunction = null;
+  
   // check if this is an ascii STL file or a binary one
   if ( data.substr(0, 5) == 'solid' ) {
 
     // this is an ascii STL file
-
+    
     data = data.split('\n');
 
     // get the number of lines
-    _size = dataAsArray.length;
+    _size = data.length;
 
     // set the parse function for ASCII
-    _parseFunction = this.parseLine;
+    _parseFunction = this.parseLine.bind(this);
 
   } else {
 
-    // this is a binary STL file
+    // this is a binary STL file (http://en.wikipedia.org/wiki/STL_(file_format))
 
     // A binary STL file has an 80 character header (which is generally
     // ignored, but which should never begin with 'solid' because that will
@@ -77,7 +99,7 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
     _size = this.parseUInt32(data, 80);
 
     // set the parse function for binary
-    _parseFunction = this.parseBytes;
+    _parseFunction = this.parseBytes.bind(this);
 
   }
 
@@ -141,6 +163,7 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
 
 };
 
+
 /**
  * Parses a line of .STL data and modifies the given X.triplets containers.
  * 
@@ -183,6 +206,7 @@ X.parserSTL.prototype.parseLine = function(p, n, data, index) {
 
 };
 
+
 /**
  * Parses a triangle of .STL data and modifies the given X.triplets containers.
  * Original embodiment by Matthew Goodman (meawoppl@gmail.com)
@@ -197,24 +221,24 @@ X.parserSTL.prototype.parseBytes = function(p, n, data, index) {
   // each triangle consists of 50 bytes to parse
   // so incorporate it in the individual offset
   // and also add the 84 bytes from the header
-  var _offset = 84 + index * 50;
+  var offset = 84 + index * 50;
   
   // foreach triangle
   // REAL32[3] â Normal vector
   normal = this.parseFloat32Array(data, offset, 3)[0];
-  _offset += 3 * 4;
+  offset += 3 * 4;
 
   // REAL32[3] â Vertex 1
   v1 = this.parseFloat32Array(data, offset, 3)[0];
-  _offset += 3 * 4;
+  offset += 3 * 4;
 
   // REAL32[3] â Vertex 2
   v2 = this.parseFloat32Array(data, offset, 3)[0];
-  _offset += 3 * 4;
+  offset += 3 * 4;
 
   // REAL32[3] â Vertex 3
   v3 = this.parseFloat32Array(data, offset, 3)[0];
-  _offset += 3 * 4;
+  offset += 3 * 4;
 
   // MRG TODO:
   // The above could probably be made faster by
@@ -222,7 +246,7 @@ X.parserSTL.prototype.parseBytes = function(p, n, data, index) {
 
   // UINT16 â Attribute byte count
   attributes = this.parseUInt16(data, offset)[0];
-  _offset += 2;
+  offset += 2;
 
   // Add the vertices
   p.add(v1[0], v1[1], v1[2]);
