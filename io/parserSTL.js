@@ -76,11 +76,9 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
   if ( data.substr(0, 5) == 'solid' ) {
 
     // this is an ascii STL file
-    
-    data = data.split('\n');
 
     // get the number of lines
-    _size = data.length;
+    _size = data.split('\n').length;
 
     // set the parse function for ASCII
     _parseFunction = this.parseLine.bind(this);
@@ -169,7 +167,7 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
  * 
  * @param {!X.triplets} p The object's points as a X.triplets container.
  * @param {!X.triplets} n The object's normals as a X.triplets container.
- * @param {!string} data The data to parse.
+ * @param {!Array} data The data to parse.
  * @param {!number} index The index of the current line.
  * @protected
  */
@@ -213,7 +211,7 @@ X.parserSTL.prototype.parseLine = function(p, n, data, index) {
  * 
  * @param {!X.triplets} p The object's points as a X.triplets container.
  * @param {!X.triplets} n The object's normals as a X.triplets container.
- * @param {!string} data The data to parse.
+ * @param {!String} data The data to parse.
  * @param {!number} index The index of the current triangle.
  */
 X.parserSTL.prototype.parseBytes = function(p, n, data, index) {
@@ -225,19 +223,19 @@ X.parserSTL.prototype.parseBytes = function(p, n, data, index) {
   
   // foreach triangle
   // REAL32[3] â Normal vector
-  normal = this.parseFloat32Array(data, offset, 3)[0];
+  var normal = this.parseFloat32Array(data, offset, 3)[0];
   offset += 3 * 4;
 
   // REAL32[3] â Vertex 1
-  v1 = this.parseFloat32Array(data, offset, 3)[0];
+  var v1 = this.parseFloat32Array(data, offset, 3)[0];
   offset += 3 * 4;
 
   // REAL32[3] â Vertex 2
-  v2 = this.parseFloat32Array(data, offset, 3)[0];
+  var v2 = this.parseFloat32Array(data, offset, 3)[0];
   offset += 3 * 4;
 
   // REAL32[3] â Vertex 3
-  v3 = this.parseFloat32Array(data, offset, 3)[0];
+  var v3 = this.parseFloat32Array(data, offset, 3)[0];
   offset += 3 * 4;
 
   // MRG TODO:
@@ -245,7 +243,7 @@ X.parserSTL.prototype.parseBytes = function(p, n, data, index) {
   // making a single read of 12 float32 values.
 
   // UINT16 â Attribute byte count
-  attributes = this.parseUInt16(data, offset)[0];
+  var attributes = this.parseUInt16(data, offset)[0];
   offset += 2;
 
   // Add the vertices
