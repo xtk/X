@@ -1216,7 +1216,7 @@ X.renderer3D.prototype.distanceToEye_ = function(object) {
   var centroidVector = new goog.math.Vec3(centroid[0], centroid[1], centroid[2]);
   var transformedCentroidVector = object._transform._matrix
       .multiplyByVector(centroidVector);
-  var realCentroidVector = this._camera.view
+  var realCentroidVector = this._camera._view
       .multiplyByVector(transformedCentroidVector);
   var distanceFromEye = goog.math.Vec3.distance(this._camera._position,
       realCentroidVector);

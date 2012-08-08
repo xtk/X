@@ -201,13 +201,13 @@ X.camera3D.prototype.rotate = function(distance) {
   
   var identity = X.matrix.createIdentityMatrix(4);
   // the x-Axis vector is determined by the first row of the view matrix
-  var xAxisVector = new goog.math.Vec3(parseFloat(this.view.getValueAt(0, 0)),
-      parseFloat(this.view.getValueAt(0, 1)), parseFloat(this.view.getValueAt(
-          0, 2)));
+  var xAxisVector = new goog.math.Vec3(parseFloat(this._view.getValueAt(0, 0)),
+      parseFloat(this._view.getValueAt(0, 1)), parseFloat(this._view
+          .getValueAt(0, 2)));
   // the y-Axis vector is determined by the second row of the view matrix
-  var yAxisVector = new goog.math.Vec3(parseFloat(this.view.getValueAt(1, 0)),
-      parseFloat(this.view.getValueAt(1, 1)), parseFloat(this.view.getValueAt(
-          1, 2)));
+  var yAxisVector = new goog.math.Vec3(parseFloat(this._view.getValueAt(1, 0)),
+      parseFloat(this._view.getValueAt(1, 1)), parseFloat(this._view
+          .getValueAt(1, 2)));
   
   // we rotate around the Y Axis when the mouse moves along the screen in X
   // direction
@@ -218,8 +218,8 @@ X.camera3D.prototype.rotate = function(distance) {
   var rotateY = identity.rotate(angleY, xAxisVector);
   
   // perform the actual rotation calculation
-  this.view = new X.matrix(this.view.multiply(rotateY.multiply(rotateX)));
-  this._glview = new Float32Array(this.view.flatten());
+  this._view = new X.matrix(this._view.multiply(rotateY.multiply(rotateX)));
+  this._glview = new Float32Array(this._view.flatten());
   
   // fire a render event
   // this.dispatchEvent(new X.event.RenderEvent());
