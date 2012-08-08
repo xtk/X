@@ -66,6 +66,8 @@ goog.inherits(X.parserSTL, X.parser);
  */
 X.parserSTL.prototype.parse = function(container, object, data, flag) {
 
+  var _data = data;
+  
   // the size which can be either number of lines for ASCII data
   // or the number of triangles for binary data
   var _size = 0;
@@ -78,7 +80,7 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
     // this is an ascii STL file
     
     // split the data
-    data = data.split('\n');
+    _data = data.split('\n');
     
     // get the number of lines
     _size = data.length;
@@ -90,6 +92,8 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
     
     // this is a binary STL file
     // (http://en.wikipedia.org/wiki/STL_(file_format))
+    
+    _data = data;
     
     // A binary STL file has an 80 character header (which is generally
     // ignored, but which should never begin with 'solid' because that will
@@ -133,27 +137,27 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
   var i = 0;
   var n2 = _size % 8;
   while (n2--) {
-    _parseFunction(p, n, data, i);
+    _parseFunction(p, n, _data, i);
     i++;
   }
   
   n2 = (_size * 0.125) ^ 0;
   while (n2--) {
-    _parseFunction(p, n, data, i);
+    _parseFunction(p, n, _data, i);
     i++;
-    _parseFunction(p, n, data, i);
+    _parseFunction(p, n, _data, i);
     i++;
-    _parseFunction(p, n, data, i);
+    _parseFunction(p, n, _data, i);
     i++;
-    _parseFunction(p, n, data, i);
+    _parseFunction(p, n, _data, i);
     i++;
-    _parseFunction(p, n, data, i);
+    _parseFunction(p, n, _data, i);
     i++;
-    _parseFunction(p, n, data, i);
+    _parseFunction(p, n, _data, i);
     i++;
-    _parseFunction(p, n, data, i);
+    _parseFunction(p, n, _data, i);
     i++;
-    _parseFunction(p, n, data, i);
+    _parseFunction(p, n, _data, i);
     i++;
   }
   
