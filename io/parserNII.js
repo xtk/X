@@ -197,11 +197,17 @@ X.parserNII.prototype.parseStream = function(data) {
       size: 4,
       func_arrayRead: this.parseFloat32Array.bind(this)
     },
-    MRI_SHORT: {
+    MRI_USHORT: {
       value: 4,
-      name: "short",
+      name: "ushort",
       size: 2,
       func_arrayRead: this.parseUInt16Array.bind(this)
+    },
+    MRI_SSHORT: {
+      value: 5,
+      name: "sshort",
+      size: 2,
+      func_arrayRead: this.parseSInt16Array.bind(this)
     }
   };
   // syslog('Reading .nii/.nii.gz header');
@@ -288,6 +294,9 @@ X.parserNII.prototype.parseStream = function(data) {
   case 2:
     MRI.MRIdatatype = MRItype.MRI_UCHAR;
     break;
+  case 4:
+    MRI.MRIdatatype = MRItype.MRI_SSHORT;
+    break;
   case 16:
     MRI.MRIdatatype = MRItype.MRI_FLOAT;
     break;
@@ -295,13 +304,13 @@ X.parserNII.prototype.parseStream = function(data) {
     MRI.MRIdatatype = MRItype.MRI_SCHAR;
     break;
   case 512:
-    MRI.MRIdatatype = MRItype.MRI_SHORT;
+    MRI.MRIdatatype = MRItype.MRI_USHORT;
     break;
   case 768:
     MRI.MRIdatatype = MRItype.MRI_UINT32;
     break;
   default:
-    throw new Error('Unsupported NII data type.');
+    throw new Error('Unsupported NII data type: ' + MRI.datatype);
   }
   
   // dataptr

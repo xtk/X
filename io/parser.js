@@ -270,30 +270,29 @@ X.parser.prototype.parseUInt32 = function(data, offset) {
 
 /**
  * Parse an array of UInt32 values from some data.
- *
+ * 
  * @param {!String} data The data to parse.
  * @param {!number} offset An offset index.
  * @param {!number} elements The number of elements.
  * @return {!Array} An array consisting of [the actual values as an array, the
  *         max value, the min value].
  */
-X.parser.prototype.parseUInt32Array = function(data, offset,
-                                               elements) {
+X.parser.prototype.parseUInt32Array = function(data, offset, elements) {
 
-    var arr = new Array();
-
-    var max = 0;
-    var min = Infinity;
-
-    var i;
-    for (i = 0; i < elements; i++) {
-        var val = this.parseUInt32(data, offset + (i * 4));
-        arr[i] = val;
-        max = Math.max(max, val);
-        min = Math.min(min, val);
-    }
-
-    return [arr, max, min];
+  var arr = new Array();
+  
+  var max = 0;
+  var min = Infinity;
+  
+  var i;
+  for (i = 0; i < elements; i++) {
+    var val = this.parseUInt32(data, offset + (i * 4));
+    arr[i] = val;
+    max = Math.max(max, val);
+    min = Math.min(min, val);
+  }
+  
+  return [arr, max, min];
 };
 
 
@@ -378,6 +377,22 @@ X.parser.prototype.parseUInt16 = function(data, offset) {
 
 
 /**
+ * Parse a SInt16 value from some data.
+ * 
+ * @param {!String} data The data to parse
+ * @param {!number} offset An offset index.
+ * @return {!number} The parsed value.
+ */
+X.parser.prototype.parseSInt16 = function(data, offset) {
+
+  var b = this.parseUInt16EndianSwapped(data, offset);
+  
+  return b > Math.pow(2, 15) - 1 ? b - Math.pow(2, 16) : b;
+  
+};
+
+
+/**
  * Parse an array of UInt16 values from some data.
  * 
  * @param {!String} data The data to parse.
@@ -396,6 +411,34 @@ X.parser.prototype.parseUInt16Array = function(data, offset, elements) {
   var i;
   for (i = 0; i < elements; i++) {
     var val = this.parseUInt16(data, offset + (i * 2));
+    arr[i] = val;
+    max = Math.max(max, val);
+    min = Math.min(min, val);
+  }
+  
+  return [arr, max, min];
+};
+
+
+/**
+ * Parse an array of SInt16 values from some data.
+ * 
+ * @param {!String} data The data to parse.
+ * @param {!number} offset An offset index.
+ * @param {!number} elements The number of elements.
+ * @return {!Array} An array consisting of [the actual values as an array, the
+ *         max value, the min value].
+ */
+X.parser.prototype.parseSInt16Array = function(data, offset, elements) {
+
+  var arr = new Array();
+  
+  var max = 0;
+  var min = Infinity;
+  
+  var i;
+  for (i = 0; i < elements; i++) {
+    var val = this.parseSInt16(data, offset + (i * 2));
     arr[i] = val;
     max = Math.max(max, val);
     min = Math.min(min, val);
@@ -467,7 +510,7 @@ X.parser.prototype.parseSChar8 = function(data, offset) {
 
 /**
  * Parse an array of signed Char8 values from some data.
- *
+ * 
  * @param {!String} data The data to parse.
  * @param {!number} offset An offset index.
  * @param {!number} elements The number of elements.
@@ -476,20 +519,20 @@ X.parser.prototype.parseSChar8 = function(data, offset) {
  */
 X.parser.prototype.parseSChar8Array = function(data, offset, elements) {
 
-    var arr = new Array();
-
-    var max = 0;
-    var min = Infinity;
-
-    var i;
-    for (i = 0; i < elements; i++) {
-        var val = this.parseSChar8(data, offset + (i));
-        arr[i] = val;
-        max = Math.max(max, val);
-        min = Math.min(min, val);
-    }
-
-    return [arr, max, min];
+  var arr = new Array();
+  
+  var max = 0;
+  var min = Infinity;
+  
+  var i;
+  for (i = 0; i < elements; i++) {
+    var val = this.parseSChar8(data, offset + (i));
+    arr[i] = val;
+    max = Math.max(max, val);
+    min = Math.min(min, val);
+  }
+  
+  return [arr, max, min];
 };
 
 /**
