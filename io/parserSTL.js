@@ -184,6 +184,10 @@ X.parserSTL.prototype.parseLine = function(p, n, data, index) {
   // grab the current line
   var _data = data[index];
   
+  if (!_data) {
+    return;
+  }
+  
   // trim the line
   var line = _data.replace(/^\s+|\s+$/g, '');
   
