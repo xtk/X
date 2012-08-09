@@ -155,6 +155,18 @@ X.parserHelper.prototype.setParseFunction = function(func, elementSize) {
 
 
 /**
+ * Jump to a position in the byte stream.
+ * 
+ * @param {!number} offset The new offset.
+ */
+X.parserHelper.prototype.jumpTo = function(offset) {
+
+  this._dataPointer = offset;
+  
+};
+
+
+/**
  * Read from the data stream.
  * 
  * @param {*=} chunks Number of elements to read. By default, 1.

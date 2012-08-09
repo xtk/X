@@ -306,7 +306,7 @@ X.parserNII.prototype.parseStream = function(data) {
   
   // jump to vox_offset which is very important since the
   // header can be shorter as the usual 348 bytes
-  dataptr._dataPointer = MRI.vox_offset;
+  dataptr.jumpTo(parseInt(MRI.vox_offset, 10));
   
   switch (MRI.datatype) {
   case 2:
@@ -350,6 +350,8 @@ X.parserNII.prototype.parseStream = function(data) {
   MRI.data = a_ret[0];
   MRI.min = a_ret[2];
   MRI.max = a_ret[1];
+  
+  console.log(MRI);
   
   return MRI;
   
