@@ -351,8 +351,6 @@ X.parserNII.prototype.parseStream = function(data) {
   MRI.min = a_ret[2];
   MRI.max = a_ret[1];
   
-  console.log(MRI);
-  
   return MRI;
   
 };
