@@ -180,34 +180,40 @@ X.parserNII.prototype.parseStream = function(data) {
       func_arrayRead: this.parseUChar8Array.bind(this)
     },
     MRI_SCHAR: {
-      value: 0,
+      value: 1,
       name: "schar",
       size: 1,
       func_arrayRead: this.parseSChar8Array.bind(this)
     },
-    MRI_UINT32: {
-      value: 1,
-      name: "uint32",
-      size: 4,
-      func_arrayRead: this.parseUInt32Array.bind(this)
-    },
-    MRI_FLOAT: {
-      value: 3,
-      name: "float",
-      size: 4,
-      func_arrayRead: this.parseFloat32Array.bind(this)
-    },
     MRI_USHORT: {
-      value: 4,
+      value: 2,
       name: "ushort",
       size: 2,
       func_arrayRead: this.parseUInt16Array.bind(this)
     },
     MRI_SSHORT: {
-      value: 5,
-      name: "sshort",
+      value: 3,
+      name: "short",
       size: 2,
       func_arrayRead: this.parseSInt16Array.bind(this)
+    },
+    MRI_UINT: {
+      value: 4,
+      name: "uint",
+      size: 4,
+      func_arrayRead: this.parseUInt32Array.bind(this)
+    },
+    MRI_SINT: {
+      value: 5,
+      name: "sint",
+      size: 4,
+      func_arrayRead: this.parseSInt32Array.bind(this)
+    },
+    MRI_FLOAT: {
+      value: 6,
+      name: "float",
+      size: 4,
+      func_arrayRead: this.parseFloat32Array.bind(this)
     }
   };
   // syslog('Reading .nii/.nii.gz header');
@@ -216,19 +222,24 @@ X.parserNII.prototype.parseStream = function(data) {
   dataptr
       .setParseFunction(this.parseUInt32Array.bind(this), dataptr._sizeOfInt);
   MRI.sizeof_hdr = dataptr.read();
+  
   dataptr.setParseFunction(this.parseUChar8Array.bind(this),
       dataptr._sizeOfChar);
   dataptr.read(28);
+  
   dataptr
       .setParseFunction(this.parseUInt32Array.bind(this), dataptr._sizeOfInt);
   dataptr.read(1);
+  
   dataptr.setParseFunction(this.parseUInt16Array.bind(this),
       dataptr._sizeOfShort);
   dataptr.read(1);
+  
   dataptr.setParseFunction(this.parseUChar8Array.bind(this),
       dataptr._sizeOfChar);
   dataptr.read(1);
   MRI.dim_info = dataptr.read(1);
+  
   dataptr.setParseFunction(this.parseUInt16Array.bind(this),
       dataptr._sizeOfShort);
   MRI.dim = dataptr.read(8);
@@ -239,18 +250,21 @@ X.parserNII.prototype.parseStream = function(data) {
   MRI.intent_p1 = dataptr.read();
   MRI.intent_p2 = dataptr.read();
   MRI.intent_p3 = dataptr.read();
+  
   dataptr.setParseFunction(this.parseUInt16Array.bind(this),
       dataptr._sizeOfShort);
   MRI.intent_code = dataptr.read();
   MRI.datatype = dataptr.read();
   MRI.bitpix = dataptr.read();
   MRI.slice_start = dataptr.read();
+  
   dataptr.setParseFunction(this.parseFloat32Array.bind(this),
       dataptr._sizeOfFloat);
   MRI.pixdim = dataptr.read(8);
   MRI.vox_offset = dataptr.read();
   MRI.scl_slope = dataptr.read();
   MRI.scl_inter = dataptr.read();
+  
   dataptr.setParseFunction(this.parseUInt16Array.bind(this),
       dataptr._sizeOfShort);
   MRI.slice_end = dataptr.read();
@@ -286,36 +300,47 @@ X.parserNII.prototype.parseStream = function(data) {
   MRI.srow_z = dataptr.read(4);
   dataptr.setParseFunction(this.parseUChar8Array.bind(this),
       dataptr._sizeOfChar);
+  
   MRI.intent_name = dataptr.read(16);
   MRI.magic = dataptr.read(4);
   
-
+  // jump to vox_offset which is very important since the
+  // header can be shorter as the usual 348 bytes
+  dataptr._dataPointer = MRI.vox_offset;
+  
   switch (MRI.datatype) {
   case 2:
+    // unsigned char
     MRI.MRIdatatype = MRItype.MRI_UCHAR;
     break;
   case 4:
+    // signed short
     MRI.MRIdatatype = MRItype.MRI_SSHORT;
     break;
+  case 8:
+    // signed int
+    MRI.MRIdatatype = MRItype.MRI_SINT;
+    break;
   case 16:
+    // float
     MRI.MRIdatatype = MRItype.MRI_FLOAT;
     break;
   case 256:
+    // signed char
     MRI.MRIdatatype = MRItype.MRI_SCHAR;
     break;
   case 512:
+    // unsigned short
     MRI.MRIdatatype = MRItype.MRI_USHORT;
     break;
   case 768:
-    MRI.MRIdatatype = MRItype.MRI_UINT32;
+    // unsigned int
+    MRI.MRIdatatype = MRItype.MRI_UINT;
     break;
+  
   default:
     throw new Error('Unsupported NII data type: ' + MRI.datatype);
   }
-  
-  // dataptr
-  // .setParseFunction(MRI.MRIdatatype.func_arrayRead, MRI.MRIdatatype.size);
-  // var a_ret = dataptr.read(volsize);
   
   //
   // we can grab the min max values like this and skip the stats further down
@@ -326,11 +351,6 @@ X.parserNII.prototype.parseStream = function(data) {
   MRI.min = a_ret[2];
   MRI.max = a_ret[1];
   
-  // console.time('stats')
-  // syslog('Calculating data/image stats...');
-  // MRI.stats = this.stats_calc(MRI.v_data);
-  // syslog('.nii/.nii.gz data stream END.');
-  // console.timeEnd('stats')
   return MRI;
   
 };

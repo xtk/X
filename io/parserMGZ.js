@@ -129,7 +129,8 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
 
 /**
  * Parse the data stream according to the MGH/MGZ file format and return an MRI
- * structure which holds all parsed information.
+ * structure which holds all parsed information. Note: MGH/MGZ files are BIG
+ * ENDIAN so we need to use the endian swapped functions here.
  * 
  * @param {!String} data The data stream.
  * @return {Object} The MRI structure which holds all parsed information.
