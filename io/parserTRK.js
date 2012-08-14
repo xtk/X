@@ -125,8 +125,6 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   var minZ = null;
   var maxZ = null;
   
-  console.time('a');
-  
   var _numPoints = this.scan('uint', (this._data.byteLength - 1000) / 4);
   this.jumpTo(header.hdr_size);
   var points = this.scan('float', (this._data.byteLength - 1000) / 4);
@@ -218,8 +216,6 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
     lengths.push(length);
     
   } // end of loop through all tracks
-  
-  console.timeEnd('a');
   
   // calculate the center based on the bounding box of the whole .trk file
   var centerX = (minX + maxX) / 2;
