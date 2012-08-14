@@ -342,7 +342,7 @@ X.loader.extensions = {
   // as some custom flags and the result type
   'STL': [X.parserSTL, null, null],
   'VTK': [X.parserVTK, null, null],
-  'TRK': [X.parserTRK, null, null],
+  'TRK': [X.parserTRK, null, 'arraybuffer'],
   // FSM, INFLATED, SMOOTHWM, SPHERE, PIAL and ORIG are all freesurfer meshes
   'FSM': [X.parserFSM, null, null],
   'INFLATED': [X.parserFSM, null, null],
