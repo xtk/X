@@ -53,8 +53,20 @@ X.parser = function() {
    */
   this._dataPointer = 0;
   
+  /**
+   * The min value of the last parsing attempt.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._lastMin = -Infinity;
   
+  /**
+   * The max value of the last parsing attempt.
+   * 
+   * @type {!number}
+   * @protected
+   */
   this._lastMax = Infinity;
   
 };
@@ -128,7 +140,7 @@ X.parser.prototype.stats_calc = function(data) {
 /**
  * Scan a string with a given length from some data.
  * 
- * @param {!number} length The length of the string.
+ * @param {!number} chunks The length of the string.
  * @return {string} The scanned string.
  */
 X.parser.prototype.scanString = function(chunks) {
@@ -149,6 +161,11 @@ X.parser.prototype.scanString = function(chunks) {
 };
 
 
+/**
+ * Jump to a position in the byte stream.
+ * 
+ * @param {!number} position The new offset.
+ */
 X.parser.prototype.jumpTo = function(position) {
 
   this._dataPointer = position;
@@ -157,9 +174,15 @@ X.parser.prototype.jumpTo = function(position) {
 
 
 /**
+ * Scan binary data relative to the internal position in the byte stream.
  * 
+ * @param {!string} type The data type to scan, f.e.
+ *          'uchar','schar','ushort','sshort','uint','sint','float'
+ * @param {?number} chunks The number of chunks to scan. By default, 1.
+ * @param {?boolean} big_endian The endianness to use. By default, false ==
+ *          little endian.
  */
-X.parser.prototype.scan = function(type, chunks, big_endian) {
+X.parser.prototype.scan = function(type, chunks) {
 
   if (!goog.isDefAndNotNull(chunks)) {
     
@@ -167,150 +190,57 @@ X.parser.prototype.scan = function(type, chunks, big_endian) {
     
   }
   
-  if (!goog.isDefAndNotNull(big_endian)) {
-    
-    // by default little endian
-    big_endian = false;
-    
-  }
-  
-  // the element sizes in bytes
   var _chunkSize = 1;
-  var _lower = -1;
-  var _upper = -1;
+  var _array_type = Uint8Array;
+  
   switch (type) {
   
   // 1 byte data types
   case 'uchar':
     break;
   case 'schar':
-    _lower = 127; // 2^7 - 1
-    _upper = 256; // 2^8
+    _array_type = Int8Array;
     break;
   // 2 byte data types
   case 'ushort':
+    _array_type = Uint16Array;
     _chunkSize = 2;
     break;
   case 'sshort':
+    _array_type = Int16Array;
     _chunkSize = 2;
-    _lower = 32767; // 2^15 - 1
-    _upper = 65536; // 2^16
     break;
   // 4 byte data types
   case 'uint':
+    _array_type = Uint32Array;
     _chunkSize = 4;
     break;
   case 'sint':
+    _array_type = Int32Array;
     _chunkSize = 4;
-    _lower = 2147483647; // 2^31 - 1
-    _upper = 4294967296; // 2^32
     break;
   case 'float':
+    _array_type = Float32Array;
     _chunkSize = 4;
     break;
   
   }
   
-  // we also store the min and max values
-  var _min = Infinity;
-  var _max = -Infinity;
+  var _bytes = new _array_type(this._data.slice(this._dataPointer,
+      this._dataPointer + chunks * _chunkSize));
   
-  var data = this._data;
-  
-  var _return = new Array(chunks);
-  
-  // do the following for the number of chunks
-  var i;
-  for (i = 0; i < chunks; i++) {
-    
-    var _bytes = new Array(_chunkSize);
-    
-    //
-    // now grab the appropriate number of bytes
-    
-    // there will be always one
-    _bytes[0] = data.charCodeAt(this._dataPointer++) & 0xff;
-    
-    // by default, the first byte is our value
-    var _value = _bytes[0];
-    
-    if (_chunkSize == 2) {
-      _bytes[1] = data.charCodeAt(this._dataPointer++) & 0xff;
-    } else if (_chunkSize == 4) {
-      _bytes[1] = data.charCodeAt(this._dataPointer++) & 0xff;
-      _bytes[2] = data.charCodeAt(this._dataPointer++) & 0xff;
-      _bytes[3] = data.charCodeAt(this._dataPointer++) & 0xff;
-    }
-    
-    // reverse if big endian
-    if (big_endian) {
-      _bytes = _bytes.reverse();
-    }
-    
-    // byte shifts to add the individual ones
-    if (_chunkSize == 2) {
-      
-      // this is a short, add the 2 bytes
-      _value = (_bytes[1] << 8) + _bytes[0];
-      
-    } else if (_chunkSize == 4) {
-      
-      // special case for float
-      if (type == 'float') {
-        
-        var sign = 1 - (2 * (_bytes[3] >> 7)), exponent = (((_bytes[3] << 1) & 0xff) | (_bytes[2] >> 7)) - 127, mantissa = ((_bytes[2] & 0x7f) << 16) |
-            (_bytes[1] << 8) | _bytes[0];
-        
-        if (mantissa == 0 && exponent == -127) {
-          _value = 0.0;
-        }
-        
-        // create the float using mantissa and exponent
-        _value = sign * (1 + mantissa * Math.pow(2, -23)) *
-            Math.pow(2, exponent);
-        
-      } else {
-        
-        // this is an int, add the 4 bytes
-        _value = (_bytes[3] << 24) + (_bytes[2] << 16) + (_bytes[1] << 8) +
-            _bytes[0];
-        
-      }
-      
-    }
-    
-    // incorporate sign, if required (only for signed data types)
-    if (_lower != -1) {
-      
-      // if there is a sign, make sure to include the negative range
-      _value = _value > _lower ? _value - _upper : _value;
-      
-    }
-    
-    // now we have a good value, add it to our array
-    _return[i] = _value;
-    
-    // update the min and max values
-    _min = Math.min(_min, _value);
-    _max = Math.max(_max, _value);
-    
-  }
-  
-  // buffer the _min and _max values
-  this._lastMin = _min;
-  this._lastMax = _max;
+  // increase the data pointer
+  this._dataPointer += chunks * _chunkSize;
   
   if (chunks == 1) {
     
-    // if only one chunk was requested, return it immediately
-    return _return[0];
-    
-  } else {
-    
-    // return an array if multiple chunks were requested
-    return _return;
+    // if only one chunk was requested, just return one value
+    return _bytes[0];
     
   }
+  
+  // return the byte array
+  return _bytes;
   
 };
 
@@ -351,6 +281,8 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     }
   }
   
+  // console.log(image);
+  
   var pixelValue = 0;
   
   // loop through all slices in scan direction
@@ -362,7 +294,7 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
   for (z = 0; z < slices; z++) {
     
     // grab the pixels for the current slice z
-    var currentSlice = datastream.slice(z * (numberPixelsPerSlice), (z + 1) *
+    var currentSlice = datastream.subarray(z * (numberPixelsPerSlice), (z + 1) *
         numberPixelsPerSlice);
     // the texture has 3 times the pixel value + 1 opacity value for all pixels
     var textureForCurrentSlice = new Uint8Array(4 * numberPixelsPerSlice);
