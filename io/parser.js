@@ -90,48 +90,6 @@ X.parser.prototype.parse = function(container, object, data, flag) {
   
 };
 
-/**
- * Process a numerical array and calculate some basic stats: o mean o variance o
- * deviation o prod o sum o min; minIndex o max; maxIndex
- * 
- * @param {*} data The numerical data array to process.
- * @return {*} The results.
- */
-X.parser.prototype.stats_calc = function(data) {
-
-  var r = {
-    mean: 0,
-    variance: 0,
-    deviation: 0,
-    prod: 1,
-    sum: 0,
-    min: 0,
-    minIndex: 0,
-    max: 0,
-    maxIndex: 0
-  };
-  var t = data.length;
-  r.size = t;
-  for ( var m = 0, p = 1, s = 0, l = t; l >= 0; l--) {
-    s += data[l];
-    p *= data[l];
-    if (r.min >= data[l]) {
-      r.min = data[l];
-      r.minIndex = l;
-    }
-    if (r.max <= data[l]) {
-      r.max = data[l];
-      r.maxIndex = l;
-    }
-  }
-  ;
-  r.prod = p;
-  r.sum = s;
-  for (m = r.mean = s / t, l = t, s = 0; l--; s += Math.pow(data[l] - m, 2)) {
-    ;
-  }
-  return r.deviation = Math.sqrt(r.variance = s / t), r;
-};
 
 //
 // PARSE FUNCTIONS
@@ -157,6 +115,34 @@ X.parser.prototype.scanString = function(chunks) {
   this._dataPointer = this._dataPointer * chunks;
   
   return _value;
+  
+};
+
+
+/**
+ * Get the min and max values of an array.
+ * 
+ * @param {!Array} data The data array to analyze.
+ * @return {!Array} An array with length 2 containing the [min, max] values.
+ */
+X.parser.prototype.arrayMinMax = function(data) {
+
+  var _min = Infinity;
+  var _max = -Infinity;
+  
+  // buffer the length
+  var _datasize = data.length;
+  
+  var i = 0;
+  for (i = 0; i < _datasize; i++) {
+    
+    var _value = data[i];
+    _min = Math.min(_min, _value);
+    _max = Math.max(_max, _value);
+    
+  }
+  
+  return [_min, _max];
   
 };
 
@@ -226,11 +212,9 @@ X.parser.prototype.scan = function(type, chunks) {
   
   }
   
+  // increase the data pointer in-place
   var _bytes = new _array_type(this._data.slice(this._dataPointer,
-      this._dataPointer + chunks * _chunkSize));
-  
-  // increase the data pointer
-  this._dataPointer += chunks * _chunkSize;
+      this._dataPointer += chunks * _chunkSize));
   
   if (chunks == 1) {
     

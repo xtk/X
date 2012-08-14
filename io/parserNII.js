@@ -287,18 +287,9 @@ X.parserNII.prototype.parseStream = function(data) {
   }
   
   // get the min and max intensities
-  var i = 0;
-  var _min = MRI.min;
-  var _max = MRI.max;
-  for (i = 0; i < MRI.data.length; i++) {
-    
-    var _value = MRI.data[i];
-    _min = Math.min(_min, _value);
-    _max = Math.max(_max, _value);
-    
-  }
-  MRI.min = _min;
-  MRI.max = _max;
+  var min_max = this.arrayMinMax(MRI.data);
+  MRI.min = min_max[0];
+  MRI.max = min_max[1];
   
   return MRI;
   
