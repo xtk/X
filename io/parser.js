@@ -27,16 +27,16 @@ X.parser = function() {
   //
   // call the standard constructor of X.base
   goog.base(this);
-
+  
   //
   // class attributes
-
+  
   /**
    * @inheritDoc
    * @const
    */
   this._classname = 'parser';
-
+  
   /**
    * The data.
    * 
@@ -44,7 +44,7 @@ X.parser = function() {
    * @protected
    */
   this._data = null;
-
+  
   /**
    * The pointer to the current byte.
    * 
@@ -56,7 +56,7 @@ X.parser = function() {
   this._lastMin = -Infinity;
   
   this._lastMax = Infinity;
-
+  
 };
 // inherit from X.base
 goog.inherits(X.parser, X.base);
@@ -66,7 +66,7 @@ goog.inherits(X.parser, X.base);
  * X.parser.ModifiedEvent is fired.
  * 
  * @param {!X.base} container A container which holds the loaded data. This can
- *            be an X.object as well.
+ *          be an X.object as well.
  * @param {!X.object} object The object to configure.
  * @param {!String} data The data to parse.
  * @param {*} flag An additional flag.
@@ -75,7 +75,7 @@ goog.inherits(X.parser, X.base);
 X.parser.prototype.parse = function(container, object, data, flag) {
 
   throw new Error('The function parse() should be overloaded.');
-
+  
 };
 
 /**
@@ -88,26 +88,26 @@ X.parser.prototype.parse = function(container, object, data, flag) {
 X.parser.prototype.stats_calc = function(data) {
 
   var r = {
-    mean : 0,
-    variance : 0,
-    deviation : 0,
-    prod : 1,
-    sum : 0,
-    min : 0,
-    minIndex : 0,
-    max : 0,
-    maxIndex : 0
+    mean: 0,
+    variance: 0,
+    deviation: 0,
+    prod: 1,
+    sum: 0,
+    min: 0,
+    minIndex: 0,
+    max: 0,
+    maxIndex: 0
   };
   var t = data.length;
   r.size = t;
   for ( var m = 0, p = 1, s = 0, l = t; l >= 0; l--) {
     s += data[l];
     p *= data[l];
-    if ( r.min >= data[l] ) {
+    if (r.min >= data[l]) {
       r.min = data[l];
       r.minIndex = l;
     }
-    if ( r.max <= data[l] ) {
+    if (r.max <= data[l]) {
       r.max = data[l];
       r.maxIndex = l;
     }
@@ -133,19 +133,26 @@ X.parser.prototype.stats_calc = function(data) {
  */
 X.parser.prototype.scanString = function(chunks) {
 
-  if ( !goog.isDefAndNotNull(chunks) ) {
-
+  if (!goog.isDefAndNotNull(chunks)) {
+    
     chunks = 1;
-
+    
   }
-
+  
   var _value = this._data.substr(this._dataPointer, chunks);
-
+  
   // increase data pointer
   this._dataPointer = this._dataPointer * chunks;
-
+  
   return _value;
+  
+};
 
+
+X.parser.prototype.jumpTo = function(position) {
+
+  this._dataPointer = position;
+  
 };
 
 
@@ -154,25 +161,25 @@ X.parser.prototype.scanString = function(chunks) {
  */
 X.parser.prototype.scan = function(type, chunks, big_endian) {
 
-  if ( !goog.isDefAndNotNull(chunks) ) {
-
+  if (!goog.isDefAndNotNull(chunks)) {
+    
     chunks = 1;
-
+    
   }
-
-  if ( !goog.isDefAndNotNull(big_endian) ) {
-
+  
+  if (!goog.isDefAndNotNull(big_endian)) {
+    
     // by default little endian
     big_endian = false;
-
+    
   }
-
+  
   // the element sizes in bytes
   var _chunkSize = 1;
   var _lower = -1;
   var _upper = -1;
   switch (type) {
-
+  
   // 1 byte data types
   case 'uchar':
     break;
@@ -201,93 +208,97 @@ X.parser.prototype.scan = function(type, chunks, big_endian) {
   case 'float':
     _chunkSize = 4;
     break;
-
+  
   }
   
   // we also store the min and max values
   var _min = Infinity;
-  var _max = -Infinity;  
-
+  var _max = -Infinity;
+  
+  var data = this._data;
+  
   var _return = new Array(chunks);
-
+  
   // do the following for the number of chunks
   var i;
   for (i = 0; i < chunks; i++) {
-
+    
     var _bytes = new Array(_chunkSize);
-
+    
+    //
     // now grab the appropriate number of bytes
-    _bytes[0] = data.charCodeAt(this._dataPointer++) & 0xff; // there will be
-                                                              // always one
-
+    
+    // there will be always one
+    _bytes[0] = data.charCodeAt(this._dataPointer++) & 0xff;
+    
     // by default, the first byte is our value
-    var _value = bytes[0];
-
-    if ( _chunkSize == 2 ) {
+    var _value = _bytes[0];
+    
+    if (_chunkSize == 2) {
       _bytes[1] = data.charCodeAt(this._dataPointer++) & 0xff;
-    } else if ( _chunkSize == 4 ) {
+    } else if (_chunkSize == 4) {
       _bytes[1] = data.charCodeAt(this._dataPointer++) & 0xff;
       _bytes[2] = data.charCodeAt(this._dataPointer++) & 0xff;
       _bytes[3] = data.charCodeAt(this._dataPointer++) & 0xff;
     }
-
+    
     // reverse if big endian
-    if ( big_endian ) {
+    if (big_endian) {
       _bytes = _bytes.reverse();
     }
-
+    
     // byte shifts to add the individual ones
-    if ( _chunkSize == 2 ) {
-
+    if (_chunkSize == 2) {
+      
       // this is a short, add the 2 bytes
       _value = (_bytes[1] << 8) + _bytes[0];
-
-    } else if ( _chunkSize == 4 ) {
-
+      
+    } else if (_chunkSize == 4) {
+      
       // special case for float
-      if ( type == 'float' ) {
-
-        var sign = 1 - (2 * (_bytes[3] >> 7)), exponent = (((_bytes[3] << 1) & 0xff) | (_bytes[2] >> 7)) - 127, mantissa = ((_bytes[2] & 0x7f) << 16)
-            | (_bytes[1] << 8) | _bytes[0];
-
-        if ( mantissa == 0 && exponent == -127 ) {
+      if (type == 'float') {
+        
+        var sign = 1 - (2 * (_bytes[3] >> 7)), exponent = (((_bytes[3] << 1) & 0xff) | (_bytes[2] >> 7)) - 127, mantissa = ((_bytes[2] & 0x7f) << 16) |
+            (_bytes[1] << 8) | _bytes[0];
+        
+        if (mantissa == 0 && exponent == -127) {
           _value = 0.0;
         }
-
+        
         // create the float using mantissa and exponent
-        _value = sign * (1 + mantissa * Math.pow(2, -23))
-            * Math.pow(2, exponent);
-
+        _value = sign * (1 + mantissa * Math.pow(2, -23)) *
+            Math.pow(2, exponent);
+        
       } else {
-
+        
         // this is an int, add the 4 bytes
-        _value = (_bytes[3] << 24) + (_bytes[2] << 16) + (_bytes[1] << 8)
-            + _bytes[0];
-
+        _value = (_bytes[3] << 24) + (_bytes[2] << 16) + (_bytes[1] << 8) +
+            _bytes[0];
+        
       }
-
+      
     }
-
+    
     // incorporate sign, if required (only for signed data types)
-    if ( _lower != -1 ) {
-
+    if (_lower != -1) {
+      
       // if there is a sign, make sure to include the negative range
       _value = _value > _lower ? _value - _upper : _value;
-
+      
     }
-
+    
     // now we have a good value, add it to our array
     _return[i] = _value;
-
+    
     // update the min and max values
     _min = Math.min(_min, _value);
-    _max = Math.max(_max, _value);    
+    _max = Math.max(_max, _value);
     
   }
   
   // buffer the _min and _max values
   this._lastMin = _min;
-  this._lastMax = _max;  
+  this._lastMax = _max;
   
   if (chunks == 1) {
     
@@ -300,7 +311,7 @@ X.parser.prototype.scan = function(type, chunks, big_endian) {
     return _return;
     
   }
-
+  
 };
 
 
@@ -324,13 +335,13 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
   var rowsCount = sizes[1];
   // number of cols in each slice in scan direction
   var colsCount = sizes[0];
-
+  
   // do we have a labelmap?
   var hasLabelMap = object._labelmap != null;
-
+  
   // slice dimensions in scan direction
   var numberPixelsPerSlice = rowsCount * colsCount;
-
+  
   // allocate 3d image array [slices][rows][cols]
   var image = new Array(slices);
   for ( var iS = 0; iS < slices; iS++) {
@@ -339,9 +350,9 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
       image[iS][iR] = new Array(colsCount);
     }
   }
-
+  
   var pixelValue = 0;
-
+  
   // loop through all slices in scan direction
   //
   // this step creates the slices in X-direction and fills the 3d image array at
@@ -349,37 +360,37 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
   // combining the two operations saves some time..
   var z = 0;
   for (z = 0; z < slices; z++) {
-
+    
     // grab the pixels for the current slice z
-    var currentSlice = datastream.slice(z * (numberPixelsPerSlice), (z + 1)
-        * numberPixelsPerSlice);
+    var currentSlice = datastream.slice(z * (numberPixelsPerSlice), (z + 1) *
+        numberPixelsPerSlice);
     // the texture has 3 times the pixel value + 1 opacity value for all pixels
     var textureForCurrentSlice = new Uint8Array(4 * numberPixelsPerSlice);
-
+    
     // now loop through all pixels of the current slice
     var row = 0;
     var col = 0;
     var p = 0; // just a counter
-
+    
     for (row = 0; row < rowsCount; row++) {
       for (col = 0; col < colsCount; col++) {
-
+        
         // map pixel values
         pixelValue = currentSlice[p];
         var pixelValue_r = 0;
         var pixelValue_g = 0;
         var pixelValue_b = 0;
         var pixelValue_a = 0;
-        if ( object._colortable ) {
+        if (object._colortable) {
           // color table!
           var lookupValue = object._colortable._map.get(Math.floor(pixelValue));
-
+          
           // check for out of range and use the last label value in this case
-          if ( !lookupValue ) {
+          if (!lookupValue) {
             lookupValue = object._colortable._map.get(object._colortable._map
                 .getCount() - 1);
           }
-
+          
           pixelValue_r = 255 * lookupValue[1];
           pixelValue_g = 255 * lookupValue[2];
           pixelValue_b = 255 * lookupValue[3];
@@ -389,72 +400,72 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
           pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
           pixelValue_a = 255;
         }
-
+        
         var textureStartIndex = p * 4;
         textureForCurrentSlice[textureStartIndex] = pixelValue_r;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
-
+        
         // save the pixelValue in the 3d image data
         image[z][row][col] = pixelValue;
-
+        
         p++;
-
+        
       }
-
+      
     }
-
+    
     // create the texture for slices in X-direction
     var pixelTexture = new X.texture();
     pixelTexture._rawData = textureForCurrentSlice;
     pixelTexture._rawDataWidth = colsCount;
     pixelTexture._rawDataHeight = rowsCount;
-
+    
     currentSlice = object._slicesZ._children[z];
     currentSlice._texture = pixelTexture;
-    if ( hasLabelMap ) {
-
+    if (hasLabelMap) {
+      
       // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
       currentSlice._labelmap = object._labelmap._slicesZ._children[z]._texture;
-
+      
     }
-
+    
   }
-
+  
   // the following parses the 3d image array according to the Y- and the
   // Z-direction of the slices
   // this was unrolled for more performance
-
+  
   // for Y-direction
   // all slices are along the rows of the image
   // all rows are along the slices of the image
   // all cols are along the cols of the image
   //  
   for (row = 0; row < rowsCount; row++) {
-
+    
     var textureForCurrentSlice = new Uint8Array(4 * slices * colsCount);
     var p = 0; // just a counter
     for (z = 0; z < slices; z++) {
       for (col = 0; col < colsCount; col++) {
-
+        
         pixelValue = image[z][row][col];
         var pixelValue_r = 0;
         var pixelValue_g = 0;
         var pixelValue_b = 0;
         var pixelValue_a = 0;
-        if ( object._colortable ) {
+        if (object._colortable) {
           // color table!
           var lookupValue = object._colortable._map.get(Math.floor(pixelValue));
-
+          
           // check for out of range and use the last label value in this case
-          if ( !lookupValue ) {
+          if (!lookupValue) {
             lookupValue = object._colortable._map.get(object._colortable._map
                 .getCount() - 1);
           }
-
+          
           pixelValue_r = 255 * lookupValue[1];
           pixelValue_g = 255 * lookupValue[2];
           pixelValue_b = 255 * lookupValue[3];
@@ -464,36 +475,36 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
           pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
           pixelValue_a = 255;
         }
-
+        
         var textureStartIndex = p * 4;
         textureForCurrentSlice[textureStartIndex] = pixelValue_r;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
-
+        
         p++;
-
+        
       }
     }
-
+    
     var pixelTexture = new X.texture();
     pixelTexture._rawData = textureForCurrentSlice;
     pixelTexture._rawDataWidth = colsCount;
     pixelTexture._rawDataHeight = slices;
-
+    
     currentSlice = object._slicesY._children[row];
     currentSlice._texture = pixelTexture;
-    if ( hasLabelMap ) {
-
+    if (hasLabelMap) {
+      
       // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
       currentSlice._labelmap = object._labelmap._slicesY._children[row]._texture;
-
+      
     }
-
+    
   }
-
+  
   // for Z
   // all slices are along the cols of the image
   // all rows are along the slices of the image
@@ -504,22 +515,22 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     var p = 0; // just a counter
     for (z = 0; z < slices; z++) {
       for (row = 0; row < rowsCount; row++) {
-
+        
         pixelValue = image[z][row][col];
         var pixelValue_r = 0;
         var pixelValue_g = 0;
         var pixelValue_b = 0;
         var pixelValue_a = 0;
-        if ( object._colortable ) {
+        if (object._colortable) {
           // color table!
           var lookupValue = object._colortable._map.get(Math.floor(pixelValue));
-
+          
           // check for out of range and use the last label value in this case
-          if ( !lookupValue ) {
+          if (!lookupValue) {
             lookupValue = object._colortable._map.get(object._colortable._map
                 .getCount() - 1);
           }
-
+          
           pixelValue_r = 255 * lookupValue[1];
           pixelValue_g = 255 * lookupValue[2];
           pixelValue_b = 255 * lookupValue[3];
@@ -529,34 +540,34 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
           pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
           pixelValue_a = 255;
         }
-
+        
         var textureStartIndex = p * 4;
         textureForCurrentSlice[textureStartIndex] = pixelValue_r;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
-
+        
         p++;
-
+        
       }
     }
-
+    
     var pixelTexture = new X.texture();
     pixelTexture._rawData = textureForCurrentSlice;
     pixelTexture._rawDataWidth = rowsCount;
     pixelTexture._rawDataHeight = slices;
-
+    
     currentSlice = object._slicesX._children[col];
     currentSlice._texture = pixelTexture;
-    if ( hasLabelMap ) {
-
+    if (hasLabelMap) {
+      
       // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
       currentSlice._labelmap = object._labelmap._slicesX._children[col]._texture;
-
+      
     }
-
+    
   }
-
+  
 };

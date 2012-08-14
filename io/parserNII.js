@@ -96,8 +96,8 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   var _spacing = [MRI.pixdim[1], MRI.pixdim[2], MRI.pixdim[3]];
   object._spacing = _spacing;
   
-  var min = MRI.min;
-  var max = MRI.max;
+  var min = this._lastMin;
+  var max = this._lastMax;
   
   // attach the scalar range to the volume
   object._min = object._windowLow = min;
@@ -172,184 +172,110 @@ X.parserNII.prototype.parseStream = function(data) {
     magic: [], // *!< MUST be "ni1\0" or "n+1\0". */
     data: []
   };
-  var MRItype = {
-    MRI_UCHAR: {
-      value: 0,
-      name: "uchar",
-      size: 1,
-      func_arrayRead: this.parseUChar8Array.bind(this)
-    },
-    MRI_SCHAR: {
-      value: 1,
-      name: "schar",
-      size: 1,
-      func_arrayRead: this.parseSChar8Array.bind(this)
-    },
-    MRI_USHORT: {
-      value: 2,
-      name: "ushort",
-      size: 2,
-      func_arrayRead: this.parseUInt16Array.bind(this)
-    },
-    MRI_SSHORT: {
-      value: 3,
-      name: "short",
-      size: 2,
-      func_arrayRead: this.parseSInt16Array.bind(this)
-    },
-    MRI_UINT: {
-      value: 4,
-      name: "uint",
-      size: 4,
-      func_arrayRead: this.parseUInt32Array.bind(this)
-    },
-    MRI_SINT: {
-      value: 5,
-      name: "sint",
-      size: 4,
-      func_arrayRead: this.parseSInt32Array.bind(this)
-    },
-    MRI_FLOAT: {
-      value: 6,
-      name: "float",
-      size: 4,
-      func_arrayRead: this.parseFloat32Array.bind(this)
-    }
-  };
-  // syslog('Reading .nii/.nii.gz header');
-  var dataptr = new X.parserHelper(data);
   
-  dataptr
-      .setParseFunction(this.parseUInt32Array.bind(this), dataptr._sizeOfInt);
-  MRI.sizeof_hdr = dataptr.read();
+  this._data = data;
   
-  dataptr.setParseFunction(this.parseUChar8Array.bind(this),
-      dataptr._sizeOfChar);
-  dataptr.read(28);
+
+
+  MRI.sizeof_hdr = this.scan('uint');
   
-  dataptr
-      .setParseFunction(this.parseUInt32Array.bind(this), dataptr._sizeOfInt);
-  dataptr.read(1);
+  this.scan('uchar', 28);
+  this.scan('uint');
+  this.scan('ushort');
+  this.scan('uchar');
   
-  dataptr.setParseFunction(this.parseUInt16Array.bind(this),
-      dataptr._sizeOfShort);
-  dataptr.read(1);
-  
-  dataptr.setParseFunction(this.parseUChar8Array.bind(this),
-      dataptr._sizeOfChar);
-  dataptr.read(1);
-  MRI.dim_info = dataptr.read(1);
-  
-  dataptr.setParseFunction(this.parseUInt16Array.bind(this),
-      dataptr._sizeOfShort);
-  MRI.dim = dataptr.read(8);
+  MRI.dim_info = this.scan('uchar');
+  MRI.dim = this.scan('ushort', 8);
   var volsize = MRI.dim[1] * MRI.dim[2] * MRI.dim[3];
   
-  dataptr.setParseFunction(this.parseFloat32Array.bind(this),
-      dataptr._sizeOfFloat);
-  MRI.intent_p1 = dataptr.read();
-  MRI.intent_p2 = dataptr.read();
-  MRI.intent_p3 = dataptr.read();
+  MRI.intent_p1 = this.scan('float');
+  MRI.intent_p2 = this.scan('float');
+  MRI.intent_p3 = this.scan('float');
   
-  dataptr.setParseFunction(this.parseUInt16Array.bind(this),
-      dataptr._sizeOfShort);
-  MRI.intent_code = dataptr.read();
-  MRI.datatype = dataptr.read();
-  MRI.bitpix = dataptr.read();
-  MRI.slice_start = dataptr.read();
+  MRI.intent_code = this.scan('ushort');
+  MRI.datatype = this.scan('ushort');
+  MRI.bitpix = this.scan('ushort');
+  MRI.slice_start = this.scan('ushort');
   
-  dataptr.setParseFunction(this.parseFloat32Array.bind(this),
-      dataptr._sizeOfFloat);
-  MRI.pixdim = dataptr.read(8);
-  MRI.vox_offset = dataptr.read();
-  MRI.scl_slope = dataptr.read();
-  MRI.scl_inter = dataptr.read();
+  MRI.pixdim = this.scan('float', 8);
+  MRI.vox_offset = this.scan('float');
+  MRI.scl_slope = this.scan('float');
+  MRI.scl_inter = this.scan('float');
   
-  dataptr.setParseFunction(this.parseUInt16Array.bind(this),
-      dataptr._sizeOfShort);
-  MRI.slice_end = dataptr.read();
-  dataptr.setParseFunction(this.parseUChar8Array.bind(this),
-      dataptr._sizeOfChar);
-  MRI.slice_code = dataptr.read();
-  MRI.xyzt_units = dataptr.read();
-  dataptr.setParseFunction(this.parseFloat32Array.bind(this),
-      dataptr._sizeOfFloat);
-  MRI.cal_max = dataptr.read();
-  MRI.cal_min = dataptr.read();
-  MRI.slice_duration = dataptr.read();
-  MRI.toffset = dataptr.read();
-  dataptr.setParseFunction(this.parseUChar8Array.bind(this),
-      dataptr._sizeOfChar);
-  MRI.descrip = dataptr.read(80);
-  MRI.aux_file = dataptr.read(24);
-  dataptr.setParseFunction(this.parseUInt16Array.bind(this),
-      dataptr._sizeOfShort);
-  MRI.qform_code = dataptr.read();
-  MRI.sform_code = dataptr.read();
-  dataptr.setParseFunction(this.parseFloat32Array.bind(this),
-      dataptr._sizeOfFloat);
-  MRI.quatern_b = dataptr.read();
-  MRI.quatern_c = dataptr.read();
-  MRI.quatern_d = dataptr.read();
-  MRI.qoffset_x = dataptr.read();
-  MRI.qoffset_y = dataptr.read();
-  MRI.qoffset_z = dataptr.read();
+  MRI.slice_end = this.scan('ushort');
+  MRI.slice_code = this.scan('uchar');
+  MRI.xyzt_units = this.scan('uchar');
   
-  MRI.srow_x = dataptr.read(4);
-  MRI.srow_y = dataptr.read(4);
-  MRI.srow_z = dataptr.read(4);
-  dataptr.setParseFunction(this.parseUChar8Array.bind(this),
-      dataptr._sizeOfChar);
+  MRI.cal_max = this.scan('float');
+  MRI.cal_min = this.scan('float');
+  MRI.slice_duration = this.scan('float');
+  MRI.toffset = this.scan('float');
   
-  MRI.intent_name = dataptr.read(16);
-  MRI.magic = dataptr.read(4);
+  // todo grab 2 more ints
   
+  MRI.descrip = this.scan('uchar', 80);
+  MRI.aux_file = this.scan('uchar', 24);
+  
+  MRI.qform_code = this.scan('ushort');
+  MRI.sform_code = this.scan('ushort');
+  
+  MRI.quatern_b = this.scan('float');
+  MRI.quatern_c = this.scan('float');
+  MRI.quatern_d = this.scan('float');
+  MRI.qoffset_x = this.scan('float');
+  MRI.qoffset_y = this.scan('float');
+  MRI.qoffset_z = this.scan('float');
+  
+  MRI.srow_x = this.scan('float', 4);
+  MRI.srow_y = this.scan('float', 4);
+  MRI.srowz = this.scan('float', 4);
+  
+  MRI.intent_name = this.scan('uchar', 16);
+  MRI.magic = this.scan('uchar', 4);
+  
+
+
   // jump to vox_offset which is very important since the
   // header can be shorter as the usual 348 bytes
-  dataptr.jumpTo(parseInt(MRI.vox_offset, 10));
+  this.jumpTo(parseInt(MRI.vox_offset, 10));
+  
+  var _pixelData = null;
   
   switch (MRI.datatype) {
   case 2:
     // unsigned char
-    MRI.MRIdatatype = MRItype.MRI_UCHAR;
+    _pixelData = this.scan('uchar', volsize);
     break;
   case 4:
     // signed short
-    MRI.MRIdatatype = MRItype.MRI_SSHORT;
+    _pixelData = this.scan('sshort', volsize);
     break;
   case 8:
     // signed int
-    MRI.MRIdatatype = MRItype.MRI_SINT;
+    _pixelData = this.scan('sint', volsize);
     break;
   case 16:
     // float
-    MRI.MRIdatatype = MRItype.MRI_FLOAT;
+    _pixelData = this.scan('float', volsize);
     break;
   case 256:
     // signed char
-    MRI.MRIdatatype = MRItype.MRI_SCHAR;
+    _pixelData = this.scan('schar', volsize);
     break;
   case 512:
     // unsigned short
-    MRI.MRIdatatype = MRItype.MRI_USHORT;
+    _pixelData = this.scan('ushort', volsize);
     break;
   case 768:
     // unsigned int
-    MRI.MRIdatatype = MRItype.MRI_UINT;
+    _pixelData = this.scan('uint', volsize);
     break;
   
   default:
     throw new Error('Unsupported NII data type: ' + MRI.datatype);
   }
   
-  //
-  // we can grab the min max values like this and skip the stats further down
-  //
-  var a_ret = MRI.MRIdatatype.func_arrayRead(data, dataptr._dataPointer,
-      volsize);
-  MRI.data = a_ret[0];
-  MRI.min = a_ret[2];
-  MRI.max = a_ret[1];
+  MRI.data = _pixelData;
   
   return MRI;
   
