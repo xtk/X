@@ -344,18 +344,18 @@ X.loader.extensions = {
   'VTK': [X.parserVTK, null, null],
   'TRK': [X.parserTRK, null, 'arraybuffer'],
   // FSM, INFLATED, SMOOTHWM, SPHERE, PIAL and ORIG are all freesurfer meshes
-  'FSM': [X.parserFSM, null, null],
-  'INFLATED': [X.parserFSM, null, null],
-  'SMOOTHWM': [X.parserFSM, null, null],
-  'SPHERE': [X.parserFSM, null, null],
-  'PIAL': [X.parserFSM, null, null],
-  'ORIG': [X.parserFSM, null, null],
+  'FSM': [X.parserFSM, null, 'arraybuffer'],
+  'INFLATED': [X.parserFSM, null, 'arraybuffer'],
+  'SMOOTHWM': [X.parserFSM, null, 'arraybuffer'],
+  'SPHERE': [X.parserFSM, null, 'arraybuffer'],
+  'PIAL': [X.parserFSM, null, 'arraybuffer'],
+  'ORIG': [X.parserFSM, null, 'arraybuffer'],
   'NRRD': [X.parserNRRD, null, null],
   'NII': [X.parserNII, false, 'arraybuffer'],
   // 'GZ': [X.parserNII, false, null], // right now nii.gz is the only format
   // // ending with .gz, later we have to fix
   // // that
-  'CRV': [X.parserCRV, null, null],
+  'CRV': [X.parserCRV, null, 'arraybuffer'],
   'LABEL': [X.parserLBL, null, null],
   'MGH': [X.parserMGZ, false, 'arraybuffer'],
   'MGZ': [X.parserMGZ, true, 'arraybuffer'],
