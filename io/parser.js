@@ -25,6 +25,12 @@
  *                                         - Richard M. Stallman
  * 
  * 
+ * CREDITS:
+ *   
+ *   - the endianness handling was inspired by
+ *     Ilmari Heikkinen's DataStream.js (https://github.com/kig/DataStream.js)
+ *     THANKS!!
+ * 
  */
 
 goog.provide('X.parser');
@@ -71,6 +77,23 @@ X.parser = function() {
    * @protected
    */
   this._dataPointer = 0;
+  
+  /**
+   * The native endianness flag. Based on
+   * https://github.com/kig/DataStream.js/blob/master/DataStream.js
+   * 
+   * @type {!boolean}
+   * @protected
+   */
+  this._nativeLittleEndian = new Int8Array(new Int16Array([1]).buffer)[0] > 0;
+  
+  /**
+   * The data-specific endianness flag.
+   * 
+   * @type {!boolean}
+   * @protected
+   */
+  this._littleEndian = true;
   
   /**
    * The min value of the last parsing attempt.
@@ -235,6 +258,14 @@ X.parser.prototype.scan = function(type, chunks) {
   var _bytes = new _array_type(this._data.slice(this._dataPointer,
       this._dataPointer += chunks * _chunkSize));
   
+  // if required, flip the endianness of the bytes
+  if (this._nativeLittleEndian != this._littleEndian) {
+    
+    // we need to flip here since the format doesn't match the native endianness
+    _bytes = this.flipEndianness(_bytes, _chunkSize);
+    
+  }
+  
   if (chunks == 1) {
     
     // if only one chunk was requested, just return one value
@@ -244,6 +275,29 @@ X.parser.prototype.scan = function(type, chunks) {
   
   // return the byte array
   return _bytes;
+  
+};
+
+
+/**
+ * Flips typed array endianness in-place. Based on
+ * https://github.com/kig/DataStream.js/blob/master/DataStream.js.
+ * 
+ * @param {!Object} array Typed array to flip.
+ * @param {!number} chunkSize The size of each element.
+ * @return {!Object} The converted typed array.
+ */
+X.parser.prototype.flipEndianness = function(array, chunkSize) {
+
+  var u8 = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);
+  for ( var i = 0; i < array.byteLength; i += chunkSize) {
+    for ( var j = i + chunkSize - 1, k = i; j > k; j--, k++) {
+      var tmp = u8[k];
+      u8[k] = u8[j];
+      u8[j] = tmp;
+    }
+  }
+  return array;
   
 };
 
