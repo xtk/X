@@ -86,6 +86,16 @@ X.volume = function(volume) {
    */
   this._spacing = [1, 1, 1];
   
+
+  /**
+   * The image data as a 3D array.
+   * 
+   * @type {!Array{
+   * @protected
+   */
+  this._image = null;
+  
+
   /**
    * The index of the currently shown slice in X-direction.
    * 
@@ -563,6 +573,19 @@ X.volume.prototype.__defineSetter__('center', function(center) {
   }
   
   this._center = center;
+  
+});
+
+
+/**
+ * Get the image data of this volume.
+ * 
+ * @return {!Array} A 3D array containing the pixel (image) data.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('image', function() {
+
+  return this._image;
   
 });
 

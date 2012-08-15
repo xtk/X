@@ -117,7 +117,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   object.create_();
   
   // re-slice the data according each direction
-  this.reslice(object, MRI);
+  object._image = this.reslice(object, MRI);
   
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
