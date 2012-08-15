@@ -357,8 +357,8 @@ X.loader.extensions = {
   // // that
   'CRV': [X.parserCRV, null, null],
   'LABEL': [X.parserLBL, null, null],
-  'MGH': [X.parserMGZ, false, null],
-  'MGZ': [X.parserMGZ, true, null],
+  'MGH': [X.parserMGZ, false, 'arraybuffer'],
+  'MGZ': [X.parserMGZ, true, 'arraybuffer'],
   'TXT': [X.parserLUT, null, null],
   'LUT': [X.parserLUT, null, null],
   'PNG': [X.parserIMAGE, 'png', 'arraybuffer'], // here we use the arraybuffer
