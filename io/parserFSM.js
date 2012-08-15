@@ -108,8 +108,9 @@ X.parserFSM.prototype.parse = function(container, object, data, flag) {
   var _vertices = this.scan('float', numberOfVertices * 3);
   
   // parse the triangle indices
-  var _triangles = this.scan('uint', numberOfTriangles * 3);
+  var _indices = this.scan('uint', numberOfTriangles * 3);
   
+  console.time('a')
   // .. then do the loop
   var t;
   for (t = 0; t < numberOfTriangles; t++) {
@@ -117,9 +118,9 @@ X.parserFSM.prototype.parse = function(container, object, data, flag) {
     var i = t * 3;
     
     // grab the three indices which define a triangle
-    var index1 = _triangles[i];
-    var index2 = _triangles[i + 1];
-    var index3 = _triangles[i + 2];
+    var index1 = _indices[i];
+    var index2 = _indices[i + 1];
+    var index3 = _indices[i + 2];
     
     // store the ordered vertex indices
     ind.push(index1);
@@ -127,13 +128,19 @@ X.parserFSM.prototype.parse = function(container, object, data, flag) {
     ind.push(index3);
     
     // grab the 3 corresponding vertices
-    var v1 = [_vertices[index1], _vertices[index1 + 1], _vertices[index1 + 2]];
-    var v2 = [_vertices[index2], _vertices[index2 + 1], _vertices[index2 + 2]];
-    var v3 = [_vertices[index3], _vertices[index3 + 1], _vertices[index3 + 2]];
+    // var v1 = [_vertices[index1 * 3], _vertices[index1 * 3 + 1],
+    // _vertices[index1 * 3 + 2]];
+    // var v2 = [_vertices[index2 * 3], _vertices[index2 * 3 + 1],
+    // _vertices[index2 * 3 + 2]];
+    // var v3 = [_vertices[index3 * 3], _vertices[index3 * 3 + 1],
+    // _vertices[index3 * 3 + 2]];
     
-    p.add(v1[0], v1[1], v1[2]);
-    p.add(v2[0], v2[1], v2[2]);
-    p.add(v3[0], v3[1], v3[2]);
+    p.add(_vertices[index1 * 3], _vertices[index1 * 3 + 1],
+        _vertices[index1 * 3 + 2]);
+    p.add(_vertices[index2 * 3], _vertices[index2 * 3 + 1],
+        _vertices[index2 * 3 + 2]);
+    p.add(_vertices[index3 * 3], _vertices[index3 * 3 + 1],
+        _vertices[index3 * 3 + 2]);
     
     n.add(1, 1, 1);
     n.add(1, 1, 1);
@@ -142,7 +149,7 @@ X.parserFSM.prototype.parse = function(container, object, data, flag) {
     // normals[index1] = normals[index1].add(normal);
     
   }
-  
+  console.timeEnd('a')
 
 
   // .. and set the objectType to triangles
