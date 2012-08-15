@@ -309,13 +309,16 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
  * associated label map which has to be loaded before.
  * 
  * @param {!X.object} object The X.volume to fill.
- * @param {!Array} datastream The datastream as an array.
- * @param {!Array} sizes The sizes of the volume as an array [X,Y,Z].
- * @param {!number} min The min. scalar intensity value.
- * @param {!number} max The max. scalar intensity value.
+ * @param {!Object} MRI The MRI object which contains the min, max, data and
+ *          type.
+ * @return {!Array} The volume data as a 3D Array.
  */
-X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
+X.parser.prototype.reslice = function(object, MRI) {
 
+  var sizes = object._dimensions;
+  var max = MRI.max;
+  var datastream = MRI.data;
+  
   // number of slices in scan direction
   var slices = sizes[2];
   // number of rows in each slice in scan direction
@@ -334,7 +337,10 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
   for ( var iS = 0; iS < slices; iS++) {
     image[iS] = new Array(rowsCount);
     for ( var iR = 0; iR < rowsCount; iR++) {
-      image[iS][iR] = new Array(colsCount);
+      
+      // create a typed array here depending on the MRI.data type
+      image[iS][iR] = new MRI.data.constructor(colsCount);
+      
     }
   }
   
@@ -558,5 +564,7 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     }
     
   }
+  
+  return image;
   
 };
