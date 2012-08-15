@@ -62,6 +62,13 @@ X.parserCRV = function() {
    */
   this._classname = 'parserCRV';
   
+  /**
+   * Here, the data stream is big endian.
+   * 
+   * @inheritDoc
+   */
+  this._littleEndian = false;
+  
 };
 // inherit from X.parser
 goog.inherits(X.parserCRV, X.parser);
@@ -81,25 +88,15 @@ X.parserCRV.prototype.parse = function(container, object, data, flag) {
     
   }
   
-  var currentOffset = 0;
+  // attach the given data
+  this._data = data;
   
-  var magicNumber = this.parseUInt24EndianSwapped(data, currentOffset);
-  currentOffset += 3;
+  // directly jump 3 bytes to skip the magic number
+  this.jumpTo(3);
   
-  // This hackery is the fact that the new version defines this
-  // as a magic number to identify the new file type
-  if (magicNumber != 16777215) {
-    alert("Can't load curvature file, invalid magic number.");
-    return;
-  }
-  
-  var numVertices = this.parseUInt32EndianSwapped(data, currentOffset);
-  
-  currentOffset += 4;
-  var fnum = this.parseUInt32EndianSwapped(data, currentOffset);
-  currentOffset += 4;
-  var valsPerVertex = this.parseUInt32EndianSwapped(data, currentOffset);
-  currentOffset += 4;
+  var numVertices = this.scan('uint');
+  var fnum = this.scan('uint');
+  var valsPerVertex = this.scan('uint');
   
   var numPosValues = 0;
   var numNegValues = 0;
@@ -113,14 +110,18 @@ X.parserCRV.prototype.parse = function(container, object, data, flag) {
   var mean = 0.0;
   var stdDev = 0.0;
   var numValues = 0;
-  var vertexCurvatures = new Array(numVertices);
   var minCurv = new Array(2);
   var maxCurv = new Array(2);
   
+  // parse the curvature values
+  var vertexCurvatures = this.scan('float', numVertices);
+  
+  // first loop to get min, max, posSum, negSum
   var k;
   for (k = 0; k < numVertices; k++) {
-    var curv = this.parseFloat32EndianSwapped(data, currentOffset);
-    currentOffset += 4;
+    
+    var curv = vertexCurvatures[k];
+    
     if (k == 0) {
       minCurv[0] = maxCurv[0] = curv;
     }
@@ -141,6 +142,7 @@ X.parserCRV.prototype.parse = function(container, object, data, flag) {
     vertexCurvatures[k] = curv;
   }
   
+  // calculate the means
   if (numPosValues != 0) {
     posMean = posSum / numPosValues;
   }
@@ -153,11 +155,11 @@ X.parserCRV.prototype.parse = function(container, object, data, flag) {
     mean = sum / numValues;
   }
   
-
   posSum = 0.0;
   negSum = 0.0;
   sum = 0.0;
   
+  // second loop to get the sums regarding the means
   var i;
   for (i = 0; i < numVertices; i++) {
     var curv = vertexCurvatures[i];
@@ -174,6 +176,7 @@ X.parserCRV.prototype.parse = function(container, object, data, flag) {
     sum += diffSq;
   }
   
+  // calculate the standard deviations
   if (numPosValues > 1) {
     posStdDev = Math.sqrt(posSum / (numPosValues - 1));
   }
@@ -197,7 +200,7 @@ X.parserCRV.prototype.parse = function(container, object, data, flag) {
   var numberOfScalars = numVertices;
   var numberOfIndices = ind.length;
   
-  var orderedCurvatures = [];
+  var orderedCurvatures = new Float32Array(numberOfIndices * 3);
   
   for (i = 0; i < numberOfIndices; i++) {
     
@@ -214,9 +217,9 @@ X.parserCRV.prototype.parse = function(container, object, data, flag) {
     var currentScalar = vertexCurvatures[currentIndex];
     
     // add the scalar 3x since we need to match the point array length
-    orderedCurvatures.push(currentScalar);
-    orderedCurvatures.push(currentScalar);
-    orderedCurvatures.push(currentScalar);
+    orderedCurvatures[i * 3] = currentScalar;
+    orderedCurvatures[i * 3 + 1] = currentScalar;
+    orderedCurvatures[i * 3 + 2] = currentScalar;
     
   }
   
