@@ -182,6 +182,14 @@ X.loader.prototype.load = function(container, object) {
     
   }
   
+  // check if job is already monitored..
+  // then it is safe to exit
+  if (this._jobs.containsKey(container._id)) {
+    
+    return;
+    
+  }
+  
   // add this loading job to our jobs map
   this._jobs.set(container._id, false);
   

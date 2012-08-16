@@ -137,7 +137,6 @@ X.parserLUT.prototype.parse = function(container, object, data, flag) {
     
   }
   
-
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
