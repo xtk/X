@@ -88,16 +88,22 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
   // the position in the file
   var position = 0;
   
-  var _data = null;
+  var _data = data;
   
   if (b_zipped) {
+    
     // we need to decompress the datastream
-    _data = new JXG.Util.Unzip(data.substr(position)).unzip()[0][0];
-  } else {
-    // we can use the data directly
-    _data = data;
+    
+    // here we start the unzipping and get a typed Uint8Array back
+    _data = new JXG.Util.Unzip(new Uint8Array(data))
+        .unzip(_data.byteLength * 2);
+    
+    // .. and use the underlying array buffer
+    _data = _data.buffer;
+    
   }
   
+
   // parse the byte stream
   var MRI = this.parseStream(_data);
   
