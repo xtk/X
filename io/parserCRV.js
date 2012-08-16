@@ -197,7 +197,7 @@ X.parserCRV.prototype.parse = function(container, object, data, flag) {
   //
   // now order the curvature values based on the indices
   //
-  var numberOfScalars = numVertices;
+  
   var numberOfIndices = ind.length;
   
   var orderedCurvatures = new Float32Array(numberOfIndices * 3);
@@ -210,7 +210,7 @@ X.parserCRV.prototype.parse = function(container, object, data, flag) {
     var currentScalar = vertexCurvatures[currentIndex];
     
     // add the scalar 3x since we need to match the point array length
-    var _i = i*3;
+    var _i = i * 3;
     orderedCurvatures[_i] = currentScalar;
     orderedCurvatures[_i + 1] = currentScalar;
     orderedCurvatures[_i + 2] = currentScalar;

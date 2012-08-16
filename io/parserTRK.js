@@ -131,10 +131,14 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   
   var offset = 0;
   
+  // keep track of the number of all points along all tracks
+  var _totalPoints = 0;
+  
   var i;
   for (i = 0; i < numberOfFibers; i++) {
     var numPoints = _numPoints[offset];
     
+
     // console.log(numPoints, offset);
     
 
@@ -171,6 +175,11 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
         length += Math.sqrt(Math.pow(x - oldPoint[0], 2) +
             Math.pow(y - oldPoint[1], 2) + Math.pow(z - oldPoint[2], 2));
         
+      }
+      
+      // increase the number of points if this is not the last track
+      if (j < numPoints - 1) {
+        _totalPoints += 6;
       }
       
     }
@@ -223,7 +232,9 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   var centerZ = (minZ + maxZ) / 2;
   
   // the scalar array
-  var scalarArray = [];
+  var scalarArray = new Float32Array(_totalPoints);
+  
+  var _scalarIndex = 0;
   
   // now we have a list of fibers
   for (i = 0; i < numberOfFibers; i++) {
@@ -231,6 +242,7 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
     // grab the current points of this fiber
     var points = fibers[i];
     var numberOfPoints = points.count;
+    
     // grab the length of this fiber
     var length = lengths[i];
     
@@ -286,12 +298,12 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
       
       // add the length (6 times since we added two points with each 3
       // coordinates)
-      scalarArray.push(length);
-      scalarArray.push(length);
-      scalarArray.push(length);
-      scalarArray.push(length);
-      scalarArray.push(length);
-      scalarArray.push(length);
+      scalarArray[_scalarIndex++] = length;
+      scalarArray[_scalarIndex++] = length;
+      scalarArray[_scalarIndex++] = length;
+      scalarArray[_scalarIndex++] = length;
+      scalarArray[_scalarIndex++] = length;
+      scalarArray[_scalarIndex++] = length;
       
     } // loop through points
     
