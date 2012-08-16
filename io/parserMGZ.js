@@ -85,9 +85,6 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
 
   var b_zipped = flag;
   
-  // the position in the file
-  var position = 0;
-  
   var _data = data;
   
   if (b_zipped) {
@@ -96,7 +93,7 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
     
     // here we start the unzipping and get a typed Uint8Array back
     _data = new JXG.Util.Unzip(new Uint8Array(data))
-        .unzip(_data.byteLength * 2);
+        .unzip(_data.byteLength * 4);
     
     // .. and use the underlying array buffer
     _data = _data.buffer;
@@ -155,7 +152,7 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
  */
 X.parserMGZ.prototype.parseStream = function(data) {
 
-  // attach the given data
+  // attach the given data to the internal scan function
   this._data = data;
   
   var MRI = {
