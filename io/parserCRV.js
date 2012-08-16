@@ -206,20 +206,14 @@ X.parserCRV.prototype.parse = function(container, object, data, flag) {
     
     var currentIndex = ind[i];
     
-    // validate
-    if (currentIndex > numberOfScalars) {
-      
-      throw new Error('Could not find scalar for vertex.');
-      
-    }
-    
     // grab the current scalar
     var currentScalar = vertexCurvatures[currentIndex];
     
     // add the scalar 3x since we need to match the point array length
-    orderedCurvatures[i * 3] = currentScalar;
-    orderedCurvatures[i * 3 + 1] = currentScalar;
-    orderedCurvatures[i * 3 + 2] = currentScalar;
+    var _i = i*3;
+    orderedCurvatures[_i] = currentScalar;
+    orderedCurvatures[_i + 1] = currentScalar;
+    orderedCurvatures[_i + 2] = currentScalar;
     
   }
   

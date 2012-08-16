@@ -90,11 +90,10 @@ X.parserFSM.prototype.parse = function(container, object, data, flag) {
   // we count the appearance of indices to be able to average the normals
   var indexCounter = new Uint32Array(numberOfVertices);  
   
+  // buffer the normals since we need to calculate them in a second loop
   var normals = new Float32Array(numberOfTriangles*9);
   
-  console.time('a')
-  // .. then do the loop
-  
+  // first loop through the indices
   var t;
   for (t = 0; t < numberOfTriangles; t++) {
 
@@ -110,20 +109,24 @@ X.parserFSM.prototype.parse = function(container, object, data, flag) {
     ind.push(index2);
     ind.push(index3);
     
+    // count the use of the indices
     indexCounter[index1] += 1;
     indexCounter[index2] += 1;
     indexCounter[index3] += 1;    
 
     // grab the 3 corresponding vertices with each x,y,z coordinates
-    var v1x = _vertices[index1 * 3];
-    var v1y = _vertices[index1 * 3 + 1];
-    var v1z = _vertices[index1 * 3 + 2];
-    var v2x = _vertices[index2 * 3];
-    var v2y = _vertices[index2 * 3 + 1];
-    var v2z = _vertices[index2 * 3 + 2];
-    var v3x = _vertices[index3 * 3];
-    var v3y = _vertices[index3 * 3 + 1];
-    var v3z = _vertices[index3 * 3 + 2];
+    var _index1 = index1 *3;
+    var _index2 = index2 *3;
+    var _index3 = index3 *3;
+    var v1x = _vertices[_index1];
+    var v1y = _vertices[_index1 + 1];
+    var v1z = _vertices[_index1 + 2];
+    var v2x = _vertices[_index2];
+    var v2y = _vertices[_index2 + 1];
+    var v2z = _vertices[_index2 + 2];
+    var v3x = _vertices[_index3];
+    var v3y = _vertices[_index3 + 1];
+    var v3z = _vertices[_index3 + 2];
        
     // add the points
     p.add(v1x,v1y,v1z);
@@ -142,21 +145,21 @@ X.parserFSM.prototype.parse = function(container, object, data, flag) {
     var normal = goog.math.Vec3.cross(n1, n2).normalize();
         
     // store them
-    normals[3*index1] += normal.x;
-    normals[3*index1+1] += normal.y;
-    normals[3*index1+2] += normal.z;
-    normals[3*index2] += normal.x;
-    normals[3*index2+1] += normal.y;
-    normals[3*index2+2] += normal.z;
-    normals[3*index3] += normal.x;
-    normals[3*index3+1] += normal.y;
-    normals[3*index3+2] += normal.z;
+    normals[_index1] += normal.x;
+    normals[_index1+1] += normal.y;
+    normals[_index1+2] += normal.z;
+    normals[_index2] += normal.x;
+    normals[_index2+1] += normal.y;
+    normals[_index2+2] += normal.z;
+    normals[_index3] += normal.x;
+    normals[_index3+1] += normal.y;
+    normals[_index3+2] += normal.z;
     
   }
-  
-  console.timeEnd('a');
 
-  console.time('b');
+  // second loop through the indices
+  // this loop is required since we need to average the normals and only now
+  // know how often an index was used
   var t;
   for (t = 0; t < numberOfTriangles; t++) {
 
@@ -167,22 +170,27 @@ X.parserFSM.prototype.parse = function(container, object, data, flag) {
     var index2 = _indices[i + 1];
     var index3 = _indices[i + 2];
     
-    var n1x = normals[3*index1];
-    var n1y = normals[3*index1+1];
-    var n1z = normals[3*index1+2];
-
-    var n2x = normals[3*index2];
-    var n2y = normals[3*index2+1];
-    var n2z = normals[3*index2+2];    
+    // grab the normals for this triangle
+    var _index1 = index1 *3;
+    var _index2 = index2 *3;
+    var _index3 = index3 *3;
     
-    var n3x = normals[3*index3];
-    var n3y = normals[3*index3+1];
-    var n3z = normals[3*index3+2];    
+    var n1x = normals[_index1];
+    var n1y = normals[_index1+1];
+    var n1z = normals[_index1+2];
+
+    var n2x = normals[_index2];
+    var n2y = normals[_index2+1];
+    var n2z = normals[_index2+2];    
+    
+    var n3x = normals[_index3];
+    var n3y = normals[_index3+1];
+    var n3z = normals[_index3+2];    
         
+    // convert the normals to vectors
     var n1v = new goog.math.Vec3(n1x, n1y, n1z);
     var n2v = new goog.math.Vec3(n2x, n2y, n2z);
     var n3v = new goog.math.Vec3(n3x, n3y, n3z);
-    
     
     // transform triangle normals to vertex normals
     var normal1 = n1v.scale(1 / indexCounter[index1]).normalize();
@@ -192,15 +200,13 @@ X.parserFSM.prototype.parse = function(container, object, data, flag) {
     // .. add'em
     n.add(normal1.x, normal1.y, normal1.z);
     n.add(normal2.x, normal2.y, normal2.z);
-    n.add(normal3.x, normal3.y, normal3.z);    
+    n.add(normal3.x, normal3.y, normal3.z);  
     
   }
-  
-  console.timeEnd('b');
-  
+
   // .. and set the objectType to triangles
   object._type = X.displayable.types.TRIANGLES;
-
+  
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
