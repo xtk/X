@@ -71,19 +71,21 @@ goog.inherits(X.parserNII, X.parser);
  */
 X.parserNII.prototype.parse = function(container, object, data, flag) {
 
-  var b_zipped = flag;
+  var _data = data;
   
-  // the position in the file
-  var position = 0;
+  // check if this data is compressed, then this int != 348
+  var _compressionCheck = new Uint32Array(data, 0, 1)[0];
   
-  var _data = null;
-  
-  if (b_zipped) {
+  if (_compressionCheck != 348) {
+    
     // we need to decompress the datastream
-    _data = new JXG.Util.Unzip(data.substr(position)).unzip()[0][0];
-  } else {
-    // we can use the data directly
-    _data = data;
+    
+    // here we start the unzipping and get a typed Uint8Array back
+    _data = new JXG.Util.Unzip(new Uint8Array(data)).unzip();
+    
+    // .. and use the underlying array buffer
+    _data = _data.buffer;
+    
   }
   
   // parse the byte stream

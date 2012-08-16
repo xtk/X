@@ -92,8 +92,7 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
     // we need to decompress the datastream
     
     // here we start the unzipping and get a typed Uint8Array back
-    _data = new JXG.Util.Unzip(new Uint8Array(data))
-        .unzip(_data.byteLength * 4);
+    _data = new JXG.Util.Unzip(new Uint8Array(data)).unzip();
     
     // .. and use the underlying array buffer
     _data = _data.buffer;

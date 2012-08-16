@@ -349,10 +349,9 @@ X.loader.extensions = {
   'PIAL': [X.parserFSM, null, 'arraybuffer'],
   'ORIG': [X.parserFSM, null, 'arraybuffer'],
   'NRRD': [X.parserNRRD, null, null],
-  'NII': [X.parserNII, false, 'arraybuffer'],
-  // 'GZ': [X.parserNII, false, null], // right now nii.gz is the only format
-  // // ending with .gz, later we have to fix
-  // // that
+  'NII': [X.parserNII, null, 'arraybuffer'],
+  'GZ': [X.parserNII, null, 'arraybuffer'], // right now nii.gz is the only
+  // format ending .gz
   'CRV': [X.parserCRV, null, 'arraybuffer'],
   'LABEL': [X.parserLBL, null, null],
   'MGH': [X.parserMGZ, false, 'arraybuffer'],
