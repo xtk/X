@@ -90,10 +90,10 @@ X.volume = function(volume) {
   /**
    * The image data as a 3D array.
    * 
-   * @type {!Array{
+   * @type {!Array}
    * @protected
    */
-  this._image = null;
+  this._image = [];
   
 
   /**
