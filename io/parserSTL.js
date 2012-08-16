@@ -66,22 +66,149 @@ goog.inherits(X.parserSTL, X.parser);
  */
 X.parserSTL.prototype.parse = function(container, object, data, flag) {
 
-  var _data = data;
+  this._data = data;
+  
+
+  var p = object._points;
+  var n = object._normals;
   
   // the size which can be either number of lines for ASCII data
   // or the number of triangles for binary data
   var _size = 0;
   
   var _parseFunction = null;
-  // console.log(data);
-  _data = String.fromCharCode.apply(null, new Uint8Array(data, 0, 5));
-  console.log(_data);
-  return;
+  
+
+  var _ascii_tag = String.fromCharCode.apply(null, this.scan('uchar', 5));
   
   // check if this is an ascii STL file or a binary one
-  if (_data.substr(0, 5) == 'solid') {
+  if (_ascii_tag == 'solid') {
     
     // this is an ascii STL file
+    
+    a = this.scan('uchar', data.byteLength - 5);
+    l = a.length;
+    lines = 0;
+    spaces = 0;
+    
+    var _normalsMode = false;
+    var _normalsStart = 0;
+    var _vertexMode = false;
+    var _vertexStart = 0;
+    var _buffer = new Uint8Array(50);
+    var j = 0;
+    for (i = 0; i < l; i++) {
+      
+      if (a[i] == 10) {
+        
+        // new line
+        lines++;
+        
+
+        if (_normalsMode) {
+          
+          var _points = String.fromCharCode.apply(null, a.subarray(
+              _normalsStart, i));
+          
+
+
+          _normalsMode = false;
+          
+          var k;
+          var lineFields = _points.split(' ');
+          // add point
+          var x = parseFloat(lineFields[0]);
+          var y = parseFloat(lineFields[1]);
+          var z = parseFloat(lineFields[2]);
+          // console.log('n', _points, x, y, z);
+          
+          n.add(x, y, z);
+          n.add(x, y, z);
+          n.add(x, y, z);
+          
+        } else if (_vertexMode) {
+          
+          var _points = String.fromCharCode.apply(null, a.subarray(
+              _vertexStart, i));
+          
+          var lineFields = _points.split(' ');
+          
+          // add normals
+          var x = parseFloat(lineFields[0]);
+          var y = parseFloat(lineFields[1]);
+          var z = parseFloat(lineFields[2]);
+          p.add(x, y, z);
+          // console.log('v', _points, x, y, z);
+          
+          _vertexMode = false;
+          
+        }
+        
+      } else if (a[i] == 32) {
+        
+        // space
+        spaces++;
+        
+      } else if (a[i - 1] == 32) {
+        
+        // the one before was a space
+        
+        if (a[i] == 102 || a[i] == 70) {
+          
+          // this is a facet
+          
+
+
+          // move pointer to
+          i += 13;
+          _normalsStart = i;
+          _normalsMode = true;
+          
+          j = 0;
+          
+
+        } else if (a[i] == 118 || a[i] == 86) {
+          
+          // this is a vertex
+          
+
+          // move pointer to
+          i += 7;
+          _vertexStart = i;
+          _vertexMode = true;
+          
+          j = 0;
+          
+        }
+        
+
+      }
+      
+    }
+    
+
+    // console.log(object);
+    
+    // the object should be set up here, so let's fire a modified event
+    var modifiedEvent = new X.event.ModifiedEvent();
+    modifiedEvent._object = object;
+    modifiedEvent._container = container;
+    this.dispatchEvent(modifiedEvent);
+    
+    return;
+    
+    // _data = String.fromCharCode.apply(null, this.scan('uchar',
+    // this._data.byteLength - 5))
+    this.jumpTo(10);
+    console.log(this.scan('uchar'));
+    console.log(String.fromCharCode.apply(null, this.scan('uchar')));
+    return;
+    var bufView = new Uint8Array(data);
+    var unis = [];
+    for ( var i = 0; i < bufView.length; i++) {
+      unis.push(bufView[i]);
+    }
+    _data = String.fromCharCode.apply(null, unis);
     
     // split the data
     _data = data.split('\n');
