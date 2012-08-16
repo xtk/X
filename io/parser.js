@@ -65,7 +65,7 @@ X.parser = function() {
   /**
    * The data.
    * 
-   * @type {?String}
+   * @type {?ArrayBuffer}
    * @protected
    */
   this._data = null;
@@ -122,7 +122,7 @@ goog.inherits(X.parser, X.base);
  * @param {!X.base} container A container which holds the loaded data. This can
  *          be an X.object as well.
  * @param {!X.object} object The object to configure.
- * @param {!String} data The data to parse.
+ * @param {!ArrayBuffer} data The data to parse.
  * @param {*} flag An additional flag.
  * @throws {Error} An exception if something goes wrong.
  */
@@ -137,29 +137,6 @@ X.parser.prototype.parse = function(container, object, data, flag) {
 // PARSE FUNCTIONS
 //
 //
-/**
- * Scan a string with a given length from some data.
- * 
- * @param {!number} chunks The length of the string.
- * @return {string} The scanned string.
- */
-X.parser.prototype.scanString = function(chunks) {
-
-  if (!goog.isDefAndNotNull(chunks)) {
-    
-    chunks = 1;
-    
-  }
-  
-  var _value = this._data.substr(this._dataPointer, chunks);
-  
-  // increase data pointer
-  this._dataPointer = this._dataPointer * chunks;
-  
-  return _value;
-  
-};
-
 
 /**
  * Get the min and max values of an array.
