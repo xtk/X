@@ -127,7 +127,7 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   
   var _numPoints = this.scan('uint', (this._data.byteLength - 1000) / 4);
   this.jumpTo(header.hdr_size);
-  var points = this.scan('float', (this._data.byteLength - 1000) / 4);
+  var _points = this.scan('float', (this._data.byteLength - 1000) / 4);
   
   var offset = 0;
   
@@ -146,9 +146,9 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
     for ( var j = 0; j < numPoints; j++) {
       
       // read coordinates
-      var x = points[offset + j * 3 + 1];
-      var y = points[offset + j * 3 + 2];
-      var z = points[offset + j * 3 + 3];
+      var x = _points[offset + j * 3 + 1];
+      var y = _points[offset + j * 3 + 2];
+      var z = _points[offset + j * 3 + 3];
       
       // console.log(x, y, z);
       
