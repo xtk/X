@@ -361,7 +361,7 @@ X.loader.extensions = {
   'GZ': [X.parserNII, null, 'arraybuffer'], // right now nii.gz is the only
   // format ending .gz
   'CRV': [X.parserCRV, null, 'arraybuffer'],
-  'LABEL': [X.parserLBL, null, null],
+  'LABEL': [X.parserLBL, null, 'arraybuffer'],
   'MGH': [X.parserMGZ, false, 'arraybuffer'],
   'MGZ': [X.parserMGZ, true, 'arraybuffer'],
   'TXT': [X.parserLUT, null, 'arraybuffer'],
