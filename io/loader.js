@@ -356,7 +356,7 @@ X.loader.extensions = {
   'SPHERE': [X.parserFSM, null, 'arraybuffer'],
   'PIAL': [X.parserFSM, null, 'arraybuffer'],
   'ORIG': [X.parserFSM, null, 'arraybuffer'],
-  'NRRD': [X.parserNRRD, null, null],
+  'NRRD': [X.parserNRRD, null, 'arraybuffer'],
   'NII': [X.parserNII, null, 'arraybuffer'],
   'GZ': [X.parserNII, null, 'arraybuffer'], // right now nii.gz is the only
   // format ending .gz
