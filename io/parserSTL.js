@@ -73,8 +73,8 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
   var _size = 0;
   
   var _parseFunction = null;
-  //console.log(data);
-  _data = String.fromCharCode.apply(null, new Uint8Array(data,0,-1));
+  // console.log(data);
+  _data = String.fromCharCode.apply(null, new Uint8Array(data, 0, 5));
   console.log(_data);
   return;
   
