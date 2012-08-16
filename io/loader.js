@@ -356,8 +356,8 @@ X.loader.extensions = {
   'LABEL': [X.parserLBL, null, null],
   'MGH': [X.parserMGZ, false, 'arraybuffer'],
   'MGZ': [X.parserMGZ, true, 'arraybuffer'],
-  'TXT': [X.parserLUT, null, null],
-  'LUT': [X.parserLUT, null, null],
+  'TXT': [X.parserLUT, null, 'arraybuffer'],
+  'LUT': [X.parserLUT, null, 'arraybuffer'],
   'PNG': [X.parserIMAGE, 'png', 'arraybuffer'], // here we use the arraybuffer
   // response type
   'JPG': [X.parserIMAGE, 'jpeg', 'arraybuffer'],

@@ -70,56 +70,74 @@ X.parserLUT.prototype.parse = function(container, object, data, flag) {
 
   var colortable = container;
   
-  var dataAsArray = data.split('\n');
+  this._data = data;
   
-  var numberOfLines = dataAsArray.length;
+  var _bytes = this.scan('uchar', data.byteLength);
+  var _length = _bytes.length;
+  
+  var _rangeStart = 0;
   
   var i;
-  for (i = 0; i < numberOfLines; ++i) {
+  for (i = 0; i < _length; i++) {
     
-    var line = dataAsArray[i];
-    
-    // trim the line
-    line = line.replace(/^\s+|\s+$/g, '');
-    
-    // ignore comments
-    if (line[0] == '#') {
-      continue;
-    }
-    
-    // split each line
-    var lineFields = line.split(' ');
-    
-    // filter out multiple blanks
-    lineFields = lineFields.filter(function(v) {
+    if (_bytes[i] == 10) {
+      
+      // the current byte is a line break
+      
+      // grab a line
+      var line = String.fromCharCode.apply(null, _bytes
+          .subarray(_rangeStart, i));
+      
+      _rangeStart = i + 1;
+      
+      // now we have the line
+      
+      // trim the line
+      line = line.replace(/^\s+|\s+$/g, '');
+      
+      // ignore comments
+      if (line[0] == '#') {
+        continue;
+      }
+      
+      // split each line
+      var lineFields = line.split(' ');
+      
+      // filter out multiple blanks
+      lineFields = lineFields.filter(function(v) {
 
-      return v != '';
+        return v != '';
+        
+      });
       
-    });
-    
-    // check if we have 6 values
-    if (lineFields.length != 6) {
+      // check if we have 6 values
+      if (lineFields.length != 6) {
+        
+        // ignore this line
+        continue;
+        
+      }
       
-      // ignore this line
-      continue;
+      // here, we have a valid array containing
+      // labelValue, labelName, r, g, b, a
       
+      // convert r, g, b, a to the range 0..1 and don't forget to make it a
+      // number
+      lineFields[2] = parseInt(lineFields[2], 10) / 255; // r
+      lineFields[3] = parseInt(lineFields[3], 10) / 255; // g
+      lineFields[4] = parseInt(lineFields[4], 10) / 255; // b
+      lineFields[5] = parseInt(lineFields[5], 10) / 255; // a
+      
+      // .. push it
+      colortable.add(parseInt(lineFields[0], 10), lineFields[1], lineFields[2],
+          lineFields[3], lineFields[4], lineFields[5], 10);
+      
+
     }
-    
-    // here, we have a valid array containing
-    // labelValue, labelName, r, g, b, a
-    
-    // convert r, g, b, a to the range 0..1 and don't forget to make it a number
-    lineFields[2] = parseInt(lineFields[2], 10) / 255; // r
-    lineFields[3] = parseInt(lineFields[3], 10) / 255; // g
-    lineFields[4] = parseInt(lineFields[4], 10) / 255; // b
-    lineFields[5] = parseInt(lineFields[5], 10) / 255; // a
-    
-    // .. push it
-    colortable.add(parseInt(lineFields[0], 10), lineFields[1], lineFields[2],
-        lineFields[3], lineFields[4], lineFields[5], 10);
     
   }
   
+
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
