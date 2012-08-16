@@ -63,7 +63,7 @@ X.scalars = function() {
   /**
    * The array containing the scalars.
    * 
-   * @type {?Array}
+   * @type {?Float32Array}
    * @protected
    */
   this._array = null;
