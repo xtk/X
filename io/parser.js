@@ -206,9 +206,7 @@ X.parser.prototype.jumpTo = function(position) {
  * 
  * @param {!string} type The data type to scan, f.e.
  *          'uchar','schar','ushort','sshort','uint','sint','float'
- * @param {?number} chunks The number of chunks to scan. By default, 1.
- * @param {?boolean} big_endian The endianness to use. By default, false ==
- *          little endian.
+ * @param {!number=} chunks The number of chunks to scan. By default, 1.
  */
 X.parser.prototype.scan = function(type, chunks) {
 
