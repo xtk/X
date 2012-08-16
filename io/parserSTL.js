@@ -73,9 +73,13 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
   var _size = 0;
   
   var _parseFunction = null;
+  //console.log(data);
+  _data = String.fromCharCode.apply(null, new Uint8Array(data,0,-1));
+  console.log(_data);
+  return;
   
   // check if this is an ascii STL file or a binary one
-  if (data.substr(0, 5) == 'solid') {
+  if (_data.substr(0, 5) == 'solid') {
     
     // this is an ascii STL file
     
