@@ -83,6 +83,8 @@ goog.inherits(X.parserMGZ, X.parser);
  */
 X.parserMGZ.prototype.parse = function(container, object, data, flag) {
 
+  X.TIMER(this._classname + '.parse');
+  
   var b_zipped = flag;
   
   var _data = data;
@@ -129,6 +131,8 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
   
   // create the object
   object.create_();
+
+  X.TIMERSTOP(this._classname + '.parse');
   
   // re-slice the data according each direction
   object._image = this.reslice(object, MRI);

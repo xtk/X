@@ -642,6 +642,8 @@ X.renderer3D.prototype.update_ = function(object) {
   //
   // This gets executed after all dynamic content has been loaded.
   
+  X.TIMER(this._classname + '.update');
+  
   // check if this is an X.slice as part of a X.labelmap
   var isLabelMap = (object instanceof X.slice && object._volume instanceof X.labelmap);
   
@@ -785,6 +787,8 @@ X.renderer3D.prototype.update_ = function(object) {
   if (isLabelMap) {
     
     this._locked = false; // we gotta unlock here already
+    
+    X.TIMERSTOP(this._classname + '.update');
     
     this._loader.addProgress(0.9); // add the missing progress
     
@@ -1111,6 +1115,8 @@ X.renderer3D.prototype.update_ = function(object) {
   
   // clean the object
   object._dirty = false;
+  
+  X.TIMERSTOP(this._classname + '.update');
   
   // unlock
   this._locked = false;

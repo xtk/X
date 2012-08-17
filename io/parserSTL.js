@@ -66,6 +66,8 @@ goog.inherits(X.parserSTL, X.parser);
  */
 X.parserSTL.prototype.parse = function(container, object, data, flag) {
 
+  X.TIMER(this._classname + '.parse');
+
   this._data = data;
   
 
@@ -97,6 +99,8 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
     this.parseBIN(p, n);
     
   }
+  
+  X.TIMERSTOP(this._classname + '.parse');
   
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();

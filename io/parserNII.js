@@ -71,6 +71,8 @@ goog.inherits(X.parserNII, X.parser);
  */
 X.parserNII.prototype.parse = function(container, object, data, flag) {
 
+  X.TIMER(this._classname + '.parse');
+
   var _data = data;
   
   // check if this data is compressed, then this int != 348
@@ -118,6 +120,8 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   // create the object
   object.create_();
   
+  X.TIMERSTOP(this._classname + '.parse');
+
   // re-slice the data according each direction
   object._image = this.reslice(object, MRI);
   

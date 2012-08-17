@@ -74,6 +74,8 @@ goog.inherits(X.parserNRRD, X.parser);
  */
 X.parserNRRD.prototype.parse = function(container, object, data, flag) {
 
+  X.TIMER(this._classname + '.parse');
+
   // attach the data so we can use the internal scan function
   this._data = data;
   
@@ -175,6 +177,8 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   
   // create the object
   object.create_();
+  
+  X.TIMERSTOP(this._classname + '.parse');
   
   // now we have the values and need to reslice in the 3 orthogonal directions
   // and create the textures for each slice

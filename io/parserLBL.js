@@ -67,6 +67,8 @@ goog.inherits(X.parserLBL, X.parser);
  */
 X.parserLBL.prototype.parse = function(container, object, data, flag) {
 
+  X.TIMER(this._classname + '.parse');
+
   var ind = object._pointIndices;
   var numberOfIndices = ind.length;
   
@@ -186,6 +188,8 @@ X.parserLBL.prototype.parse = function(container, object, data, flag) {
   object._scalars._glArray = _orderedLabels; // the ordered, gl-Ready
   // now mark the scalars dirty
   object._scalars._dirty = true;
+  
+  X.TIMERSTOP(this._classname + '.parse');
   
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();

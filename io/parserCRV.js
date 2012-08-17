@@ -79,6 +79,8 @@ goog.inherits(X.parserCRV, X.parser);
  */
 X.parserCRV.prototype.parse = function(container, object, data, flag) {
 
+  X.TIMER(this._classname + '.parse');
+  
   var ind = object._pointIndices;
   
   // we need point indices here, so fail if there aren't any
@@ -233,6 +235,8 @@ X.parserCRV.prototype.parse = function(container, object, data, flag) {
   object._scalars._glArray = orderedCurvatures; // the ordered, gl-Ready
   // now mark the scalars dirty
   object._scalars._dirty = true;
+  
+  X.TIMERSTOP(this._classname + '.parse');
   
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();

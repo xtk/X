@@ -344,6 +344,8 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
  */
 X.parser.prototype.reslice = function(object, MRI) {
 
+  X.TIMER(this._classname + '.reslice');
+
   var sizes = object._dimensions;
   var max = MRI.max;
   var datastream = MRI.data;
@@ -594,6 +596,8 @@ X.parser.prototype.reslice = function(object, MRI) {
     
   }
   
+  X.TIMERSTOP(this._classname + '.reslice');
+
   return image;
   
 };
