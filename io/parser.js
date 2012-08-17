@@ -254,6 +254,60 @@ X.parser.prototype.scan = function(type, chunks) {
 };
 
 
+X.parser.prototype.parseNumberFromBytestream = function(data, i, storage, chunks, delimiter, skip_first) {
+ 
+  var _number = 0;
+  var _str_buffer = '';
+  var j = 0;
+  var ignore = skip_first;
+  
+  do {
+    
+    var _b = data[i++];
+    
+    if ((57 >= _b) && (_b >= 45)) {
+      
+      if (ignore) {
+        
+        // currently in ignore mode,
+        // so don't store anything
+        continue;
+        
+      }
+      
+      // the current byte is part of a number
+      // .. store it
+      _str_buffer += String.fromCharCode(_b);
+      
+    } else if (((_b==delimiter || _b==10) && (data[i-2]!=32))) {
+      
+      if (ignore) {
+        
+        // this is the first element, ignore it
+        // and switch off the ignore mode
+        ignore = !ignore;
+        continue;
+        
+      }
+      
+      // the current byte is a space or a line-break
+      // this means the current buffer is ready to be stored
+      _number = parseFloat(_str_buffer);
+      
+      storage[j++] = _number;
+      
+      // clear the buffer
+      _str_buffer = '';
+      
+    }
+    
+  } while (j<chunks && (_b == delimiter || _b == 10 || ((57 >= _b) && (_b >= 45)) || _b == 101));
+  
+  return i;
+  
+};
+
+
 /**
  * Flips typed array endianness in-place. Based on
  * https://github.com/kig/DataStream.js/blob/master/DataStream.js.

@@ -70,7 +70,7 @@ goog.inherits(X.parserVTK, X.parser);
 X.parserVTK.prototype.parse = function(container, object, data, flag) {
 
   this._data = data;
-  
+  console.time('a');
   var p = object._points;
   var n = object._normals;
   
@@ -78,6 +78,10 @@ X.parserVTK.prototype.parse = function(container, object, data, flag) {
   var _length = _bytes.length;
   
   var _points = null;
+  var _pointsCount = 0;
+  var _indices = null;
+  var _indicesCount = 0;
+  var _normals = null;
   
   var i;
   for (i = 0; i < _length; i++) {
@@ -95,43 +99,18 @@ X.parserVTK.prototype.parse = function(container, object, data, flag) {
           
           // this is POINTS
           i += 7;
-          console.log('POINTS', i, _bytes[i]);
+          
+          // grab the number of points
+          _pointsCount = new Int32Array(1);
+          i = this.parseNumberFromBytestream(_bytes, i, _pointsCount, 1, 32, false );
           
           // fast forward to the line end
           do {
           } while (_bytes[i++] != 10);
           
-          _points = new Float32Array(2011*3);
-          
-          var _index = 0;
-          var _str_buffer = '';
-          var _float = 0;
-          do {
-            
-            var _b = _bytes[i++];
-            
-            if ((57 >= _b) && (_b >= 45)) {
-              
-              // the current byte is part of a number
-              // .. store it
-              _str_buffer += String.fromCharCode(_b);
-              
-            } else if (((_b==32 || _b==10) && (_bytes[i-2]!=32))) {
-              
-              // the current byte is a space or a line-break
-              // this means the current buffer is ready to be stored
-              _float = parseFloat(_str_buffer);
-              
-              _points[_index++] = _float;
-              
-              // clear the buffer
-              _str_buffer = '';
-              
-            }
-            
-          } while (_b == 32 || _b == 10 || ((57 >= _b) && (_b >= 45)));
-
-          console.log('done',_b,_points,_index,i)
+          // grab the points
+          _points = new Float32Array(_pointsCount[0]*3);
+          i = this.parseNumberFromBytestream(_bytes, i, _points, _pointsCount[0]*3, 32, false );
 
         } else if (_bytes[i + 3] == 76) {
           
@@ -143,10 +122,13 @@ X.parserVTK.prototype.parse = function(container, object, data, flag) {
         } else if (_bytes[i + 5] == 95) {
           
           // this is POINT_DATA
+          // we don't really need that since we parse the normals down there and already know how many points there are
           
           i += 11;
-          console.log('POINT_DATA', _bytes[i])
-
+          // fast forward to the line end
+          do {
+          } while (_bytes[i++] != 10);
+          
         }
         
       } else if (_bytes[i] == 86) {
@@ -166,95 +148,42 @@ X.parserVTK.prototype.parse = function(container, object, data, flag) {
         
         // this is TRIANGLE_STRIPS
         i += 16;
-        console.log('TRIANGLE_STRIPS', _bytes[i]);
+        
+        // grab the number of indices
+        _indicesCount = new Int32Array(2);
+        i = this.parseNumberFromBytestream(_bytes, i, _indicesCount, 2, 32, false );
+        
+        // grab the indices
+        _indices = new Int32Array(_indicesCount[1]);
+        i = this.parseNumberFromBytestream(_bytes, i, _indices, _indicesCount[0], 32, true );
         
       } else if (_bytes[i] == 78) {
         
         // this is NORMALS
         i += 8;
-        console.log('NORMALS', _bytes[i]);
+
+        // fast forward to the line end
+        do {
+        } while (_bytes[i++] != 10);
+        
+        // grab the points
+        _normals = new Float32Array(_pointsCount[0]*3);
+        i = this.parseNumberFromBytestream(_bytes, i, _normals, _pointsCount[0]*3, 32 );
         
       }
       
     }
     
   }
-  
-
-
+  console.timeEnd('a');
   return;
-  
-  var dataAsArray = data.split('\n');
-  var numberOfLines = dataAsArray.length;
-  
-  // in .VTK files, the points are not ordered for rendering, so we need to
-  // buffer everything in X.triplets containers and then order it
-  var unorderedPoints = new X.triplets();
-  var unorderedNormals = new X.triplets();
-  
-  // .. we also need a buffer for all indices
-  this._geometries = [];
   
   // even if vtk files support multiple object types in the same file, we only
   // support one kind
   this._objectType = X.displayable.types.TRIANGLES;
-  
-  // this mode indicates that the next lines will be X,Y,Z coordinates
-  this._pointsMode = false;
-  
-  // this mode indicates that the next lines will be indices mapping to points
-  // and pointData
-  this._geometryMode = false;
-  
-  // this mode indicates that the next lines will be pointData
-  this._pointDataMode = false;
-  // one type of pointData are normals and right now the only supported ones
-  this._normalsMode = false;
-  
-
-  //
-  // LOOP THROUGH ALL LINES
-  //
-  // This uses an optimized loop.
-  //
-  
-  /*
-   * Fast Duff's Device
-   * 
-   * @author Miller Medeiros <http://millermedeiros.com>
-   * 
-   * @version 0.3 (2010/08/25)
-   */
-  var i = 0;
-  var n2 = numberOfLines % 8;
-  while (n2--) {
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
-    i++;
-  }
-  
-  n2 = (numberOfLines * 0.125) ^ 0;
-  while (n2--) {
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
-    i++;
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
-    i++;
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
-    i++;
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
-    i++;
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
-    i++;
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
-    i++;
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
-    i++;
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
-    i++;
-  }
-  
-
+    
   // now, configure the object according to the objectType
-  this.configure(unorderedPoints, unorderedNormals, p, n);
+  this.configure(_points, _normals, _indices, p, n);
   
   // .. and set the objectType
   object._type = this._objectType;
@@ -269,252 +198,6 @@ X.parserVTK.prototype.parse = function(container, object, data, flag) {
 
 
 /**
- * Parses a line of .VTK data and modifies the given X.triplets containers.
- * 
- * @param {!X.triplets} unorderedPoints A points container as a X.triplets
- *          object.
- * @param {!X.triplets} unorderedNormals A normals container as a X.triplets
- *          object.
- * @param {!string} line The line to parse.
- * @protected
- */
-X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
-    line) {
-
-  // trim the line
-  line = line.replace(/^\s+|\s+$/g, '');
-  
-  // split to array
-  var lineFields = line.split(' ');
-  
-  // number of lineFields
-  var numberOfLineFields = lineFields.length;
-  
-  // the first field of the line can be a keyword to indicate different modes
-  var firstLineField = lineFields[0];
-  
-  // KEYWORD CHECK / MODE SWITCH
-  //
-  // identify the section of the next coming lines using the vtk keywords
-  switch (firstLineField) {
-  
-  case 'POINTS':
-
-    // this means that real X,Y,Z points are coming
-    
-    this._pointsMode = true;
-    this._geometryMode = false;
-    this._pointDataMode = false;
-    
-    // go to next line
-    return;
-    
-  case 'VERTICES':
-
-    // this means that triangles or points are coming
-    
-    this._geometryMode = true;
-    this._pointsMode = false;
-    this._pointDataMode = false;
-    
-    var numberOfElements = parseInt(lineFields[1], 10);
-    
-    if (numberOfElements >= 3) {
-      this._objectType = X.displayable.types.TRIANGLES;
-    } else if (numberOfElements == 1) {
-      this._objectType = X.displayable.types.POINTS;
-    } else {
-      
-      throw new Error('This VTK file is not supported!');
-      
-    }
-    
-    // reset all former geometries since we only support 1 geometry type per
-    // file (the last one specified)
-    this._geometries = [];
-    
-    // go to next line
-    return;
-    
-  case 'TRIANGLE_STRIPS':
-
-    // this means that triangle_strips are coming
-    
-    this._geometryMode = true;
-    this._pointsMode = false;
-    this._pointDataMode = false;
-    this._objectType = X.displayable.types.TRIANGLE_STRIPS;
-    
-    // reset all former geometries since we only support 1 geometry type per
-    // file (the last one specified)
-    this._geometries = [];
-    
-    // go to next line
-    return;
-    
-  case 'LINES':
-
-    // this means that lines are coming
-    
-    this._geometryMode = true;
-    this._pointsMode = false;
-    this._pointDataMode = false;
-    this._objectType = X.displayable.types.LINES;
-    
-    // reset all former geometries since we only support 1 geometry type per
-    // file (the last one specified)
-    this._geometries = [];
-    
-    // go to next line
-    return;
-    
-  case 'POLYGONS':
-
-    // this means that polygons are coming
-    // we only support polygons which are triangles right now
-    
-    this._geometryMode = true;
-    this._pointsMode = false;
-    this._pointDataMode = false;
-    this._objectType = X.displayable.types.POLYGONS;
-    
-    // reset all former geometries since we only support 1 geometry type per
-    // file (the last one specified)
-    this._geometries = [];
-    
-    // go to next line
-    return;
-    
-  case 'POINT_DATA':
-
-    // this means point-data is coming
-    // f.e. normals
-    
-    this._pointDataMode = true;
-    this._pointsMode = false;
-    this._geometryMode = false;
-    
-    // go to next line
-    return;
-    
-  }
-  
-  // PARSING
-  //
-  // now we parse according to the current mode
-  //
-  if (this._pointsMode) {
-    
-    // in pointsMode, each line has X,Y,Z coordinates separated by space
-    
-    if (numberOfLineFields == 1 || isNaN(parseFloat(firstLineField))) {
-      
-      // this likely means end of pointsMode
-      this._pointsMode = false;
-      
-      return;
-      
-    }
-    
-    // assume max. 9 coordinate values (== 3 points) in one row
-    if (numberOfLineFields >= 3) {
-      var x0 = parseFloat(lineFields[0]);
-      var y0 = parseFloat(lineFields[1]);
-      var z0 = parseFloat(lineFields[2]);
-      
-      unorderedPoints.add(x0, y0, z0);
-    }
-    
-    if (numberOfLineFields >= 6) {
-      var x1 = parseFloat(lineFields[3]);
-      var y1 = parseFloat(lineFields[4]);
-      var z1 = parseFloat(lineFields[5]);
-      unorderedPoints.add(x1, y1, z1);
-    }
-    
-    if (numberOfLineFields >= 9) {
-      var x2 = parseFloat(lineFields[6]);
-      var y2 = parseFloat(lineFields[7]);
-      var z2 = parseFloat(lineFields[8]);
-      
-      unorderedPoints.add(x2, y2, z2);
-    }
-    
-  } // end of pointsMode
-  else if (this._geometryMode) {
-    
-    // in geometryMode, each line has indices which map to points and pointsData
-    
-    if (numberOfLineFields == 1 || isNaN(parseFloat(firstLineField))) {
-      
-      // this likely means end of geometryMode
-      this._geometryMode = false;
-      return;
-      
-    }
-    
-    // the first element is the number of coming indices
-    // so we just slice the first element to get all indices
-    var values = lineFields.slice(1);
-    
-    // append all index values to the main geometries array
-    this._geometries.push(values);
-    
-  } // end of geometryMode
-  else if (this._pointDataMode) {
-    
-    // at the moment, only normals are supported as point-data
-    
-    if (firstLineField == 'NORMALS') {
-      
-      this._normalsMode = true;
-      
-      return;
-      
-    }
-    
-    if (numberOfLineFields == 1 || isNaN(parseFloat(firstLineField))) {
-      
-      // this likely means end of pointDataMode
-      this._pointDataMode = false;
-      this._normalsMode = false;
-      
-      return;
-      
-    }
-    
-    // the normals mode
-    if (this._normalsMode) {
-      
-      // assume 9 coordinate values (== 3 points) in one row
-      
-      if (numberOfLineFields >= 3) {
-        var x0 = parseFloat(lineFields[0]);
-        var y0 = parseFloat(lineFields[1]);
-        var z0 = parseFloat(lineFields[2]);
-        unorderedNormals.add(x0, y0, z0);
-      }
-      if (numberOfLineFields >= 6) {
-        var x1 = parseFloat(lineFields[3]);
-        var y1 = parseFloat(lineFields[4]);
-        var z1 = parseFloat(lineFields[5]);
-        unorderedNormals.add(x1, y1, z1);
-      }
-      if (numberOfLineFields >= 9) {
-        var x2 = parseFloat(lineFields[6]);
-        var y2 = parseFloat(lineFields[7]);
-        var z2 = parseFloat(lineFields[8]);
-        unorderedNormals.add(x2, y2, z2);
-      }
-      
-    } // end of normalsMode
-    
-  } // end of pointDataMode
-  
-};
-
-
-/**
  * Configure X.object points and normals. This method takes the object type into
  * consideration to f.e. use degenerated triangles for TRIANGLE_STRIPS.
  * 
@@ -523,13 +206,12 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
  * @param {!X.triplets} p The points container of the X.object.
  * @param {!X.triplets} n The normals container of the X.object.
  */
-X.parserVTK.prototype.configure = function(unorderedPoints, unorderedNormals,
-    p, n) {
+X.parserVTK.prototype.configure = function(unorderedPoints, unorderedNormals, indices,p, n) {
 
   // cache often used values for fast access
   var numberOfUnorderedNormals = unorderedNormals.length;
   
-  var numberOfGeometries = this._geometries.length;
+  var numberOfGeometries = this._indices.length;
   var i = numberOfGeometries;
   // we use this loop here since it's slightly faster than the for loop
   do {
