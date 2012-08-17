@@ -69,8 +69,120 @@ goog.inherits(X.parserVTK, X.parser);
  */
 X.parserVTK.prototype.parse = function(container, object, data, flag) {
 
+  this._data = data;
+  
   var p = object._points;
   var n = object._normals;
+  
+  var _bytes = this.scan('uchar', data.byteLength);
+  var _length = _bytes.length;
+  
+  var _points = null;
+  
+  var i;
+  for (i = 0; i < _length; i++) {
+    
+    if (_bytes[i - 1] == 10) {
+      
+
+
+      if (_bytes[i] == 80) {
+        
+        // this is either POINTS, POLYGONS or POINT_DATA
+        
+
+        if (_bytes[i + 5] == 83) {
+          
+          // this is POINTS
+          i += 7;
+          console.log('POINTS', i, _bytes[i]);
+          
+          // fast forward to the line end
+          do {
+          } while (_bytes[i++] != 10);
+          
+          _points = new Float32Array(2011*3);
+          
+          var _index = 0;
+          var _str_buffer = '';
+          var _float = 0;
+          do {
+            
+            var _b = _bytes[i++];
+            
+            if ((57 >= _b) && (_b >= 45)) {
+              
+              // the current byte is part of a number
+              // .. store it
+              _str_buffer += String.fromCharCode(_b);
+              
+            } else if (((_b==32 || _b==10) && (_bytes[i-2]!=32))) {
+              
+              // the current byte is a space or a line-break
+              // this means the current buffer is ready to be stored
+              _float = parseFloat(_str_buffer);
+              
+              _points[_index++] = _float;
+              
+              // clear the buffer
+              _str_buffer = '';
+              
+            }
+            
+          } while (_b == 32 || _b == 10 || ((57 >= _b) && (_b >= 45)));
+
+          console.log('done',_b,_points,_index,i)
+
+        } else if (_bytes[i + 3] == 76) {
+          
+          // this is POLYGONS
+          i += 9;
+          console.log('POLYGONS')
+
+
+        } else if (_bytes[i + 5] == 95) {
+          
+          // this is POINT_DATA
+          
+          i += 11;
+          console.log('POINT_DATA', _bytes[i])
+
+        }
+        
+      } else if (_bytes[i] == 86) {
+        
+        // this is VERTICES
+        i += 9;
+        console.log('VERTICES', _bytes[i]);
+        
+
+      } else if (_bytes[i] == 76) {
+        
+        // this is LINES
+        i += 6;
+        console.log('LINES', _bytes[i]);
+        
+      } else if (_bytes[i] == 84) {
+        
+        // this is TRIANGLE_STRIPS
+        i += 16;
+        console.log('TRIANGLE_STRIPS', _bytes[i]);
+        
+      } else if (_bytes[i] == 78) {
+        
+        // this is NORMALS
+        i += 8;
+        console.log('NORMALS', _bytes[i]);
+        
+      }
+      
+    }
+    
+  }
+  
+
+
+  return;
   
   var dataAsArray = data.split('\n');
   var numberOfLines = dataAsArray.length;
@@ -562,7 +674,9 @@ X.parserVTK.prototype.configure = function(unorderedPoints, unorderedNormals,
     
     i--;
     
-  } while (i > 0);
+  } while (i > 0) {
+    ;
+  }
   
 };
 
