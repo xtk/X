@@ -54,7 +54,7 @@ X.loadable = function() {
   /**
    * The file data.
    * 
-   * @type {?string}
+   * @type {?ArrayBuffer}
    * @protected
    */
   this._filedata = null;

@@ -67,7 +67,7 @@ goog.inherits(X.parserSTL, X.parser);
 X.parserSTL.prototype.parse = function(container, object, data, flag) {
 
   X.TIMER(this._classname + '.parse');
-
+  
   this._data = data;
   
 
@@ -116,7 +116,7 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
  * 
  * @param {!X.triplets} p The object's points as a X.triplets container.
  * @param {!X.triplets} n The object's normals as a X.triplets container.
- * @param {!Array} data The data to parse.
+ * @param {!Uint8Array} data The data to parse.
  * @protected
  */
 X.parserSTL.prototype.parseASCII = function(p, n, data) {

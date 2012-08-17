@@ -72,7 +72,7 @@ goog.inherits(X.parserNII, X.parser);
 X.parserNII.prototype.parse = function(container, object, data, flag) {
 
   X.TIMER(this._classname + '.parse');
-
+  
   var _data = data;
   
   // check if this data is compressed, then this int != 348
@@ -121,7 +121,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   object.create_();
   
   X.TIMERSTOP(this._classname + '.parse');
-
+  
   // re-slice the data according each direction
   object._image = this.reslice(object, MRI);
   
@@ -138,7 +138,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
  * Parse the data stream according to the .nii/.nii.gz file format and return an
  * MRI structure which holds all parsed information.
  * 
- * @param {!String} data The data stream.
+ * @param {!ArrayBuffer} data The data stream.
  * @return {Object} The MRI structure which holds all parsed information.
  */
 X.parserNII.prototype.parseStream = function(data) {

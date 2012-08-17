@@ -75,7 +75,7 @@ goog.inherits(X.parserNRRD, X.parser);
 X.parserNRRD.prototype.parse = function(container, object, data, flag) {
 
   X.TIMER(this._classname + '.parse');
-
+  
   // attach the data so we can use the internal scan function
   this._data = data;
   
@@ -196,7 +196,7 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
 /**
  * Parse a NRRD file header.
  * 
- * @param {string} header The NRRD header to parse.
+ * @param {?string} header The NRRD header to parse.
  * @throws {Error} An error, if the NRRD header is not supported or invalid.
  */
 X.parserNRRD.prototype.parseHeader = function(header) {
