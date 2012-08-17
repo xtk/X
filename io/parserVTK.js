@@ -69,6 +69,8 @@ goog.inherits(X.parserVTK, X.parser);
  */
 X.parserVTK.prototype.parse = function(container, object, data, flag) {
 
+  X.TIMER(this._classname + '.parse');
+  
   var p = object._points;
   var n = object._normals;
   
@@ -146,6 +148,8 @@ X.parserVTK.prototype.parse = function(container, object, data, flag) {
   
   // .. and set the objectType
   object._type = this._objectType;
+  
+  X.TIMERSTOP(this._classname + '.parse');
   
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();

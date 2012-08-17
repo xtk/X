@@ -71,6 +71,8 @@ goog.inherits(X.parserNII, X.parser);
  */
 X.parserNII.prototype.parse = function(container, object, data, flag) {
 
+  X.TIMER(this._classname + '.parse');
+  
   var b_zipped = flag;
   
   // the position in the file
@@ -112,6 +114,8 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   }
   
   object.create_();
+  
+  X.TIMERSTOP(this._classname + '.parse');
   
   this.reslice(object, MRI.data, _dimensions, min, max);
   

@@ -72,6 +72,8 @@ goog.inherits(X.parserTRK, X.parser);
  */
 X.parserTRK.prototype.parse = function(container, object, data, flag) {
 
+  X.TIMER(this._classname + '.parse');
+  
   var p = object._points;
   var n = object._normals;
   var c = object._colors;
@@ -315,6 +317,8 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   // discard!
   scalars._dirty = true;
   object._scalars = scalars;
+  
+  X.TIMERSTOP(this._classname + '.parse');
   
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();

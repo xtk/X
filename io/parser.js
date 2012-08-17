@@ -646,6 +646,8 @@ X.parser.prototype.parseUChar8Array = function(data, offset, elements) {
  */
 X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
 
+  X.TIMER(this._classname + '.reslice');
+  
   // number of slices in scan direction
   var slices = sizes[2];
   // number of rows in each slice in scan direction
@@ -887,5 +889,7 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     }
     
   }
+  
+  X.TIMERSTOP(this._classname + '.reslice');
   
 };

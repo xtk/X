@@ -73,6 +73,8 @@ goog.inherits(X.parserFSM, X.parser);
  */
 X.parserFSM.prototype.parse = function(container, object, data, flag) {
 
+  X.TIMER(this._classname + '.parse');
+  
   var p = object._points;
   var n = object._normals;
   var ind = object._pointIndices;
@@ -221,6 +223,8 @@ X.parserFSM.prototype.parse = function(container, object, data, flag) {
   
   // .. and set the objectType to triangles
   object._type = X.displayable.types.TRIANGLES;
+  
+  X.TIMERSTOP(this._classname + '.parse');
   
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
