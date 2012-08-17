@@ -196,7 +196,8 @@ X.renderer = function() {
     'PROGRESSBAR_ENABLED': true
   };
   
-  window.console.log('XTK Release 4 -- 04/12/12 -- http://www.goXTK.com');
+  window.console
+      .log('XTK Release pre8 -- 08/17/12 -- http://www.goXTK.com -- @goXTK');
   
 };
 // inherit from X.base
