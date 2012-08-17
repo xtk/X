@@ -1,3 +1,5 @@
+<a href="http://twitter.com/goxtk" target="_blank"><img src="http://xtk.github.com/twitter3.png"></a>
+
 # The X Toolkit: <i>WebGL&trade; for Scientific Visualization</i>
 
 * <b>XTK is <i>easy</i>, <i>lightweight</i> and <i>fast</i> !</b>
