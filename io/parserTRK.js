@@ -78,39 +78,39 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   var n = object._normals;
   var c = object._colors;
   
-  var offset = 0;
+  this._data = data;
   
   // parse the header of the .TRK file
   // Documented here: http://trackvis.org/docs/?subsect=fileformat
   var header = {
-    'id_string': this.parseString(data, offset, 6),
-    'dim': this.parseUInt16Array(data, offset + 6, 3)[0],
-    'voxel_size': this.parseFloat32Array(data, offset + 12, 3)[0],
-    'origin': this.parseFloat32Array(data, offset + 24, 3)[0],
-    'n_scalars': this.parseUInt16(data, offset + 36),
-    'scalar_name': this.parseString(data, offset + 38, 200),
-    'n_properties': this.parseUInt16(data, offset + 238),
-    'property_name': this.parseString(data, offset + 240, 200),
-    'vox_to_ras': this.parseFloat32Array(data, offset + 440, 16)[0],
-    'reserved': this.parseString(data, offset + 504, 444),
-    'voxel_order': this.parseString(data, offset + 948, 4),
-    'pad2': this.parseString(data, offset + 952, 4),
-    'image_orientation_patient': this.parseFloat32Array(data, offset + 956, 6)[0],
-    'pad1': this.parseString(data, offset + 980, 2),
-    'invert_x': this.parseUChar8(data, offset + 982),
-    'invert_y': this.parseUChar8(data, offset + 983),
-    'invert_z': this.parseUChar8(data, offset + 984),
-    'swap_xy': this.parseUChar8(data, offset + 985),
-    'swap_yz': this.parseUChar8(data, offset + 986),
-    'swap_zx': this.parseUChar8(data, offset + 987),
-    'n_count': this.parseUInt32(data, offset + 988),
-    'version': this.parseUInt32(data, offset + 992),
-    'hdr_size': this.parseUInt32(data, offset + 996)
+    
+    'id_string': this.scan('uchar', 6),
+    'dim': this.scan('ushort', 3),
+    'voxel_size': this.scan('float', 3),
+    'origin': this.scan('float', 3),
+    'n_scalars': this.scan('ushort'),
+    'scalar_name': this.scan('uchar', 200),
+    'n_properties': this.scan('ushort'),
+    'property_name': this.scan('uchar', 200),
+    'vox_to_ras': this.scan('float', 16),
+    'reserved': this.scan('uchar', 444),
+    'voxel_order': this.scan('uchar', 4),
+    'pad2': this.scan('uchar', 4),
+    'image_orientation_patient': this.scan('float', 6),
+    'pad1': this.scan('uchar', 2),
+    'invert_x': this.scan('uchar'),
+    'invert_y': this.scan('uchar'),
+    'invert_z': this.scan('uchar'),
+    'swap_xy': this.scan('uchar'),
+    'swap_yz': this.scan('uchar'),
+    'swap_zx': this.scan('uchar'),
+    'n_count': this.scan('uint'),
+    'version': this.scan('uint'),
+    'hdr_size': this.scan('uint')
   };
   
   //
   // parse the data
-  offset = header.hdr_size;
   
   var numberOfFibers = header.n_count;
   
@@ -127,35 +127,39 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   var minZ = null;
   var maxZ = null;
   
+  var _numPoints = this.scan('uint', (this._data.byteLength - 1000) / 4);
+  this.jumpTo(header.hdr_size);
+  var _points = this.scan('float', (this._data.byteLength - 1000) / 4);
+  
+  var offset = 0;
+  
+  // keep track of the number of all points along all tracks
+  var _totalPoints = 0;
+  
   var i;
   for (i = 0; i < numberOfFibers; i++) {
-    var numPoints = this.parseUInt32(data, offset);
+    var numPoints = _numPoints[offset];
     
+
+    // console.log(numPoints, offset);
+    
+
     var currentPoints = new X.triplets();
     
     var length = 0.0;
-    
-    offset += 4;
     
     // loop through the points of this fiber
     for ( var j = 0; j < numPoints; j++) {
       
       // read coordinates
-      var x = this.parseFloat32(data, offset);
-      offset += 4;
+      var x = _points[offset + j * 3 + 1];
+      var y = _points[offset + j * 3 + 2];
+      var z = _points[offset + j * 3 + 3];
       
-      var y = this.parseFloat32(data, offset);
-      offset += 4;
-      
-      var z = this.parseFloat32(data, offset);
-      offset += 4;
+      // console.log(x, y, z);
       
       // read scalars
-      var scalars = null;
-      if (header.n_scalars > 0) {
-        scalars = this.parseFloat32Array(data, offset, header.n_scalars)[0];
-        offset += (header.n_scalars * 4);
-      }
+      // var scalars = this.scan('float', header.n_scalars);
       
       // Convert coordinates to world space by dividing by spacing
       x = x / header.voxel_size[0];
@@ -166,26 +170,28 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
       
       // fiber length
       if (j > 0) {
+        
         // if not the first point, calculate length
         var oldPoint = currentPoints.get(j - 1);
         
         length += Math.sqrt(Math.pow(x - oldPoint[0], 2) +
             Math.pow(y - oldPoint[1], 2) + Math.pow(z - oldPoint[2], 2));
         
-
+      }
+      
+      // increase the number of points if this is not the last track
+      if (j < numPoints - 1) {
+        _totalPoints += 6;
       }
       
     }
     
-    // read additional properties, if existing
-    // we don't support them right now in XTK
-    if (header.n_properties > 0) {
-      // var properties = this
-      // .parseFloat32Array(data, offset, header.n_properties);
-      offset += (header.n_properties * 4);
-    }
+    offset += numPoints * 3 + 1;
     
 
+    // read additional properties
+    // var properties = this.scan('float', header.n_properties);
+    
     // we need to get the bounding box of the whole .trk file before we add the
     // points to properly setup normals
     
@@ -228,7 +234,9 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   var centerZ = (minZ + maxZ) / 2;
   
   // the scalar array
-  var scalarArray = [];
+  var scalarArray = new Float32Array(_totalPoints);
+  
+  var _scalarIndex = 0;
   
   // now we have a list of fibers
   for (i = 0; i < numberOfFibers; i++) {
@@ -236,6 +244,7 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
     // grab the current points of this fiber
     var points = fibers[i];
     var numberOfPoints = points.count;
+    
     // grab the length of this fiber
     var length = lengths[i];
     
@@ -291,12 +300,12 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
       
       // add the length (6 times since we added two points with each 3
       // coordinates)
-      scalarArray.push(length);
-      scalarArray.push(length);
-      scalarArray.push(length);
-      scalarArray.push(length);
-      scalarArray.push(length);
-      scalarArray.push(length);
+      scalarArray[_scalarIndex++] = length;
+      scalarArray[_scalarIndex++] = length;
+      scalarArray[_scalarIndex++] = length;
+      scalarArray[_scalarIndex++] = length;
+      scalarArray[_scalarIndex++] = length;
+      scalarArray[_scalarIndex++] = length;
       
     } // loop through points
     

@@ -108,7 +108,7 @@ X.parserIMAGE.prototype.parse = function(container, object, data, flag) {
  * @param {!X.base} container A container which holds the loaded data. This can
  *          be an X.object as well.
  * @param {!X.object} object The object to configure.
- * @param {!String} data The data to parse.
+ * @param {!ArrayBuffer} data The data to parse.
  * @param {*} flag An additional flag.
  */
 X.parserIMAGE.prototype.parseCompleted = function(image, container, object,

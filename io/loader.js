@@ -182,6 +182,14 @@ X.loader.prototype.load = function(container, object) {
     
   }
   
+  // check if job is already monitored..
+  // then it is safe to exit
+  if (this._jobs.containsKey(container._id)) {
+    
+    return;
+    
+  }
+  
   // add this loading job to our jobs map
   this._jobs.set(container._id, false);
   
@@ -218,12 +226,7 @@ X.loader.prototype.load = function(container, object) {
   
   // configure the URL
   request.open('GET', filepath, true);
-  if (responseType) {
-    // set the response type if != null, else fall back to the default 'text'
-    request.responseType = responseType;
-  }
-  request.overrideMimeType("text/plain; charset=x-user-defined");
-  request.setRequestHeader("Content-Type", "text/plain");
+  request.responseType = 'arraybuffer';
   
   // .. and GO!
   request.send(null);
@@ -340,30 +343,29 @@ X.loader.prototype.failed = function(request, container, object) {
 X.loader.extensions = {
   // support for the following extensions and the mapping to X.parsers as well
   // as some custom flags and the result type
-  'STL': [X.parserSTL, null, null],
-  'VTK': [X.parserVTK, null, null],
-  'TRK': [X.parserTRK, null, null],
+  'STL': [X.parserSTL, null],
+  'VTK': [X.parserVTK, null],
+  'TRK': [X.parserTRK, null],
   // FSM, INFLATED, SMOOTHWM, SPHERE, PIAL and ORIG are all freesurfer meshes
-  'FSM': [X.parserFSM, null, null],
-  'INFLATED': [X.parserFSM, null, null],
-  'SMOOTHWM': [X.parserFSM, null, null],
-  'SPHERE': [X.parserFSM, null, null],
-  'PIAL': [X.parserFSM, null, null],
-  'ORIG': [X.parserFSM, null, null],
-  'NRRD': [X.parserNRRD, null, null],
-  'NII': [X.parserNII, false, null],
-  // 'GZ': [X.parserNII, false, null], // right now nii.gz is the only format
-  // // ending with .gz, later we have to fix
-  // // that
-  'CRV': [X.parserCRV, null, null],
-  'LABEL': [X.parserLBL, null, null],
-  'MGH': [X.parserMGZ, false, null],
-  'MGZ': [X.parserMGZ, true, null],
-  'TXT': [X.parserLUT, null, null],
-  'LUT': [X.parserLUT, null, null],
-  'PNG': [X.parserIMAGE, 'png', 'arraybuffer'], // here we use the arraybuffer
+  'FSM': [X.parserFSM, null],
+  'INFLATED': [X.parserFSM, null],
+  'SMOOTHWM': [X.parserFSM, null],
+  'SPHERE': [X.parserFSM, null],
+  'PIAL': [X.parserFSM, null],
+  'ORIG': [X.parserFSM, null],
+  'NRRD': [X.parserNRRD, null],
+  'NII': [X.parserNII, null],
+  'GZ': [X.parserNII, null], // right now nii.gz is the only
+  // format ending .gz
+  'CRV': [X.parserCRV, null],
+  'LABEL': [X.parserLBL, null],
+  'MGH': [X.parserMGZ, false],
+  'MGZ': [X.parserMGZ, true],
+  'TXT': [X.parserLUT, null],
+  'LUT': [X.parserLUT, null],
+  'PNG': [X.parserIMAGE, 'png'], // here we use the arraybuffer
   // response type
-  'JPG': [X.parserIMAGE, 'jpeg', 'arraybuffer'],
-  'JPEG': [X.parserIMAGE, 'jpeg', 'arraybuffer'],
-  'GIF': [X.parserIMAGE, 'gif', 'arraybuffer']
+  'JPG': [X.parserIMAGE, 'jpeg'],
+  'JPEG': [X.parserIMAGE, 'jpeg'],
+  'GIF': [X.parserIMAGE, 'gif']
 };

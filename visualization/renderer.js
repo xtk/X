@@ -384,7 +384,7 @@ X.renderer.prototype.__defineGetter__('loadingCompleted', function() {
 X.renderer.prototype.__defineSetter__('loadingCompleted', function(
     loadingCompleted) {
 
-  this._loadingCompleted = loadingCompleted;
+  this._loadingCompleted = this._onShowtime = loadingCompleted;
   
 });
 

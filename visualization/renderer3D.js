@@ -1072,8 +1072,8 @@ X.renderer3D.prototype.update_ = function(object) {
       
       // bind and fill with colors defined above
       this._context.bindBuffer(this._context.ARRAY_BUFFER, glScalarBuffer);
-      this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-          scalarsArray), this._context.STATIC_DRAW);
+      this._context.bufferData(this._context.ARRAY_BUFFER, scalarsArray,
+          this._context.STATIC_DRAW);
       
       // create an X.buffer to store the colors
       // every scalar consists of 1 item

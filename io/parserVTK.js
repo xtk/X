@@ -74,7 +74,19 @@ X.parserVTK.prototype.parse = function(container, object, data, flag) {
   var p = object._points;
   var n = object._normals;
   
-  var dataAsArray = data.split('\n');
+  var _data = new Uint8Array(data);
+  
+  var _str = '';
+  
+  // convert the char array to a string
+  // the quantum is necessary to deal with large data
+  var QUANTUM = 32768;
+  for (var i = 0, len = _data.length; i < len; i += QUANTUM)
+  {
+    _str += String.fromCharCode.apply(null, _data.subarray(i, Math.min(i+QUANTUM,len)));
+  }  
+  
+  var dataAsArray = _str.split('\n');
   var numberOfLines = dataAsArray.length;
   
   // in .VTK files, the points are not ordered for rendering, so we need to
@@ -142,7 +154,6 @@ X.parserVTK.prototype.parse = function(container, object, data, flag) {
     i++;
   }
   
-
   // now, configure the object according to the objectType
   this.configure(unorderedPoints, unorderedNormals, p, n);
   

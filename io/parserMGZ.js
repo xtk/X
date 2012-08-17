@@ -45,7 +45,8 @@ goog.require('JXG.Util.Unzip');
 
 
 /**
- * Create a parser for .MGZ files.
+ * Create a parser for .MGZ files. Note: MGH/MGZ files are BIG ENDIAN so we need
+ * to take care of that..
  * 
  * @constructor
  * @extends X.parser
@@ -65,6 +66,13 @@ X.parserMGZ = function() {
    */
   this._classname = 'parserMGZ';
   
+  /**
+   * Here, the data stream is big endian.
+   * 
+   * @inheritDoc
+   */
+  this._littleEndian = false;
+  
 };
 // inherit from X.parser
 goog.inherits(X.parserMGZ, X.parser);
@@ -79,28 +87,33 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
   
   var b_zipped = flag;
   
-  // the position in the file
-  var position = 0;
-  
-  var _data = 0;
+  var _data = data;
   
   if (b_zipped) {
+    
     // we need to decompress the datastream
-    _data = new JXG.Util.Unzip(data.substr(position)).unzip()[0][0];
-  } else {
-    // we can use the data directly
-    _data = data.substr(position);
+    
+    // here we start the unzipping and get a typed Uint8Array back
+    _data = new JXG.Util.Unzip(new Uint8Array(data)).unzip();
+    
+    // .. and use the underlying array buffer
+    _data = _data.buffer;
+    
   }
   
 
+  // parse the byte stream
   var MRI = this.parseStream(_data);
-  // object.MRI = MRI;
+  
+  // grab the dimensions
   var _dimensions = [MRI.ndim1, MRI.ndim2, MRI.ndim3];
   object._dimensions = _dimensions;
   
+  // grab the spacing
   var _spacing = MRI.v_voxelsize;
   object._spacing = _spacing;
   
+  // grab the min, max intensities
   var min = MRI.min;
   var max = MRI.max;
   
@@ -116,11 +129,13 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
     object._upperThreshold = max;
   }
   
+  // create the object
   object.create_();
   
   X.TIMERSTOP(this._classname + '.parse');
   
-  this.reslice(object, MRI.v_data, _dimensions, min, max);
+  // re-slice the data according each direction
+  object._image = this.reslice(object, MRI);
   
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
@@ -133,14 +148,16 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
 
 /**
  * Parse the data stream according to the MGH/MGZ file format and return an MRI
- * structure which holds all parsed information. Note: MGH/MGZ files are BIG
- * ENDIAN so we need to use the endian swapped functions here.
+ * structure which holds all parsed information.
  * 
- * @param {!String} data The data stream.
+ * @param {!ArrayBuffer} data The data stream.
  * @return {Object} The MRI structure which holds all parsed information.
  */
 X.parserMGZ.prototype.parseStream = function(data) {
 
+  // attach the given data to the internal scan function
+  this._data = data;
+  
   var MRI = {
     version: 0,
     Tr: 0,
@@ -155,178 +172,98 @@ X.parserMGZ.prototype.parseStream = function(data) {
     dof: 0,
     rasgoodflag: 0,
     MRIreader: null,
-    M_ras: [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-    v_voxelsize: [],
-    v_data: [], // data as single vector
-    V_data: [], // data as volume
-    stats: null,
-    min: 0,
-    max: 0
+    M_ras: null,
+    v_voxelsize: null,
+    data: null, // data as single vector
+    min: Infinity,
+    max: -Infinity
   };
-  
-  var MRItype = {
-    MRI_UCHAR: {
-      value: 0,
-      name: "uchar",
-      size: 1,
-      func_arrayRead: this.parseUChar8Array.bind(this)
-    },
-    MRI_INT: {
-      value: 1,
-      name: "int",
-      size: 4,
-      func_arrayRead: this.parseUInt32EndianSwappedArray.bind(this)
-    },
-    // MRI_LONG: {
-    // value: 2,
-    // name: "long",
-    // size: 8,
-    // func_arrayRead: null
-    // }, // NOT YET DEFINED!
-    MRI_FLOAT: {
-      value: 3,
-      name: "float",
-      size: 4,
-      func_arrayRead: this.parseFloat32EndianSwappedArray.bind(this)
-    },
-    MRI_SHORT: {
-      value: 4,
-      name: "short",
-      size: 2,
-      func_arrayRead: this.parseUInt16EndianSwappedArray.bind(this)
-    }
-  // MRI_BITMAP: {
-  // value: 5,
-  // name: "bitmap",
-  // size: 8,
-  // func_arrayRead: null
-  // }
-  // NOT YET DEFINED!
-  };
-  
-  var UNUSED_SPACE_SIZE = 256;
-  var MGH_VERSION = 1;
-  var sizeof_char = 1;
-  var sizeof_short = 2;
-  var sizeof_int = 4;
-  var sizeof_float = 4;
-  var sizeof_double = 8;
-  var USED_SPACE_SIZE = (3 * sizeof_float + 4 * 3 * sizeof_float);
-  var unused_space_size = UNUSED_SPACE_SIZE;
-  
-  // syslog('FreeSurfer MGH/MGZ data stream START.');
-  // syslog('Reading MGH/MGZ header');
-  var dataptr = new X.parserHelper(data);
-  dataptr.setParseFunction(this.parseUInt32EndianSwappedArray.bind(this),
-      dataptr._sizeOfInt);
-  MRI.version = dataptr.read();
-  MRI.ndim1 = dataptr.read();
-  MRI.ndim2 = dataptr.read();
-  MRI.ndim3 = dataptr.read();
-  MRI.nframes = dataptr.read();
-  MRI.type = dataptr.read();
-  switch (MRI.type) {
-  case 0:
-    MRI.MRIdatatype = MRItype.MRI_UCHAR;
-    break;
-  case 1:
-    MRI.MRIdatatype = MRItype.MRI_INT;
-    break;
-  // case 2:
-  // MRI.MRIdatatype = MRItype.MRI_LONG;
-  // break;
-  case 3:
-    MRI.MRIdatatype = MRItype.MRI_FLOAT;
-    break;
-  case 4:
-    MRI.MRIdatatype = MRItype.MRI_SHORT;
-    break;
-  // case 5:
-  // MRI.MRIdatatype = MRItype.MRI_BITMAP;
-  // break;
-  // case else?
-  }
-  MRI.dof = dataptr.read();
-  dataptr.setParseFunction(this.parseUInt16EndianSwappedArray.bind(this),
-      dataptr._sizeOfShort);
-  MRI.rasgoodflag = dataptr.read();
-  
-  unused_space_size -= sizeof_short;
-  
-  if (MRI.rasgoodflag > 0) {
-    dataptr.setParseFunction(this.parseFloat32EndianSwappedArray.bind(this),
-        dataptr._sizeOfFloat);
-    // Read in voxel size and RAS matrix
-    unused_space_size -= USED_SPACE_SIZE;
-    MRI.v_voxelsize[0] = dataptr.read();
-    MRI.v_voxelsize[1] = dataptr.read();
-    MRI.v_voxelsize[2] = dataptr.read();
-    
-    // X
-    MRI.M_ras[0][0] = dataptr.read();
-    MRI.M_ras[1][0] = dataptr.read();
-    MRI.M_ras[2][0] = dataptr.read();
-    
-    // Y
-    MRI.M_ras[0][1] = dataptr.read();
-    MRI.M_ras[1][1] = dataptr.read();
-    MRI.M_ras[2][1] = dataptr.read();
-    
-    // Z
-    MRI.M_ras[0][2] = dataptr.read();
-    MRI.M_ras[1][2] = dataptr.read();
-    MRI.M_ras[2][2] = dataptr.read();
-    
-    // C
-    MRI.M_ras[0][3] = dataptr.read();
-    MRI.M_ras[1][3] = dataptr.read();
-    MRI.M_ras[2][3] = dataptr.read();
-  }
-  
-  dataptr.setParseFunction(this.parseUChar8Array.bind(this),
-      dataptr._sizeOfChar);
-  dataptr.read(unused_space_size);
-  var volsize = MRI.ndim1 * MRI.ndim2 * MRI.ndim3;
-  
-  // syslog('Reading MGH/MGZ image data');
-  // syslog(sprintf('Accessing %d %s vals (%d bytes)', volsize,
-  // MRI.MRIdatatype.name,
-  // volsize*MRI.MRIdatatype.size));
   
 
-  // dataptr
-  // .setParseFunction(MRI.MRIdatatype.func_arrayRead, MRI.MRIdatatype.size);
-  // var a_ret = dataptr.read(volsize);
+  MRI.version = this.scan('uint');
+  MRI.ndim1 = this.scan('uint');
+  MRI.ndim2 = this.scan('uint');
+  MRI.ndim3 = this.scan('uint');
+  MRI.nframes = this.scan('uint');
+  MRI.type = this.scan('uint');
+  MRI.dof = this.scan('uint');
   
-  //
-  // we can grab the min max values like this and skip the stats further down
-  //
-  var a_ret = MRI.MRIdatatype.func_arrayRead(data, dataptr._dataPointer,
-      volsize);
-  MRI.v_data = a_ret[0];
-  MRI.min = a_ret[2];
-  MRI.max = a_ret[1];
+  MRI.rasgoodflag = this.scan('ushort');
   
-  // increase the data pointr
-  dataptr._dataPointer += dataptr._elementSize * MRI.MRIdatatype.size;
+  if (MRI.rasgoodflag > 0) {
+    
+    // Read in voxel size and RAS matrix
+    MRI.v_voxelsize = this.scan('float', 3);
+    
+    var _ras = [];
+    
+    // X
+    _ras.push(this.scan('float', 3));
+    
+    // Y
+    _ras.push(this.scan('float', 3));
+    
+    // Z
+    _ras.push(this.scan('float', 3));
+    
+    // C
+    _ras.push(this.scan('float', 3));
+    
+    MRI.M_ras = _ras;
+    
+  }
+  
+  // jump to the image data which starts at byte 284,
+  // according to http://surfer.nmr.mgh.harvard.edu/fswiki/FsTutorial/MghFormat
+  this.jumpTo(284);
+  
+  // number of pixels in the volume
+  var volsize = MRI.ndim1 * MRI.ndim2 * MRI.ndim3;
+  
+  // scan the pixels regarding the data type
+  switch (MRI.type) {
+  case 0:
+    // unsigned char
+    MRI.data = this.scan('uchar', volsize);
+    break;
+  case 1:
+    // unsigned int
+    MRI.data = this.scan('uint', volsize);
+    break;
+  // case 2:
+  // long
+  // break;
+  case 3:
+    // float
+    MRI.data = this.scan('float', volsize);
+    break;
+  case 4:
+    // unsigned short
+    MRI.data = this.scan('ushort', volsize);
+    break;
+  // case 5:
+  // bitmap
+  // break;
+  default:
+    throw new Error('Unsupported MGH/MGZ data type: ' + MRI.type);
+  }
+  
+  // get the min and max intensities
+  var min_max = this.arrayMinMax(MRI.data);
+  MRI.min = min_max[0];
+  MRI.max = min_max[1];
   
 
   // Now for the final MRI parameters at the end of the data stream:
-  if (dataptr._dataPointer + 4 * sizeof_float < dataptr._data.length) {
-    // syslog('Reading MGH/MGZ MRI parameters');
-    dataptr.setParseFunction(this.parseFloat32EndianSwappedArray.bind(this),
-        dataptr._sizeOfFloat);
-    MRI.Tr = dataptr.read();
-    MRI.flipangle = dataptr.read();
-    MRI.Te = dataptr.read();
-    MRI.Ti = dataptr.read();
+  if (this._dataPointer + 4 * 4 < this._data.byteLength) {
+    
+    MRI.Tr = this.scan('float');
+    MRI.flipangle = this.scan('float');
+    MRI.Te = this.scan('float');
+    MRI.Ti = this.scan('float');
+    
   }
   
-  // console.time('stats')
-  // syslog('Calculating data/image stats...');
-  // MRI.stats = this.stats_calc(MRI.v_data);
-  // syslog('FreeSurfer MGH/MGZ data stream END.');
-  // console.timeEnd('stats')
   return MRI;
   
 };

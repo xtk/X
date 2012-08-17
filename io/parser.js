@@ -25,6 +25,12 @@
  *                                         - Richard M. Stallman
  * 
  * 
+ * CREDITS:
+ *   
+ *   - the endianness handling was inspired by
+ *     Ilmari Heikkinen's DataStream.js (https://github.com/kig/DataStream.js)
+ *     THANKS!!
+ * 
  */
 
 goog.provide('X.parser');
@@ -34,8 +40,6 @@ goog.require('X.base');
 goog.require('X.event');
 goog.require('X.texture');
 goog.require('X.triplets');
-
-
 
 /**
  * Create a parser for binary or ascii data.
@@ -58,10 +62,58 @@ X.parser = function() {
    */
   this._classname = 'parser';
   
+  /**
+   * The data.
+   * 
+   * @type {?ArrayBuffer}
+   * @protected
+   */
+  this._data = null;
+  
+  /**
+   * The pointer to the current byte.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._dataPointer = 0;
+  
+  /**
+   * The native endianness flag. Based on
+   * https://github.com/kig/DataStream.js/blob/master/DataStream.js
+   * 
+   * @type {!boolean}
+   * @protected
+   */
+  this._nativeLittleEndian = new Int8Array(new Int16Array([1]).buffer)[0] > 0;
+  
+  /**
+   * The data-specific endianness flag.
+   * 
+   * @type {!boolean}
+   * @protected
+   */
+  this._littleEndian = true;
+  
+  /**
+   * The min value of the last parsing attempt.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._lastMin = -Infinity;
+  
+  /**
+   * The max value of the last parsing attempt.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._lastMax = Infinity;
+  
 };
 // inherit from X.base
 goog.inherits(X.parser, X.base);
-
 
 /**
  * Parse data and configure the given object. When complete, a
@@ -70,7 +122,7 @@ goog.inherits(X.parser, X.base);
  * @param {!X.base} container A container which holds the loaded data. This can
  *          be an X.object as well.
  * @param {!X.object} object The object to configure.
- * @param {!String} data The data to parse.
+ * @param {!ArrayBuffer} data The data to parse.
  * @param {*} flag An additional flag.
  * @throws {Error} An exception if something goes wrong.
  */
@@ -81,554 +133,201 @@ X.parser.prototype.parse = function(container, object, data, flag) {
 };
 
 
-/**
- * Process a numerical array and calculate some basic stats: o mean o variance o
- * deviation o prod o sum o min; minIndex o max; maxIndex
- * 
- * @param {*} data The numerical data array to process.
- * @return {*} The results.
- */
-X.parser.prototype.stats_calc = function(data) {
-
-  var r = {
-    mean: 0,
-    variance: 0,
-    deviation: 0,
-    prod: 1,
-    sum: 0,
-    min: 0,
-    minIndex: 0,
-    max: 0,
-    maxIndex: 0
-  };
-  var t = data.length;
-  r.size = t;
-  for ( var m = 0, p = 1, s = 0, l = t; l >= 0; l--) {
-    s += data[l];
-    p *= data[l];
-    if (r.min >= data[l]) {
-      r.min = data[l];
-      r.minIndex = l;
-    }
-    if (r.max <= data[l]) {
-      r.max = data[l];
-      r.maxIndex = l;
-    }
-  }
-  ;
-  r.prod = p;
-  r.sum = s;
-  for (m = r.mean = s / t, l = t, s = 0; l--; s += Math.pow(data[l] - m, 2)) {
-    ;
-  }
-  return r.deviation = Math.sqrt(r.variance = s / t), r;
-};
-
 //
 // PARSE FUNCTIONS
 //
-// Some parse functions were inspired by Dan Ginsburg, Children's Hospital
-// Boston (see LICENSE)
 //
-// by default Little Endian (LSB is the first byte)
 
 /**
- * Parse a string from some data.
+ * Get the min and max values of an array.
  * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @param {!number} length The length of the string.
- * @return {string} The parsed string.
+ * @param {!Array} data The data array to analyze.
+ * @return {!Array} An array with length 2 containing the [min, max] values.
  */
-X.parser.prototype.parseString = function(data, offset, length) {
+X.parser.prototype.arrayMinMax = function(data) {
 
-  return data.substr(offset, length);
+  var _min = Infinity;
+  var _max = -Infinity;
   
-};
-
-
-/**
- * Parse a unsigned Char8 value from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @return {!number} The parsed value.
- */
-X.parser.prototype.parseUChar8 = function(data, offset) {
-
-  return data.charCodeAt(offset) & 0xff;
+  // buffer the length
+  var _datasize = data.length;
   
-};
-
-
-/**
- * Parse a signed Char8 value from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @return {!number} The parsed value.
- */
-X.parser.prototype.parseSChar8 = function(data, offset) {
-
-  var b = this.parseUChar8(data, offset);
-  return b > 127 ? b - 256 : b;
-  
-};
-
-
-/**
- * Parse an UInt16 value from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @return {!number} The parsed value.
- */
-X.parser.prototype.parseUInt16 = function(data, offset) {
-
-  var b0 = this.parseUChar8(data, offset);
-  var b1 = this.parseUChar8(data, offset + 1);
-  
-  return (b1 << 8) + b0;
-  
-};
-
-
-/**
- * Parse an endian swapped UInt16 value from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @return {!number} The parsed value.
- */
-X.parser.prototype.parseUInt16EndianSwapped = function(data, offset) {
-
-  var b0 = this.parseUChar8(data, offset);
-  var b1 = this.parseUChar8(data, offset + 1);
-  
-  return (b0 << 8) + b1;
-  
-};
-
-
-/**
- * Parse a SInt16 value from some data.
- * 
- * @param {!String} data The data to parse
- * @param {!number} offset An offset index.
- * @return {!number} The parsed value.
- */
-X.parser.prototype.parseSInt16 = function(data, offset) {
-
-  var b = this.parseUInt16(data, offset);
-  
-  return b > 32767 ? b - 65536 : b;
-  
-};
-
-
-
-/**
- * Parse an endian swaped UInt24 value from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @return {!number} The parsed value.
- */
-X.parser.prototype.parseUInt24EndianSwapped = function(data, offset) {
-
-  var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
-      offset + 1), b2 = this.parseUChar8(data, offset + 2);
-  
-
-  return ((b0 << 16) + (b1 << 8) + (b2)) & 0x00FFFFFF;
-};
-
-
-/**
- * Parse an UInt32 value from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @return {!number} The parsed value.
- */
-X.parser.prototype.parseUInt32 = function(data, offset) {
-
-  var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
-      offset + 1), b2 = this.parseUChar8(data, offset + 2), b3 = this
-      .parseUChar8(data, offset + 3);
-  
-  return (b3 << 24) + (b2 << 16) + (b1 << 8) + b0;
-  
-};
-
-
-/**
- * Parse an endian swaped UInt32 value from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @return {!number} The parsed value.
- */
-X.parser.prototype.parseUInt32EndianSwapped = function(data, offset) {
-
-  var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
-      offset + 1), b2 = this.parseUChar8(data, offset + 2), b3 = this
-      .parseUChar8(data, offset + 3);
-  
-  return (b0 << 24) + (b1 << 16) + (b2 << 8) + b3;
-};
-
-
-/**
- * Parse an SInt32 value from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @return {!number} The parsed value.
- */
-X.parser.prototype.parseSInt32 = function(data, offset) {
-
-  var b = this.parseUInt32(data, offset);
-  
-  return b > 2147483647 ? b - 4294967296 : b;
-  
-};
-
-
-/**
- * Parse a Float32 value from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @return {!number} The parsed value.
- */
-X.parser.prototype.parseFloat32 = function(data, offset) {
-
-  var b3 = this.parseUChar8(data, offset), b2 = this.parseUChar8(data,
-      offset + 1), b1 = this.parseUChar8(data, offset + 2), b0 = this
-      .parseUChar8(data, offset + 3),
-
-  sign = 1 - (2 * (b0 >> 7)), exponent = (((b0 << 1) & 0xff) | (b1 >> 7)) - 127, mantissa = ((b1 & 0x7f) << 16) |
-      (b2 << 8) | b3;
-  
-  if (mantissa == 0 && exponent == -127) {
-    return 0.0;
+  var i = 0;
+  for (i = 0; i < _datasize; i++) {
+    
+    var _value = data[i];
+    _min = Math.min(_min, _value);
+    _max = Math.max(_max, _value);
+    
   }
   
-  return sign * (1 + mantissa * Math.pow(2, -23)) * Math.pow(2, exponent);
+  return [_min, _max];
   
 };
 
 
 /**
- * Parse an endian swaped Float32 value from some data.
+ * Jump to a position in the byte stream.
  * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @return {!number} The parsed value.
+ * @param {!number} position The new offset.
  */
-X.parser.prototype.parseFloat32EndianSwapped = function(data, offset) {
+X.parser.prototype.jumpTo = function(position) {
 
-  var b0 = this.parseUChar8(data, offset), b1 = this.parseUChar8(data,
-      offset + 1), b2 = this.parseUChar8(data, offset + 2), b3 = this
-      .parseUChar8(data, offset + 3),
-
-  sign = 1 - (2 * (b0 >> 7)), exponent = (((b0 << 1) & 0xff) | (b1 >> 7)) - 127, mantissa = ((b1 & 0x7f) << 16) |
-      (b2 << 8) | b3;
-  
-  if (mantissa == 0 && exponent == -127) {
-    return 0.0;
-  }
-  
-  return sign * (1 + mantissa * Math.pow(2, -23)) * Math.pow(2, exponent);
+  this._dataPointer = position;
   
 };
 
 
-
 /**
- * Parse an array of endian swapped UInt32 values from some data.
+ * Scan binary data relative to the internal position in the byte stream.
  * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @param {!number} elements The number of elements.
- * @return {!Array} An array consisting of [the actual values as an array, the
- *         max value, the min value].
+ * @param {!string} type The data type to scan, f.e.
+ *          'uchar','schar','ushort','sshort','uint','sint','float'
+ * @param {!number=} chunks The number of chunks to scan. By default, 1.
  */
-X.parser.prototype.parseUInt32EndianSwappedArray = function(data, offset,
-    elements) {
+X.parser.prototype.scan = function(type, chunks) {
 
-  var arr = new Array();
-  
-  var max = 0;
-  var min = Infinity;
-  
-  var i;
-  for (i = 0; i < elements; i++) {
-    var val = this.parseUInt32EndianSwapped(data, offset + (i * 4));
-    arr[i] = val;
-    max = Math.max(max, val);
-    min = Math.min(min, val);
+  if (!goog.isDefAndNotNull(chunks)) {
+    
+    chunks = 1;
+    
   }
   
-  return [arr, max, min];
+  var _chunkSize = 1;
+  var _array_type = Uint8Array;
+  
+  switch (type) {
+  
+  // 1 byte data types
+  case 'uchar':
+    break;
+  case 'schar':
+    _array_type = Int8Array;
+    break;
+  // 2 byte data types
+  case 'ushort':
+    _array_type = Uint16Array;
+    _chunkSize = 2;
+    break;
+  case 'sshort':
+    _array_type = Int16Array;
+    _chunkSize = 2;
+    break;
+  // 4 byte data types
+  case 'uint':
+    _array_type = Uint32Array;
+    _chunkSize = 4;
+    break;
+  case 'sint':
+    _array_type = Int32Array;
+    _chunkSize = 4;
+    break;
+  case 'float':
+    _array_type = Float32Array;
+    _chunkSize = 4;
+    break;
+  
+  }
+  
+  // increase the data pointer in-place
+  var _bytes = new _array_type(this._data.slice(this._dataPointer,
+      this._dataPointer += chunks * _chunkSize));
+  
+  // if required, flip the endianness of the bytes
+  if (this._nativeLittleEndian != this._littleEndian) {
+    
+    // we need to flip here since the format doesn't match the native endianness
+    _bytes = this.flipEndianness(_bytes, _chunkSize);
+    
+  }
+  
+  if (chunks == 1) {
+    
+    // if only one chunk was requested, just return one value
+    return _bytes[0];
+    
+  }
+  
+  // return the byte array
+  return _bytes;
+  
 };
 
 
-
-/**
- * Parse an array of UInt16 values from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @param {!number} elements The number of elements.
- * @return {!Array} An array consisting of [the actual values as an array, the
- *         max value, the min value].
- */
-X.parser.prototype.parseUInt16Array = function(data, offset, elements) {
-
-  var arr = new Array();
+X.parser.prototype.parseNumberFromBytestream = function(data, i, storage, chunks, delimiter, skip_first) {
+ 
+  var _number = 0;
+  var _str_buffer = '';
+  var j = 0;
+  var ignore = skip_first;
   
-  var max = 0;
-  var min = Infinity;
+  do {
+    
+    var _b = data[i++];
+    
+    if ((57 >= _b) && (_b >= 45)) {
+      
+      if (ignore) {
+        
+        // currently in ignore mode,
+        // so don't store anything
+        continue;
+        
+      }
+      
+      // the current byte is part of a number
+      // .. store it
+      _str_buffer += String.fromCharCode(_b);
+      
+    } else if (((_b==delimiter || _b==10) && (data[i-2]!=32))) {
+      
+      if (ignore) {
+        
+        // this is the first element, ignore it
+        // and switch off the ignore mode
+        ignore = !ignore;
+        continue;
+        
+      }
+      
+      // the current byte is a space or a line-break
+      // this means the current buffer is ready to be stored
+      _number = parseFloat(_str_buffer);
+      
+      storage[j++] = _number;
+      
+      // clear the buffer
+      _str_buffer = '';
+      
+    }
+    
+  } while (j<chunks && (_b == delimiter || _b == 10 || ((57 >= _b) && (_b >= 45)) || _b == 101));
   
-  var i;
-  for (i = 0; i < elements; i++) {
-    var val = this.parseUInt16(data, offset + (i * 2));
-    arr[i] = val;
-    max = Math.max(max, val);
-    min = Math.min(min, val);
-  }
+  return i;
   
-  return [arr, max, min];
-};
-
-
-/**
- * Parse an array of SInt16 values from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @param {!number} elements The number of elements.
- * @return {!Array} An array consisting of [the actual values as an array, the
- *         max value, the min value].
- */
-X.parser.prototype.parseSInt16Array = function(data, offset, elements) {
-
-  var arr = new Array();
-  
-  var max = 0;
-  var min = Infinity;
-  
-  var i;
-  for (i = 0; i < elements; i++) {
-    var val = this.parseSInt16(data, offset + (i * 2));
-    arr[i] = val;
-    max = Math.max(max, val);
-    min = Math.min(min, val);
-  }
-  
-  return [arr, max, min];
-};
-
-
-
-/**
- * Parse an array of endian swapped Float32 values from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @param {!number} elements The number of elements.
- * @return {!Array} An array consisting of [the actual values as an array, the
- *         max value, the min value].
- */
-X.parser.prototype.parseFloat32EndianSwappedArray = function(data, offset,
-    elements) {
-
-  var arr = new Array();
-  
-  var max = 0;
-  var min = Infinity;
-  
-  var i;
-  for (i = 0; i < elements; i++) {
-    var val = this.parseFloat32EndianSwapped(data, offset + (i * 4));
-    arr[i] = val;
-    max = Math.max(max, val);
-    min = Math.min(min, val);
-  }
-  
-  return [arr, max, min];
-};
-
-/**
- * Parse an array of endian swapped UInt16 values from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @param {!number} elements The number of elements.
- * @return {!Array} An array consisting of [the actual values as an array, the
- *         max value, the min value].
- */
-X.parser.prototype.parseUInt16EndianSwappedArray = function(data, offset,
-    elements) {
-
-  var arr = new Array();
-  
-  var max = 0;
-  var min = Infinity;
-  
-  var i;
-  for (i = 0; i < elements; i++) {
-    var val = this.parseUInt16EndianSwapped(data, offset + (i * 2));
-    arr[i] = val;
-    max = Math.max(max, val);
-    min = Math.min(min, val);
-  }
-  
-  return [arr, max, min];
-};
-
-
-
-/**
- * Parse an array of Float32 values from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @param {!number} elements The number of elements.
- * @return {!Array} An array consisting of [the actual values as an array, the
- *         max value, the min value].
- */
-X.parser.prototype.parseFloat32Array = function(data, offset, elements) {
-
-  var arr = new Array();
-  
-  var max = 0;
-  var min = Infinity;
-  
-  var i;
-  for (i = 0; i < elements; i++) {
-    var val = this.parseFloat32(data, offset + (i * 4));
-    arr[i] = val;
-    max = Math.max(max, val);
-    min = Math.min(min, val);
-  }
-  
-  return [arr, max, min];
 };
 
 
 /**
- * Parse an array of UInt32 values from some data.
+ * Flips typed array endianness in-place. Based on
+ * https://github.com/kig/DataStream.js/blob/master/DataStream.js.
  * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @param {!number} elements The number of elements.
- * @return {!Array} An array consisting of [the actual values as an array, the
- *         max value, the min value].
+ * @param {!Object} array Typed array to flip.
+ * @param {!number} chunkSize The size of each element.
+ * @return {!Object} The converted typed array.
  */
-X.parser.prototype.parseUInt32Array = function(data, offset, elements) {
+X.parser.prototype.flipEndianness = function(array, chunkSize) {
 
-  var arr = new Array();
-  
-  var max = 0;
-  var min = Infinity;
-  
-  var i;
-  for (i = 0; i < elements; i++) {
-    var val = this.parseUInt32(data, offset + (i * 4));
-    arr[i] = val;
-    max = Math.max(max, val);
-    min = Math.min(min, val);
+  var u8 = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);
+  for ( var i = 0; i < array.byteLength; i += chunkSize) {
+    for ( var j = i + chunkSize - 1, k = i; j > k; j--, k++) {
+      var tmp = u8[k];
+      u8[k] = u8[j];
+      u8[j] = tmp;
+    }
   }
+  return array;
   
-  return [arr, max, min];
-};
-
-
-/**
- * Parse an array of SInt32 values from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @param {!number} elements The number of elements.
- * @return {!Array} An array consisting of [the actual values as an array, the
- *         max value, the min value].
- */
-X.parser.prototype.parseSInt32Array = function(data, offset, elements) {
-
-  var arr = new Array();
-  
-  var max = 0;
-  var min = Infinity;
-  
-  var i;
-  for (i = 0; i < elements; i++) {
-    var val = this.parseSInt32(data, offset + (i * 4));
-    arr[i] = val;
-    max = Math.max(max, val);
-    min = Math.min(min, val);
-  }
-  
-  return [arr, max, min];
-};
-
-
-/**
- * Parse an array of signed Char8 values from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @param {!number} elements The number of elements.
- * @return {!Array} An array consisting of [the actual values as an array, the
- *         max value, the min value].
- */
-X.parser.prototype.parseSChar8Array = function(data, offset, elements) {
-
-  var arr = new Array();
-  
-  var max = 0;
-  var min = Infinity;
-  
-  var i;
-  for (i = 0; i < elements; i++) {
-    var val = this.parseSChar8(data, offset + (i));
-    arr[i] = val;
-    max = Math.max(max, val);
-    min = Math.min(min, val);
-  }
-  
-  return [arr, max, min];
-};
-
-
-
-/**
- * Parse an array of unsigned Char8 values from some data.
- * 
- * @param {!String} data The data to parse.
- * @param {!number} offset An offset index.
- * @param {!number} elements The number of elements.
- * @return {!Array} An array consisting of [the actual values as an array, the
- *         max value, the min value].
- */
-X.parser.prototype.parseUChar8Array = function(data, offset, elements) {
-
-  var arr = new Array();
-  
-  var max = 0;
-  var min = Infinity;
-  
-  var i;
-  for (i = 0; i < elements; i++) {
-    var val = this.parseUChar8(data, offset + (i));
-    arr[i] = val;
-    max = Math.max(max, val);
-    min = Math.min(min, val);
-  }
-  
-  return [arr, max, min];
 };
 
 
@@ -639,14 +338,17 @@ X.parser.prototype.parseUChar8Array = function(data, offset, elements) {
  * associated label map which has to be loaded before.
  * 
  * @param {!X.object} object The X.volume to fill.
- * @param {!Array} datastream The datastream as an array.
- * @param {!Array} sizes The sizes of the volume as an array [X,Y,Z].
- * @param {!number} min The min. scalar intensity value.
- * @param {!number} max The max. scalar intensity value.
+ * @param {!Object} MRI The MRI object which contains the min, max, data and
+ *          type.
+ * @return {!Array} The volume data as a 3D Array.
  */
-X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
+X.parser.prototype.reslice = function(object, MRI) {
 
   X.TIMER(this._classname + '.reslice');
+
+  var sizes = object._dimensions;
+  var max = MRI.max;
+  var datastream = MRI.data;
   
   // number of slices in scan direction
   var slices = sizes[2];
@@ -666,9 +368,14 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
   for ( var iS = 0; iS < slices; iS++) {
     image[iS] = new Array(rowsCount);
     for ( var iR = 0; iR < rowsCount; iR++) {
-      image[iS][iR] = new Array(colsCount);
+      
+      // create a typed array here depending on the MRI.data type
+      image[iS][iR] = new MRI.data.constructor(colsCount);
+      
     }
   }
+  
+  // console.log(image);
   
   var pixelValue = 0;
   
@@ -681,7 +388,7 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
   for (z = 0; z < slices; z++) {
     
     // grab the pixels for the current slice z
-    var currentSlice = datastream.slice(z * (numberPixelsPerSlice), (z + 1) *
+    var currentSlice = datastream.subarray(z * (numberPixelsPerSlice), (z + 1) *
         numberPixelsPerSlice);
     // the texture has 3 times the pixel value + 1 opacity value for all pixels
     var textureForCurrentSlice = new Uint8Array(4 * numberPixelsPerSlice);
@@ -824,7 +531,6 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
     
   }
   
-
   // for Z
   // all slices are along the cols of the image
   // all rows are along the slices of the image
@@ -891,5 +597,7 @@ X.parser.prototype.reslice = function(object, datastream, sizes, min, max) {
   }
   
   X.TIMERSTOP(this._classname + '.reslice');
+
+  return image;
   
 };
