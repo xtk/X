@@ -226,10 +226,7 @@ X.loader.prototype.load = function(container, object) {
   
   // configure the URL
   request.open('GET', filepath, true);
-  if (responseType) {
-    // set the response type if != null, else fall back to the default 'text'
-    request.responseType = responseType;
-  }
+  request.responseType = 'arraybuffer';
   
   // .. and GO!
   request.send(null);
@@ -346,29 +343,29 @@ X.loader.prototype.failed = function(request, container, object) {
 X.loader.extensions = {
   // support for the following extensions and the mapping to X.parsers as well
   // as some custom flags and the result type
-  'STL': [X.parserSTL, null, 'arraybuffer'],
-  'VTK': [X.parserVTK, null, 'arraybuffer'],
-  'TRK': [X.parserTRK, null, 'arraybuffer'],
+  'STL': [X.parserSTL, null],
+  'VTK': [X.parserVTK, null],
+  'TRK': [X.parserTRK, null],
   // FSM, INFLATED, SMOOTHWM, SPHERE, PIAL and ORIG are all freesurfer meshes
-  'FSM': [X.parserFSM, null, 'arraybuffer'],
-  'INFLATED': [X.parserFSM, null, 'arraybuffer'],
-  'SMOOTHWM': [X.parserFSM, null, 'arraybuffer'],
-  'SPHERE': [X.parserFSM, null, 'arraybuffer'],
-  'PIAL': [X.parserFSM, null, 'arraybuffer'],
-  'ORIG': [X.parserFSM, null, 'arraybuffer'],
-  'NRRD': [X.parserNRRD, null, 'arraybuffer'],
-  'NII': [X.parserNII, null, 'arraybuffer'],
-  'GZ': [X.parserNII, null, 'arraybuffer'], // right now nii.gz is the only
+  'FSM': [X.parserFSM, null],
+  'INFLATED': [X.parserFSM, null],
+  'SMOOTHWM': [X.parserFSM, null],
+  'SPHERE': [X.parserFSM, null],
+  'PIAL': [X.parserFSM, null],
+  'ORIG': [X.parserFSM, null],
+  'NRRD': [X.parserNRRD, null],
+  'NII': [X.parserNII, null],
+  'GZ': [X.parserNII, null], // right now nii.gz is the only
   // format ending .gz
-  'CRV': [X.parserCRV, null, 'arraybuffer'],
-  'LABEL': [X.parserLBL, null, 'arraybuffer'],
-  'MGH': [X.parserMGZ, false, 'arraybuffer'],
-  'MGZ': [X.parserMGZ, true, 'arraybuffer'],
-  'TXT': [X.parserLUT, null, 'arraybuffer'],
-  'LUT': [X.parserLUT, null, 'arraybuffer'],
-  'PNG': [X.parserIMAGE, 'png', 'arraybuffer'], // here we use the arraybuffer
+  'CRV': [X.parserCRV, null],
+  'LABEL': [X.parserLBL, null],
+  'MGH': [X.parserMGZ, false],
+  'MGZ': [X.parserMGZ, true],
+  'TXT': [X.parserLUT, null],
+  'LUT': [X.parserLUT, null],
+  'PNG': [X.parserIMAGE, 'png'], // here we use the arraybuffer
   // response type
-  'JPG': [X.parserIMAGE, 'jpeg', 'arraybuffer'],
-  'JPEG': [X.parserIMAGE, 'jpeg', 'arraybuffer'],
-  'GIF': [X.parserIMAGE, 'gif', 'arraybuffer']
+  'JPG': [X.parserIMAGE, 'jpeg'],
+  'JPEG': [X.parserIMAGE, 'jpeg'],
+  'GIF': [X.parserIMAGE, 'gif']
 };
