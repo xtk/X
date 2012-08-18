@@ -374,23 +374,6 @@ X.renderer.prototype.__defineGetter__('loadingCompleted', function() {
 
 
 /**
- * Set the state of the initial loading flag. This can be set to false to make
- * sure the onShowtime gets executed if further loading happens after the
- * initial one.
- * 
- * @param {boolean} loadingCompleted The loading completed flag which could
- *          activate the onShowtime method, if the initial loading already
- *          happened and new loading was performed.
- */
-X.renderer.prototype.__defineSetter__('loadingCompleted', function(
-    loadingCompleted) {
-
-  this._loadingCompleted = this._onShowtime = loadingCompleted;
-  
-});
-
-
-/**
  * Get the container of this renderer.
  * 
  * @return {!Element|HTMLBodyElement} The container of this renderer.
@@ -877,6 +860,10 @@ X.renderer.prototype.render = function() {
     
     this.showProgressBar_();
     
+    // also reset the loadingCompleted flags
+    this._loadingCompleted = false;
+    this._onShowtime = false;
+    
     // let's check again in a short time
     this._readyCheckTimer = goog.Timer.callOnce(function() {
 
@@ -896,6 +883,9 @@ X.renderer.prototype.render = function() {
     // we are ready! yahoooo!
     
     // call the onShowtime function which can be overloaded
+    
+    // we need two flags here since the render loop repeats so fast
+    // that there would be timing issues
     if (!this._loadingCompleted && !this._onShowtime) {
       
       this._onShowtime = true;
