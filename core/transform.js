@@ -105,9 +105,7 @@ X.transform.prototype.__defineSetter__('matrix', function(matrix) {
   }
   
   this._matrix = matrix;
-  this._glMatrix = new Float32Array(this._matrix.flatten());
-  
-  this._dirty = true;
+  this.modified();
   
 });
 
@@ -129,9 +127,7 @@ X.transform.prototype.rotateX = function(angle) {
   var angleInRadii = angle * Math.PI / 180;
   
   this._matrix = this._matrix.rotate(angleInRadii, new goog.math.Vec3(0, 1, 0));
-  this._glMatrix = new Float32Array(this._matrix.flatten());
-  
-  this._dirty = true;
+  this.modified();
   
 };
 
@@ -153,9 +149,7 @@ X.transform.prototype.rotateY = function(angle) {
   var angleInRadii = angle * Math.PI / 180;
   
   this._matrix = this._matrix.rotate(angleInRadii, new goog.math.Vec3(1, 0, 0));
-  this._glMatrix = new Float32Array(this._matrix.flatten());
-  
-  this._dirty = true;
+  this.modified();
   
 };
 
@@ -177,9 +171,7 @@ X.transform.prototype.rotateZ = function(angle) {
   var angleInRadii = angle * Math.PI / 180;
   
   this._matrix = this._matrix.rotate(angleInRadii, new goog.math.Vec3(0, 0, 1));
-  this._glMatrix = new Float32Array(this._matrix.flatten());
-  
-  this._dirty = true;
+  this.modified();
   
 };
 
@@ -201,9 +193,7 @@ X.transform.prototype.translateX = function(distance) {
   var vector = new goog.math.Vec3(distance, 0, 0);
   
   this._matrix = this._matrix.translate(vector);
-  this._glMatrix = new Float32Array(this._matrix.flatten());
-  
-  this._dirty = true;
+  this.modified();
   
 };
 
@@ -225,9 +215,7 @@ X.transform.prototype.translateY = function(distance) {
   var vector = new goog.math.Vec3(0, distance, 0);
   
   this._matrix = this._matrix.translate(vector);
-  this._glMatrix = new Float32Array(this._matrix.flatten());
-  
-  this._dirty = true;
+  this.modified();
   
 };
 
@@ -249,9 +237,7 @@ X.transform.prototype.translateZ = function(distance) {
   var vector = new goog.math.Vec3(0, 0, distance);
   
   this._matrix = this._matrix.translate(vector);
-  this._glMatrix = new Float32Array(this._matrix.flatten());
-  
-  this._dirty = true;
+  this.modified();
   
 };
 
@@ -271,9 +257,7 @@ X.transform.prototype.flip_ = function(i, j) {
   }
   
   this._matrix.setValueAt(i, j, oldValue * -1);
-  this._glMatrix = new Float32Array(this._matrix.flatten());
-  
-  this._dirty = true;
+  this.modified();
   
 };
 
@@ -308,6 +292,18 @@ X.transform.prototype.flipZ = function() {
 };
 
 
+/**
+ * Mark the transform as modified and update the GL-ready version.
+ */
+X.transform.prototype.modified = function() {
+  
+  this._glMatrix = new Float32Array(this._matrix.flatten());
+  
+  this._dirty = true;  
+  
+};
+
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.transform', X.transform);
 goog.exportSymbol('X.transform.prototype.rotateX',
@@ -325,3 +321,4 @@ goog.exportSymbol('X.transform.prototype.translateZ',
 goog.exportSymbol('X.transform.prototype.flipX', X.transform.prototype.flipX);
 goog.exportSymbol('X.transform.prototype.flipY', X.transform.prototype.flipY);
 goog.exportSymbol('X.transform.prototype.flipZ', X.transform.prototype.flipZ);
+goog.exportSymbol('X.transform.prototype.modified', X.transform.prototype.modified);
