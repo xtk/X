@@ -144,6 +144,7 @@ X.triplets = function(size, data) {
   if (goog.isDefAndNotNull(data)) {
     
     this._triplets = data._triplets.subarray(0, data._triplets.length);
+    this._dataPointer = this._triplets.length;
     this._minA = data._minA;
     this._maxA = data._maxA;
     this._minB = data._minB;
