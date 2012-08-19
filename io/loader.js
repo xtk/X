@@ -307,6 +307,9 @@ X.loader.prototype.complete = function(event) {
     // mark the container's file as clean
     container._file._dirty = false;
     
+    // .. but mark the container as dirty since its content changed
+    container._dirty = true;
+    
     // fire the modified event on the object
     object.modified();
     

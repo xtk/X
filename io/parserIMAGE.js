@@ -117,6 +117,9 @@ X.parserIMAGE.prototype.parseCompleted = function(image, container, object,
   // attach the image to the container
   container._image = image;
   
+  // if there is any raw data, reset it
+  container._rawData = null;
+  
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
