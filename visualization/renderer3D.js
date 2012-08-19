@@ -967,7 +967,8 @@ X.renderer3D.prototype.update_ = function(object) {
   // Objects can have point colors which can be different for each fragment.
   // If no point colors are defined, the object has a solid color.
   
-  if (existed && colors._dirty) {
+  // also check if colors is null
+  if (existed && colors && colors._dirty) {
     
     // this means the object already existed and the colors are dirty
     // therefore, we delete the old gl buffers
