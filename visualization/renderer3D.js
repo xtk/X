@@ -616,7 +616,7 @@ X.renderer3D.prototype.update_ = function(object) {
   
   // check if this is an empty object, if yes, jump out
   // empty objects can be used to group objects
-  if (points.count == 0) {
+  if (!points) {
     
     object._dirty = false;
     return;
@@ -642,7 +642,7 @@ X.renderer3D.prototype.update_ = function(object) {
   //
   // This gets executed after all dynamic content has been loaded.
   
-  X.TIMER(this._classname + '.update');
+  //X.TIMER(this._classname + '.update');
   
   // check if this is an X.slice as part of a X.labelmap
   var isLabelMap = (object instanceof X.slice && object._volume instanceof X.labelmap);
@@ -876,10 +876,14 @@ X.renderer3D.prototype.update_ = function(object) {
     var glVertexBuffer = this._context.createBuffer();
     
     // bind and fill with vertices of current object
+    
+    // resize the dynamic array 
+    points.resize();
+    
     this._context.bindBuffer(this._context.ARRAY_BUFFER, glVertexBuffer);
     
-    this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-        points._triplets), this._context.STATIC_DRAW);
+    this._context.bufferData(this._context.ARRAY_BUFFER, 
+        points._triplets, this._context.STATIC_DRAW);
     
     // create an X.buffer to store the vertices
     // every vertex consists of 3 items (x,y,z)
@@ -931,9 +935,13 @@ X.renderer3D.prototype.update_ = function(object) {
     var glNormalBuffer = this._context.createBuffer();
     
     // bind and fill with normals of current object
+    
+    // resize the dynamic array 
+    normals.resize();    
+    
     this._context.bindBuffer(this._context.ARRAY_BUFFER, glNormalBuffer);
-    this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-        normals._triplets), this._context.STATIC_DRAW);
+    this._context.bufferData(this._context.ARRAY_BUFFER, 
+        normals._triplets, this._context.STATIC_DRAW);
     
     // create an X.buffer to store the normals
     // every normal consists of 3 items (x,y,z)
@@ -980,7 +988,7 @@ X.renderer3D.prototype.update_ = function(object) {
   // X.buffer
   var colorBuffer = null;
   
-  if (colors.length > 0) {
+  if (colors) {
     
     // yes, there are point colors setup
     
@@ -1001,9 +1009,13 @@ X.renderer3D.prototype.update_ = function(object) {
       var glColorBuffer = this._context.createBuffer();
       
       // bind and fill with colors defined above
+      
+      // resize the dynamic array 
+      colors.resize();      
+      
       this._context.bindBuffer(this._context.ARRAY_BUFFER, glColorBuffer);
-      this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-          colors._triplets), this._context.STATIC_DRAW);
+      this._context.bufferData(this._context.ARRAY_BUFFER, 
+          colors._triplets, this._context.STATIC_DRAW);
       
       // create an X.buffer to store the colors
       // every color consists of 3 items (r,g,b)
@@ -1116,7 +1128,7 @@ X.renderer3D.prototype.update_ = function(object) {
   // clean the object
   object._dirty = false;
   
-  X.TIMERSTOP(this._classname + '.update');
+  //X.TIMERSTOP(this._classname + '.update');
   
   // unlock
   this._locked = false;

@@ -75,26 +75,26 @@ X.displayable = function() {
   /**
    * The points of this object.
    * 
-   * @type {!X.triplets}
+   * @type {?X.triplets}
    * @protected
    */
-  this._points = new X.triplets();
+  this._points = null;
   
   /**
    * The normals of this object.
    * 
-   * @type {!X.triplets}
+   * @type {?X.triplets}
    * @protected
    */
-  this._normals = new X.triplets();
+  this._normals = null;
   
   /**
    * The point colors of this object.
    * 
-   * @type {!X.triplets}
+   * @type {?X.triplets}
    * @protected
    */
-  this._colors = new X.triplets();
+  this._colors = null;
   
   /**
    * The texture of this object.

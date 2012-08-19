@@ -144,7 +144,7 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
     // console.log(numPoints, offset);
     
 
-    var currentPoints = new X.triplets();
+    var currentPoints = new X.triplets(numPoints*3);
     
     var length = 0.0;
     
@@ -235,6 +235,11 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   
   // the scalar array
   var scalarArray = new Float32Array(_totalPoints);
+  
+  // setup the points and normals arrays
+  object._points = p = new X.triplets(_totalPoints);
+  object._normals = n = new X.triplets(_totalPoints);
+  object._colors = c = new X.triplets(_totalPoints);
   
   var _scalarIndex = 0;
   

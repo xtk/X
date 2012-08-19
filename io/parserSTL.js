@@ -80,6 +80,10 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
   // check if this is an ascii STL file or a binary one
   if (_ascii_tag == 'solid') {
     
+    // allocate memory using a good guess
+    object._points = p = new X.triplets(data.byteLength);
+    object._normals = n = new X.triplets(data.byteLength);      
+    
     // this is an ascii STL file
     this.parseASCII(p, n, this.scan('uchar', data.byteLength - 5));
     
@@ -95,8 +99,14 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
     // but we ignore it
     this.jumpTo(80);
     
+    var _triangleCount = this.scan('uint');  
+    
+    // allocate the exact amount of memory
+    object._points = p = new X.triplets(_triangleCount * 9);
+    object._normals = n = new X.triplets(_triangleCount * 9);         
+    
     // parse the bytes
-    this.parseBIN(p, n);
+    this.parseBIN(p, n, _triangleCount);
     
   }
   
@@ -209,13 +219,12 @@ X.parserSTL.prototype.parseASCII = function(p, n, data) {
  * 
  * @param {!X.triplets} p The object's points as a X.triplets container.
  * @param {!X.triplets} n The object's normals as a X.triplets container.
+ * @param {!number} triangleCount The number of triangles.
  */
-X.parserSTL.prototype.parseBIN = function(p, n) {
-
-  var _triangleCount = this.scan('uint');
+X.parserSTL.prototype.parseBIN = function(p, n, triangleCount) { 
   
   var i = 0;
-  for (i = 0; i < _triangleCount; i++) {
+  for (i = 0; i < triangleCount; i++) {
     
     // grab 12 float values
     var _bytes = this.scan('float', 12);

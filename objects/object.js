@@ -37,7 +37,6 @@ goog.require('X.displayable');
 goog.require('X.indexer');
 goog.require('X.loadable');
 goog.require('X.scalars');
-goog.require('X.triplets');
 
 
 /**
@@ -121,11 +120,15 @@ X.object.prototype.copy_ = function(object) {
   
   this._color = object._color.slice();
   
-  this._points = new X.triplets(object._points);
-  
-  this._normals = new X.triplets(object._normals);
-  
-  this._colors = new X.triplets(object._colors);
+  if (object._points) {
+    this._points = new X.triplets(object._points.length, object._points);
+  }
+  if (object._normals) {
+    this._normals = new X.triplets(object._normals.length, object._normals);
+  }
+  if (object._colors) {
+    this._colors = new X.triplets(object._colors.length, object._colors);
+  }
   
   // do we need to copy this? maybe not
   this._texture = object._texture;

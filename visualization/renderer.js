@@ -917,7 +917,7 @@ X.renderer.prototype.render = function() {
   //
   
   // this starts the rendering loops
-  window.requestAnimationFrame(this.render.bind(this, this._canvas));
+  window.requestAnimationFrame(this.render.bind(this), this._canvas);
   eval("this.onRender()");
   this.render_(false, true);
   

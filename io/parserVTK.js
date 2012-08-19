@@ -78,6 +78,10 @@ X.parserVTK.prototype.parse = function(container, object, data, flag) {
   
   var _str = '';
   
+  // allocate memory using a good guess
+  object._points = p = new X.triplets(data.byteLength);
+  object._normals = n = new X.triplets(data.byteLength);  
+  
   // convert the char array to a string
   // the quantum is necessary to deal with large data
   var QUANTUM = 32768;
@@ -91,8 +95,10 @@ X.parserVTK.prototype.parse = function(container, object, data, flag) {
   
   // in .VTK files, the points are not ordered for rendering, so we need to
   // buffer everything in X.triplets containers and then order it
-  var unorderedPoints = new X.triplets();
-  var unorderedNormals = new X.triplets();
+  // nevertheless, we don't create the containers here since we can
+  // figure out the exact size later. this is faster.
+  this._unorderedPoints = null;
+  this._unorderedNormals = null;
   
   // .. we also need a buffer for all indices
   this._geometries = [];
@@ -130,32 +136,32 @@ X.parserVTK.prototype.parse = function(container, object, data, flag) {
   var i = 0;
   var n2 = numberOfLines % 8;
   while (n2--) {
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
+    this.parseLine(dataAsArray[i]);
     i++;
   }
   
   n2 = (numberOfLines * 0.125) ^ 0;
   while (n2--) {
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
+    this.parseLine(dataAsArray[i]);
     i++;
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
+    this.parseLine(dataAsArray[i]);
     i++;
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
+    this.parseLine(dataAsArray[i]);
     i++;
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
+    this.parseLine(dataAsArray[i]);
     i++;
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
+    this.parseLine(dataAsArray[i]);
     i++;
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
+    this.parseLine(dataAsArray[i]);
     i++;
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
+    this.parseLine(dataAsArray[i]);
     i++;
-    this.parseLine(unorderedPoints, unorderedNormals, dataAsArray[i]);
+    this.parseLine(dataAsArray[i]);
     i++;
   }
   
   // now, configure the object according to the objectType
-  this.configure(unorderedPoints, unorderedNormals, p, n);
+  this.configure(p, n);
   
   // .. and set the objectType
   object._type = this._objectType;
@@ -174,15 +180,10 @@ X.parserVTK.prototype.parse = function(container, object, data, flag) {
 /**
  * Parses a line of .VTK data and modifies the given X.triplets containers.
  * 
- * @param {!X.triplets} unorderedPoints A points container as a X.triplets
- *          object.
- * @param {!X.triplets} unorderedNormals A normals container as a X.triplets
- *          object.
  * @param {!string} line The line to parse.
  * @protected
  */
-X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
-    line) {
+X.parserVTK.prototype.parseLine = function(line) {
 
   // trim the line
   line = line.replace(/^\s+|\s+$/g, '');
@@ -208,6 +209,10 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
     this._pointsMode = true;
     this._geometryMode = false;
     this._pointDataMode = false;
+    
+    var numberOfPoints = parseInt(lineFields[1], 10);
+    this._unorderedPoints = new X.triplets(numberOfPoints*3);
+    this._unorderedNormals = new X.triplets(numberOfPoints*3);
     
     // go to next line
     return;
@@ -325,14 +330,14 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
       var y0 = parseFloat(lineFields[1]);
       var z0 = parseFloat(lineFields[2]);
       
-      unorderedPoints.add(x0, y0, z0);
+      this._unorderedPoints.add(x0, y0, z0);
     }
     
     if (numberOfLineFields >= 6) {
       var x1 = parseFloat(lineFields[3]);
       var y1 = parseFloat(lineFields[4]);
       var z1 = parseFloat(lineFields[5]);
-      unorderedPoints.add(x1, y1, z1);
+      this._unorderedPoints.add(x1, y1, z1);
     }
     
     if (numberOfLineFields >= 9) {
@@ -340,7 +345,7 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
       var y2 = parseFloat(lineFields[7]);
       var z2 = parseFloat(lineFields[8]);
       
-      unorderedPoints.add(x2, y2, z2);
+      this._unorderedPoints.add(x2, y2, z2);
     }
     
   } // end of pointsMode
@@ -395,19 +400,19 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
         var x0 = parseFloat(lineFields[0]);
         var y0 = parseFloat(lineFields[1]);
         var z0 = parseFloat(lineFields[2]);
-        unorderedNormals.add(x0, y0, z0);
+        this._unorderedNormals.add(x0, y0, z0);
       }
       if (numberOfLineFields >= 6) {
         var x1 = parseFloat(lineFields[3]);
         var y1 = parseFloat(lineFields[4]);
         var z1 = parseFloat(lineFields[5]);
-        unorderedNormals.add(x1, y1, z1);
+        this._unorderedNormals.add(x1, y1, z1);
       }
       if (numberOfLineFields >= 9) {
         var x2 = parseFloat(lineFields[6]);
         var y2 = parseFloat(lineFields[7]);
         var z2 = parseFloat(lineFields[8]);
-        unorderedNormals.add(x2, y2, z2);
+        this._unorderedNormals.add(x2, y2, z2);
       }
       
     } // end of normalsMode
@@ -421,14 +426,14 @@ X.parserVTK.prototype.parseLine = function(unorderedPoints, unorderedNormals,
  * Configure X.object points and normals. This method takes the object type into
  * consideration to f.e. use degenerated triangles for TRIANGLE_STRIPS.
  * 
- * @param {!X.triplets} unorderedPoints The container for unordered points.
- * @param {!X.triplets} unorderedNormals The container for unordered normals.
  * @param {!X.triplets} p The points container of the X.object.
  * @param {!X.triplets} n The normals container of the X.object.
  */
-X.parserVTK.prototype.configure = function(unorderedPoints, unorderedNormals,
-    p, n) {
+X.parserVTK.prototype.configure = function(p, n) {
 
+  var unorderedPoints = this._unorderedPoints;
+  var unorderedNormals = this._unorderedNormals;
+  
   // cache often used values for fast access
   var numberOfUnorderedNormals = unorderedNormals.length;
   

@@ -117,6 +117,9 @@ X.parserFSM.prototype.parse = function(container, object, data, flag) {
   // buffer the normals since we need to calculate them in a second loop
   var normals = new Float32Array(numberOfTriangles * 9);
   
+  object._points = p = new X.triplets(numberOfTriangles*9);
+  object._normals = n = new X.triplets(numberOfTriangles*9);
+  
   // first loop through the indices
   var t;
   for (t = 0; t < numberOfTriangles; t++) {
