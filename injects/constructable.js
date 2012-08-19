@@ -76,7 +76,7 @@ X.constructable.prototype.toCSG = function() {
     var color = this._color;
     
     // if point colors are defined on this X.object, use'em
-    if ((this._colors.length > 0)) {
+    if ((this._colors && this._colors.length > 0)) {
       
       // we only grab the color of the first point since CSG only supports
       // colors per triangle not per point
