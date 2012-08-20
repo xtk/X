@@ -184,7 +184,7 @@ X.loader.prototype.load = function(container, object) {
   
   // check if job is already monitored..
   // then it is safe to exit
-  if (this._jobs.containsKey(container._id)) {
+  if (this._jobs.containsKey(container._id) && !this._jobs.get(container._id)) {
     
     return;
     
