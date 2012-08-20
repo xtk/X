@@ -33,6 +33,7 @@ goog.require('X.base');
 goog.require('X.event');
 goog.require('X.object');
 goog.require('X.parserCRV');
+goog.require('X.parserDCM');
 goog.require('X.parserFSM');
 goog.require('X.parserIMAGE');
 goog.require('X.parserLBL');
@@ -360,6 +361,8 @@ X.loader.extensions = {
   'NII': [X.parserNII, null],
   'GZ': [X.parserNII, null], // right now nii.gz is the only
   // format ending .gz
+  'DCM': [X.parserDCM, null],
+  'DICOM': [X.parserDCM, null],
   'CRV': [X.parserCRV, null],
   'LABEL': [X.parserLBL, null],
   'MGH': [X.parserMGZ, false],
