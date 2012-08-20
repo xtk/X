@@ -148,7 +148,10 @@ X.parserDCM.prototype.parseStream = function(data) {
   };
   
   // skip the preamble
-  this.jumpTo(132);
+  // this.jumpTo(132);
+  
+  var _bytes = this.scan('ushort', this._data.byteLength);
+  var _bytePointer = 66;
   
   var _tagGroup = null;
   var _tagSpecific = null;
@@ -158,75 +161,86 @@ X.parserDCM.prototype.parseStream = function(data) {
   var _tagCount = 7;
   
   var _data_byte_size = 0;
-  while (_tagCount > 0) {
+  while (_tagCount > 1) {
     
     // read short
-    _tagGroup = this.scan('ushort');
+    _tagGroup = _bytes[_bytePointer++];// this.scan('ushort');
     
     if (_tagGroup == 0x0028) {
       
       // Group of GENERAL IMAGE SPECS
-      _tagSpecific = this.scan('ushort');
+      _tagSpecific = _bytes[_bytePointer++];
       
-      _VR = this.scan('ushort');
-      _VL = this.scan('ushort');
+      _VR = _bytes[_bytePointer++];
+      _VL = _bytes[_bytePointer++];
       
       switch (_tagSpecific) {
       
       case 0x0010:
         // rows
-        MRI.rows = this.scan('ushort');
+        MRI.rows = _bytes[_bytePointer++];
         _tagCount--;
         break;
       case 0x0011:
         // cols
-        MRI.cols = this.scan('ushort');
+        MRI.cols = _bytes[_bytePointer++];
         _tagCount--;
         break;
       case 0x0100:
         // bits allocated
-        MRI.bits_allocated = this.scan('ushort');
+        MRI.bits_allocated = _bytes[_bytePointer++];
         _tagCount--;
         break;
       case 0x0101:
         // bits stored
-        MRI.bits_stored = this.scan('ushort');
+        MRI.bits_stored = _bytes[_bytePointer++];
         _tagCount--;
         break;
       case 0x0002:
         // number of images
-        MRI.number_of_images = this.scan('ushort');
+        MRI.number_of_images = _bytes[_bytePointer++];
         _tagCount--;
         break;
       case 0x0030:
         // pixel spacing
         
-        // in x direction
-        var _px_spacingX = 0;
-        var _px_char = this.scan('uchar', _VL / 2 - 1);
-        if (_px_char instanceof Uint8Array) {
-          _px_spacingX = parseFloat(String.fromCharCode.apply(null, _px_char));
-        } else {
-          _px_spacingX = parseFloat(String.fromCharCode(_px_char));
-        }
+
+        var _short = _bytes[_bytePointer++];
         
-        // scan delimiter
-        this.scan('uchar');
+        // var _char0 = _short & 0x00FF;
+        // var _char1 = (_short & 0xFF00) >> 8;
         
-        // in y direction
-        var _px_spacingY = 0;
-        _px_char = this.scan('uchar', _VL / 2);
-        if (_px_char instanceof Uint8Array) {
-          _px_spacingY = parseFloat(String.fromCharCode.apply(null, _px_char));
-        } else {
-          _px_spacingY = parseFloat(String.fromCharCode(_px_char));
-        }
-        
-        MRI.pixdim = [_px_spacingX, _px_spacingY, 1];
+        MRI.pixdim = [1, 1, 1];
         
         _tagCount--;
-        
         break;
+      //        
+      // // in x direction
+      // var _px_spacingX = 0;
+      // var _px_char = this.scan('uchar', _VL / 2 - 1);
+      // if (_px_char instanceof Uint8Array) {
+      // _px_spacingX = parseFloat(String.fromCharCode.apply(null, _px_char));
+      // } else {
+      // _px_spacingX = parseFloat(String.fromCharCode(_px_char));
+      // }
+      //        
+      // // scan delimiter
+      // this.scan('uchar');
+      //        
+      // // in y direction
+      // var _px_spacingY = 0;
+      // _px_char = this.scan('uchar', _VL / 2);
+      // if (_px_char instanceof Uint8Array) {
+      // _px_spacingY = parseFloat(String.fromCharCode.apply(null, _px_char));
+      // } else {
+      // _px_spacingY = parseFloat(String.fromCharCode(_px_char));
+      // }
+      //        
+      // MRI.pixdim = [_px_spacingX, _px_spacingY, 1];
+      //        
+      // _tagCount--;
+      //        
+      // break;
       
       case 0x1052: // rescale intercept
       case 0x1053: // rescale slope
@@ -240,46 +254,7 @@ X.parserDCM.prototype.parseStream = function(data) {
       
       }
       
-    } else if (_tagGroup == 0x0020) {
-      
-      // Group of SLICE INFO
-      _tagSpecific = this.scan('ushort');
-      
-      // here we are only interested in slice location field
-      if (_tagSpecific == 0x1041) {
-        
-        _VR = this.scan('ushort');
-        _VL = this.scan('ushort');
-        
-        MRI.slice_location = parseFloat(String.fromCharCode.apply(null, this
-            .scan('uchar', _VL)));
-        
-        _tagCount--;
-        
-      }
-      
-    } else if (_tagGroup == 0x7FE0) {
-      
-      // Group of DATA
-      _tagSpecific = this.scan('ushort');
-      
-      // here we are only interested in slice location field
-      if (_tagSpecific == 0x0010) {
-        
-        _VR = this.scan('ushort');
-        
-        // skip 2 bytes
-        this.scan('ushort');
-        
-        _data_byte_size = this.scan('uint');
-        
-        console.log(this._dataPointer);
-        
-        // we are at the data position now, jump out of the loop
-        break;
-        
-      }
-      
+
     }
     
   }
