@@ -65,8 +65,9 @@ X.loadable = function() {
 /**
  * Load this object from a file path or reset the associated file path.
  * 
- * @param {?string} filepath The file path/URL to load. If null, reset the
- *          associated file.
+ * @param {?string|Array} filepath The file path/URL to load. If null, reset the
+ *          associated file. If an array is given, load multiple files (this only
+ *          works for DICOM so far).
  */
 X.loadable.prototype.__defineSetter__('file', function(filepath) {
 
@@ -79,7 +80,36 @@ X.loadable.prototype.__defineSetter__('file', function(filepath) {
     
   }
   
-  this._file = new X.file(filepath);
+  // support for multiple files
+  if (filepath instanceof Array) {
+    
+    if (filepath.length == 1) {
+      
+      // if this is only one file, proceed as usual
+      this._file = new X.file(filepath);
+      
+      return;
+      
+    }
+    
+    // first sort the filepaths
+    filepath = filepath.sort();
+    
+    // create an X.file object for each filepath
+    var _file_array = goog.array.map(filepath, function(v) {
+
+      return new X.file(v);
+      
+    });
+    
+    // and attach it
+    this._file = _file_array;
+    
+  } else {
+  
+    this._file = new X.file(filepath);
+  
+  }
   
 });
 
