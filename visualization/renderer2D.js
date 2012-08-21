@@ -314,24 +314,43 @@ X.renderer2D.prototype.update_ = function(object) {
   //
   
   // with multiple files
-  if(goog.isDefAndNotNull(file) && file instanceof Array) {
+  if (goog.isDefAndNotNull(file) && file instanceof Array) {
     // this object holds multiple files, a.k.a it is a DICOM series
     
-    var _k = 0;
-    var _len = file.length;
-    for(_k =0; _k < _len; _k++) {
+    // check if we already loaded all the files
+    if (!goog.isDefAndNotNull(object.MRI)) {
       
-      // start loading of each file..
-      this._loader.load(file[_k], object);
+      // no files loaded at all, start the loading
+      
+      var _k = 0;
+      var _len = file.length;
+      for (_k = 0; _k < _len; _k++) {
+        
+        // start loading of each file..
+        this._loader.load(file[_k], object);
+        
+      }
+      
+      return;
+      
+    } else if (object.MRI.loaded_files != file.length) {
+      
+      // still loading
+      return;
+      
+    } else if (existed && !object._dirty) {
+      
+      // already parsed the volume
+      return;
       
     }
     
-    return;
+    // just continue
     
   }
-  
+
   // with one file
-  if (goog.isDefAndNotNull(file) && file._dirty) {
+  else if (goog.isDefAndNotNull(file) && file._dirty) {
     // this object is based on an external file and it is dirty..
     
     // start loading..
