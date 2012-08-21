@@ -86,7 +86,7 @@ X.loadable.prototype.__defineSetter__('file', function(filepath) {
     if (filepath.length == 1) {
       
       // if this is only one file, proceed as usual
-      this._file = new X.file(filepath);
+      this._file = new X.file(filepath[0]);
       
       return;
       
@@ -98,7 +98,9 @@ X.loadable.prototype.__defineSetter__('file', function(filepath) {
     // create an X.file object for each filepath
     var _file_array = goog.array.map(filepath, function(v) {
 
-      return new X.file(v);
+      var _v = new X.volume();
+      _v._file = new X.file(v);
+      return _v;
       
     });
     

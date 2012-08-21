@@ -205,7 +205,6 @@ X.loader.prototype.load = function(container, object) {
   // check the file format which returns the filepath, extension and the parser
   var _checkresult = this.checkFileFormat(container);
   var filepath = _checkresult[0];
-  var responseType = _checkresult[4];
   
   if (container._filedata != null) {
     

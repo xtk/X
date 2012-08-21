@@ -312,6 +312,25 @@ X.renderer2D.prototype.update_ = function(object) {
   //
   // VOLUME
   //
+  
+  // with multiple files
+  if(goog.isDefAndNotNull(file) && file instanceof Array) {
+    // this object holds multiple files, a.k.a it is a DICOM series
+    
+    var _k = 0;
+    var _len = file.length;
+    for(_k =0; _k < _len; _k++) {
+      
+      // start loading of each file..
+      this._loader.load(file[_k], object);
+      
+    }
+    
+    return;
+    
+  }
+  
+  // with one file
   if (goog.isDefAndNotNull(file) && file._dirty) {
     // this object is based on an external file and it is dirty..
     

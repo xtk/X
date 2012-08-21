@@ -573,6 +573,20 @@ X.renderer3D.prototype.update_ = function(object) {
     
     return;
     
+  } else if(goog.isDefAndNotNull(file) && file instanceof Array && file[0]._file._dirty) {
+    // this object holds multiple files, a.k.a it is a DICOM series
+    
+    var _k = 0;
+    var _len = file.length;
+    for(_k =0; _k < _len; _k++) {
+      
+      // start loading of each file..
+      this._loader.load(file[_k], object);
+      
+    }
+    
+    return;
+  
   } else if (goog.isDefAndNotNull(file) && file._dirty) {
     // this object is based on an external file and it is dirty..
     
