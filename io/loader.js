@@ -152,6 +152,14 @@ X.loader.prototype.checkFileFormat = function(container) {
   // grab the file extension
   var extension = filepath.split('.').pop().toUpperCase();
   
+  // support no extensions
+  if (extension == filepath.toUpperCase()) {
+    
+    // this means no extension
+    extension = '';
+    
+  }
+  
   // check if the file format is supported
   if (!(extension in X.loader.extensions)) {
     
@@ -363,6 +371,7 @@ X.loader.extensions = {
   // format ending .gz
   'DCM': [X.parserDCM, null],
   'DICOM': [X.parserDCM, null],
+  '': [X.parserDCM, null],
   'CRV': [X.parserCRV, null],
   'LABEL': [X.parserLBL, null],
   'MGH': [X.parserMGZ, false],

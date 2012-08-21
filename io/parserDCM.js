@@ -24,6 +24,8 @@
  *      'Free' as in 'free speech', not as in 'free beer'.
  *                                         - Richard M. Stallman
  * 
+ * 
+ * CREDITS: Thank you to Thomas J. Re for his initial implementation.
  *
  */
 
@@ -41,7 +43,7 @@ goog.require('JXG.Util.Unzip');
 
 
 /**
- * Create a parser for .nii/.nii.gz files.
+ * Create a parser for DICOM files.
  * 
  * @constructor
  * @extends X.parser
@@ -147,21 +149,20 @@ X.parserDCM.prototype.parseStream = function(data) {
     max: -Infinity
   };
   
-  // skip the preamble
-  // this.jumpTo(132);
-  
+  // scan the whole file as short (2 bytes)
   var _bytes = this.scan('ushort', this._data.byteLength);
-  var _bytePointer = 66;
+  
+  var _bytePointer = 66; // skip the 132 byte preamble
   
   var _tagGroup = null;
   var _tagSpecific = null;
   var _VR = null;
   var _VL = null;
   
+  // we only need 7 tags of the DICOM header
   var _tagCount = 7;
   
-  var _data_byte_size = 0;
-  while (_tagCount > 1) {
+  while (_tagCount > 0) {
     
     // read short
     _tagGroup = _bytes[_bytePointer++];// this.scan('ushort');
@@ -204,43 +205,28 @@ X.parserDCM.prototype.parseStream = function(data) {
       case 0x0030:
         // pixel spacing
         
-
-        var _short = _bytes[_bytePointer++];
+        var _pixel_spacing = '';
         
-        // var _char0 = _short & 0x00FF;
-        // var _char1 = (_short & 0xFF00) >> 8;
+        // pixel spacing is a delimited string (ASCII)
+        var i=0;
+        for (i=0;i<_VL/2;i++){
+          
+          var _short = _bytes[_bytePointer++];
         
-        MRI.pixdim = [1, 1, 1];
+          var _b0 = _short & 0x00FF;
+          var _b1 = (_short & 0xFF00) >> 8;
+          
+          _pixel_spacing += String.fromCharCode(_b0);
+          _pixel_spacing += String.fromCharCode(_b1);
+          
+        }
+        
+        _pixel_spacing = _pixel_spacing.split("\\");
+        
+        MRI.pixdim = [parseInt(_pixel_spacing[0],10), parseInt(_pixel_spacing[1],10), 1];
         
         _tagCount--;
         break;
-      //        
-      // // in x direction
-      // var _px_spacingX = 0;
-      // var _px_char = this.scan('uchar', _VL / 2 - 1);
-      // if (_px_char instanceof Uint8Array) {
-      // _px_spacingX = parseFloat(String.fromCharCode.apply(null, _px_char));
-      // } else {
-      // _px_spacingX = parseFloat(String.fromCharCode(_px_char));
-      // }
-      //        
-      // // scan delimiter
-      // this.scan('uchar');
-      //        
-      // // in y direction
-      // var _px_spacingY = 0;
-      // _px_char = this.scan('uchar', _VL / 2);
-      // if (_px_char instanceof Uint8Array) {
-      // _px_spacingY = parseFloat(String.fromCharCode.apply(null, _px_char));
-      // } else {
-      // _px_spacingY = parseFloat(String.fromCharCode(_px_char));
-      // }
-      //        
-      // MRI.pixdim = [_px_spacingX, _px_spacingY, 1];
-      //        
-      // _tagCount--;
-      //        
-      // break;
       
       case 0x1052: // rescale intercept
       case 0x1053: // rescale slope
@@ -254,13 +240,46 @@ X.parserDCM.prototype.parseStream = function(data) {
       
       }
       
-
-    }
+    } else if (_tagGroup == 0x0020) {
+      
+      // Group of SLICE INFO
+      _tagSpecific = _bytes[_bytePointer++];
+      
+      // here we are only interested in slice location field
+      if (_tagSpecific == 0x1041) {
+        
+        _VR = _bytes[_bytePointer++];
+        _VL = _bytes[_bytePointer++];
+        
+        var _slice_location = '';
+        
+        // again an ASCII string
+        var i=0;
+        for (i=0;i<_VL/2;i++){
+          
+          var _short = _bytes[_bytePointer++];
+        
+          var _b0 = _short & 0x00FF;
+          var _b1 = (_short & 0xFF00) >> 8;
+          
+          _slice_location += String.fromCharCode(_b0);
+          _slice_location += String.fromCharCode(_b1);
+          
+        }
+        
+        MRI.slice_location = parseFloat(_slice_location);
+        
+        _tagCount--;
+        
+      }
+      
+    } 
     
   }
   
   var _vol_size = MRI.rows * MRI.cols;
-  
+
+  // jump to the beginning of the pixel data
   this.jumpTo(this._data.byteLength - _vol_size * 2);
   
   // type check
@@ -268,7 +287,7 @@ X.parserDCM.prototype.parseStream = function(data) {
   
   MRI.dim = [MRI.cols, MRI.rows, 1];
   
-  console.log(MRI);
+  console.log('MRI',MRI);
   
   // get the min and max intensities
   var min_max = this.arrayMinMax(MRI.data);
