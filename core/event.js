@@ -331,10 +331,10 @@ X.event.ModifiedEvent = function() {
   /**
    * The object which was modified.
    * 
-   * @type {!X.object}
+   * @type {?X.object}
    * @protected
    */
-  this._object = new X.object();
+  this._object = null;
   
   /**
    * A container for an X.base derived instance.
