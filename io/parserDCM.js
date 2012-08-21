@@ -73,20 +73,44 @@ goog.inherits(X.parserDCM, X.parser);
  */
 X.parserDCM.prototype.parse = function(container, object, data, flag) {
 
-  X.TIMER(this._classname + '.parse');
+  // X.TIMER(this._classname + '.parse');
   
   var _data = data;
   
   // parse the byte stream
   var MRI = this.parseStream(_data, object);
   
-  X.TIMERSTOP(this._classname + '.parse');
+  // X.TIMERSTOP(this._classname + '.parse');
   
+  // check if all slices were completed loaded
+  if (MRI.loaded_files == MRI.number_of_slices) {
+    
+    // we got everything loaded
+    
+    // we now sort the existing data according to their acquisition index
+    //
+    // this is required if not all slices of a series are available
+    var _sorting_table_len = MRI.sorting_table.length;
+    var _i;
+    var _j = 0;
+    for (_i = 0; _i < _sorting_table_len; _i++) {
+      
+      var unsorted_index = MRI.sorting_table[_i];
+      
+      if (unsorted_index !== undefined) {
+        
+        var unsorted_start = unsorted_index * MRI.vol_size;
+        var unsorted_end = unsorted_start + MRI.vol_size;
+        
+        var _data = MRI.data_unsorted.subarray(unsorted_start, unsorted_end);
+        
+        MRI.data.set(_data, _j * MRI.vol_size);
+        _j++;
+      }
+      
+    }
+    
 
-  if (container == object._file[object._file.length - 1]) {
-    
-    // this is the last one
-    
     // grab the dimensions
     var _dimensions = [MRI.dim[0], MRI.dim[1], MRI.dim[2]];
     object._dimensions = _dimensions;
@@ -95,13 +119,14 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     var _spacing = [MRI.pixdim[0], MRI.pixdim[1], MRI.pixdim[2]];
     object._spacing = _spacing;
     
-    // grab the min, max intensities
-    var min = MRI.min;
-    var max = MRI.max;
+    // get the min and max intensities
+    var min_max = this.arrayMinMax(MRI.data);
+    var min = min_max[0];
+    var max = min_max[1];
     
     // attach the scalar range to the volume
-    object._min = object._windowLow = min;
-    object._max = object._windowHigh = max;
+    MRI.min = object._min = object._windowLow = min;
+    MRI.max = object._max = object._windowHigh = max;
     // .. and set the default threshold
     // only if the threshold was not already set
     if (object._lowerThreshold == -Infinity) {
@@ -111,16 +136,16 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       object._upperThreshold = max;
     }
     
+    // X.TIMER('create');
     // create the object
     object.create_();
+    // X.TIMERSTOP('create');
     
     // re-slice the data according each direction
     object._image = this.reslice(object, MRI);
     
   }
   
-
-
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
@@ -147,9 +172,6 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     
     // this is the _first slice_
     
-    // check how many slices we have
-    var _number_of_slices = object._file.length;
-    
     //
     // the header fields + 1 field for data
     var MRI = {
@@ -158,12 +180,27 @@ X.parserDCM.prototype.parseStream = function(data, object) {
       pixdim: null,
       bits_allocated: 0,
       bits_stored: 0,
+      number_of_slices: 1,
       number_of_images: 1,
-      slice_location: 0,
+      instance_number_start: 0,
+      instance_number_length: 0,
+      loaded_files: 0,
+      vol_size: 0,
+      data_unsorted: null,
+      position_unsorted: 0,
+      sorting_table: [],
       data: null,
       min: Infinity,
       max: -Infinity
     };
+    
+    // check how many slices we have
+    MRI.number_of_slices = object._file.length;
+    if (!goog.isDefAndNotNull(MRI.number_of_slices)) {
+      
+      MRI.number_of_slices = 1;
+      
+    }
     
     // scan the whole file as short (2 bytes)
     var _bytes = this.scan('ushort', this._data.byteLength);
@@ -174,6 +211,9 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     var _tagSpecific = null;
     var _VR = null;
     var _VL = null;
+    
+    // the instance number a.k.a slice index
+    var _position = '';
     
     // we only need 7 tags of the DICOM header
     var _tagCount = 7;
@@ -262,16 +302,15 @@ X.parserDCM.prototype.parseStream = function(data, object) {
         // Group of SLICE INFO
         _tagSpecific = _bytes[_bytePointer++];
         
-        // here we are only interested in slice location field
-        if (_tagSpecific == 0x1041) {
+        // here we are only interested in the InstanceNumber
+        if (_tagSpecific == 0x0013) {
           
           _VR = _bytes[_bytePointer++];
           _VL = _bytes[_bytePointer++];
           
-          var _slice_location = '';
+          MRI.instance_number_start = _bytePointer;
+          MRI.instance_number_length = _VL;
           
-          // again an ASCII string
-          var i = 0;
           for (i = 0; i < _VL / 2; i++) {
             
             var _short = _bytes[_bytePointer++];
@@ -279,12 +318,11 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             var _b0 = _short & 0x00FF;
             var _b1 = (_short & 0xFF00) >> 8;
             
-            _slice_location += String.fromCharCode(_b0);
-            _slice_location += String.fromCharCode(_b1);
+            _position += String.fromCharCode(_b0);
+            _position += String.fromCharCode(_b1);
+            _position = parseInt(_position, 10);
             
           }
-          
-          MRI.slice_location = parseFloat(_slice_location);
           
           _tagCount--;
           
@@ -298,18 +336,25 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     
     // initially set the dimensions
     MRI.dim = [MRI.cols, MRI.rows, 1];
+    MRI.vol_size = MRI.rows * MRI.cols;
     
     // allocate the data array depending on the type
     switch (MRI.bits_allocated) {
     
     case 8:
-      MRI.data = new Uint8Array(MRI.cols * MRI.rows * _number_of_slices);
+      MRI.data_unsorted = new Uint8Array(MRI.cols * MRI.rows *
+          MRI.number_of_slices);
+      MRI.data = new Uint8Array(MRI.cols * MRI.rows * MRI.number_of_slices);
       break;
     case 16:
-      MRI.data = new Uint16Array(MRI.cols * MRI.rows * _number_of_slices);
+      MRI.data_unsorted = new Uint16Array(MRI.cols * MRI.rows *
+          MRI.number_of_slices);
+      MRI.data = new Uint16Array(MRI.cols * MRI.rows * MRI.number_of_slices);
       break;
     case 32:
-      MRI.data = new Uint32Array(MRI.cols * MRI.rows * _number_of_slices);
+      MRI.data_unsorted = new Uint32Array(MRI.cols * MRI.rows *
+          MRI.number_of_slices);
+      MRI.data = new Uint32Array(MRI.cols * MRI.rows * MRI.number_of_slices);
       break;
     
     }
@@ -318,47 +363,48 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     
     var MRI = object.MRI;
     
-    // scan the whole file as short (2 bytes)
-    var _bytes = this.scan('ushort', this._data.byteLength);
+    var _bytePointer = MRI.instance_number_start;
+    var _VL = MRI.instance_number_length;
     
-    var _bytePointer = 66; // skip the 132 byte preamble
+    // scan a part of the header
+    this.jumpTo(_bytePointer * 2);
+    
+    var _partial_header = this.scan('uchar', _VL);
+    
+    var _ascii_position = String.fromCharCode.apply(null, _partial_header);
+    _position = parseInt(_ascii_position, 10);
     
     // increase the Z dimensions since we have a new slice
     MRI.dim[2]++;
     
-  }
+  } // end of check for first slice
   
 
-  // end of check for first slice
-  
-  var _vol_size = MRI.rows * MRI.cols;
-  
   // jump to the beginning of the pixel data
-  this.jumpTo(this._data.byteLength - _vol_size * 2);
+  this.jumpTo(this._data.byteLength - MRI.vol_size * 2);
   
   // check for data type and parse accordingly
   var _data = null;
   switch (MRI.bits_allocated) {
   
   case 8:
-    _data = this.scan('uchar', _vol_size);
+    _data = this.scan('uchar', MRI.vol_size);
     break;
   case 16:
-    _data = this.scan('ushort', _vol_size);
+    _data = this.scan('ushort', MRI.vol_size);
     break;
   case 32:
-    _data = this.scan('ushort', _vol_size);
+    _data = this.scan('uint', MRI.vol_size);
     break;
   
   }
   
-  // TODO _position must be slice index 0..N
-  MRI.data.set(_data, _position);
+  MRI.sorting_table[_position] = MRI.position_unsorted;
+  MRI.data_unsorted.set(_data, MRI.position_unsorted * MRI.vol_size);
+  MRI.position_unsorted++;
   
-  // get the min and max intensities
-  var min_max = this.arrayMinMax(MRI.data);
-  MRI.min = min_max[0];
-  MRI.max = min_max[1];
+  // increase the number of loaded files
+  ++MRI.loaded_files;
   
   return MRI;
   
