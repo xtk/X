@@ -236,6 +236,13 @@ X.renderer.prototype.onModified = function(event) {
 
   if (goog.isDefAndNotNull(event) && event instanceof X.event.ModifiedEvent) {
     
+    if (!event._object) {
+      
+      // we need an object here
+      return;
+      
+    }
+    
     this.update_(event._object);
     
   }

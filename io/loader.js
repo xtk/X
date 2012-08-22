@@ -33,6 +33,7 @@ goog.require('X.base');
 goog.require('X.event');
 goog.require('X.object');
 goog.require('X.parserCRV');
+goog.require('X.parserDCM');
 goog.require('X.parserFSM');
 goog.require('X.parserIMAGE');
 goog.require('X.parserLBL');
@@ -151,6 +152,14 @@ X.loader.prototype.checkFileFormat = function(container) {
   // grab the file extension
   var extension = filepath.split('.').pop().toUpperCase();
   
+  // support no extensions
+  if (extension == filepath.toUpperCase()) {
+    
+    // this means no extension
+    extension = '';
+    
+  }
+  
   // check if the file format is supported
   if (!(extension in X.loader.extensions)) {
     
@@ -196,7 +205,6 @@ X.loader.prototype.load = function(container, object) {
   // check the file format which returns the filepath, extension and the parser
   var _checkresult = this.checkFileFormat(container);
   var filepath = _checkresult[0];
-  var responseType = _checkresult[4];
   
   if (container._filedata != null) {
     
@@ -360,6 +368,9 @@ X.loader.extensions = {
   'NII': [X.parserNII, null],
   'GZ': [X.parserNII, null], // right now nii.gz is the only
   // format ending .gz
+  'DCM': [X.parserDCM, null],
+  'DICOM': [X.parserDCM, null],
+  '': [X.parserDCM, null],
   'CRV': [X.parserCRV, null],
   'LABEL': [X.parserLBL, null],
   'MGH': [X.parserMGZ, false],
