@@ -102,9 +102,9 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
         var unsorted_start = unsorted_index * MRI.vol_size;
         var unsorted_end = unsorted_start + MRI.vol_size;
         
-        var _data = MRI.data_unsorted.subarray(unsorted_start, unsorted_end);
+        var __data = MRI.data_unsorted.subarray(unsorted_start, unsorted_end);
         
-        MRI.data.set(_data, _j * MRI.vol_size);
+        MRI.data.set(__data, _j * MRI.vol_size);
         _j++;
       }
       
