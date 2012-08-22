@@ -692,6 +692,10 @@ goog.exportSymbol('X.renderer2D.prototype.onRender',
 goog.exportSymbol('X.renderer2D.prototype.onScroll',
     X.renderer2D.prototype.onScroll);
 goog.exportSymbol('X.renderer2D.prototype.get', X.renderer2D.prototype.get);
+goog.exportSymbol('X.renderer2D.prototype.rotate',
+    X.renderer2D.prototype.rotate);
+goog.exportSymbol('X.renderer2D.prototype.rotateCounter',
+    X.renderer2D.prototype.rotateCounter);
 goog.exportSymbol('X.renderer2D.prototype.resetViewAndRender',
     X.renderer2D.prototype.resetViewAndRender);
 goog.exportSymbol('X.renderer2D.prototype.render',
