@@ -36,6 +36,7 @@ goog.require('X.parserCRV');
 goog.require('X.parserDX');
 goog.require('X.parserFSM');
 goog.require('X.parserIMAGE');
+goog.require('X.parserIMG');
 goog.require('X.parserLBL');
 goog.require('X.parserLUT');
 goog.require('X.parserMGZ');
@@ -192,43 +193,41 @@ X.loader.prototype.load = function(container, object) {
   var responseType = _checkresult[4];
   
   if (container._filedata != null) {
-    
+  	
     // we have raw file data attached and therefor can skip the loading
     this.parse(null, container, object);
     
     // .. and jump out
     return;
     
-  }
+  } 
   
-  // we use a simple XHR to get the file contents
-  // this works for binary and for ascii files
-  var request = new XMLHttpRequest();
-  
-  // listen to abort events
-  goog.events.listen(request, 'abort', this.failed.bind(this, request,
-      container, object));
-  
-  // listen to error events
-  goog.events.listen(request, 'error', this.failed.bind(this, request,
-      container, object));
-  
-  // listen to completed events which triggers parsing
-  goog.events.listen(request, 'load', this.parse.bind(this, request, container,
-      object));
-  
-  // configure the URL
-  request.open('GET', filepath, true);
-  if (responseType) {
-    // set the response type if != null, else fall back to the default 'text'
-    request.responseType = responseType;
-  }
-  request.overrideMimeType("text/plain; charset=x-user-defined");
-  request.setRequestHeader("Content-Type", "text/plain");
-  
-  // .. and GO!
-  request.send(null);
-  
+	  
+	// we use a simple XHR to get the file contents
+	// this works for binary and for ascii files
+	var request = new XMLHttpRequest();
+
+	// listen to abort events
+	goog.events.listen(request, 'abort', this.failed.bind(this, request, container, object));
+
+	// listen to error events
+	goog.events.listen(request, 'error', this.failed.bind(this, request, container, object));
+
+	// listen to completed events which triggers parsing
+	goog.events.listen(request, 'load', this.parse.bind(this, request, container, object));
+
+	// configure the URL
+	request.open('GET', filepath, true);
+	if (responseType) {
+		// set the response type if != null, else fall back to the default 'text'
+		request.responseType = responseType;
+	}
+	request.overrideMimeType("text/plain; charset=x-user-defined");
+	request.setRequestHeader("Content-Type", "text/plain");
+
+	// .. and GO!
+	request.send(null); 
+
 };
 
 
@@ -265,17 +264,21 @@ X.loader.prototype.parse = function(request, container, object) {
         .bind(this));
     
     // check if we have loaded data or attached raw data
-    var _data = container._filedata;
-    if (_data == null) {
+    if (container._filedata == null) {
       
       // use the loaded data
-      _data = request.response;
+      container._filedata = request.response;
       
     }
-    
+  
+  	if (container._hdrfiledata != null) {
+  		
+    _parser.parse(container, object, container._hdrfiledata, container._filedata, flags);
+  	} else {
     // call the parse function and pass in the container, the object and the
     // data stream and some additional value
-    _parser.parse(container, object, _data, flags);
+    _parser.parse(container, object, container._filedata, flags);
+   }
     
   }.bind(this), 100);
   
@@ -354,9 +357,9 @@ X.loader.extensions = {
   'ORIG': [X.parserFSM, null, null],
   'NRRD': [X.parserNRRD, null, null],
   'NII': [X.parserNII, false, null],
-  // 'GZ': [X.parserNII, false, null], // right now nii.gz is the only format
-  // // ending with .gz, later we have to fix
-  // // that
+  'GZ': [X.parserNII, true, null],
+  'IMG': [X.parserIMG, null, null],
+  'HDR': [X.parserIMG, null, null],
   'CRV': [X.parserCRV, null, null],
   'LABEL': [X.parserLBL, null, null],
   'MGH': [X.parserMGZ, false, null],

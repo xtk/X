@@ -80,6 +80,12 @@ X.parser.prototype.parse = function(container, object, data, flag) {
   
 };
 
+X.parser.prototype.parse = function(container, object, hdrdata, data, flag) {
+
+  throw new Error('The function parse() should be overloaded.');
+  
+};
+
 
 /**
  * Process a numerical array and calculate some basic stats: o mean o variance o
@@ -208,7 +214,6 @@ X.parser.prototype.parseUInt16EndianSwapped = function(data, offset) {
   return (b0 << 8) + b1;
   
 };
-
 
 /**
  * Parse a SInt16 value from some data.
@@ -374,7 +379,6 @@ X.parser.prototype.parseFloat32EndianSwapped = function(data, offset) {
 };
 
 
-
 /**
  * Parse an array of UInt16 values from some data.
  * 
@@ -384,7 +388,6 @@ X.parser.prototype.parseFloat32EndianSwapped = function(data, offset) {
  * @return {!Array} An array consisting of [the actual values as an array, the
  *         max value, the min value].
  */
-    elements) {
 X.parser.prototype.parseUInt16Array = function(data, offset, elements) {
 
   var arr = new Array();
@@ -402,7 +405,6 @@ X.parser.prototype.parseUInt16Array = function(data, offset, elements) {
   
   return [arr, max, min];
 };
-
 
 
 /**
