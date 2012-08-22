@@ -112,6 +112,16 @@ X.renderer2D = function() {
    */
   this._sliceHeight = 0;
   
+  /**
+   * The current rotation factor. This is positive to rotate clockwise and
+   * negative to rotate counter-clockwise. The factor is multiplied by 90
+   * degrees.
+   * 
+   * @type {number}
+   * @protected
+   */
+  this._rotation = 0;
+  
 };
 // inherit from X.base
 goog.inherits(X.renderer2D, X.renderer);
@@ -235,6 +245,26 @@ X.renderer2D.prototype.init = function() {
   // this._labelFrameBuffer.style.imageRendering = '-webkit-optimize-contrast';
   // this._labelFrameBuffer.style.imageRendering = 'optimize-contrast';
   // this._labelFrameBuffer.style.msInterpolationMode = 'nearest-neighbor';
+  
+};
+
+
+/**
+ * Rotate the current view clock-wise.
+ */
+X.renderer2D.prototype.rotate = function() {
+
+  this._rotation++;
+  
+};
+
+
+/**
+ * Rotate the current view counter clock-wise.
+ */
+X.renderer2D.prototype.rotateCounter = function() {
+
+  this._rotation--;
   
 };
 
@@ -482,7 +512,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _normalizedScale = Math.max(1 + _view.getValueAt(2, 3) / 10, 0.6);
   this._context.setTransform(_normalizedScale, 0, 0, _normalizedScale, _x, _y);
   
-
   //
   // grab the volume and current slice
   //
@@ -500,13 +529,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _sliceWidth = this._sliceWidth;
   var _sliceHeight = this._sliceHeight;
   
-  // canvas center, taking zooming and panning in account
-  var _canvasCenterX = (1 / (_normalizedScale * 2)) *
-      (_width - _sliceWidth * _normalizedScale) + _x;
-  var _canvasCenterY = (1 / (_normalizedScale * 2)) *
-      (_height - _sliceHeight * _normalizedScale) + _y;
-  
-
   //
   // FRAME BUFFERING
   //  
@@ -606,8 +628,46 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   
   // draw the slice frame buffer (which equals the slice data) to the main
   // context
-  this._context.globalAlpha = 1.0; // draw fully opaque
-  this._context.drawImage(this._frameBuffer, _canvasCenterX, _canvasCenterY);
+  this._context.globalAlpha = 1.0; // draw fully opaque}
+  
+  // move to the middle
+  this._context.translate(_width / 2 / _normalizedScale, _height / 2 /
+      _normalizedScale);
+  
+  // rotate
+  this._context.rotate(Math.PI * 0.5 * this._rotation);
+  
+  // the padding x and y have to be adjusted because of the rotation
+  switch (this._rotation % 4) {
+  
+  case 0:
+    // padding is fine;
+    break;
+  case 1:
+    // padding is twisted
+    var _buf = _x;
+    _x = _y;
+    _y = -_buf;
+    break;
+  case 2:
+    // padding is inverted
+    _x *= -1;
+    _y *= -1;
+    break;
+  case 3:
+    // padding is twisted
+    var _buf = _x;
+    _x = -_y;
+    _y = _buf;
+    break;
+  
+  }
+  
+  var _offset_x = -_sliceWidth / 2 + _x;
+  var _offset_y = -_sliceHeight / 2 + _y;
+  
+  // draw the slice
+  this._context.drawImage(this._frameBuffer, _offset_x, _offset_y);
   
   // draw the labels with a configured opacity
   if (_currentLabelMap && _volume._labelmap._visible) {
@@ -616,8 +676,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     
     this._context.globalAlpha = _labelOpacity; // draw transparent depending on
     // opacity
-    this._context.drawImage(this._labelFrameBuffer, _canvasCenterX,
-        _canvasCenterY);
+    this._context.drawImage(this._labelFrameBuffer, _offset_x, _offset_y);
   }
   
 };
