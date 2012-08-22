@@ -196,8 +196,6 @@ X.renderer = function() {
     'PROGRESSBAR_ENABLED': true
   };
   
-  window.console.log('XTK Release 4 -- 04/12/12 -- http://www.goXTK.com');
-  
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
@@ -915,6 +913,16 @@ X.renderer.prototype.render = function() {
   
 };
 
+
+/**
+ * Reset render
+ * 
+ * @public
+ */
+X.renderer.prototype.resetRender = function() { 
+      this._onShowtime = false;
+      this._loadingCompleted = false;
+};
 
 /**
  * Overload this function to execute code after all initial loading (files,

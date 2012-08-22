@@ -1923,6 +1923,8 @@ goog.exportSymbol('X.renderer3D.prototype.init', X.renderer3D.prototype.init);
 goog.exportSymbol('X.renderer3D.prototype.add', X.renderer3D.prototype.add);
 goog.exportSymbol('X.renderer3D.prototype.onShowtime',
     X.renderer3D.prototype.onShowtime);
+goog.exportSymbol('X.renderer3D.prototype.resetRender',
+    X.renderer3D.prototype.resetRender);
 goog.exportSymbol('X.renderer3D.prototype.onRender',
     X.renderer3D.prototype.onRender);
 goog.exportSymbol('X.renderer3D.prototype.get', X.renderer3D.prototype.get);
