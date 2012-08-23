@@ -140,6 +140,18 @@ X.renderer2D.prototype.onScroll = function() {
 
 
 /**
+ * Overload this function to execute code after window/level adjustment has
+ * completed and just before the next rendering call.
+ * 
+ * @public
+ */
+X.renderer2D.prototype.onWindowLevel = function() {
+
+  // do nothing
+};
+
+
+/**
  * @inheritDoc
  */
 X.renderer2D.prototype.onScroll_ = function(event) {
@@ -173,6 +185,55 @@ X.renderer2D.prototype.onScroll_ = function(event) {
   
   // .. and trigger re-rendering
   // this.render_(false, false);
+  
+};
+
+
+/**
+ * Performs window/level adjustment for the currently loaded volume.
+ * 
+ * @param {!X.event.WindowLevelEvent} event The window/level event from the
+ *          camera.
+ */
+X.renderer2D.prototype.onWindowLevel_ = function(event) {
+
+  // grab the current volume
+  var _volume = this._topLevelObjects[0];
+  // .. if there is none, exit right away
+  if (!_volume) {
+    return;
+  }
+  
+  // update window level
+  var _old_window = _volume._windowHigh - _volume._windowLow;
+  var _old_level = _old_window / 2;
+  
+  // shrink/expand window
+  var _new_window = parseInt(_old_window + (_old_window / 15) * -event._window,
+      10);
+  
+  // increase/decrease level
+  var _new_level = parseInt(_old_level + (_old_level / 15) * event._level, 10);
+  
+  // TODO better handling of these cases
+  if (_old_window == _new_window) {
+    _new_window++;
+  }
+  
+  if (_old_level == _new_level) {
+    _new_level++;
+  }
+  
+  // re-propagate
+  _volume._windowLow -= parseInt(_old_level - _new_level, 10);
+  _volume._windowLow -= parseInt(_old_window - _new_window, 10);
+  _volume._windowLow = Math.max(_volume._windowLow, _volume._min);
+  _volume._windowHigh -= parseInt(_old_level - _new_level, 10);
+  _volume._windowHigh += parseInt(_old_window - _new_window, 10);
+  _volume._windowHigh = Math.min(_volume._windowHigh, _volume._max);
+  
+  // execute the callback
+  eval('this.onWindowLevel();');
   
 };
 
@@ -246,6 +307,10 @@ X.renderer2D.prototype.init = function() {
   // this._labelFrameBuffer.style.imageRendering = 'optimize-contrast';
   // this._labelFrameBuffer.style.msInterpolationMode = 'nearest-neighbor';
   
+  // listen to window/level events of the camera
+  goog.events.listen(this._camera, X.event.events.WINDOWLEVEL,
+      this.onWindowLevel_.bind(this));
+  
 };
 
 
@@ -279,6 +344,17 @@ X.renderer2D.prototype.resetViewAndRender = function() {
   
   // .. and perform auto scaling
   this.autoScale_();
+  
+  // .. and reset the window/level
+  var _volume = this._topLevelObjects[0];
+  // .. if there is none, exit right away
+  if (_volume) {
+    
+    _volume._windowHigh = _volume._max;
+    _volume._windowLow = _volume._min;
+    
+  }
+  
   // .. render
   // this.render_(false, false);
   
@@ -691,6 +767,8 @@ goog.exportSymbol('X.renderer2D.prototype.onRender',
     X.renderer2D.prototype.onRender);
 goog.exportSymbol('X.renderer2D.prototype.onScroll',
     X.renderer2D.prototype.onScroll);
+goog.exportSymbol('X.renderer2D.prototype.onWindowLevel',
+    X.renderer2D.prototype.onWindowLevel);
 goog.exportSymbol('X.renderer2D.prototype.get', X.renderer2D.prototype.get);
 goog.exportSymbol('X.renderer2D.prototype.rotate',
     X.renderer2D.prototype.rotate);
