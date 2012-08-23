@@ -57,6 +57,41 @@ X.camera2D = function(width, height) {
    */
   this._classname = 'camera2D';
   
+  this._window = 0;
+  this._level = 0;
+  
 };
 // inherit from X.base
 goog.inherits(X.camera2D, X.camera);
+
+
+/**
+ * @inheritDoc
+ */
+X.camera2D.prototype.rotate = function(distance) {
+  
+  console.log(distance.x,distance.y);
+  
+  if (distance.x > 0) {
+    
+    // shrink window
+    
+  } else if(distance.x < 0) {
+    
+    // expand window
+    
+  }
+  
+  if (distance.y > 0) {
+    
+    // increase level
+    this._level++;
+    
+  } else if(distance.y < 0) {
+    
+    // decrease level
+    this._level--;
+    
+  }
+  
+};

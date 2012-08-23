@@ -82,41 +82,6 @@ goog.inherits(X.camera3D, X.camera);
 
 
 /**
- * Observe ROTATE events for this 3D camera.
- * 
- * @inheritDoc
- */
-X.camera3D.prototype.observe = function(interactor) {
-
-  goog.base(this, 'observe', interactor);
-  
-  goog.events.listen(interactor, X.event.events.ROTATE, this.onRotate_
-      .bind(this));
-  
-};
-
-
-/**
- * The callback for a ROTATE event.
- * 
- * @param {!X.event.RotateEvent} event The event.
- * @throws {Error} An exception if the event is invalid.
- * @protected
- */
-X.camera3D.prototype.onRotate_ = function(event) {
-
-  if (!(event instanceof X.event.RotateEvent)) {
-    
-    throw new Error('Received no valid rotate event.');
-    
-  }
-  
-  this.rotate(event._distance);
-  
-};
-
-
-/**
  * Calculate a perspective matrix based on the given values. This calculation is
  * based on known principles of Computer Vision (Source: TODO?).
  * 
@@ -175,25 +140,12 @@ X.camera3D.prototype.calculateViewingFrustum_ = function(left, right, bottom,
 
 
 /**
- * Perform a rotate operation. This method fires a X.event.RenderEvent() after
- * the calculation is done.
- * 
- * @param {!goog.math.Vec2|!Array} distance The distance of the rotation in
- *          respect of the last camera position as either a 2D Array or a
- *          goog.math.Vec2 containing the X and Y distances for the rotation.
- * @public
+ * @inheritDoc
  */
 X.camera3D.prototype.rotate = function(distance) {
 
-  if ((distance instanceof Array) && (distance.length == 2)) {
-    
-    distance = new goog.math.Vec2(distance[0], distance[1]);
-    
-  } else if (!(distance instanceof goog.math.Vec2)) {
-    
-    throw new Error('Invalid distance vector for rotate operation.');
-    
-  }
+  // call the superclass
+  goog.base(this, 'rotate', distance);
   
   // in radii, the 5 is a constant stating how quick the rotation performs..
   var angleX = -distance.x / 5 * Math.PI / 180;
@@ -297,4 +249,3 @@ X.camera3D.prototype.lookAt_ = function(cameraPosition, targetPoint) {
 };
 
 goog.exportSymbol('X.camera3D', X.camera3D);
-goog.exportSymbol('X.camera3D.prototype.rotate', X.camera3D.prototype.rotate);
