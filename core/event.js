@@ -40,6 +40,7 @@ goog.provide('X.event.RenderEvent');
 goog.provide('X.event.ResetViewEvent');
 goog.provide('X.event.RotateEvent');
 goog.provide('X.event.ScrollEvent');
+goog.provide('X.event.WindowLevelEvent');
 goog.provide('X.event.ZoomEvent');
 
 // requires
@@ -115,6 +116,9 @@ X.event.events = {
   // the reset view event
   RESETVIEW: X.event.uniqueId('resetview'),
   
+  // window_level modification event
+  WINDOWLEVEL: X.event.uniqueId('windowlevel'),
+  
   // the object modified event
   MODIFIED: X.event.uniqueId('modified'),
   
@@ -128,6 +132,38 @@ X.event.events = {
   HOVER_END: X.event.uniqueId('hover_end')
 
 };
+
+
+/**
+ * The window/level event to initiate updating a volume's window/level settings.
+ * 
+ * @constructor
+ * @extends X.event
+ */
+X.event.WindowLevelEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.event.events.WINDOWLEVEL);
+  
+  /**
+   * The flag to increase or decrease the window. + to increase, - to decrease.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._window = 0;
+  
+  /**
+   * The flag to increase or decrease the level. + to increase, - to decrease.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._level = 0;
+  
+};
+// inherit from goog.events.Event
+goog.inherits(X.event.WindowLevelEvent, X.event);
 
 
 /**
@@ -331,10 +367,10 @@ X.event.ModifiedEvent = function() {
   /**
    * The object which was modified.
    * 
-   * @type {!X.object}
+   * @type {?X.object}
    * @protected
    */
-  this._object = new X.object();
+  this._object = null;
   
   /**
    * A container for an X.base derived instance.

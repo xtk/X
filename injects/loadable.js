@@ -54,7 +54,7 @@ X.loadable = function() {
   /**
    * The file data.
    * 
-   * @type {?string}
+   * @type {?ArrayBuffer}
    * @protected
    */
   this._filedata = null;
@@ -80,12 +80,14 @@ X.loadable = function() {
 /**
  * Load this object from a file path or reset the associated file path.
  * 
- * @param {?string} filepath The file path/URL to load. If null, reset the
- *          associated file.
+ * @param {?string|Array} filepath The file path/URL to load. If null, reset the
+ *          associated file. If an array is given, load multiple files (this
+ *          only works for DICOM so far).
  */
 X.loadable.prototype.__defineSetter__('file', function(filepath) {
 
-  if (!goog.isDefAndNotNull(filepath)) {
+  if (!goog.isDefAndNotNull(filepath) ||
+      (filepath instanceof Array && filepath.length == 0)) {
     
     // if path is null, we reset the associated X.file object
     
@@ -94,7 +96,35 @@ X.loadable.prototype.__defineSetter__('file', function(filepath) {
     
   }
   
-  this._file = new X.file(filepath);
+  // support for multiple files
+  if (filepath instanceof Array) {
+    
+    if (filepath.length == 1) {
+      
+      // if this is only one file, proceed as usual
+      this._file = new X.file(filepath[0]);
+      
+      return;
+      
+    }
+    
+    // create an X.file object for each filepath
+    var _file_array = goog.array.map(filepath, function(v) {
+
+      var _v = new X.volume();
+      _v._file = new X.file(v);
+      return _v;
+      
+    });
+    
+    // and attach it
+    this._file = _file_array;
+    
+  } else {
+    
+    this._file = new X.file(filepath);
+    
+  }
   
 });
 
@@ -133,11 +163,46 @@ X.loadable.prototype.__defineGetter__('filedata', function() {
  * Set raw file data for this object. Doing so, skips any additional loading and
  * just parses this raw data.
  * 
- * @param {?string} filedata The raw file data to parse.
+ * @param {?string|Array} filedata The raw file data to parse.
  */
 X.loadable.prototype.__defineSetter__('filedata', function(filedata) {
 
-  this._filedata = filedata;
+  if (!goog.isDefAndNotNull(filedata) ||
+      (filedata instanceof Array && filedata.length == 0)) {
+    
+    this._filedata = null;
+    
+  }
+  
+  // support for multiple files
+  if (filedata instanceof Array) {
+    
+    if (filedata.length == 1) {
+      
+      // if this is only one file, proceed as usual
+      this._filedata = filedata[0];
+      
+      return;
+      
+    }
+    
+    // modify the filedata for each associated file
+    var _number_of_files = this._file.length;
+    
+    var i;
+    for (i = 0; i < _number_of_files; i++) {
+      
+      // attach the filedata for each associated file
+      this._file[i]._filedata = filedata[i];
+      
+    }
+    
+
+  } else {
+    
+    this._filedata = filedata;
+    
+  }
   
 });
 

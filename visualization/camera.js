@@ -131,8 +131,30 @@ X.camera.prototype.observe = function(interactor) {
     
   }
   
+  goog.events.listen(interactor, X.event.events.ROTATE, this.onRotate_
+      .bind(this));
   goog.events.listen(interactor, X.event.events.PAN, this.onPan_.bind(this));
   goog.events.listen(interactor, X.event.events.ZOOM, this.onZoom_.bind(this));
+  
+};
+
+
+/**
+ * The callback for a ROTATE event.
+ * 
+ * @param {!X.event.RotateEvent} event The event.
+ * @throws {Error} An exception if the event is invalid.
+ * @protected
+ */
+X.camera.prototype.onRotate_ = function(event) {
+
+  if (!(event instanceof X.event.RotateEvent)) {
+    
+    throw new Error('Received no valid rotate event.');
+    
+  }
+  
+  this.rotate(event._distance);
   
 };
 
@@ -354,6 +376,33 @@ X.camera.prototype.reset = function() {
 
 
 /**
+ * Perform a rotate operation. This method fires a X.event.RenderEvent() after
+ * the calculation is done.
+ * 
+ * @param {!goog.math.Vec2|!Array} distance The distance of the rotation in
+ *          respect of the last camera position as either a 2D Array or a
+ *          goog.math.Vec2 containing the X and Y distances for the rotation.
+ * @public
+ */
+X.camera.prototype.rotate = function(distance) {
+
+  if ((distance instanceof Array) && (distance.length == 2)) {
+    
+    distance = new goog.math.Vec2(distance[0], distance[1]);
+    
+  } else if (!(distance instanceof goog.math.Vec2)) {
+    
+    throw new Error('Invalid distance vector for rotate operation.');
+    
+  }
+  
+  return distance;
+  // actions need to be overloaded for 2D/3D
+  
+};
+
+
+/**
  * Perform a pan operation. This method fires a X.event.RenderEvent() after the
  * calculation is done.
  * 
@@ -477,5 +526,6 @@ X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.camera', X.camera);
 goog.exportSymbol('X.camera.prototype.pan', X.camera.prototype.pan);
+goog.exportSymbol('X.camera.prototype.rotate', X.camera.prototype.rotate);
 goog.exportSymbol('X.camera.prototype.zoomIn', X.camera.prototype.zoomIn);
 goog.exportSymbol('X.camera.prototype.zoomOut', X.camera.prototype.zoomOut);

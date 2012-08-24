@@ -76,7 +76,7 @@ X.constructable.prototype.toCSG = function() {
     var color = this._color;
     
     // if point colors are defined on this X.object, use'em
-    if ((this._colors.length > 0)) {
+    if ((this._colors && this._colors.length > 0)) {
       
       // we only grab the color of the first point since CSG only supports
       // colors per triangle not per point
@@ -117,11 +117,6 @@ X.constructable.prototype.fromCSG = function(csg) {
     throw new Error('Invalid CSG object.');
     
   }
-  
-  // remove all previous points
-  this._points.clear();
-  this._normals.clear();
-  this._colors.clear();
   
   var indexer = new X.indexer();
   
@@ -169,6 +164,11 @@ X.constructable.prototype.fromCSG = function(csg) {
   //
   // setup the points, normals and colors for this X.object
   // by converting the triangles to the X.object API
+  
+  this._points = new X.triplets(triangles.length*9);
+  this._normals = new X.triplets(triangles.length*9);
+  this._colors = new X.triplets(triangles.length*9);
+  
   goog.array.map(triangles, function(i) {
 
     // grab the three vertices of this triangle
@@ -202,6 +202,14 @@ X.constructable.prototype.fromCSG = function(csg) {
     }
     
   }.bind(this));
+  
+  // check if colors were actually added
+  if (this._colors._dataPointer == 0) {
+    
+    // no colors were added, let's remove all
+    this._colors = null;
+    
+  };
   
   // we only support CSG in TRIANGLES rendering mode
   this._type = X.displayable.types.TRIANGLES;

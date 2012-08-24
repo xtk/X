@@ -62,94 +62,134 @@ X.parserLBL = function() {
 // inherit from X.parser
 goog.inherits(X.parserLBL, X.parser);
 
-function new_array(length, val) {
-	val = typeof val !== 'undefined' ? val : 0;
-	var array = [];
-    var i = 0;
-    while (i < length) {
-        array[i++] = val;
-    }
-    return array;
-}
-
 /**
  * @inheritDoc
  */
 X.parserLBL.prototype.parse = function(container, object, data, flag) {
 
-  var dataAsArray = data.split('\n');
-  var numberOfLines = dataAsArray.length;
-  var arr_label	= new Array(numberOfLines-3);
+  X.TIMER(this._classname + '.parse');
 
-  var i = 0;
-  var j = 0;
-  var vertex = 0;
+  var ind = object._pointIndices;
+  var numberOfIndices = ind.length;
   
-  var numVertices = object._points.count;
-  var arr_vertexCurvatures;
-
-  // Start at the 3rd line, i.e. the 2nd index and create an array
-  // of vertices that belong to this label
-  for(i=2; i<numberOfLines-1; i++, j++) {
-	  vertex = this.parseLine(dataAsArray[i]);
-	  arr_label[i-2] = vertex;
+  // we need point indices here, so fail if there aren't any
+  if (numberOfIndices == 0) {
+    
+    throw new Error('No _pointIndices defined on the X.object.');
+    
   }
+  
+  //
+  // PARSE
+  //
+  
+  // attach the data so we can use the internal scan function
+  this._data = data;
+  
+  // this holds the parsed indices of this label
+  var _indices = [];
+  
+  var _bytes = this.scan('uchar', data.byteLength);
+  var _length = _bytes.length;
+  
+  // scan mode indicates that a new vertex index is coming
+  var _scanMode = false;
+  // store the start of the vertex index bytes
+  var _rangeStart = 0;
+  
+  var i;
+  for (i = 1; i < _length; i++) {
+    
+    if (_bytes[i - 1] == 10) {
+      
+      // the last byte was a line break
+      // this means, we buffer now until the next space
+      _rangeStart = i;
+      _scanMode = true;
+      
+    } else if (_scanMode && _bytes[i] == 32) {
+      
+      // the current byte is a space
+      
+      // grab the buffered data as integer
+      var _value = parseInt(String.fromCharCode.apply(null, _bytes.subarray(
+          _rangeStart, i)), 10);
+      
+      // buffer this value
+      _indices.push(_value);
+      
+      // reset the scan mode
+      _scanMode = false;
+      
+    }
+    
+  }
+  
+  //
+  // MERGE AND TAG
+  //
   
   // Now tag the label vertices. If an existing overlay exists, i.e.
   // object._scalars._array is non-null, then only change the vertex
   // values where the label is defined, otherwise also initialize
   // non-label vertices to zero.
-  if(object._scalars._array) {
-	  arr_vertexCurvatures = object._scalars._array;
-  }  else {
-	  arr_vertexCurvatures = new_array(numVertices, 0);
-  }
-  for(i=0; i<arr_label.length; i++) {
-	  arr_vertexCurvatures[arr_label[i]] = 1.0;
-  }
-  
-  var ind = object._pointIndices;
-
-  // we need point indices here, so fail if there aren't any
-  if (ind.length == 0) {
+  var _unorderedLabels;
+  if (object._scalars._array) {
     
-    throw new Error('No _pointIndices defined on the X.object.');
+    _unorderedLabels = object._scalars._array;
+    
+  } else {
+    
+    _unorderedLabels = new Float32Array(numberOfIndices);
     
   }
-   
-  //
-  // now order the curvature values based on the indices
-  //
-  var numberOfScalars = numVertices;
-  var numberOfIndices = ind.length;
   
-  var orderedCurvatures = [];
+  var _labelsCount = _indices.length;
+  for (i = 0; i < _labelsCount; i++) {
+    
+    _unorderedLabels[_indices[i]] = 1.0;
+    
+  }
+  
+  //
+  // ORDER AND STORE
+  //
+  
+  //
+  // now order the label values based on the indices
+  //
+  
+  // .. and store the new scalars in a float32array
+  var _orderedLabels = new Float32Array(numberOfIndices * 3);
+  var _curvaturePointer = 0;
   
   for (i = 0; i < numberOfIndices; i++) {
     
     var currentIndex = ind[i];
     
     // validate
-    if (currentIndex > numberOfScalars) {
+    if (currentIndex > numberOfIndices) {
       
       throw new Error('Could not find scalar for vertex.');
       
     }
     
     // grab the current scalar
-    var currentScalar = arr_vertexCurvatures[currentIndex];
+    var currentScalar = _unorderedLabels[currentIndex];
     
     // add the scalar 3x since we need to match the point array length
-    orderedCurvatures.push(currentScalar);
-    orderedCurvatures.push(currentScalar);
-    orderedCurvatures.push(currentScalar);
+    _orderedLabels[_curvaturePointer++] = currentScalar;
+    _orderedLabels[_curvaturePointer++] = currentScalar;
+    _orderedLabels[_curvaturePointer++] = currentScalar;
     
   }
   
-  object._scalars._array = arr_vertexCurvatures; // the un-ordered scalars
-  object._scalars._glArray = orderedCurvatures; // the ordered, gl-Ready
+  object._scalars._array = _unorderedLabels; // the un-ordered scalars
+  object._scalars._glArray = _orderedLabels; // the ordered, gl-Ready
   // now mark the scalars dirty
   object._scalars._dirty = true;
+  
+  X.TIMERSTOP(this._classname + '.parse');
   
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
@@ -157,26 +197,6 @@ X.parserLBL.prototype.parse = function(container, object, data, flag) {
   modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
   
-};
-
-/**
- * Parses a line of label-file data -- the only important field is the first.
- * 
- * 
- * @param {!string} line to parse.
- * @return {!number} vertex index
- * @protected
- */
-X.parserLBL.prototype.parseLine = function(line) {
-
-  // trim the line
-  line = line.replace(/^\s+|\s+$/g, '');
-  
-  // split to array
-  var lineFields = line.split(' ');
-
-  // return the vertex index
-  return parseInt(lineFields[0],10);
 };
 
 

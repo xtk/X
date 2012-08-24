@@ -32,19 +32,20 @@ goog.provide('X.triplets');
 
 // requires
 goog.require('X.base');
-goog.require('goog.math.Coordinate3');
-goog.require('goog.structs.Map');
 
 
 
 /**
- * Create an ordered container for triplets (3D tuples).
+ * Create an ordered container for triplets (3D tuples) with a 
+ * fixed memory size.
  * 
+ * @param {!number} size The number of triplets to store. This is used to
+ *                       allocate memory: 4 bytes * size.
  * @param {X.triplets=} data Initial data as another X.triplets container.
  * @constructor
  * @extends X.base
  */
-X.triplets = function(data) {
+X.triplets = function(size, data) {
 
   //
   // call the standard constructor of X.base
@@ -57,7 +58,7 @@ X.triplets = function(data) {
    * @inheritDoc
    * @const
    */
-  this._classname = 'triplets';
+  this._classname = 'fasttriplets';
   
   /**
    * The minA border of the bounding box.
@@ -116,17 +117,34 @@ X.triplets = function(data) {
   this._centroid = [0, 0, 0];
   
   /**
-   * The one dimensional array storing all triplets.
+   * This marks the triplets container as fresh meaning unused.
    * 
-   * @type {!Array}
+   * @type {!boolean}
+   * @protected
+   */
+  this._fresh = true;
+  
+  /**
+   * The pointer to the current position in the float array.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._dataPointer = 0;
+  
+  /**
+   * The one dimensional float array storing all triplets.
+   * 
+   * @type {!Float32Array}
    * @private
    */
-  this._triplets = new Array();
+  this._triplets = new Float32Array(size);
   
   // if we have initial data, use it!
   if (goog.isDefAndNotNull(data)) {
     
-    this._triplets = data._triplets.slice();
+    this._triplets = data._triplets.subarray(0, data._triplets.length);
+    this._dataPointer = this._triplets.length;
     this._minA = data._minA;
     this._maxA = data._maxA;
     this._minB = data._minB;
@@ -134,6 +152,7 @@ X.triplets = function(data) {
     this._minC = data._minC;
     this._maxC = data._maxC;
     this._centroid = data._centroid.slice();
+    this._fresh = false;
     
   }
   
@@ -153,12 +172,6 @@ goog.inherits(X.triplets, X.base);
  * @public
  */
 X.triplets.prototype.add = function(a, b, c) {
-
-  if (!goog.isNumber(a) || !goog.isNumber(b) || !goog.isNumber(c)) {
-    
-    throw new Error('Invalid triplet.');
-    
-  }
   
   // update bounding box
   this._minA = Math.min(this._minA, a);
@@ -172,8 +185,39 @@ X.triplets.prototype.add = function(a, b, c) {
                     (this._minB + this._maxB) / 2,
                     (this._minC + this._maxC) / 2];
   
+  this._fresh = false;
   this._dirty = true;
-  return this._triplets.push(a, b, c) / 3;
+  
+  this._triplets[this._dataPointer++] = a;
+  this._triplets[this._dataPointer++] = b;
+  this._triplets[this._dataPointer++] = c;
+  
+  return this._dataPointer / 3;
+  
+};
+
+
+/**
+ * Adjust the size of the internal array to match
+ * the real content.
+ */
+X.triplets.prototype.resize = function() {
+  
+  // jump out if there is no need
+  if (this._dataPointer == this._triplets.length) {
+    
+    //console.log('no resize',this._dataPointer,this._triplets.length);
+    
+    return;
+    
+  }
+  //console.log('resize',this._dataPointer,this._triplets.length);
+  
+  // resize the array according to its real content
+  var _tmpArr = new Float32Array(this._dataPointer);
+  _tmpArr.set(this._triplets.subarray(0,this._dataPointer));
+  
+  this._triplets = _tmpArr; 
   
 };
 
@@ -183,22 +227,15 @@ X.triplets.prototype.add = function(a, b, c) {
  * 
  * @param {!number} id The id of the requested triplet.
  * @return {!Array} The triplet with the given id as a 1D Array with length 3.
- * @throws {Error} An exception if the passed id is invalid or does not exist.
  * @public
  */
 X.triplets.prototype.get = function(id) {
-
-  if (!goog.isNumber(id) ||
-      (id < 0 || id * 3 > this._triplets.length || id == this._triplets.length / 3)) {
-    
-    throw new Error('Invalid id.');
-    
-  }
   
   // we need to convert the id to the index in the array
   id = id * 3;
   
-  return [this._triplets[id], this._triplets[id + 1], this._triplets[id + 2]];
+  //return this._triplets.subarray(id,id+3);
+  return [this._triplets[id],this._triplets[id+1],this._triplets[id+2]];
   
 };
 
@@ -207,21 +244,14 @@ X.triplets.prototype.get = function(id) {
  * Remove a given triplet from this container.
  * 
  * @param {!number} id The id of the to be removed triplet.
- * @throws {Error} An exception if the passed id is invalid or does not exist.
  * @public
  */
 X.triplets.prototype.remove = function(id) {
-
-  if (!goog.isNumber(id) ||
-      (id < 0 || id * 3 > this._triplets.length || id == this.count)) {
-    
-    throw new Error('Invalid id.');
-    
-  }
   
-  this._triplets.splice(id, 3);
-  
-  this._dirty = true;
+  //this._triplets.splice(id, 3);
+  //TODO do we need that?
+  throw new Error('Not implemented.');
+  //this._dirty = true;
   
 };
 
@@ -234,7 +264,7 @@ X.triplets.prototype.remove = function(id) {
 X.triplets.prototype.clear = function() {
 
   // delete all triplets
-  this._triplets = new Array();
+  this._triplets = new Float32Array(this._triplets.length);
   
   this._dirty = true;
   
@@ -249,6 +279,9 @@ X.triplets.prototype.clear = function() {
  */
 X.triplets.prototype.__defineGetter__('count', function() {
 
+  // just in case resize here to get the right number
+  this.resize();
+  
   return this._triplets.length / 3;
   
 });
@@ -263,6 +296,9 @@ X.triplets.prototype.__defineGetter__('count', function() {
  */
 X.triplets.prototype.__defineGetter__('length', function() {
 
+  // just in case resize here to get the right number
+  this.resize();
+  
   return this._triplets.length;
   
 });
@@ -271,6 +307,7 @@ X.triplets.prototype.__defineGetter__('length', function() {
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.triplets', X.triplets);
 goog.exportSymbol('X.triplets.prototype.add', X.triplets.prototype.add);
+goog.exportSymbol('X.triplets.prototype.resize', X.triplets.prototype.resize);
 goog.exportSymbol('X.triplets.prototype.get', X.triplets.prototype.get);
 goog.exportSymbol('X.triplets.prototype.remove', X.triplets.prototype.remove);
 goog.exportSymbol('X.triplets.prototype.clear', X.triplets.prototype.clear);

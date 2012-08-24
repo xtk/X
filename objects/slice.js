@@ -266,8 +266,6 @@ X.slice.prototype.setup = function(center, front, up, width, height, borders,
  * @private
  */
 X.slice.prototype.create_ = function() {
-
-  this._points.clear();
   
   // get an orthogonal vector using front x up
   var frontVector = new goog.math.Vec3(this._front[0], this._front[1],
@@ -326,6 +324,10 @@ X.slice.prototype.create_ = function() {
   
   var point5 = point1;
   
+  // allocate memory
+  this._points = new X.triplets(18);
+  this._normals = new X.triplets(18);
+  
   // left triangle
   this._points.add(point0.x, point0.y, point0.z); // 0
   this._points.add(point1.x, point1.y, point1.z); // 1
@@ -348,6 +350,11 @@ X.slice.prototype.create_ = function() {
   // add some borders, if enabled
   if (this._borders) {
     var borders = new X.object();
+    
+    // allocate memory
+    borders._points = new X.triplets(24);
+    borders._normals = new X.triplets(24);
+    
     borders._points.add(point0.x, point0.y, point0.z); // 0
     borders._points.add(point1.x, point1.y, point1.z); // 1
     borders._points.add(point1.x, point1.y, point1.z); // 1

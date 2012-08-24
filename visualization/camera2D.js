@@ -32,6 +32,7 @@ goog.provide('X.camera2D');
 
 // requires
 goog.require('X.camera');
+goog.require('X.event.WindowLevelEvent');
 
 
 /**
@@ -60,3 +61,44 @@ X.camera2D = function(width, height) {
 };
 // inherit from X.base
 goog.inherits(X.camera2D, X.camera);
+
+
+/**
+ * @inheritDoc
+ */
+X.camera2D.prototype.rotate = function(distance) {
+
+  // call the superclass
+  distance = goog.base(this, 'rotate', distance);
+  
+  // create a new event
+  var _e = new X.event.WindowLevelEvent();
+  
+  if (distance.x > 0) {
+    
+    // shrink window
+    _e._window--;
+    
+  } else if (distance.x < 0) {
+    
+    // expand window
+    _e._window++;
+    
+  }
+  
+  if (distance.y > 0) {
+    
+    // increase level
+    _e._level++;
+    
+  } else if (distance.y < 0) {
+    
+    // decrease level
+    _e._level--;
+    
+  }
+  
+  // fire it up
+  this.dispatchEvent(_e);
+  
+};

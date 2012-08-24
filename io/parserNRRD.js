@@ -74,51 +74,71 @@ goog.inherits(X.parserNRRD, X.parser);
  */
 X.parserNRRD.prototype.parse = function(container, object, data, flag) {
 
-  // the position in the file
-  var position = 0;
+  X.TIMER(this._classname + '.parse');
   
-  // grab the header
-  var headerRegexMatch = data.match(/^([\s\S]*?)\r?\n\r?\n/);
-  position = headerRegexMatch[0].length; // the one _with_ the blank line
-  var header = headerRegexMatch[1]; // the one without the blank line
+  // attach the data so we can use the internal scan function
+  this._data = data;
+  
+  var _bytes = this.scan('uchar', data.byteLength);
+  var _length = _bytes.length;
+  
+  var _header = null;
+  var _data_start = 0;
+  
+  var i;
+  for (i = 1; i < _length; i++) {
+    
+    if (_bytes[i - 1] == 10 && _bytes[i] == 10) {
+      
+      // we found two line breaks in a row
+      
+      // now we know what the header is
+      _header = String.fromCharCode.apply(null, _bytes.subarray(0, i - 2));
+      
+      // this is were the data starts
+      _data_start = i + 1;
+      break;
+      
+    }
+    
+  }
   
   // parse the header
-  this.parseHeader(header);
+  this.parseHeader(_header);
   
   // now we have all kinds of things attached to this reader..
   // this was done by M. Lauer
   // I don't really like it but it works..
   
-  var _data = 0; // the data without header
+  var _data = _bytes.subarray(_data_start); // the data without header
   
   if (this.encoding == 'gzip' || this.encoding == 'gz') {
+    
     // we need to decompress the datastream
-    _data = new JXG.Util.Unzip(data.substr(position)).unzip()[0][0];
-  } else {
-    // we can use the data directly
-    _data = data.substr(position);
+    
+    // here we start the unzipping and get a typed Uint8Array back
+    _data = new JXG.Util.Unzip(_data).unzip();
+    
   }
   
-  var numberOfPixels = this.sizes[0] * this.sizes[1] * this.sizes[2];
+  // .. let's use the underlying array buffer
+  _data = _data.buffer;
+  
+  var MRI = {
+    data: null,
+    min: Infinity,
+    max: -Infinity
+  };
   
   //
   // parse the (unzipped) data to a datastream of the correct type
   //
-  var datastream = new Array(numberOfPixels);
+  MRI.data = new this.__array(_data);
   
-  // we store the min and max values to be able to convert the values to uint8
-  // later
-  var max = -Infinity;
-  var min = Infinity;
-  
-  var i;
-  for (i = 0; i < numberOfPixels; i++) {
-    // parseFunc was defined by analyzing the nrrd header
-    var pixelValue = this.parseFunc(_data, 0 + (i * this.parseBytes));
-    datastream[i] = pixelValue;
-    max = Math.max(max, pixelValue);
-    min = Math.min(min, pixelValue);
-  }
+  // get the min and max intensities
+  var min_max = this.arrayMinMax(MRI.data);
+  var min = MRI.min = min_max[0];
+  var max = MRI.max = min_max[1];
   
   //
   // we know enough to create the object
@@ -158,9 +178,11 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   // create the object
   object.create_();
   
+  X.TIMERSTOP(this._classname + '.parse');
+  
   // now we have the values and need to reslice in the 3 orthogonal directions
   // and create the textures for each slice
-  this.reslice(object, datastream, this.sizes, min, max);
+  object._image = this.reslice(object, MRI);
   
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
@@ -174,7 +196,7 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
 /**
  * Parse a NRRD file header.
  * 
- * @param {string} header The NRRD header to parse.
+ * @param {?string} header The NRRD header to parse.
  * @throws {Error} An error, if the NRRD header is not supported or invalid.
  */
 X.parserNRRD.prototype.parseHeader = function(header) {
@@ -228,34 +250,49 @@ X.parserNRRD.prototype.fieldFunctions = {
   'type': function(data) {
 
     switch (data) {
+    case 'uchar':
     case 'unsigned char':
     case 'uint8':
-      this.parseFunc = this.parseUChar8;
-      this.parseBytes = 1;
+    case 'uint8_t':
+      this.__array = Uint8Array;
       break;
     case 'signed char':
     case 'int8':
-      this.parseFunc = this.parseSChar8;
-      this.parseBytes = 1;
+    case 'int8_t':
+      this.__array = Int8Array;
       break;
     case 'short':
-    case 'signed short':
-    case 'unsigned short':
     case 'short int':
+    case 'signed short':
+    case 'signed short int':
     case 'int16':
-      this.parseFunc = this.parseUInt16;
-      this.parseBytes = 2;
+    case 'int16_t':
+      this.__array = Int16Array;
+      break;
+    case 'ushort':
+    case 'unsigned short':
+    case 'unsigned short int':
+    case 'uint16':
+    case 'uint16_t':
+      this.__array = Uint16Array;
       break;
     case 'int':
+    case 'signed int':
     case 'int32':
+    case 'int32_t':
+      this.__array = Int32Array;
+      break;
+    case 'uint':
+    case 'unsigned int':
+    case 'uint32':
+    case 'uint32_t':
+      this.__array = Uint32Array;
       break;
     case 'float':
-      this.parseFunc = this.parseFloat32;
-      this.parseBytes = 4;
+      this.__array = Float32Array;
       break;
     default:
-      throw new Error('Only short/int/int8/float data is allowed. Found ' +
-          data);
+      throw new Error('Unsupported NRRD data type: ' + data);
     }
     return this.type = data;
   },

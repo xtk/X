@@ -622,9 +622,6 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
     // attach the distance vector
     e._distance = distance;
     
-    // attach the angle in degrees
-    e._angle = 0;
-    
     // .. fire the event
     this.dispatchEvent(e);
     

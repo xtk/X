@@ -24,8 +24,8 @@ window.onload = function() {
   test_renderer.init();
   
   // load a .mgz file
-  var volume = new X.volume();
-  volume.file = 'data/smallvolume.mgh';
+  volume = new X.volume();
+  volume.file = 'data/daniel.mgh';
   
   // add the object
   test_renderer.add(volume);

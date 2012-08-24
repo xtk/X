@@ -25,7 +25,7 @@ window.onload = function() {
   
   // load a .nrrd file
   var volume = new X.volume();
-  volume.file = 'data/test.nii';
+  volume.file = 'data/daniel.nii';
   volume.color = [1, 0, 0];
   
   // add the object

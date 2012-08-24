@@ -33,7 +33,7 @@ goog.require('X.base');
 goog.require('X.event');
 goog.require('X.object');
 goog.require('X.parserCRV');
-goog.require('X.parserDX');
+goog.require('X.parserDCM');
 goog.require('X.parserFSM');
 goog.require('X.parserIMAGE');
 goog.require('X.parserIMG');
@@ -153,6 +153,14 @@ X.loader.prototype.checkFileFormat = function(container) {
   // grab the file extension
   var extension = filepath.split('.').pop().toUpperCase();
   
+  // support no extensions
+  if (extension == filepath.toUpperCase()) {
+    
+    // this means no extension
+    extension = '';
+    
+  }
+  
   // check if the file format is supported
   if (!(extension in X.loader.extensions)) {
     
@@ -184,13 +192,20 @@ X.loader.prototype.load = function(container, object) {
     
   }
   
+  // check if job is already monitored..
+  // then it is safe to exit
+  if (this._jobs.containsKey(container._id) && !this._jobs.get(container._id)) {
+    
+    return;
+    
+  }
+  
   // add this loading job to our jobs map
   this._jobs.set(container._id, false);
   
   // check the file format which returns the filepath, extension and the parser
   var _checkresult = this.checkFileFormat(container);
   var filepath = _checkresult[0];
-  var responseType = _checkresult[4];
   
   if (container._filedata != null) {
   	
@@ -202,32 +217,29 @@ X.loader.prototype.load = function(container, object) {
     
   } 
   
-	  
-	// we use a simple XHR to get the file contents
-	// this works for binary and for ascii files
-	var request = new XMLHttpRequest();
-
-	// listen to abort events
-	goog.events.listen(request, 'abort', this.failed.bind(this, request, container, object));
-
-	// listen to error events
-	goog.events.listen(request, 'error', this.failed.bind(this, request, container, object));
-
-	// listen to completed events which triggers parsing
-	goog.events.listen(request, 'load', this.parse.bind(this, request, container, object));
-
-	// configure the URL
-	request.open('GET', filepath, true);
-	if (responseType) {
-		// set the response type if != null, else fall back to the default 'text'
-		request.responseType = responseType;
-	}
-	request.overrideMimeType("text/plain; charset=x-user-defined");
-	request.setRequestHeader("Content-Type", "text/plain");
-
-	// .. and GO!
-	request.send(null); 
-
+  // we use a simple XHR to get the file contents
+  // this works for binary and for ascii files
+  var request = new XMLHttpRequest();
+  
+  // listen to abort events
+  goog.events.listen(request, 'abort', this.failed.bind(this, request,
+      container, object));
+  
+  // listen to error events
+  goog.events.listen(request, 'error', this.failed.bind(this, request,
+      container, object));
+  
+  // listen to completed events which triggers parsing
+  goog.events.listen(request, 'load', this.parse.bind(this, request, container,
+      object));
+  
+  // configure the URL
+  request.open('GET', filepath, true);
+  request.responseType = 'arraybuffer';
+  
+  // .. and GO!
+  request.send(null);
+  
 };
 
 
@@ -308,6 +320,9 @@ X.loader.prototype.complete = function(event) {
     // mark the container's file as clean
     container._file._dirty = false;
     
+    // .. but mark the container as dirty since its content changed
+    container._dirty = true;
+    
     // fire the modified event on the object
     object.modified();
     
@@ -349,26 +364,28 @@ X.loader.extensions = {
   'VTK': [X.parserVTK, null, null],
   'TRK': [X.parserTRK, null, null],
   // FSM, INFLATED, SMOOTHWM, SPHERE, PIAL and ORIG are all freesurfer meshes
-  'FSM': [X.parserFSM, null, null],
-  'INFLATED': [X.parserFSM, null, null],
-  'SMOOTHWM': [X.parserFSM, null, null],
-  'SPHERE': [X.parserFSM, null, null],
-  'PIAL': [X.parserFSM, null, null],
-  'ORIG': [X.parserFSM, null, null],
-  'NRRD': [X.parserNRRD, null, null],
-  'NII': [X.parserNII, false, null],
-  'GZ': [X.parserNII, true, null],
-  'IMG': [X.parserIMG, null, null],
-  'HDR': [X.parserIMG, null, null],
-  'CRV': [X.parserCRV, null, null],
-  'LABEL': [X.parserLBL, null, null],
-  'MGH': [X.parserMGZ, false, null],
-  'MGZ': [X.parserMGZ, true, null],
-  'TXT': [X.parserLUT, null, null],
-  'LUT': [X.parserLUT, null, null],
-  'PNG': [X.parserIMAGE, 'png', 'arraybuffer'], // here we use the arraybuffer
+  'FSM': [X.parserFSM, null],
+  'INFLATED': [X.parserFSM, null],
+  'SMOOTHWM': [X.parserFSM, null],
+  'SPHERE': [X.parserFSM, null],
+  'PIAL': [X.parserFSM, null],
+  'ORIG': [X.parserFSM, null],
+  'NRRD': [X.parserNRRD, null],
+  'NII': [X.parserNII, null],
+  'GZ': [X.parserNII, null], // right now nii.gz is the only
+  // format ending .gz
+  'DCM': [X.parserDCM, null],
+  'DICOM': [X.parserDCM, null],
+  '': [X.parserDCM, null],
+  'CRV': [X.parserCRV, null],
+  'LABEL': [X.parserLBL, null],
+  'MGH': [X.parserMGZ, false],
+  'MGZ': [X.parserMGZ, true],
+  'TXT': [X.parserLUT, null],
+  'LUT': [X.parserLUT, null],
+  'PNG': [X.parserIMAGE, 'png'], // here we use the arraybuffer
   // response type
-  'JPG': [X.parserIMAGE, 'jpeg', 'arraybuffer'],
-  'JPEG': [X.parserIMAGE, 'jpeg', 'arraybuffer'],
-  'GIF': [X.parserIMAGE, 'gif', 'arraybuffer']
+  'JPG': [X.parserIMAGE, 'jpeg'],
+  'JPEG': [X.parserIMAGE, 'jpeg'],
+  'GIF': [X.parserIMAGE, 'gif']
 };

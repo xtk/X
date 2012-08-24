@@ -53,6 +53,50 @@ var X = X || {};
 X.DEV = true;
 
 /**
+ * Timer functionality which can be used in developer mode to clock certain
+ * things.
+ * 
+ * <pre>
+ * X.TIMER(this._classname+'.functionname');
+ * 
+ * ... stuff is happening
+ * </pre>
+ * 
+ * @param {string} what The title of this timer.
+ */
+X.TIMER = function(what) {
+
+  if (eval('X.DEV === undefined')) {
+    return;
+  }
+  
+  window.console.time(what);
+  
+};
+
+/**
+ * Timer functionality which can be used in developer mode to clock certain
+ * things.
+ * 
+ * <pre>
+ * ... stuff was happening 
+ * 
+ * X.TIMERSTOP(this._classname+'.functionname');
+ * </pre>
+ * 
+ * @param {string} what The title of this timer.
+ */
+X.TIMERSTOP = function(what) {
+
+  if (eval('X.DEV === undefined')) {
+    return;
+  }
+  
+  window.console.timeEnd(what);
+  
+};
+
+/**
  * The counter class, keeping track of instance ids.
  * 
  * @constructor

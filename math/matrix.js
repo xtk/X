@@ -335,6 +335,8 @@ goog.exportSymbol('X.matrix.prototype.rotate', X.matrix.prototype.rotate);
 goog.exportSymbol('X.matrix.prototype.toArray', X.matrix.prototype.toArray);
 goog.exportSymbol('X.matrix.prototype.getValueAt',
     X.matrix.prototype.getValueAt);
+goog.exportSymbol('X.matrix.prototype.setValueAt',
+    X.matrix.prototype.setValueAt);
 goog.exportSymbol('X.matrix.prototype.multiplyByVector',
     X.matrix.prototype.multiplyByVector);
 goog.exportSymbol('X.matrix.prototype.swapRows', X.matrix.prototype.swapRows);

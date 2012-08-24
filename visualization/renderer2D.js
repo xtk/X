@@ -112,6 +112,16 @@ X.renderer2D = function() {
    */
   this._sliceHeight = 0;
   
+  /**
+   * The current rotation factor. This is positive to rotate clockwise and
+   * negative to rotate counter-clockwise. The factor is multiplied by 90
+   * degrees.
+   * 
+   * @type {number}
+   * @protected
+   */
+  this._rotation = 0;
+  
 };
 // inherit from X.base
 goog.inherits(X.renderer2D, X.renderer);
@@ -124,6 +134,18 @@ goog.inherits(X.renderer2D, X.renderer);
  * @public
  */
 X.renderer2D.prototype.onScroll = function() {
+
+  // do nothing
+};
+
+
+/**
+ * Overload this function to execute code after window/level adjustment has
+ * completed and just before the next rendering call.
+ * 
+ * @public
+ */
+X.renderer2D.prototype.onWindowLevel = function() {
 
   // do nothing
 };
@@ -163,6 +185,55 @@ X.renderer2D.prototype.onScroll_ = function(event) {
   
   // .. and trigger re-rendering
   // this.render_(false, false);
+  
+};
+
+
+/**
+ * Performs window/level adjustment for the currently loaded volume.
+ * 
+ * @param {!X.event.WindowLevelEvent} event The window/level event from the
+ *          camera.
+ */
+X.renderer2D.prototype.onWindowLevel_ = function(event) {
+
+  // grab the current volume
+  var _volume = this._topLevelObjects[0];
+  // .. if there is none, exit right away
+  if (!_volume) {
+    return;
+  }
+  
+  // update window level
+  var _old_window = _volume._windowHigh - _volume._windowLow;
+  var _old_level = _old_window / 2;
+  
+  // shrink/expand window
+  var _new_window = parseInt(_old_window + (_old_window / 15) * -event._window,
+      10);
+  
+  // increase/decrease level
+  var _new_level = parseInt(_old_level + (_old_level / 15) * event._level, 10);
+  
+  // TODO better handling of these cases
+  if (_old_window == _new_window) {
+    _new_window++;
+  }
+  
+  if (_old_level == _new_level) {
+    _new_level++;
+  }
+  
+  // re-propagate
+  _volume._windowLow -= parseInt(_old_level - _new_level, 10);
+  _volume._windowLow -= parseInt(_old_window - _new_window, 10);
+  _volume._windowLow = Math.max(_volume._windowLow, _volume._min);
+  _volume._windowHigh -= parseInt(_old_level - _new_level, 10);
+  _volume._windowHigh += parseInt(_old_window - _new_window, 10);
+  _volume._windowHigh = Math.min(_volume._windowHigh, _volume._max);
+  
+  // execute the callback
+  eval('this.onWindowLevel();');
   
 };
 
@@ -236,6 +307,30 @@ X.renderer2D.prototype.init = function() {
   // this._labelFrameBuffer.style.imageRendering = 'optimize-contrast';
   // this._labelFrameBuffer.style.msInterpolationMode = 'nearest-neighbor';
   
+  // listen to window/level events of the camera
+  goog.events.listen(this._camera, X.event.events.WINDOWLEVEL,
+      this.onWindowLevel_.bind(this));
+  
+};
+
+
+/**
+ * Rotate the current view clock-wise.
+ */
+X.renderer2D.prototype.rotate = function() {
+
+  this._rotation++;
+  
+};
+
+
+/**
+ * Rotate the current view counter clock-wise.
+ */
+X.renderer2D.prototype.rotateCounter = function() {
+
+  this._rotation--;
+  
 };
 
 
@@ -249,6 +344,17 @@ X.renderer2D.prototype.resetViewAndRender = function() {
   
   // .. and perform auto scaling
   this.autoScale_();
+  
+  // .. and reset the window/level
+  var _volume = this._topLevelObjects[0];
+  // .. if there is none, exit right away
+  if (_volume) {
+    
+    _volume._windowHigh = _volume._max;
+    _volume._windowLow = _volume._min;
+    
+  }
+  
   // .. render
   // this.render_(false, false);
   
@@ -312,7 +418,45 @@ X.renderer2D.prototype.update_ = function(object) {
   //
   // VOLUME
   //
-  if (goog.isDefAndNotNull(file) && file._dirty) {
+  
+  // with multiple files
+  if (goog.isDefAndNotNull(file) && file instanceof Array) {
+    // this object holds multiple files, a.k.a it is a DICOM series
+    
+    // check if we already loaded all the files
+    if (!goog.isDefAndNotNull(object.MRI)) {
+      
+      // no files loaded at all, start the loading
+      
+      var _k = 0;
+      var _len = file.length;
+      for (_k = 0; _k < _len; _k++) {
+        
+        // start loading of each file..
+        this._loader.load(file[_k], object);
+        
+      }
+      
+      return;
+      
+    } else if (object.MRI.loaded_files != file.length) {
+      
+      // still loading
+      return;
+      
+    } else if (existed && !object._dirty) {
+      
+      // already parsed the volume
+      return;
+      
+    }
+    
+    // just continue
+    
+  }
+
+  // with one file
+  else if (goog.isDefAndNotNull(file) && file._dirty) {
     // this object is based on an external file and it is dirty..
     
     // start loading..
@@ -444,7 +588,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _normalizedScale = Math.max(1 + _view.getValueAt(2, 3) / 10, 0.6);
   this._context.setTransform(_normalizedScale, 0, 0, _normalizedScale, _x, _y);
   
-
   //
   // grab the volume and current slice
   //
@@ -462,13 +605,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _sliceWidth = this._sliceWidth;
   var _sliceHeight = this._sliceHeight;
   
-  // canvas center, taking zooming and panning in account
-  var _canvasCenterX = (1 / (_normalizedScale * 2)) *
-      (_width - _sliceWidth * _normalizedScale) + _x;
-  var _canvasCenterY = (1 / (_normalizedScale * 2)) *
-      (_height - _sliceHeight * _normalizedScale) + _y;
-  
-
   //
   // FRAME BUFFERING
   //  
@@ -568,8 +704,46 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   
   // draw the slice frame buffer (which equals the slice data) to the main
   // context
-  this._context.globalAlpha = 1.0; // draw fully opaque
-  this._context.drawImage(this._frameBuffer, _canvasCenterX, _canvasCenterY);
+  this._context.globalAlpha = 1.0; // draw fully opaque}
+  
+  // move to the middle
+  this._context.translate(_width / 2 / _normalizedScale, _height / 2 /
+      _normalizedScale);
+  
+  // rotate
+  this._context.rotate(Math.PI * 0.5 * this._rotation);
+  
+  // the padding x and y have to be adjusted because of the rotation
+  switch (this._rotation % 4) {
+  
+  case 0:
+    // padding is fine;
+    break;
+  case 1:
+    // padding is twisted
+    var _buf = _x;
+    _x = _y;
+    _y = -_buf;
+    break;
+  case 2:
+    // padding is inverted
+    _x *= -1;
+    _y *= -1;
+    break;
+  case 3:
+    // padding is twisted
+    var _buf = _x;
+    _x = -_y;
+    _y = _buf;
+    break;
+  
+  }
+  
+  var _offset_x = -_sliceWidth / 2 + _x;
+  var _offset_y = -_sliceHeight / 2 + _y;
+  
+  // draw the slice
+  this._context.drawImage(this._frameBuffer, _offset_x, _offset_y);
   
   // draw the labels with a configured opacity
   if (_currentLabelMap && _volume._labelmap._visible) {
@@ -578,8 +752,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     
     this._context.globalAlpha = _labelOpacity; // draw transparent depending on
     // opacity
-    this._context.drawImage(this._labelFrameBuffer, _canvasCenterX,
-        _canvasCenterY);
+    this._context.drawImage(this._labelFrameBuffer, _offset_x, _offset_y);
   }
   
 };
@@ -594,7 +767,13 @@ goog.exportSymbol('X.renderer2D.prototype.onRender',
     X.renderer2D.prototype.onRender);
 goog.exportSymbol('X.renderer2D.prototype.onScroll',
     X.renderer2D.prototype.onScroll);
+goog.exportSymbol('X.renderer2D.prototype.onWindowLevel',
+    X.renderer2D.prototype.onWindowLevel);
 goog.exportSymbol('X.renderer2D.prototype.get', X.renderer2D.prototype.get);
+goog.exportSymbol('X.renderer2D.prototype.rotate',
+    X.renderer2D.prototype.rotate);
+goog.exportSymbol('X.renderer2D.prototype.rotateCounter',
+    X.renderer2D.prototype.rotateCounter);
 goog.exportSymbol('X.renderer2D.prototype.resetViewAndRender',
     X.renderer2D.prototype.resetViewAndRender);
 goog.exportSymbol('X.renderer2D.prototype.render',

@@ -66,100 +66,51 @@ goog.inherits(X.parserSTL, X.parser);
  */
 X.parserSTL.prototype.parse = function(container, object, data, flag) {
 
-  var _data = data;
+  X.TIMER(this._classname + '.parse');
   
-  // the size which can be either number of lines for ASCII data
-  // or the number of triangles for binary data
-  var _size = 0;
+  this._data = data;
   
-  var _parseFunction = null;
+
+  var p = object._points;
+  var n = object._normals;
+  
+  // parse 5 bytes
+  var _ascii_tag = String.fromCharCode.apply(null, this.scan('uchar', 5));
   
   // check if this is an ascii STL file or a binary one
-  if (data.substr(0, 5) == 'solid') {
+  if (_ascii_tag == 'solid') {
+    
+    // allocate memory using a good guess
+    object._points = p = new X.triplets(data.byteLength);
+    object._normals = n = new X.triplets(data.byteLength);      
     
     // this is an ascii STL file
-    
-    // split the data
-    _data = data.split('\n');
-    
-    // get the number of lines
-    _size = data.length;
-    
-    // set the parse function for ASCII
-    _parseFunction = this.parseLine.bind(this);
+    this.parseASCII(p, n, this.scan('uchar', data.byteLength - 5));
     
   } else {
     
     // this is a binary STL file
     // (http://en.wikipedia.org/wiki/STL_(file_format))
     
-    _data = data;
-    
     // A binary STL file has an 80 character header (which is generally
     // ignored, but which should never begin with 'solid' because that will
     // lead most software to assume that this is an ASCII STL file).
-    var header_data = data.slice(0, 80);
+    //
+    // but we ignore it
+    this.jumpTo(80);
     
-    // Following the header is a 4 byte unsigned integer indicating
-    // the number of triangular facets in the file.
-    _size = this.parseUInt32(data, 80);
+    var _triangleCount = this.scan('uint');  
     
-    // set the parse function for binary
-    _parseFunction = this.parseBytes.bind(this);
+    // allocate the exact amount of memory
+    object._points = p = new X.triplets(_triangleCount * 9);
+    object._normals = n = new X.triplets(_triangleCount * 9);         
+    
+    // parse the bytes
+    this.parseBIN(p, n, _triangleCount);
     
   }
   
-  var p = object._points;
-  var n = object._normals;
-  
-  //
-  // THE LOOP
-  //
-  // This uses an optimized loop.
-  //
-  
-  //
-  // This one is shorter but Fast Duff's Device is slightly faster on average.
-  //
-  // var i = numberOfLines;
-  // do {
-  // i--;
-  //    
-  // this.parseLine_(p, n, dataAsArray[i]);
-  //    
-  // } while (i > 0);
-  
-  /*
-   * Fast Duff's Device @author Miller Medeiros <http://millermedeiros.com>
-   * 
-   * @version 0.3 (2010/08/25)
-   */
-  var i = 0;
-  var n2 = _size % 8;
-  while (n2--) {
-    _parseFunction(p, n, _data, i);
-    i++;
-  }
-  
-  n2 = (_size * 0.125) ^ 0;
-  while (n2--) {
-    _parseFunction(p, n, _data, i);
-    i++;
-    _parseFunction(p, n, _data, i);
-    i++;
-    _parseFunction(p, n, _data, i);
-    i++;
-    _parseFunction(p, n, _data, i);
-    i++;
-    _parseFunction(p, n, _data, i);
-    i++;
-    _parseFunction(p, n, _data, i);
-    i++;
-    _parseFunction(p, n, _data, i);
-    i++;
-    _parseFunction(p, n, _data, i);
-    i++;
-  }
+  X.TIMERSTOP(this._classname + '.parse');
   
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
@@ -171,46 +122,91 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
 
 
 /**
- * Parses a line of .STL data and modifies the given X.triplets containers.
+ * Parses ASCII .STL data and modifies the given X.triplets containers.
  * 
  * @param {!X.triplets} p The object's points as a X.triplets container.
  * @param {!X.triplets} n The object's normals as a X.triplets container.
- * @param {!Array} data The data to parse.
- * @param {!number} index The index of the current line.
+ * @param {!Uint8Array} data The data to parse.
  * @protected
  */
-X.parserSTL.prototype.parseLine = function(p, n, data, index) {
+X.parserSTL.prototype.parseASCII = function(p, n, data) {
 
-  // grab the current line
-  var _data = data[index];
+  var _length = data.length;
   
-  if (!_data) {
-    return;
-  }
+  //
+  // the mode flags
   
-  // trim the line
-  var line = _data.replace(/^\s+|\s+$/g, '');
+  // TRUE if the next couple of bytes are normals
+  var _normalsMode = false;
   
-  // split to array
-  var lineFields = line.split(' ');
+  // TRUE if the next couple of bytes are vertices
+  var _vertexMode = false;
   
-  if (lineFields[0] == 'vertex') {
+  // store the beginning of a byte range
+  var _rangeStart = 0;
+  
+  var i;
+  for (i = 0; i < _length; i++) {
     
-    // add point
-    var x = parseFloat(lineFields[1]);
-    var y = parseFloat(lineFields[2]);
-    var z = parseFloat(lineFields[3]);
-    p.add(x, y, z);
-    
-  } else if (lineFields[0] == 'facet') {
-    
-    // add normals
-    var x = parseFloat(lineFields[2]);
-    var y = parseFloat(lineFields[3]);
-    var z = parseFloat(lineFields[4]);
-    n.add(x, y, z);
-    n.add(x, y, z);
-    n.add(x, y, z);
+    if (data[i] == 10) {
+      
+      // the current byte is a line break
+      
+      if (_normalsMode || _vertexMode) {
+        
+        // grab the bytes which contain the numbers
+        var _substring = String.fromCharCode.apply(null, data.subarray(
+            _rangeStart, i));
+        
+        // split the substring
+        var _numbers = _substring.split(' ');
+        
+        // grab the x, y, z coordinates
+        var x = parseFloat(_numbers[0]);
+        var y = parseFloat(_numbers[1]);
+        var z = parseFloat(_numbers[2]);
+        
+        if (_normalsMode) {
+          // add the normals 3x (for each vertex)
+          n.add(x, y, z);
+          n.add(x, y, z);
+          n.add(x, y, z);
+        } else {
+          // add the vertices
+          p.add(x, y, z);
+        }
+        
+        // reset the modes
+        _normalsMode = false;
+        _vertexMode = false;
+        
+      }
+      
+    } else if (data[i - 1] == 32) {
+      
+      // the one byte before was a space
+      
+      if (data[i] == 102) {
+        
+        // this is a facet since the current char f
+        
+        // move pointer to the normals
+        i += 13;
+        _rangeStart = i;
+        _normalsMode = true;
+        
+      } else if (data[i] == 118) {
+        
+        // this is a vertex since the current char v
+        
+        // move pointer to the coordinates
+        i += 7;
+        _rangeStart = i;
+        _vertexMode = true;
+        
+      }
+      
+    }
     
   }
   
@@ -218,55 +214,40 @@ X.parserSTL.prototype.parseLine = function(p, n, data, index) {
 
 
 /**
- * Parses a triangle of .STL data and modifies the given X.triplets containers.
+ * Parses BINARY .STL data and modifies the given X.triplets containers.
  * Original embodiment by Matthew Goodman (meawoppl@gmail.com)
  * 
  * @param {!X.triplets} p The object's points as a X.triplets container.
  * @param {!X.triplets} n The object's normals as a X.triplets container.
- * @param {!String} data The data to parse.
- * @param {!number} index The index of the current triangle.
+ * @param {!number} triangleCount The number of triangles.
  */
-X.parserSTL.prototype.parseBytes = function(p, n, data, index) {
-
-  // each triangle consists of 50 bytes to parse
-  // so incorporate it in the individual offset
-  // and also add the 84 bytes from the header
-  var offset = 84 + index * 50;
+X.parserSTL.prototype.parseBIN = function(p, n, triangleCount) { 
   
-  // foreach triangle
-  // REAL32[3] â Normal vector
-  var normal = this.parseFloat32Array(data, offset, 3)[0];
-  offset += 3 * 4;
-  
-  // REAL32[3] â Vertex 1
-  var v1 = this.parseFloat32Array(data, offset, 3)[0];
-  offset += 3 * 4;
-  
-  // REAL32[3] â Vertex 2
-  var v2 = this.parseFloat32Array(data, offset, 3)[0];
-  offset += 3 * 4;
-  
-  // REAL32[3] â Vertex 3
-  var v3 = this.parseFloat32Array(data, offset, 3)[0];
-  offset += 3 * 4;
-  
-  // MRG TODO:
-  // The above could probably be made faster by
-  // making a single read of 12 float32 values.
-  
-  // UINT16 â Attribute byte count
-  var attributes = this.parseUInt16(data, offset)[0];
-  offset += 2;
-  
-  // Add the vertices
-  p.add(v1[0], v1[1], v1[2]);
-  p.add(v2[0], v2[1], v2[2]);
-  p.add(v3[0], v3[1], v3[2]);
-  
-  // Add the Normals
-  n.add(normal[0], normal[1], normal[2]);
-  n.add(normal[0], normal[1], normal[2]);
-  n.add(normal[0], normal[1], normal[2]);
+  var i = 0;
+  for (i = 0; i < triangleCount; i++) {
+    
+    // grab 12 float values
+    var _bytes = this.scan('float', 12);
+    
+    // the first 3 are the normals
+    var _normalX = _bytes[0];
+    var _normalY = _bytes[1];
+    var _normalZ = _bytes[2];
+    
+    // add them
+    n.add(_normalX, _normalY, _normalZ);
+    n.add(_normalX, _normalY, _normalZ);
+    n.add(_normalX, _normalY, _normalZ);
+    
+    // now the vertices
+    p.add(_bytes[3], _bytes[4], _bytes[5]);
+    p.add(_bytes[6], _bytes[7], _bytes[8]);
+    p.add(_bytes[9], _bytes[10], _bytes[11]);
+    
+    // jump 2 bytes
+    this._dataPointer += 2;
+    
+  }
   
 };
 

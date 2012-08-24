@@ -196,6 +196,9 @@ X.renderer = function() {
     'PROGRESSBAR_ENABLED': true
   };
   
+  window.console
+      .log('XTK Release pre8 -- 08/17/12 -- http://www.goXTK.com -- @goXTK');
+  
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
@@ -232,6 +235,13 @@ X.renderer.prototype.onProgress = function(event) {
 X.renderer.prototype.onModified = function(event) {
 
   if (goog.isDefAndNotNull(event) && event instanceof X.event.ModifiedEvent) {
+    
+    if (!event._object) {
+      
+      // we need an object here
+      return;
+      
+    }
     
     this.update_(event._object);
     
@@ -857,6 +867,10 @@ X.renderer.prototype.render = function() {
     
     this.showProgressBar_();
     
+    // also reset the loadingCompleted flags
+    this._loadingCompleted = false;
+    this._onShowtime = false;
+    
     // let's check again in a short time
     this._readyCheckTimer = goog.Timer.callOnce(function() {
 
@@ -876,6 +890,9 @@ X.renderer.prototype.render = function() {
     // we are ready! yahoooo!
     
     // call the onShowtime function which can be overloaded
+    
+    // we need two flags here since the render loop repeats so fast
+    // that there would be timing issues
     if (!this._loadingCompleted && !this._onShowtime) {
       
       this._onShowtime = true;
@@ -907,7 +924,7 @@ X.renderer.prototype.render = function() {
   //
   
   // this starts the rendering loops
-  window.requestAnimationFrame(this.render.bind(this, this._canvas));
+  window.requestAnimationFrame(this.render.bind(this), this._canvas);
   eval("this.onRender()");
   this.render_(false, true);
   

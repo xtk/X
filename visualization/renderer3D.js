@@ -573,6 +573,39 @@ X.renderer3D.prototype.update_ = function(object) {
     
     return;
     
+  } else if (goog.isDefAndNotNull(file) && file instanceof Array) {
+    // this object holds multiple files, a.k.a it is a DICOM series
+    
+    // check if we already loaded all the files
+    if (!goog.isDefAndNotNull(object.MRI)) {
+      
+      // no files loaded at all, start the loading
+      
+      var _k = 0;
+      var _len = file.length;
+      for (_k = 0; _k < _len; _k++) {
+        
+        // start loading of each file..
+        this._loader.load(file[_k], object);
+        
+      }
+      
+      return;
+      
+    } else if (object.MRI.loaded_files != file.length) {
+      
+      // still loading
+      return;
+      
+    } else if (!object._dirty) {
+      
+      // already parsed the volume
+      return;
+      
+    }
+    
+    // just continue
+    
   } else if (goog.isDefAndNotNull(file) && file._dirty) {
     // this object is based on an external file and it is dirty..
     
@@ -616,7 +649,7 @@ X.renderer3D.prototype.update_ = function(object) {
   
   // check if this is an empty object, if yes, jump out
   // empty objects can be used to group objects
-  if (points.count == 0) {
+  if (!points) {
     
     object._dirty = false;
     return;
@@ -641,6 +674,8 @@ X.renderer3D.prototype.update_ = function(object) {
   // LOCKED DOWN: ACTION!!
   //
   // This gets executed after all dynamic content has been loaded.
+  
+  // X.TIMER(this._classname + '.update');
   
   // check if this is an X.slice as part of a X.labelmap
   var isLabelMap = (object instanceof X.slice && object._volume instanceof X.labelmap);
@@ -786,6 +821,8 @@ X.renderer3D.prototype.update_ = function(object) {
     
     this._locked = false; // we gotta unlock here already
     
+    X.TIMERSTOP(this._classname + '.update');
+    
     this._loader.addProgress(0.9); // add the missing progress
     
     return; // sayonara
@@ -872,10 +909,14 @@ X.renderer3D.prototype.update_ = function(object) {
     var glVertexBuffer = this._context.createBuffer();
     
     // bind and fill with vertices of current object
+    
+    // resize the dynamic array
+    points.resize();
+    
     this._context.bindBuffer(this._context.ARRAY_BUFFER, glVertexBuffer);
     
-    this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-        points._triplets), this._context.STATIC_DRAW);
+    this._context.bufferData(this._context.ARRAY_BUFFER, points._triplets,
+        this._context.STATIC_DRAW);
     
     // create an X.buffer to store the vertices
     // every vertex consists of 3 items (x,y,z)
@@ -927,9 +968,13 @@ X.renderer3D.prototype.update_ = function(object) {
     var glNormalBuffer = this._context.createBuffer();
     
     // bind and fill with normals of current object
+    
+    // resize the dynamic array
+    normals.resize();
+    
     this._context.bindBuffer(this._context.ARRAY_BUFFER, glNormalBuffer);
-    this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-        normals._triplets), this._context.STATIC_DRAW);
+    this._context.bufferData(this._context.ARRAY_BUFFER, normals._triplets,
+        this._context.STATIC_DRAW);
     
     // create an X.buffer to store the normals
     // every normal consists of 3 items (x,y,z)
@@ -955,7 +1000,8 @@ X.renderer3D.prototype.update_ = function(object) {
   // Objects can have point colors which can be different for each fragment.
   // If no point colors are defined, the object has a solid color.
   
-  if (existed && colors._dirty) {
+  // also check if colors is null
+  if (existed && colors && colors._dirty) {
     
     // this means the object already existed and the colors are dirty
     // therefore, we delete the old gl buffers
@@ -976,7 +1022,7 @@ X.renderer3D.prototype.update_ = function(object) {
   // X.buffer
   var colorBuffer = null;
   
-  if (colors.length > 0) {
+  if (colors) {
     
     // yes, there are point colors setup
     
@@ -997,9 +1043,13 @@ X.renderer3D.prototype.update_ = function(object) {
       var glColorBuffer = this._context.createBuffer();
       
       // bind and fill with colors defined above
+      
+      // resize the dynamic array
+      colors.resize();
+      
       this._context.bindBuffer(this._context.ARRAY_BUFFER, glColorBuffer);
-      this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-          colors._triplets), this._context.STATIC_DRAW);
+      this._context.bufferData(this._context.ARRAY_BUFFER, colors._triplets,
+          this._context.STATIC_DRAW);
       
       // create an X.buffer to store the colors
       // every color consists of 3 items (r,g,b)
@@ -1068,8 +1118,8 @@ X.renderer3D.prototype.update_ = function(object) {
       
       // bind and fill with colors defined above
       this._context.bindBuffer(this._context.ARRAY_BUFFER, glScalarBuffer);
-      this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-          scalarsArray), this._context.STATIC_DRAW);
+      this._context.bufferData(this._context.ARRAY_BUFFER, scalarsArray,
+          this._context.STATIC_DRAW);
       
       // create an X.buffer to store the colors
       // every scalar consists of 1 item
@@ -1111,6 +1161,8 @@ X.renderer3D.prototype.update_ = function(object) {
   
   // clean the object
   object._dirty = false;
+  
+  // X.TIMERSTOP(this._classname + '.update');
   
   // unlock
   this._locked = false;
