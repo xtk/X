@@ -371,8 +371,8 @@ X.loader.extensions = {
   'PIAL': [X.parserFSM, null],
   'ORIG': [X.parserFSM, null],
   'NRRD': [X.parserNRRD, null],
-  'NII': [X.parserNII, null],
-  'GZ': [X.parserNII, null], // right now nii.gz is the only
+  'NII': [X.parserNII, false],
+  'GZ': [X.parserNII, true], // right now nii.gz is the only
   // format ending .gz
   'DCM': [X.parserDCM, null],
   'DICOM': [X.parserDCM, null],
