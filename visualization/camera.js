@@ -132,7 +132,7 @@ X.camera.prototype.observe = function(interactor) {
   }
   
   goog.events.listen(interactor, X.event.events.ROTATE, this.onRotate_
-      .bind(this));  
+      .bind(this));
   goog.events.listen(interactor, X.event.events.PAN, this.onPan_.bind(this));
   goog.events.listen(interactor, X.event.events.ZOOM, this.onZoom_.bind(this));
   
@@ -385,7 +385,7 @@ X.camera.prototype.reset = function() {
  * @public
  */
 X.camera.prototype.rotate = function(distance) {
-  
+
   if ((distance instanceof Array) && (distance.length == 2)) {
     
     distance = new goog.math.Vec2(distance[0], distance[1]);
@@ -394,8 +394,9 @@ X.camera.prototype.rotate = function(distance) {
     
     throw new Error('Invalid distance vector for rotate operation.');
     
-  }  
+  }
   
+  return distance;
   // actions need to be overloaded for 2D/3D
   
 };

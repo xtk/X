@@ -145,7 +145,7 @@ X.camera3D.prototype.calculateViewingFrustum_ = function(left, right, bottom,
 X.camera3D.prototype.rotate = function(distance) {
 
   // call the superclass
-  goog.base(this, 'rotate', distance);
+  distance = goog.base(this, 'rotate', distance);
   
   // in radii, the 5 is a constant stating how quick the rotation performs..
   var angleX = -distance.x / 5 * Math.PI / 180;

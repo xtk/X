@@ -68,6 +68,9 @@ goog.inherits(X.camera2D, X.camera);
  */
 X.camera2D.prototype.rotate = function(distance) {
 
+  // call the superclass
+  distance = goog.base(this, 'rotate', distance);
+  
   // create a new event
   var _e = new X.event.WindowLevelEvent();
   
