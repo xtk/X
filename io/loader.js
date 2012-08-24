@@ -284,7 +284,7 @@ X.loader.prototype.parse = function(request, container, object) {
     }
   
   	if (container._hdrfiledata != null) {
-  		
+  	// for analyze image format. it comes with pair of files: .img & .hdr 
     _parser.parse(container, object, container._hdrfiledata, container._filedata, flags);
   	} else {
     // call the parse function and pass in the container, the object and the
@@ -376,6 +376,8 @@ X.loader.extensions = {
   // format ending .gz
   'DCM': [X.parserDCM, null],
   'DICOM': [X.parserDCM, null],
+  'IMG': [X.parserIMG, null],
+  'HDR': [X.parserIMG, null],
   '': [X.parserDCM, null],
   'CRV': [X.parserCRV, null],
   'LABEL': [X.parserLBL, null],

@@ -1,7 +1,10 @@
 /*
  * Zhizhong Liu <zhizhong.liu@loni.ucla.edu>
  * UCLA Laboratory of Neuro Imaging
- * http://loni.ucla.edu
+ * http://www.loni.ucla.edu
+ * 
+ * Based on https://github.com/xtk/X/blob/master/io/parserNII.js
+ * Under MIT License: http://www.opensource.org/licenses/mit-license.php
  */
 
 // provides
@@ -42,29 +45,42 @@ X.parserIMG = function() {
 goog.inherits(X.parserIMG, X.parser);
 
 /**
- * @inheritDoc
+ * Parse header and data files and configure the given object. When complete, a
+ * X.parser.ModifiedEvent is fired.
+ * 
+ * @param {!X.base} container A container which holds the loaded data. This can
+ *          be an X.object as well.
+ * @param {!X.object} object The object to configure.
+ * @param {!ArrayBuffer} hdrdata The header (hdr) to parse.
+ * @param {!ArrayBuffer} data The data (img) to parse.
+ * @param {*} flag An additional flag.
+ * @throws {Error} An exception if something goes wrong.
  */
 X.parserIMG.prototype.parse = function(container, object, hdrdata, data, flag) {
 
-	var b_zipped = flag;
+	X.TIMER(this._classname + '.parse');
+  
+	var _data = data;
 
-	// the position in the file
-	var position = 0;
-
-	var _data = 0;
-	var _hdrdata = 0;
-
-	if (b_zipped) {
+	if (flag) {
 		// we need to decompress the datastream
-		_data = new JXG.Util.Unzip(data.substr(position)).unzip()[0][0];
-		_hdrdata = new JXG.Util.Unzip(hdrdata.substr(position)).unzip()[0][0];
-	} else {
-		// we can use the data directly
-		_data = data.substr(position);
-		_hdrdata = hdrdata.substr(position);
+
+		// here we start the unzipping and get a typed Uint8Array back
+		_data = new JXG.Util.Unzip(new Uint8Array(data)).unzip();
+
+		// .. and use the underlying array buffer
+		_data = _data.buffer;
 	}
 
-	var MRI = this.parseStream(_hdrdata, _data);
+	// check if this data is compressed, then this int != 348
+	var sizeof_hdr = new Uint32Array(hdrdata, 0, 1)[0];
+
+	if (sizeof_hdr != 348) {
+		// this is big endian
+		this._littleEndian = false;
+	}
+
+	var MRI = this.parseStream(hdrdata, _data);
 
 	// object.MRI = MRI;
 	var _dimensions = [MRI.dim[1], MRI.dim[2], MRI.dim[3]];
@@ -89,8 +105,10 @@ X.parserIMG.prototype.parse = function(container, object, hdrdata, data, flag) {
 	}
 
 	object.create_();
-
-	this.reslice(object, MRI.data, _dimensions, min, max);
+	
+	X.TIMERSTOP(this._classname + '.parse');
+	
+	this.reslice(object, MRI);
 
 	// the object should be set up here, so let's fire a modified event
 	var modifiedEvent = new X.event.ModifiedEvent();
@@ -104,7 +122,8 @@ X.parserIMG.prototype.parse = function(container, object, hdrdata, data, flag) {
  * Parse the data stream according to the .img file format and return an
  * MRI structure which holds all parsed information.
  *
- * @param {!String} data The data stream.
+ * @param {!ArrayBuffer} hdrdata The header stream.
+ * @param {!ArrayBuffer} data The data stream.
  * @return {Object} The MRI structure which holds all parsed information.
  */
 X.parserIMG.prototype.parseStream = function(hdrdata, data) {
@@ -115,84 +134,45 @@ X.parserIMG.prototype.parseStream = function(hdrdata, data) {
 		pixdim : [], // *!< Grid spacings. */ /* float pixdim[8]; */
 		data : []
 	};
-	var MRItype = {
-		MRI_UCHAR : {
-			value : 0,
-			name : "uchar",
-			size : 1,
-			func_arrayRead : this.parseUChar8ArrayEndian.bind(this)
-		},
-		MRI_SSHORT : {
-			value : 3,
-			name : "short",
-			size : 2,
-			func_arrayRead : this.parseSInt16ArrayEndian.bind(this)
-		},
-		MRI_SINT : {
-			value : 5,
-			name : "sint",
-			size : 4,
-			func_arrayRead : this.parseSInt32ArrayEndian.bind(this)
-		},
-		MRI_FLOAT : {
-			value : 6,
-			name : "float",
-			size : 4,
-			func_arrayRead : this.parseFloat32ArrayEndian.bind(this)
-		}
-	};
-	// syslog('Reading .img header');
-	var dataptr = new X.parserHelper(hdrdata);
-
-	var bigEndian = true;
-
-	dataptr.setParseFunction(this.parseUInt32Array.bind(this), dataptr._sizeOfInt);
-	if (dataptr.read() == 348) {
-		dataptr.setBigEndian(true);
-	} else {
-		dataptr.jumpTo(0);
-		dataptr.setParseFunction(this.parseUInt32EndianSwappedArray.bind(this), dataptr._sizeOfInt);
-		if (dataptr.read() == 348) {
-			bigEndian = false;
-			dataptr.setBigEndian(false);
-		} else {
-			window.console.log('Invalid IMG header: sizeof_hdr is not 348');
-			throw new Error('Invalid IMG header: sizeof_hdr is not 348');
-		} 
-	}
 	
-	dataptr.jumpTo(40);
-	dataptr.setParseFunction(this.parseUInt16ArrayEndian.bind(this), dataptr._sizeOfShort);
-	MRI.dim = dataptr.read(8);
+	// read header first
+	this._data = hdrdata;
+	
+	this.jumpTo(40);
+	MRI.dim = this.scan('ushort', 8);
+	
+	this.jumpTo(70);
+	MRI.datatype = this.scan('ushort');
+	
+	this.jumpTo(76);
+	MRI.pixdim = this.scan('float', 8);
+	
 	var volsize = MRI.dim[1] * MRI.dim[2] * MRI.dim[3];
-
-	dataptr.jumpTo(70);
-	MRI.datatype = dataptr.read();
-	
-	dataptr.jumpTo(76);
-	dataptr.setParseFunction(this.parseFloat32ArrayEndian.bind(this), dataptr._sizeOfFloat);
-	MRI.pixdim = dataptr.read(8);
 
 	window.console.log("MRI.datatype " + MRI.datatype);
 	window.console.log(MRI.dim[1] + "x" + MRI.dim[2] + "x" + MRI.dim[3]);
 	window.console.log(MRI.pixdim[1] + "x" + MRI.pixdim[2] + "x" + MRI.pixdim[3]);
 
+
+	// read data
+	this._data = data;
+	this.jumpTo(0);
 	switch (MRI.datatype) {
 		case 2:
 			// unsigned char
-			MRI.MRIdatatype = MRItype.MRI_UCHAR;
+			MRI.data = this.scan('uchar', volsize);
 			break;
 		case 4:
 			// signed short
-			MRI.MRIdatatype = MRItype.MRI_SSHORT;
+			MRI.data = this.scan('sshort', volsize);
 			break;
 		case 8:
 			// signed int
-			MRI.MRIdatatype = MRItype.MRI_SINT;
+			MRI.data = this.scan('sint', volsize);
 			break;
 		case 16:
 			// float
-			MRI.MRIdatatype = MRItype.MRI_FLOAT;
+			MRI.data = this.scan('float', volsize);
 			break;
 
 		default:
@@ -200,13 +180,10 @@ X.parserIMG.prototype.parseStream = function(hdrdata, data) {
 			throw new Error('Unsupported IMG data type: ' + MRI.datatype);
 	}
 
-	//
-	// we can grab the min max values like this and skip the stats further down
-	//
-	var a_ret = MRI.MRIdatatype.func_arrayRead(data, 0, volsize, bigEndian);
-	MRI.data = a_ret[0];
-	MRI.min = a_ret[2];
-	MRI.max = a_ret[1];
+	// get the min and max intensities
+	var min_max = this.arrayMinMax(MRI.data);
+	MRI.min = min_max[0];
+	MRI.max = min_max[1];
 
 	return MRI;
 
