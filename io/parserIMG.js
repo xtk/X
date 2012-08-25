@@ -149,10 +149,9 @@ X.parserIMG.prototype.parseStream = function(hdrdata, data) {
 	
 	var volsize = MRI.dim[1] * MRI.dim[2] * MRI.dim[3];
 
-	window.console.log("MRI.datatype " + MRI.datatype);
-	window.console.log(MRI.dim[1] + "x" + MRI.dim[2] + "x" + MRI.dim[3]);
-	window.console.log(MRI.pixdim[1] + "x" + MRI.pixdim[2] + "x" + MRI.pixdim[3]);
-
+	// window.console.log("MRI.datatype " + MRI.datatype);
+	// window.console.log(MRI.dim[1] + "x" + MRI.dim[2] + "x" + MRI.dim[3]);
+	// window.console.log(MRI.pixdim[1] + "x" + MRI.pixdim[2] + "x" + MRI.pixdim[3]);
 
 	// read data
 	this._data = data;
