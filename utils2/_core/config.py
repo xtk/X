@@ -82,4 +82,15 @@ BUILD_OUTPUT_PATH = os.path.normpath( os.path.join( XBUILD_PATH , SOFTWARE_SHORT
 DEPS_OUTPUT_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH , SOFTWARE_SHORT.lower() + '-deps.js' ) )
 DOC_OUTPUT_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH , 'doc/' ) )
 
+UNIT_TESTS = os.path.normpath( os.sep + 'testing' + os.sep + SOFTWARE_SHORT.lower() + '_tests.html' )
+UNIT_TESTS_BUILD = os.path.normpath( os.sep + 'testing' + os.sep + SOFTWARE_SHORT.lower() + '_tests_build.html' )
+VISUAL_TESTS_BASEPATH = os.sep + 'testing' + os.sep + 'visualization' + os.sep
+VISUAL_TESTS = ['test_trk.html']
+VISUAL_BASELINES_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'testing/visualization/baselines/' ) )
+JSCOVERAGE_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/jscoverage/' ) )
+JSCOVERAGE_ARGUMENTS = " --document-root=" + SOFTWARE_PATH + " --no-instrument=/lib/ --no-instrument=/testing/ --no-instrument=/utils/ --no-instrument=/core/testing/ --no-instrument=/math/testing/ --no-instrument=xtk-deps.js &"
+SELENIUM_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/selenium/' ) )
+SELENIUM_CHROMEDRIVER_PATH = os.path.normpath( os.path.join( SELENIUM_PATH, 'chromedrivers/' ) )
+PYPNG_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/pypng-0.0.9/code' ) )
+
 TEMP_PATH = tempfile.gettempdir()

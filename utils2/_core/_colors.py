@@ -14,3 +14,16 @@ class Colors( object ):
   ORANGE = '\033[93m'
   CYAN = '\033[36m'
   _CLEAR = '\033[0m'
+
+  @staticmethod
+  def strip( text ):
+    '''
+    Strips all color codes from a text.
+    '''
+    members = [attr for attr in Colors.__dict__.keys() if not attr.startswith( "__" ) and not attr == 'strip']
+
+    for c in members:
+
+      text = text.replace( vars( Colors )[c], '' )
+
+    return text

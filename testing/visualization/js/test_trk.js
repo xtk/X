@@ -25,7 +25,7 @@ window.onload = function() {
   
   // load a .trk file
   var fibers = new X.fibers();
-  fibers.file = 'data/complete.trk';
+  fibers.file = 'data/smalltrack.trk';
   
   // add the object
   test_renderer.add(fibers);
