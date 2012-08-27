@@ -115,13 +115,9 @@ X.thresholdable.prototype.__defineGetter__('lowerThreshold', function() {
 X.thresholdable.prototype.__defineSetter__('lowerThreshold', function(
     lowerThreshold) {
 
-  if (lowerThreshold >= this._min && lowerThreshold <= this._max) {
-    
-    this._lowerThreshold = lowerThreshold;
-    
-    // no modified event since the rendering loop always checks it
-    
-  }
+  this._lowerThreshold = lowerThreshold;
+  
+  // no modified event since the rendering loop always checks it
   
 });
 
