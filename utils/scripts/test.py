@@ -57,7 +57,7 @@ def calculate( xtkTestFile, xtkLibDir ):
   print
 
   print '======== GOOGLE CHROME RESULTS ========'
-  browserString = 'chrome'
+  browserString = 'firefox'
   #display = Display( visible=0, size=( 1024, 768 ) )
   #display.start()
   chrome_results = runTests( xtkTestFile, xtkLibDir, browserString )
@@ -273,7 +273,7 @@ def runTests( xtkTestFile, xtkLibDir, browserString ):
     time.sleep( 1 )
 
     # perform interaction tests, if we are using chrome
-    if  browserString == 'chrome':
+    if  browserString == 'firefox':
       canvas = browser.find_element_by_tag_name( 'canvas' )
 
       actions = ActionChains( browser )
