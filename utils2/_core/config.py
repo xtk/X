@@ -88,7 +88,8 @@ VISUAL_TESTS_BASEPATH = os.sep + 'testing' + os.sep + 'visualization' + os.sep
 VISUAL_TESTS = ['test_trk.html']
 VISUAL_BASELINES_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'testing/visualization/baselines/' ) )
 JSCOVERAGE_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/jscoverage/' ) )
-JSCOVERAGE_ARGUMENTS = " --document-root=" + SOFTWARE_PATH + " --no-instrument=/lib/ --no-instrument=/testing/ --no-instrument=/utils/ --no-instrument=/core/testing/ --no-instrument=/math/testing/ --no-instrument=xtk-deps.js &"
+JSCOVERAGE_OUTPUT_PATH = os.path.normpath( os.path.join( tempfile.gettempdir(), 'xbuild_coverage/' ) )
+JSCOVERAGE_ARGUMENTS = " --report-dir=" + JSCOVERAGE_OUTPUT_PATH + " --document-root=" + SOFTWARE_PATH + " --no-instrument=/lib/ --no-instrument=/testing/ --no-instrument=/utils/ --no-instrument=/core/testing/ --no-instrument=/math/testing/ --no-instrument=xtk-deps.js &"
 SELENIUM_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/selenium/' ) )
 SELENIUM_CHROMEDRIVER_PATH = os.path.normpath( os.path.join( SELENIUM_PATH, 'chromedrivers/' ) )
 PYPNG_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/pypng-0.0.9/code' ) )

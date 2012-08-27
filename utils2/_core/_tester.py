@@ -4,8 +4,10 @@
 # (c) 2012 The XTK Developers <dev@goXTK.com>
 #
 
+import json
 import os
 import platform
+import re
 import sys
 import subprocess
 import tempfile
@@ -117,8 +119,17 @@ class Tester( object ):
     '''
     Tear down the testing environment.
     '''
+
+    # save jscoverage results
+    self.__browser.switch_to_window( self.__browser.window_handles[0] )
+    self.__browser.execute_script( 'jscoverage_storeButton_click();' )
+
+    time.sleep( 1 )
+
+    # quit browser
     self.__browser.quit()
 
+    # shutdown coverage server
     os.system( self.getCoverageServer() + " --shutdown" )
 
 
@@ -285,18 +296,18 @@ class Tester( object ):
     return baseline
 
 
-  def parse_unit_results(self, results):
+  def parse_unit_results( self, results ):
     '''
     Parse a Closure Unit test report and return a proper log.
     '''
-      
+
     log = []
-    
+
     error_in_test = False
     _log = ''
-    
-    for l in results.split('\n'):
-      
+
+    for l in results.split( '\n' ):
+
       if error_in_test:
         # this is part of an error
         if l == '':
@@ -305,57 +316,124 @@ class Tester( object ):
           continue
         else:
           log[-1][2] += l + '\n'
-        
-      l_arr = l.split(' ')
-      
-      if len(l_arr) == 5 and l_arr[4] == 'PASSED':
+
+      l_arr = l.split( ' ' )
+
+      if len( l_arr ) == 5 and l_arr[4] == 'PASSED':
         # this is a passed test
-        log.append([l_arr[2], 'passed', '', 1, None, None])
-      elif len(l_arr) == 5 and l_arr[4] == 'FAILED':
+        log.append( [l_arr[2], 'passed', '', 1, None, None] )
+      elif len( l_arr ) == 5 and l_arr[4] == 'FAILED':
         # this is a failed test
         error_in_test = True
-        log.append([l_arr[2], 'failed', '', 1, None, None])
-    
+        log.append( [l_arr[2], 'failed', '', 1, None, None] )
+
     return log
 
 
-  def print_log(self, log):
+  def print_log( self, log ):
     '''
     Print the log nicely.
     '''
-    
+
     for t in log:
-      
+
       test_result = t[1].upper()
       if test_result == 'FAILED':
         test_result = Colors.RED + test_result + Colors._CLEAR
         test_result += '\n' + Colors.PURPLE + t[2] + Colors._CLEAR
-        
+
       print Colors.ORANGE + t[0] + ': ' + Colors._CLEAR + test_result
-    
-    
-  def print_summary(self, log):
+
+
+  def print_summary( self, log ):
     '''
     Print a nice summary.
     '''
 
     no_passed = 0
     no_failed = 0
-    
+
     for t in log:
-      
+
       test_result = t[1].upper()
       if test_result == 'FAILED':
-        no_failed += 1    
+        no_failed += 1
       else:
         no_passed += 1
-        
-    no_total = no_passed + no_failed      
+
+    no_total = no_passed + no_failed
     print
     print Colors.ORANGE + 'TOTAL: '
-    print Colors._CLEAR + '   ' + str(no_passed) + '/' + str(no_total) + ' PASSED'
-    print Colors.RED + '   ' + str(no_failed) + '/' + str(no_total) + ' FAILED' 
+    print Colors._CLEAR + '   ' + str( no_passed ) + '/' + str( no_total ) + ' PASSED'
+    print Colors.RED + '   ' + str( no_failed ) + '/' + str( no_total ) + ' FAILED'
     print Colors._CLEAR
+
+
+  def parse_coverage( self ):
+    '''
+    Parse the json output of the coverage server and return a list containing
+    all important information.
+    
+    This is very restrictive and rather doesn't count than counts coverage.
+    '''
+
+    # log format:
+    # filepath | lines_tested | lines_untested | percent_covered | lines
+    # lines is a sublist, structured like this
+    #  line_number | count (-1 for ignored) | code
+    log = []
+
+    with open( os.path.join( config.JSCOVERAGE_OUTPUT_PATH, 'jscoverage.json' ) ) as f:
+
+      json_content = json.loads( f.read() )
+
+
+    for j in json_content:
+
+      # grab each file and parse the coverage information
+      f = json_content[j]
+
+      _lines_tested = 0
+      _lines_untested = 0
+      _percent_coverage = 0
+
+      _lines = f['source']
+      _count = f['coverage']
+
+      lines = []
+
+      # loop through lines
+      for i, l in enumerate( _lines ):
+
+        # strip html from http://stackoverflow.com/a/4869782/1183453
+        l = re.sub( '<[^<]+?>', '', l )
+
+        # there can be a case were the last line was not counted
+        # when nothing was exported
+        if i > len( _count ) - 1:
+          hits = None
+        else:
+          hits = _count[i]
+
+        if hits == None:
+          # ignored (comment etc.)
+          hits = -1
+        elif hits == 0:
+          # not tested
+          _lines_untested += 1
+        else:
+          # tested
+          _lines_tested += 1
+
+        lines.append( [i, hits, l] )
+
+      percent_covered = _lines_tested / ( _lines_tested + _lines_untested )
+      percent_covered = round( percent_covered * 100 )
+
+      # now we can attach to the log
+      log.append( [j, _lines_tested, _lines_untested, percent_covered, lines] )
+
+    return log
 
 
   def run( self, options=None ):
@@ -454,15 +532,34 @@ class Tester( object ):
     # print the results in verbose mode
     if options.verbose:
       self.print_log( log )
-      
+
     # but always print the summary
     self.print_summary( log )
-    
+
+    # parse the coverage analysis
+    coverage_log = self.parse_coverage()
+
     # now we create a dashboard submission file
     cdasher = CDash()
     xmlfile = cdasher.run( ['Testing', log] )
 
     with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Test.xml' ), 'w' ) as f:
+      f.write( xmlfile )
+
+    # .. and two coverage submission files
+
+    # first is the summary
+    cdasher = CDash()
+    xmlfile = cdasher.run( ['Coverage', coverage_log] )
+
+    with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Coverage.xml' ), 'w' ) as f:
+      f.write( xmlfile )
+
+    # second is the log for each LOC
+    cdasher = CDash()
+    xmlfile = cdasher.run( ['CoverageLog', coverage_log] )
+
+    with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_CoverageLog.xml' ), 'w' ) as f:
       f.write( xmlfile )
 
     print Colors.ORANGE + 'Testing done.' + Colors._CLEAR

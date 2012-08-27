@@ -62,7 +62,7 @@ class Uploader( object ):
     #
     print Colors.CYAN + 'Loading Testing Report..' + Colors._CLEAR
     testReport = os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Test.xml' )
-    
+
     if os.path.isfile( testReport ):
       # found a build report
       print Colors.ORANGE + 'Found Testing Report!' + Colors._CLEAR
@@ -77,10 +77,56 @@ class Uploader( object ):
       print Colors.ORANGE + 'Not Found!' + Colors._CLEAR
       testReport = None
 
+    #
+    # coverage summary
+    # 
+    print Colors.CYAN + 'Loading Coverage Summary..' + Colors._CLEAR
+    coverageReport = os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Coverage.xml' )
+
+    if os.path.isfile( coverageReport ):
+      # found a build report
+      print Colors.ORANGE + 'Found Coverage Summary!' + Colors._CLEAR
+
+      with open( coverageReport, 'r' ) as f:
+        cdasher.submit( f.read(), submissiontype )
+
+      print Colors.ORANGE + '..Successfully uploaded as ' + Colors.CYAN + submissiontype + Colors.ORANGE + '.' + Colors._CLEAR
+
+    else:
+      # not found
+      print Colors.ORANGE + 'Not Found!' + Colors._CLEAR
+      coverageReport = None
+
+    #
+    # coverage log
+    # 
+    print Colors.CYAN + 'Loading Coverage Log..' + Colors._CLEAR
+    coverageLog = os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_CoverageLog.xml' )
+
+    if os.path.isfile( coverageLog ):
+      # found a build report
+      print Colors.ORANGE + 'Found Coverage Log!' + Colors._CLEAR
+
+      with open( coverageLog, 'r' ) as f:
+        cdasher.submit( f.read(), submissiontype )
+
+      print Colors.ORANGE + '..Successfully uploaded as ' + Colors.CYAN + submissiontype + Colors.ORANGE + '.' + Colors._CLEAR
+
+    else:
+      # not found
+      print Colors.ORANGE + 'Not Found!' + Colors._CLEAR
+      coverageLog = None
+
+
     # delete old reports
     if buildReport:
       os.unlink( buildReport )
 
     if testReport:
-      print testReport
-      #os.unlink( testReport )
+      os.unlink( testReport )
+
+    if coverageReport:
+      os.unlink( coverageReport )
+
+    if coverageLog:
+      print coverageLog

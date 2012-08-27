@@ -56,6 +56,10 @@ class CDash( object ):
       nestedElement = self.fillBuildElement( nestedElement, options[1] )
     elif options[0] == 'Testing':
       nestedElement = self.fillTestingElement( nestedElement, options[1] )
+    elif options[0] == 'Coverage':
+      nestedElement = self.fillCoverageElement( nestedElement, options[1] )
+    elif options[0] == 'CoverageLog':
+      nestedElement = self.fillCoverageLogElement( nestedElement, options[1] )
 
     # now attach the nested element to the site element
     siteElement.appendChild( nestedElement )
@@ -206,25 +210,25 @@ class CDash( object ):
         imageResultBase64 = None
         with open( imageResultPath, "rb" ) as im1:
           imageResultBase64 = base64.b64encode( im1.read() )
-          
+
         namedImageResultElement = xml.createElement( 'NamedMeasurement' )
         namedImageResultElement.setAttribute( 'type', 'image/png' )
         namedImageResultElement.setAttribute( 'name', 'Result Image' )
-        namedImageResultElement.appendChild(self.createXMLNode('Value', str(imageResultBase64)))
-        results_element.appendChild( namedImageResultElement )      
-        
+        namedImageResultElement.appendChild( self.createXMLNode( 'Value', str( imageResultBase64 ) ) )
+        results_element.appendChild( namedImageResultElement )
+
       if t[5]:
         # convert to base64
         imageBaselinePath = t[5]
         imageBaselineBase64 = None
         with open( imageBaselinePath, "rb" ) as im2:
-          imageBaselineBase64 = base64.b64encode( im2.read() )        
+          imageBaselineBase64 = base64.b64encode( im2.read() )
 
         namedImageBaselineElement = xml.createElement( 'NamedMeasurement' )
         namedImageBaselineElement.setAttribute( 'type', 'image/png' )
         namedImageBaselineElement.setAttribute( 'name', 'Baseline Image' )
-        namedImageBaselineElement.appendChild(self.createXMLNode('Value', str(imageBaselineBase64)))
-        results_element.appendChild( namedImageBaselineElement )    
+        namedImageBaselineElement.appendChild( self.createXMLNode( 'Value', str( imageBaselineBase64 ) ) )
+        results_element.appendChild( namedImageBaselineElement )
 
       accurate_time_element = xml.createElement( 'NamedMeasurement' )
       accurate_time_element.setAttribute( 'name', 'Accurate Execution Time' )
@@ -239,6 +243,116 @@ class CDash( object ):
       testingElement.appendChild( test_element )
 
     return testingElement
+
+  def fillCoverageElement( self, coverageElement, cov_log ):
+    '''
+    Parses a coverage log and creates the proper XML elements.
+    
+    'cov_log' is a list in this format:
+    
+     [
+     
+      # filepath | lines_tested | lines_untested | percent_covered | lines
+      ['/X.js', 10, 0, 100, lines],
+      ['/X2.js', 21, 0, 100, lines],
+     
+     ]    
+
+    # 
+    # lines is a sublist, structured like this
+    #  line_number | count (-1 for ignored) | code     
+     
+    '''
+    xml = self.__xml
+
+    total_lines_tested = 0
+    total_lines_untested = 0
+    total_lines = 0
+    total_percentage = 0
+
+    for c in cov_log:
+
+      # add information for each file
+      file_name = c[0]
+      lines_tested = c[1]
+      lines_untested = c[2]
+      percentage = int( c[3] )
+
+      # identification
+      file_element = xml.createElement( 'File' )
+      file_element.setAttribute( 'Name', os.path.split( file_name )[1] )
+      file_element.setAttribute( 'FullPath', file_name )
+      file_element.setAttribute( 'Covered', 'true' )
+
+      # now the real values
+      file_element.appendChild( self.createXMLNode( 'LOCTested', str( lines_tested ) ) )
+      file_element.appendChild( self.createXMLNode( 'LOCUntested', str( lines_untested ) ) )
+      file_element.appendChild( self.createXMLNode( 'PercentCoverage', str( percentage ) ) )
+
+      # ..append this entry
+      coverageElement.appendChild( file_element )
+
+      # and update the total counters
+      total_lines_tested += lines_tested
+      total_lines_untested += lines_untested
+
+    # and a summary for the whole submission
+    total_lines = total_lines_tested + total_lines_untested
+    total_percentage = ( total_lines_tested / total_lines ) * 100
+    total_percentage = int( round( total_percentage ) )
+
+    coverageElement.appendChild( self.createXMLNode( 'LOCTested', str( total_lines_tested ) ) )
+    coverageElement.appendChild( self.createXMLNode( 'LOCUntested', str( total_lines_untested ) ) )
+    coverageElement.appendChild( self.createXMLNode( 'LOC', str( total_lines ) ) )
+    coverageElement.appendChild( self.createXMLNode( 'PercentCoverage', str( total_percentage ) ) )
+
+    return coverageElement
+
+
+  def fillCoverageLogElement( self, coverageLogElement, cov_log ):
+    '''
+    Parses a coverage log and creates the proper XML elements.
+    
+    'cov_log' is a list in this format:
+    
+     [
+     
+      # filepath | lines_tested | lines_untested | percent_covered | lines
+      ['/X.js', 10, 0, 100, lines],
+      ['/X2.js', 21, 0, 100, lines],
+     
+     ]    
+
+    # 
+    # lines is a sublist, structured like this
+    #  line_number | count (-1 for ignored) | code     
+     
+    '''
+    xml = self.__xml
+
+    for c in cov_log:
+
+      # add information for each file
+      file_name = c[0]
+
+      # identification
+      file_element = xml.createElement( 'File' )
+      file_element.setAttribute( 'Name', os.path.split( file_name )[1] )
+      file_element.setAttribute( 'FullPath', file_name )
+
+      # now for each LOC
+      for l in c[4]:
+
+        line_element = self.createXMLNode( 'Line', l[2] )
+        line_element.setAttribute( 'Number', str( l[0] - 1 ) ) # there is the offset of 1
+        line_element.setAttribute( 'Count', str( l[1] ) )
+
+        file_element.appendChild( line_element )
+
+      # ..append this entry
+      coverageLogElement.appendChild( file_element )
+
+    return coverageLogElement
 
 
   def createSiteElement( self ):
