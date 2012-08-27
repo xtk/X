@@ -321,11 +321,11 @@ class Tester( object ):
 
       if len( l_arr ) == 5 and l_arr[4] == 'PASSED':
         # this is a passed test
-        log.append( [l_arr[2], 'passed', '', 1, None, None] )
+        log.append( [l_arr[2], 'passed', '', 1, None, None, None, None] )
       elif len( l_arr ) == 5 and l_arr[4] == 'FAILED':
         # this is a failed test
         error_in_test = True
-        log.append( [l_arr[2], 'failed', '', 1, None, None] )
+        log.append( [l_arr[2], 'failed', '', 1, None, None, None, None] )
 
     return log
 
@@ -485,7 +485,11 @@ class Tester( object ):
         # clock it
         start_time = time.time()
 
-        self.visit( _test )
+        if options.build:
+          # if we test against the build tree, append ?build to the url
+          self.visit( _test + '?build' )
+        else:
+          self.visit( _test )
 
         # wait until loading fully completed
         timer = 0
@@ -505,6 +509,10 @@ class Tester( object ):
         baseline_file = self.baseline( testFileId )
         result_image = self.compare_images( screenshot_file, baseline_file )
 
+        # grab the FPS and the startup time
+        fps = self.__browser.execute_script( 'return 1000/frameTime;' )
+        startup_time = self.__browser.execute_script( 'return startup;' )
+
         #
         # add log entry
         #
@@ -519,7 +527,7 @@ class Tester( object ):
           test_result = 'passed'
           test_log = ''
 
-        log.append( ['Visualization' + testFileId, test_result, test_log, execution_time, screenshot_file, baseline_file] )
+        log.append( ['Visualization' + testFileId, test_result, test_log, execution_time, screenshot_file, baseline_file, startup_time, fps] )
 
         # use the mouse but only in chrome (firefox might crash)
         # this is just to increase testing coverage of interactors
@@ -541,7 +549,7 @@ class Tester( object ):
 
     # now we create a dashboard submission file
     cdasher = CDash()
-    xmlfile = cdasher.run( ['Testing', log] )
+    xmlfile = cdasher.run( ['Testing', log, options.build] )
 
     with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Test.xml' ), 'w' ) as f:
       f.write( xmlfile )
@@ -550,14 +558,14 @@ class Tester( object ):
 
     # first is the summary
     cdasher = CDash()
-    xmlfile = cdasher.run( ['Coverage', coverage_log] )
+    xmlfile = cdasher.run( ['Coverage', coverage_log, options.build] )
 
     with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Coverage.xml' ), 'w' ) as f:
       f.write( xmlfile )
 
     # second is the log for each LOC
     cdasher = CDash()
-    xmlfile = cdasher.run( ['CoverageLog', coverage_log] )
+    xmlfile = cdasher.run( ['CoverageLog', coverage_log, options.build] )
 
     with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_CoverageLog.xml' ), 'w' ) as f:
       f.write( xmlfile )

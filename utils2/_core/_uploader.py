@@ -129,4 +129,4 @@ class Uploader( object ):
       os.unlink( coverageReport )
 
     if coverageLog:
-      print coverageLog
+      os.unlink( coverageLog )

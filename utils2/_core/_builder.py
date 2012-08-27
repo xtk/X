@@ -123,7 +123,7 @@ class Builder( object ):
 
     # now we create a dashboard submission file
     cdasher = CDash()
-    xmlfile = cdasher.run( ['Build', log] )
+    xmlfile = cdasher.run( ['Build', log, True] )
 
     with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Build.xml' ), 'w' ) as f:
       f.write( xmlfile )

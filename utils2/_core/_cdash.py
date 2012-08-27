@@ -44,10 +44,15 @@ class CDash( object ):
     options
       [type, log]
     '''
+    # check if are running something against the build tree
+    if len( options ) > 2:
+      against_build = options[2]
+
+
     # create the CDash XML elements
 
     # .. the <Site> element
-    siteElement = self.createSiteElement()
+    siteElement = self.createSiteElement( against_build )
 
     # .. the nested element of a certain type
     nestedElement = self.createNestedElement( options[0] )
@@ -149,9 +154,9 @@ class CDash( object ):
     
      [
      
-      # The name, Passed/Failed, Testlog, Execution Time [ms], ResultImage, BaselineImage
-      ['Testname 1', 'passed', 'Testlog\n\nDone', 200, None, None],
-      ['Testname 2', 'failed', 'Testlog\n\nblabla', 5599, None, None]
+      # The name, Passed/Failed, Testlog, Execution Time [ms], ResultImage, BaselineImage, StartupTime [ms], FPS
+      ['Testname 1', 'passed', 'Testlog\n\nDone', 200, None, None, 616, 57.7],
+      ['Testname 2', 'failed', 'Testlog\n\nblabla', 5599, None, None, None]
      
      ]
     '''
@@ -197,7 +202,7 @@ class CDash( object ):
 
       # then the execution time
       execution_time_element = xml.createElement( 'NamedMeasurement' )
-      execution_time_element.setAttribute( 'name', 'Execution Time' )
+      execution_time_element.setAttribute( 'name', 'Execution Time [s]' )
       execution_time_element.setAttribute( 'type', 'numeric/double' )
       execution_time_element.appendChild( self.createXMLNode( 'Value', test_execution_time ) )
 
@@ -230,8 +235,25 @@ class CDash( object ):
         namedImageBaselineElement.appendChild( self.createXMLNode( 'Value', str( imageBaselineBase64 ) ) )
         results_element.appendChild( namedImageBaselineElement )
 
+      # if we have measurements for the startup time, add these
+      if t[6]:
+        startup_time_element = xml.createElement( 'NamedMeasurement' )
+        startup_time_element.setAttribute( 'name', 'Start-up Time [s]' )
+        startup_time_element.setAttribute( 'type', 'numeric/double' )
+        startup_time_element.appendChild( self.createXMLNode( 'Value', str( float( t[6] ) / 1000.0 ) ) )
+        results_element.appendChild( startup_time_element )
+
+      # .. same for the FPS
+      if t[7]:
+        fps_element = xml.createElement( 'NamedMeasurement' )
+        fps_element.setAttribute( 'name', 'FPS' )
+        fps_element.setAttribute( 'type', 'numeric/double' )
+        fps_element.appendChild( self.createXMLNode( 'Value', str( round( t[7], 1 ) ) ) )
+        results_element.appendChild( fps_element )
+
+
       accurate_time_element = xml.createElement( 'NamedMeasurement' )
-      accurate_time_element.setAttribute( 'name', 'Accurate Execution Time' )
+      accurate_time_element.setAttribute( 'name', 'Accurate Execution Time [s]' )
       accurate_time_element.setAttribute( 'type', 'text/string' )
       accurate_time_element.appendChild( self.createXMLNode( 'Value', test_execution_time ) )
       results_element.appendChild( accurate_time_element )
@@ -355,7 +377,7 @@ class CDash( object ):
     return coverageLogElement
 
 
-  def createSiteElement( self ):
+  def createSiteElement( self, build ):
     '''
     Creates the top level CDash Site Element.
     
@@ -364,6 +386,12 @@ class CDash( object ):
 
     # grab the current xml structure
     xml = self.__xml
+
+    # check if we run against a build tree
+    if build:
+      type = 'build'
+    else:
+      type = 'dev'
 
     #
     # create <Site>
@@ -379,7 +407,7 @@ class CDash( object ):
 
     siteElement = xml.createElement( 'Site' )
     # .. and the attributes for it
-    siteElement.setAttribute( 'BuildName', os_platform + '-' + os_version )
+    siteElement.setAttribute( 'BuildName', os_platform + '-' + os_version + '-' + type )
     siteElement.setAttribute( 'BuildStamp', buildtime + '-${BUILDTYPE}' )
     siteElement.setAttribute( 'Hostname', hostname )
     siteElement.setAttribute( 'Name', hostname )
