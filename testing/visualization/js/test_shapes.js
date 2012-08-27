@@ -1,26 +1,5 @@
-if (location.href.match(/(\?|&)build($|&|=)/)) {
-  
-  // testing the BUILD tree
-  addJavascript('../../utils/xtk.js', 'head');
-  
-  console.log('Testing the BUILD tree.');
-  
-} else {
-  
-  console.log('Testing the DEV tree.');
-  
-  // includes
-  goog.require('X.renderer3D');
-  goog.require('X.cube');
-  goog.require('X.sphere');
-  goog.require('X.cylinder');
-  
-}
+test = function() {
 
-window.onload = function() {
-
-  window.console.time('startup');
-  
   // create a new test_renderer
   test_renderer = new X.renderer3D();
   test_renderer.init();
@@ -50,12 +29,14 @@ window.onload = function() {
   // .. and render it
   test_renderer.camera.position = [-200, 0, 300];
   
-  test_renderer.onShowtime = function() {
-
-    window.console.timeEnd('startup');
-    
-  };
-  
   test_renderer.render();
+  
+  // now a hack to force the onshowtime function even if there is no loading
+  // this way we get a loading time here as well.
+  setTimeout(function() {
+
+    eval('test_renderer.onShowtime()');
+    
+  }, 10);
   
 };
