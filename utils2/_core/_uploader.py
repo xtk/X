@@ -62,7 +62,7 @@ class Uploader( object ):
     #
     print Colors.CYAN + 'Loading Testing Report..' + Colors._CLEAR
     testReport = os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Test.xml' )
-
+    
     if os.path.isfile( testReport ):
       # found a build report
       print Colors.ORANGE + 'Found Testing Report!' + Colors._CLEAR

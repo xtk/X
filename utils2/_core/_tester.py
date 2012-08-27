@@ -285,12 +285,83 @@ class Tester( object ):
     return baseline
 
 
+  def parse_unit_results(self, results):
+    '''
+    Parse a Closure Unit test report and return a proper log.
+    '''
+      
+    log = []
+    
+    error_in_test = False
+    _log = ''
+    
+    for l in results.split('\n'):
+      
+      if error_in_test:
+        # this is part of an error
+        if l == '':
+          # this is the last line of the log
+          error_in_test = False # reset the flag
+          continue
+        else:
+          log[-1][2] += l + '\n'
+        
+      l_arr = l.split(' ')
+      
+      if len(l_arr) == 5 and l_arr[4] == 'PASSED':
+        # this is a passed test
+        log.append([l_arr[2], 'passed', '', 1, None, None])
+      elif len(l_arr) == 5 and l_arr[4] == 'FAILED':
+        # this is a failed test
+        error_in_test = True
+        log.append([l_arr[2], 'failed', '', 1, None, None])
+    
+    return log
+
+
+  def print_log(self, log):
+    '''
+    Print the log nicely.
+    '''
+    
+    for t in log:
+      
+      test_result = t[1].upper()
+      if test_result == 'FAILED':
+        test_result = Colors.RED + test_result + Colors._CLEAR
+        test_result += '\n' + Colors.PURPLE + t[2] + Colors._CLEAR
+        
+      print Colors.ORANGE + t[0] + ': ' + Colors._CLEAR + test_result
+    
+    
+  def print_summary(self, log):
+    '''
+    Print a nice summary.
+    '''
+
+    no_passed = 0
+    no_failed = 0
+    
+    for t in log:
+      
+      test_result = t[1].upper()
+      if test_result == 'FAILED':
+        no_failed += 1    
+      else:
+        no_passed += 1
+        
+    no_total = no_passed + no_failed      
+    print
+    print Colors.ORANGE + 'TOTAL: '
+    print Colors._CLEAR + '   ' + str(no_passed) + '/' + str(no_total) + ' PASSED'
+    print Colors.RED + '   ' + str(no_failed) + '/' + str(no_total) + ' FAILED' 
+    print Colors._CLEAR
+
+
   def run( self, options=None ):
     '''
     Performs the action.
     '''
-
-    log = []
 
     print 'Testing ' + config.SOFTWARE_SHORT + '...'
 
@@ -318,12 +389,8 @@ class Tester( object ):
 
     # .. grab the result
     result_unit = self.__browser.execute_script( 'return window.G_testRunner.getReport(true);' )
-
+    # .. and fill our log
     log = self.parse_unit_results( result_unit )
-
-    if options.verbose:
-      # print the results with errors in red
-      print result_unit.replace( 'ERROR', Colors.RED + 'ERROR' + Colors._CLEAR )
 
     #
     # VISUAL TESTS
@@ -366,46 +433,31 @@ class Tester( object ):
         end_time = time.time()
         execution_time = end_time - start_time
 
-        test_result = Colors.RED + 'FAILED' + Colors._CLEAR
+        test_result = 'failed'
         test_log = 'Comparison of ' + screenshot_file + ' and ' + baseline_file + ' failed!'
 
         if result_image:
           # this means the test passed
-          test_result = 'PASSED'
+          test_result = 'passed'
           test_log = ''
 
-        log.append( ['Visualization' + testFileId, Colors.strip( test_result ).lower(), test_log, execution_time, screenshot_file, baseline_file] )
-
-        # in verbose mode, directly print the result
-        if options.verbose:
-          print 'Visualization' + testFileId + ': ' + test_result
-
+        log.append( ['Visualization' + testFileId, test_result, test_log, execution_time, screenshot_file, baseline_file] )
 
         # use the mouse but only in chrome (firefox might crash)
         # this is just to increase testing coverage of interactors
         if browser == 'chrome':
           self.interact_mouse()
 
-
     # teardown environment
     self.teardownEnvironment( browser )
 
-
-    return
-
-
-
-
-
-
-
-
-
-    log = []
-    log.append( ['Test1', 'passed', 'All worked!Yay!', 200, None, None] )
-    log.append( ['Test2', 'failed', 'Failure :( :( :(Failure!', 123, None, None] )
-
-
+    # print the results in verbose mode
+    if options.verbose:
+      self.print_log( log )
+      
+    # but always print the summary
+    self.print_summary( log )
+    
     # now we create a dashboard submission file
     cdasher = CDash()
     xmlfile = cdasher.run( ['Testing', log] )

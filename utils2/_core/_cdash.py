@@ -4,6 +4,7 @@
 # (c) 2012 The XTK Developers <dev@goXTK.com>
 #
 
+import base64
 import hashlib
 import os
 import sys
@@ -198,12 +199,38 @@ class CDash( object ):
 
       results_element.appendChild( execution_time_element )
 
-      # TODO images
+      # then the result and baseline images, if there are any
+      if t[4]:
+        # convert to base64
+        imageResultPath = t[4]
+        imageResultBase64 = None
+        with open( imageResultPath, "rb" ) as im1:
+          imageResultBase64 = base64.b64encode( im1.read() )
+          
+        namedImageResultElement = xml.createElement( 'NamedMeasurement' )
+        namedImageResultElement.setAttribute( 'type', 'image/png' )
+        namedImageResultElement.setAttribute( 'name', 'Result Image' )
+        namedImageResultElement.appendChild(self.createXMLNode('Value', str(imageResultBase64)))
+        results_element.appendChild( namedImageResultElement )      
+        
+      if t[5]:
+        # convert to base64
+        imageBaselinePath = t[5]
+        imageBaselineBase64 = None
+        with open( imageBaselinePath, "rb" ) as im2:
+          imageBaselineBase64 = base64.b64encode( im2.read() )        
+
+        namedImageBaselineElement = xml.createElement( 'NamedMeasurement' )
+        namedImageBaselineElement.setAttribute( 'type', 'image/png' )
+        namedImageBaselineElement.setAttribute( 'name', 'Baseline Image' )
+        namedImageBaselineElement.appendChild(self.createXMLNode('Value', str(imageBaselineBase64)))
+        results_element.appendChild( namedImageBaselineElement )    
 
       accurate_time_element = xml.createElement( 'NamedMeasurement' )
       accurate_time_element.setAttribute( 'name', 'Accurate Execution Time' )
       accurate_time_element.setAttribute( 'type', 'text/string' )
       accurate_time_element.appendChild( self.createXMLNode( 'Value', test_execution_time ) )
+      results_element.appendChild( accurate_time_element )
 
       # .. append the results
       test_element.appendChild( results_element )
