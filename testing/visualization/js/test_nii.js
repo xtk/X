@@ -6,7 +6,7 @@ test = function() {
   
   // load a .nrrd file
   var volume = new X.volume();
-  volume.file = 'data/daniel.nii';
+  volume.file = 'data/smallvolume.nii';
   volume.color = [1, 0, 0];
   
   // add the object

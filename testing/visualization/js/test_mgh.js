@@ -6,7 +6,7 @@ test = function() {
   
   // load a .mgz file
   volume = new X.volume();
-  volume.file = 'data/daniel.mgh';
+  volume.file = 'data/smallvolume.mgh';
   
   // add the object
   test_renderer.add(volume);
