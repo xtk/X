@@ -8,6 +8,7 @@ import json
 import os
 import platform
 import re
+import shutil
 import sys
 import subprocess
 import tempfile
@@ -105,6 +106,10 @@ class Tester( object ):
     '''
     Setup the testing environment. This includes Selenium and the JSCoverage server.
     '''
+
+    # remove all old coverage output
+    if os.path.exists( config.JSCOVERAGE_OUTPUT_PATH ):
+      shutil.rmtree( config.JSCOVERAGE_OUTPUT_PATH )
 
     # start the jscoverage server
     os.system( self.getCoverageServer() + config.JSCOVERAGE_ARGUMENTS )
