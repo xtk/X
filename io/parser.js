@@ -355,14 +355,13 @@ X.parser.prototype.reslice = function(object, MRI) {
           object._colortable, object._slicesX, null);
     }
   } else {
-    //console.log('rows == cols');
     if (hasLabelMap) {
       this.reslice2D(slices, colsCount, rowsCount, image, max,
-          object._colortable, object._slicesY, object._labelmap._slicesY,
-          object._slicesX, object._labelmap._slicesX);
+          object._colortable, object._slicesX, object._labelmap._slicesX,
+          object._slicesY, object._labelmap._slicesY);
     } else {
       this.reslice2D(slices, colsCount, rowsCount, image, max,
-          object._colortable, object._slicesY, null, object._slicesX, null);
+          object._colortable, object._slicesX, null, object._slicesY, null);
     }
   }
   X.TIMERSTOP(this._classname + '.reslice');
