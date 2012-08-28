@@ -121,7 +121,7 @@ X.cylinder.prototype.__defineGetter__('start', function() {
  */
 X.cylinder.prototype.__defineSetter__('start', function(start) {
 
-  if (!goog.isDefAndNotNull(start) || !(start instanceof Array) ||
+  if (!goog.isDefAndNotNull(start) || !goog.isArray(start) ||
       (start.length != 3)) {
     
     throw new Error('Invalid start');
@@ -155,7 +155,7 @@ X.cylinder.prototype.__defineGetter__('end', function() {
  */
 X.cylinder.prototype.__defineSetter__('end', function(end) {
 
-  if (!goog.isDefAndNotNull(end) || !(end instanceof Array) ||
+  if (!goog.isDefAndNotNull(end) || !goog.isArray(end) ||
       (end.length != 3)) {
     
     throw new Error('Invalid end');
