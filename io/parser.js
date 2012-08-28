@@ -318,7 +318,7 @@ X.parser.prototype.reslice = function(object, MRI) {
         textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
         // save the pixelValue in the 3d image data
-        image[z][row][col] = pixelValue;
+        image[z][row][col] = 255 * (pixelValue / max);
         p++;
       }
     }
@@ -392,25 +392,22 @@ X.parser.prototype.reslice1D = function(sizeX, sizeY, sizeZ, image, max,
     for (z = 0; z < sizeX; z++) {
       for (row = 0; row < sizeY; row++) {
         pixelValue = image[z][row][col];
-        pixelValue_r = 0;
-        pixelValue_g = 0;
-        pixelValue_b = 0;
+        pixelValue_r = pixelValue;
+        pixelValue_g = pixelValue;
+        pixelValue_b = pixelValue;
         pixelValue_a = 255;
         if (colorTable) {
           // color table!
           var lookupValue = colorTable._map.get(Math.floor(pixelValue));
           // check for out of range and use the last label value in this case
           if (!lookupValue) {
-            lookupValue = colorTable._map.get(object._colortable._map
+            lookupValue = colorTable._map.get(colorTable._map
                 .getCount() - 1);
           }
           pixelValue_r = 255 * lookupValue[1];
           pixelValue_g = 255 * lookupValue[2];
           pixelValue_b = 255 * lookupValue[3];
           pixelValue_a = 255 * lookupValue[4];
-        } else {
-          // no color table, 1-channel gray value
-          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
         }
         var textureStartIndex = p * 4;
         textureForCurrentSlice[textureStartIndex] = pixelValue_r;
@@ -437,75 +434,79 @@ X.parser.prototype.reslice1D = function(sizeX, sizeY, sizeZ, image, max,
 X.parser.prototype.reslice2D = function(sizeX, sizeY, sizeZ, image, max,
     colorTable, targetSlice1, targetLabelMap1, targetSlice2, targetLabelMap2) {
   var textureArraySize = 4 * sizeX * sizeY;
-  var z = 0;
-  var row = 0;
   var col = 0;
-  var p = 0;
-  var pixelValue = 0;
-  var pixelValue_r = 0;
-  var pixelValue_g = 0;
-  var pixelValue_b = 0;
-  var pixelValue_a = 0;
   for (col = 0; col < sizeZ; col++) {
     var textureForCurrentSlice = new Uint8Array(textureArraySize);
     var textureForCurrentSlice2 = new Uint8Array(textureArraySize);
-    p = 0; // just a counter
+    var p = 0; // just a counter
+    var z = 0;
+    
     for (z = 0; z < sizeX; z++) {
+      var imagez = image[z];
+      var row = 0;
       for (row = 0; row < sizeY; row++) {
         // first direction
-        pixelValue = image[z][row][col];
-        pixelValue_r = 0;
-        pixelValue_g = 0;
-        pixelValue_b = 0;
-        pixelValue_a = 255;
-        if (colorTable) {
+        var pixelValue = imagez[row][col];
+        var pixelValue_r = pixelValue;
+        var pixelValue_g = pixelValue;
+        var pixelValue_b = pixelValue;
+        var pixelValue_a = 255;
+/*        if (colorTable) {
           // color table!
           var lookupValue = colorTable._map.get(Math.floor(pixelValue));
           // check for out of range and use the last label value in this case
           if (!lookupValue) {
-            lookupValue = colorTable._map.get(object._colortable._map
-                .getCount() - 1);
+            lookupValue = colorTable._map.get(colorTable._map.getCount() - 1);
           }
           pixelValue_r = 255 * lookupValue[1];
           pixelValue_g = 255 * lookupValue[2];
           pixelValue_b = 255 * lookupValue[3];
           pixelValue_a = 255 * lookupValue[4];
-        } else {
-          // no color table, 1-channel gray value
-          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
-        }
+        }*/
+        
         var textureStartIndex = p * 4;
         textureForCurrentSlice[textureStartIndex] = pixelValue_r;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
+        
         // second direction
-        pixelValue = image[z][col][row];
-        pixelValue_r = 0;
-        pixelValue_g = 0;
-        pixelValue_b = 0;
-        pixelValue_a = 255;
-        if (colorTable) {
-          // color table!
-          var lookupValue = colorTable._map.get(Math.floor(pixelValue));
-          // check for out of range and use the last label value in this case
-          if (!lookupValue) {
-            lookupValue = colorTable._map.get(object._colortable._map
-                .getCount() - 1);
-          }
-          pixelValue_r = 255 * lookupValue[1];
-          pixelValue_g = 255 * lookupValue[2];
-          pixelValue_b = 255 * lookupValue[3];
-          pixelValue_a = 255 * lookupValue[4];
-        } else {
-          // no color table, 1-channel gray value
-          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
+        var pixelValue2 = imagez[col][row];
+        var pixelValue_r2 = pixelValue2;
+        var pixelValue_g2 = pixelValue2;
+        var pixelValue_b2 = pixelValue2;
+        var pixelValue_a2 = 255;
+/*                if (colorTable) {
+        // color table!
+        var lookupValue = colorTable._map.get(Math.floor(pixelValue2));
+        // check for out of range and use the last label value in this case
+        if (!lookupValue) {
+          lookupValue = colorTable._map.get(colorTable._map.getCount() - 1);
         }
+        pixelValue_r2 = 255 * lookupValue[1];
+        pixelValue_g2 = 255 * lookupValue[2];
+        pixelValue_b2 = 255 * lookupValue[3];
+        pixelValue_a2 = 255 * lookupValue[4];
+      }*/
+/*        if (colorTable) {
+          // color table!
+          var lookupValue2 = colorTable._map.get(Math.floor(pixelValue2));
+          // check for out of range and use the last label value in this case
+          if (!lookupValue2) {
+            lookupValue2 = colorTable._map.get(colorTable._map.getCount() - 1);
+            console.log('in loop');
+          }
+          pixelValue_r2 = 255 * lookupValue2[1];
+          pixelValue_g2 = 255 * lookupValue2[2];
+          pixelValue_b2 = 255 * lookupValue2[3];
+          pixelValue_a2 = 255 * lookupValue2[4];
+        }*/
+        
         var textureStartIndex = p * 4;
-        textureForCurrentSlice2[textureStartIndex] = pixelValue_r;
-        textureForCurrentSlice2[++textureStartIndex] = pixelValue_g;
-        textureForCurrentSlice2[++textureStartIndex] = pixelValue_b;
-        textureForCurrentSlice2[++textureStartIndex] = pixelValue_a;
+        textureForCurrentSlice2[textureStartIndex] = pixelValue_r2;
+        textureForCurrentSlice2[++textureStartIndex] = pixelValue_g2;
+        textureForCurrentSlice2[++textureStartIndex] = pixelValue_b2;
+        textureForCurrentSlice2[++textureStartIndex] = pixelValue_a2;
         // increment counter
         p++;
       }
@@ -514,23 +515,25 @@ X.parser.prototype.reslice2D = function(sizeX, sizeY, sizeZ, image, max,
     pixelTexture._rawData = textureForCurrentSlice;
     pixelTexture._rawDataWidth = sizeY;
     pixelTexture._rawDataHeight = sizeX;
-    targetSlice1._children[col]._texture = pixelTexture;
+    var t1 = targetSlice1._children[col];
+    t1._texture = pixelTexture;
     if (targetLabelMap1) {
       // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      targetSlice1._children[col]._labelmap = targetLabelMap1._children[col]._texture;
+      t1._labelmap = targetLabelMap1._children[col]._texture;
     }
     var pixelTexture2 = new X.texture();
     pixelTexture2._rawData = textureForCurrentSlice2;
     pixelTexture2._rawDataWidth = sizeY;
     pixelTexture2._rawDataHeight = sizeX;
-    targetSlice2._children[col]._texture = pixelTexture2;
+    var t2 = targetSlice2._children[col];
+    t2._texture = pixelTexture2;
     if (targetLabelMap2) {
       // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      targetSlice2._children[col]._labelmap = targetLabelMap2._children[col]._texture;
+      t2._labelmap = targetLabelMap2._children[col]._texture;
     }
   }
 };
