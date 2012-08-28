@@ -263,13 +263,6 @@ X.parser.prototype.reslice = function(object, MRI) {
   var numberPixelsPerSlice = rowsCount * colsCount;
   // allocate 3d image array [slices][rows][cols]
   var image = new Array(slices);
-  for ( var iS = 0; iS < slices; iS++) {
-    image[iS] = new Array(rowsCount);
-    for ( var iR = 0; iR < rowsCount; iR++) {
-      // create a typed array here depending on the MRI.data type
-      image[iS][iR] = new MRI.data.constructor(colsCount);
-    }
-  }
   // console.log(image);
   var pixelValue = 0;
   // loop through all slices in scan direction
@@ -283,6 +276,7 @@ X.parser.prototype.reslice = function(object, MRI) {
   var p = 0;
   var textureArraySize = 4 * numberPixelsPerSlice;
   for (z = 0; z < slices; z++) {
+    image[z] = new Array(rowsCount);
     // grab the pixels for the current slice z
     var currentSlice = datastream.subarray(z * (numberPixelsPerSlice), (z + 1)
         * numberPixelsPerSlice);
@@ -293,6 +287,7 @@ X.parser.prototype.reslice = function(object, MRI) {
     col = 0;
     p = 0; // just a counter
     for (row = 0; row < rowsCount; row++) {
+      image[z][row] = new MRI.data.constructor(colsCount);
       for (col = 0; col < colsCount; col++) {
         // map pixel values
         pixelValue = currentSlice[p];
