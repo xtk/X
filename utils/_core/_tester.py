@@ -452,6 +452,14 @@ class Tester( object ):
     if options.firefox:
       browser = 'firefox'
 
+    # sanity check when testing against the build
+    if options.build:
+      # make sure there is xtk.js
+      if not os.path.exists(config.BUILD_OUTPUT_PATH):
+        print Colors.RED + 'Could not find ' + Colors.ORANGE + 'xtk.js' + Colors.RED + '!'
+        print Colors.RED + 'Make sure to run ' + Colors.CYAN + './build.py' + Colors.RED + ' before!' + Colors._CLEAR
+        sys.exit(2)
+
     # setup environment
     self.setupEnvironment( browser )
 
