@@ -567,20 +567,21 @@ class Tester( object ):
     with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Test.xml' ), 'w' ) as f:
       f.write( xmlfile )
 
-    # .. and two coverage submission files
+    # .. and two coverage submission files, but only in dev mode
 
-    # first is the summary
-    cdasher = CDash()
-    xmlfile = cdasher.run( ['Coverage', coverage_log, options.build] )
-
-    with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Coverage.xml' ), 'w' ) as f:
-      f.write( xmlfile )
-
-    # second is the log for each LOC
-    cdasher = CDash()
-    xmlfile = cdasher.run( ['CoverageLog', coverage_log, options.build] )
-
-    with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_CoverageLog.xml' ), 'w' ) as f:
-      f.write( xmlfile )
+    if not options.build:
+      # first is the summary
+      cdasher = CDash()
+      xmlfile = cdasher.run( ['Coverage', coverage_log, options.build] )
+  
+      with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Coverage.xml' ), 'w' ) as f:
+        f.write( xmlfile )
+  
+      # second is the log for each LOC
+      cdasher = CDash()
+      xmlfile = cdasher.run( ['CoverageLog', coverage_log, options.build] )
+  
+      with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_CoverageLog.xml' ), 'w' ) as f:
+        f.write( xmlfile )
 
     print Colors.ORANGE + 'Testing done.' + Colors._CLEAR
