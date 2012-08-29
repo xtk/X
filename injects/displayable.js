@@ -193,6 +193,30 @@ X.displayable.types = {
 };
 
 
+/**
+ * Set the render type of this object. Valid types are: TRIANGLES,
+ * TRIANGLE_STRIPS, LINES, POINTS, POLYGONS
+ * 
+ * @param {!string} type The render type.
+ */
+X.displayable.prototype.__defineSetter__('type', function(type) {
+
+  return this._type = type;
+  
+});
+
+
+/**
+ * Get the render type of this object.
+ * 
+ * @return {!string} The render type.
+ */
+X.displayable.prototype.__defineGetter__('type', function() {
+
+  return this._type;
+  
+});
+
 
 /**
  * Get the texture of this object.
@@ -237,6 +261,18 @@ X.displayable.prototype.__defineGetter__('points', function() {
 
 
 /**
+ * Set the points of this object.
+ * 
+ * @param {!X.triplets} points The points.
+ */
+X.displayable.prototype.__defineSetter__('points', function(points) {
+
+  this._points = points;
+  
+});
+
+
+/**
  * Get the normals of this object.
  * 
  * @return {!X.triplets} The normals.
@@ -249,6 +285,18 @@ X.displayable.prototype.__defineGetter__('normals', function() {
 
 
 /**
+ * Set the normals of this object.
+ * 
+ * @param {!X.triplets} normals The normals.
+ */
+X.displayable.prototype.__defineSetter__('normals', function(normals) {
+
+  this._normals = normals;
+  
+});
+
+
+/**
  * Get the point colors of this object.
  * 
  * @return {!X.triplets} The point colors.
@@ -256,6 +304,18 @@ X.displayable.prototype.__defineGetter__('normals', function() {
 X.displayable.prototype.__defineGetter__('colors', function() {
 
   return this._colors;
+  
+});
+
+
+/**
+ * Set the colors of this object.
+ * 
+ * @param {!X.triplets} colors The colors.
+ */
+X.displayable.prototype.__defineSetter__('colors', function(colors) {
+
+  this._colors = colors;
   
 });
 
