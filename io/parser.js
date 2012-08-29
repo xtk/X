@@ -459,7 +459,7 @@ X.parser.prototype.reslice1D_ = function(sizeX, sizeY, sizeZ, image, max,
  *          image The array containing the image.
  * @param {!number}
  *          max The object's max intensity.
- * @param {!X.object}
+ * @param {!X.colortable}
  *          colorTable The colortable.
  * @param {!X.object}
  *          targetSlice The object containing the slices to be computed.
@@ -613,7 +613,7 @@ X.parser.prototype.reslice2D_ = function(sizeX, sizeY, sizeZ, image, max,
  *          image The array containing the image.
  * @param {!number}
  *          max The object's max intensity.
- * @param {!X.object}
+ * @param {!X.colortable}
  *          colorTable The colortable.
  * @param {!X.object}
  *          targetSlice1 The object containing the slices to be computed.
