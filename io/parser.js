@@ -336,7 +336,6 @@ X.parser.prototype.reslice = function(object, MRI) {
       currentSlice._labelmap = object._labelmap._slicesZ._children[z]._texture;
     }
   }
-  
   if (colsCount != rowsCount) {
     if (hasLabelMap) {
       this.reslice1D(slices, colsCount, rowsCount, image, max,
@@ -362,18 +361,7 @@ X.parser.prototype.reslice = function(object, MRI) {
   X.TIMERSTOP(this._classname + '.reslice');
   return image;
 };
-/**
- * Reslice a data stream to fill the slices of an X.volume in X,Y and Z
- * directions. The given volume (object) has to be created at this point
- * according to the proper dimensions. This also takes care of a possible
- * associated label map which has to be loaded before.
- * 
- * @param {!X.object}
- *          object The X.volume to fill.
- * @param {!Object}
- *          MRI The MRI object which contains the min, max, data and type.
- * @return {!Array} The volume data as a 3D Array.
- */
+
 X.parser.prototype.reslice1D = function(sizeX, sizeY, sizeZ, image, max,
     colorTable, targetSlice, targetLabelMap) {
   var textureArraySize = 4 * sizeX * sizeY;
@@ -397,12 +385,12 @@ X.parser.prototype.reslice1D = function(sizeX, sizeY, sizeZ, image, max,
         pixelValue_b = pixelValue;
         pixelValue_a = 255;
         if (colorTable) {
+          pixelValue = max * (pixelValue / 255);
           // color table!
           var lookupValue = colorTable._map.get(Math.floor(pixelValue));
           // check for out of range and use the last label value in this case
           if (!lookupValue) {
-            lookupValue = colorTable._map.get(colorTable._map
-                .getCount() - 1);
+            lookupValue = colorTable._map.get(colorTable._map.getCount() - 1);
           }
           pixelValue_r = 255 * lookupValue[1];
           pixelValue_g = 255 * lookupValue[2];
@@ -431,6 +419,7 @@ X.parser.prototype.reslice1D = function(sizeX, sizeY, sizeZ, image, max,
     }
   }
 };
+
 X.parser.prototype.reslice2D = function(sizeX, sizeY, sizeZ, image, max,
     colorTable, targetSlice1, targetLabelMap1, targetSlice2, targetLabelMap2) {
   var textureArraySize = 4 * sizeX * sizeY;
@@ -440,7 +429,6 @@ X.parser.prototype.reslice2D = function(sizeX, sizeY, sizeZ, image, max,
     var textureForCurrentSlice2 = new Uint8Array(textureArraySize);
     var p = 0; // just a counter
     var z = 0;
-    
     for (z = 0; z < sizeX; z++) {
       var imagez = image[z];
       var row = 0;
@@ -451,7 +439,8 @@ X.parser.prototype.reslice2D = function(sizeX, sizeY, sizeZ, image, max,
         var pixelValue_g = pixelValue;
         var pixelValue_b = pixelValue;
         var pixelValue_a = 255;
-/*        if (colorTable) {
+        if (colorTable) {
+          pixelValue = max * (pixelValue / 255);
           // color table!
           var lookupValue = colorTable._map.get(Math.floor(pixelValue));
           // check for out of range and use the last label value in this case
@@ -462,46 +451,31 @@ X.parser.prototype.reslice2D = function(sizeX, sizeY, sizeZ, image, max,
           pixelValue_g = 255 * lookupValue[2];
           pixelValue_b = 255 * lookupValue[3];
           pixelValue_a = 255 * lookupValue[4];
-        }*/
-        
+        }
         var textureStartIndex = p * 4;
         textureForCurrentSlice[textureStartIndex] = pixelValue_r;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
-        
         // second direction
         var pixelValue2 = imagez[col][row];
         var pixelValue_r2 = pixelValue2;
         var pixelValue_g2 = pixelValue2;
         var pixelValue_b2 = pixelValue2;
         var pixelValue_a2 = 255;
-/*                if (colorTable) {
-        // color table!
-        var lookupValue = colorTable._map.get(Math.floor(pixelValue2));
-        // check for out of range and use the last label value in this case
-        if (!lookupValue) {
-          lookupValue = colorTable._map.get(colorTable._map.getCount() - 1);
-        }
-        pixelValue_r2 = 255 * lookupValue[1];
-        pixelValue_g2 = 255 * lookupValue[2];
-        pixelValue_b2 = 255 * lookupValue[3];
-        pixelValue_a2 = 255 * lookupValue[4];
-      }*/
-/*        if (colorTable) {
+        if (colorTable) {
+          pixelValue2 = max * (pixelValue2 / 255);
           // color table!
           var lookupValue2 = colorTable._map.get(Math.floor(pixelValue2));
           // check for out of range and use the last label value in this case
           if (!lookupValue2) {
             lookupValue2 = colorTable._map.get(colorTable._map.getCount() - 1);
-            console.log('in loop');
           }
           pixelValue_r2 = 255 * lookupValue2[1];
           pixelValue_g2 = 255 * lookupValue2[2];
           pixelValue_b2 = 255 * lookupValue2[3];
           pixelValue_a2 = 255 * lookupValue2[4];
-        }*/
-        
+        }
         var textureStartIndex = p * 4;
         textureForCurrentSlice2[textureStartIndex] = pixelValue_r2;
         textureForCurrentSlice2[++textureStartIndex] = pixelValue_g2;
