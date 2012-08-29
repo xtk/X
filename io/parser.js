@@ -32,12 +32,18 @@
  *     THANKS!!
  * 
  */
+
+// provides
 goog.provide('X.parser');
+
 // requires
 goog.require('X.base');
 goog.require('X.event');
 goog.require('X.texture');
 goog.require('X.triplets');
+
+
+
 /**
  * Create a parser for binary or ascii data.
  * 
@@ -45,16 +51,20 @@ goog.require('X.triplets');
  * @extends X.base
  */
 X.parser = function() {
+
   //
   // call the standard constructor of X.base
   goog.base(this);
+  
   //
   // class attributes
+  
   /**
    * @inheritDoc
    * @const
    */
   this._classname = 'parser';
+  
   /**
    * The data.
    * 
@@ -62,6 +72,7 @@ X.parser = function() {
    * @protected
    */
   this._data = null;
+  
   /**
    * The pointer to the current byte.
    * 
@@ -69,6 +80,7 @@ X.parser = function() {
    * @protected
    */
   this._dataPointer = 0;
+  
   /**
    * The native endianness flag. Based on
    * https://github.com/kig/DataStream.js/blob/master/DataStream.js
@@ -76,7 +88,8 @@ X.parser = function() {
    * @type {!boolean}
    * @protected
    */
-  this._nativeLittleEndian = new Int8Array(new Int16Array([ 1 ]).buffer)[0] > 0;
+  this._nativeLittleEndian = new Int8Array(new Int16Array([1]).buffer)[0] > 0;
+  
   /**
    * The data-specific endianness flag.
    * 
@@ -84,6 +97,7 @@ X.parser = function() {
    * @protected
    */
   this._littleEndian = true;
+  
   /**
    * The min value of the last parsing attempt.
    * 
@@ -91,6 +105,7 @@ X.parser = function() {
    * @protected
    */
   this._lastMin = -Infinity;
+  
   /**
    * The max value of the last parsing attempt.
    * 
@@ -98,40 +113,42 @@ X.parser = function() {
    * @protected
    */
   this._lastMax = Infinity;
+  
 };
 // inherit from X.base
 goog.inherits(X.parser, X.base);
+
+
 /**
  * Parse data and configure the given object. When complete, a
  * X.parser.ModifiedEvent is fired.
  * 
- * @param {!X.base}
- *          container A container which holds the loaded data. This can be an
- *          X.object as well.
- * @param {!X.object}
- *          object The object to configure.
- * @param {!ArrayBuffer}
- *          data The data to parse.
- * @param {*}
- *          flag An additional flag.
- * @throws {Error}
- *           An exception if something goes wrong.
+ * @param {!X.base} container A container which holds the loaded data. This can
+ *          be an X.object as well.
+ * @param {!X.object} object The object to configure.
+ * @param {!ArrayBuffer} data The data to parse.
+ * @param {*} flag An additional flag.
+ * @throws {Error} An exception if something goes wrong.
  */
 X.parser.prototype.parse = function(container, object, data, flag) {
+
   throw new Error('The function parse() should be overloaded.');
 };
+
+
 //
 // PARSE FUNCTIONS
 //
 //
+
 /**
  * Get the min and max values of an array.
  * 
- * @param {!Array}
- *          data The data array to analyze.
+ * @param {!Array} data The data array to analyze.
  * @return {!Array} An array with length 2 containing the [min, max] values.
  */
 X.parser.prototype.arrayMinMax = function(data) {
+
   var _min = Infinity;
   var _max = -Infinity;
   // buffer the length
@@ -142,27 +159,30 @@ X.parser.prototype.arrayMinMax = function(data) {
     _min = Math.min(_min, _value);
     _max = Math.max(_max, _value);
   }
-  return [ _min, _max ];
+  return [_min, _max];
 };
+
+
 /**
  * Jump to a position in the byte stream.
  * 
- * @param {!number}
- *          position The new offset.
+ * @param {!number} position The new offset.
  */
 X.parser.prototype.jumpTo = function(position) {
+
   this._dataPointer = position;
 };
+
+
 /**
  * Scan binary data relative to the internal position in the byte stream.
  * 
- * @param {!string}
- *          type The data type to scan, f.e.
+ * @param {!string} type The data type to scan, f.e.
  *          'uchar','schar','ushort','sshort','uint','sint','float'
- * @param {!number=}
- *          chunks The number of chunks to scan. By default, 1.
+ * @param {!number=} chunks The number of chunks to scan. By default, 1.
  */
 X.parser.prototype.scan = function(type, chunks) {
+
   if (!goog.isDefAndNotNull(chunks)) {
     chunks = 1;
   }
@@ -213,17 +233,18 @@ X.parser.prototype.scan = function(type, chunks) {
   // return the byte array
   return _bytes;
 };
+
+
 /**
  * Flips typed array endianness in-place. Based on
  * https://github.com/kig/DataStream.js/blob/master/DataStream.js.
  * 
- * @param {!Object}
- *          array Typed array to flip.
- * @param {!number}
- *          chunkSize The size of each element.
+ * @param {!Object} array Typed array to flip.
+ * @param {!number} chunkSize The size of each element.
  * @return {!Object} The converted typed array.
  */
 X.parser.prototype.flipEndianness = function(array, chunkSize) {
+
   var u8 = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);
   for ( var i = 0; i < array.byteLength; i += chunkSize) {
     for ( var j = i + chunkSize - 1, k = i; j > k; j--, k++) {
@@ -234,20 +255,23 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
   }
   return array;
 };
+
+
 /**
  * Reslice a data stream to fill the slices of an X.volume in X,Y and Z
  * directions. The given volume (object) has to be created at this point
  * according to the proper dimensions. This also takes care of a possible
  * associated label map which has to be loaded before.
  * 
- * @param {!X.object}
- *          object The X.volume to fill.
- * @param {!Object}
- *          MRI The MRI object which contains the min, max, data and type.
+ * @param {!X.object} object The X.volume to fill.
+ * @param {!Object} MRI The MRI object which contains the min, max, data and
+ *          type.
  * @return {!Array} The volume data as a 3D Array.
  */
 X.parser.prototype.reslice = function(object, MRI) {
+
   X.TIMER(this._classname + '.reslice');
+  
   var sizes = object._dimensions;
   var max = MRI.max;
   var datastream = MRI.data;
@@ -278,8 +302,8 @@ X.parser.prototype.reslice = function(object, MRI) {
   for (z = 0; z < slices; z++) {
     image[z] = new Array(rowsCount);
     // grab the pixels for the current slice z
-    var currentSlice = datastream.subarray(z * (numberPixelsPerSlice), (z + 1)
-        * numberPixelsPerSlice);
+    var currentSlice = datastream.subarray(z * (numberPixelsPerSlice), (z + 1) *
+        numberPixelsPerSlice);
     // the texture has 3 times the pixel value + 1 opacity value for all pixels
     var textureForCurrentSlice = new Uint8Array(textureArraySize);
     // now loop through all pixels of the current slice
@@ -336,8 +360,10 @@ X.parser.prototype.reslice = function(object, MRI) {
       currentSlice._labelmap = object._labelmap._slicesZ._children[z]._texture;
     }
   }
-  // RESLICE 1D
+  
+  // RESLICE 1D which is a special when the cols == rows to speed up the reslice
   if (colsCount != rowsCount) {
+    
     if (hasLabelMap) {
       if (!object._colortable) {
         this.reslice1D_(slices, colsCount, rowsCount, image, max,
@@ -363,7 +389,9 @@ X.parser.prototype.reslice = function(object, MRI) {
             object._colortable, object._slicesX, null);
       }
     }
+    
   } else {
+    
     // RESLICE 2D
     if (hasLabelMap) {
       if (!object._colortable) {
@@ -385,30 +413,30 @@ X.parser.prototype.reslice = function(object, MRI) {
       }
     }
   }
+  
   X.TIMERSTOP(this._classname + '.reslice');
+  
   return image;
+  
 };
+
+
 /**
  * Create Slice for a given volume in one direction
  * 
- * @param {!number}
- *          sizeX The volume size in X direction.
- * @param {!number}
- *          sizeY The volume size in Y direction.
- * @param {!number}
- *          sizeZ The volume size in Z direction.
- * @param {!Array}
- *          image The array containing the image.
- * @param {!number}
- *          max The object's max intensity.
- * @param {!X.object}
- *          targetSlice The object containing the slices to be computed.
- * @param {?X.volume}
- *          targetLabelMap The object containing the labelmap if any.
+ * @param {!number} sizeX The volume size in X direction.
+ * @param {!number} sizeY The volume size in Y direction.
+ * @param {!number} sizeZ The volume size in Z direction.
+ * @param {!Array} image The array containing the image.
+ * @param {!number} max The object's max intensity.
+ * @param {!X.object} targetSlice The object containing the slices to be
+ *          computed.
+ * @param {?X.volume} targetLabelMap The object containing the labelmap if any.
  * @protected
  */
 X.parser.prototype.reslice1D_ = function(sizeX, sizeY, sizeZ, image, max,
     targetSlice, targetLabelMap) {
+
   var textureArraySize = 4 * sizeX * sizeY;
   var col = 0;
   for (col = 0; col < sizeZ; col++) {
@@ -446,29 +474,25 @@ X.parser.prototype.reslice1D_ = function(sizeX, sizeY, sizeZ, image, max,
     }
   }
 };
+
+
 /**
  * Create Slice for a given colortable in one direction
  * 
- * @param {!number}
- *          sizeX The volume size in X direction.
- * @param {!number}
- *          sizeY The volume size in Y direction.
- * @param {!number}
- *          sizeZ The volume size in Z direction.
- * @param {!Array}
- *          image The array containing the image.
- * @param {!number}
- *          max The object's max intensity.
- * @param {!X.colortable}
- *          colorTable The colortable.
- * @param {!X.object}
- *          targetSlice The object containing the slices to be computed.
- * @param {?X.volume}
- *          targetLabelMap The object containing the labelmap if any.
+ * @param {!number} sizeX The volume size in X direction.
+ * @param {!number} sizeY The volume size in Y direction.
+ * @param {!number} sizeZ The volume size in Z direction.
+ * @param {!Array} image The array containing the image.
+ * @param {!number} max The object's max intensity.
+ * @param {!X.colortable} colorTable The colortable.
+ * @param {!X.object} targetSlice The object containing the slices to be
+ *          computed.
+ * @param {?X.volume} targetLabelMap The object containing the labelmap if any.
  * @protected
  */
 X.parser.prototype.reslice1DColorTable_ = function(sizeX, sizeY, sizeZ, image,
     max, colorTable, targetSlice, targetLabelMap) {
+
   var textureArraySize = 4 * sizeX * sizeY;
   var col = 0;
   for (col = 0; col < sizeZ; col++) {
@@ -512,31 +536,27 @@ X.parser.prototype.reslice1DColorTable_ = function(sizeX, sizeY, sizeZ, image,
     }
   }
 };
+
+
 /**
  * Create Slices for a given volume in two direction
  * 
- * @param {!number}
- *          sizeX The volume size in X direction.
- * @param {!number}
- *          sizeY The volume size in Y direction.
- * @param {!number}
- *          sizeZ The volume size in Z direction.
- * @param {!Array}
- *          image The array containing the image.
- * @param {!number}
- *          max The object's max intensity.
- * @param {!X.object}
- *          targetSlice1 The object containing the slices to be computed.
- * @param {?X.volume}
- *          targetLabelMap1 The object containing the labelmap if any.
- * @param {!X.object}
- *          targetSlice2 The object containing the slices to be computed.
- * @param {?X.volume}
- *          targetLabelMap2 The object containing the labelmap if any.
+ * @param {!number} sizeX The volume size in X direction.
+ * @param {!number} sizeY The volume size in Y direction.
+ * @param {!number} sizeZ The volume size in Z direction.
+ * @param {!Array} image The array containing the image.
+ * @param {!number} max The object's max intensity.
+ * @param {!X.object} targetSlice1 The object containing the slices to be
+ *          computed.
+ * @param {?X.volume} targetLabelMap1 The object containing the labelmap if any.
+ * @param {!X.object} targetSlice2 The object containing the slices to be
+ *          computed.
+ * @param {?X.volume} targetLabelMap2 The object containing the labelmap if any.
  * @protected
  */
 X.parser.prototype.reslice2D_ = function(sizeX, sizeY, sizeZ, image, max,
     targetSlice1, targetLabelMap1, targetSlice2, targetLabelMap2) {
+
   var textureArraySize = 4 * sizeX * sizeY;
   var col = 0;
   for (col = 0; col < sizeZ; col++) {
@@ -600,34 +620,29 @@ X.parser.prototype.reslice2D_ = function(sizeX, sizeY, sizeZ, image, max,
     }
   }
 };
+
+
 /**
  * Create Slices for a colortable in two direction
  * 
- * @param {!number}
- *          sizeX The volume size in X direction.
- * @param {!number}
- *          sizeY The volume size in Y direction.
- * @param {!number}
- *          sizeZ The volume size in Z direction.
- * @param {!Array}
- *          image The array containing the image.
- * @param {!number}
- *          max The object's max intensity.
- * @param {!X.colortable}
- *          colorTable The colortable.
- * @param {!X.object}
- *          targetSlice1 The object containing the slices to be computed.
- * @param {?X.volume}
- *          targetLabelMap1 The object containing the labelmap if any.
- * @param {!X.object}
- *          targetSlice2 The object containing the slices to be computed.
- * @param {?X.volume}
- *          targetLabelMap2 The object containing the labelmap if any.
+ * @param {!number} sizeX The volume size in X direction.
+ * @param {!number} sizeY The volume size in Y direction.
+ * @param {!number} sizeZ The volume size in Z direction.
+ * @param {!Array} image The array containing the image.
+ * @param {!number} max The object's max intensity.
+ * @param {!X.colortable} colorTable The colortable.
+ * @param {!X.object} targetSlice1 The object containing the slices to be
+ *          computed.
+ * @param {?X.volume} targetLabelMap1 The object containing the labelmap if any.
+ * @param {!X.object} targetSlice2 The object containing the slices to be
+ *          computed.
+ * @param {?X.volume} targetLabelMap2 The object containing the labelmap if any.
  * @protected
  */
 X.parser.prototype.reslice2DColorTable_ = function(sizeX, sizeY, sizeZ, image,
     max, colorTable, targetSlice1, targetLabelMap1, targetSlice2,
     targetLabelMap2) {
+
   var textureArraySize = 4 * sizeX * sizeY;
   var col = 0;
   for (col = 0; col < sizeZ; col++) {
