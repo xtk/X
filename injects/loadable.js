@@ -72,7 +72,7 @@ X.loadable = function() {
 X.loadable.prototype.__defineSetter__('file', function(filepath) {
 
   if (!goog.isDefAndNotNull(filepath) ||
-      (goog.isArray(filepath) && filepath.length == 0)) {
+      (filepath instanceof Array && filepath.length == 0)) {
     
     // if path is null, we reset the associated X.file object
     
@@ -82,7 +82,7 @@ X.loadable.prototype.__defineSetter__('file', function(filepath) {
   }
   
   // support for multiple files
-  if (goog.isArray(filepath)) {
+  if (filepath instanceof Array) {
     
     if (filepath.length == 1) {
       
@@ -153,14 +153,14 @@ X.loadable.prototype.__defineGetter__('filedata', function() {
 X.loadable.prototype.__defineSetter__('filedata', function(filedata) {
 
   if (!goog.isDefAndNotNull(filedata) ||
-      (goog.isArray(filedata) && filedata.length == 0)) {
+      (filedata instanceof Array && filedata.length == 0)) {
     
     this._filedata = null;
     
   }
   
   // support for multiple files
-  if (goog.isArray(filedata)) {
+  if (filedata instanceof Array) {
     
     if (filedata.length == 1) {
       

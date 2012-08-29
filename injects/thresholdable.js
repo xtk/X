@@ -200,7 +200,7 @@ X.thresholdable.prototype.__defineGetter__('minColor', function() {
  */
 X.thresholdable.prototype.__defineSetter__('minColor', function(minColor) {
 
-  if (!goog.isDefAndNotNull(minColor) || !goog.isArray(minColor) ||
+  if (!goog.isDefAndNotNull(minColor) || !(minColor instanceof Array) ||
       (minColor.length != 3)) {
     
     throw new Error('Invalid min. color.');
@@ -236,7 +236,7 @@ X.thresholdable.prototype.__defineGetter__('maxColor', function() {
  */
 X.thresholdable.prototype.__defineSetter__('maxColor', function(maxColor) {
 
-  if (!goog.isDefAndNotNull(maxColor) || !goog.isArray(maxColor) ||
+  if (!goog.isDefAndNotNull(maxColor) || !(maxColor instanceof Array) ||
       (maxColor.length != 3)) {
     
     throw new Error('Invalid max. color.');

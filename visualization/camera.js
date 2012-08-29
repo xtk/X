@@ -262,7 +262,7 @@ X.camera.prototype.__defineGetter__('position', function() {
  */
 X.camera.prototype.__defineSetter__('position', function(position) {
 
-  if (!goog.isDefAndNotNull(position) || !goog.isArray(position) ||
+  if (!goog.isDefAndNotNull(position) || !(position instanceof Array) ||
       (position.length != 3)) {
     
     throw new Error('Invalid position.');
@@ -304,7 +304,7 @@ X.camera.prototype.__defineGetter__('focus', function() {
  */
 X.camera.prototype.__defineSetter__('focus', function(focus) {
 
-  if (!goog.isDefAndNotNull(focus) || !goog.isArray(focus) ||
+  if (!goog.isDefAndNotNull(focus) || !(focus instanceof Array) ||
       (focus.length != 3)) {
     
     throw new Error('Invalid focus');
@@ -345,7 +345,7 @@ X.camera.prototype.__defineGetter__('up', function() {
  */
 X.camera.prototype.__defineSetter__('up', function(up) {
 
-  if (!goog.isDefAndNotNull(up) || !goog.isArray(up) || (up.length != 3)) {
+  if (!goog.isDefAndNotNull(up) || !(up instanceof Array) || (up.length != 3)) {
     
     throw new Error('Invalid up vector.');
     
@@ -386,7 +386,7 @@ X.camera.prototype.reset = function() {
  */
 X.camera.prototype.rotate = function(distance) {
 
-  if (goog.isArray(distance) && (distance.length == 2)) {
+  if ((distance instanceof Array) && (distance.length == 2)) {
     
     distance = new goog.math.Vec2(distance[0], distance[1]);
     
@@ -412,7 +412,7 @@ X.camera.prototype.rotate = function(distance) {
  */
 X.camera.prototype.pan = function(distance) {
 
-  if (goog.isArray(distance) && (distance.length == 2)) {
+  if ((distance instanceof Array) && (distance.length == 2)) {
     
     distance = new goog.math.Vec2(distance[0], distance[1]);
     

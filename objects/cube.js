@@ -147,7 +147,7 @@ X.cube.prototype.__defineGetter__('center', function() {
  */
 X.cube.prototype.__defineSetter__('center', function(center) {
 
-  if (!goog.isDefAndNotNull(center) || !goog.isArray(center) ||
+  if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
       (center.length != 3)) {
     
     throw new Error('Invalid center');
