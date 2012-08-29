@@ -1,2 +1,0 @@
-EasyProcess
-entrypoint2

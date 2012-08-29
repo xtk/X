@@ -57,12 +57,10 @@ class Proxy(object):
     @auto_detect.setter
     def auto_detect(self, value):
         if isinstance(value, bool):
-            if self.autodetect is value:
-                return
-            self._verify_proxy_type_compatilibily(ProxyType.AUTODETECT)
-            self.proxyType = ProxyType.AUTODETECT
-            self.autodetect = value
-            return self
+            if self.autodetect is not value:
+                self._verify_proxy_type_compatilibily(ProxyType.AUTODETECT)
+                self.proxyType = ProxyType.AUTODETECT
+                self.autodetect = value
         else:
             raise ValueError("value needs to be a boolean")
 
@@ -113,7 +111,7 @@ class Proxy(object):
     @ssl_proxy.setter
     def ssl_proxy(self, value):
         self._verify_proxy_type_compatilibily(ProxyType.MANUAL)
-        self.proxyType = value
+        self.proxyType = ProxyType.MANUAL
         self.sslProxy = value
 
     def _verify_proxy_type_compatilibily(self, compatibleProxy):
