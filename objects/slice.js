@@ -194,21 +194,21 @@ X.slice.prototype.setup = function(center, front, up, width, height, borders,
     borderColor) {
 
   
-  if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
+  if (!goog.isDefAndNotNull(center) || !goog.isArray(center) ||
       (center.length != 3)) {
     
     throw new Error('Invalid center.');
     
   }
   
-  if (!goog.isDefAndNotNull(front) || !(front instanceof Array) ||
+  if (!goog.isDefAndNotNull(front) || !goog.isArray(front) ||
       (front.length != 3)) {
     
     throw new Error('Invalid front direction.');
     
   }
   
-  if (!goog.isDefAndNotNull(up) || !(up instanceof Array) || (up.length != 3)) {
+  if (!goog.isDefAndNotNull(up) || !goog.isArray(up) || (up.length != 3)) {
     
     throw new Error('Invalid up direction.');
     

@@ -565,7 +565,7 @@ X.volume.prototype.__defineGetter__('center', function() {
  */
 X.volume.prototype.__defineSetter__('center', function(center) {
 
-  if (!goog.isDefAndNotNull(center) || !(center instanceof Array) ||
+  if (!goog.isDefAndNotNull(center) || !goog.isArray(center) ||
       !(center.length == 3)) {
     
     throw new Error('Invalid center.');
