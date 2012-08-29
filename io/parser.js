@@ -45,6 +45,7 @@ goog.require('X.triplets');
  * @extends X.base
  */
 X.parser = function() {
+
   //
   // call the standard constructor of X.base
   goog.base(this);
@@ -76,7 +77,7 @@ X.parser = function() {
    * @type {!boolean}
    * @protected
    */
-  this._nativeLittleEndian = new Int8Array(new Int16Array([ 1 ]).buffer)[0] > 0;
+  this._nativeLittleEndian = new Int8Array(new Int16Array([1]).buffer)[0] > 0;
   /**
    * The data-specific endianness flag.
    * 
@@ -105,19 +106,15 @@ goog.inherits(X.parser, X.base);
  * Parse data and configure the given object. When complete, a
  * X.parser.ModifiedEvent is fired.
  * 
- * @param {!X.base}
- *          container A container which holds the loaded data. This can be an
- *          X.object as well.
- * @param {!X.object}
- *          object The object to configure.
- * @param {!ArrayBuffer}
- *          data The data to parse.
- * @param {*}
- *          flag An additional flag.
- * @throws {Error}
- *           An exception if something goes wrong.
+ * @param {!X.base} container A container which holds the loaded data. This can
+ *          be an X.object as well.
+ * @param {!X.object} object The object to configure.
+ * @param {!ArrayBuffer} data The data to parse.
+ * @param {*} flag An additional flag.
+ * @throws {Error} An exception if something goes wrong.
  */
 X.parser.prototype.parse = function(container, object, data, flag) {
+
   throw new Error('The function parse() should be overloaded.');
 };
 //
@@ -127,11 +124,11 @@ X.parser.prototype.parse = function(container, object, data, flag) {
 /**
  * Get the min and max values of an array.
  * 
- * @param {!Array}
- *          data The data array to analyze.
+ * @param {!Array} data The data array to analyze.
  * @return {!Array} An array with length 2 containing the [min, max] values.
  */
 X.parser.prototype.arrayMinMax = function(data) {
+
   var _min = Infinity;
   var _max = -Infinity;
   // buffer the length
@@ -142,27 +139,30 @@ X.parser.prototype.arrayMinMax = function(data) {
     _min = Math.min(_min, _value);
     _max = Math.max(_max, _value);
   }
-  return [ _min, _max ];
+  return [_min, _max];
 };
+
+
 /**
  * Jump to a position in the byte stream.
  * 
- * @param {!number}
- *          position The new offset.
+ * @param {!number} position The new offset.
  */
 X.parser.prototype.jumpTo = function(position) {
+
   this._dataPointer = position;
 };
+
+
 /**
  * Scan binary data relative to the internal position in the byte stream.
  * 
- * @param {!string}
- *          type The data type to scan, f.e.
+ * @param {!string} type The data type to scan, f.e.
  *          'uchar','schar','ushort','sshort','uint','sint','float'
- * @param {!number=}
- *          chunks The number of chunks to scan. By default, 1.
+ * @param {!number=} chunks The number of chunks to scan. By default, 1.
  */
 X.parser.prototype.scan = function(type, chunks) {
+
   if (!goog.isDefAndNotNull(chunks)) {
     chunks = 1;
   }
@@ -213,17 +213,18 @@ X.parser.prototype.scan = function(type, chunks) {
   // return the byte array
   return _bytes;
 };
+
+
 /**
  * Flips typed array endianness in-place. Based on
  * https://github.com/kig/DataStream.js/blob/master/DataStream.js.
  * 
- * @param {!Object}
- *          array Typed array to flip.
- * @param {!number}
- *          chunkSize The size of each element.
+ * @param {!Object} array Typed array to flip.
+ * @param {!number} chunkSize The size of each element.
  * @return {!Object} The converted typed array.
  */
 X.parser.prototype.flipEndianness = function(array, chunkSize) {
+
   var u8 = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);
   for ( var i = 0; i < array.byteLength; i += chunkSize) {
     for ( var j = i + chunkSize - 1, k = i; j > k; j--, k++) {
@@ -234,19 +235,21 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
   }
   return array;
 };
+
+
 /**
  * Reslice a data stream to fill the slices of an X.volume in X,Y and Z
  * directions. The given volume (object) has to be created at this point
  * according to the proper dimensions. This also takes care of a possible
  * associated label map which has to be loaded before.
  * 
- * @param {!X.object}
- *          object The X.volume to fill.
- * @param {!Object}
- *          MRI The MRI object which contains the min, max, data and type.
+ * @param {!X.object} object The X.volume to fill.
+ * @param {!Object} MRI The MRI object which contains the min, max, data and
+ *          type.
  * @return {!Array} The volume data as a 3D Array.
  */
 X.parser.prototype.reslice = function(object, MRI) {
+
   X.TIMER(this._classname + '.reslice');
   var sizes = object._dimensions;
   var max = MRI.max;
@@ -278,8 +281,8 @@ X.parser.prototype.reslice = function(object, MRI) {
   for (z = 0; z < slices; z++) {
     image[z] = new Array(rowsCount);
     // grab the pixels for the current slice z
-    var currentSlice = datastream.subarray(z * (numberPixelsPerSlice), (z + 1)
-        * numberPixelsPerSlice);
+    var currentSlice = datastream.subarray(z * (numberPixelsPerSlice), (z + 1) *
+        numberPixelsPerSlice);
     // the texture has 3 times the pixel value + 1 opacity value for all pixels
     var textureForCurrentSlice = new Uint8Array(textureArraySize);
     // now loop through all pixels of the current slice
@@ -390,6 +393,7 @@ X.parser.prototype.reslice = function(object, MRI) {
 };
 X.parser.prototype.reslice1D = function(sizeX, sizeY, sizeZ, image, max,
     targetSlice, targetLabelMap) {
+
   var textureArraySize = 4 * sizeX * sizeY;
   var col = 0;
   for (col = 0; col < sizeZ; col++) {
@@ -400,11 +404,11 @@ X.parser.prototype.reslice1D = function(sizeX, sizeY, sizeZ, image, max,
       var row = 0;
       var imagez = image[z];
       for (row = 0; row < sizeY; row++) {
-        pixelValue = imagez[row][col];
-        pixelValue_r = pixelValue;
-        pixelValue_g = pixelValue;
-        pixelValue_b = pixelValue;
-        pixelValue_a = 255;
+        var pixelValue = imagez[row][col];
+        var pixelValue_r = pixelValue;
+        var pixelValue_g = pixelValue;
+        var pixelValue_b = pixelValue;
+        var pixelValue_a = 255;
         var textureStartIndex = p * 4;
         textureForCurrentSlice[textureStartIndex] = pixelValue_r;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
@@ -417,7 +421,7 @@ X.parser.prototype.reslice1D = function(sizeX, sizeY, sizeZ, image, max,
     pixelTexture._rawData = textureForCurrentSlice;
     pixelTexture._rawDataWidth = sizeY;
     pixelTexture._rawDataHeight = sizeX;
-    currentSlice = targetSlice._children[col];
+    var currentSlice = targetSlice._children[col];
     currentSlice._texture = pixelTexture;
     if (targetLabelMap) {
       // if this object has a labelmap,
@@ -429,6 +433,7 @@ X.parser.prototype.reslice1D = function(sizeX, sizeY, sizeZ, image, max,
 };
 X.parser.prototype.reslice1DColorTable = function(sizeX, sizeY, sizeZ, image,
     max, colorTable, targetSlice, targetLabelMap) {
+
   var textureArraySize = 4 * sizeX * sizeY;
   var col = 0;
   for (col = 0; col < sizeZ; col++) {
@@ -462,7 +467,7 @@ X.parser.prototype.reslice1DColorTable = function(sizeX, sizeY, sizeZ, image,
     pixelTexture._rawData = textureForCurrentSlice;
     pixelTexture._rawDataWidth = sizeY;
     pixelTexture._rawDataHeight = sizeX;
-    currentSlice = targetSlice._children[col];
+    var currentSlice = targetSlice._children[col];
     currentSlice._texture = pixelTexture;
     if (targetLabelMap) {
       // if this object has a labelmap,
@@ -474,6 +479,7 @@ X.parser.prototype.reslice1DColorTable = function(sizeX, sizeY, sizeZ, image,
 };
 X.parser.prototype.reslice2D = function(sizeX, sizeY, sizeZ, image, max,
     targetSlice1, targetLabelMap1, targetSlice2, targetLabelMap2) {
+
   var textureArraySize = 4 * sizeX * sizeY;
   var col = 0;
   for (col = 0; col < sizeZ; col++) {
@@ -502,7 +508,7 @@ X.parser.prototype.reslice2D = function(sizeX, sizeY, sizeZ, image, max,
         var pixelValue_g2 = pixelValue2;
         var pixelValue_b2 = pixelValue2;
         var pixelValue_a2 = 255;
-        var textureStartIndex = p * 4;
+        textureStartIndex = p * 4;
         textureForCurrentSlice2[textureStartIndex] = pixelValue_r2;
         textureForCurrentSlice2[++textureStartIndex] = pixelValue_g2;
         textureForCurrentSlice2[++textureStartIndex] = pixelValue_b2;
@@ -540,6 +546,7 @@ X.parser.prototype.reslice2D = function(sizeX, sizeY, sizeZ, image, max,
 X.parser.prototype.reslice2DColorTable = function(sizeX, sizeY, sizeZ, image,
     max, colorTable, targetSlice1, targetLabelMap1, targetSlice2,
     targetLabelMap2) {
+
   var textureArraySize = 4 * sizeX * sizeY;
   var col = 0;
   for (col = 0; col < sizeZ; col++) {
@@ -580,7 +587,7 @@ X.parser.prototype.reslice2DColorTable = function(sizeX, sizeY, sizeZ, image,
         var pixelValue_g2 = 255 * lookupValue2[2];
         var pixelValue_b2 = 255 * lookupValue2[3];
         var pixelValue_a2 = 255 * lookupValue2[4];
-        var textureStartIndex = p * 4;
+        textureStartIndex = p * 4;
         textureForCurrentSlice2[textureStartIndex] = pixelValue_r2;
         textureForCurrentSlice2[++textureStartIndex] = pixelValue_g2;
         textureForCurrentSlice2[++textureStartIndex] = pixelValue_b2;
