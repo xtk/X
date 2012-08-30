@@ -367,26 +367,26 @@ X.parser.prototype.reslice = function(object, MRI) {
     if (hasLabelMap) {
       if (!object._colortable) {
         this.reslice1D_(slices, colsCount, rowsCount, image, max,
-            object._slicesY, object._labelmap._slicesY);
+            object._slicesY, object._labelmap._slicesY, true);
         this.reslice1D_(slices, rowsCount, colsCount, image, max,
-            object._slicesX, object._labelmap._slicesX);
+            object._slicesX, object._labelmap._slicesX, false);
       } else {
         this.reslice1DColorTable_(slices, colsCount, rowsCount, image, max,
-            object._colortable, object._slicesY, object._labelmap._slicesY);
+            object._colortable, object._slicesY, object._labelmap._slicesY, true);
         this.reslice1DColorTable_(slices, rowsCount, colsCount, image, max,
-            object._colortable, object._slicesX, object._labelmap._slicesX);
+            object._colortable, object._slicesX, object._labelmap._slicesX, false);
       }
     } else {
       if (!object._colortable) {
         this.reslice1D_(slices, colsCount, rowsCount, image, max,
-            object._slicesY, null);
+            object._slicesY, null, true);
         this.reslice1D_(slices, rowsCount, colsCount, image, max,
-            object._slicesX, null);
+            object._slicesX, null, false);
       } else {
         this.reslice1DColorTable_(slices, colsCount, rowsCount, image, max,
-            object._colortable, object._slicesY, null);
+            object._colortable, object._slicesY, null, true);
         this.reslice1DColorTable_(slices, rowsCount, colsCount, image, max,
-            object._colortable, object._slicesX, null);
+            object._colortable, object._slicesX, null, false);
       }
     }
     
@@ -432,10 +432,11 @@ X.parser.prototype.reslice = function(object, MRI) {
  * @param {!X.object} targetSlice The object containing the slices to be
  *          computed.
  * @param {?X.volume} targetLabelMap The object containing the labelmap if any.
+ * @param {!boolean} invert invert rows and columns when accessing pixel value
  * @protected
  */
 X.parser.prototype.reslice1D_ = function(sizeX, sizeY, sizeZ, image, max,
-    targetSlice, targetLabelMap) {
+    targetSlice, targetLabelMap, invert) {
 
   var textureArraySize = 4 * sizeX * sizeY;
   var col = 0;
@@ -448,6 +449,9 @@ X.parser.prototype.reslice1D_ = function(sizeX, sizeY, sizeZ, image, max,
       var imagez = image[z];
       for (row = 0; row < sizeY; row++) {
         var pixelValue = imagez[row][col];
+        if(invert){
+          pixelValue = imagez[col][row];
+        }
         var pixelValue_r = pixelValue;
         var pixelValue_g = pixelValue;
         var pixelValue_b = pixelValue;
@@ -488,10 +492,11 @@ X.parser.prototype.reslice1D_ = function(sizeX, sizeY, sizeZ, image, max,
  * @param {!X.object} targetSlice The object containing the slices to be
  *          computed.
  * @param {?X.volume} targetLabelMap The object containing the labelmap if any.
+ * @param {!boolean} invert invert rows and columns when accessing pixel value
  * @protected
  */
 X.parser.prototype.reslice1DColorTable_ = function(sizeX, sizeY, sizeZ, image,
-    max, colorTable, targetSlice, targetLabelMap) {
+    max, colorTable, targetSlice, targetLabelMap, invert) {
 
   var textureArraySize = 4 * sizeX * sizeY;
   var col = 0;
@@ -504,6 +509,9 @@ X.parser.prototype.reslice1DColorTable_ = function(sizeX, sizeY, sizeZ, image,
       var row = 0;
       for (row = 0; row < sizeY; row++) {
         var pixelValue = max * (imagez[row][col]) / 255;
+        if(invert){
+          pixelValue = max * (imagez[col][row]) / 255;
+        }
         // color table!
         var lookupValue = colorTable._map.get(Math.floor(pixelValue));
         // check for out of range and use the last label value in this case
