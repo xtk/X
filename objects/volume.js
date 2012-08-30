@@ -584,39 +584,8 @@ X.volume.prototype.__defineSetter__('center', function(center) {
  * @public
  */
 X.volume.prototype.__defineGetter__('image', function() {
-
-  var max = this._max;
   
-  var xmax = this._dimensions[0];
-  var ymax = this._dimensions[1];
-  var zmax = this._dimensions[2];
-  
-  var realImage = new Array(zmax);
-  
-  // we need to remap the intensity values since we had to put them in a
-  // Uint8Array for the texture
-  var z = 0;
-  for (z = 0; z < zmax; z++) {
-    
-    realImage[z] = new Array(ymax);
-    
-    var y = 0;
-    for (y = 0; y < ymax; y++) {
-      
-      realImage[z][y] = new Array(xmax);
-      
-      var x = 0;
-      for (x = 0; x < xmax; x++) {
-        
-        realImage[z][y][x] = max * (this._image[z][y][x]) / 255;
-        
-      }
-      
-    }
-    
-  }
-  
-  return realImage;
+  return this._image;
   
 });
 
