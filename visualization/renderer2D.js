@@ -420,7 +420,7 @@ X.renderer2D.prototype.update_ = function(object) {
   //
   
   // with multiple files
-  if (goog.isDefAndNotNull(file) && file instanceof Array) {
+  if (goog.isDefAndNotNull(file) && goog.isArray(file)) {
     // this object holds multiple files, a.k.a it is a DICOM series
     
     // check if we already loaded all the files
