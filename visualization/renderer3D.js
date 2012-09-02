@@ -573,7 +573,7 @@ X.renderer3D.prototype.update_ = function(object) {
     
     return;
     
-  } else if (goog.isDefAndNotNull(file) && file instanceof Array) {
+  } else if (goog.isDefAndNotNull(file) && goog.isArray(file)) {
     // this object holds multiple files, a.k.a it is a DICOM series
     
     // check if we already loaded all the files
