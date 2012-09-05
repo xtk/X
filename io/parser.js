@@ -455,9 +455,11 @@ X.parser.prototype.reslice1D_ = function(sizeX, sizeY, sizeZ, image, max,
       var row = 0;
       var imagez = image[z];
       for (row = 0; row < sizeY; row++) {
-        var pixelValue = imagez[row][col];
+        var pixelValue;
         if(invert){
           pixelValue = imagez[col][row];
+        } else {
+          pixelValue = imagez[row][col];
         }
         var pixelValue_r = pixelValue;
         var pixelValue_g = pixelValue;
@@ -515,10 +517,12 @@ X.parser.prototype.reslice1DColorTable_ = function(sizeX, sizeY, sizeZ, image,
       var imagez = image[z];
       var row = 0;
       for (row = 0; row < sizeY; row++) {
-        var pixelValue = imagez[row][col];
+        var pixelValue;
         if(invert){
           pixelValue = imagez[col][row];
-        }
+        } else {
+          pixelValue = imagez[row][col];
+        }        
         // color table!
         var lookupValue = colorTable._map.get(Math.floor(pixelValue));
         // check for out of range and use the last label value in this case
