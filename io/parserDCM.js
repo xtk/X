@@ -279,8 +279,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
           
           _pixel_spacing = _pixel_spacing.split("\\");
           
-          MRI.pixdim = [parseInt(_pixel_spacing[0], 10),
-                        parseInt(_pixel_spacing[1], 10), 1];
+          MRI.pixdim = [+_pixel_spacing[0], +_pixel_spacing[1], 1];
           
           _tagCount--;
           break;
