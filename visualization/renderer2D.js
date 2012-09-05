@@ -113,6 +113,22 @@ X.renderer2D = function() {
   this._sliceHeight = 0;
   
   /**
+   * The current slice width spacing.
+   * 
+   * @type {number}
+   * @protected
+   */
+  this._sliceWidthSpacing = 0;
+  
+  /**
+   * The current slice height spacing.
+   * 
+   * @type {number}
+   * @protected
+   */
+  this._sliceHeightSpacing = 0;  
+  
+  /**
    * The current rotation factor. This is positive to rotate clockwise and
    * negative to rotate counter-clockwise. The factor is multiplied by 90
    * degrees.
@@ -473,36 +489,37 @@ X.renderer2D.prototype.update_ = function(object) {
   var _sliceWidth = 0;
   var _sliceHeight = 0;
   var _dimensions = object._dimensions;
+  var _spacing = object._spacing;
   
   // check the orientation and store a pointer to the slices
   if (this._orientation == 'X') {
     
     this._slices = object._slicesX._children;
-    _sliceWidth = _dimensions[2];
-    _sliceHeight = _dimensions[1];
+    // the X oriented texture is twisted ..
+    // this means the indices are switched
+    _sliceWidth = _dimensions[1];
+    _sliceHeight = _dimensions[2];
+    this._sliceWidthSpacing = _spacing[1];
+    this._sliceHeightSpacing = _spacing[2];
     
   } else if (this._orientation == 'Y') {
     
     this._slices = object._slicesY._children;
     _sliceWidth = _dimensions[0];
     _sliceHeight = _dimensions[2];
+    this._sliceWidthSpacing = _spacing[0];
+    this._sliceHeightSpacing = _spacing[2];
     
   } else if (this._orientation == 'Z') {
     
     this._slices = object._slicesZ._children;
     _sliceWidth = _dimensions[0];
     _sliceHeight = _dimensions[1];
+    this._sliceWidthSpacing = _spacing[0];
+    this._sliceHeightSpacing = _spacing[1]; 
     
   }
   
-  if (this._orientation == 'X') {
-    
-    // the X oriented texture is twisted ..
-    var _newSliceWidth = _sliceHeight;
-    _sliceHeight = _sliceWidth;
-    _sliceWidth = _newSliceWidth;
-    
-  }
   // .. and store the dimensions
   this._sliceWidth = _sliceWidth;
   this._sliceHeight = _sliceHeight;
@@ -535,8 +552,8 @@ X.renderer2D.prototype.update_ = function(object) {
 X.renderer2D.prototype.autoScale_ = function() {
 
   // let's auto scale for best fit
-  var _wScale = this._width / this._sliceWidth;
-  var _hScale = this._height / this._sliceHeight;
+  var _wScale = this._width / this._sliceWidth * this._sliceWidthSpacing;
+  var _hScale = this._height / this._sliceHeight * this._sliceHeightSpacing;
   
   var _autoScale = Math.min(_wScale, _hScale);
   _autoScale = 10 * _autoScale - 10;
@@ -739,11 +756,11 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   
   }
   
-  var _offset_x = -_sliceWidth / 2 + _x;
-  var _offset_y = -_sliceHeight / 2 + _y;
+  var _offset_x = -_sliceWidth * this._sliceWidthSpacing / 2 + _x;
+  var _offset_y = -_sliceHeight * this._sliceHeightSpacing / 2 + _y;
   
   // draw the slice
-  this._context.drawImage(this._frameBuffer, _offset_x, _offset_y);
+  this._context.drawImage(this._frameBuffer, _offset_x, _offset_y, _sliceWidth * this._sliceWidthSpacing, _sliceHeight * this._sliceHeightSpacing);
   
   // draw the labels with a configured opacity
   if (_currentLabelMap && _volume._labelmap._visible) {
@@ -752,7 +769,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     
     this._context.globalAlpha = _labelOpacity; // draw transparent depending on
     // opacity
-    this._context.drawImage(this._labelFrameBuffer, _offset_x, _offset_y);
+    this._context.drawImage(this._labelFrameBuffer, _offset_x, _offset_y, _sliceWidth * this._sliceWidthSpacing, _sliceHeight * this._sliceHeightSpacing);
   }
   
 };
