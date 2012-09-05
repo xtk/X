@@ -292,6 +292,13 @@ X.parser.prototype.reslice = function(object, MRI) {
   var realImage = new Array(slices);
   // console.log(image);
   var pixelValue = 0;
+  
+  // reference the color table for easy access
+  var _colorTable = null;
+  if (object._colorTable) {
+    _colorTable = object._colorTable._map;
+  }
+  
   // loop through all slices in scan direction
   //
   // this step creates the slices in X-direction and fills the 3d image array at
@@ -324,13 +331,13 @@ X.parser.prototype.reslice = function(object, MRI) {
         var pixelValue_g = 0;
         var pixelValue_b = 0;
         var pixelValue_a = 0;
-        if (object._colortable) {
+        if (_colorTable) {
           // color table!
-          var lookupValue = object._colortable._map.get(Math.floor(pixelValue));
+          var lookupValue = _colorTable.get(Math.floor(pixelValue));
           // check for out of range and use the last label value in this case
           if (!lookupValue) {
-            lookupValue = object._colortable._map.get(object._colortable._map
-                .getCount() - 1);
+            var all_colors = _colorTable.getValues();
+            lookupValue = all_colors[all_colors.length - 1];
           }
           pixelValue_r = 255 * lookupValue[1];
           pixelValue_g = 255 * lookupValue[2];
@@ -379,9 +386,11 @@ X.parser.prototype.reslice = function(object, MRI) {
             object._slicesX, object._labelmap._slicesX, false);
       } else {
         this.reslice1DColorTable_(slices, colsCount, rowsCount, realImage, max,
-            object._colortable, object._slicesY, object._labelmap._slicesY, true);
+            object._colortable, object._slicesY, object._labelmap._slicesY,
+            true);
         this.reslice1DColorTable_(slices, rowsCount, colsCount, realImage, max,
-            object._colortable, object._slicesX, object._labelmap._slicesX, false);
+            object._colortable, object._slicesX, object._labelmap._slicesX,
+            false);
       }
     } else {
       if (!object._colortable) {
@@ -456,7 +465,7 @@ X.parser.prototype.reslice1D_ = function(sizeX, sizeY, sizeZ, image, max,
       var imagez = image[z];
       for (row = 0; row < sizeY; row++) {
         var pixelValue;
-        if(invert){
+        if (invert) {
           pixelValue = imagez[col][row];
         } else {
           pixelValue = imagez[row][col];
@@ -507,6 +516,8 @@ X.parser.prototype.reslice1D_ = function(sizeX, sizeY, sizeZ, image, max,
 X.parser.prototype.reslice1DColorTable_ = function(sizeX, sizeY, sizeZ, image,
     max, colorTable, targetSlice, targetLabelMap, invert) {
 
+  var _colorTable = colorTable._map;
+  
   var textureArraySize = 4 * sizeX * sizeY;
   var col = 0;
   for (col = 0; col < sizeZ; col++) {
@@ -518,16 +529,17 @@ X.parser.prototype.reslice1DColorTable_ = function(sizeX, sizeY, sizeZ, image,
       var row = 0;
       for (row = 0; row < sizeY; row++) {
         var pixelValue;
-        if(invert){
+        if (invert) {
           pixelValue = imagez[col][row];
         } else {
           pixelValue = imagez[row][col];
-        }        
+        }
         // color table!
-        var lookupValue = colorTable._map.get(Math.floor(pixelValue));
+        var lookupValue = _colorTable.get(Math.floor(pixelValue));
         // check for out of range and use the last label value in this case
         if (!lookupValue) {
-          lookupValue = colorTable._map.get(colorTable._map.getCount() - 1);
+          var all_colors = _colorTable.getValues();
+          lookupValue = all_colors[all_colors.length - 1];
         }
         var pixelValue_r = 255 * lookupValue[1];
         var pixelValue_g = 255 * lookupValue[2];
@@ -662,6 +674,8 @@ X.parser.prototype.reslice2DColorTable_ = function(sizeX, sizeY, sizeZ, image,
     max, colorTable, targetSlice1, targetLabelMap1, targetSlice2,
     targetLabelMap2) {
 
+  var _colorTable = colorTable._map;
+  
   var textureArraySize = 4 * sizeX * sizeY;
   var col = 0;
   for (col = 0; col < sizeZ; col++) {
@@ -676,10 +690,11 @@ X.parser.prototype.reslice2DColorTable_ = function(sizeX, sizeY, sizeZ, image,
         // first direction
         var pixelValue = imagez[row][col];
         // color table!
-        var lookupValue = colorTable._map.get(Math.floor(pixelValue));
+        var lookupValue = _colorTable.get(Math.floor(pixelValue));
         // check for out of range and use the last label value in this case
         if (!lookupValue) {
-          lookupValue = colorTable._map.get(colorTable._map.getCount() - 1);
+          var all_colors = _colorTable.getValues();
+          lookupValue = all_colors[all_colors.length - 1];
         }
         var pixelValue_r = 255 * lookupValue[1];
         var pixelValue_g = 255 * lookupValue[2];
@@ -693,10 +708,11 @@ X.parser.prototype.reslice2DColorTable_ = function(sizeX, sizeY, sizeZ, image,
         // second direction
         var pixelValue2 = imagez[col][row];
         // color table!
-        var lookupValue2 = colorTable._map.get(Math.floor(pixelValue2));
+        var lookupValue2 = _colorTable.get(Math.floor(pixelValue2));
         // check for out of range and use the last label value in this case
         if (!lookupValue2) {
-          lookupValue2 = colorTable._map.get(colorTable._map.getCount() - 1);
+          var all_colors = _colorTable.getValues();
+          lookupValue2 = all_colors[all_colors.length - 1];
         }
         var pixelValue_r2 = 255 * lookupValue2[1];
         var pixelValue_g2 = 255 * lookupValue2[2];
