@@ -932,6 +932,16 @@ X.renderer.prototype.render = function() {
 
 
 /**
+ * Reset render
+ * 
+ * @public
+ */
+X.renderer.prototype.resetRender = function() { 
+      this._onShowtime = false;
+      this._loadingCompleted = false;
+};
+
+/**
  * Overload this function to execute code after all initial loading (files,
  * textures..) has completed and just before the first real rendering call.
  * 

@@ -135,6 +135,8 @@ X.parserHelper = function(data) {
    */
   this._parseFunction = null;
   
+  this._bigEndian = null;
+  
 };
 // inherit from X.base
 goog.inherits(X.parserHelper, X.base);
@@ -165,6 +167,16 @@ X.parserHelper.prototype.jumpTo = function(offset) {
   
 };
 
+/**
+ * Set to big endian
+ * 
+ * @param {!boolean} bigendian true if it's big endian, false otherwise
+ */
+X.parserHelper.prototype.setBigEndian = function(bigendian) {
+
+  this._bigEndian = bigendian;
+  
+};
 
 /**
  * Read from the data stream.
@@ -180,7 +192,12 @@ X.parserHelper.prototype.read = function(chunks) {
     
   }
   
-  var ret = this._parseFunction(this._data, this._dataPointer, chunks);
+  var ret = null;
+  if (this._bigEndian == null) {
+  	ret = this._parseFunction(this._data, this._dataPointer, chunks);
+  } else {
+  	ret = this._parseFunction(this._data, this._dataPointer, chunks, this._bigEndian);	
+  }
   var arr_byte = ret[0];
   this._dataPointer += this._elementSize * chunks;
   if (chunks == 1) {
