@@ -138,6 +138,10 @@ X.object.prototype.copy_ = function(object) {
     // only if a file is configured
     this._file = new X.file(new String(object._file._path).toString());
   }
+  if (object._hdrfile) {
+    // only if a hdr file is configured
+    this._hdrfile = new X.file(new String(object._hdrfile._path).toString());
+  }
   
   this._opacity = object._opacity;
   
