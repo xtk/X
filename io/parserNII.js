@@ -75,7 +75,11 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   
   var _data = data;
   
-  if (flag) {
+  // check if this data is compressed, then this int != 348
+  var _compressionCheck = new Uint32Array(data, 0, 1)[0];
+  
+  if (_compressionCheck != 348) {
+    
     // we need to decompress the datastream
     
     // here we start the unzipping and get a typed Uint8Array back
@@ -83,14 +87,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
     
     // .. and use the underlying array buffer
     _data = _data.buffer;
-  }
     
-  // check if this data is compressed, then this int != 348
-  var sizeof_hdr = new Uint32Array(_data, 0, 1)[0];
-  
-  if (sizeof_hdr != 348) {
-  	// this is big endian
-  	this._littleEndian = false;
   }
   
   // parse the byte stream

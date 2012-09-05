@@ -36,7 +36,6 @@ goog.require('X.parserCRV');
 goog.require('X.parserDCM');
 goog.require('X.parserFSM');
 goog.require('X.parserIMAGE');
-goog.require('X.parserIMG');
 goog.require('X.parserLBL');
 goog.require('X.parserLUT');
 goog.require('X.parserMGZ');
@@ -208,14 +207,14 @@ X.loader.prototype.load = function(container, object) {
   var filepath = _checkresult[0];
   
   if (container._filedata != null) {
-  	
+    
     // we have raw file data attached and therefor can skip the loading
     this.parse(null, container, object);
     
     // .. and jump out
     return;
     
-  } 
+  }
   
   // we use a simple XHR to get the file contents
   // this works for binary and for ascii files
@@ -276,21 +275,17 @@ X.loader.prototype.parse = function(request, container, object) {
         .bind(this));
     
     // check if we have loaded data or attached raw data
-    if (container._filedata == null) {
+    var _data = container._filedata;
+    if (_data == null) {
       
       // use the loaded data
-      container._filedata = request.response;
+      _data = request.response;
       
     }
-  
-  	if (container._hdrfiledata != null) {
-  	// for analyze image format. it comes with pair of files: .img & .hdr 
-    _parser.parse(container, object, container._hdrfiledata, container._filedata, flags);
-  	} else {
+    
     // call the parse function and pass in the container, the object and the
     // data stream and some additional value
-    _parser.parse(container, object, container._filedata, flags);
-   }
+    _parser.parse(container, object, _data, flags);
     
   }.bind(this), 100);
   
@@ -359,10 +354,9 @@ X.loader.prototype.failed = function(request, container, object) {
 X.loader.extensions = {
   // support for the following extensions and the mapping to X.parsers as well
   // as some custom flags and the result type
-  'STL': [X.parserSTL, null, null],
-  'VTK': [X.parserVTK, null, null],
-  'DX': [X.parserDX, null, null],
-  'TRK': [X.parserTRK, null, null],
+  'STL': [X.parserSTL, null],
+  'VTK': [X.parserVTK, null],
+  'TRK': [X.parserTRK, null],
   // FSM, INFLATED, SMOOTHWM, SPHERE, PIAL and ORIG are all freesurfer meshes
   'FSM': [X.parserFSM, null],
   'INFLATED': [X.parserFSM, null],
@@ -371,13 +365,11 @@ X.loader.extensions = {
   'PIAL': [X.parserFSM, null],
   'ORIG': [X.parserFSM, null],
   'NRRD': [X.parserNRRD, null],
-  'NII': [X.parserNII, false],
-  'GZ': [X.parserNII, true], // right now nii.gz is the only
+  'NII': [X.parserNII, null],
+  'GZ': [X.parserNII, null], // right now nii.gz is the only
   // format ending .gz
   'DCM': [X.parserDCM, null],
   'DICOM': [X.parserDCM, null],
-  'IMG': [X.parserIMG, null],
-  'HDR': [X.parserIMG, null],
   '': [X.parserDCM, null],
   'CRV': [X.parserCRV, null],
   'LABEL': [X.parserLBL, null],

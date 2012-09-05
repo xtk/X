@@ -59,21 +59,6 @@ X.loadable = function() {
    */
   this._filedata = null;
   
-  /**
-   * The header file of this loadable object.
-   * 
-   * @type {?X.file}
-   * @protected
-   */
-  this._hdrfile = null;
-  
-  /**
-   * The header file data.
-   * 
-   * @type {?string}
-   * @protected
-   */
-  this._hdrfiledata = null;
 };
 
 
@@ -203,70 +188,5 @@ X.loadable.prototype.__defineSetter__('filedata', function(filedata) {
     this._filedata = filedata;
     
   }
-  
-});
-
-
-/**
- * Load this object from a file path or reset the associated file path.
- * 
- * @param {?string} filepath The file path/URL to load. If null, reset the
- *          associated file.
- */
-X.loadable.prototype.__defineSetter__('hdrfile', function(filepath) {
-
-  if (!goog.isDefAndNotNull(filepath)) {
-    
-    // if path is null, we reset the associated X.file object
-    
-    this._hdrfile = null;
-    return;
-    
-  }
-  
-  this._hdrfile = new X.file(filepath);
-  
-});
-
-
-/**
- * Get the associated X.file for the header.
- * 
- * @return {string} The associated file path or null if no file is associated.
- */
-X.loadable.prototype.__defineGetter__('hdrfile', function() {
-
-  if (!this._hdrfile) {
-    
-    return '';
-    
-  }
-  
-  return this._hdrfile._path;
-  
-});
-
-
-/**
- * Get the possibly attached file data for the header.
- * 
- * @return {?string} The associated file data or null if none is attached.
- */
-X.loadable.prototype.__defineGetter__('hdrfiledata', function() {
-
-  return this._hdrfiledata;
-  
-});
-
-
-/**
- * Set raw file data for the header. Doing so, skips any additional loading and
- * just parses this raw data.
- * 
- * @param {?string} filedata The raw file data to parse.
- */
-X.loadable.prototype.__defineSetter__('hdrfiledata', function(filedata) {
-
-  this._hdrfiledata = filedata;
   
 });
