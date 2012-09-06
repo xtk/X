@@ -196,6 +196,14 @@ X.renderer = function() {
     'PROGRESSBAR_ENABLED': true
   };
   
+  /**
+   * The animation frame ID.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._AnimationFrameID = -1;
+  
   window.console
       .log('XTK Release pre8 -- 08/17/12 -- http://www.goXTK.com -- @goXTK');
   
@@ -923,8 +931,8 @@ X.renderer.prototype.render = function() {
   // CURTAIN UP! LET THE SHOW BEGIN..
   //
   
-  // this starts the rendering loops
-  window.requestAnimationFrame(this.render.bind(this), this._canvas);
+  // this starts the rendering loops and store its id
+  this._AnimationFrameID = window.requestAnimationFrame(this.render.bind(this), this._canvas);
   eval("this.onRender()");
   this.render_(false, true);
   
@@ -979,6 +987,9 @@ X.renderer.prototype.render_ = function(picking, invoked) {
  */
 X.renderer.prototype.destroy = function() {
 
+  // stop the rendering loop
+  window.cancelAnimationFrame(this._AnimationFrameID);
+  
   // remove all objects
   this._objects.clear();
   delete this._objects;
