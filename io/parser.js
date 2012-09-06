@@ -295,8 +295,8 @@ X.parser.prototype.reslice = function(object, MRI) {
   
   // reference the color table for easy access
   var _colorTable = null;
-  if (object._colorTable) {
-    _colorTable = object._colorTable._map;
+  if (object._colortable) {
+    _colorTable = object._colortable._map;
   }
   
   // loop through all slices in scan direction
