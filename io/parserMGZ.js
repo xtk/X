@@ -38,7 +38,6 @@ goog.provide('X.parserMGZ');
 goog.require('X.event');
 goog.require('X.object');
 goog.require('X.parser');
-goog.require('X.parserHelper');
 goog.require('X.triplets');
 goog.require('goog.math.Vec3');
 goog.require('JXG.Util.Unzip');

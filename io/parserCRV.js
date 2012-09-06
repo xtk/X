@@ -36,7 +36,6 @@ goog.provide('X.parserCRV');
 // requires
 goog.require('X.event');
 goog.require('X.parser');
-goog.require('X.parserHelper');
 goog.require('X.triplets');
 
 
