@@ -26,6 +26,14 @@ test = function() {
   test_renderer.add(sphere);
   test_renderer.add(cylinder);
   
+  // perform some boolean actions
+  var funstuff = cube.intersect(cylinder).union(sphere);
+  funstuff.transform.translateX(-50);
+  var funstuff2 = cylinder.subtract(sphere).inverse();
+  funstuff2.transform.translateX(50);
+  test_renderer.add(funstuff);
+  test_renderer.add(funstuff2);
+  
   // .. and render it
   test_renderer.camera.position = [-200, 0, 300];
   
