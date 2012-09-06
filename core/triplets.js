@@ -58,7 +58,7 @@ X.triplets = function(size, data) {
    * @inheritDoc
    * @const
    */
-  this._classname = 'fasttriplets';
+  this._classname = 'triplets';
   
   /**
    * The minA border of the bounding box.

@@ -276,8 +276,8 @@ function testXeventModifiedEvent() {
   // .. should be always the same type
   assertEquals(me.type, me2.type);
   
-  // check the className of the associated object
-  assertEquals(me._object.classname, 'object');
+  // the object should be null
+  assertEquals(me._object, null);
   
 
 }
