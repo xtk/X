@@ -221,12 +221,22 @@ class Tester( object ):
     '''
     canvas = self.__browser.find_element_by_tag_name( 'canvas' )
 
+    canvas_width = canvas.get_attribute('width')
+    canvas_height = canvas.get_attribute('height')
+
+    # move to canvas center to trigger a caption
     actions = ActionChains( self.__browser )
-    actions.click( canvas )
+    actions.click( canvas )    
+    actions.move_to_element_with_offset( canvas, int(canvas_width)/2, int(canvas_height)/2 )
+    actions.perform()
+    time.sleep(3)
 
     #
-    # mouse
+    # rotate, pan, zoom
     #
+    
+    actions = ActionChains( self.__browser )
+    actions.click( canvas )
 
     # rotate
     for i in range( 30 ):
@@ -238,7 +248,7 @@ class Tester( object ):
       actions.move_to_element_with_offset( canvas, 0, -10 );
       actions.release( canvas )
 
-    # zoom      
+    # zoom (not possible right now since the scrollwheel can't be triggered)
 
     # pan
     for i in range( 10 ):

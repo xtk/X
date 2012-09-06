@@ -6,6 +6,7 @@ test = function() {
   
   // load a .fsm file
   var surface = new X.mesh();
+  surface.caption = 'this is a mesh';
   surface.file = 'data/daniel.fsm';
   surface.scalars.file = 'data/daniel.crv';
   
