@@ -552,11 +552,10 @@ X.renderer2D.prototype.update_ = function(object) {
 X.renderer2D.prototype.autoScale_ = function() {
 
   // let's auto scale for best fit
-  var _wScale = this._width / this._sliceWidth * this._sliceWidthSpacing;
-  var _hScale = this._height / this._sliceHeight * this._sliceHeightSpacing;
+  var _wScale = this._width / (this._sliceWidth * this._sliceWidthSpacing);
+  var _hScale = this._height / (this._sliceHeight * this._sliceHeightSpacing);
   
   var _autoScale = Math.min(_wScale, _hScale);
-  _autoScale = 10 * _autoScale - 10;
   
   // propagate scale (zoom) to the camera
   var _view = this._camera._view;
@@ -602,7 +601,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _x = 1 * _view.getValueAt(0, 3);
   var _y = -1 * _view.getValueAt(1, 3); // we need to flip y here
   // .. this includes zoom
-  var _normalizedScale = Math.max(1 + _view.getValueAt(2, 3) / 10, 0.6);
+  var _normalizedScale = Math.max(_view.getValueAt(2, 3), 0.6);
   this._context.setTransform(_normalizedScale, 0, 0, _normalizedScale, _x, _y);
   
   //
