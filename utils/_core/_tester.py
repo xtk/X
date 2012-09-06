@@ -520,6 +520,12 @@ class Tester( object ):
         # compare a screenshot vs. the baseline
         screenshot_file = self.screenshot( testFileId )
         baseline_file = self.baseline( testFileId )
+        
+        # check if the baseline exists
+        if not os.path.exists(baseline_file):
+          # if not, copy the current screnshot over
+          shutil.copy(screenshot_file, baseline_file);
+        
         result_image = self.compare_images( screenshot_file, baseline_file )
 
         # grab the FPS and the startup time
