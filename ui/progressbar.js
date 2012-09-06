@@ -178,8 +178,8 @@ X.progressbar.prototype.init_ = function() {
   // place the progressBar in the center
   var pbElement = this.getElement();
   pbElement.style.position = 'absolute';
-  pbElement.style.top = (this._parent.clientHeight - 5) / 2;
-  pbElement.style.left = (this._parent.clientWidth - 100) / 2;
+  pbElement.style.top = (this._parent.clientHeight - 5) / 2 + 'px';
+  pbElement.style.left = (this._parent.clientWidth - 100) / 2 + 'px';
   pbElement.classList.add('xtk-progress-bar');
   
 };
