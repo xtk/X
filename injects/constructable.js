@@ -224,6 +224,7 @@ X.constructable.prototype.fromCSG = function(csg) {
  * @param {!CSG|X.object} object The other X.object or CSG object.
  * @return {X.object} A new X.object.
  * @throws {Error} An error if the given object is invalid.
+ * @suppress {missingProperties}
  */
 X.constructable.prototype.union = function(object) {
 
@@ -259,6 +260,7 @@ X.constructable.prototype.union = function(object) {
  * @param {!CSG|X.object} object The object to subtract.
  * @return {X.object} A new X.object.
  * @throws {Error} An error if the given object is invalid.
+ * @suppress {missingProperties}
  */
 X.constructable.prototype.subtract = function(object) {
 
@@ -294,6 +296,7 @@ X.constructable.prototype.subtract = function(object) {
  * @param {!CSG|X.object} object The object to use for the intersect operation.
  * @return {X.object} A new X.object.
  * @throws {Error} An error if the given object is invalid.
+ * @suppress {missingProperties}
  */
 X.constructable.prototype.intersect = function(object) {
 
@@ -327,6 +330,7 @@ X.constructable.prototype.intersect = function(object) {
  * Inverse this X.object and return a new X.object.
  * 
  * @return {X.object} A new X.object.
+ * @suppress {missingProperties}
  */
 X.constructable.prototype.inverse = function() {
 

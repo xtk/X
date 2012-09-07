@@ -168,6 +168,7 @@ X.sphere.prototype.__defineSetter__('radius', function(radius) {
 
 /**
  * @inheritDoc
+ * @suppress {missingProperties}
  */
 X.sphere.prototype.modified = function() {
 
