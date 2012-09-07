@@ -990,6 +990,19 @@ X.renderer.prototype.destroy = function() {
   // stop the rendering loop
   window.cancelAnimationFrame(this._AnimationFrameID);
   
+  // delete the loader if any
+  if (this._loader) {
+    delete this._loader;
+    this._loader = null;
+  }
+  
+  // remove the progress bar if any
+  if (this._progressBar) {
+    this._progressBar.kill();
+    delete this._progressBar;
+    this._progressBar = null;
+  }
+  
   // remove all objects
   this._objects.clear();
   delete this._objects;
