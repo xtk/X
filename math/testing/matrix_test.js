@@ -94,8 +94,8 @@ function testXmatrixTranslate() {
   assertTrue(_exceptionFired); 
   
   // test a 3x3 matrix
-  matrix = new X.matrix(3,3);
-  vector = new goog.math.Vec3(9, 9);
+  matrix = X.matrix.createIdentityMatrix(3);
+  vector = new goog.math.Vec2(9, 9);
 
   // translating the matrix with the vector should result in this matrix
   //
@@ -104,17 +104,17 @@ function testXmatrixTranslate() {
   // 0 0 0
   matrix = matrix.translate(vector);
   
-  assertEquals(matrix.getValueAt(0, 0), 0);
+  assertEquals(matrix.getValueAt(0, 0), 1);
   assertEquals(matrix.getValueAt(0, 1), 0);
   assertEquals(matrix.getValueAt(0, 2), 9);
   
   assertEquals(matrix.getValueAt(1, 0), 0);
-  assertEquals(matrix.getValueAt(1, 1), 0);
+  assertEquals(matrix.getValueAt(1, 1), 1);
   assertEquals(matrix.getValueAt(1, 2), 9);
   
   assertEquals(matrix.getValueAt(2, 0), 0);
   assertEquals(matrix.getValueAt(2, 1), 0);
-  assertEquals(matrix.getValueAt(2, 2), 9);
+  assertEquals(matrix.getValueAt(2, 2), 1);
   
 }
 
