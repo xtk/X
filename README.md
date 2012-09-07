@@ -76,9 +76,9 @@
 ## Download
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://get.goXTK.com/xtk_edge.js"><img src="http://xtk.github.com/xtkfile.png"></a><br>
-Get it right here: <b><a href="http://get.goXTK.com/xtk_edge.js">xtk_edge.js</a></b> or include it like this:
+Get it right here: <b><a href="http://get.goXTK.com/xtk.js">xtk.js</a></b> or include it like this:
 ```html
-<script type="text/javascript" src="http://get.goXTK.com/xtk_edge.js"></script>
+<script type="text/javascript" src="http://get.goXTK.com/xtk.js"></script>
 ```
 
 ## Example Usage ##
