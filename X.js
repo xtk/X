@@ -161,36 +161,40 @@ function inject(a, b) {
 // 1. Safari does not support the .bind(this) functionality which is crucial for
 // XTK's event mechanism. This hack fixes this.
 //
-if (!Function.prototype.bind) {
+function bind_shim() {
   
-  Function.prototype.bind = function(oThis) {
-
-    if (typeof this !== "function") {
-      // closest thing possible to the ECMAScript 5 internal IsCallable function
-      throw new TypeError(
-          "Function.prototype.bind - what is trying to be bound is not callable");
-    }
+  if (!Function.prototype.bind) {
     
-    var fSlice = Array.prototype.slice, aArgs = fSlice.call(arguments, 1), fToBind = this;
-    
-    /**
-     * @constructor
-     */
-    var fNOP = function() {
-
+    Function.prototype.bind = function(oThis) {
+  
+      if (typeof this !== "function") {
+        // closest thing possible to the ECMAScript 5 internal IsCallable function
+        throw new TypeError(
+            "Function.prototype.bind - what is trying to be bound is not callable");
+      }
+      
+      var fSlice = Array.prototype.slice, aArgs = fSlice.call(arguments, 1), fToBind = this;
+      
+      /**
+       * @constructor
+       */
+      var fNOP = function() {
+  
+      };
+      
+      var fBound = function() {
+  
+        return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs
+            .concat(fSlice.call(arguments)));
+      };
+      
+      fNOP.prototype = this.prototype;
+      fBound.prototype = new fNOP();
+      
+      return fBound;
     };
-    
-    var fBound = function() {
-
-      return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs
-          .concat(fSlice.call(arguments)));
-    };
-    
-    fNOP.prototype = this.prototype;
-    fBound.prototype = new fNOP();
-    
-    return fBound;
-  };
+  }
+  
 }
 
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
@@ -201,38 +205,45 @@ if (!Function.prototype.bind) {
 //
 // from: https://gist.github.com/1579671
 
-(function() {
-
-  var lastTime = 0;
-  var vendors = ['ms', 'moz', 'webkit', 'o'];
-  for ( var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-    window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-    window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||
-        window[vendors[x] + 'CancelRequestAnimationFrame'];
-  }
+function requestAnimationFrame_shim() {
   
-  if (!window.requestAnimationFrame) {
-    window.requestAnimationFrame = function(callback, element) {
-
-      var currTime = Date.now(); // changed this to avoid new object each time
-      var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-      var id = window.setTimeout(function() {
-
-        callback(currTime + timeToCall);
-      }, timeToCall);
-      lastTime = currTime + timeToCall;
-      return id;
-    };
-  }
+  (function() {
   
-  if (!window.cancelAnimationFrame) {
-    window.cancelAnimationFrame = function(id) {
+    var lastTime = 0;
+    var vendors = ['ms', 'moz', 'webkit', 'o'];
+    for ( var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+      window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+      window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||
+          window[vendors[x] + 'CancelRequestAnimationFrame'];
+    }
+    
+    if (!window.requestAnimationFrame) {
+      window.requestAnimationFrame = function(callback, element) {
+  
+        var currTime = Date.now(); // changed this to avoid new object each time
+        var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+        var id = window.setTimeout(function() {
+  
+          callback(currTime + timeToCall);
+        }, timeToCall);
+        lastTime = currTime + timeToCall;
+        return id;
+      };
+    }
+    
+    if (!window.cancelAnimationFrame) {
+      window.cancelAnimationFrame = function(id) {
+  
+        clearTimeout(id);
+      };
+    }
+  }());
+  
+}
 
-      clearTimeout(id);
-    };
-  }
-}());
-
+// install the shims, if necessary
+bind_shim();
+requestAnimationFrame_shim();
 
 goog.exportSymbol('Function.prototype.bind', Function.prototype.bind);
 goog.exportSymbol('window.requestAnimationFrame', window.requestAnimationFrame);
