@@ -127,6 +127,17 @@ X.loadable.prototype.__defineGetter__('file', function() {
     
   }
   
+  // if we have multiple files, return all filepaths
+  if (goog.isArray(this._file)) {
+    
+    return this._file.map(function(v) {
+      
+      return v._file._path;
+      
+    });
+    
+  }
+  
   return this._file._path;
   
 });
