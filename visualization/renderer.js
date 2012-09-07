@@ -205,7 +205,7 @@ X.renderer = function() {
   this._AnimationFrameID = -1;
   
   window.console
-      .log('XTK Release pre8 -- 08/17/12 -- http://www.goXTK.com -- @goXTK');
+      .log('XTK Release 9 -- ###TIMESTAMP### -- http://www.goXTK.com -- @goXTK');
   
 };
 // inherit from X.base
@@ -932,7 +932,8 @@ X.renderer.prototype.render = function() {
   //
   
   // this starts the rendering loops and store its id
-  this._AnimationFrameID = window.requestAnimationFrame(this.render.bind(this), this._canvas);
+  this._AnimationFrameID = window.requestAnimationFrame(this.render.bind(this),
+      this._canvas);
   eval("this.onRender()");
   this.render_(false, true);
   

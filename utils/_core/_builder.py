@@ -4,6 +4,7 @@
 # (c) 2012 The XTK Developers <dev@goXTK.com>
 #
 
+import datetime
 import os
 import sys
 import subprocess
@@ -127,6 +128,17 @@ class Builder( object ):
 
     with open( os.path.join( config.TEMP_PATH, config.SOFTWARE_SHORT + '_Build.xml' ), 'w' ) as f:
       f.write( xmlfile )
+
+    # and add a timestamp to the compiled file
+    with open( config.BUILD_OUTPUT_PATH, 'r' ) as f:
+
+      content = f.read() # read everything in the file
+      now = datetime.datetime.now()
+      content_with_timestamp = content.replace( '###TIMESTAMP###', now.strftime( '%Y-%m-%d %H:%M:%S' ) )
+
+    with open( config.BUILD_OUTPUT_PATH, 'w' ) as f:
+
+      f.write( content_with_timestamp ) # write the new stuff
 
     # and attach the license
     licenser = Licenser()
