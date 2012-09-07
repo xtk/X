@@ -18,12 +18,8 @@ function testXmatrixflatten() {
   
   var baseline = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
   
-  var i;
-  for (i = 0; i < baseline.length; i++) {
-    
-    assertEquals(flattened[i], baseline[i]);
-    
-  }
+  assertArrayEquals(flattened, baseline);
+  
 }
 
 function testXmatrixTranslate() {
@@ -77,7 +73,48 @@ function testXmatrixTranslate() {
   assertEquals(matrix.getValueAt(3, 2), 0);
   assertEquals(matrix.getValueAt(3, 3), 1);
   
-  // TODO test also a 3x3 matrix translated by a 2d vector
+  // try a non-square matrix, this should fail
+  matrix = new X.matrix(3,4);
+  var _exceptionFired = false;
+  try {
+    matrix = matrix.translate(vector);
+  } catch (Error) {
+    _exceptionFired = true;
+  }
+  assertTrue(_exceptionFired);    
+  
+  // .. and try a large matrix
+  matrix = new X.matrix(10,10);
+  var _exceptionFired = false;
+  try {
+    matrix = matrix.translate(vector);
+  } catch (Error) {
+    _exceptionFired = true;
+  }
+  assertTrue(_exceptionFired); 
+  
+  // test a 3x3 matrix
+  matrix = X.matrix.createIdentityMatrix(3);
+  vector = new goog.math.Vec2(9, 9);
+
+  // translating the matrix with the vector should result in this matrix
+  //
+  // 0 0 9
+  // 0 0 9
+  // 0 0 0
+  matrix = matrix.translate(vector);
+  
+  assertEquals(matrix.getValueAt(0, 0), 1);
+  assertEquals(matrix.getValueAt(0, 1), 0);
+  assertEquals(matrix.getValueAt(0, 2), 9);
+  
+  assertEquals(matrix.getValueAt(1, 0), 0);
+  assertEquals(matrix.getValueAt(1, 1), 1);
+  assertEquals(matrix.getValueAt(1, 2), 9);
+  
+  assertEquals(matrix.getValueAt(2, 0), 0);
+  assertEquals(matrix.getValueAt(2, 1), 0);
+  assertEquals(matrix.getValueAt(2, 2), 1);
   
 }
 
@@ -109,5 +146,121 @@ function testXmatrixMultiplyByVector() {
   assertEquals(vector.x, baseline.x);
   assertEquals(vector.y, baseline.y);
   assertEquals(vector.z, baseline.z);
+  
+  // the multiplication should not work with a vector with
+  // length < 3
+  var _exceptionFired = false;
+  try {
+    vector = new goog.math.Vec3(7, 8);
+    vector = matrix.multiplyByVector(vector);
+  } catch (Error) {
+    _exceptionFired = true;
+  }
+  assertTrue(_exceptionFired);  
+  
+}
+
+function testXmatrixSwapCols() {
+  
+  var matrix = X.matrix.createIdentityMatrix(4);
+
+  // make sure the identity matrix is valid
+  assertEquals(matrix.getValueAt(0, 0), 1);
+  assertEquals(matrix.getValueAt(0, 1), 0);
+  assertEquals(matrix.getValueAt(0, 2), 0);
+  assertEquals(matrix.getValueAt(0, 3), 0);
+  
+  assertEquals(matrix.getValueAt(1, 0), 0);
+  assertEquals(matrix.getValueAt(1, 1), 1);
+  assertEquals(matrix.getValueAt(1, 2), 0);
+  assertEquals(matrix.getValueAt(1, 3), 0);
+  
+  assertEquals(matrix.getValueAt(2, 0), 0);
+  assertEquals(matrix.getValueAt(2, 1), 0);
+  assertEquals(matrix.getValueAt(2, 2), 1);
+  assertEquals(matrix.getValueAt(2, 3), 0);
+  
+  assertEquals(matrix.getValueAt(3, 0), 0);
+  assertEquals(matrix.getValueAt(3, 1), 0);
+  assertEquals(matrix.getValueAt(3, 2), 0);
+  assertEquals(matrix.getValueAt(3, 3), 1);
+    
+  // now swap cols 1 and 2
+  matrix.swapCols(1, 2);
+  
+  // and check the result again
+  assertEquals(matrix.getValueAt(0, 0), 1);
+  assertEquals(matrix.getValueAt(0, 1), 0);
+  assertEquals(matrix.getValueAt(0, 2), 0);
+  assertEquals(matrix.getValueAt(0, 3), 0);
+  
+  assertEquals(matrix.getValueAt(1, 0), 0);
+  assertEquals(matrix.getValueAt(1, 1), 0);
+  assertEquals(matrix.getValueAt(1, 2), 1);
+  assertEquals(matrix.getValueAt(1, 3), 0);
+  
+  assertEquals(matrix.getValueAt(2, 0), 0);
+  assertEquals(matrix.getValueAt(2, 1), 1);
+  assertEquals(matrix.getValueAt(2, 2), 0);
+  assertEquals(matrix.getValueAt(2, 3), 0);
+  
+  assertEquals(matrix.getValueAt(3, 0), 0);
+  assertEquals(matrix.getValueAt(3, 1), 0);
+  assertEquals(matrix.getValueAt(3, 2), 0);
+  assertEquals(matrix.getValueAt(3, 3), 1);
+      
+  
+}
+
+
+function testXmatrixSwapRows() {
+  
+  var matrix = X.matrix.createIdentityMatrix(4);
+
+  // make sure the identity matrix is valid
+  assertEquals(matrix.getValueAt(0, 0), 1);
+  assertEquals(matrix.getValueAt(0, 1), 0);
+  assertEquals(matrix.getValueAt(0, 2), 0);
+  assertEquals(matrix.getValueAt(0, 3), 0);
+  
+  assertEquals(matrix.getValueAt(1, 0), 0);
+  assertEquals(matrix.getValueAt(1, 1), 1);
+  assertEquals(matrix.getValueAt(1, 2), 0);
+  assertEquals(matrix.getValueAt(1, 3), 0);
+  
+  assertEquals(matrix.getValueAt(2, 0), 0);
+  assertEquals(matrix.getValueAt(2, 1), 0);
+  assertEquals(matrix.getValueAt(2, 2), 1);
+  assertEquals(matrix.getValueAt(2, 3), 0);
+  
+  assertEquals(matrix.getValueAt(3, 0), 0);
+  assertEquals(matrix.getValueAt(3, 1), 0);
+  assertEquals(matrix.getValueAt(3, 2), 0);
+  assertEquals(matrix.getValueAt(3, 3), 1);
+    
+  // now swap cols 0 and 3
+  matrix.swapRows(0, 3);
+  
+  // and check the result again
+  assertEquals(matrix.getValueAt(0, 0), 0);
+  assertEquals(matrix.getValueAt(0, 1), 0);
+  assertEquals(matrix.getValueAt(0, 2), 0);
+  assertEquals(matrix.getValueAt(0, 3), 1);
+  
+  assertEquals(matrix.getValueAt(1, 0), 0);
+  assertEquals(matrix.getValueAt(1, 1), 1);
+  assertEquals(matrix.getValueAt(1, 2), 0);
+  assertEquals(matrix.getValueAt(1, 3), 0);
+  
+  assertEquals(matrix.getValueAt(2, 0), 0);
+  assertEquals(matrix.getValueAt(2, 1), 0);
+  assertEquals(matrix.getValueAt(2, 2), 1);
+  assertEquals(matrix.getValueAt(2, 3), 0);
+  
+  assertEquals(matrix.getValueAt(3, 0), 1);
+  assertEquals(matrix.getValueAt(3, 1), 0);
+  assertEquals(matrix.getValueAt(3, 2), 0);
+  assertEquals(matrix.getValueAt(3, 3), 0);
+      
   
 }

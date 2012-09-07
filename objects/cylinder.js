@@ -202,6 +202,7 @@ X.cylinder.prototype.__defineSetter__('radius', function(radius) {
 
 /**
  * @inheritDoc
+ * @suppress {missingProperties}
  */
 X.cylinder.prototype.modified = function() {
 

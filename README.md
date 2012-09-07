@@ -65,6 +65,12 @@
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/13/"><img src="http://xtk.github.com/lessonsgfx/13/minicaption.png" alt="lesson13" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/library/pure/xtk/lessons/tree/gh-pages/13/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
 <td valign="top"><a href="http://lessons.goxtk.com/13/"><b>Lesson 13: I want 2D!</b></a><br>This lesson links three 2D renderers to one 3D renderer and loads a .NRRD single-file DICOM and a label map.</td>
 </tr>
+<tr>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/14/"><img src="http://xtk.github.com/lessonsgfx/14/minicaption.png" alt="lesson14" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/library/pure/xtk/lessons/tree/gh-pages/14/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
+<td valign="top"><a href="http://lessons.goxtk.com/14/"><b>Lesson 14: Is it a cube?</b></a><br>Zoom in to see the particles and some great effects!</td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/15/"><img src="http://xtk.github.com/lessonsgfx/15/minicaption.png" alt="lesson15" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/library/pure/xtk/lessons/tree/gh-pages/15/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
+<td valign="top"><a href="http://lessons.goxtk.com/15/"><b>Lesson 15: D-I-C-O-M!</b></a><br>Here we visualize a brain MR scan read from DICOM files.</td>
+</tr>
 </table>
 
 ## Download

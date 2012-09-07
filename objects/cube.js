@@ -260,6 +260,7 @@ X.cube.prototype.__defineSetter__('lengthZ', function(lengthZ) {
 
 /**
  * @inheritDoc
+ * @suppress {missingProperties}
  */
 X.cube.prototype.modified = function() {
 

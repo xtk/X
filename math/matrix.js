@@ -111,10 +111,6 @@ X.matrix.prototype.flatten = function() {
   
   var dimensions = this.getSize();
   
-  if (dimensions.height == 0 || dimensions.width == 0) {
-    return [];
-  }
-  
   var i, j;
   for (j = 0; j < dimensions.height; j++) {
     for (i = 0; i < dimensions.width; i++) {
