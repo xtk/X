@@ -891,7 +891,7 @@ X.renderer.prototype.render = function() {
       
     }.bind(this), 100); // check again in 500 ms
     
-    return; // .. and jump out
+    // return; // .. and jump out
     
   } else {
     

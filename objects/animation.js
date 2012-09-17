@@ -57,7 +57,7 @@ X.animation = function() {
    * @const
    */
   this._classname = 'animation';
-
+  
   /**
    * The speed of the animation in FPS.
    * 
@@ -104,11 +104,10 @@ goog.inherits(X.animation, X.object);
 
 
 /**
- * Get the current speed for this animation. The value indicates
- * how many renderings are needed before jumping to the next
- * step of the animation.
+ * Get the current speed for this animation. The value indicates how many
+ * renderings are needed before jumping to the next step of the animation.
  * 
- * @return {!number} The number of frames between animation steps. 
+ * @return {!number} The number of frames between animation steps.
  */
 X.animation.prototype.__defineGetter__('speed', function() {
 
@@ -118,14 +117,14 @@ X.animation.prototype.__defineGetter__('speed', function() {
 
 
 /**
- * Set the current animation speed as number of frames between
- * each step.
+ * Set the current animation speed as number of frames between each step.
  * 
  * @param {!number} speed The number of frames between animation steps.
  */
 X.animation.prototype.__defineSetter__('speed', function(speed) {
 
-  this._speed = speed;
+  this._framecount = 0;
+  this._speed = Math.floor(speed);
   
 });
 
@@ -145,8 +144,8 @@ X.animation.prototype.__defineGetter__('active', function() {
 /**
  * Toggle the animations running state.
  * 
- * @param {!boolean} active If set to TRUE, the animation is running, if set to 
- *                   FALSE the animation gets paused.
+ * @param {!boolean} active If set to TRUE, the animation is running, if set to
+ *          FALSE the animation gets paused.
  */
 X.animation.prototype.__defineSetter__('active', function(active) {
 
@@ -161,23 +160,29 @@ X.animation.prototype.__defineSetter__('active', function(active) {
  * @return {?X.object} The currently shown object.
  */
 X.animation.prototype.__defineGetter__('currentObject', function() {
-  
+
   return this._currentObject;
   
 });
 
 
 /**
- * Add an X.object (or X.volume, X.mesh, X.fibers)
- * to this animation.
+ * Add an X.object (or X.volume, X.mesh, X.fibers) to this animation.
  * 
  * @param {!X.object} object The object to add.
  * @public
  */
 X.animation.prototype.add = function(object) {
-  
+
   // by default, the object is invisible
   object._visible = false;
+  
+  if (!this._currentObject) {
+    
+    this._currentObject = object;
+    object._visible = true;
+    
+  }
   
   this._children.push(object);
   
@@ -185,23 +190,23 @@ X.animation.prototype.add = function(object) {
 
 
 /**
- * Perform the animation by showing/hiding
- * the attached objects sequentially.
+ * Perform the animation by showing/hiding the attached objects sequentially.
  * 
  * @param {!X.renderer3D} renderer3d The 3D renderer holding the animation.
  * @protected
  */
 X.animation.prototype.animate = function(renderer3d) {
-  
-  this._framecount++;  
+
+  this._framecount++;
   
   // first check if we have to re-orient a X.volume
-  if (this._currentObject && this._currentObject instanceof X.volume) {
+  if (this._currentObject && this._currentObject instanceof X.volume &&
+      this._currentObject._loaded) {
     
     // this is a X.volume so re-orient it
     renderer3d.orientVolume_(this._currentObject);
     
-  }  
+  }
   
   // check if we hit the speed threshold
   if (this._framecount == this._speed) {
@@ -229,7 +234,7 @@ X.animation.prototype.animate = function(renderer3d) {
       
     }
     
-    var _object = this._children[this._currentIndex]; 
+    var _object = this._children[this._currentIndex];
     
     // show the current object
     _object._visible = true;
@@ -243,7 +248,7 @@ X.animation.prototype.animate = function(renderer3d) {
     this._framecount = 0;
     
   }
-    
+  
 };
 
 

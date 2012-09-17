@@ -318,6 +318,9 @@ X.loader.prototype.complete = function(event) {
     // .. but mark the container as dirty since its content changed
     container._dirty = true;
     
+    // mark the container as ready
+    container._loaded = true;
+    
     // fire the modified event on the object
     object.modified();
     

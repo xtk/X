@@ -59,6 +59,14 @@ X.loadable = function() {
    */
   this._filedata = null;
   
+  /**
+   * The loaded flag, indicating if everything was loaded or not.
+   * 
+   * @type {!boolean}
+   * @protected
+   */
+  this._loaded = false;
+  
 };
 
 
@@ -131,7 +139,7 @@ X.loadable.prototype.__defineGetter__('file', function() {
   if (goog.isArray(this._file)) {
     
     return this._file.map(function(v) {
-      
+
       return v._file._path;
       
     });
