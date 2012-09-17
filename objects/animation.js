@@ -156,6 +156,18 @@ X.animation.prototype.__defineSetter__('active', function(active) {
 
 
 /**
+ * Get the currently shown object.
+ * 
+ * @return {?X.object} The currently shown object.
+ */
+X.animation.prototype.__defineGetter__('currentObject', function() {
+  
+  return this._currentObject;
+  
+});
+
+
+/**
  * Add an X.object (or X.volume, X.mesh, X.fibers)
  * to this animation.
  * 
