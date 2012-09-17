@@ -1296,6 +1296,14 @@ X.renderer3D.prototype.order_ = function() {
     
     var object = topLevelObjects[t];
     
+    // first check if we have an animation
+    if (object instanceof X.animation) {
+      
+      // then, the current object is the one we want
+      object = object._currentObject;
+      
+    }
+    
     // special case for X.volumes in volumeRendering mode
     // a) we know the volumeRendering direction and the center of the volume
     // b) based on this we can minimize the expensive distance calculation to
