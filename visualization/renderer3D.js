@@ -1496,6 +1496,11 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
     var topLevelObject = this._topLevelObjects[i];
     if (topLevelObject instanceof X.volume) {
       this.orientVolume_(topLevelObject);
+    } else if (topLevelObject instanceof X.animation) {
+      // also check if we have an X.animation an
+      // call the animate function meaning hide/show
+      // the animated objects
+      topLevelObject.animate_();
     }
   }
   
