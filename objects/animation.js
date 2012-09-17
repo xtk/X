@@ -124,6 +124,13 @@ X.animation.prototype.animate = function(renderer3d) {
   if (this._framecount == this._speed) {
     
     // if yes, do the animation (show/hide)
+    // but only if we are active here
+    if (!this._active) {
+      
+      // inactive, so jump out
+      return;
+      
+    }
     
     if (this._currentObject >= 1) {
       
