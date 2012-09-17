@@ -32,6 +32,7 @@ goog.provide('X.animation');
 
 // requires
 goog.require('X.object');
+goog.require('X.renderer3D');
 
 
 
@@ -69,8 +70,17 @@ X.animation = function() {
    * The flag indicating a running or paused animation.
    * 
    * @type {!boolean}
+   * @protected
    */
   this._active = true;
+  
+  /**
+   * The internal index of the currently shown object.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._currentObject = 0;
   
 };
 // inherit from X.object
@@ -91,8 +101,54 @@ X.animation.prototype.add = function(object) {
 };
 
 
-X.animation.prototype.animate_ = function() {
+/**
+ * Perform the animation by showing/hiding
+ * the attached objects sequentially.
+ * 
+ * @param {!X.renderer3D} renderer3d The 3D renderer holding the animation.
+ * @protected
+ */
+X.animation.prototype.animate = function(renderer3d) {
   
+  // check if we hit the speed threshold
+  if (count % this._speed) {
+    
+    // if yes, do the animation (show/hide)
+    
+    if (this._currentObject >= 1) {
+      
+      // hide the previous object
+      this._children[this._currentObject - 1].Ha = false;
+      
+    }
+    
+    // start from the beginning if the animation loop is completed
+    if (this._currentObject > this._children.length - 1) {
+      
+      this._currentObject = 0;
+      
+    }
+    
+    var _object = this._children[this._currentObject]; 
+    
+    // but first check if we have to re-orient a X.volume
+    if (_object instanceof X.volume) {
+      
+      // this is a X.volume so re-orient it
+      renderer3d.orientVolume_(_object);
+      
+    }
+    
+    // show the current object
+    _object._visible = true;
+    
+    // increase the internal index
+    this._currentObject++;
+    
+  }
+  
+  count++;
+    
 };
 
 

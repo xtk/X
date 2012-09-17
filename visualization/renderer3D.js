@@ -1500,7 +1500,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       // also check if we have an X.animation an
       // call the animate function meaning hide/show
       // the animated objects
-      topLevelObject.animate_();
+      topLevelObject.animate(this);
     }
   }
   
