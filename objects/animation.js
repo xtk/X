@@ -82,6 +82,14 @@ X.animation = function() {
    */
   this._currentObject = 0;
   
+  /**
+   * The number of painted frames.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._framecount = 0;
+  
 };
 // inherit from X.object
 goog.inherits(X.animation, X.object);
@@ -110,8 +118,10 @@ X.animation.prototype.add = function(object) {
  */
 X.animation.prototype.animate = function(renderer3d) {
   
+  this._framecount++;  
+  
   // check if we hit the speed threshold
-  if (count % this._speed) {
+  if (this._framecount == this._speed) {
     
     // if yes, do the animation (show/hide)
     
@@ -145,9 +155,10 @@ X.animation.prototype.animate = function(renderer3d) {
     // increase the internal index
     this._currentObject++;
     
+    // reset the frame counter
+    this._framecount = 0;
+    
   }
-  
-  count++;
     
 };
 
