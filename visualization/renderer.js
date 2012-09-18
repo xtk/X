@@ -894,7 +894,7 @@ X.renderer.prototype.render = function() {
     
     // intermediate rendering means render also
     // while loading is still active
-    if (!this.config.INTERMEDIATE_RENDERING) {
+    if (!this._config['INTERMEDIATE_RENDERING']) {
       
       return; // .. and jump out
       

@@ -1524,444 +1524,428 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
     
   }
   
-  var statisticsEnabled = (!picking && goog.isDefAndNotNull(invoked) && invoked && this._config['STATISTICS_ENABLED']);
-  if (statisticsEnabled) {
-    
-    // for statistics
-    var verticesCounter = 0;
-    var trianglesCounter = 0;
-    var linesCounter = 0;
-    var pointsCounter = 0;
-    
-  }
   
   //
   // caching for multiple objects
   //
-  var aPointers = this._attributePointers;
-  var aPosition = aPointers.get(X.shaders.attributes.VERTEXPOSITION);
-  var aNormal = aPointers.get(X.shaders.attributes.VERTEXNORMAL);
-  var aColor = aPointers.get(X.shaders.attributes.VERTEXCOLOR);
-  var aTexturePosition = aPointers.get(X.shaders.attributes.VERTEXTEXTUREPOS);
-  var aScalar = aPointers.get(X.shaders.attributes.VERTEXSCALAR);
-  
-  var uLocations = this._uniformLocations;
-  var uUsePicking = uLocations.get(X.shaders.uniforms.USEPICKING);
-  var uUseObjectColor = uLocations.get(X.shaders.uniforms.USEOBJECTCOLOR);
-  var uObjectColor = uLocations.get(X.shaders.uniforms.OBJECTCOLOR);
-  var uUseScalars = uLocations.get(X.shaders.uniforms.USESCALARS);
-  var uScalarsReplaceMode = uLocations
-      .get(X.shaders.uniforms.SCALARSREPLACEMODE);
-  var uScalarsMin = uLocations.get(X.shaders.uniforms.SCALARSMIN);
-  var uScalarsMax = uLocations.get(X.shaders.uniforms.SCALARSMAX);
-  var uScalarsMinColor = uLocations.get(X.shaders.uniforms.SCALARSMINCOLOR);
-  var uScalarsMaxColor = uLocations.get(X.shaders.uniforms.SCALARSMAXCOLOR);
-  var uScalarsMinThreshold = uLocations
-      .get(X.shaders.uniforms.SCALARSMINTHRESHOLD);
-  var uScalarsMaxThreshold = uLocations
-      .get(X.shaders.uniforms.SCALARSMAXTHRESHOLD);
-  var uObjectOpacity = uLocations.get(X.shaders.uniforms.OBJECTOPACITY);
-  var uLabelMapOpacity = uLocations.get(X.shaders.uniforms.LABELMAPOPACITY);
-  var uUseTexture = uLocations.get(X.shaders.uniforms.USETEXTURE);
-  var uUseLabelMapTexture = uLocations
-      .get(X.shaders.uniforms.USELABELMAPTEXTURE);
-  var uTextureSampler = uLocations.get(X.shaders.uniforms.TEXTURESAMPLER);
-  var uTextureSampler2 = uLocations.get(X.shaders.uniforms.TEXTURESAMPLER2);
-  var uVolumeLowerThreshold = uLocations
-      .get(X.shaders.uniforms.VOLUMELOWERTHRESHOLD);
-  var uVolumeUpperThreshold = uLocations
-      .get(X.shaders.uniforms.VOLUMEUPPERTHRESHOLD);
-  var uVolumeScalarMin = uLocations.get(X.shaders.uniforms.VOLUMESCALARMIN);
-  var uVolumeScalarMax = uLocations.get(X.shaders.uniforms.VOLUMESCALARMAX);
-  var uVolumeWindowLow = uLocations.get(X.shaders.uniforms.VOLUMEWINDOWLOW);
-  var uVolumeWindowHigh = uLocations.get(X.shaders.uniforms.VOLUMEWINDOWHIGH);
-  var uVolumeScalarMinColor = uLocations
-      .get(X.shaders.uniforms.VOLUMESCALARMINCOLOR);
-  var uVolumeScalarMaxColor = uLocations
-      .get(X.shaders.uniforms.VOLUMESCALARMAXCOLOR);
-  var uVolumeTexture = uLocations.get(X.shaders.uniforms.VOLUMETEXTURE);
-  var uObjectTransform = uLocations.get(X.shaders.uniforms.OBJECTTRANSFORM);
-  var uPointSize = uLocations.get(X.shaders.uniforms.POINTSIZE);
-  
+
   //
   // loop through all objects and (re-)draw them
   
-  i = _numberOfObjects;
+  i = topLevelObjectsLength;
   do {
     
-    var object = _objects[_numberOfObjects - i];
-    
-    if (object) {
-      // we have a valid object
-      
-      // special case for volumes
-      var volume = null;
-      
-      if (object instanceof X.slice && object._volume) {
-        
-        // we got a volume
-        volume = object._volume;
-        
-      }
-      
-      // check visibility
-      if (!object._visible || (volume && !volume._visible)) {
-        
-        // not visible, continue to the next one..
-        continue;
-        
-      }
-      
-      var id = object._id;
-      
-      var magicMode = object._magicmode;
-      
-      var vertexBuffer = this._vertexBuffers.get(id);
-      var normalBuffer = this._normalBuffers.get(id);
-      
-      var colorBuffer = this._colorBuffers.get(id);
-      var scalarBuffer = this._scalarBuffers.get(id);
-      var texturePositionBuffer = this._texturePositionBuffers.get(id);
-      
-      // ..bind the glBuffers
-      
-      // VERTICES
-      this._context.bindBuffer(this._context.ARRAY_BUFFER,
-          vertexBuffer._glBuffer);
-      
-      this._context.vertexAttribPointer(aPosition, vertexBuffer._itemSize,
-          this._context.FLOAT, false, 0, 0);
-      
-      // NORMALS
-      this._context.bindBuffer(this._context.ARRAY_BUFFER,
-          normalBuffer._glBuffer);
-      
-      this._context.vertexAttribPointer(aNormal, normalBuffer._itemSize,
-          this._context.FLOAT, false, 0, 0);
-      
-      if (picking) {
-        
-        // in picking mode, we use a color based on the id of this object
-        this._context.uniform1i(uUsePicking, true);
-        
-      } else {
-        
-        // in picking mode, we use a color based on the id of this object
-        this._context.uniform1i(uUsePicking, false);
-        
-      }
-      
-      // COLORS
-      if (colorBuffer && !picking && !magicMode) {
-        
-        // point colors are defined for this object and there is not picking
-        // request and no magicMode active
-        
-        // de-activate the useObjectColor flag on the shader
-        this._context.uniform1i(uUseObjectColor, false);
-        
-        this._context.bindBuffer(this._context.ARRAY_BUFFER,
-            colorBuffer._glBuffer);
-        
-        this._context.vertexAttribPointer(aColor, colorBuffer._itemSize,
-            this._context.FLOAT, false, 0, 0);
-        
-      } else {
-        
-        // we have a fixed object color or this is 'picking' mode
-        var useObjectColor = 1;
-        
-        // some magic mode support
-        if (magicMode && !picking) {
-          
-          useObjectColor = 0;
-          
-        }
-        
-        // activate the useObjectColor flag on the shader
-        // in magicMode, this is always false!
-        this._context.uniform1i(uUseObjectColor, useObjectColor);
-        
-        var objectColor = object._color;
-        
-        if (picking) {
-          
-          // encoding of the id to 3 bytes
-          var r = Math.floor((id % (255 * 255)) % 255);
-          var g = Math.floor((id % (255 * 255)) / 255);
-          var b = Math.floor(id / (255 * 255));
-          
-          // and set it as the color
-          objectColor = [r / 255, g / 255, b / 255];
-          
-        }
-        
-        this._context.uniform3f(uObjectColor, parseFloat(objectColor[0]),
-            parseFloat(objectColor[1]), parseFloat(objectColor[2]));
-        
-        // we always have to configure the attribute of the point colors
-        // even if no point colors are in use
-        this._context.vertexAttribPointer(aColor, vertexBuffer._itemSize,
-            this._context.FLOAT, false, 0, 0);
-        
-      }
-      
-      // SCALARS
-      if (scalarBuffer && !picking && !magicMode) {
-        
-        // scalars are defined for this object and there is not picking
-        // request and no magicMode active
-        
-        // activate the useScalars flag on the shader
-        this._context.uniform1i(uUseScalars, true);
-        
-        // propagate the replace flag
-        this._context.uniform1i(uScalarsReplaceMode,
-            object._scalars._replaceMode);
-        
-        var minColor = object._scalars._minColor;
-        var maxColor = object._scalars._maxColor;
-        
-        // propagate minColors and maxColors for the scalars
-        this._context.uniform3f(uScalarsMinColor, parseFloat(minColor[0]),
-            parseFloat(minColor[1]), parseFloat(minColor[2]));
-        this._context.uniform3f(uScalarsMaxColor, parseFloat(maxColor[0]),
-            parseFloat(maxColor[1]), parseFloat(maxColor[2]));
-        
-        // propagate minThreshold and maxThreshold for the scalars
-        this._context.uniform1f(uScalarsMinThreshold,
-            parseFloat(object._scalars._lowerThreshold));
-        this._context.uniform1f(uScalarsMaxThreshold,
-            parseFloat(object._scalars._upperThreshold));
-        
-        // propagate min and max for the scalars
-        this._context.uniform1f(uScalarsMin, parseFloat(object._scalars._min));
-        this._context.uniform1f(uScalarsMax, parseFloat(object._scalars._max));
-        
-
-        this._context.bindBuffer(this._context.ARRAY_BUFFER,
-            scalarBuffer._glBuffer);
-        
-        this._context.vertexAttribPointer(aScalar, scalarBuffer._itemSize,
-            this._context.FLOAT, false, 0, 0);
-        
-      } else {
-        
-        // de-activate the useScalars flag on the shader
-        this._context.uniform1i(uUseScalars, false);
-        
-        // we always have to configure the attribute of the scalars
-        // even if no scalars are in use
-        this._context.vertexAttribPointer(aScalar, vertexBuffer._itemSize,
-            this._context.FLOAT, false, 0, 0);
-        
-      }
-      
-      // OPACITY
-      this._context.uniform1f(uObjectOpacity, parseFloat(object._opacity));
-      
-      // TEXTURE
-      if (object._texture && texturePositionBuffer && !picking) {
-        //
-        // texture associated to this object
-        //
-        
-        // activate the texture flag on the shader
-        this._context.uniform1i(uUseTexture, true);
-        
-        // setup the sampler
-        
-        // bind the texture
-        this._context.activeTexture(this._context.TEXTURE0);
-        
-        // grab the texture from the internal hash map using the id as the
-        // key
-        this._context.bindTexture(this._context.TEXTURE_2D, this._textures
-            .get(object._texture._id));
-        this._context.uniform1i(uTextureSampler, 0);
-        
-        // propagate the current texture-coordinate-map to WebGL
-        this._context.bindBuffer(this._context.ARRAY_BUFFER,
-            texturePositionBuffer._glBuffer);
-        
-        this._context.vertexAttribPointer(aTexturePosition,
-            texturePositionBuffer._itemSize, this._context.FLOAT, false, 0, 0);
-        
-        // by default, no X.volume texture
-        this._context.uniform1i(uVolumeTexture, false);
-        
-      } else {
-        
-        // no texture for this object or 'picking' mode
-        this._context.uniform1i(uUseTexture, false);
-        
-        // we always have to configure the attribute of the texture positions
-        // even if no textures are in use
-        this._context.vertexAttribPointer(aTexturePosition,
-            vertexBuffer._itemSize, this._context.FLOAT, false, 0, 0);
-        
-      }
-      
-      // VOLUMES
-      // several special values need to be passed to the shaders if the object
-      // is a X.slice (part of an X.volume)
-      // this is the case if we have a volume here..
-      if (volume) {
-        
-        // this is a X.volume texture
-        this._context.uniform1i(uVolumeTexture, true);
-        
-        // pass the lower threshold
-        this._context.uniform1f(uVolumeLowerThreshold, volume._lowerThreshold);
-        // pass the upper threshold
-        this._context.uniform1f(uVolumeUpperThreshold, volume._upperThreshold);
-        
-        // pass the scalar range
-        this._context.uniform1f(uVolumeScalarMin, volume._min);
-        this._context.uniform1f(uVolumeScalarMax, volume._max);
-        
-        // pass the colors for scalar mapping
-        var minColor = volume._minColor;
-        var maxColor = volume._maxColor;
-        this._context.uniform3f(uVolumeScalarMinColor, parseFloat(minColor[0]),
-            parseFloat(minColor[1]), parseFloat(minColor[2]));
-        this._context.uniform3f(uVolumeScalarMaxColor, parseFloat(maxColor[0]),
-            parseFloat(maxColor[1]), parseFloat(maxColor[2]));
-        
-        // pass the w/l
-        this._context.uniform1f(uVolumeWindowLow, volume._windowLow);
-        this._context.uniform1f(uVolumeWindowHigh, volume._windowHigh);
-        
-        // get the (optional) label map
-        var labelmap = volume._labelmap;
-        
-        // no labelmap by default
-        this._context.uniform1i(uUseLabelMapTexture, false);
-        
-        // opacity, only if volume rendering is active
-        if (volume._volumeRendering) {
-          
-          this._context.uniform1f(uObjectOpacity, parseFloat(volume._opacity));
-          
-        } else if (labelmap && labelmap._visible) {
-          // only if we have an associated labelmap..
-          
-          // grab the id of the labelmap
-          var labelmapTextureID = object._labelmap._id;
-          
-          // we handle a second texture, actually the one for the labelmap
-          this._context.uniform1i(uUseLabelMapTexture, true);
-          
-          // bind the texture
-          this._context.activeTexture(this._context.TEXTURE1);
-          
-          // grab the texture from the internal hash map using the id as
-          // the key
-          this._context.bindTexture(this._context.TEXTURE_2D, this._textures
-              .get(labelmapTextureID));
-          this._context.uniform1i(uTextureSampler2, 1);
-          
-          // propagate label map opacity
-          this._context.uniform1f(uLabelMapOpacity, labelmap._opacity);
-          
-        }
-        
-      }
-      
-      // TRANSFORMS
-      // propagate transform to the uniform matrices of the shader
-      this._context.uniformMatrix4fv(uObjectTransform, false,
-          object._transform._glMatrix);
-      
-      // POINT SIZE
-      var pointSize = 1;
-      if (object._type == X.displayable.types.POINTS) {
-        pointSize = object._pointsize;
-      }
-      this._context.uniform1f(uPointSize, pointSize);
-      
-      //
-      // .. and draw with the object's DRAW MODE
-      //
-      var drawMode = -1;
-      if (object._type == X.displayable.types.TRIANGLES) {
-        
-        drawMode = this._context.TRIANGLES;
-        if (statisticsEnabled) {
-          trianglesCounter += (vertexBuffer._itemCount / 3);
-        }
-        
-      } else if (object._type == X.displayable.types.LINES) {
-        
-        this._context.lineWidth(object._linewidth);
-        
-        drawMode = this._context.LINES;
-        if (statisticsEnabled) {
-          linesCounter += (vertexBuffer._itemCount / 2);
-        }
-        
-      } else if (object._type == X.displayable.types.POINTS) {
-        
-        drawMode = this._context.POINTS;
-        if (statisticsEnabled) {
-          pointsCounter += vertexBuffer._itemCount;
-        }
-        
-      } else if (object._type == X.displayable.types.TRIANGLE_STRIPS) {
-        
-        drawMode = this._context.TRIANGLE_STRIP;
-        if (statisticsEnabled) {
-          trianglesCounter += (vertexBuffer._itemCount / 3);
-        }
-        
-      } else if (object._type == X.displayable.types.POLYGONS) {
-        
-        // TODO right now, this is hacked.. we need to use the Van Gogh
-        // triangulation algorithm or something faster to properly convert
-        // POLYGONS to TRIANGLES.
-        // Remark: The Van Gogh algorithm is implemented in the
-        // X.object.toCSG/fromCSG functions but not used here.
-        if (vertexBuffer._itemCount % 3 == 0) {
-          
-          drawMode = this._context.TRIANGLES;
-          
-        } else {
-          
-          drawMode = this._context.TRIANGLE_FAN;
-          
-        }
-        
-        if (statisticsEnabled) {
-          trianglesCounter += (vertexBuffer._itemCount / 3);
-        }
-        
-      }
-      
-      if (statisticsEnabled) {
-        
-        verticesCounter += vertexBuffer._itemCount;
-        
-      }
-      
-      // push it to the GPU, baby..
-      this._context.drawArrays(drawMode, 0, vertexBuffer._itemCount);
-      
-    }
+    var object = this._topLevelObjects[topLevelObjectsLength - i];
+    this.draw_(object, picking);
     
   } while (--i); // loop through objects
   
-  if (statisticsEnabled) {
+};
+
+
+/**
+ * 
+ * @param object
+ */
+X.renderer3D.prototype.draw_ = function(object, picking) {
+  
+  if (!object) {
     
-    var statistics = "Objects: " + _numberOfObjects + " | ";
-    statistics += "Vertices: " + verticesCounter + " | ";
-    statistics += "Triangles: " + Math.round(trianglesCounter) + " | ";
-    statistics += "Lines: " + linesCounter + " | ";
-    statistics += "Points: " + pointsCounter + " | ";
-    statistics += "Textures: " + this._textures.getCount();
-    window.console.log(statistics);
+    // we don't have a valid object
+    return;
     
   }
   
+  if (!object._visible) {
+    
+    // not visible, jump out
+    return;
+    
+  }
+  
+  if (object._points) {
+    
+    var aPointers = this._attributePointers;
+    var aPosition = aPointers.get(X.shaders.attributes.VERTEXPOSITION);
+    var aNormal = aPointers.get(X.shaders.attributes.VERTEXNORMAL);
+    var aColor = aPointers.get(X.shaders.attributes.VERTEXCOLOR);
+    var aTexturePosition = aPointers.get(X.shaders.attributes.VERTEXTEXTUREPOS);
+    var aScalar = aPointers.get(X.shaders.attributes.VERTEXSCALAR);
+    
+    var uLocations = this._uniformLocations;
+    var uUsePicking = uLocations.get(X.shaders.uniforms.USEPICKING);
+    var uUseObjectColor = uLocations.get(X.shaders.uniforms.USEOBJECTCOLOR);
+    var uObjectColor = uLocations.get(X.shaders.uniforms.OBJECTCOLOR);
+    var uUseScalars = uLocations.get(X.shaders.uniforms.USESCALARS);
+    var uScalarsReplaceMode = uLocations
+        .get(X.shaders.uniforms.SCALARSREPLACEMODE);
+    var uScalarsMin = uLocations.get(X.shaders.uniforms.SCALARSMIN);
+    var uScalarsMax = uLocations.get(X.shaders.uniforms.SCALARSMAX);
+    var uScalarsMinColor = uLocations.get(X.shaders.uniforms.SCALARSMINCOLOR);
+    var uScalarsMaxColor = uLocations.get(X.shaders.uniforms.SCALARSMAXCOLOR);
+    var uScalarsMinThreshold = uLocations
+        .get(X.shaders.uniforms.SCALARSMINTHRESHOLD);
+    var uScalarsMaxThreshold = uLocations
+        .get(X.shaders.uniforms.SCALARSMAXTHRESHOLD);
+    var uObjectOpacity = uLocations.get(X.shaders.uniforms.OBJECTOPACITY);
+    var uLabelMapOpacity = uLocations.get(X.shaders.uniforms.LABELMAPOPACITY);
+    var uUseTexture = uLocations.get(X.shaders.uniforms.USETEXTURE);
+    var uUseLabelMapTexture = uLocations
+        .get(X.shaders.uniforms.USELABELMAPTEXTURE);
+    var uTextureSampler = uLocations.get(X.shaders.uniforms.TEXTURESAMPLER);
+    var uTextureSampler2 = uLocations.get(X.shaders.uniforms.TEXTURESAMPLER2);
+    var uVolumeLowerThreshold = uLocations
+        .get(X.shaders.uniforms.VOLUMELOWERTHRESHOLD);
+    var uVolumeUpperThreshold = uLocations
+        .get(X.shaders.uniforms.VOLUMEUPPERTHRESHOLD);
+    var uVolumeScalarMin = uLocations.get(X.shaders.uniforms.VOLUMESCALARMIN);
+    var uVolumeScalarMax = uLocations.get(X.shaders.uniforms.VOLUMESCALARMAX);
+    var uVolumeWindowLow = uLocations.get(X.shaders.uniforms.VOLUMEWINDOWLOW);
+    var uVolumeWindowHigh = uLocations.get(X.shaders.uniforms.VOLUMEWINDOWHIGH);
+    var uVolumeScalarMinColor = uLocations
+        .get(X.shaders.uniforms.VOLUMESCALARMINCOLOR);
+    var uVolumeScalarMaxColor = uLocations
+        .get(X.shaders.uniforms.VOLUMESCALARMAXCOLOR);
+    var uVolumeTexture = uLocations.get(X.shaders.uniforms.VOLUMETEXTURE);
+    var uObjectTransform = uLocations.get(X.shaders.uniforms.OBJECTTRANSFORM);
+    var uPointSize = uLocations.get(X.shaders.uniforms.POINTSIZE);
+      
+    // special case for volumes
+    var volume = null;
+    
+    if (object instanceof X.slice && object._volume) {
+      
+      // we got a volume
+      volume = object._volume;
+      
+    }
+    
+    var id = object._id;
+    
+    var magicMode = object._magicmode;
+    
+    var vertexBuffer = this._vertexBuffers.get(id);
+    var normalBuffer = this._normalBuffers.get(id);
+    
+    var colorBuffer = this._colorBuffers.get(id);
+    var scalarBuffer = this._scalarBuffers.get(id);
+    var texturePositionBuffer = this._texturePositionBuffers.get(id);
+    
+    // ..bind the glBuffers
+    
+    // VERTICES
+    this._context.bindBuffer(this._context.ARRAY_BUFFER,
+        vertexBuffer._glBuffer);
+    
+    this._context.vertexAttribPointer(aPosition, vertexBuffer._itemSize,
+        this._context.FLOAT, false, 0, 0);
+    
+    // NORMALS
+    this._context.bindBuffer(this._context.ARRAY_BUFFER,
+        normalBuffer._glBuffer);
+    
+    this._context.vertexAttribPointer(aNormal, normalBuffer._itemSize,
+        this._context.FLOAT, false, 0, 0);
+    
+    if (picking) {
+      
+      // in picking mode, we use a color based on the id of this object
+      this._context.uniform1i(uUsePicking, true);
+      
+    } else {
+      
+      // in picking mode, we use a color based on the id of this object
+      this._context.uniform1i(uUsePicking, false);
+      
+    }
+    
+    // COLORS
+    if (colorBuffer && !picking && !magicMode) {
+      
+      // point colors are defined for this object and there is not picking
+      // request and no magicMode active
+      
+      // de-activate the useObjectColor flag on the shader
+      this._context.uniform1i(uUseObjectColor, false);
+      
+      this._context.bindBuffer(this._context.ARRAY_BUFFER,
+          colorBuffer._glBuffer);
+      
+      this._context.vertexAttribPointer(aColor, colorBuffer._itemSize,
+          this._context.FLOAT, false, 0, 0);
+      
+    } else {
+      
+      // we have a fixed object color or this is 'picking' mode
+      var useObjectColor = 1;
+      
+      // some magic mode support
+      if (magicMode && !picking) {
+        
+        useObjectColor = 0;
+        
+      }
+      
+      // activate the useObjectColor flag on the shader
+      // in magicMode, this is always false!
+      this._context.uniform1i(uUseObjectColor, useObjectColor);
+      
+      var objectColor = object._color;
+      
+      if (picking) {
+        
+        // encoding of the id to 3 bytes
+        var r = Math.floor((id % (255 * 255)) % 255);
+        var g = Math.floor((id % (255 * 255)) / 255);
+        var b = Math.floor(id / (255 * 255));
+        
+        // and set it as the color
+        objectColor = [r / 255, g / 255, b / 255];
+        
+      }
+      
+      this._context.uniform3f(uObjectColor, parseFloat(objectColor[0]),
+          parseFloat(objectColor[1]), parseFloat(objectColor[2]));
+      
+      // we always have to configure the attribute of the point colors
+      // even if no point colors are in use
+      this._context.vertexAttribPointer(aColor, vertexBuffer._itemSize,
+          this._context.FLOAT, false, 0, 0);
+      
+    }
+    
+    // SCALARS
+    if (scalarBuffer && !picking && !magicMode) {
+      
+      // scalars are defined for this object and there is not picking
+      // request and no magicMode active
+      
+      // activate the useScalars flag on the shader
+      this._context.uniform1i(uUseScalars, true);
+      
+      // propagate the replace flag
+      this._context.uniform1i(uScalarsReplaceMode,
+          object._scalars._replaceMode);
+      
+      var minColor = object._scalars._minColor;
+      var maxColor = object._scalars._maxColor;
+      
+      // propagate minColors and maxColors for the scalars
+      this._context.uniform3f(uScalarsMinColor, parseFloat(minColor[0]),
+          parseFloat(minColor[1]), parseFloat(minColor[2]));
+      this._context.uniform3f(uScalarsMaxColor, parseFloat(maxColor[0]),
+          parseFloat(maxColor[1]), parseFloat(maxColor[2]));
+      
+      // propagate minThreshold and maxThreshold for the scalars
+      this._context.uniform1f(uScalarsMinThreshold,
+          parseFloat(object._scalars._lowerThreshold));
+      this._context.uniform1f(uScalarsMaxThreshold,
+          parseFloat(object._scalars._upperThreshold));
+      
+      // propagate min and max for the scalars
+      this._context.uniform1f(uScalarsMin, parseFloat(object._scalars._min));
+      this._context.uniform1f(uScalarsMax, parseFloat(object._scalars._max));
+      
+  
+      this._context.bindBuffer(this._context.ARRAY_BUFFER,
+          scalarBuffer._glBuffer);
+      
+      this._context.vertexAttribPointer(aScalar, scalarBuffer._itemSize,
+          this._context.FLOAT, false, 0, 0);
+      
+    } else {
+      
+      // de-activate the useScalars flag on the shader
+      this._context.uniform1i(uUseScalars, false);
+      
+      // we always have to configure the attribute of the scalars
+      // even if no scalars are in use
+      this._context.vertexAttribPointer(aScalar, vertexBuffer._itemSize,
+          this._context.FLOAT, false, 0, 0);
+      
+    }
+    
+    // OPACITY
+    this._context.uniform1f(uObjectOpacity, parseFloat(object._opacity));
+    
+    // TEXTURE
+    if (object._texture && texturePositionBuffer && !picking) {
+      //
+      // texture associated to this object
+      //
+      
+      // activate the texture flag on the shader
+      this._context.uniform1i(uUseTexture, true);
+      
+      // setup the sampler
+      
+      // bind the texture
+      this._context.activeTexture(this._context.TEXTURE0);
+      
+      // grab the texture from the internal hash map using the id as the
+      // key
+      this._context.bindTexture(this._context.TEXTURE_2D, this._textures
+          .get(object._texture._id));
+      this._context.uniform1i(uTextureSampler, 0);
+      
+      // propagate the current texture-coordinate-map to WebGL
+      this._context.bindBuffer(this._context.ARRAY_BUFFER,
+          texturePositionBuffer._glBuffer);
+      
+      this._context.vertexAttribPointer(aTexturePosition,
+          texturePositionBuffer._itemSize, this._context.FLOAT, false, 0, 0);
+      
+      // by default, no X.volume texture
+      this._context.uniform1i(uVolumeTexture, false);
+      
+    } else {
+      
+      // no texture for this object or 'picking' mode
+      this._context.uniform1i(uUseTexture, false);
+      
+      // we always have to configure the attribute of the texture positions
+      // even if no textures are in use
+      this._context.vertexAttribPointer(aTexturePosition,
+          vertexBuffer._itemSize, this._context.FLOAT, false, 0, 0);
+      
+    }
+    
+    // VOLUMES
+    // several special values need to be passed to the shaders if the object
+    // is a X.slice (part of an X.volume)
+    // this is the case if we have a volume here..
+    if (volume) {
+      
+      // this is a X.volume texture
+      this._context.uniform1i(uVolumeTexture, true);
+      
+      // pass the lower threshold
+      this._context.uniform1f(uVolumeLowerThreshold, volume._lowerThreshold);
+      // pass the upper threshold
+      this._context.uniform1f(uVolumeUpperThreshold, volume._upperThreshold);
+      
+      // pass the scalar range
+      this._context.uniform1f(uVolumeScalarMin, volume._min);
+      this._context.uniform1f(uVolumeScalarMax, volume._max);
+      
+      // pass the colors for scalar mapping
+      var minColor = volume._minColor;
+      var maxColor = volume._maxColor;
+      this._context.uniform3f(uVolumeScalarMinColor, parseFloat(minColor[0]),
+          parseFloat(minColor[1]), parseFloat(minColor[2]));
+      this._context.uniform3f(uVolumeScalarMaxColor, parseFloat(maxColor[0]),
+          parseFloat(maxColor[1]), parseFloat(maxColor[2]));
+      
+      // pass the w/l
+      this._context.uniform1f(uVolumeWindowLow, volume._windowLow);
+      this._context.uniform1f(uVolumeWindowHigh, volume._windowHigh);
+      
+      // get the (optional) label map
+      var labelmap = volume._labelmap;
+      
+      // no labelmap by default
+      this._context.uniform1i(uUseLabelMapTexture, false);
+      
+      // opacity, only if volume rendering is active
+      if (volume._volumeRendering) {
+        
+        this._context.uniform1f(uObjectOpacity, parseFloat(volume._opacity));
+        
+      } else if (labelmap && labelmap._visible) {
+        // only if we have an associated labelmap..
+        
+        // grab the id of the labelmap
+        var labelmapTextureID = object._labelmap._id;
+        
+        // we handle a second texture, actually the one for the labelmap
+        this._context.uniform1i(uUseLabelMapTexture, true);
+        
+        // bind the texture
+        this._context.activeTexture(this._context.TEXTURE1);
+        
+        // grab the texture from the internal hash map using the id as
+        // the key
+        this._context.bindTexture(this._context.TEXTURE_2D, this._textures
+            .get(labelmapTextureID));
+        this._context.uniform1i(uTextureSampler2, 1);
+        
+        // propagate label map opacity
+        this._context.uniform1f(uLabelMapOpacity, labelmap._opacity);
+        
+      }
+      
+    }
+    
+    // TRANSFORMS
+    // propagate transform to the uniform matrices of the shader
+    this._context.uniformMatrix4fv(uObjectTransform, false,
+        object._transform._glMatrix);
+    
+    // POINT SIZE
+    var pointSize = 1;
+    if (object._type == X.displayable.types.POINTS) {
+      pointSize = object._pointsize;
+    }
+    this._context.uniform1f(uPointSize, pointSize);
+    
+    //
+    // .. and draw with the object's DRAW MODE
+    //
+    var drawMode = -1;
+    if (object._type == X.displayable.types.TRIANGLES) {
+      
+      drawMode = this._context.TRIANGLES;
+      
+    } else if (object._type == X.displayable.types.LINES) {
+      
+      this._context.lineWidth(object._linewidth);
+      
+      drawMode = this._context.LINES;
+      
+    } else if (object._type == X.displayable.types.POINTS) {
+      
+      drawMode = this._context.POINTS;
+      
+    } else if (object._type == X.displayable.types.TRIANGLE_STRIPS) {
+      
+      drawMode = this._context.TRIANGLE_STRIP;
+      
+    } else if (object._type == X.displayable.types.POLYGONS) {
+      
+      // TODO right now, this is hacked.. we need to use the Van Gogh
+      // triangulation algorithm or something faster to properly convert
+      // POLYGONS to TRIANGLES.
+      // Remark: The Van Gogh algorithm is implemented in the
+      // X.object.toCSG/fromCSG functions but not used here.
+      if (vertexBuffer._itemCount % 3 == 0) {
+        
+        drawMode = this._context.TRIANGLES;
+        
+      } else {
+        
+        drawMode = this._context.TRIANGLE_FAN;
+        
+      }
+      
+    }
+    
+    // push it to the GPU, baby..
+    this._context.drawArrays(drawMode, 0, vertexBuffer._itemCount);
+      
+  } // end of points check
+  
+  // nevertheless, now loop through the children
+  var _children = object._children;
+  var _childrenLength = _children.length;
+  var i = 0;
+  
+  for (i=0; i<_childrenLength; i++) {
+    
+    // draw the child
+    this.draw_(_children[i], picking);
+    
+  }
+
 };
 
 
