@@ -84,6 +84,19 @@ X.scalars = function() {
    * @protected
    */
   this._replaceMode = true;
+
+  /**
+   * The interpolation scheme for this object.
+   * 	0 -	linear interpolation across range from minColor to maxColor
+   * 	1 - FreeSurfer curvature convention: negative values are interpolated
+   * 	    over minColor range, positive curvatures separately over 
+   * 	    maxColor range.
+   * 
+   * @type {!Integer}
+   * @protected
+   */
+  this._interpolation = 0;
+  
   
   // inject functionality
   inject(this, new X.loadable()); // this object is loadable from a file
@@ -136,6 +149,38 @@ X.scalars.prototype.__defineSetter__('array', function(array) {
   
   // also, mark this dirty so the renderer can pick it up
   this._dirty = true;
+  
+});
+
+
+/**
+ * The scalar interpolation associated with this object.
+   * The interpolation scheme for this object.
+   * 	0 -	linear interpolation across range from minColor to maxColor
+   * 	1 - FreeSurfer curvature convention: negative values are interpolated
+   * 	    over minColor range, positive curvatures separately over 
+   * 	    maxColor range.
+ * 
+ * @return {!Integer} The scalarInterpolation variable.
+ */
+X.scalars.prototype.__defineGetter__('interpolation', function() {
+  
+  return this._interpolation;
+  
+});
+
+
+/**
+ * scalarsInterpolation
+   * The interpolation scheme for this object.
+   * 	0 -	linear interpolation across range from minColor to maxColor
+   * 	1 - FreeSurfer curvature convention: negative values are interpolated
+   * 	    over minColor range, positive curvatures separately over 
+   * 	    maxColor range.
+ */
+X.scalars.prototype.__defineSetter__('interpolation', function(value) {
+
+  this._interpolation = value;
   
 });
 

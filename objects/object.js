@@ -88,6 +88,7 @@ X.object = function(object) {
    * @protected
    */
   this._scalars = null;
+
   
   // inject functionality
   inject(this, new X.displayable()); // this object is displayable
@@ -224,7 +225,6 @@ X.object.prototype.__defineGetter__('children', function() {
   return this._children;
   
 });
-
 
 /**
  * Fire a modified event for this object.
