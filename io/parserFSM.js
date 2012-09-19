@@ -85,6 +85,7 @@ X.parserFSM.prototype.parse = function(container, object, data, flag) {
   
   var p = object._points;
   var n = object._normals;
+  object._pointIndices = [];
   var ind = object._pointIndices;
   
   // Go through two newlines

@@ -86,6 +86,7 @@ X.shaders = function() {
   t += 'uniform vec3 scalarsMaxColor;\n';
   t += 'uniform float scalarsMinThreshold;\n';
   t += 'uniform float scalarsMaxThreshold;\n';
+  t += 'uniform int scalarsInterpolation;\n';
   t += 'uniform vec3 objectColor;\n';
   t += 'uniform float pointSize;\n';
   t += '\n';
@@ -121,7 +122,23 @@ X.shaders = function() {
   t += '      }\n';
   t += '    } else {\n';
   t += '      if (scalarsReplaceMode) {\n';
-  t += '        fragmentColor = scalarValue * scalarsMaxColor + (1.0 - scalarValue) * scalarsMinColor;\n';
+  t += '        if (scalarsInterpolation == 1) {\n';
+// the zeroMaxColor is the "zero" point for the interpolation of the "max" colors
+// and used for the positive curvatures; similarly the zeroMinColor for the 
+// negative curvatures.
+  t += '            vec3 zeroMaxColor;\n';
+  t += '            vec3 zeroMinColor;\n';
+  t += '            zeroMaxColor[0] = scalarsMaxColor[0]*0.33;\n';
+  t += '            zeroMaxColor[1] = scalarsMaxColor[1]*0.33;\n';
+  t += '            zeroMaxColor[2] = scalarsMaxColor[2]*0.33;\n';
+  t += '            zeroMinColor[0] = scalarsMinColor[0]*0.33;\n';
+  t += '            zeroMinColor[1] = scalarsMinColor[1]*0.33;\n';
+  t += '            zeroMinColor[2] = scalarsMinColor[2]*0.33;\n';
+  t += '            if(scalarValue < 0.0) {fragmentColor = scalarValue/(scalarsMin) * scalarsMinColor + (1.0 - scalarValue/(scalarsMin)) * (zeroMinColor);}\n';
+  t += '            else {fragmentColor = scalarValue/(scalarsMax) * scalarsMaxColor + (1.0 - scalarValue/(scalarsMax)) * (zeroMaxColor);}\n';
+  t += '        } else {\n';
+  t += '            fragmentColor = scalarValue/(scalarsMax-scalarsMin) * scalarsMaxColor + (1.0 - scalarValue/(scalarsMax-scalarsMin)) * scalarsMinColor;\n';
+  t += '          }\n';
   t += '      } else {\n';
   t += '        fragmentColor = vertexColor;\n'; // if we don't replace and
   // didn't discard, just use
@@ -290,6 +307,7 @@ X.shaders.uniforms = {
   SCALARSMAXCOLOR: 'scalarsMaxColor',
   SCALARSMINTHRESHOLD: 'scalarsMinThreshold',
   SCALARSMAXTHRESHOLD: 'scalarsMaxThreshold',
+  SCALARSINTERPOLATION: 'scalarsInterpolation',
   POINTSIZE: 'pointSize',
   OBJECTOPACITY: 'objectOpacity',
   NORMAL: 'normal',

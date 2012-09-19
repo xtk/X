@@ -1541,6 +1541,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   var uScalarsMax = uLocations.get(X.shaders.uniforms.SCALARSMAX);
   var uScalarsMinColor = uLocations.get(X.shaders.uniforms.SCALARSMINCOLOR);
   var uScalarsMaxColor = uLocations.get(X.shaders.uniforms.SCALARSMAXCOLOR);
+  var uScalarsInterpolation = uLocations.get(X.shaders.uniforms.SCALARSINTERPOLATION);
   var uScalarsMinThreshold = uLocations
       .get(X.shaders.uniforms.SCALARSMINTHRESHOLD);
   var uScalarsMaxThreshold = uLocations
@@ -1723,6 +1724,8 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         this._context.uniform1f(uScalarsMin, parseFloat(object._scalars._min));
         this._context.uniform1f(uScalarsMax, parseFloat(object._scalars._max));
         
+        // propagate scalar interpolation scheme
+        this._context.uniform1i(uScalarsInterpolation, parseInt(object._scalars._interpolation, 10));
 
         this._context.bindBuffer(this._context.ARRAY_BUFFER,
             scalarBuffer._glBuffer);
