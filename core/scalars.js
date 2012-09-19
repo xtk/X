@@ -92,7 +92,7 @@ X.scalars = function() {
    * 	    over minColor range, positive curvatures separately over 
    * 	    maxColor range.
    * 
-   * @type {!Integer}
+   * @type {!number}
    * @protected
    */
   this._interpolation = 0;
@@ -161,7 +161,7 @@ X.scalars.prototype.__defineSetter__('array', function(array) {
    * 	    over minColor range, positive curvatures separately over 
    * 	    maxColor range.
  * 
- * @return {!Integer} The scalarInterpolation variable.
+ * @return {!number} The scalarInterpolation variable.
  */
 X.scalars.prototype.__defineGetter__('interpolation', function() {
   

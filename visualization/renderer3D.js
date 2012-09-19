@@ -1725,7 +1725,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         this._context.uniform1f(uScalarsMax, parseFloat(object._scalars._max));
         
         // propagate scalar interpolation scheme
-        this._context.uniform1i(uScalarsInterpolation, parseInt(object._scalars._interpolation));
+        this._context.uniform1i(uScalarsInterpolation, parseInt(object._scalars._interpolation, 10));
 
         this._context.bindBuffer(this._context.ARRAY_BUFFER,
             scalarBuffer._glBuffer);
