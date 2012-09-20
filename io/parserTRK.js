@@ -113,6 +113,7 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   // parse the data
   
   var numberOfFibers = header.n_count;
+  var numberOfScalars = header.n_scalars;
   
   // loop through all fibers
   var fibers = [];
@@ -144,7 +145,7 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
     // console.log(numPoints, offset);
     
 
-    var currentPoints = new X.triplets(numPoints*3);
+    var currentPoints = new X.triplets(numPoints * 3);
     
     var length = 0.0;
     
@@ -152,9 +153,9 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
     for ( var j = 0; j < numPoints; j++) {
       
       // read coordinates
-      var x = _points[offset + j * 3 + 1];
-      var y = _points[offset + j * 3 + 2];
-      var z = _points[offset + j * 3 + 3];
+      var x = _points[offset + j * 3 + j * numberOfScalars + 1];
+      var y = _points[offset + j * 3 + j * numberOfScalars + 2];
+      var z = _points[offset + j * 3 + j * numberOfScalars + 3];
       
       // console.log(x, y, z);
       
@@ -186,7 +187,7 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
       
     }
     
-    offset += numPoints * 3 + 1;
+    offset += numPoints * 3 + numPoints * numberOfScalars + 1;
     
 
     // read additional properties
