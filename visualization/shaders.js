@@ -123,9 +123,10 @@ X.shaders = function() {
   t += '    } else {\n';
   t += '      if (scalarsReplaceMode) {\n';
   t += '        if (scalarsInterpolation == 1) {\n';
-// the zeroMaxColor is the "zero" point for the interpolation of the "max" colors
-// and used for the positive curvatures; similarly the zeroMinColor for the 
-// negative curvatures.
+  // the zeroMaxColor is the "zero" point for the interpolation of the "max"
+  // colors
+  // and used for the positive curvatures; similarly the zeroMinColor for the
+  // negative curvatures.
   t += '            vec3 zeroMaxColor;\n';
   t += '            vec3 zeroMinColor;\n';
   t += '            zeroMaxColor[0] = scalarsMaxColor[0]*0.33;\n';
@@ -137,7 +138,10 @@ X.shaders = function() {
   t += '            if(scalarValue < 0.0) {fragmentColor = scalarValue/(scalarsMin) * scalarsMinColor + (1.0 - scalarValue/(scalarsMin)) * (zeroMinColor);}\n';
   t += '            else {fragmentColor = scalarValue/(scalarsMax) * scalarsMaxColor + (1.0 - scalarValue/(scalarsMax)) * (zeroMaxColor);}\n';
   t += '        } else {\n';
-  t += '            fragmentColor = scalarValue/(scalarsMax-scalarsMin) * scalarsMaxColor + (1.0 - scalarValue/(scalarsMax-scalarsMin)) * scalarsMinColor;\n';
+  // t += ' fragmentColor = (scalarValue-scalarsMin)/(scalarsMax-scalarsMin) *
+  // scalarsMaxColor + (1.0 - (scalarValue-scalarsMin)/(scalarsMax-scalarsMin))
+  // * scalarsMinColor;\n';
+  t += '            fragmentColor = scalarValue * scalarsMaxColor + (1.0 - scalarValue) * scalarsMinColor;\n';
   t += '          }\n';
   t += '      } else {\n';
   t += '        fragmentColor = vertexColor;\n'; // if we don't replace and
