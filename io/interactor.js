@@ -191,7 +191,9 @@ X.interactor = function(element) {
     'MOUSECLICKS_ENABLED': true,
     'KEYBOARD_ENABLED': true,
     'HOVERING_ENABLED': true,
-    'CONTEXTMENU_ENABLED': false
+    'CONTEXTMENU_ENABLED': false,
+    'TOUCH_ENABLED': true,
+    'TOUCH_BOUNCING_ENABLED': false
   };
   
 };
@@ -209,6 +211,8 @@ goog.inherits(X.interactor, X.base);
  *  config.KEYBOARD_ENABLED: true
  *  config.HOVERING_ENABLED: true
  *  config.CONTEXTMENU_ENABLED: false 
+ *  config.TOUCH_ENABLED: true
+ *  config.TOUCH_BOUNCING_ENABLED: false
  * </pre>
  * 
  * @return {Object} The configuration.
@@ -331,6 +335,31 @@ X.interactor.prototype.init = function() {
     
   }
   
+  // touch events
+  if (this._config['TOUCH_ENABLED']) {
+    
+    if (!this._config['TOUCH_BOUNCING_ENABLED']) {
+      
+      // disable bouncing
+      document.body.addEventListener('touchmove', function(event) {
+
+        event.preventDefault();
+      }, false);
+      
+    }
+    
+    // touch move event
+    this._touchMoveListener = goog.events.listen(this._element,
+        goog.events.EventType.TOUCHMOVE, this.onTouchMove_.bind(this));
+    
+  } else {
+    
+    // remove the observer, if it exists..
+    goog.events.unlistenByKey(this._touchMoveListener);
+    
+  }
+  
+
   //
   // we always listen to mouse move events since they are essential for the
   // other events
@@ -514,6 +543,52 @@ X.interactor.prototype.onMouseMove = function(event) {
 };
 
 
+X.interactor.prototype.onTouchMove_ = function(event) {
+
+  // prevent the default
+  event.preventDefault();
+  
+  // convert to touch event
+  event.init(event.getBrowserEvent().targetTouches[0], event.currentTarget);
+  
+  this._touchPosition = [event.clientX, event.clientY];
+  var currentTouchPosition = new goog.math.Vec2(this._touchPosition[0],
+      this._touchPosition[1]);
+  
+  if (!this._lastTouchPosition) {
+    this._lastTouchPosition = currentTouchPosition.clone();
+  }
+  
+  var _right_quarter = this._touchPosition[0] > this._element.clientWidth * 3 / 4;
+  var _left_quarter = this._touchPosition[0] < this._element.clientWidth / 4;
+  var _top_quarter = this._touchPosition[1] < this._element.clientHeight / 4;
+  var _bottom_quarter = this._touchPosition[1] > this._element.clientHeight * 3 / 4;
+  var _middle = !_right_quarter && !_left_quarter && !_top_quarter &&
+      !_bottom_quarter;
+  
+  // console.log(_right_quarter, _left_quarter, _top_quarter, _bottom_quarter,
+  // _middle);
+  
+  var distance = this._lastTouchPosition.subtract(currentTouchPosition);
+  
+  this._lastTouchPosition = currentTouchPosition.clone();
+  
+  if (_right_quarter || _left_quarter) {
+    
+    // distance.y > 0 for up
+    // distance.y < 0 for down
+    var e = new X.event.ScrollEvent();
+    
+    e._up = (distance.y < 0);
+    
+    this.dispatchEvent(e);
+    
+  }
+  
+
+};
+
+
 /**
  * Callback for mouse movement events inside the associated DOM element. This
  * distinguishes by pressed mouse buttons, key accelerators etc. and fires
@@ -689,7 +764,7 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
 
 /**
  * Stop the hover countdown and fire a X.event.HoverEndEvent.
- *
+ * 
  * @protected
  */
 X.interactor.prototype.hoverEnd_ = function() {
