@@ -89,3 +89,49 @@ X.interactor2D.prototype.onMouseWheel_ = function(event) {
   this.dispatchEvent(e);
   
 };
+
+
+/**
+ * @inheritDoc
+ */
+X.interactor2D.prototype.onTouchMove_ = function(_event) {
+
+  var _fingers = goog.base(this, 'onTouchMove_', _event);
+  
+  if (_fingers.length == 1) {
+    
+    // 1 finger moving
+    var finger1 = _fingers[0];
+    
+    this._touchPosition = [finger1.clientX, finger1.clientY];
+    
+    var currentTouchPosition = new goog.math.Vec2(this._touchPosition[0],
+        this._touchPosition[1]);
+    
+    var _right_quarter = this._touchPosition[0] > this._element.clientWidth * 3 / 4;
+    var _left_quarter = this._touchPosition[0] < this._element.clientWidth / 4;
+    var _top_quarter = this._touchPosition[1] < this._element.clientHeight / 4;
+    var _bottom_quarter = this._touchPosition[1] > this._element.clientHeight * 3 / 4;
+    var _middle = !_right_quarter && !_left_quarter && !_top_quarter &&
+        !_bottom_quarter;
+    
+    var distance = this._lastTouchPosition.subtract(currentTouchPosition);
+    
+    // store the last touch position
+    this._lastTouchPosition = currentTouchPosition.clone();
+    
+    if (_right_quarter || _left_quarter) {
+      
+      // distance.y > 0 for up
+      // distance.y < 0 for down
+      var e = new X.event.ScrollEvent();
+      
+      e._up = (distance.y < 0);
+      
+      this.dispatchEvent(e);
+      
+    }
+    
+  }
+  
+};

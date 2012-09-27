@@ -348,14 +348,26 @@ X.interactor.prototype.init = function() {
       
     }
     
+    // touch start event
+    this._touchStartListener = goog.events.listen(this._element,
+        goog.events.EventType.TOUCHSTART, this.onTouchStart_.bind(this));
+    
     // touch move event
     this._touchMoveListener = goog.events.listen(this._element,
         goog.events.EventType.TOUCHMOVE, this.onTouchMove_.bind(this));
     
+    // touch end event
+    this._touchEndListener = goog.events.listen(this._element,
+        goog.events.EventType.TOUCHEND, this.onTouchEnd_.bind(this));
+    
   } else {
     
-    // remove the observer, if it exists..
+    // remove the observers, if they exist..
+    goog.events.unlistenByKey(this._touchStartListener);
+    
     goog.events.unlistenByKey(this._touchMoveListener);
+    
+    goog.events.unlistenByKey(this._touchEndListener);
     
   }
   
@@ -543,7 +555,7 @@ X.interactor.prototype.onMouseMove = function(event) {
 };
 
 
-X.interactor.prototype.onTouchMove_ = function(event) {
+X.interactor.prototype.onTouchStart_ = function(event) {
 
   // prevent the default
   event.preventDefault();
@@ -551,41 +563,35 @@ X.interactor.prototype.onTouchMove_ = function(event) {
   // convert to touch event
   event.init(event.getBrowserEvent().targetTouches[0], event.currentTarget);
   
-  this._touchPosition = [event.clientX, event.clientY];
-  var currentTouchPosition = new goog.math.Vec2(this._touchPosition[0],
-      this._touchPosition[1]);
+  // store the last touch position
+  this._lastTouchPosition = new goog.math.Vec2(event.clientX, event.clientY);
   
-  if (!this._lastTouchPosition) {
-    this._lastTouchPosition = currentTouchPosition.clone();
-  }
+  this._distance = 0;
   
-  var _right_quarter = this._touchPosition[0] > this._element.clientWidth * 3 / 4;
-  var _left_quarter = this._touchPosition[0] < this._element.clientWidth / 4;
-  var _top_quarter = this._touchPosition[1] < this._element.clientHeight / 4;
-  var _bottom_quarter = this._touchPosition[1] > this._element.clientHeight * 3 / 4;
-  var _middle = !_right_quarter && !_left_quarter && !_top_quarter &&
-      !_bottom_quarter;
+  // console.log('start')
   
-  // console.log(_right_quarter, _left_quarter, _top_quarter, _bottom_quarter,
-  // _middle);
-  
-  var distance = this._lastTouchPosition.subtract(currentTouchPosition);
-  
-  this._lastTouchPosition = currentTouchPosition.clone();
-  
-  if (_right_quarter || _left_quarter) {
-    
-    // distance.y > 0 for up
-    // distance.y < 0 for down
-    var e = new X.event.ScrollEvent();
-    
-    e._up = (distance.y < 0);
-    
-    this.dispatchEvent(e);
-    
-  }
-  
+};
 
+
+X.interactor.prototype.onTouchEnd_ = function(event) {
+
+  // prevent the default
+  event.preventDefault();
+  
+  // console.log('end');
+  
+};
+
+
+X.interactor.prototype.onTouchMove_ = function(event) {
+
+  // prevent the default
+  event.preventDefault();
+  
+  var _fingers = event.getBrowserEvent().targetTouches;
+  
+  return _fingers;
+  
 };
 
 
