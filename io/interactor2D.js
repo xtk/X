@@ -132,6 +132,85 @@ X.interactor2D.prototype.onTouchMove_ = function(_event) {
       
     }
     
+
+  } else if (_fingers.length == 2) {
+    
+    // 2 fingers moving
+    var finger1 = _fingers[0];
+    var finger2 = _fingers[1];
+    
+    this._touchPosition1 = [finger1.clientX, finger1.clientY];
+    this._touchPosition2 = [finger2.clientX, finger2.clientY];
+    
+    var currentTouchPosition1 = new goog.math.Vec2(this._touchPosition1[0],
+        this._touchPosition1[1]);
+    var currentTouchPosition2 = new goog.math.Vec2(this._touchPosition2[0],
+        this._touchPosition2[1]);
+    
+    var distance = goog.math.Vec2.squaredDistance(currentTouchPosition1,
+        currentTouchPosition2);
+    
+    var distanceChange = distance - this._lastDistance;
+    
+    this._lastDistance = distance;
+    
+    distance = this._lastTouchPosition.subtract(currentTouchPosition1);
+    
+    // store the last touch position
+    this._lastTouchPosition = currentTouchPosition1.clone();
+    
+
+    if (distanceChange == 0) {
+      
+      // create a new pan event
+      var e = new X.event.PanEvent();
+      
+      // panning in general moves pretty fast, so we threshold the distance
+      // additionally
+      if (distance.x > 5) {
+        
+        distance.x = 5;
+        
+      } else if (distance.x < -5) {
+        
+        distance.x = -5;
+        
+      }
+      if (distance.y > 5) {
+        
+        distance.y = 5;
+        
+      } else if (distance.y < -5) {
+        
+        distance.y = -5;
+        
+      }
+      
+      // attach the distance vector
+      e._distance = distance;
+      
+      // .. fire the event
+      this.dispatchEvent(e);
+      
+
+    } else {
+      
+      // create a new zoom event
+      var e = new X.event.ZoomEvent();
+      
+      // set the zoom direction
+      // true if zooming in, false if zooming out
+      e._in = (distanceChange > 0);
+      
+      // with the right click, the zoom will happen rather
+      // fine than fast
+      e._fast = false;
+      
+      // .. fire the event
+      this.dispatchEvent(e);
+      
+    }
+    
   }
   
 };
