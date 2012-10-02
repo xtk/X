@@ -578,8 +578,6 @@ X.interactor.prototype.onTouchEnd_ = function(event) {
   // prevent the default
   event.preventDefault();
   
-  // console.log('end');
-  
 };
 
 

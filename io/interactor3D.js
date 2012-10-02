@@ -56,6 +56,8 @@ X.interactor3D = function(element) {
    */
   this._classname = 'interactor3D';
   
+  this._clear_all = false;
+  
 };
 // inherit from X.base
 goog.inherits(X.interactor3D, X.interactor);
@@ -110,6 +112,18 @@ X.interactor3D.prototype.onTouchMove_ = function(_event) {
     
     var distance = this._lastTouchPosition.subtract(currentTouchPosition);
     
+    // touch rotations shall be a little faster than mouse rotations
+    
+    // but add a threshold so it is not too wonky
+    if (Math.abs(distance.x) < 5) {
+      distance.x = 0;
+    }
+    if (Math.abs(distance.y) < 5) {
+      distance.y = 0;
+    }
+    
+    distance.scale(3);
+    
     // store the last touch position
     this._lastTouchPosition = currentTouchPosition.clone();
     
@@ -121,6 +135,35 @@ X.interactor3D.prototype.onTouchMove_ = function(_event) {
     
     // .. fire the event
     this.dispatchEvent(e);
+    
+    //
+    // after spin
+    //
+    
+    _after_spin = setInterval(function() {
+
+      if (distance.magnitude() < 1.0) {
+        
+        clearInterval(_after_spin);
+        return;
+        
+      }
+      
+      // console.log(distance.x, distance.y);
+      distance.scale(0.7);
+      
+      // console.log(distance.x, distance.y, distance.magnitude())
+      
+      var e = new X.event.RotateEvent();
+      
+      e._distance = distance;
+      
+      this.dispatchEvent(e);
+      
+
+      console.log('new rotate event');
+      
+    }.bind(this), 100);
     
   } else if (_fingers.length == 2) {
     
@@ -149,7 +192,7 @@ X.interactor3D.prototype.onTouchMove_ = function(_event) {
     this._lastTouchPosition = currentTouchPosition1.clone();
     
 
-    if (distanceChange == 0) {
+    if (distanceChange < 10) {
       
       // create a new pan event
       var e = new X.event.PanEvent();

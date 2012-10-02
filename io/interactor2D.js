@@ -160,7 +160,7 @@ X.interactor2D.prototype.onTouchMove_ = function(_event) {
     this._lastTouchPosition = currentTouchPosition1.clone();
     
 
-    if (distanceChange == 0) {
+    if (distanceChange < 10) {
       
       // create a new pan event
       var e = new X.event.PanEvent();
