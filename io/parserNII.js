@@ -74,12 +74,12 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   
   var _data = data;
   
-  
-  // check if this data is compressed, then this int != 348
-  //var _compressionCheck = new Int32Array(data,0,1)[0];
-  var dataview = new DataView(data, 0);
-  var _compressionCheck = dataview.getInt32(0,littleEndian=true);
 
+  // check if this data is compressed, then this int != 348
+  // var _compressionCheck = new Int32Array(data,0,1)[0];
+  var dataview = new DataView(data, 0);
+  var _compressionCheck = dataview.getInt32(0, true);
+  
   if (_compressionCheck != 348) {
     
     // we need to decompress the datastream
