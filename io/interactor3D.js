@@ -140,7 +140,7 @@ X.interactor3D.prototype.onTouchMove_ = function(_event) {
     // after spin
     //
     
-    _after_spin = setInterval(function() {
+    var _after_spin = setInterval(function() {
 
       if (distance.magnitude() < 1.0) {
         
@@ -161,7 +161,7 @@ X.interactor3D.prototype.onTouchMove_ = function(_event) {
       this.dispatchEvent(e);
       
 
-      console.log('new rotate event');
+      // console.log('new rotate event');
       
     }.bind(this), 100);
     
