@@ -1021,6 +1021,9 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
     // create a new rotate event
     var e = new X.event.RotateEvent();
     
+    // make the rotation a little faster
+    distance.scale(3);
+    
     // attach the distance vector
     e._distance = distance;
     
