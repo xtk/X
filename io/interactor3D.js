@@ -56,6 +56,8 @@ X.interactor3D = function(element) {
    */
   this._classname = 'interactor3D';
   
+  this._clear_all = false;
+  
 };
 // inherit from X.base
 goog.inherits(X.interactor3D, X.interactor);

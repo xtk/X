@@ -126,7 +126,7 @@ X.renderer2D = function() {
    * @type {number}
    * @protected
    */
-  this._sliceHeightSpacing = 0;  
+  this._sliceHeightSpacing = 0;
   
   /**
    * The current rotation factor. This is positive to rotate clockwise and
@@ -394,6 +394,13 @@ X.renderer2D.prototype.update_ = function(object) {
     
   }
   
+  if (!(object instanceof X.volume)) {
+    
+    // we only add volumes in the 2d renderer for now
+    return;
+    
+  }
+  
   // var id = object._id;
   // var texture = object._texture;
   var file = object._file;
@@ -516,7 +523,7 @@ X.renderer2D.prototype.update_ = function(object) {
     _sliceWidth = _dimensions[0];
     _sliceHeight = _dimensions[1];
     this._sliceWidthSpacing = _spacing[0];
-    this._sliceHeightSpacing = _spacing[1]; 
+    this._sliceHeightSpacing = _spacing[1];
     
   }
   
@@ -759,7 +766,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _offset_y = -_sliceHeight * this._sliceHeightSpacing / 2 + _y;
   
   // draw the slice
-  this._context.drawImage(this._frameBuffer, _offset_x, _offset_y, _sliceWidth * this._sliceWidthSpacing, _sliceHeight * this._sliceHeightSpacing);
+  this._context.drawImage(this._frameBuffer, _offset_x, _offset_y, _sliceWidth *
+      this._sliceWidthSpacing, _sliceHeight * this._sliceHeightSpacing);
   
   // draw the labels with a configured opacity
   if (_currentLabelMap && _volume._labelmap._visible) {
@@ -768,7 +776,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     
     this._context.globalAlpha = _labelOpacity; // draw transparent depending on
     // opacity
-    this._context.drawImage(this._labelFrameBuffer, _offset_x, _offset_y, _sliceWidth * this._sliceWidthSpacing, _sliceHeight * this._sliceHeightSpacing);
+    this._context.drawImage(this._labelFrameBuffer, _offset_x, _offset_y,
+        _sliceWidth * this._sliceWidthSpacing, _sliceHeight *
+            this._sliceHeightSpacing);
   }
   
 };

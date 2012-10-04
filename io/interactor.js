@@ -182,6 +182,38 @@ X.interactor = function(element) {
   this._lastMousePosition = new goog.math.Vec2(0, 0);
   
   /**
+   * The previous touch position of the first finger.
+   * 
+   * @type {!goog.math.Vec2}
+   * @protected
+   */
+  this._lastTouchPosition = new goog.math.Vec2(0, 0);
+  
+  /**
+   * The last distance between the first and second finger.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this.lastFingerDistance = 0;
+  
+  /**
+   * The hover timeout index.
+   * 
+   * @type {?number}
+   * @protected
+   */
+  this._hoverTrigger = null;
+  
+  /**
+   * The touch hover timeout index.
+   * 
+   * @type {?number}
+   * @protected
+   */
+  this._touchHoverTrigger = null;
+  
+  /**
    * The configuration of this interactor.
    * 
    * @enum {boolean}
@@ -191,7 +223,9 @@ X.interactor = function(element) {
     'MOUSECLICKS_ENABLED': true,
     'KEYBOARD_ENABLED': true,
     'HOVERING_ENABLED': true,
-    'CONTEXTMENU_ENABLED': false
+    'CONTEXTMENU_ENABLED': false,
+    'TOUCH_ENABLED': true,
+    'TOUCH_BOUNCING_ENABLED': false
   };
   
 };
@@ -209,6 +243,8 @@ goog.inherits(X.interactor, X.base);
  *  config.KEYBOARD_ENABLED: true
  *  config.HOVERING_ENABLED: true
  *  config.CONTEXTMENU_ENABLED: false 
+ *  config.TOUCH_ENABLED: true
+ *  config.TOUCH_BOUNCING_ENABLED: false
  * </pre>
  * 
  * @return {Object} The configuration.
@@ -331,6 +367,43 @@ X.interactor.prototype.init = function() {
     
   }
   
+  // touch events
+  if (this._config['TOUCH_ENABLED']) {
+    
+    if (!this._config['TOUCH_BOUNCING_ENABLED']) {
+      
+      // disable bouncing
+      document.body.addEventListener('touchmove', function(event) {
+
+        event.preventDefault();
+      }, false);
+      
+    }
+    
+    // touch start event
+    this._touchStartListener = goog.events.listen(this._element,
+        goog.events.EventType.TOUCHSTART, this.onTouchStart_.bind(this));
+    
+    // touch move event
+    this._touchMoveListener = goog.events.listen(this._element,
+        goog.events.EventType.TOUCHMOVE, this.onTouchMove_.bind(this));
+    
+    // touch end event
+    this._touchEndListener = goog.events.listen(this._element,
+        goog.events.EventType.TOUCHEND, this.onTouchEnd_.bind(this));
+    
+  } else {
+    
+    // remove the observers, if they exist..
+    goog.events.unlistenByKey(this._touchStartListener);
+    
+    goog.events.unlistenByKey(this._touchMoveListener);
+    
+    goog.events.unlistenByKey(this._touchEndListener);
+    
+  }
+  
+
   //
   // we always listen to mouse move events since they are essential for the
   // other events
@@ -515,6 +588,335 @@ X.interactor.prototype.onMouseMove = function(event) {
 
 
 /**
+ * Callback for the touch start event.
+ * 
+ * @param {goog.events.Event} event The browser fired event.
+ * @protected
+ */
+X.interactor.prototype.onTouchStart_ = function(event) {
+
+  // prevent the default
+  event.preventDefault();
+  
+  // convert to touch event
+  event.init(event.getBrowserEvent().targetTouches[0], event.currentTarget);
+  
+  // execute user defined callback
+  eval("this.onTouchStart(" + event.clientX + "," + event.clientY + ")");
+  
+  // store the last touch position
+  this._lastTouchPosition = new goog.math.Vec2(event.clientX, event.clientY);
+  
+  // get ready for a hover event
+  this._touchHoverTrigger = setTimeout(this.onTouchHover_.bind(this, event),
+      500);
+  
+};
+
+
+/**
+ * Overload this function to execute code on touch start of the first finger.
+ * 
+ * @param {!number} x The x coordinate of the touch start event.
+ * @param {!number} y The y coordinate of the touch start event.
+ */
+X.interactor.prototype.onTouchStart = function(x, y) {
+
+  // do nothing
+  
+};
+
+
+/**
+ * The callback for the touch hover event which gets triggered when a finger
+ * sits at the same position for 500 ms.
+ * 
+ * @param {!goog.events.Event} event The browser fired event.
+ */
+X.interactor.prototype.onTouchHover_ = function(event) {
+
+  // execute user definable callback
+  eval("this.onTouchHover(" + event.clientX + "," + event.clientY + ")");
+  
+  // to show that we are hovering,
+  // zoom in a little bit
+  
+  // create a new zoom event
+  var e = new X.event.ZoomEvent();
+  
+  // set the zoom direction
+  // true if zooming in, false if zooming out
+  e._in = true;
+  
+  // zoom fast in 3D, small in 2D
+  e._fast = (this instanceof X.interactor3D);
+  
+  // .. fire the event
+  this.dispatchEvent(e);
+  
+  this._touchHovering = true;
+  
+};
+
+
+/**
+ * Overload this function to execute code on touch hover. This gets called if a
+ * finger touches the screen for 500ms at the same position.
+ * 
+ * @param {!number} x The x coordinate of the touch hover event.
+ * @param {!number} y The y coordinate of the touch hover event.
+ */
+X.interactor.prototype.onTouchHover = function(x, y) {
+
+  // do nothing
+  
+};
+
+
+/**
+ * Reset the current touch hover callback, f.e. if the finger moves or gets
+ * released.
+ */
+X.interactor.prototype.resetTouchHover_ = function() {
+
+  // clear the hover trigger
+  clearTimeout(this._touchHoverTrigger);
+  
+  if (this._touchHovering) {
+    
+    // if we were hovering, zoom out a little bit
+    // to indicate the leaving of hovering mode
+    
+    var e = new X.event.ZoomEvent();
+    
+    // set the zoom direction
+    // true if zooming in, false if zooming out
+    e._in = false;
+    
+    // zoom fast in 3D, small in 2D
+    e._fast = (this instanceof X.interactor3D);
+    
+    // .. fire the event
+    this.dispatchEvent(e);
+    
+  }
+  
+  this._touchHovering = false;
+  
+};
+
+
+/**
+ * The callback for the touch end event.
+ * 
+ * @param {Event} event The browser fired event.
+ */
+X.interactor.prototype.onTouchEnd_ = function(event) {
+
+  // prevent the default
+  event.preventDefault();
+  
+  // execute user definable callback
+  eval("this.onTouchEnd()");
+  
+  // reset the touch hover
+  this.resetTouchHover_();
+  
+};
+
+
+/**
+ * Overload this function to execute code on touch end.
+ */
+X.interactor.prototype.onTouchEnd = function() {
+
+  // do nothing
+  
+};
+
+
+/**
+ * The callback for the touch move event. This performs several actions like
+ * rotating, zooming, panning etc.
+ * 
+ * @param {goog.events.Event} event The browser fired event.
+ */
+X.interactor.prototype.onTouchMove_ = function(event) {
+
+  // prevent the default
+  event.preventDefault();
+  
+  if (!this._touchHovering) {
+    // reset the touch hover, f.e. when the hovering period
+    // was too small
+    this.resetTouchHover_();
+  }
+  
+  event = event.getBrowserEvent();
+  
+  this['touchmoveEvent'] = event; // we need to buffer the event to run eval in
+  // advanced compilation
+  eval("this.onTouchMove(this['touchmoveEvent'])");
+  
+  var _fingers = event.targetTouches;
+  
+
+  if (_fingers.length == 1) {
+    
+    // 1 finger moving
+    var finger1 = _fingers[0];
+    
+    var _touchPosition = [finger1.clientX, finger1.clientY];
+    
+    var currentTouchPosition = new goog.math.Vec2(_touchPosition[0],
+        _touchPosition[1]);
+    
+    var _right_quarter = _touchPosition[0] > this._element.clientWidth * 3 / 4;
+    var _left_quarter = _touchPosition[0] < this._element.clientWidth / 4;
+    var _top_quarter = _touchPosition[1] < this._element.clientHeight / 4;
+    var _bottom_quarter = _touchPosition[1] > this._element.clientHeight * 3 / 4;
+    var _middle = !_right_quarter && !_left_quarter && !_top_quarter &&
+        !_bottom_quarter;
+    
+    var distance = this._lastTouchPosition.subtract(currentTouchPosition);
+    
+    // store the last touch position
+    this._lastTouchPosition = currentTouchPosition.clone();
+    
+
+    if (this._touchHovering) {
+      
+      // we are in hovering mode, so let's pan
+      
+      // create a new pan event
+      var e = new X.event.PanEvent();
+      
+      // panning in general moves pretty fast, so we threshold the distance
+      // additionally
+      if (distance.x > 5) {
+        
+        distance.x = 1;
+        
+      } else if (distance.x < -5) {
+        
+        distance.x = -1;
+        
+      }
+      if (distance.y > 5) {
+        
+        distance.y = 1;
+        
+      } else if (distance.y < -5) {
+        
+        distance.y = -1;
+        
+      }
+      
+      // attach the distance vector
+      e._distance = distance;
+      
+      // .. fire the event
+      this.dispatchEvent(e);
+      
+    } else {
+      
+      // no hovering mode so let's either scroll through the slices
+      // or window/level
+      
+      if ((this instanceof X.interactor2D) && (_right_quarter || _left_quarter)) {
+        
+        // scrolling
+        
+        // distance.y > 0 for up
+        // distance.y < 0 for down
+        var e = new X.event.ScrollEvent();
+        
+        e._up = (distance.y < 0);
+        
+        this.dispatchEvent(e);
+        
+      } else if ((this instanceof X.interactor3D) || _middle) {
+        
+        // window/level (2e camera listens for rotate events)
+        
+        distance.scale(3);
+        
+        // create a new rotate event
+        var e = new X.event.RotateEvent();
+        
+        // attach the distance vector
+        e._distance = distance;
+        
+        // .. fire the event
+        this.dispatchEvent(e);
+        
+      }
+      
+    }
+    
+  } else if (_fingers.length == 2) {
+    
+    // 2 fingers moving
+    var finger1 = _fingers[0];
+    var finger2 = _fingers[1];
+    
+    var _touchPosition1 = [finger1.clientX, finger1.clientY];
+    var _touchPosition2 = [finger2.clientX, finger2.clientY];
+    
+    var currentTouchPosition1 = new goog.math.Vec2(_touchPosition1[0],
+        _touchPosition1[1]);
+    var currentTouchPosition2 = new goog.math.Vec2(_touchPosition2[0],
+        _touchPosition2[1]);
+    
+    var distance = goog.math.Vec2.squaredDistance(currentTouchPosition1,
+        currentTouchPosition2);
+    
+    var distanceChange = distance - this.lastFingerDistance;
+    
+    this.lastFingerDistance = distance;
+    
+    distance = this._lastTouchPosition.subtract(currentTouchPosition1);
+    
+    // store the last touch position
+    this._lastTouchPosition = currentTouchPosition1.clone();
+    
+
+    if (Math.abs(distanceChange) > 10) {
+      
+      // create a new zoom event
+      var e = new X.event.ZoomEvent();
+      
+      // set the zoom direction
+      // true if zooming in, false if zooming out
+      e._in = (distanceChange > 0);
+      
+      // with the right click, the zoom will happen rather
+      // fine than fast
+      e._fast = (this instanceof X.interactor3D);
+      
+      // .. fire the event
+      this.dispatchEvent(e);
+      
+    }
+    
+  }
+  
+};
+
+
+/**
+ * Overload this function to execute code on touch move.
+ * 
+ * @param {Event} event The browser fired event.
+ */
+X.interactor.prototype.onTouchMove = function(event) {
+
+  // do nothing
+  
+};
+
+
+/**
  * Callback for mouse movement events inside the associated DOM element. This
  * distinguishes by pressed mouse buttons, key accelerators etc. and fires
  * proper X.event events.
@@ -571,7 +973,7 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
     // start the hovering countdown
     // if the mouse does not move for 2 secs, fire the HoverEvent to initiate
     // picking etc.
-    this.hoverTrigger = setTimeout(function() {
+    this._hoverTrigger = setTimeout(function() {
 
       this.hoverEnd_();
       
@@ -582,7 +984,7 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
       this.dispatchEvent(e);
       
       // reset the trigger
-      this.hoverTrigger = null;
+      this._hoverTrigger = null;
       
     }.bind(this), 300);
     
@@ -689,13 +1091,13 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
 
 /**
  * Stop the hover countdown and fire a X.event.HoverEndEvent.
- *
+ * 
  * @protected
  */
 X.interactor.prototype.hoverEnd_ = function() {
 
-  if (this.hoverTrigger) {
-    clearTimeout(this.hoverTrigger);
+  if (this._hoverTrigger) {
+    clearTimeout(this._hoverTrigger);
   }
   
   var e = new X.event.HoverEndEvent();
@@ -897,3 +1299,11 @@ goog.exportSymbol('X.interactor.prototype.onMouseMove',
 goog.exportSymbol('X.interactor.prototype.onMouseWheel',
     X.interactor.prototype.onMouseWheel);
 goog.exportSymbol('X.interactor.prototype.onKey', X.interactor.prototype.onKey);
+goog.exportSymbol('X.interactor.prototype.onTouchStart',
+    X.interactor.prototype.onTouchStart);
+goog.exportSymbol('X.interactor.prototype.onTouchMove',
+    X.interactor.prototype.onTouchMove);
+goog.exportSymbol('X.interactor.prototype.onTouchEnd',
+    X.interactor.prototype.onTouchEnd);
+goog.exportSymbol('X.interactor.prototype.onTouchHover',
+    X.interactor.prototype.onTouchHover);
