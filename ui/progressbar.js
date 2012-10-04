@@ -84,6 +84,14 @@ X.progressbar = function(parent, initialvalue) {
   this._parent = parent;
   
   /**
+   * The original position style setting of the parent.
+   * 
+   * @type {string}
+   * @protected
+   */
+  this._parent_position_original = '';
+  
+  /**
    * The element for the CSS style of this progress bar.
    * 
    * @type {?Element}
@@ -152,6 +160,8 @@ X.progressbar.prototype.init_ = function() {
   
   if (this._parent.style.position == 'static' ||
       this._parent.style.position == '') {
+    // buffer the original setting
+    this._parent_position_original = this._parent.style.position;
     this._parent.style.position = 'relative';
   }
   
@@ -237,5 +247,8 @@ X.progressbar.prototype.kill = function() {
   
   this._style = null;
   this._doneProgressBar = null;
+  
+  // reset the original parent position style
+  this._parent.style.position = this._parent_position_original;
   
 };
