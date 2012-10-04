@@ -112,87 +112,22 @@ X.interactor3D.prototype.onTouchMove_ = function(_event) {
     
     var distance = this._lastTouchPosition.subtract(currentTouchPosition);
     
-    // touch rotations shall be a little faster than mouse rotations
-    
+
+
     // but add a threshold so it is not too wonky
-    if (Math.abs(distance.x) < 5) {
-      distance.x = 0;
-    }
-    if (Math.abs(distance.y) < 5) {
-      distance.y = 0;
-    }
-    
-    distance.scale(3);
+    // if (Math.abs(distance.x) < 5) {
+    // distance.x = 0;
+    // }
+    // if (Math.abs(distance.y) < 5) {
+    // distance.y = 0;
+    // }
     
     // store the last touch position
     this._lastTouchPosition = currentTouchPosition.clone();
     
-    // create a new rotate event
-    var e = new X.event.RotateEvent();
-    
-    // attach the distance vector
-    e._distance = distance;
-    
-    // .. fire the event
-    this.dispatchEvent(e);
-    
-    //
-    // after spin
-    //
-    
-    var _after_spin = setInterval(function() {
-
-      if (distance.magnitude() < 1.0) {
-        
-        clearInterval(_after_spin);
-        return;
-        
-      }
+    if (this._touchHovering) {
       
-      // console.log(distance.x, distance.y);
-      distance.scale(0.7);
-      
-      // console.log(distance.x, distance.y, distance.magnitude())
-      
-      var e = new X.event.RotateEvent();
-      
-      e._distance = distance;
-      
-      this.dispatchEvent(e);
-      
-
-      // console.log('new rotate event');
-      
-    }.bind(this), 100);
-    
-  } else if (_fingers.length == 2) {
-    
-    // 2 fingers moving
-    var finger1 = _fingers[0];
-    var finger2 = _fingers[1];
-    
-    this._touchPosition1 = [finger1.clientX, finger1.clientY];
-    this._touchPosition2 = [finger2.clientX, finger2.clientY];
-    
-    var currentTouchPosition1 = new goog.math.Vec2(this._touchPosition1[0],
-        this._touchPosition1[1]);
-    var currentTouchPosition2 = new goog.math.Vec2(this._touchPosition2[0],
-        this._touchPosition2[1]);
-    
-    var distance = goog.math.Vec2.squaredDistance(currentTouchPosition1,
-        currentTouchPosition2);
-    
-    var distanceChange = distance - this._lastDistance;
-    
-    this._lastDistance = distance;
-    
-    distance = this._lastTouchPosition.subtract(currentTouchPosition1);
-    
-    // store the last touch position
-    this._lastTouchPosition = currentTouchPosition1.clone();
-    
-
-    if (distanceChange < 10) {
+      // we are in hovering mode, so let's pan
       
       // create a new pan event
       var e = new X.event.PanEvent();
@@ -224,8 +159,53 @@ X.interactor3D.prototype.onTouchMove_ = function(_event) {
       // .. fire the event
       this.dispatchEvent(e);
       
-
     } else {
+      
+      // without hovering mode, we rotate
+      
+      // touch rotations shall be a little faster than mouse rotations
+      distance.scale(3);
+      
+      // create a new rotate event
+      var e = new X.event.RotateEvent();
+      
+      // attach the distance vector
+      e._distance = distance;
+      
+      // .. fire the event
+      this.dispatchEvent(e);
+      
+    }
+    
+
+  } else if (_fingers.length == 2) {
+    
+    // 2 fingers moving
+    var finger1 = _fingers[0];
+    var finger2 = _fingers[1];
+    
+    this._touchPosition1 = [finger1.clientX, finger1.clientY];
+    this._touchPosition2 = [finger2.clientX, finger2.clientY];
+    
+    var currentTouchPosition1 = new goog.math.Vec2(this._touchPosition1[0],
+        this._touchPosition1[1]);
+    var currentTouchPosition2 = new goog.math.Vec2(this._touchPosition2[0],
+        this._touchPosition2[1]);
+    
+    var distance = goog.math.Vec2.squaredDistance(currentTouchPosition1,
+        currentTouchPosition2);
+    
+    var distanceChange = distance - this._lastDistance;
+    
+    this._lastDistance = distance;
+    
+    distance = this._lastTouchPosition.subtract(currentTouchPosition1);
+    
+    // store the last touch position
+    this._lastTouchPosition = currentTouchPosition1.clone();
+    
+
+    if (Math.abs(distanceChange) > 10) {
       
       // create a new zoom event
       var e = new X.event.ZoomEvent();

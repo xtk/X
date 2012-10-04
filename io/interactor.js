@@ -566,9 +566,60 @@ X.interactor.prototype.onTouchStart_ = function(event) {
   // store the last touch position
   this._lastTouchPosition = new goog.math.Vec2(event.clientX, event.clientY);
   
-  this._distance = 0;
+  // get ready for a hover event
+  this.touchHoverTrigger = setTimeout(this.onTouchHover_.bind(this, event), 500);
   
-  // console.log('start')
+};
+
+
+X.interactor.prototype.onTouchHover_ = function(event) {
+
+  // to show that we are hovering,
+  // zoom in a little bit
+  
+  // create a new zoom event
+  var e = new X.event.ZoomEvent();
+  
+  // set the zoom direction
+  // true if zooming in, false if zooming out
+  e._in = true;
+  
+  // zoom fast in 3D, small in 2D
+  e._fast = (this instanceof X.interactor3D);
+  
+  // .. fire the event
+  this.dispatchEvent(e);
+  
+  this._touchHovering = true;
+  
+};
+
+
+X.interactor.prototype.resetTouchHover_ = function() {
+
+  // clear the hover trigger
+  clearTimeout(this.touchHoverTrigger);
+  
+  if (this._touchHovering) {
+    
+    // if we were hovering, zoom out a little bit
+    // to indicate the leaving of hovering mode
+    
+    var e = new X.event.ZoomEvent();
+    
+    // set the zoom direction
+    // true if zooming in, false if zooming out
+    e._in = false;
+    
+    // zoom fast in 3D, small in 2D
+    e._fast = (this instanceof X.interactor3D);
+    
+    // .. fire the event
+    this.dispatchEvent(e);
+    
+  }
+  
+  this._touchHovering = false;
   
 };
 
@@ -578,6 +629,9 @@ X.interactor.prototype.onTouchEnd_ = function(event) {
   // prevent the default
   event.preventDefault();
   
+  // reset the touch hover
+  this.resetTouchHover_();
+  
 };
 
 
@@ -585,6 +639,12 @@ X.interactor.prototype.onTouchMove_ = function(event) {
 
   // prevent the default
   event.preventDefault();
+  
+  if (!this._touchHovering) {
+    // reset the touch hover, f.e. when the hovering period
+    // was too small
+    this.resetTouchHover_();
+  }
   
   var _fingers = event.getBrowserEvent().targetTouches;
   

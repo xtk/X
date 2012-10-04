@@ -120,47 +120,10 @@ X.interactor2D.prototype.onTouchMove_ = function(_event) {
     // store the last touch position
     this._lastTouchPosition = currentTouchPosition.clone();
     
-    if (_right_quarter || _left_quarter) {
-      
-      // distance.y > 0 for up
-      // distance.y < 0 for down
-      var e = new X.event.ScrollEvent();
-      
-      e._up = (distance.y < 0);
-      
-      this.dispatchEvent(e);
-      
-    }
-    
 
-  } else if (_fingers.length == 2) {
-    
-    // 2 fingers moving
-    var finger1 = _fingers[0];
-    var finger2 = _fingers[1];
-    
-    this._touchPosition1 = [finger1.clientX, finger1.clientY];
-    this._touchPosition2 = [finger2.clientX, finger2.clientY];
-    
-    var currentTouchPosition1 = new goog.math.Vec2(this._touchPosition1[0],
-        this._touchPosition1[1]);
-    var currentTouchPosition2 = new goog.math.Vec2(this._touchPosition2[0],
-        this._touchPosition2[1]);
-    
-    var distance = goog.math.Vec2.squaredDistance(currentTouchPosition1,
-        currentTouchPosition2);
-    
-    var distanceChange = distance - this._lastDistance;
-    
-    this._lastDistance = distance;
-    
-    distance = this._lastTouchPosition.subtract(currentTouchPosition1);
-    
-    // store the last touch position
-    this._lastTouchPosition = currentTouchPosition1.clone();
-    
-
-    if (distanceChange < 10) {
+    if (this._touchHovering) {
+      
+      // we are in hovering mode, so let's pan
       
       // create a new pan event
       var e = new X.event.PanEvent();
@@ -192,8 +155,68 @@ X.interactor2D.prototype.onTouchMove_ = function(_event) {
       // .. fire the event
       this.dispatchEvent(e);
       
-
     } else {
+      
+      // no hovering mode so let's either scroll through the slices
+      // or window/level
+      
+      if (_right_quarter || _left_quarter) {
+        
+        // scrolling
+        
+        // distance.y > 0 for up
+        // distance.y < 0 for down
+        var e = new X.event.ScrollEvent();
+        
+        e._up = (distance.y < 0);
+        
+        this.dispatchEvent(e);
+        
+      } else if (_middle) {
+        
+        // window/level (2e camera listens for rotate events)
+        
+        // create a new rotate event
+        var e = new X.event.RotateEvent();
+        
+        // attach the distance vector
+        e._distance = distance;
+        
+        // .. fire the event
+        this.dispatchEvent(e);
+        
+      }
+      
+    }
+    
+  } else if (_fingers.length == 2) {
+    
+    // 2 fingers moving
+    var finger1 = _fingers[0];
+    var finger2 = _fingers[1];
+    
+    this._touchPosition1 = [finger1.clientX, finger1.clientY];
+    this._touchPosition2 = [finger2.clientX, finger2.clientY];
+    
+    var currentTouchPosition1 = new goog.math.Vec2(this._touchPosition1[0],
+        this._touchPosition1[1]);
+    var currentTouchPosition2 = new goog.math.Vec2(this._touchPosition2[0],
+        this._touchPosition2[1]);
+    
+    var distance = goog.math.Vec2.squaredDistance(currentTouchPosition1,
+        currentTouchPosition2);
+    
+    var distanceChange = distance - this._lastDistance;
+    
+    this._lastDistance = distance;
+    
+    distance = this._lastTouchPosition.subtract(currentTouchPosition1);
+    
+    // store the last touch position
+    this._lastTouchPosition = currentTouchPosition1.clone();
+    
+
+    if (Math.abs(distanceChange) > 10) {
       
       // create a new zoom event
       var e = new X.event.ZoomEvent();
