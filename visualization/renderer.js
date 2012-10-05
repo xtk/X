@@ -293,7 +293,7 @@ X.renderer.prototype.onResize_ = function() {
   canvas.width = this._width;
   canvas.height = this._height;
   
-  if (this instanceof X.renderer3D) {
+  if (this._classname == 'renderer3D') {
     
     // modify 3d viewport
     this._context.viewport(0, 0, this._width, this._height);
