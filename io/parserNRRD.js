@@ -93,7 +93,7 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
       // we found two line breaks in a row
       
       // now we know what the header is
-      _header = String.fromCharCode.apply(null, _bytes.subarray(0, i - 2));
+      _header = this.parseChars(_bytes, 0, i - 2);
       
       // this is were the data starts
       _data_start = i + 1;

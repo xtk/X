@@ -87,8 +87,7 @@ X.parserLUT.prototype.parse = function(container, object, data, flag) {
       // the current byte is a line break
       
       // grab a line
-      var line = String.fromCharCode.apply(null, _bytes
-          .subarray(_rangeStart, i));
+      var line = this.parseChars(_bytes, _rangeStart, i);
       
       _rangeStart = i + 1;
       

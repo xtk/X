@@ -164,6 +164,43 @@ X.parser.prototype.arrayMinMax = function(data) {
 
 
 /**
+ * Create a string from a bunch of UChars. This replaces a
+ * String.fromCharCode.apply call and therefor supports more platforms (like the
+ * Android stock browser).
+ * 
+ * @param {!Array|Uint8Array} array The Uint8Array.
+ * @param {?number=} start The start position. If undefined, use the whole
+ *          array.
+ * @param {?number=} end The end position. If undefined, use the whole array.
+ * @return {string} The created string.
+ */
+X.parser.prototype.parseChars = function(array, start, end) {
+
+  // without borders, use the whole array
+  if (start === undefined) {
+    start = 0;
+  }
+  
+  if (end === undefined) {
+    end = array.length;
+  }
+  
+  var _output = '';
+  
+  // create and append the chars
+  var i = 0;
+  for (i = start; i < end; ++i) {
+    
+    _output += String.fromCharCode(array[i]);
+    
+  }
+  
+  return _output;
+  
+};
+
+
+/**
  * Jump to a position in the byte stream.
  * 
  * @param {!number} position The new offset.

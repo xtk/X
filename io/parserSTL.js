@@ -75,14 +75,14 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
   var n = object._normals;
   
   // parse 5 bytes
-  var _ascii_tag = String.fromCharCode.apply(null, this.scan('uchar', 5));
+  var _ascii_tag = this.parseChars(this.scan('uchar', 5));
   
   // check if this is an ascii STL file or a binary one
   if (_ascii_tag == 'solid') {
     
     // allocate memory using a good guess
     object._points = p = new X.triplets(data.byteLength);
-    object._normals = n = new X.triplets(data.byteLength);      
+    object._normals = n = new X.triplets(data.byteLength);
     
     // this is an ascii STL file
     this.parseASCII(p, n, this.scan('uchar', data.byteLength - 5));
@@ -99,11 +99,11 @@ X.parserSTL.prototype.parse = function(container, object, data, flag) {
     // but we ignore it
     this.jumpTo(80);
     
-    var _triangleCount = this.scan('uint');  
+    var _triangleCount = this.scan('uint');
     
     // allocate the exact amount of memory
     object._points = p = new X.triplets(_triangleCount * 9);
-    object._normals = n = new X.triplets(_triangleCount * 9);         
+    object._normals = n = new X.triplets(_triangleCount * 9);
     
     // parse the bytes
     this.parseBIN(p, n, _triangleCount);
@@ -155,8 +155,7 @@ X.parserSTL.prototype.parseASCII = function(p, n, data) {
       if (_normalsMode || _vertexMode) {
         
         // grab the bytes which contain the numbers
-        var _substring = String.fromCharCode.apply(null, data.subarray(
-            _rangeStart, i));
+        var _substring = this.parseChars(data, _rangeStart, i);
         
         // split the substring
         var _numbers = _substring.split(' ');
@@ -221,8 +220,8 @@ X.parserSTL.prototype.parseASCII = function(p, n, data) {
  * @param {!X.triplets} n The object's normals as a X.triplets container.
  * @param {!number} triangleCount The number of triangles.
  */
-X.parserSTL.prototype.parseBIN = function(p, n, triangleCount) { 
-  
+X.parserSTL.prototype.parseBIN = function(p, n, triangleCount) {
+
   var i = 0;
   for (i = 0; i < triangleCount; i++) {
     

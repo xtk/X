@@ -369,7 +369,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     
     var _partial_header = this.scan('uchar', _VL);
     
-    var _ascii_position = String.fromCharCode.apply(null, _partial_header);
+    var _ascii_position = this.parseChars(_partial_header);
     _position = parseInt(_ascii_position, 10);
     
     // increase the Z dimensions since we have a new slice

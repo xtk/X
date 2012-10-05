@@ -80,15 +80,16 @@ X.parserVTK.prototype.parse = function(container, object, data, flag) {
   
   // allocate memory using a good guess
   object._points = p = new X.triplets(data.byteLength);
-  object._normals = n = new X.triplets(data.byteLength);  
+  object._normals = n = new X.triplets(data.byteLength);
   
   // convert the char array to a string
   // the quantum is necessary to deal with large data
   var QUANTUM = 32768;
-  for (var i = 0, len = _data.length; i < len; i += QUANTUM)
-  {
-    _str += String.fromCharCode.apply(null, _data.subarray(i, Math.min(i+QUANTUM,len)));
-  }  
+  for ( var i = 0, len = _data.length; i < len; i += QUANTUM) {
+    
+    _str += this.parseChars(_data, i, Math.min(i + QUANTUM, len));
+    
+  }
   
   var dataAsArray = _str.split('\n');
   var numberOfLines = dataAsArray.length;
@@ -211,8 +212,8 @@ X.parserVTK.prototype.parseLine = function(line) {
     this._pointDataMode = false;
     
     var numberOfPoints = parseInt(lineFields[1], 10);
-    this._unorderedPoints = new X.triplets(numberOfPoints*3);
-    this._unorderedNormals = new X.triplets(numberOfPoints*3);
+    this._unorderedPoints = new X.triplets(numberOfPoints * 3);
+    this._unorderedNormals = new X.triplets(numberOfPoints * 3);
     
     // go to next line
     return;

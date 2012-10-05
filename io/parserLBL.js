@@ -67,7 +67,7 @@ goog.inherits(X.parserLBL, X.parser);
 X.parserLBL.prototype.parse = function(container, object, data, flag) {
 
   X.TIMER(this._classname + '.parse');
-
+  
   var ind = object._pointIndices;
   var numberOfIndices = ind.length;
   
@@ -111,9 +111,7 @@ X.parserLBL.prototype.parse = function(container, object, data, flag) {
       // the current byte is a space
       
       // grab the buffered data as integer
-      var _value = parseInt(String.fromCharCode.apply(null, _bytes.subarray(
-          _rangeStart, i)), 10);
-      
+      var _value = parseInt(this.parseChars(_bytes, _rangeStart, i), 10);
       // buffer this value
       _indices.push(_value);
       
