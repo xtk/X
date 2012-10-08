@@ -330,6 +330,9 @@ X.parser.prototype.reslice = function(object, MRI) {
   // console.log(image);
   var pixelValue = 0;
   
+  var rgb_volume = (typeof MRI.datatype != 'undefined') &&
+      (MRI.datatype == 128);
+  
   // reference the color table for easy access
   var _colorTable = null;
   if (object._colortable) {
@@ -346,6 +349,9 @@ X.parser.prototype.reslice = function(object, MRI) {
   var col = 0;
   var p = 0;
   var textureArraySize = 4 * numberPixelsPerSlice;
+  if (rgb_volume) {
+    numberPixelsPerSlice *= 3;
+  }
   for (z = 0; z < slices; z++) {
     image[z] = new Array(rowsCount);
     realImage[z] = new Array(rowsCount);
@@ -380,6 +386,13 @@ X.parser.prototype.reslice = function(object, MRI) {
           pixelValue_g = 255 * lookupValue[2];
           pixelValue_b = 255 * lookupValue[3];
           pixelValue_a = 255 * lookupValue[4];
+        } else if (rgb_volume) {
+          // special case for RGB volumes
+          pixelValue_r = currentSlice[p * 3];
+          pixelValue_g = currentSlice[p * 3 + 1];
+          pixelValue_b = currentSlice[p * 3 + 2];
+          pixelValue_a = 255;
+          // console.log(pixelValue_r);
         } else {
           // no color table, 1-channel gray value
           pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixelValue / max);
@@ -411,9 +424,9 @@ X.parser.prototype.reslice = function(object, MRI) {
       currentSlice._labelmap = object._labelmap._slicesZ._children[z]._texture;
     }
   }
-  
+  return;
   // RESLICE 1D which is a special when the cols == rows to speed up the reslice
-  if (colsCount != rowsCount) {
+  if (colsCount == rowsCount) {
     
     if (hasLabelMap) {
       if (!object._colortable) {

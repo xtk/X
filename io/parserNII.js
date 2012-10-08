@@ -277,6 +277,10 @@ X.parserNII.prototype.parseStream = function(data) {
     // float
     MRI.data = this.scan('float', volsize);
     break;
+  case 128:
+    // r,g,b triplets (3*uchar)
+    MRI.data = this.scan('uchar', volsize * 3);
+    break;
   case 256:
     // signed char
     MRI.data = this.scan('schar', volsize);
@@ -298,7 +302,7 @@ X.parserNII.prototype.parseStream = function(data) {
   var min_max = this.arrayMinMax(MRI.data);
   MRI.min = min_max[0];
   MRI.max = min_max[1];
-  
+  console.log(MRI);
   return MRI;
   
 };
