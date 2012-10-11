@@ -224,6 +224,14 @@ X.volume = function(volume) {
    */
   this._windowHigh = -Infinity;
   
+  /**
+   * The reslicing flag.
+   * 
+   * @type {!boolean}
+   * @protected
+   */
+  this._reslicing = true;
+  
   // inject functionality
   inject(this, new X.loadable()); // this object is loadable from a file
   inject(this, new X.thresholdable()); // this object is thresholdable
@@ -584,7 +592,7 @@ X.volume.prototype.__defineSetter__('center', function(center) {
  * @public
  */
 X.volume.prototype.__defineGetter__('image', function() {
-  
+
   return this._image;
   
 });
@@ -788,6 +796,34 @@ X.volume.prototype.__defineGetter__('borders', function() {
 X.volume.prototype.__defineSetter__('borders', function(borders) {
 
   this._borders = borders;
+  
+});
+
+
+/**
+ * Return the reslicing flag.
+ * 
+ * @return {boolean} TRUE if reslicing is enabled, FALSE otherwise.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('reslicing', function() {
+
+  return this._reslicing;
+  
+});
+
+
+/**
+ * Set the borders flag. Must be called before the volume gets created
+ * internally. After that, the borders can be modified using the children of
+ * each slice.
+ * 
+ * @param {boolean} reslicing TRUE to enable reslicing, FALSE to disable it.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('reslicing', function(reslicing) {
+
+  this._reslicing = reslicing;
   
 });
 

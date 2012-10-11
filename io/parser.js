@@ -412,60 +412,70 @@ X.parser.prototype.reslice = function(object, MRI) {
     }
   }
   
-  // RESLICE 1D which is a special when the cols == rows to speed up the reslice
-  if (colsCount != rowsCount) {
+  // check if further reslicing is requested
+  if (object._reslicing) {
     
-    if (hasLabelMap) {
-      if (!object._colortable) {
-        this.reslice1D_(slices, colsCount, rowsCount, image, max,
-            object._slicesY, object._labelmap._slicesY, true);
-        this.reslice1D_(slices, rowsCount, colsCount, image, max,
-            object._slicesX, object._labelmap._slicesX, false);
+    // we do want to reslice
+    // now check for special optimized cases
+    
+    // RESLICE 1D which is a special when the cols == rows to speed up the
+    // reslice
+    if (colsCount == rowsCount) {
+      
+      if (hasLabelMap) {
+        if (!object._colortable) {
+          this.reslice1D_(slices, colsCount, rowsCount, image, max,
+              object._slicesY, object._labelmap._slicesY, true);
+          this.reslice1D_(slices, rowsCount, colsCount, image, max,
+              object._slicesX, object._labelmap._slicesX, false);
+        } else {
+          this.reslice1DColorTable_(slices, colsCount, rowsCount, realImage,
+              max, object._colortable, object._slicesY,
+              object._labelmap._slicesY, true);
+          this.reslice1DColorTable_(slices, rowsCount, colsCount, realImage,
+              max, object._colortable, object._slicesX,
+              object._labelmap._slicesX, false);
+        }
       } else {
-        this.reslice1DColorTable_(slices, colsCount, rowsCount, realImage, max,
-            object._colortable, object._slicesY, object._labelmap._slicesY,
-            true);
-        this.reslice1DColorTable_(slices, rowsCount, colsCount, realImage, max,
-            object._colortable, object._slicesX, object._labelmap._slicesX,
-            false);
+        if (!object._colortable) {
+          this.reslice1D_(slices, colsCount, rowsCount, image, max,
+              object._slicesY, null, true);
+          this.reslice1D_(slices, rowsCount, colsCount, image, max,
+              object._slicesX, null, false);
+        } else {
+          this.reslice1DColorTable_(slices, colsCount, rowsCount, realImage,
+              max, object._colortable, object._slicesY, null, true);
+          this.reslice1DColorTable_(slices, rowsCount, colsCount, realImage,
+              max, object._colortable, object._slicesX, null, false);
+        }
       }
+      
     } else {
-      if (!object._colortable) {
-        this.reslice1D_(slices, colsCount, rowsCount, image, max,
-            object._slicesY, null, true);
-        this.reslice1D_(slices, rowsCount, colsCount, image, max,
-            object._slicesX, null, false);
+      
+      // RESLICE 2D
+      if (hasLabelMap) {
+        if (!object._colortable) {
+          this.reslice2D_(slices, colsCount, rowsCount, image, max,
+              object._slicesX, object._labelmap._slicesX, object._slicesY,
+              object._labelmap._slicesY);
+        } else {
+          this.reslice2DColorTable_(slices, colsCount, rowsCount, image, max,
+              object._colortable, object._slicesX, object._labelmap._slicesX,
+              object._slicesY, object._labelmap._slicesY);
+        }
       } else {
-        this.reslice1DColorTable_(slices, colsCount, rowsCount, realImage, max,
-            object._colortable, object._slicesY, null, true);
-        this.reslice1DColorTable_(slices, rowsCount, colsCount, realImage, max,
-            object._colortable, object._slicesX, null, false);
+        if (!object._colortable) {
+          this.reslice2D_(slices, colsCount, rowsCount, image, max,
+              object._slicesX, null, object._slicesY, null);
+        } else {
+          this.reslice2DColorTable_(slices, colsCount, rowsCount, realImage,
+              max, object._colortable, object._slicesX, null, object._slicesY,
+              null);
+        }
       }
     }
     
-  } else {
-    
-    // RESLICE 2D
-    if (hasLabelMap) {
-      if (!object._colortable) {
-        this.reslice2D_(slices, colsCount, rowsCount, image, max,
-            object._slicesX, object._labelmap._slicesX, object._slicesY,
-            object._labelmap._slicesY);
-      } else {
-        this.reslice2DColorTable_(slices, colsCount, rowsCount, image, max,
-            object._colortable, object._slicesX, object._labelmap._slicesX,
-            object._slicesY, object._labelmap._slicesY);
-      }
-    } else {
-      if (!object._colortable) {
-        this.reslice2D_(slices, colsCount, rowsCount, image, max,
-            object._slicesX, null, object._slicesY, null);
-      } else {
-        this.reslice2DColorTable_(slices, colsCount, rowsCount, realImage, max,
-            object._colortable, object._slicesX, null, object._slicesY, null);
-      }
-    }
-  }
+  } // end of reslicing check
   
   X.TIMERSTOP(this._classname + '.reslice');
   
