@@ -701,8 +701,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   
   if (_redraw_required) {
     
-    console.log('redraw');
-    
     // loop through the pixels and draw them to the invisible canvas
     // from bottom right up
     // also apply thresholding
