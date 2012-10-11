@@ -138,6 +138,46 @@ X.renderer2D = function() {
    */
   this._rotation = 0;
   
+  /**
+   * The buffer of the current slice index.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._currentSlice = -1;
+  
+  /**
+   * The buffer of the current lower threshold.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._lowerThreshold = -1;
+  
+  /**
+   * The buffer of the current upper threshold.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._upperThreshold = -1;
+  
+  /**
+   * The buffer of the current w/l low value.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._windowLow = -1;
+  
+  /**
+   * The buffer of the current w/l high value.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._windowHigh = -1;
+  
 };
 // inherit from X.base
 goog.inherits(X.renderer2D, X.renderer);
@@ -647,80 +687,100 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _maxScalarRange = _volume._max;
   var _lowerThreshold = _volume._lowerThreshold;
   var _upperThreshold = _volume._upperThreshold;
+  var _windowLow = _volume._windowLow / _maxScalarRange;
+  var _windowHigh = _volume._windowHigh / _maxScalarRange;
   
-
-  // loop through the pixels and draw them to the invisible canvas
-  // from bottom right up
-  // also apply thresholding
-  var _index = 0;
-  do {
+  // caching mechanism
+  // we need to redraw the pixels only
+  // - if the _currentSlice has changed
+  // - if the threshold has changed
+  // - if the window/level has changed
+  var _redraw_required = (this._currentSlice != _currentSlice ||
+      this._lowerThreshold != _lowerThreshold ||
+      this._upperThreshold != _upperThreshold || this._windowLow != _windowLow || this._windowHigh != _windowHigh);
+  
+  if (_redraw_required) {
     
-    // default color and label is just transparent
-    var _color = [0, 0, 0, 0];
-    var _label = [0, 0, 0, 0];
+    console.log('redraw');
     
-    // grab the pixel intensity
-    var _intensity = _sliceData[_index] / 255 * _maxScalarRange;
-    var _origIntensity = _sliceData[_index];
-    
-    // apply window/level
-    var _windowLow = _volume._windowLow / _maxScalarRange;
-    var _windowHigh = _volume._windowHigh / _maxScalarRange;
-    var _fac = _windowHigh - _windowLow;
-    _origIntensity = (_origIntensity / 255 - _windowLow) / _fac;
-    _origIntensity = _origIntensity * 255;
-    
-    // apply thresholding
-    if (_intensity >= _lowerThreshold && _intensity <= _upperThreshold) {
+    // loop through the pixels and draw them to the invisible canvas
+    // from bottom right up
+    // also apply thresholding
+    var _index = 0;
+    do {
       
-      // current intensity is inside the threshold range so use the real
-      // intensity
+      // default color and label is just transparent
+      var _color = [0, 0, 0, 0];
+      var _label = [0, 0, 0, 0];
       
-      // map volume scalars to a linear color gradient
-      var maxColor = new goog.math.Vec3(_volume._maxColor[0],
-          _volume._maxColor[1], _volume._maxColor[2]);
-      var minColor = new goog.math.Vec3(_volume._minColor[0],
-          _volume._minColor[1], _volume._minColor[2]);
-      _color = maxColor.scale(_origIntensity).add(
-          minColor.scale(255 - _origIntensity));
-      // .. and back to an array
-      _color = [Math.floor(_color.x), Math.floor(_color.y),
-                Math.floor(_color.z), 255];
+      // grab the pixel intensity
+      var _intensity = _sliceData[_index] / 255 * _maxScalarRange;
+      var _origIntensity = _sliceData[_index];
       
-      if (_currentLabelMap) {
+      // apply window/level
+      var _fac = _windowHigh - _windowLow;
+      _origIntensity = (_origIntensity / 255 - _windowLow) / _fac;
+      _origIntensity = _origIntensity * 255;
+      
+      // apply thresholding
+      if (_intensity >= _lowerThreshold && _intensity <= _upperThreshold) {
         
-        // we have a label map here
-        _label = [_labelData[_index], _labelData[_index + 1],
-                  _labelData[_index + 2], _labelData[_index + 3]];
+        // current intensity is inside the threshold range so use the real
+        // intensity
+        
+        // map volume scalars to a linear color gradient
+        var maxColor = new goog.math.Vec3(_volume._maxColor[0],
+            _volume._maxColor[1], _volume._maxColor[2]);
+        var minColor = new goog.math.Vec3(_volume._minColor[0],
+            _volume._minColor[1], _volume._minColor[2]);
+        _color = maxColor.scale(_origIntensity).add(
+            minColor.scale(255 - _origIntensity));
+        // .. and back to an array
+        _color = [Math.floor(_color.x), Math.floor(_color.y),
+                  Math.floor(_color.z), 255];
+        
+        if (_currentLabelMap) {
+          
+          // we have a label map here
+          _label = [_labelData[_index], _labelData[_index + 1],
+                    _labelData[_index + 2], _labelData[_index + 3]];
+          
+        }
         
       }
       
-    }
-    
-    var _invertedIndex = (_pixelsLength - 1 - _index);
-    
-    _pixels[_invertedIndex - 3] = _color[0]; // r
-    _pixels[_invertedIndex - 2] = _color[1]; // g
-    _pixels[_invertedIndex - 1] = _color[2]; // b
-    _pixels[_invertedIndex] = _color[3]; // a
-    
+      var _invertedIndex = (_pixelsLength - 1 - _index);
+      
+      _pixels[_invertedIndex - 3] = _color[0]; // r
+      _pixels[_invertedIndex - 2] = _color[1]; // g
+      _pixels[_invertedIndex - 1] = _color[2]; // b
+      _pixels[_invertedIndex] = _color[3]; // a
+      
 
-    _labelPixels[_invertedIndex - 3] = _label[0]; // r
-    _labelPixels[_invertedIndex - 2] = _label[1]; // g
-    _labelPixels[_invertedIndex - 1] = _label[2]; // b
-    _labelPixels[_invertedIndex] = _label[3]; // a
-    
+      _labelPixels[_invertedIndex - 3] = _label[0]; // r
+      _labelPixels[_invertedIndex - 2] = _label[1]; // g
+      _labelPixels[_invertedIndex - 1] = _label[2]; // b
+      _labelPixels[_invertedIndex] = _label[3]; // a
+      
 
-    _index = _index + 4; // increase by 4 units for r,g,b,a
+      _index = _index + 4; // increase by 4 units for r,g,b,a
+      
+    } while (_index < _pixelsLength);
     
-  } while (_index < _pixelsLength);
+    // store the generated image data to the frame buffer context
+    _imageFBContext.putImageData(_imageData, 0, 0);
+    _labelFBContext.putImageData(_labelmapData, 0, 0);
+    
+    // cache the current slice index and other values
+    // which might require a redraw
+    this._currentSlice = _currentSlice;
+    this._lowerThreshold = _lowerThreshold;
+    this._upperThreshold = _upperThreshold;
+    this._windowLow = _windowLow;
+    this._windowHigh = _windowHigh;
+    
+  }
   
-  // store the generated image data to the frame buffer context
-  _imageFBContext.putImageData(_imageData, 0, 0);
-  _labelFBContext.putImageData(_labelmapData, 0, 0);
-  
-
-
   //
   // the actual drawing (rendering) happens here
   //
