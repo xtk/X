@@ -420,7 +420,7 @@ X.parser.prototype.reslice = function(object, MRI) {
     
     // RESLICE 1D which is a special when the cols == rows to speed up the
     // reslice
-    if (colsCount == rowsCount) {
+    if (colsCount != rowsCount) {
       
       if (hasLabelMap) {
         if (!object._colortable) {
