@@ -119,6 +119,10 @@ Copyright (c) 2012 The X Toolkit Developers  \<dev@goXTK.com>
 The X Toolkit (XTK) is licensed under the MIT License:
   <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a>
 
+## Publications ##
+* Hähn D, Rannou N, Ahtam B, Grant PE, Pienaar R: <b>Neuroimaging in the Browser using the X Toolkit</b>. NeuroInformatics, September 2012. <a href="http://www.neuroinformatics2012.org/abstracts/neuroimaging-in-the-browser-using-the-x-toolkit">Abstract</a> and <a href="http://f1000.com/posters/browse/summary/1092491">Poster</a>.
+* <a href="https://github.com/xtk/X/wiki/X:publications">more..</a>
+
 ## Affiliations and Sponsors ##
 > <a href="http://childrenshospital.org/FNNDSC"><img src="http://xtk.github.com/chb_logo.png" alt="Boston Children's Hospital Boston" title="Children's Hospital"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 > <a href="http://hms.harvard.edu"><img src="http://xtk.github.com/hms_logo.png" alt="Harvard Medical School" title="Harvard Medical School"></a>
