@@ -153,6 +153,9 @@ function inject(a, b) {
   return a; // return the altered object
 }
 
+// make sure we don't overwrite a $ sign to ensure compatibility with jQuery
+var $ = window.$;
+
 //
 // BROWSER COMPATIBILITY FIXES GO HERE
 //
@@ -339,6 +342,7 @@ bind_shim();
 requestAnimationFrame_shim();
 arrayBufferSlice_shim();
 
+goog.exportSymbol('$', $);
 goog.exportSymbol('Function.prototype.bind', Function.prototype.bind);
 goog.exportSymbol('window.requestAnimationFrame', window.requestAnimationFrame);
 goog.exportSymbol('window.cancelAnimationFrame', window.cancelAnimationFrame);
