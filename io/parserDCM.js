@@ -226,22 +226,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
       // read short
       _tagGroup = _bytes[_bytePointer++];// this.scan('ushort');
       
-      if (_tagGroup == 0x0008) {
-        
-        _tagSpecific = _bytes[_bytePointer++];
-        
-        _VR = _bytes[_bytePointer++];
-        _VL = _bytes[_bytePointer++];
-        
-        // we need to grab the SOPInstanceUID since it has a varying VL
-        if (_tagSpecific == 0x0018) {
-          
-          MRI.sop_instance_uid_start = _bytePointer - 2;
-          MRI.sop_instance_uid_length = _VL;
-          
-        }
-        
-      } else if (_tagGroup == 0x0028) {
+      if (_tagGroup == 0x0028) {
         
         // Group of GENERAL IMAGE SPECS
         _tagSpecific = _bytes[_bytePointer++];
@@ -321,14 +306,6 @@ X.parserDCM.prototype.parseStream = function(data, object) {
         
         // here we are only interested in the InstanceNumber
         if (_tagSpecific == 0x0013) {
-          
-          // since the SOPInstanceUID can differ in length
-          // for each slice, we subtract it here
-          // this has to happen two times since the
-          // MediaStorageSOPInstanceUID
-          // has the same length as the SOPInstanceUID
-          MRI.instance_number_start = _bytePointer -
-              MRI.sop_instance_uid_length;
           
           _VR = _bytes[_bytePointer++];
           _VL = _bytes[_bytePointer++];
