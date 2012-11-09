@@ -115,6 +115,11 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     object._dimensions = _dimensions;
     
     // grab the spacing
+    if (MRI.pixdim[2] == Infinity) {
+      // if the z-spacing can't be detected,
+      // we assume 1
+      MRI.pixdim[2] = 1;
+    }
     var _spacing = [MRI.pixdim[0], MRI.pixdim[1], MRI.pixdim[2]];
     object._spacing = _spacing;
     
@@ -184,9 +189,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
       bits_stored: 0,
       number_of_slices: 1,
       number_of_images: 1,
-      sop_instance_uid_start: 0,
-      sop_instance_uid_length: 0,
-      instance_number_start: 0,
+      last_slicelocation: null,
       loaded_files: 0,
       vol_size: 0,
       data_unsorted: null,
@@ -294,7 +297,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
           
           _pixel_spacing = _pixel_spacing.split("\\");
           
-          MRI.pixdim = [+_pixel_spacing[0], +_pixel_spacing[1], 1];
+          MRI.pixdim = [+_pixel_spacing[0], +_pixel_spacing[1], Infinity];
           
           _tagCount--;
           break;
@@ -382,32 +385,86 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     
     var MRI = object.MRI;
     
-    // first grab the length of the sop instance uid
+    // scan the whole header as short (2 bytes), we know the volume size
+    // now so we can reduce the byte array
+    var _bytes = this.scan('ushort', this._data.byteLength - MRI.vol_size * 2);
+    var _bytePointer = 0;
     
-    this.jumpTo(MRI.sop_instance_uid_start * 2);
-    var _VR = this.scan('ushort');
-    var _VL = this.scan('ushort');
-    var _bytePointer = MRI.instance_number_start + _VL;
+    // now find the instance number flag
+    var _tagCount = 2;
     
-    // scan a part of the header
-    this.jumpTo(_bytePointer * 2);
-    
-    _VR = this.scan('ushort');
-    _VL = this.scan('ushort');
-    
-    for (i = 0; i < _VL / 2; i++) {
+    while (_tagCount > 0) {
       
-      var _short = this.scan('ushort');
+      // read short
+      _tagGroup = _bytes[_bytePointer++];
       
-      var _b0 = _short & 0x00FF;
-      var _b1 = (_short & 0xFF00) >> 8;
-      
-      _position += String.fromCharCode(_b0);
-      _position += String.fromCharCode(_b1);
-      _position = parseInt(_position, 10);
-      
+      if (_tagGroup == 0x0020) {
+        
+        // Group of SLICE INFO
+        _tagSpecific = _bytes[_bytePointer++];
+        
+        // here we are only interested in the InstanceNumber
+        if (_tagSpecific == 0x0013) {
+          
+          _VR = _bytes[_bytePointer++];
+          _VL = _bytes[_bytePointer++];
+          
+          for (i = 0; i < _VL / 2; i++) {
+            
+            var _short = _bytes[_bytePointer++];
+            
+            var _b0 = _short & 0x00FF;
+            var _b1 = (_short & 0xFF00) >> 8;
+            
+            _position += String.fromCharCode(_b0);
+            _position += String.fromCharCode(_b1);
+            _position = parseInt(_position, 10);
+            
+          }
+          
+          _tagCount--;
+          
+        } else if (_tagSpecific == 0x1041) {
+          
+          // this is the slicelocation so we can grab the
+          // z-spacing
+          
+          _VR = _bytes[_bytePointer++];
+          _VL = _bytes[_bytePointer++];
+          
+          var _slicelocation = '';
+          
+          // slice location is a string in the dicom header
+          for (i = 0; i < _VL / 2; i++) {
+            
+            var _short = _bytes[_bytePointer++];
+            
+            var _b0 = _short & 0x00FF;
+            var _b1 = (_short & 0xFF00) >> 8;
+            
+            _slicelocation += String.fromCharCode(_b0);
+            _slicelocation += String.fromCharCode(_b1);
+            
+          }
+          
+          // we compare the last_slicelocation to the current one
+          var _location_difference = Math.abs(MRI.last_slicelocation -
+              _slicelocation);
+          
+          // .. and store it if it is smaller than before
+          MRI.pixdim = [MRI.pixdim[0], MRI.pixdim[1],
+                        Math.min(_location_difference, MRI.pixdim[2])];
+          
+          // we now store the current slice location as
+          // the last one
+          MRI.last_slicelocation = _slicelocation;
+          
+          _tagCount--;
+          
+        }
+        
+      }
     }
-    // console.log(MRI.instance_number_start, _VL, _position);
     
     // increase the Z dimensions since we have a new slice
     MRI.dim[2]++;
