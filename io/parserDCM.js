@@ -167,6 +167,9 @@ X.parserDCM.prototype.parseStream = function(data, object) {
   // attach the given data
   this._data = data;
   
+  // the instance number a.k.a slice index
+  var _position = 0;
+  
   if (!goog.isDefAndNotNull(object.MRI)) {
     
     // this is the _first slice_
@@ -181,8 +184,9 @@ X.parserDCM.prototype.parseStream = function(data, object) {
       bits_stored: 0,
       number_of_slices: 1,
       number_of_images: 1,
+      sop_instance_uid_start: 0,
+      sop_instance_uid_length: 0,
       instance_number_start: 0,
-      instance_number_length: 0,
       loaded_files: 0,
       vol_size: 0,
       data_unsorted: null,
@@ -211,9 +215,6 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     var _VR = null;
     var _VL = null;
     
-    // the instance number a.k.a slice index
-    var _position = '';
-    
     // we only need 7 tags of the DICOM header
     var _tagCount = 7;
     
@@ -222,7 +223,22 @@ X.parserDCM.prototype.parseStream = function(data, object) {
       // read short
       _tagGroup = _bytes[_bytePointer++];// this.scan('ushort');
       
-      if (_tagGroup == 0x0028) {
+      if (_tagGroup == 0x0008) {
+        
+        _tagSpecific = _bytes[_bytePointer++];
+        
+        _VR = _bytes[_bytePointer++];
+        _VL = _bytes[_bytePointer++];
+        
+        // we need to grab the SOPInstanceUID since it has a varying VL
+        if (_tagSpecific == 0x0018) {
+          
+          MRI.sop_instance_uid_start = _bytePointer - 2;
+          MRI.sop_instance_uid_length = _VL;
+          
+        }
+        
+      } else if (_tagGroup == 0x0028) {
         
         // Group of GENERAL IMAGE SPECS
         _tagSpecific = _bytes[_bytePointer++];
@@ -303,11 +319,16 @@ X.parserDCM.prototype.parseStream = function(data, object) {
         // here we are only interested in the InstanceNumber
         if (_tagSpecific == 0x0013) {
           
+          // since the SOPInstanceUID can differ in length
+          // for each slice, we subtract it here
+          // this has to happen two times since the
+          // MediaStorageSOPInstanceUID
+          // has the same length as the SOPInstanceUID
+          MRI.instance_number_start = _bytePointer -
+              MRI.sop_instance_uid_length;
+          
           _VR = _bytes[_bytePointer++];
           _VL = _bytes[_bytePointer++];
-          
-          MRI.instance_number_start = _bytePointer;
-          MRI.instance_number_length = _VL;
           
           for (i = 0; i < _VL / 2; i++) {
             
@@ -361,16 +382,32 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     
     var MRI = object.MRI;
     
-    var _bytePointer = MRI.instance_number_start;
-    var _VL = MRI.instance_number_length;
+    // first grab the length of the sop instance uid
+    
+    this.jumpTo(MRI.sop_instance_uid_start * 2);
+    var _VR = this.scan('ushort');
+    var _VL = this.scan('ushort');
+    var _bytePointer = MRI.instance_number_start + _VL;
     
     // scan a part of the header
     this.jumpTo(_bytePointer * 2);
     
-    var _partial_header = this.scan('uchar', _VL);
+    _VR = this.scan('ushort');
+    _VL = this.scan('ushort');
     
-    var _ascii_position = this.parseChars(_partial_header);
-    _position = parseInt(_ascii_position, 10);
+    for (i = 0; i < _VL / 2; i++) {
+      
+      var _short = this.scan('ushort');
+      
+      var _b0 = _short & 0x00FF;
+      var _b1 = (_short & 0xFF00) >> 8;
+      
+      _position += String.fromCharCode(_b0);
+      _position += String.fromCharCode(_b1);
+      _position = parseInt(_position, 10);
+      
+    }
+    // console.log(MRI.instance_number_start, _VL, _position);
     
     // increase the Z dimensions since we have a new slice
     MRI.dim[2]++;
