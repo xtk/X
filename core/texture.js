@@ -104,4 +104,82 @@ X.texture = function() {
 // inherit from X.base
 goog.inherits(X.texture, X.base);
 
+
+/**
+ * Set the raw data for this texture.
+ * 
+ * @param {?Object} rawData The raw data.
+ * @public
+ */
+X.texture.prototype.__defineSetter__('rawData', function(rawData) {
+
+  this._rawData = rawData;
+  
+});
+
+
+/**
+ * Get the raw data for this texture.
+ * 
+ * @return {?Object} The raw data.
+ * @public
+ */
+X.texture.prototype.__defineGetter__('rawData', function() {
+
+  return this._rawData;
+  
+});
+
+
+/**
+ * Set the raw data width for this texture.
+ * 
+ * @param {number} rawDataWidth The raw data width.
+ * @public
+ */
+X.texture.prototype.__defineSetter__('rawDataWidth', function(rawDataWidth) {
+
+  this._rawDataWidth = rawDataWidth;
+  
+});
+
+
+/**
+ * Get the raw data width for this texture.
+ * 
+ * @return {number} The raw data width.
+ * @public
+ */
+X.texture.prototype.__defineGetter__('rawDataWidth', function() {
+
+  return this._rawDataWidth;
+  
+});
+
+
+/**
+ * Set the raw data height for this texture.
+ * 
+ * @param {number} rawDataHeight The raw data height.
+ * @public
+ */
+X.texture.prototype.__defineSetter__('rawDataHeight', function(rawDataHeight) {
+
+  this._rawDataHeight = rawDataHeight;
+  
+});
+
+
+/**
+ * Get the raw data height for this texture.
+ * 
+ * @return {number} The raw data height.
+ * @public
+ */
+X.texture.prototype.__defineGetter__('rawDataHeight', function() {
+
+  return this._rawDataHeight;
+  
+});
+
 goog.exportSymbol('X.texture', X.texture);

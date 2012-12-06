@@ -1685,6 +1685,8 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   var uVolumeTexture = uLocations.get(X.shaders.uniforms.VOLUMETEXTURE);
   var uObjectTransform = uLocations.get(X.shaders.uniforms.OBJECTTRANSFORM);
   var uPointSize = uLocations.get(X.shaders.uniforms.POINTSIZE);
+  var uRgbLowerThreshold = uLocations.get(X.shaders.uniforms.RGBLOWERTHRESHOLD);
+  var uRgbUpperThreshold = uLocations.get(X.shaders.uniforms.RGBUPPERTHRESHOLD);
   
   //
   // loop through all objects and (re-)draw them
@@ -1704,6 +1706,16 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         
         // we got a volume
         volume = object._volume;
+        
+      }
+      
+      // special case for stacks
+      var stack = null;
+      
+      if (object instanceof X.slice && object._stack) {
+        
+        // we got a stack
+        stack = object._stack;
         
       }
       
@@ -1895,6 +1907,20 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         
         // by default, no X.volume texture
         this._context.uniform1i(uVolumeTexture, false);
+        
+        if (stack) {
+          
+          // propagate the rgb thresholds
+          this._context.uniform3f(uRgbLowerThreshold,
+              parseFloat(stack._rLowerThreshold),
+              parseFloat(stack._gLowerThreshold),
+              parseFloat(stack._bLowerThreshold));
+          this._context.uniform3f(uRgbUpperThreshold,
+              parseFloat(stack._rUpperThreshold),
+              parseFloat(stack._gUpperThreshold),
+              parseFloat(stack._bUpperThreshold));
+          
+        }
         
       } else {
         
@@ -2094,6 +2120,8 @@ X.renderer3D.prototype.destroy = function() {
 goog.exportSymbol('X.renderer3D', X.renderer3D);
 goog.exportSymbol('X.renderer3D.prototype.init', X.renderer3D.prototype.init);
 goog.exportSymbol('X.renderer3D.prototype.add', X.renderer3D.prototype.add);
+goog.exportSymbol('X.renderer3D.prototype.remove',
+    X.renderer3D.prototype.remove);
 goog.exportSymbol('X.renderer3D.prototype.onShowtime',
     X.renderer3D.prototype.onShowtime);
 goog.exportSymbol('X.renderer3D.prototype.onRender',

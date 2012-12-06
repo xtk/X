@@ -188,6 +188,8 @@ X.shaders = function() {
   t2 += 'uniform vec3 volumeScalarMaxColor;\n';
   t2 += 'uniform float volumeWindowLow;\n';
   t2 += 'uniform float volumeWindowHigh;\n';
+  t2 += 'uniform vec3 rgbLowerThreshold;\n';
+  t2 += 'uniform vec3 rgbUpperThreshold;\n';
   t2 += '\n';
   t2 += 'varying float fDiscardNow;\n';
   t2 += 'varying vec4 fVertexPosition;\n';
@@ -206,6 +208,18 @@ X.shaders = function() {
   t2 += ' } else if (useTexture) {\n';
   t2 += '   vec4 texture1 = texture2D(textureSampler,fragmentTexturePos);\n';
   t2 += '   vec4 textureSum = texture1;\n';
+  t2 += '   if (textureSum.r < rgbLowerThreshold.r ||\n';
+  t2 += '       textureSum.r > rgbUpperThreshold.r) {\n';
+  t2 += '     textureSum.r = 0.0;\n';
+  t2 += '    }\n';
+  t2 += '   if (textureSum.g < rgbLowerThreshold.g ||\n';
+  t2 += '       textureSum.g > rgbUpperThreshold.g) {\n';
+  t2 += '     textureSum.g = 0.0;\n';
+  t2 += '    }\n';
+  t2 += '   if (textureSum.b < rgbLowerThreshold.b ||\n';
+  t2 += '       textureSum.b > rgbUpperThreshold.b) {\n';
+  t2 += '     textureSum.b = 0.0;\n';
+  t2 += '    }\n';
   // perform window level
   t2 += '   if (volumeTexture) {\n';
   t2 += '     float _windowLow = (volumeWindowLow / volumeScalarMax);\n';
@@ -329,7 +343,9 @@ X.shaders.uniforms = {
   VOLUMESCALARMAXCOLOR: 'volumeScalarMaxColor',
   VOLUMEWINDOWLOW: 'volumeWindowLow',
   VOLUMEWINDOWHIGH: 'volumeWindowHigh',
-  VOLUMETEXTURE: 'volumeTexture'
+  VOLUMETEXTURE: 'volumeTexture',
+  RGBLOWERTHRESHOLD: 'rgbLowerThreshold',
+  RGBUPPERTHRESHOLD: 'rgbUpperThreshold'
 };
 
 

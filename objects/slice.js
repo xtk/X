@@ -116,6 +116,14 @@ X.slice = function(slice) {
   this._volume = null;
   
   /**
+   * A pointer to the parent stack of this slice.
+   * 
+   * @type {?X.stack}
+   * @protected
+   */
+  this._stack = null;
+  
+  /**
    * The label map of this slice which is a second texture.
    * 
    * @type {?X.texture}
@@ -266,7 +274,7 @@ X.slice.prototype.setup = function(center, front, up, width, height, borders,
  * @private
  */
 X.slice.prototype.create_ = function() {
-  
+
   // get an orthogonal vector using front x up
   var frontVector = new goog.math.Vec3(this._front[0], this._front[1],
       this._front[2]);
@@ -382,6 +390,33 @@ X.slice.prototype.create_ = function() {
   
 };
 
+/**
+ * Set the stack of this slice.
+ * 
+ * @param {?X.stack} stack The stack of this slice.
+ * @public
+ */
+X.slice.prototype.__defineSetter__('stack', function(stack) {
+
+  this._stack = stack;
+  
+});
+
+
+/**
+ * Get the stack of this slice.
+ * 
+ * @return {?X.stack} The stack of this slice.
+ * @public
+ */
+X.slice.prototype.__defineGetter__('stack', function() {
+
+  return this._stack;
+  
+});
+
+
 // export symbols (required for advanced compilation and in particular the copy
 // constructors with duck typing)
 goog.exportSymbol('X.slice', X.slice);
+goog.exportSymbol('X.slice.prototype.setup', X.slice.prototype.setup);

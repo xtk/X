@@ -40,6 +40,7 @@ goog.addDependency('../../../../objects/mesh.js', ['X.mesh'], ['X.object']);
 goog.addDependency('../../../../objects/object.js', ['X.object'], ['X.base', 'X.colortable', 'X.displayable', 'X.indexer', 'X.loadable', 'X.scalars']);
 goog.addDependency('../../../../objects/slice.js', ['X.slice'], ['X.base', 'X.object', 'goog.math.Vec3']);
 goog.addDependency('../../../../objects/sphere.js', ['X.sphere'], ['CSG.sphere', 'X.base', 'X.constructable', 'X.object']);
+goog.addDependency('../../../../objects/stack.js', ['X.stack'], ['X.volume']);
 goog.addDependency('../../../../objects/volume.js', ['X.volume'], ['X.object', 'X.slice', 'X.thresholdable']);
 goog.addDependency('../../../../ui/caption.js', ['X.caption'], ['X.base', 'X.interactor', 'goog.dom', 'goog.positioning.ViewportPosition', 'goog.ui.Tooltip']);
 goog.addDependency('../../../../ui/progressbar.js', ['X.progressbar'], ['X.base', 'goog.dom', 'goog.ui.ProgressBar']);

@@ -290,7 +290,7 @@ X.volume.prototype.copy_ = function(volume) {
  * 
  * @private
  */
-X.volume.prototype.create_ = function() {
+X.volume.prototype.create = function() {
 
   // remove all old children
   this._children.length = 0;
@@ -505,6 +505,19 @@ X.volume.prototype.slicing_ = function() {
 X.volume.prototype.__defineGetter__('dimensions', function() {
 
   return this._dimensions;
+  
+});
+
+
+/**
+ * Set the dimensions of this volume.
+ * 
+ * @param {!Array} dimensions The dimensions of this volume.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('dimensions', function(dimensions) {
+
+  this._dimensions = dimensions;
   
 });
 
@@ -871,3 +884,4 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.volume', X.volume);
 goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);
+goog.exportSymbol('X.volume.prototype.create', X.volume.prototype.create);
