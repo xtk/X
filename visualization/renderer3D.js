@@ -222,7 +222,8 @@ X.renderer3D = function() {
     'PROGRESSBAR_ENABLED': true,
     'PICKING_ENABLED': true,
     'ORDERING_ENABLED': true,
-    'STATISTICS_ENABLED': false
+    'STATISTICS_ENABLED': false,
+    'INTERMEDIATE_RENDERING': false
   };
   
 };
@@ -239,6 +240,7 @@ goog.inherits(X.renderer3D, X.renderer);
  *  config.PICKING_ENABLED: true
  *  config.ORDERING_ENABLED: true
  *  config.STATISTICS_ENABLED: false
+ *  config.INTERMEDIATE_RENDERING: false
  * </pre>
  * 
  * @return {Object} The configuration.

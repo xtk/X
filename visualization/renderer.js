@@ -193,7 +193,8 @@ X.renderer = function() {
    * @enum {boolean}
    */
   this._config = {
-    'PROGRESSBAR_ENABLED': true
+    'PROGRESSBAR_ENABLED': true,
+    'INTERMEDIATE_RENDERING': false
   };
   
   /**
@@ -891,7 +892,13 @@ X.renderer.prototype.render = function() {
       
     }.bind(this), 100); // check again in 500 ms
     
-    return; // .. and jump out
+    // intermediate rendering means render also
+    // while loading is still active
+    if (!this._config['INTERMEDIATE_RENDERING']) {
+    
+      return; // .. and jump out
+    
+    }
     
   } else {
     
