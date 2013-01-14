@@ -40,7 +40,7 @@ goog.require('X.object');
 goog.require('X.parser');
 goog.require('X.triplets');
 goog.require('goog.math.Vec3');
-goog.require('JXG.Util.Unzip');
+goog.require('Zlib.Gunzip');
 
 
 /**
@@ -93,7 +93,8 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
     // we need to decompress the datastream
     
     // here we start the unzipping and get a typed Uint8Array back
-    _data = new JXG.Util.Unzip(new Uint8Array(data)).unzip();
+    var inflate = new Zlib.Gunzip(new Uint8Array(_data));
+    _data = inflate.decompress();
     
     // .. and use the underlying array buffer
     _data = _data.buffer;
