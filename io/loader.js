@@ -41,6 +41,7 @@ goog.require('X.parserLUT');
 goog.require('X.parserMGZ');
 goog.require('X.parserNII');
 goog.require('X.parserNRRD');
+goog.require('X.parserOBJ');
 goog.require('X.parserSTL');
 goog.require('X.parserTRK');
 goog.require('X.parserVTK');
@@ -354,6 +355,7 @@ X.loader.prototype.failed = function(request, container, object) {
 X.loader.extensions = {
   // support for the following extensions and the mapping to X.parsers as well
   // as some custom flags and the result type
+  'OBJ': [X.parserOBJ, null],
   'STL': [X.parserSTL, null],
   'VTK': [X.parserVTK, null],
   'TRK': [X.parserTRK, null],
