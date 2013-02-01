@@ -103,9 +103,9 @@ X.parserOBJ.prototype.parse = function(container, object, data, flag) {
        } else if (_d[0] == "f") {
 
          // assumes all points have been read
-         var p1 = _pts[parseInt(_d[1])-1];
-         var p2 = _pts[parseInt(_d[2])-1];
-         var p3 = _pts[parseInt(_d[3])-1];
+         var p1 = _pts[parseInt(_d[1], 10)-1];
+         var p2 = _pts[parseInt(_d[2], 10)-1];
+         var p3 = _pts[parseInt(_d[3], 10)-1];
      
          p.add(p1[0], p1[1], p1[2]);
          p.add(p2[0], p2[1], p2[2]);
