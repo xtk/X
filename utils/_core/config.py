@@ -85,7 +85,7 @@ DOC_OUTPUT_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH , 'doc/' ) )
 UNIT_TESTS = os.path.normpath( os.sep + 'testing' + os.sep + SOFTWARE_SHORT.lower() + '_tests.html' )
 UNIT_TESTS_BUILD = os.path.normpath( os.sep + 'testing' + os.sep + SOFTWARE_SHORT.lower() + '_tests_build.html' )
 VISUAL_TESTS_BASEPATH = os.sep + 'testing' + os.sep + 'visualization' + os.sep
-VISUAL_TESTS = ['test_image.html', 'test_binstl.html', 'test_mgh.html', 'test_nii.html', 'test_fsm_crv.html', 'test_fsm_label.html', 'test_dcm.html', 'test_shapes.html', 'test_trk.html', 'test_vtk.html', 'test_labelmap.html', 'test_mgz.html', 'test_nrrd.html', 'test_stl.html', 'test_vr.html']
+VISUAL_TESTS = ['test_image.html', 'test_binstl.html', 'test_mgh.html', 'test_nii.html', 'test_fsm_crv.html', 'test_fsm_label.html', 'test_dcm.html', 'test_shapes.html', 'test_trk.html', 'test_vtk.html', 'test_labelmap.html', 'test_mgz.html', 'test_nrrd.html', 'test_stl.html', 'test_vr.html', 'test_obj.html']
 
 VISUAL_BASELINES_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'testing/visualization/baselines/' ) )
 JSCOVERAGE_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/jscoverage/' ) )
