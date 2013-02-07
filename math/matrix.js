@@ -172,7 +172,7 @@ X.matrix.prototype.translate = function(vector) {
  * 
  * @this {X.matrix}
  * @param {!number} angle The rotation angle.
- * @param {!goog.math.Vec3} iaxis The axis to rotate around.
+ * @param {!goog.math.Vec3|Array} iaxis The axis to rotate around.
  * @return {!X.matrix} The result of this rotation.
  * @throws {Error} An exception if the rotation fails.
  */
@@ -186,9 +186,15 @@ X.matrix.prototype.rotate = function(angle, iaxis) {
     
   }
   
-  if (!goog.isDefAndNotNull(iaxis) || !(iaxis instanceof goog.math.Vec3)) {
+  if (!goog.isDefAndNotNull(iaxis)) {
     
     throw new Error('Invalid axis vector.');
+    
+  }
+  
+  if (!(iaxis instanceof goog.math.Vec3)) {
+    
+    iaxis = new goog.math.Vec3(iaxis[0], iaxis[1], iaxis[2]);
     
   }
   
