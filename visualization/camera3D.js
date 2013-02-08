@@ -106,8 +106,10 @@ X.camera3D.prototype.rotate = function(distance) {
 X.camera3D.prototype.lookAt_ = function(cameraPosition, targetPoint) {
 
   var matrix = goog.base(this, 'lookAt_', cameraPosition, targetPoint);
-  
-  return X.matrix.makeLookAt(matrix, cameraPosition, targetPoint, this._up);
+  console.log(matrix);
+  X.matrix.makeLookAt(matrix, cameraPosition, targetPoint, this._up);
+  console.log(matrix);
+  return matrix;
     
 };
 

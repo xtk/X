@@ -30,6 +30,7 @@
 goog.provide('X.matrix');
 
 // requires
+goog.require('X.vector');
 goog.require('goog.vec.Mat4');
 
 
@@ -43,29 +44,41 @@ X.matrix.makeLookAt = function(mat, eyePt, centerPt, worldUpVec) {
   // normalize.
   var fwdVec = centerPt.subtract(eyePt);
   fwdVec.normalize();
-  fwdVec.z = 0;
 
   // Compute the side vector from the forward vector and the input up vector.
   var sideVec = X.vector.cross(fwdVec, worldUpVec);
   sideVec.normalize();
-  sideVec.z = 0;
 
   // Now the up vector to form the orthonormal basis.
   var upVec = X.vector.cross(sideVec, fwdVec);
   upVec.normalize();
-  upVec.z = 0;
 
   // Update the view matrix with the new orthonormal basis and position the
   // camera at the given eye point.
   fwdVec.invert();
-  goog.vec.Mat4.setRow(mat, 0, sideVec);
-  goog.vec.Mat4.setRow(mat, 1, upVec);
-  goog.vec.Mat4.setRow(mat, 2, fwdVec);
-  goog.vec.Mat4.setRowValues(mat, 3, 0, 0, 0, 1);
+  goog.vec.Mat4.setRowValues(mat, 0, sideVec.x, sideVec.y, sideVec.z, 0);
+  goog.vec.Mat4.setRowValues(mat, 1, upVec.x, upVec.y, upVec.z, 0);
+  goog.vec.Mat4.setRowValues(mat, 2, fwdVec.x, fwdVec.y, fwdVec.z, 0);
   goog.vec.Mat4.translate(
       mat, -eyePt.x, -eyePt.y, -eyePt.z);
 
   return mat;
+  
+};
+
+X.matrix.multiplyByVector = function(mat, x, y, z) {
+  
+  // from Google Closure Library
+  // http://closure-library.googlecode.com/svn/docs/closure_goog_vec_mat4.js.source.html#line1133
+  // but adjusted to *not* use goog.vec.Vec3 for performance  
+  
+  var invw = 1 / (x * mat[3] + y * mat[7] + z * mat[11] + mat[15]);
+  var _x = (x * mat[0] + y * mat[4] + z * mat[8] + mat[12]) * invw;
+  var _y = (x * mat[1] + y * mat[5] + z * mat[9] + mat[13]) * invw;
+  var _z = (x * mat[2] + y * mat[6] + z * mat[10] + mat[14]) * invw;
+  
+  return new X.vector(_x, _y, _z);
+  
 };
 
 X.matrix.identity = goog.vec.Mat4.createFloat32Identity;
@@ -73,7 +86,6 @@ X.matrix.clone = goog.vec.Mat4.cloneFloat32;
 X.matrix.transpose = goog.vec.Mat4.transpose;
 X.matrix.determinant = goog.vec.Mat4.determinant;
 X.matrix.invert = goog.vec.Mat4.invert;
-X.matrix.multVec3 = goog.vec.Mat4.multVec3;
 X.matrix.makePerspective = goog.vec.Mat4.makePerspective;
 X.matrix.makeFrustum = goog.vec.Mat4.makeFrustum;
 X.matrix.makeOrtho = goog.vec.Mat4.makeOrtho;
@@ -89,7 +101,7 @@ goog.exportSymbol('X.matrix.clone', X.matrix.clone);
 goog.exportSymbol('X.matrix.transpose', X.matrix.transpose);
 goog.exportSymbol('X.matrix.determinant', X.matrix.determinant);
 goog.exportSymbol('X.matrix.invert', X.matrix.invert);
-goog.exportSymbol('X.matrix.multVec3', X.matrix.multVec3);
+goog.exportSymbol('X.matrix.multiplyByVector', X.matrix.multiplyByVector);
 goog.exportSymbol('X.matrix.makePerspective', X.matrix.makePerspective);
 goog.exportSymbol('X.matrix.makeFrustum', X.matrix.makeFrustum);
 goog.exportSymbol('X.matrix.makeOrtho', X.matrix.makeOrtho);

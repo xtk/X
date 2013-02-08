@@ -845,10 +845,8 @@ X.renderer3D.prototype.update_ = function(object) {
   if (!existed || points._dirty || transform._dirty) {
     var transformationMatrix = transform._matrix;
     
-    var tMin = transformationMatrix.multiplyByVector(new goog.math.Vec3(
-        points._minA, points._minB, points._minC));
-    var tMax = transformationMatrix.multiplyByVector(new goog.math.Vec3(
-        points._maxA, points._maxB, points._maxC));
+    var tMin = X.matrix.multiplyByVector(transformationMatrix, points._minA, points._minB, points._minC); 
+    var tMax = X.matrix.multiplyByVector(transformationMatrix, points._maxA, points._maxB, points._maxC);
     
     if (goog.isNull(this._minX) || tMin.x < this._minX) {
       this._minX = tMin.x;
@@ -1471,7 +1469,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   var perspectiveMatrix = this._camera._perspective;
   
   // grab the current view from the camera
-  var viewMatrix = this._camera._glview;
+  var viewMatrix = this._camera._view;
   
   // propagate perspective and view matrices to the uniforms of
   // the shader
@@ -1861,7 +1859,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       // TRANSFORMS
       // propagate transform to the uniform matrices of the shader
       this._context.uniformMatrix4fv(uObjectTransform, false,
-          object._transform._glMatrix);
+          object._transform._matrix);
       
       // POINT SIZE
       var pointSize = 1;

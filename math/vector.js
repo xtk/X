@@ -37,7 +37,12 @@ X.vector.prototype.clone = goog.math.Vec3.prototype.clone;
 X.vector.prototype.magnitude = goog.math.Vec3.prototype.magnitude;
 X.vector.prototype.scale = goog.math.Vec3.prototype.scale;
 X.vector.prototype.invert = goog.math.Vec3.prototype.invert;
-X.vector.prototype.normalize = goog.math.Vec3.prototype.normalize;
+X.vector.prototype.normalize = function() {
+  // add a special check if the magnitude is 0
+  var _magnitude = this.magnitude();
+  if (_magnitude == 0) return 0;
+  return this.scale(1 / _magnitude);
+};
 X.vector.prototype.add = goog.math.Vec3.prototype.add;
 X.vector.prototype.subtract = goog.math.Vec3.prototype.subtract;
 X.vector.dot = goog.math.Vec3.dot;
