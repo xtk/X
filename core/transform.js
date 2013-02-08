@@ -33,7 +33,6 @@ goog.provide('X.transform');
 // requires
 goog.require('X.base');
 goog.require('X.matrix');
-goog.require('goog.math.Vec3');
 
 
 
@@ -61,18 +60,10 @@ X.transform = function() {
   /**
    * The transformation matrix.
    * 
-   * @type {!X.matrix}
+   * @type {!Float32Array}
    * @protected
    */
-  this._matrix = X.matrix.createIdentityMatrix(4);
-  
-  /**
-   * The transformation matrix as a 'ready-to-use'-gl version.
-   * 
-   * @type {!Object}
-   * @protected
-   */
-  this._glMatrix = new Float32Array(this._matrix.flatten());
+  this._matrix = X.matrix.identity();
   
 };
 // inherit from X.base
@@ -94,11 +85,11 @@ X.transform.prototype.__defineGetter__('matrix', function() {
 /**
  * Set the transformation matrix.
  * 
- * @param {!X.matrix} matrix The transformation matrix.
+ * @param {!Float32Array} matrix The transformation matrix.
  */
 X.transform.prototype.__defineSetter__('matrix', function(matrix) {
 
-  if (!goog.isDefAndNotNull(matrix) || !(matrix instanceof X.matrix)) {
+  if (!goog.isDefAndNotNull(matrix) || !(matrix instanceof Float32Array)) {
     
     throw new Error('Invalid matrix.');
     
@@ -126,7 +117,8 @@ X.transform.prototype.rotateX = function(angle) {
   
   var angleInRadii = angle * Math.PI / 180;
   
-  this._matrix = this._matrix.rotate(angleInRadii, new goog.math.Vec3(0, 1, 0));
+  X.matrix.rotateX(this._matrix, angleInRadii);
+  
   this.modified();
   
 };
@@ -148,7 +140,8 @@ X.transform.prototype.rotateY = function(angle) {
   
   var angleInRadii = angle * Math.PI / 180;
   
-  this._matrix = this._matrix.rotate(angleInRadii, new goog.math.Vec3(1, 0, 0));
+  X.matrix.rotateY(this._matrix, angleInRadii);
+  
   this.modified();
   
 };
@@ -170,7 +163,8 @@ X.transform.prototype.rotateZ = function(angle) {
   
   var angleInRadii = angle * Math.PI / 180;
   
-  this._matrix = this._matrix.rotate(angleInRadii, new goog.math.Vec3(0, 0, 1));
+  X.matrix.rotateZ(this._matrix, angleInRadii);
+  
   this.modified();
   
 };
@@ -190,9 +184,8 @@ X.transform.prototype.translateX = function(distance) {
     
   }
   
-  var vector = new goog.math.Vec3(distance, 0, 0);
+  X.matrix.translate(this._matrix, distance, 0, 0);
   
-  this._matrix = this._matrix.translate(vector);
   this.modified();
   
 };
@@ -212,9 +205,8 @@ X.transform.prototype.translateY = function(distance) {
     
   }
   
-  var vector = new goog.math.Vec3(0, distance, 0);
+  X.matrix.translate(this._matrix, 0, distance, 0);
   
-  this._matrix = this._matrix.translate(vector);
   this.modified();
   
 };
@@ -234,9 +226,8 @@ X.transform.prototype.translateZ = function(distance) {
     
   }
   
-  var vector = new goog.math.Vec3(0, 0, distance);
+  X.matrix.translate(this._matrix, 0, 0, distance);
   
-  this._matrix = this._matrix.translate(vector);
   this.modified();
   
 };
@@ -245,18 +236,14 @@ X.transform.prototype.translateZ = function(distance) {
 /**
  * Flip the matrix value at the given index.
  * 
- * @param {number} i The row index.
- * @param {number} j The column index.
+ * @param {number} row The row index.
+ * @param {number} col The column index.
  * @private
  */
-X.transform.prototype.flip_ = function(i, j) {
+X.transform.prototype.flip_ = function(row, col) {
 
-  var oldValue = this._matrix.getValueAt(i, j);
-  if (!oldValue) {
-    oldValue = 0;
-  }
+  this._matrix[row + col*4] *= -1;
   
-  this._matrix.setValueAt(i, j, oldValue * -1);
   this.modified();
   
 };
@@ -293,11 +280,9 @@ X.transform.prototype.flipZ = function() {
 
 
 /**
- * Mark the transform as modified and update the GL-ready version.
+ * Mark the transform as modified.
  */
 X.transform.prototype.modified = function() {
-  
-  this._glMatrix = new Float32Array(this._matrix.flatten());
   
   this._dirty = true;  
   

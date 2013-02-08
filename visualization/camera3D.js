@@ -94,8 +94,8 @@ X.camera3D.prototype.rotate = function(distance) {
   var angleY = -distance.y / 5 * Math.PI / 180;
   
   // row+col * 4 
-  this._view = X.matrix.rotate(this._view, angleX, this._view[1], this._view[5], this._view[9]);
-  this._view = X.matrix.rotate(this._view, angleY, this._view[0], this._view[4], this._view[8]);
+  X.matrix.rotate(this._view, angleX, this._view[1], this._view[5], this._view[9]);
+  X.matrix.rotate(this._view, angleY, this._view[0], this._view[4], this._view[8]);
   
 };
 

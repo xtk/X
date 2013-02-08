@@ -68,7 +68,7 @@ X.matrix.makeLookAt = function(mat, eyePt, centerPt, worldUpVec) {
   return mat;
 };
 
-X.matrix.identity = goog.vec4.Mat4.createFloat32Identity;
+X.matrix.identity = goog.vec.Mat4.createFloat32Identity;
 X.matrix.clone = goog.vec.Mat4.cloneFloat32;
 X.matrix.transpose = goog.vec.Mat4.transpose;
 X.matrix.determinant = goog.vec.Mat4.determinant;
