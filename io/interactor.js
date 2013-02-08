@@ -44,7 +44,7 @@ goog.require('goog.events.BrowserEvent.MouseButton');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyHandler');
 goog.require('goog.events.MouseWheelHandler');
-goog.require('goog.math.Vec2');
+goog.require('goog.math.Vec3');
 
 
 
@@ -176,18 +176,18 @@ X.interactor = function(element) {
   /**
    * The previous mouse position.
    * 
-   * @type {!goog.math.Vec2}
+   * @type {!X.vector}
    * @protected
    */
-  this._lastMousePosition = new goog.math.Vec2(0, 0);
+  this._lastMousePosition = new X.vector(0, 0, 0);
   
   /**
    * The previous touch position of the first finger.
    * 
-   * @type {!goog.math.Vec2}
+   * @type {!X.vector}
    * @protected
    */
-  this._lastTouchPosition = new goog.math.Vec2(0, 0);
+  this._lastTouchPosition = new X.vector(0, 0, 0);
   
   /**
    * The last distance between the first and second finger.
@@ -567,7 +567,7 @@ X.interactor.prototype.onMouseMovementOutside_ = function(event) {
   // end all hovering since the scene can change and a caption might be
   // misplaced etc.
   this.hoverEnd_();
-  this._lastMousePosition = new goog.math.Vec2(0, 0);
+  this._lastMousePosition = new X.vector(0, 0, 0);
   
   // prevent further handling by the browser
   event.preventDefault();
@@ -605,7 +605,7 @@ X.interactor.prototype.onTouchStart_ = function(event) {
   eval("this.onTouchStart(" + event.clientX + "," + event.clientY + ")");
   
   // store the last touch position
-  this._lastTouchPosition = new goog.math.Vec2(event.clientX, event.clientY);
+  this._lastTouchPosition = new X.vector(event.clientX, event.clientY, 0);
   
   // get ready for a hover event
   this._touchHoverTrigger = setTimeout(this.onTouchHover_.bind(this, event),
@@ -768,8 +768,8 @@ X.interactor.prototype.onTouchMove_ = function(event) {
     
     var _touchPosition = [finger1.clientX, finger1.clientY];
     
-    var currentTouchPosition = new goog.math.Vec2(_touchPosition[0],
-        _touchPosition[1]);
+    var currentTouchPosition = new X.vector(_touchPosition[0],
+        _touchPosition[1], 0);
     
     var _right_quarter = _touchPosition[0] > this._element.clientWidth * 3 / 4;
     var _left_quarter = _touchPosition[0] < this._element.clientWidth / 4;
@@ -863,12 +863,12 @@ X.interactor.prototype.onTouchMove_ = function(event) {
     var _touchPosition1 = [finger1.clientX, finger1.clientY];
     var _touchPosition2 = [finger2.clientX, finger2.clientY];
     
-    var currentTouchPosition1 = new goog.math.Vec2(_touchPosition1[0],
-        _touchPosition1[1]);
-    var currentTouchPosition2 = new goog.math.Vec2(_touchPosition2[0],
-        _touchPosition2[1]);
+    var currentTouchPosition1 = new X.vector(_touchPosition1[0],
+        _touchPosition1[1], 0);
+    var currentTouchPosition2 = new X.vector(_touchPosition2[0],
+        _touchPosition2[1], 0);
     
-    var distance = goog.math.Vec2.squaredDistance(currentTouchPosition1,
+    var distance = goog.math.Vec3.squaredDistance(currentTouchPosition1,
         currentTouchPosition2);
     
     var distanceChange = distance - this.lastFingerDistance;
@@ -948,8 +948,8 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
   
   // grab the current mouse position
   this._mousePosition = [event.offsetX, event.offsetY];
-  var currentMousePosition = new goog.math.Vec2(this._mousePosition[0],
-      this._mousePosition[1]);
+  var currentMousePosition = new X.vector(this._mousePosition[0],
+      this._mousePosition[1], 0);
   
   // get the distance in terms of the last mouse move event
   var distance = this._lastMousePosition.subtract(currentMousePosition);
@@ -1235,7 +1235,7 @@ X.interactor.prototype.onKey_ = function(event) {
     }
     
     // create a distance vector
-    var distance = new goog.math.Vec2(0, 0);
+    var distance = new X.vector(0, 0, 0);
     
     if (keyCode == 37) {
       // '<-' LEFT

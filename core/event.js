@@ -46,6 +46,7 @@ goog.provide('X.event.ZoomEvent');
 // requires
 goog.require('X');
 goog.require('X.object');
+goog.require('X.vector');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 
@@ -180,10 +181,10 @@ X.event.PanEvent = function() {
   /**
    * The distance to pan in screen space.
    * 
-   * @type {!goog.math.Vec2}
+   * @type {!X.vector}
    * @protected
    */
-  this._distance = new goog.math.Vec2(0, 0);
+  this._distance = new X.vector(0, 0, 0);
   
 };
 // inherit from goog.events.Event
@@ -204,10 +205,10 @@ X.event.RotateEvent = function() {
   /**
    * The distance to pan in screen space.
    * 
-   * @type {!goog.math.Vec2}
+   * @type {!X.vector}
    * @protected
    */
-  this._distance = new goog.math.Vec2(0, 0);
+  this._distance = new X.vector(0, 0, 0);
   
 };
 // inherit from goog.events.Event
