@@ -37,7 +37,7 @@ goog.require('X.event.PanEvent');
 goog.require('X.event.RenderEvent');
 goog.require('X.interactor');
 goog.require('X.matrix');
-goog.require('goog.math.Vec3');
+goog.require('X.vector');
 
 
 
@@ -74,26 +74,26 @@ X.camera = function(width, height) {
   /**
    * The position of this camera, by default 0, 0, 100.
    *
-   * @type {!goog.math.Vec3}
+   * @type {!X.vector}
    * @protected
    */
-  this._position = new goog.math.Vec3(0, 0, 100);
+  this._position = new X.vector(0, 0, 100);
 
   /**
    * The focus point of this camera, by default 0, 0, 0.
    *
-   * @type {!goog.math.Vec3}
+   * @type {!X.vector}
    * @protected
    */
-  this._focus = new goog.math.Vec3(0, 0, 0);
+  this._focus = new X.vector(0, 0, 0);
 
   /**
    * The unit vector pointing to the top of the three-dimensional space.
    *
-   * @type {!goog.math.Vec3}
+   * @type {!X.vector}
    * @protected
    */
-  this._up = new goog.math.Vec3(0, 1, 0);
+  this._up = new X.vector(0, 1, 0);
 
   /**
    * The view matrix.
@@ -102,14 +102,6 @@ X.camera = function(width, height) {
    * @protected
    */
   this._view = this.lookAt_(this._position, this._focus);
-
-  /**
-   * The view matrix as a 'ready-to-use'-gl version.
-   *
-   * @type {!Object}
-   * @protected
-   */
-  this._glview = new Float32Array(this._view.flatten());
 
 };
 // inherit from X.base
@@ -210,7 +202,7 @@ X.camera.prototype.onPan_ = function(event) {
 /**
  * Get the view matrix for the three-dimensional space.
  *
- * @return {!X.matrix} The view matrix.
+ * @return {!Float32Array} The view matrix.
  */
 X.camera.prototype.__defineGetter__('view', function() {
 
@@ -222,20 +214,19 @@ X.camera.prototype.__defineGetter__('view', function() {
 /**
  * Set the view matrix for the three-dimensional space.
  *
- * @param {!X.matrix} view The view matrix.
+ * @param {!Float32Array} view The view matrix.
  * @throws {Error} An exception if the view matrix is invalid.
  * @public
  */
 X.camera.prototype.__defineSetter__('view', function(view) {
 
-  if (!goog.isDefAndNotNull(view) || !(view instanceof X.matrix)) {
+  if (!goog.isDefAndNotNull(view) || !(view instanceof Float32Array)) {
 
     throw new Error('Invalid view matrix.');
 
   }
 
   this._view = view;
-  this._glview = new Float32Array(this._view.flatten());
 
 });
 
@@ -273,7 +264,7 @@ X.camera.prototype.__defineSetter__('position', function(position) {
   var y = position[1];
   var z = position[2];
 
-  this._position = new goog.math.Vec3(x, y, z);
+  this._position = new X.vector(x, y, z);
 
   // we need to reset to re-calculate the matrices
   this.reset();
@@ -315,7 +306,7 @@ X.camera.prototype.__defineSetter__('focus', function(focus) {
   var y = focus[1];
   var z = focus[2];
 
-  this._focus = new goog.math.Vec3(x, y, z);
+  this._focus = new X.vector(x, y, z);
 
   // we need to reset to re-calculate the matrices
   this.reset();
@@ -355,7 +346,7 @@ X.camera.prototype.__defineSetter__('up', function(up) {
   var y = up[1];
   var z = up[2];
 
-  this._up = new goog.math.Vec3(x, y, z);
+  this._up = new X.vector(x, y, z);
 
   // we need to reset to re-calculate the matrices
   this.reset();
@@ -370,27 +361,25 @@ X.camera.prototype.reset = function() {
 
   // update the view matrix and its gl versions
   this._view = this.lookAt_(this._position, this._focus);
-  this._glview = new Float32Array(this._view.flatten());
 
 };
 
 
 /**
- * Perform a rotate operation. This method fires a X.event.RenderEvent() after
- * the calculation is done.
+ * Perform a rotate operation.
  *
- * @param {!goog.math.Vec2|!Array} distance The distance of the rotation in
+ * @param {!X.vector|!Array} distance The distance of the rotation in
  *          respect of the last camera position as either a 2D Array or a
- *          goog.math.Vec2 containing the X and Y distances for the rotation.
+ *          X.vector containing the X and Y distances for the rotation.
  * @public
  */
 X.camera.prototype.rotate = function(distance) {
 
   if (goog.isArray(distance) && (distance.length == 2)) {
 
-    distance = new goog.math.Vec2(distance[0], distance[1]);
+    distance = new X.vector(distance[0], distance[1], 0);
 
-  } else if (!(distance instanceof goog.math.Vec2)) {
+  } else if (!(distance instanceof X.vector)) {
 
     throw new Error('Invalid distance vector for rotate operation.');
 
@@ -403,10 +392,9 @@ X.camera.prototype.rotate = function(distance) {
 
 
 /**
- * Perform a pan operation. This method fires a X.event.RenderEvent() after the
- * calculation is done.
+ * Perform a pan operation.
  *
- * @param {!goog.math.Vec2} distance The distance of the panning in respect of
+ * @param {!X.vector|Array} distance The distance of the panning in respect of
  *          the last camera position.
  * @public
  */
@@ -414,31 +402,21 @@ X.camera.prototype.pan = function(distance) {
 
   if (goog.isArray(distance) && (distance.length == 2)) {
 
-    distance = new goog.math.Vec2(distance[0], distance[1]);
+    distance = new X.vector(distance[0], distance[1], 0);
 
-  } else if (!(distance instanceof goog.math.Vec2)) {
+  } else if (!(distance instanceof X.vector)) {
 
     throw new Error('Invalid distance vector for pan operation.');
 
   }
 
-  var distance3d = new goog.math.Vec3(-distance.x, distance.y, 0);
-
-  var identity = X.matrix.createIdentityMatrix(4);
-  var panMatrix = identity.translate(distance3d);
-
-  this._view = new X.matrix(panMatrix.multiply(this._view));
-  this._glview = new Float32Array(this._view.flatten());
-
-  // fire a render event
-  // this.dispatchEvent(new X.event.RenderEvent());
-
+  this._view = X.matrix.translate(this._view, -distance.x, distance.y, distance.z);
+  
 };
 
 
 /**
- * Perform a zoom in operation. This method fires a X.event.RenderEvent() after
- * the calculation is done.
+ * Perform a zoom in operation.
  *
  * @param {boolean} fast Enables/disables the fast mode which zooms much
  *          quicker.
@@ -454,23 +432,13 @@ X.camera.prototype.zoomIn = function(fast) {
 
   }
 
-  var zoomVector = new goog.math.Vec3(0, 0, zoomStep);
-
-  var identity = X.matrix.createIdentityMatrix(4);
-  var zoomMatrix = identity.translate(zoomVector);
-
-  this._view = new X.matrix(zoomMatrix.multiply(this._view));
-  this._glview = new Float32Array(this._view.flatten());
-
-  // fire a render event
-  // this.dispatchEvent(new X.event.RenderEvent());
+  this._view = X.matrix.translate(this._view, 0,0, zoomStep);
 
 };
 
 
 /**
- * Perform a zoom out operation. This method fires a X.event.RenderEvent() after
- * the calculation is done.
+ * Perform a zoom out operation.
  *
  * @param {boolean} fast Enables/disables the fast mode which zooms much
  *          quicker.
@@ -486,39 +454,30 @@ X.camera.prototype.zoomOut = function(fast) {
 
   }
 
-  var zoomVector = new goog.math.Vec3(0, 0, -zoomStep);
-
-  var identity = X.matrix.createIdentityMatrix(4);
-  var zoomMatrix = identity.translate(zoomVector);
-
-  this._view = new X.matrix(zoomMatrix.multiply(this._view));
-  this._glview = new Float32Array(this._view.flatten());
-
-  // fire a render event
-  // this.dispatchEvent(new X.event.RenderEvent());
-
+  this._view = X.matrix.translate(this._view, 0,0, -zoomStep);
+  
 };
 
 
 /**
  * Calculate a view matrix by using the camera position and a focus point.
  *
- * @param {!goog.math.Vec3} cameraPosition The camera position.
- * @param {!goog.math.Vec3} targetPoint The focus (target) point.
+ * @param {!X.vector} cameraPosition The camera position.
+ * @param {!X.vector} targetPoint The focus (target) point.
  * @return {!X.matrix} The view matrix.
  * @throws {Error} If the given arguments are invalid.
  * @protected
  */
 X.camera.prototype.lookAt_ = function(cameraPosition, targetPoint) {
 
-  if (!(cameraPosition instanceof goog.math.Vec3) ||
-      !(targetPoint instanceof goog.math.Vec3)) {
+  if (!(cameraPosition instanceof X.vector) ||
+      !(targetPoint instanceof X.vector)) {
 
     throw new Error('3D vectors required for calculating the view.');
 
   }
 
-  return X.matrix.createIdentityMatrix(4);
+  return X.matrix.identity();
 
 };
 
