@@ -410,7 +410,8 @@ X.camera.prototype.pan = function(distance) {
 
   }
 
-  X.matrix.translate(this._view, -distance.x, distance.y, distance.z);
+  this._view[12] -= distance.x;
+  this._view[13] += distance.y;
   
 };
 
@@ -432,8 +433,8 @@ X.camera.prototype.zoomIn = function(fast) {
 
   }
 
-  X.matrix.translate(this._view, 0,0, zoomStep);
-
+  this._view[14] += zoomStep;
+  
 };
 
 
@@ -454,7 +455,7 @@ X.camera.prototype.zoomOut = function(fast) {
 
   }
 
-  X.matrix.translate(this._view, 0,0, -zoomStep);
+  this._view[14] -= zoomStep;
   
 };
 
