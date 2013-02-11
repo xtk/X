@@ -45,6 +45,7 @@ class FirefoxProfile(object):
         "browser.offline": "false",
         "browser.safebrowsing.enabled": "false",
         "browser.search.update": "false",
+        "extensions.blocklist.enabled": "false",
         "browser.sessionstore.resume_from_crash": "false",
         "browser.shell.checkDefaultBrowser": "false",
         "browser.tabs.warnOnClose": "false",
@@ -99,10 +100,12 @@ class FirefoxProfile(object):
         self.default_preferences = copy.deepcopy(
             FirefoxProfile.DEFAULT_PREFERENCES)
         self.profile_dir = profile_directory
+        self.tempfolder = None
         if self.profile_dir is None:
             self.profile_dir = self._create_tempfolder()
         else:
-            newprof = os.path.join(tempfile.mkdtemp(),
+            self.tempfolder = tempfile.mkdtemp()
+            newprof = os.path.join(self.tempfolder,
                 "webdriver-py-profilecopy")
             shutil.copytree(self.profile_dir, newprof,
                 ignore=shutil.ignore_patterns("parent.lock", "lock", ".parentlock"))
@@ -211,6 +214,9 @@ class FirefoxProfile(object):
         return base64.encodestring(fp.getvalue())
 
     def set_proxy(self, proxy):
+        import warnings
+        warnings.warn("This method has been deprecated. Please pass in the proxy object to the Driver Object",
+                    DeprecationWarning)
         if proxy is None:
             raise ValueError("proxy can not be None")
 

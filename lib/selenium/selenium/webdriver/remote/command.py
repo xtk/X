@@ -77,8 +77,7 @@ class Command(object):
     IS_ELEMENT_ENABLED = "isElementEnabled"
     IS_ELEMENT_DISPLAYED = "isElementDisplayed"
     GET_ELEMENT_LOCATION = "getElementLocation"
-    GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW = (
-        "getElementLocationOnceScrolledIntoView")
+    GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW = "getElementLocationOnceScrolledIntoView"
     GET_ELEMENT_SIZE = "getElementSize"
     GET_ELEMENT_ATTRIBUTE = "getElementAttribute"
     GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty"
@@ -106,3 +105,40 @@ class Command(object):
     # Screen Orientation
     SET_SCREEN_ORIENTATION = "setScreenOrientation"
     GET_SCREEN_ORIENTATION = "getScreenOrientation"
+
+    # Touch Actions
+    SINGLE_TAP = "touchSingleTap";
+    TOUCH_DOWN = "touchDown";
+    TOUCH_UP = "touchUp";
+    TOUCH_MOVE = "touchMove";
+    TOUCH_SCROLL = "touchScroll";
+    DOUBLE_TAP = "touchDoubleTap";
+    LONG_PRESS = "touchLongPress";
+    FLICK = "touchFlick";
+
+    #HTML 5
+    EXECUTE_SQL = "executeSql"
+
+    GET_LOCATION = "getLocation"
+    SET_LOCATION = "setLocation"
+
+    GET_APP_CACHE = "getAppCache"
+    GET_APP_CACHE_STATUS = "getAppCacheStatus"
+    CLEAR_APP_CACHE = "clearAppCache"
+
+    IS_BROWSER_ONLINE = "isBrowserOnline"
+    SET_BROWSER_ONLINE = "setBrowserOnline"
+
+    GET_LOCAL_STORAGE_ITEM = "getLocalStorageItem"
+    REMOVE_LOCAL_STORAGE_ITEM = "removeLocalStorageItem"
+    GET_LOCAL_STORAGE_KEYS = "getLocalStorageKeys"
+    SET_LOCAL_STORAGE_ITEM = "setLocalStorageItem"
+    CLEAR_LOCAL_STORAGE = "clearLocalStorage"
+    GET_LOCAL_STORAGE_SIZE = "getLocalStorageSize"
+
+    GET_SESSION_STORAGE_ITEM= "getSessionStorageItem"
+    REMOVE_SESSION_STORAGE_ITEM = "removeSessionStorageItem"
+    GET_SESSION_STORAGE_KEYS = "getSessionStorageKeys"
+    SET_SESSION_STORAGE_ITEM = "setSessionStorageItem"
+    CLEAR_SESSION_STORAGE = "clearSessionStorage"
+    GET_SESSION_STORAGE_SIZE = "getSessionStorageSize"

@@ -1,5 +1,4 @@
-# Copyright 2008-2009 WebDriver committers
-# Copyright 2008-2009 Google Inc.
+# Copyright 2008-2013 Software freedom conservancy
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -139,9 +138,12 @@ class WebElement(object):
 
     def send_keys(self, *value):
         """Simulates typing into the element."""
-        local_file = LocalFileDetector.is_local_file(*value)
-        if local_file is not None:
-            value = self._upload(local_file)
+        # transfer file to another machine only if remote driver is used
+        # the same behaviour as for java binding
+        if self.parent._is_remote:
+            local_file = LocalFileDetector.is_local_file(*value)
+            if local_file is not None:
+                value = self._upload(local_file)
 
         typing = []
         for val in value:
@@ -162,6 +164,15 @@ class WebElement(object):
         return self._execute(Command.IS_ELEMENT_DISPLAYED)['value']
 
     @property
+    def location_once_scrolled_into_view(self):
+        """CONSIDERED LIABLE TO CHANGE WITHOUT WARNING. Use this to discover where on the screen an
+        element is so that we can click it. This method should cause the element to be scrolled
+        into view.
+
+        Returns the top lefthand corner location on the screen, or None if the element is not visible"""
+        return self._execute(Command.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW)['value']
+
+    @property
     def size(self):
         """ Returns the size of the element """
         size = self._execute(Command.GET_ELEMENT_SIZE)['value']
@@ -178,7 +189,10 @@ class WebElement(object):
     @property
     def location(self):
         """ Returns the location of the element in the renderable canvas"""
-        return self._execute(Command.GET_ELEMENT_LOCATION)['value']
+        old_loc = self._execute(Command.GET_ELEMENT_LOCATION)['value']
+        new_loc = {"x": old_loc['x'],
+                   "y": old_loc['y']}
+        return new_loc
 
     @property
     def parent(self):
@@ -187,6 +201,9 @@ class WebElement(object):
     @property
     def id(self):
         return self._id
+
+    def __eq__(self, element):
+        return self._id == element.id
 
     # Private Methods
     def _execute(self, command, params=None):
@@ -257,7 +274,10 @@ class LocalFileDetector(object):
         if file_path is '':
             return None
 
-        if os.path.exists(file_path):
-            return file_path
-        else:
-            return None
+        try:
+          if os.path.exists(file_path):
+              return file_path
+        except:
+          pass
+        return None
+

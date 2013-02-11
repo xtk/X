@@ -17,8 +17,7 @@
 import subprocess
 from subprocess import PIPE
 import time
-import os
-import signal
+
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 
@@ -27,30 +26,37 @@ class Service(object):
     Object that manages the starting and stopping of the ChromeDriver
     """
 
-    def __init__(self, executable_path, port=0):
+    def __init__(self, executable_path, port=0, service_args=None, log_path=None):
         """
         Creates a new instance of the Service
-        
+
         :Args:
          - executable_path : Path to the ChromeDriver
-         - port : Port the service is running on """
+         - port : Port the service is running on
+         - service_args : List of args to pass to the chromedriver service
+         - log_path : Path for the chromedriver service to log to"""
 
         self.port = port
         self.path = executable_path
+        self.service_args = service_args or []
+        if log_path:
+          self.service_args.append('--log-path=%s' % log_path)
         if self.port == 0:
             self.port = utils.free_port()
 
     def start(self):
         """
-        Starts the ChromeDriver Service. 
-        
+        Starts the ChromeDriver Service.
+
         :Exceptions:
          - WebDriverException : Raised either when it can't start the service
            or when it can't connect to the service
         """
         try:
-            self.process = subprocess.Popen([self.path, "--port=%d" % self.port],
-                    stdout=PIPE, stderr=PIPE)
+            self.process = subprocess.Popen([
+              self.path,
+              "--port=%d" % self.port] +
+              self.service_args, stdout=PIPE, stderr=PIPE)
         except:
             raise WebDriverException(
                 "ChromeDriver executable needs to be available in the path. \
@@ -62,7 +68,7 @@ class Service(object):
             time.sleep(1)
             if count == 30:
                  raise WebDriverException("Can not connect to the ChromeDriver")
-                
+
     @property
     def service_url(self):
         """
@@ -71,7 +77,7 @@ class Service(object):
         return "http://localhost:%d" % self.port
 
     def stop(self):
-        """ 
+        """
         Tells the ChromeDriver to stop and cleans up the process
         """
         #If its dead dont worry
@@ -82,17 +88,17 @@ class Service(object):
         import urllib2
         urllib2.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
         count = 0
-        while not utils.is_connectable(self.port):
+        while utils.is_connectable(self.port):
             if count == 30:
-               break 
+               break
             count += 1
             time.sleep(1)
-        
+
         #Tell the Server to properly die in case
         try:
             if self.process:
                 self.process.kill()
                 self.process.wait()
-        except AttributeError:
+        except WindowsError:
             # kill may not be available under windows environment
             pass
