@@ -90,18 +90,19 @@ X.camera3D.prototype.rotate = function(distance) {
   distance = goog.base(this, 'rotate', distance);
   
   // in radii, the 5 is a constant stating how quick the rotation performs..
-  // row+col * 4
-  if (distance.x != 0) {
-    var angleX = -distance.x / 5 * Math.PI / 180;
-    X.matrix.rotate(this._view, angleX, this._view[1], this._view[5], this._view[9]);
-  }
-  if (distance.y != 0) {
-    var angleY = -distance.y / 5 * Math.PI / 180;
-    X.matrix.rotate(this._view, angleY, this._view[0], this._view[4], this._view[8]);
-  }
+  var angleX = -distance.x / 5 * Math.PI / 180;
+  var angleY = -distance.y / 5 * Math.PI / 180;
+
+  // we need to normalize the axis here
+  var axisX = new X.vector(this._view[1], this._view[5], this._view[9]);
+  var axisY = new X.vector(this._view[0], this._view[4], this._view[8]);
+  axisX.normalize();
+  axisY.normalize();
   
-  console.log(this._view);
-    
+  // row+col * 4    
+  X.matrix.rotate(this._view, angleX, axisX.x, axisX.y, axisX.z);
+  X.matrix.rotate(this._view, angleY, axisY.x, axisY.y, axisY.z);
+  
 };
 
 
