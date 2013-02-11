@@ -394,7 +394,7 @@ X.camera.prototype.rotate = function(distance) {
 /**
  * Perform a pan operation.
  *
- * @param {!X.vector|Array} distance The distance of the panning in respect of
+ * @param {!X.vector|!Array} distance The distance of the panning in respect of
  *          the last camera position.
  * @public
  */
@@ -412,7 +412,7 @@ X.camera.prototype.pan = function(distance) {
 
   this._view[12] -= distance.x;
   this._view[13] += distance.y;
-  
+
 };
 
 
@@ -434,7 +434,7 @@ X.camera.prototype.zoomIn = function(fast) {
   }
 
   this._view[14] += zoomStep;
-  
+
 };
 
 
@@ -456,7 +456,7 @@ X.camera.prototype.zoomOut = function(fast) {
   }
 
   this._view[14] -= zoomStep;
-  
+
 };
 
 
@@ -465,7 +465,7 @@ X.camera.prototype.zoomOut = function(fast) {
  *
  * @param {!X.vector} cameraPosition The camera position.
  * @param {!X.vector} targetPoint The focus (target) point.
- * @return {!X.matrix} The view matrix.
+ * @return {!Float32Array} The view matrix.
  * @throws {Error} If the given arguments are invalid.
  * @protected
  */
