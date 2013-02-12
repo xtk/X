@@ -32,23 +32,37 @@ goog.provide('X.vector');
 // requires
 goog.require('goog.math.Vec3');
 
+
+
+/**
+ * Normalize the vector. The goog.math.Vec3.prototype.normalize
+ * did not check on a magnitude of 0 resulting in an error.
+ *
+ * @return {!X.vector|!goog.math.Vec3} The normalized vector.
+ */
+X.vector.prototype.normalize = function() {
+  // add a special check if the magnitude is 0
+  var _magnitude = this.magnitude();
+  if (_magnitude == 0) {
+    return 0;
+  }
+  return this.scale(1 / _magnitude);
+};
+
+
+// expose the following goog.math.Vec3 functionality
 X.vector = goog.math.Vec3;
 X.vector.prototype.clone = goog.math.Vec3.prototype.clone;
 X.vector.prototype.magnitude = goog.math.Vec3.prototype.magnitude;
 X.vector.prototype.scale = goog.math.Vec3.prototype.scale;
 X.vector.prototype.invert = goog.math.Vec3.prototype.invert;
-X.vector.prototype.normalize = function() {
-  // add a special check if the magnitude is 0
-  var _magnitude = this.magnitude();
-  if (_magnitude == 0) return 0;
-  return this.scale(1 / _magnitude);
-};
 X.vector.prototype.add = goog.math.Vec3.prototype.add;
 X.vector.prototype.subtract = goog.math.Vec3.prototype.subtract;
 X.vector.dot = goog.math.Vec3.dot;
 X.vector.cross = goog.math.Vec3.cross;
 X.vector.distance = goog.math.Vec3.distance;
 X.vector.lerp = goog.math.Vec3.lerp;
+
 
 goog.exportSymbol('X.vector', X.vector);
 goog.exportSymbol('X.vector.prototype.clone', X.vector.prototype.clone);
