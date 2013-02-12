@@ -33,6 +33,15 @@ goog.provide('X.vector');
 goog.require('goog.math.Vec3');
 
 
+// expose the following goog.math.Vec3 functionality
+X.vector = goog.math.Vec3;
+X.vector.prototype.clone = goog.math.Vec3.prototype.clone;
+X.vector.prototype.magnitude = goog.math.Vec3.prototype.magnitude;
+X.vector.prototype.scale = goog.math.Vec3.prototype.scale;
+X.vector.prototype.invert = goog.math.Vec3.prototype.invert;
+X.vector.prototype.add = goog.math.Vec3.prototype.add;
+X.vector.prototype.subtract = goog.math.Vec3.prototype.subtract;
+
 
 /**
  * Normalize the vector. The goog.math.Vec3.prototype.normalize
@@ -50,14 +59,6 @@ X.vector.prototype.normalize = function() {
 };
 
 
-// expose the following goog.math.Vec3 functionality
-X.vector = goog.math.Vec3;
-X.vector.prototype.clone = goog.math.Vec3.prototype.clone;
-X.vector.prototype.magnitude = goog.math.Vec3.prototype.magnitude;
-X.vector.prototype.scale = goog.math.Vec3.prototype.scale;
-X.vector.prototype.invert = goog.math.Vec3.prototype.invert;
-X.vector.prototype.add = goog.math.Vec3.prototype.add;
-X.vector.prototype.subtract = goog.math.Vec3.prototype.subtract;
 X.vector.dot = goog.math.Vec3.dot;
 X.vector.cross = goog.math.Vec3.cross;
 X.vector.distance = goog.math.Vec3.distance;
