@@ -109,7 +109,7 @@ goog.inherits(X.object, X.base);
  * Copies the properties from a given object to this object. The texture,
  * textureCoordinateMap and the children are not copied but linked.
  *
- * @param {!X.object} object The given object.
+ * @param {*} object The given object.
  * @protected
  */
 X.object.prototype.copy_ = function(object) {
@@ -228,8 +228,10 @@ X.object.prototype.__defineGetter__('children', function() {
 
 /**
  * Fire a modified event for this object.
+ *
+ * @param {?boolean=} propagateEvent An optional flag to stop propagating down to child classes.
  */
-X.object.prototype.modified = function() {
+X.object.prototype.modified = function(propagateEvent) {
 
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = this;

@@ -34,6 +34,9 @@ goog.require('goog.math.Vec3');
 
 
 // expose the following goog.math.Vec3 functionality
+/**
+ * @constructor
+ */
 X.vector = goog.math.Vec3;
 X.vector.prototype.clone = goog.math.Vec3.prototype.clone;
 X.vector.prototype.magnitude = goog.math.Vec3.prototype.magnitude;
@@ -53,7 +56,7 @@ X.vector.prototype.normalize = function() {
   // add a special check if the magnitude is 0
   var _magnitude = this.magnitude();
   if (_magnitude == 0) {
-    return 0;
+    return this.scale(0);
   }
   return this.scale(1 / _magnitude);
 };
