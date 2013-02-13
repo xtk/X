@@ -1,30 +1,30 @@
 /*
- * 
+ *
  *                  xxxxxxx      xxxxxxx
- *                   x:::::x    x:::::x 
- *                    x:::::x  x:::::x  
- *                     x:::::xx:::::x   
- *                      x::::::::::x    
- *                       x::::::::x     
- *                       x::::::::x     
- *                      x::::::::::x    
- *                     x:::::xx:::::x   
- *                    x:::::x  x:::::x  
- *                   x:::::x    x:::::x 
+ *                   x:::::x    x:::::x
+ *                    x:::::x  x:::::x
+ *                     x:::::xx:::::x
+ *                      x::::::::::x
+ *                       x::::::::x
+ *                       x::::::::x
+ *                      x::::::::::x
+ *                     x:::::xx:::::x
+ *                    x:::::x  x:::::x
+ *                   x:::::x    x:::::x
  *              THE xxxxxxx      xxxxxxx TOOLKIT
- *                    
+ *
  *                  http://www.goXTK.com
- *                   
+ *
  * Copyright (c) 2012 The X Toolkit Developers <dev@goXTK.com>
- *                   
+ *
  *    The X Toolkit (XTK) is licensed under the MIT License:
  *      http://www.opensource.org/licenses/mit-license.php
- * 
+ *
  *      "Free software" is a matter of liberty, not price.
  *      "Free" as in "free speech", not as in "free beer".
  *                                         - Richard M. Stallman
- * 
- * 
+ *
+ *
  */
 
 // provides
@@ -33,13 +33,12 @@ goog.provide('X.transform');
 // requires
 goog.require('X.base');
 goog.require('X.matrix');
-goog.require('goog.math.Vec3');
 
 
 
 /**
  * Create a transform.
- * 
+ *
  * @constructor
  * @extends X.base
  */
@@ -48,32 +47,24 @@ X.transform = function() {
   //
   // call the standard constructor of X.base
   goog.base(this);
-  
+
   //
   // class attributes
-  
+
   /**
    * @inheritDoc
    * @const
    */
   this._classname = 'transform';
-  
+
   /**
    * The transformation matrix.
-   * 
-   * @type {!X.matrix}
+   *
+   * @type {!Float32Array}
    * @protected
    */
-  this._matrix = X.matrix.createIdentityMatrix(4);
-  
-  /**
-   * The transformation matrix as a 'ready-to-use'-gl version.
-   * 
-   * @type {!Object}
-   * @protected
-   */
-  this._glMatrix = new Float32Array(this._matrix.flatten());
-  
+  this._matrix = X.matrix.identity();
+
 };
 // inherit from X.base
 goog.inherits(X.transform, X.base);
@@ -81,184 +72,180 @@ goog.inherits(X.transform, X.base);
 
 /**
  * Get the transformation matrix.
- * 
- * @return {!X.matrix} The transformation matrix.
+ *
+ * @return {!Float32Array} The transformation matrix.
  */
 X.transform.prototype.__defineGetter__('matrix', function() {
 
   return this._matrix;
-  
+
 });
 
 
 /**
  * Set the transformation matrix.
- * 
- * @param {!X.matrix} matrix The transformation matrix.
+ *
+ * @param {!Float32Array} matrix The transformation matrix.
  */
 X.transform.prototype.__defineSetter__('matrix', function(matrix) {
 
-  if (!goog.isDefAndNotNull(matrix) || !(matrix instanceof X.matrix)) {
-    
+  if (!goog.isDefAndNotNull(matrix) || !(matrix instanceof Float32Array)) {
+
     throw new Error('Invalid matrix.');
-    
+
   }
-  
+
   this._matrix = matrix;
   this.modified();
-  
+
 });
 
 
 /**
  * Rotate around the X-axis.
- * 
+ *
  * @param {number} angle The angle to rotate in degrees.
  * @throws {Error} An exception, if the given angle is invalid.
  */
 X.transform.prototype.rotateX = function(angle) {
 
   if (!goog.isNumber(angle) || angle < -360 || angle > 360) {
-    
+
     throw new Error('Invalid angle.');
-    
+
   }
-  
+
   var angleInRadii = angle * Math.PI / 180;
-  
-  this._matrix = this._matrix.rotate(angleInRadii, new goog.math.Vec3(0, 1, 0));
+
+  X.matrix.rotateX(this._matrix, angleInRadii);
+
   this.modified();
-  
+
 };
 
 
 /**
  * Rotate around the Y-axis.
- * 
+ *
  * @param {number} angle The angle to rotate in degrees.
  * @throws {Error} An exception, if the given angle is invalid.
  */
 X.transform.prototype.rotateY = function(angle) {
 
   if (!goog.isNumber(angle) || angle < -360 || angle > 360) {
-    
+
     throw new Error('Invalid angle.');
-    
+
   }
-  
+
   var angleInRadii = angle * Math.PI / 180;
-  
-  this._matrix = this._matrix.rotate(angleInRadii, new goog.math.Vec3(1, 0, 0));
+
+  X.matrix.rotateY(this._matrix, angleInRadii);
+
   this.modified();
-  
+
 };
 
 
 /**
  * Rotate around the Z-axis.
- * 
+ *
  * @param {number} angle The angle to rotate in degrees.
  * @throws {Error} An exception, if the given angle is invalid.
  */
 X.transform.prototype.rotateZ = function(angle) {
 
   if (!goog.isNumber(angle) || angle < -360 || angle > 360) {
-    
+
     throw new Error('Invalid angle.');
-    
+
   }
-  
+
   var angleInRadii = angle * Math.PI / 180;
-  
-  this._matrix = this._matrix.rotate(angleInRadii, new goog.math.Vec3(0, 0, 1));
+
+  X.matrix.rotateZ(this._matrix, angleInRadii);
+
   this.modified();
-  
+
 };
 
 
 /**
  * Translate on the X-axis.
- * 
+ *
  * @param {number} distance The distance to move.
  * @throws {Error} An exception, if the given distance is invalid.
  */
 X.transform.prototype.translateX = function(distance) {
 
   if (!goog.isNumber(distance)) {
-    
+
     throw new Error('Invalid distance.');
-    
+
   }
-  
-  var vector = new goog.math.Vec3(distance, 0, 0);
-  
-  this._matrix = this._matrix.translate(vector);
+
+  X.matrix.translate(this._matrix, distance, 0, 0);
+
   this.modified();
-  
+
 };
 
 
 /**
  * Translate on the Y-axis.
- * 
+ *
  * @param {number} distance The distance to move.
  * @throws {Error} An exception, if the given distance is invalid.
  */
 X.transform.prototype.translateY = function(distance) {
 
   if (!goog.isNumber(distance)) {
-    
+
     throw new Error('Invalid distance.');
-    
+
   }
-  
-  var vector = new goog.math.Vec3(0, distance, 0);
-  
-  this._matrix = this._matrix.translate(vector);
+
+  X.matrix.translate(this._matrix, 0, distance, 0);
+
   this.modified();
-  
+
 };
 
 
 /**
  * Translate on the Z-axis.
- * 
+ *
  * @param {number} distance The distance to move.
  * @throws {Error} An exception, if the given distance is invalid.
  */
 X.transform.prototype.translateZ = function(distance) {
 
   if (!goog.isNumber(distance)) {
-    
+
     throw new Error('Invalid distance.');
-    
+
   }
-  
-  var vector = new goog.math.Vec3(0, 0, distance);
-  
-  this._matrix = this._matrix.translate(vector);
+
+  X.matrix.translate(this._matrix, 0, 0, distance);
+
   this.modified();
-  
+
 };
 
 
 /**
  * Flip the matrix value at the given index.
- * 
- * @param {number} i The row index.
- * @param {number} j The column index.
+ *
+ * @param {number} row The row index.
+ * @param {number} col The column index.
  * @private
  */
-X.transform.prototype.flip_ = function(i, j) {
+X.transform.prototype.flip_ = function(row, col) {
 
-  var oldValue = this._matrix.getValueAt(i, j);
-  if (!oldValue) {
-    oldValue = 0;
-  }
-  
-  this._matrix.setValueAt(i, j, oldValue * -1);
+  this._matrix[row + col*4] *= -1;
+
   this.modified();
-  
+
 };
 
 
@@ -268,7 +255,7 @@ X.transform.prototype.flip_ = function(i, j) {
 X.transform.prototype.flipX = function() {
 
   this.flip_(0, 0);
-  
+
 };
 
 
@@ -278,7 +265,7 @@ X.transform.prototype.flipX = function() {
 X.transform.prototype.flipY = function() {
 
   this.flip_(1, 1);
-  
+
 };
 
 
@@ -288,19 +275,17 @@ X.transform.prototype.flipY = function() {
 X.transform.prototype.flipZ = function() {
 
   this.flip_(2, 2);
-  
+
 };
 
 
 /**
- * Mark the transform as modified and update the GL-ready version.
+ * Mark the transform as modified.
  */
 X.transform.prototype.modified = function() {
-  
-  this._glMatrix = new Float32Array(this._matrix.flatten());
-  
-  this._dirty = true;  
-  
+
+  this._dirty = true;
+
 };
 
 

@@ -261,6 +261,62 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/orientation'),
             Command.GET_SCREEN_ORIENTATION:
                 ('GET', '/session/$sessionId/orientation'),
+            Command.SINGLE_TAP:
+                ('POST', '/session/$sessionId/touch/click'),
+            Command.TOUCH_DOWN:
+                ('POST', '/session/$sessionId/touch/down'),
+            Command.TOUCH_UP:
+                ('POST', '/session/$sessionId/touch/up'),
+            Command.TOUCH_MOVE:
+                ('POST', '/session/$sessionId/touch/move'),
+            Command.TOUCH_SCROLL:
+                ('POST', '/session/$sessionId/touch/scroll'),
+            Command.DOUBLE_TAP:
+                ('POST', '/session/$sessionId/touch/doubleclick'),
+            Command.LONG_PRESS:
+                ('POST', '/session/$sessionId/touch/longclick'),
+            Command.FLICK:
+                ('POST', '/session/$sessionId/touch/flick'),
+            Command.EXECUTE_SQL:
+                ('POST', '/session/$sessionId/execute_sql'),
+            Command.GET_LOCATION:
+                ('GET', '/session/$sessionId/location'),
+            Command.SET_LOCATION:
+                ('POST', '/session/$sessionId/location'),
+            Command.GET_APP_CACHE:
+                ('GET', '/session/$sessionId/application_cache'),
+            Command.GET_APP_CACHE_STATUS:
+                ('GET', '/session/$sessionId/application_cache/status'),
+            Command.CLEAR_APP_CACHE:
+                ('DELETE', '/session/$sessionId/application_cache/clear'),
+            Command.IS_BROWSER_ONLINE:
+                ('GET', '/session/$sessionId/browser_connection'),
+            Command.SET_BROWSER_ONLINE:
+                ('POST', '/session/$sessionId/browser_connection'),
+            Command.GET_LOCAL_STORAGE_ITEM:
+                ('GET', '/session/$sessionId/local_storage/key/$key'),
+            Command.REMOVE_LOCAL_STORAGE_ITEM:
+                ('POST', '/session/$sessionId/local_storage/key/$key'),
+            Command.GET_LOCAL_STORAGE_KEYS:
+                ('GET', '/session/$sessionId/local_storage'),
+            Command.SET_LOCAL_STORAGE_ITEM:
+                ('POST', '/session/$sessionId/local_storage'),
+            Command.CLEAR_LOCAL_STORAGE:
+                ('DELETE', '/session/$sessionId/local_storage'),
+            Command.GET_LOCAL_STORAGE_SIZE:
+                ('GET', '/session/$sessionId/local_storage/size'),
+            Command.GET_SESSION_STORAGE_ITEM:
+                ('GET', '/session/$sessionId/session_storage/key/$key'),
+            Command.REMOVE_SESSION_STORAGE_ITEM:
+                ('DELETE', '/session/$sessionId/session_storage/key/$key'),
+            Command.GET_SESSION_STORAGE_KEYS:
+                ('GET', '/session/$sessionId/session_storage'),
+            Command.SET_SESSION_STORAGE_ITEM:
+                ('POST', '/session/$sessionId/session_storage'),
+            Command.CLEAR_SESSION_STORAGE:
+                ('DELETE', '/session/$sessionId/session_storage'),
+            Command.GET_SESSION_STORAGE_SIZE:
+                ('GET','/session/$sessionId/session_storage/size'),
             }
 
     def execute(self, command, params):
@@ -313,6 +369,7 @@ class RemoteConnection(object):
 
 
         request.add_header('Accept', 'application/json')
+        request.add_header('Content-Type', 'application/json;charset=UTF-8')
 
         if password_manager:
             opener = urllib2.build_opener(urllib2.HTTPRedirectHandler(),

@@ -1,7 +1,6 @@
 #!/usr/bin/python
 #
-# Copyright 2008-2010 WebDriver committers
-# Copyright 2008-2010 Google Inc.
+# Copyright 2008-2013 Software freedom conservancy
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -44,30 +43,14 @@ class WebDriver(RemoteWebDriver):
         self.iedriver = Service(executable_path, port=self.port,
              host=self.host, log_level=self.log_level, log_file=self.log_file)
 
-        self.iedriver = Service(executable_path, port=self.port)
         self.iedriver.start()
 
         RemoteWebDriver.__init__(
             self,
             command_executor='http://localhost:%d' % self.port,
             desired_capabilities=DesiredCapabilities.INTERNETEXPLORER)
+        self._is_remote = False
 
     def quit(self):
         RemoteWebDriver.quit(self)
         self.iedriver.stop()
-
-    def save_screenshot(self, filename):
-        """
-        Gets the screenshot of the current window. Returns False if there is
-        any IOError, else returns True. Use full paths in your filename.
-        """
-        png = RemoteWebDriver.execute(self, Command.SCREENSHOT)['value']
-        try:
-            f = open(filename, 'wb')
-            f.write(base64.decodestring(png))
-            f.close()
-        except IOError:
-            return False
-        finally:
-            del png
-        return True

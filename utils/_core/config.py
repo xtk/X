@@ -48,10 +48,10 @@ LICENSE_HEADER = '''/*
  *    LICENSE: https://raw.github.com/xtk/X/master/lib/csg/LICENSE
  *
  *  - parts of the Google Closure Library (http://code.google.com/closure/library)
- *    LICENSE: https://raw.github.com/xtk/X/master/lib/closure-library/LICENSE
- * 
- *  - the JSXCompressor library (http://jsxgraph.uni-bayreuth.de/wp/jsxcompressor/)
- *    LICENSE: https://raw.github.com/xtk/X/master/lib/JXG/LICENSE
+ *    LICENSE: https://raw.github.com/xtk/google-closure-library/master/LICENSE
+ *
+ *  - zlib.js, the ultimate gzip/zlib javascript implementation (https://github.com/imaya/zlib.js)
+ *    LICENSE: https://raw.github.com/imaya/zlib.js/master/LICENSE
  *
  * MORE CREDITS: https://raw.github.com/xtk/X/master/LICENSE
  *
@@ -69,11 +69,11 @@ CDASH_SUBMIT_URL = 'http://x.babymri.org/cdash/submit.php?project=' + SOFTWARE_S
 XBUILD_PATH = os.path.abspath( os.path.dirname( sys.argv[0] ) )
 SOFTWARE_PATH = os.path.normpath( XBUILD_PATH + os.sep + '..' + os.sep )
 
-CLOSURELIBRARY_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/closure-library/closure/' ) )
+CLOSURELIBRARY_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/google-closure-library/closure/' ) )
 CLOSURELIBRARY_PYTHON_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PATH, 'bin/build/' ) )
 CLOSUREBUILDER_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PYTHON_PATH, 'closurebuilder.py' ) )
 CLOSUREDEPSWRITER_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PYTHON_PATH, 'depswriter.py' ) )
-CLOSURECOMPILER_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/closure-library/compiler-latest/compiler.jar' ) )
+CLOSURECOMPILER_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/google-closure-compiler/compiler.jar' ) )
 CLOSUREGOOGBASE_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PATH, 'goog/base.js' ) )
 
 DOC_TEMPLATES_PATH = os.path.normpath( os.path.join( XBUILD_PATH, '_core', 'templates/' ) )

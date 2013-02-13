@@ -29,19 +29,22 @@ function testXobjectCopy() {
   o.linewidth = 3;
   o.caption = 'testing';
   o.magicmode = true;
-  
+
   // now we want to copy the object
   var o2 = new X.object(o);
-  
+
   // the objects should not be the same
   assertNotEquals(o, o2);
-  
+
   // the id should not be the same
   assertNotEquals(o.id, o2.id);
   console.log(o, o2);
   // now check all other attributes, they should match
   assertEquals(o.type, o2.type);
-  assertArrayEquals(o.transform.matrix.toArray(), o2.transform.matrix.toArray());
+  // compare the transform matrix
+  for (var i=0; i<16; i++) {
+    assertEquals(o.transform.matrix[i], o2.transform.matrix[i]);
+  }
   assertArrayEquals(o.color, o2.color);
   assertArrayEquals(o.points.get(0), o2.points.get(0));
   assertArrayEquals(o.normals.get(0), o2.normals.get(0));
@@ -53,7 +56,7 @@ function testXobjectCopy() {
 //  if (X.DEV !== undefined) {
 //    assertEquals(o._file._path, o2._file._path);
 //  }
-//  
+//
   assertEquals(o.opacity, o2.opacity);
   assertEquals(o.children.length, o.children.length);
   assertEquals(o.visible, o2.visible);
@@ -61,5 +64,5 @@ function testXobjectCopy() {
   assertEquals(o.linewidth, o2.linewidth);
   assertEquals(o.caption, o2.caption);
   assertEquals(o.magicmode, o2.magicmode);
-  
+
 }
