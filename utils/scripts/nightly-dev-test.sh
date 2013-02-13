@@ -12,6 +12,8 @@ git checkout master
 
 # pull new master
 git pull
+git submodule init
+git submodule update
 
 cd $XTKUTILS_DIR
 # -n: nightly

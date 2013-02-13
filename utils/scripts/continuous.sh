@@ -8,6 +8,8 @@ git checkout master
 
 old_head=$(git rev-parse --verify HEAD)
 git pull -n
+git submodule init
+git submodule update
 new_head=$(git rev-parse --verify HEAD)
 
 if [ "$old_head" != "$new_head" ]
