@@ -57,29 +57,26 @@ function testXtransformFlipX() {
   // create new transform
   var t = new X.transform();
 
-  var _identityBaselineFlipped = new X.matrix([[-1, 0, 0, 0], [0, 1, 0, 0],
-                                               [0, 0, 1, 0], [0, 0, 0, 1]]);
+  var _identityBaselineFlipped = new Float32Array([-1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
 
   // flip the X coordinates
   t.flipX();
 
-  assertArrayEquals(t.matrix.toArray(), _identityBaselineFlipped.toArray());
+  for (var i=0; i<16; i++) {
+    assertEquals(_identityBaselineFlipped[i], t.matrix[i]);
+  }
 
-  var testPoint = [[10], [20], [30], [1]];
-  var flippedTestPointBaseline = [[-10], [20], [30], [1]];
-  var testPointMatrix = new X.matrix(testPoint);
+  var testPoint = [10,20,30];
+  var flippedTestPointBaseline = [-10,20,30];
 
   // the multiplication with the flipped matrix shoudl yield the same point as
   // our flippedTestPoint when multiplied
-  var flippedTestPoint = new X.matrix(t.matrix.multiply(testPointMatrix));
+  var flippedTestPoint = X.matrix.multiplyByVector(t.matrix, testPoint[0], testPoint[1], testPoint[2]);
 
 
-  assertEquals(flippedTestPointBaseline[0][0], flippedTestPoint
-      .getValueAt(0, 0));
-  assertEquals(flippedTestPointBaseline[1][0], flippedTestPoint
-      .getValueAt(1, 0));
-  assertEquals(flippedTestPointBaseline[2][0], flippedTestPoint
-      .getValueAt(2, 0));
+  assertEquals(flippedTestPointBaseline[0], flippedTestPoint.xx);
+  assertEquals(flippedTestPointBaseline[1], flippedTestPoint.yy);
+  assertEquals(flippedTestPointBaseline[2], flippedTestPoint.zz);
 
   // the transform should be dirty now
 
@@ -93,29 +90,26 @@ function testXtransformFlipY() {
   // create new transform
   var t = new X.transform();
 
-  var _identityBaselineFlipped = new X.matrix([[1, 0, 0, 0], [0, -1, 0, 0],
-                                               [0, 0, 1, 0], [0, 0, 0, 1]]);
+  var _identityBaselineFlipped = new Float32Array([1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
 
-  // flip the Y coordinates
+  // flip the X coordinates
   t.flipY();
 
-  assertArrayEquals(t.matrix.toArray(), _identityBaselineFlipped.toArray());
+  for (var i=0; i<16; i++) {
+    assertEquals(_identityBaselineFlipped[i], t.matrix[i]);
+  }
 
-  var testPoint = [[10], [20], [30], [1]];
-  var flippedTestPointBaseline = [[10], [-20], [30], [1]];
-  var testPointMatrix = new X.matrix(testPoint);
+  var testPoint = [10,20,30];
+  var flippedTestPointBaseline = [10,-20,30];
 
   // the multiplication with the flipped matrix shoudl yield the same point as
   // our flippedTestPoint when multiplied
-  var flippedTestPoint = new X.matrix(t.matrix.multiply(testPointMatrix));
+  var flippedTestPoint = X.matrix.multiplyByVector(t.matrix, testPoint[0], testPoint[1], testPoint[2]);
 
 
-  assertEquals(flippedTestPointBaseline[0][0], flippedTestPoint
-      .getValueAt(0, 0));
-  assertEquals(flippedTestPointBaseline[1][0], flippedTestPoint
-      .getValueAt(1, 0));
-  assertEquals(flippedTestPointBaseline[2][0], flippedTestPoint
-      .getValueAt(2, 0));
+  assertEquals(flippedTestPointBaseline[0], flippedTestPoint.xx);
+  assertEquals(flippedTestPointBaseline[1], flippedTestPoint.yy);
+  assertEquals(flippedTestPointBaseline[2], flippedTestPoint.zz);
 
   // the transform should be dirty now
 
@@ -129,28 +123,26 @@ function testXtransformFlipZ() {
   // create new transform
   var t = new X.transform();
 
-  var _identityBaselineFlipped = new X.matrix([[1, 0, 0, 0], [0, 1, 0, 0],
-                                               [0, 0, -1, 0], [0, 0, 0, 1]]);
+  var _identityBaselineFlipped = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1]);
 
-  // flip the Z coordinates
+  // flip the X coordinates
   t.flipZ();
 
-  assertArrayEquals(t.matrix.toArray(), _identityBaselineFlipped.toArray());
+  for (var i=0; i<16; i++) {
+    assertEquals(_identityBaselineFlipped[i], t.matrix[i]);
+  }
 
-  var testPoint = [[10], [20], [30], [1]];
-  var flippedTestPointBaseline = [[10], [20], [-30], [1]];
-  var testPointMatrix = new X.matrix(testPoint);
+  var testPoint = [10,20,30];
+  var flippedTestPointBaseline = [10,20,-30];
 
   // the multiplication with the flipped matrix shoudl yield the same point as
   // our flippedTestPoint when multiplied
-  var flippedTestPoint = new X.matrix(t.matrix.multiply(testPointMatrix));
+  var flippedTestPoint = X.matrix.multiplyByVector(t.matrix, testPoint[0], testPoint[1], testPoint[2]);
 
-  assertEquals(flippedTestPointBaseline[0][0], flippedTestPoint
-      .getValueAt(0, 0));
-  assertEquals(flippedTestPointBaseline[1][0], flippedTestPoint
-      .getValueAt(1, 0));
-  assertEquals(flippedTestPointBaseline[2][0], flippedTestPoint
-      .getValueAt(2, 0));
+
+  assertEquals(flippedTestPointBaseline[0], flippedTestPoint.xx);
+  assertEquals(flippedTestPointBaseline[1], flippedTestPoint.yy);
+  assertEquals(flippedTestPointBaseline[2], flippedTestPoint.zz);
 
   // the transform should be dirty now
 
@@ -166,26 +158,16 @@ function testXtransformTranslateX() {
   // this is our target X
   var newX = -455;
 
-  var _translatedIdentityBaseline = new X.matrix([[1, 0, 0, newX],
-                                                  [0, 1, 0, 0], [0, 0, 1, 0],
-                                                  [0, 0, 0, 1]]);
-  var _translatedIdentityBaselineGl = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0,
-                                                        0, 0, 1, 0, newX, 0, 0,
-                                                        1]);
+
+  var _translatedIdentityBaseline = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, newX, 0, 0, 1]);
 
   // perform translation
   t.translateX(newX);
 
   // compare the resulting matrix to the baseline
-  assertArrayEquals(t.matrix.toArray(), _translatedIdentityBaseline.toArray());
-
-  if (X.DEV === undefined) {
-    // jump out if we are testing the BUILD tree
-    return;
+  for (var i=0; i<16; i++) {
+    assertEquals(_translatedIdentityBaseline[i], t.matrix[i]);
   }
-
-  // check also the gl version
-  assertObjectEquals(t._glMatrix, _translatedIdentityBaselineGl);
 
 }
 
@@ -197,28 +179,17 @@ function testXtransformTranslateY() {
   var t = new X.transform();
 
   // this is our target Y
-  var newY = -0.0533;
+  var newY = 23543;
 
-  var _translatedIdentityBaseline = new X.matrix([[1, 0, 0, 0],
-                                                  [0, 1, 0, newY],
-                                                  [0, 0, 1, 0], [0, 0, 0, 1]]);
-  var _translatedIdentityBaselineGl = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0,
-                                                        0, 0, 1, 0, 0, newY, 0,
-                                                        1]);
+  var _translatedIdentityBaseline = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, newY, 0, 1]);
 
   // perform translation
   t.translateY(newY);
 
   // compare the resulting matrix to the baseline
-  assertArrayEquals(t.matrix.toArray(), _translatedIdentityBaseline.toArray());
-
-  if (X.DEV === undefined) {
-    // jump out if we are testing the BUILD tree
-    return;
+  for (var i=0; i<16; i++) {
+    assertEquals(_translatedIdentityBaseline[i], t.matrix[i]);
   }
-
-  // check also the gl version
-  assertObjectEquals(t._glMatrix, _translatedIdentityBaselineGl);
 
 }
 
@@ -232,26 +203,15 @@ function testXtransformTranslateZ() {
   // this is our target Z
   var newZ = 10000;
 
-  var _translatedIdentityBaseline = new X.matrix([[1, 0, 0, 0],
-                                                  [0, 1, 0, newZ],
-                                                  [0, 0, 1, 0], [0, 0, 0, 1]]);
-  var _translatedIdentityBaselineGl = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0,
-                                                        0, 0, 1, 0, 0, newZ, 0,
-                                                        1]);
+  var _translatedIdentityBaseline = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, newZ, 1]);
 
   // perform translation
-  t.translateY(newZ);
+  t.translateZ(newZ);
 
   // compare the resulting matrix to the baseline
-  assertArrayEquals(t.matrix.toArray(), _translatedIdentityBaseline.toArray());
-
-  if (X.DEV === undefined) {
-    // jump out if we are testing the BUILD tree
-    return;
+  for (var i=0; i<16; i++) {
+    assertEquals(_translatedIdentityBaseline[i], t.matrix[i]);
   }
-
-  // check also the gl version
-  assertObjectEquals(t._glMatrix, _translatedIdentityBaselineGl);
 
 }
 
@@ -264,40 +224,33 @@ function testXtransformRotateX() {
 
   var degrees = 44;
 
-  // baseline was created using matlab by rotating in Y direction (which means
-  // around X axis)
+  // baseline was created using matlab by rotating in X direction
   // >> format longE
-  // >> M = makehgtform('axisrotate',[0 1 0],degtorad(44))
+  // >> M = makehgtform('axisrotate',[1 0 0],degtorad(44))
+  // now transpose this for column major ordering (like WebGL)
+  //  >> M'
   //
-  // M =
-  // 7.193398003386512e-01 0 6.946583704589973e-01 0
-  // 0 1.000000000000000e+00 0 0
-  // -6.946583704589973e-01 0 7.193398003386512e-01 0
-  // 0 0 0 1.000000000000000e+00
+  //  ans =
+  //
+  //       1.000000000000000e+00                         0                         0                         0
+  //                           0     7.193398003386512e-01     6.946583704589973e-01                         0
+  //                           0    -6.946583704589973e-01     7.193398003386512e-01                         0
+  //                           0                         0                         0     1.000000000000000e+00
 
 
-  var _rotatedIdentityBaseline = new X.matrix(
-      [[7.193398003386512e-01, 0, 6.946583704589973e-01, 0],
-       [0, 1.000000000000000e+00, 0, 0],
-       [-6.946583704589973e-01, 0, 7.193398003386512e-01, 0],
-       [0, 0, 0, 1.000000000000000e+00]]);
-  var _rotatedIdentityBaselineGl = new Float32Array(_rotatedIdentityBaseline
-      .flatten());
+    var _rotatedIdentityBaseline = new Float32Array([1.000000000000000e+00, 0, 0, 0, 0, 7.193398003386512e-01,
+                                                   6.946583704589973e-01, 0, 0,
+                                                   -6.946583704589973e-01,
+                                                   7.193398003386512e-01, 0, 0,
+                                                   0, 0, 1.000000000000000e+00]);
 
-  // perform translation
+  // perform rotation
   t.rotateX(degrees);
 
   // compare the resulting matrix to the baseline
-  assertArrayEquals(t.matrix.toArray(), _rotatedIdentityBaseline.toArray());
-
-  if (X.DEV === undefined) {
-    // jump out if we are testing the BUILD tree
-    return;
+  for (var i=0; i<16; i++) {
+    assertEquals(_rotatedIdentityBaseline[i], t.matrix[i]);
   }
-
-  // check the gl version
-  assertObjectEquals(t._glMatrix, _rotatedIdentityBaselineGl);
-
 }
 
 
@@ -310,38 +263,33 @@ function testXtransformRotateY() {
 
   var degrees = 60;
 
-  // baseline was created using matlab by rotating in X direction (which means
-  // around Y axis)
+  // baseline was created using matlab by rotating in Y direction
   // >> format longE
-  // >> M = makehgtform('axisrotate',[1 0 0],degtorad(60))
-  // M =
+  // >> M = makehgtform('axisrotate',[0 1 0],degtorad(60))
+  // now transpose this for column major ordering (like WebGL)
+  // >> M'
   //
-  // 1.000000000000000e+00 0 0 0
-  // 0 5.000000000000001e-01 -8.660254037844386e-01 0
-  // 0 8.660254037844386e-01 5.000000000000001e-01 0
-  // 0 0 0 1.000000000000000e+00
+  // ans =
+  //
+  // 5.000000000000001e-01 0 -8.660254037844386e-01 0
+  //                           0     1.000000000000000e+00                         0                         0
+  //       8.660254037844386e-01                         0     5.000000000000001e-01                         0
+  //                           0                         0                         0     1.000000000000000e+00
 
-  var _rotatedIdentityBaseline = new X.matrix(
-      [[1.000000000000000e+00, 0, 0, 0],
-       [0, 5.000000000000001e-01, -8.660254037844386e-01, 0],
-       [0, 8.660254037844386e-01, 5.000000000000001e-01, 0],
-       [0, 0, 0, 1.000000000000000e+00]]);
-  var _rotatedIdentityBaselineGl = new Float32Array(_rotatedIdentityBaseline
-      .flatten());
+  var _rotatedIdentityBaseline = new Float32Array([5.000000000000001e-01, 0,
+                                                   -8.660254037844386e-01, 0,
+                                                   0, 1.000000000000000e+00, 0,
+                                                   0, 8.660254037844386e-01, 0,
+                                                   5.000000000000001e-01, 0, 0,
+                                                   0, 0, 1.000000000000000e+00]);
 
-  // perform translation
+  // perform rotation
   t.rotateY(degrees);
 
   // compare the resulting matrix to the baseline
-  assertArrayEquals(t.matrix.toArray(), _rotatedIdentityBaseline.toArray());
-
-  if (X.DEV === undefined) {
-    // jump out if we are testing the BUILD tree
-    return;
+  for (var i=0; i<16; i++) {
+    assertEquals(_rotatedIdentityBaseline[i], t.matrix[i]);
   }
-
-  // check the gl version
-  assertObjectEquals(t._glMatrix, _rotatedIdentityBaselineGl);
 
 }
 
@@ -355,36 +303,34 @@ function testXtransformRotateZ() {
 
   var degrees = 69;
 
-  // baseline was created using matlab by rotating in X direction (which means
-  // around Y axis)
+  // baseline was created using matlab by rotating in Y direction
   // >> format longE
-  // M = makehgtform('axisrotate',[0 0 1],degtorad(69))
-  // M =
+  // >> M = makehgtform('axisrotate',[0 0 1],degtorad(69))
+  // now transpose this for column major ordering (like WebGL)
+  //  >> M'
   //
-  // 3.583679495453004e-01 -9.335804264972017e-01 0 0
-  // 9.335804264972017e-01 3.583679495453004e-01 0 0
-  // 0 0 1.000000000000000e+00 0
-  // 0 0 0 1.000000000000000e+00
+  //  ans =
+  //
+  //       3.583679495453004e-01     9.335804264972017e-01                         0                         0
+  //      -9.335804264972017e-01     3.583679495453004e-01                         0                         0
+  //                           0                         0     1.000000000000000e+00                         0
+  //                           0                         0                         0     1.000000000000000e+00
+  //
 
-  var _rotatedIdentityBaseline = new X.matrix(
-      [[3.583679495453004e-01, -9.335804264972017e-01, 0, 0],
-       [9.335804264972017e-01, 3.583679495453004e-01, 0, 0],
-       [0, 0, 1.000000000000000e+00, 0], [0, 0, 0, 1.000000000000000e+00]]);
-  var _rotatedIdentityBaselineGl = new Float32Array(_rotatedIdentityBaseline
-      .flatten());
+  var _rotatedIdentityBaseline = new Float32Array([3.583679495453004e-01,
+                                                 9.335804264972017e-01, 0, 0,
+                                                 -9.335804264972017e-01,
+                                                 3.583679495453004e-01, 0, 0,
+                                                 0, 0, 1.000000000000000e+00,
+                                                 0, 0, 0, 0,
+                                                 1.000000000000000e+00]);
 
-  // perform translation
+  // perform rotation
   t.rotateZ(degrees);
 
   // compare the resulting matrix to the baseline
-  assertArrayEquals(t.matrix.toArray(), _rotatedIdentityBaseline.toArray());
-
-  if (X.DEV === undefined) {
-    // jump out if we are testing the BUILD tree
-    return;
+  for (var i=0; i<16; i++) {
+    assertEquals(_rotatedIdentityBaseline[i], t.matrix[i]);
   }
-
-  // check the gl version
-  assertObjectEquals(t._glMatrix, _rotatedIdentityBaselineGl);
 
 }
