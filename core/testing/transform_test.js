@@ -48,44 +48,6 @@ function testXtransformMatrix() {
 
 }
 
-/**
- * Test for X.transform._glMatrix
- */
-function testXtransformGlMatrix() {
-
-  // create new transform
-  var t = new X.transform();
-
-  if (X.DEV === undefined) {
-    // jump out if we are testing the BUILD tree
-    return;
-  }
-
-  var _identityBaseLineFlattened = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0,
-                                                     0, 1, 0, 0, 0, 0, 1]);
-
-  // by default, the transform should have an identity matrix associated
-  // since this is the gl version, it should be a 1D Float32Array
-  var currentMatrix = t._glMatrix;
-  assertTrue(currentMatrix instanceof Float32Array);
-  // check if the flattened version matches the baseline
-  assertObjectEquals(currentMatrix, _identityBaseLineFlattened);
-
-  var _testMatrix = new X.matrix([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12],
-                                  [13.5, 14.5, 15.5, 16.5]]);
-  var _glTestMatrix = new Float32Array([1, 5, 9, 13.5, 2, 6, 10, 14.5, 3, 7,
-                                        11, 15.5, 4, 8, 12, 16.5]);
-
-  // set the custom matrix whcih should modify the gl-version as well
-  t.matrix = _testMatrix;
-
-  // compare the gl versions..
-  assertObjectEquals(t._glMatrix, _glTestMatrix);
-
-  // the transform should be dirty now
-
-
-}
 
 /**
  * Test for X.transform.flipX()
