@@ -20,11 +20,11 @@ function testXmatrixMultiplyByVector() {
 
   // multiplying the matrix by the vector should result in the vector since the
   // matrix is the identity
-  vector = X.matrix.multiplyByVector(matrix, vector.x, vector.y, vector.z);
+  vector = X.matrix.multiplyByVector(matrix, vector.xx, vector.yy, vector.zz);
 
-  assertEquals(baseline.x, vector.x);
-  assertEquals(baseline.y, vector.y);
-  assertEquals(baseline.z, vector.z);
+  assertEquals(baseline.xx, vector.xx);
+  assertEquals(baseline.yy, vector.yy);
+  assertEquals(baseline.zz, vector.zz);
 
 }
 

@@ -67,6 +67,48 @@ X.vector.cross = goog.math.Vec3.cross;
 X.vector.distance = goog.math.Vec3.distance;
 X.vector.lerp = goog.math.Vec3.lerp;
 
+// now we need to make sure we can access the x,y,z
+// components of a goog.math.Vec3 which might be renamed
+// during the compilation. we don't want to modify the goog.math.Vec3
+// class so this is the easiest workaround.
+/**
+ * Get the x component of this vector.
+ *
+ * @return {number} The x component of this vector.
+ * @public
+ */
+X.vector.prototype.__defineGetter__('xx', function() {
+
+  return this.x;
+
+});
+
+
+/**
+ * Get the y component of this vector.
+ *
+ * @return {number} The y component of this vector.
+ * @public
+ */
+X.vector.prototype.__defineGetter__('yy', function() {
+
+  return this.y;
+
+});
+
+
+/**
+ * Get the z component of this vector.
+ *
+ * @return {number} The z component of this vector.
+ * @public
+ */
+X.vector.prototype.__defineGetter__('zz', function() {
+
+  return this.z;
+
+});
+
 
 goog.exportSymbol('X.vector', X.vector);
 goog.exportSymbol('X.vector.prototype.clone', X.vector.prototype.clone);

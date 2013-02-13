@@ -13,9 +13,9 @@ function testXvectorNormalize() {
   // scaling with (1/magnitude = 0.2672612419124244)
   // should result in
   // x=0.2672612419124244, y=0.5345224838248488, z=0.8017837257372732
-  assertEquals(0.2672612419124244, vector.x);
-  assertEquals(0.5345224838248488, vector.y);
-  assertEquals(0.8017837257372732, vector.z);
+  assertEquals(0.2672612419124244, vector.xx);
+  assertEquals(0.5345224838248488, vector.yy);
+  assertEquals(0.8017837257372732, vector.zz);
 
 }
 
@@ -27,9 +27,9 @@ function testXvectorNormalizeWithZeroMagnitude() {
   // normalize the vector
   vector.normalize();
 
-  assertEquals(0, vector.x);
-  assertEquals(0, vector.y);
-  assertEquals(0, vector.z);
+  assertEquals(0, vector.xx);
+  assertEquals(0, vector.yy);
+  assertEquals(0, vector.zz);
 
 }
 
