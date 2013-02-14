@@ -206,7 +206,7 @@ X.renderer = function() {
   this._AnimationFrameID = -1;
 
   window.console
-      .log('XTK release 9 -- ###TIMESTAMP### -- http://www.goXTK.com -- @goXTK');
+      .log('XTK release 10 -- ###TIMESTAMP### -- http://www.goXTK.com -- @goXTK');
 
 };
 // inherit from X.base
