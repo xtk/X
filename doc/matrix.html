@@ -52,8 +52,7 @@
   function drawVisualization() {
     // Create and populate the data table.
     var data = google.visualization.arrayToDataTable([
-     [{v:"goog.math.Matrix",f:"<font color=green>goog.math.Matrix</font>"},null,null],
-["X.matrix","goog.math.Matrix",null],
+      [{v:"X.matrix",f:"<font color=green>X.matrix</font>"},null,null],
 
     ]);
   
@@ -70,110 +69,127 @@
 
 <body>
 	<h1>The X Toolkit API</h1>
-	<div class="menu"><b>X</b><br><span class="menuitem"><a href="counter.html">X.counter</a></span><br><br><b>CORE</b><br><span class="menuitem"><a href="base.html">X.base</a></span><br><span class="menuitem"><a href="colortable.html">X.colortable</a></span><br><span class="menuitem"><a href="event.html">X.event</a></span><br><span class="menuitem"><a href="file.html">X.file</a></span><br><span class="menuitem"><a href="HoverEndEvent.html">X.HoverEndEvent</a></span><br><span class="menuitem"><a href="HoverEvent.html">X.HoverEvent</a></span><br><span class="menuitem"><a href="ModifiedEvent.html">X.ModifiedEvent</a></span><br><span class="menuitem"><a href="PanEvent.html">X.PanEvent</a></span><br><span class="menuitem"><a href="ProgressEvent.html">X.ProgressEvent</a></span><br><span class="menuitem"><a href="RenderEvent.html">X.RenderEvent</a></span><br><span class="menuitem"><a href="ResetViewEvent.html">X.ResetViewEvent</a></span><br><span class="menuitem"><a href="RotateEvent.html">X.RotateEvent</a></span><br><span class="menuitem"><a href="scalars.html">X.scalars</a></span><br><span class="menuitem"><a href="ScrollEvent.html">X.ScrollEvent</a></span><br><span class="menuitem"><a href="texture.html">X.texture</a></span><br><span class="menuitem"><a href="transform.html">X.transform</a></span><br><span class="menuitem"><a href="triplets.html">X.triplets</a></span><br><span class="menuitem"><a href="WindowLevelEvent.html">X.WindowLevelEvent</a></span><br><span class="menuitem"><a href="ZoomEvent.html">X.ZoomEvent</a></span><br><br><b>INJECTS</b><br><span class="menuitem"><a href="constructable.html">X.constructable</a></span><br><span class="menuitem"><a href="displayable.html">X.displayable</a></span><br><span class="menuitem"><a href="loadable.html">X.loadable</a></span><br><span class="menuitem"><a href="thresholdable.html">X.thresholdable</a></span><br><br><b>IO</b><br><span class="menuitem"><a href="interactor.html">X.interactor</a></span><br><span class="menuitem"><a href="interactor2D.html">X.interactor2D</a></span><br><span class="menuitem"><a href="interactor3D.html">X.interactor3D</a></span><br><span class="menuitem"><a href="loader.html">X.loader</a></span><br><span class="menuitem"><a href="parser.html">X.parser</a></span><br><span class="menuitem"><a href="parserCRV.html">X.parserCRV</a></span><br><span class="menuitem"><a href="parserDCM.html">X.parserDCM</a></span><br><span class="menuitem"><a href="parserFSM.html">X.parserFSM</a></span><br><span class="menuitem"><a href="parserIMAGE.html">X.parserIMAGE</a></span><br><span class="menuitem"><a href="parserLBL.html">X.parserLBL</a></span><br><span class="menuitem"><a href="parserLUT.html">X.parserLUT</a></span><br><span class="menuitem"><a href="parserMGZ.html">X.parserMGZ</a></span><br><span class="menuitem"><a href="parserNII.html">X.parserNII</a></span><br><span class="menuitem"><a href="parserNRRD.html">X.parserNRRD</a></span><br><span class="menuitem"><a href="parserSTL.html">X.parserSTL</a></span><br><span class="menuitem"><a href="parserTRK.html">X.parserTRK</a></span><br><span class="menuitem"><a href="parserVTK.html">X.parserVTK</a></span><br><br><b>MATH</b><br><span class="menuitem"><a href="array.html">X.array</a></span><br><span class="menuitem"><a href="matrix.html">X.matrix</a></span><br><br><b>OBJECTS</b><br><span class="menuitem"><a href="cube.html">X.cube</a></span><br><span class="menuitem"><a href="cylinder.html">X.cylinder</a></span><br><span class="menuitem"><a href="fibers.html">X.fibers</a></span><br><span class="menuitem"><a href="labelmap.html">X.labelmap</a></span><br><span class="menuitem"><a href="mesh.html">X.mesh</a></span><br><span class="menuitem"><a href="object.html">X.object</a></span><br><span class="menuitem"><a href="slice.html">X.slice</a></span><br><span class="menuitem"><a href="sphere.html">X.sphere</a></span><br><span class="menuitem"><a href="volume.html">X.volume</a></span><br><br><b>UI</b><br><span class="menuitem"><a href="caption.html">X.caption</a></span><br><span class="menuitem"><a href="progressbar.html">X.progressbar</a></span><br><br><b>VISUALIZATION</b><br><span class="menuitem"><a href="buffer.html">X.buffer</a></span><br><span class="menuitem"><a href="camera.html">X.camera</a></span><br><span class="menuitem"><a href="camera2D.html">X.camera2D</a></span><br><span class="menuitem"><a href="camera3D.html">X.camera3D</a></span><br><span class="menuitem"><a href="indexer.html">X.indexer</a></span><br><span class="menuitem"><a href="renderer.html">X.renderer</a></span><br><span class="menuitem"><a href="renderer2D.html">X.renderer2D</a></span><br><span class="menuitem"><a href="renderer3D.html">X.renderer3D</a></span><br><span class="menuitem"><a href="shaders.html">X.shaders</a></span><br><br></div>
+	<div class="menu"><b>X</b><br><span class="menuitem"><a href="counter.html">X.counter</a></span><br><br><b>CORE</b><br><span class="menuitem"><a href="base.html">X.base</a></span><br><span class="menuitem"><a href="colortable.html">X.colortable</a></span><br><span class="menuitem"><a href="event.html">X.event</a></span><br><span class="menuitem"><a href="file.html">X.file</a></span><br><span class="menuitem"><a href="HoverEndEvent.html">X.HoverEndEvent</a></span><br><span class="menuitem"><a href="HoverEvent.html">X.HoverEvent</a></span><br><span class="menuitem"><a href="ModifiedEvent.html">X.ModifiedEvent</a></span><br><span class="menuitem"><a href="PanEvent.html">X.PanEvent</a></span><br><span class="menuitem"><a href="ProgressEvent.html">X.ProgressEvent</a></span><br><span class="menuitem"><a href="RenderEvent.html">X.RenderEvent</a></span><br><span class="menuitem"><a href="ResetViewEvent.html">X.ResetViewEvent</a></span><br><span class="menuitem"><a href="RotateEvent.html">X.RotateEvent</a></span><br><span class="menuitem"><a href="scalars.html">X.scalars</a></span><br><span class="menuitem"><a href="ScrollEvent.html">X.ScrollEvent</a></span><br><span class="menuitem"><a href="texture.html">X.texture</a></span><br><span class="menuitem"><a href="transform.html">X.transform</a></span><br><span class="menuitem"><a href="triplets.html">X.triplets</a></span><br><span class="menuitem"><a href="WindowLevelEvent.html">X.WindowLevelEvent</a></span><br><span class="menuitem"><a href="ZoomEvent.html">X.ZoomEvent</a></span><br><br><b>INJECTS</b><br><span class="menuitem"><a href="constructable.html">X.constructable</a></span><br><span class="menuitem"><a href="displayable.html">X.displayable</a></span><br><span class="menuitem"><a href="loadable.html">X.loadable</a></span><br><span class="menuitem"><a href="thresholdable.html">X.thresholdable</a></span><br><br><b>IO</b><br><span class="menuitem"><a href="interactor.html">X.interactor</a></span><br><span class="menuitem"><a href="interactor2D.html">X.interactor2D</a></span><br><span class="menuitem"><a href="interactor3D.html">X.interactor3D</a></span><br><span class="menuitem"><a href="loader.html">X.loader</a></span><br><span class="menuitem"><a href="parser.html">X.parser</a></span><br><span class="menuitem"><a href="parserCRV.html">X.parserCRV</a></span><br><span class="menuitem"><a href="parserDCM.html">X.parserDCM</a></span><br><span class="menuitem"><a href="parserFSM.html">X.parserFSM</a></span><br><span class="menuitem"><a href="parserIMAGE.html">X.parserIMAGE</a></span><br><span class="menuitem"><a href="parserLBL.html">X.parserLBL</a></span><br><span class="menuitem"><a href="parserLUT.html">X.parserLUT</a></span><br><span class="menuitem"><a href="parserMGZ.html">X.parserMGZ</a></span><br><span class="menuitem"><a href="parserNII.html">X.parserNII</a></span><br><span class="menuitem"><a href="parserNRRD.html">X.parserNRRD</a></span><br><span class="menuitem"><a href="parserOBJ.html">X.parserOBJ</a></span><br><span class="menuitem"><a href="parserSTL.html">X.parserSTL</a></span><br><span class="menuitem"><a href="parserTRK.html">X.parserTRK</a></span><br><span class="menuitem"><a href="parserVTK.html">X.parserVTK</a></span><br><br><b>MATH</b><br><span class="menuitem"><a href="array.html">X.array</a></span><br><span class="menuitem"><a href="matrix.html">X.matrix</a></span><br><span class="menuitem"><a href="vector.html">X.vector</a></span><br><br><b>OBJECTS</b><br><span class="menuitem"><a href="cube.html">X.cube</a></span><br><span class="menuitem"><a href="cylinder.html">X.cylinder</a></span><br><span class="menuitem"><a href="fibers.html">X.fibers</a></span><br><span class="menuitem"><a href="labelmap.html">X.labelmap</a></span><br><span class="menuitem"><a href="mesh.html">X.mesh</a></span><br><span class="menuitem"><a href="object.html">X.object</a></span><br><span class="menuitem"><a href="slice.html">X.slice</a></span><br><span class="menuitem"><a href="sphere.html">X.sphere</a></span><br><span class="menuitem"><a href="volume.html">X.volume</a></span><br><br><b>UI</b><br><span class="menuitem"><a href="caption.html">X.caption</a></span><br><span class="menuitem"><a href="progressbar.html">X.progressbar</a></span><br><br><b>VISUALIZATION</b><br><span class="menuitem"><a href="buffer.html">X.buffer</a></span><br><span class="menuitem"><a href="camera.html">X.camera</a></span><br><span class="menuitem"><a href="camera2D.html">X.camera2D</a></span><br><span class="menuitem"><a href="camera3D.html">X.camera3D</a></span><br><span class="menuitem"><a href="indexer.html">X.indexer</a></span><br><span class="menuitem"><a href="renderer.html">X.renderer</a></span><br><span class="menuitem"><a href="renderer2D.html">X.renderer2D</a></span><br><span class="menuitem"><a href="renderer3D.html">X.renderer3D</a></span><br><span class="menuitem"><a href="shaders.html">X.shaders</a></span><br><br></div>
 	<div id="diagram"></div>
 	<div class="content">
 		<h2>X.matrix</h2>
-		<div class="public" id="matrix">
+		<div class="public" id="clone">
 <pre>/**
-* Create a matrix as an object based on goog.math.Matrix but with additional
-* functionality.
-*
-* @constructor
-* @param {goog.math.Matrix|Array.<Array.<number>>|goog.math.Size|number} m A
-*          matrix to copy, a 2D-array to take as a template, a size object for
-*          dimensions, or the number of rows.
-* @param {number=} opt_n Number of columns of the matrix (only applicable if
-*          the first argument is also numeric).
-* @extends goog.math.Matrix
+* @see goog.vec.Mat4.cloneFloat32
 */</pre>
-<span class="code">var m = new <span class="identifier">X.matrix()</span>;</span><br></div><div class="private" id="_classname">
+<span class="code">X.matrix.<span class="identifier">clone</span>();</span><br></div><div class="public" id="determinant">
 <pre>/**
-* The className of this class.
-*
-* @type {string}
-* @protected
+* @see goog.vec.Mat4.determinant
 */</pre>
-<span class="code">m.<span class="identifier">_classname</span> = $_CLASSNAME;</span><br></div><div class="public" id="flatten">
+<span class="code">X.matrix.<span class="identifier">determinant</span>();</span><br></div><div class="public" id="identity">
 <pre>/**
-* Create a flattened, one-dimensional representation of a matrix. Notice: This
-* method flattens column by column.
-*
-* @this {<a href="matrix.html">X.matrix</a>}
-* @return {Array} A one-dimensional representation of this matrix.
+* @see goog.vec.Mat4.createFloat32Identity
 */</pre>
-<span class="code">var flatten = m.<span class="identifier">flatten</span>();</span><br></div><div class="public" id="multiplyByVector">
+<span class="code">X.matrix.<span class="identifier">identity</span>();</span><br></div><div class="public" id="invert">
 <pre>/**
-* Multiply 3x3 or 4x4 matrix by a vector. The vector has to be at least 3
-* dimensional.
-*
-* @this {<a href="matrix.html">X.matrix</a>}
-* @param {!goog.math.Vec3} vector The multiplication vector.
-* @return {!goog.math.Vec3} The result of this multiplication.
-* @throws {Error} An exception if the multiplication fails.
+* @see goog.vec.Mat4.invert
 */</pre>
-<span class="code">var multiplyByVector = m.<span class="identifier">multiplyByVector</span>($VECTOR);</span><br></div><div class="public" id="rotate">
+<span class="code">X.matrix.<span class="identifier">invert</span>();</span><br></div><div class="public" id="makeFrustum">
 <pre>/**
-* Rotate a 4x4 matrix by an angle around an axis.
-*
-* @this {<a href="matrix.html">X.matrix</a>}
-* @param {!number} angle The rotation angle.
-* @param {!goog.math.Vec3} iaxis The axis to rotate around.
-* @return {!<a href="matrix.html">X.matrix</a>} The result of this rotation.
-* @throws {Error} An exception if the rotation fails.
+* @see goog.vec.Mat4.makeFrustum
 */</pre>
-<span class="code">var rotate = m.<span class="identifier">rotate</span>($ANGLE, $IAXIS);</span><br></div><div class="public" id="swapCols">
+<span class="code">X.matrix.<span class="identifier">makeFrustum</span>();</span><br></div><div class="public" id="makeLookAt">
 <pre>/**
-* Swap two columns.
+* Makes the given 4x4 matrix a modelview matrix of a camera so that
+* the camera is 'looking at' the given center point.
 *
-* @param {number} col1 Index of the first column.
-* @param {number} col2 Index of the second column.
+* @param {!Float32Array} mat The matrix.
+* @param {!<a href="vector.html">X.vector</a>} eyePt The position of the eye point
+*     (camera origin).
+* @param {!<a href="vector.html">X.vector</a>} centerPt The point to aim the camera at.
+* @param {!<a href="vector.html">X.vector</a>} worldUpVec The vector that identifies
+*     the up direction for the camera.
+* @return {!Float32Array} return mat so that operations can be
+*     chained.
 */</pre>
-<span class="code">m.<span class="identifier">swapCols</span>($COL1, $COL2);</span><br></div><div class="public" id="swapRows">
+<span class="code">var makeLookAt = X.matrix.<span class="identifier">makeLookAt</span>($MAT, $EYEPT, $CENTERPT, $WORLDUPVEC);</span><br></div><div class="public" id="makeOrtho">
 <pre>/**
-* Swap two rows.
-*
-* @param {number} row1 Index of the first row.
-* @param {number} row2 Index of the second row.
+* @see goog.vec.Mat4.makeOrtho
 */</pre>
-<span class="code">m.<span class="identifier">swapRows</span>($ROW1, $ROW2);</span><br></div><div class="public" id="translate">
+<span class="code">X.matrix.<span class="identifier">makeOrtho</span>();</span><br></div><div class="public" id="makePerspective">
 <pre>/**
-* Translate a 3x3 or 4x4 matrix by a vector. In the 3x3 case, the vector has to
-* be 2 dimensional. In the 4x4 case, the vector has to be 3 dimensional.
-*
-* @this {<a href="matrix.html">X.matrix</a>}
-* @param {!goog.math.Vec2|!goog.math.Vec3} vector The translation vector.
-* @return {!<a href="matrix.html">X.matrix</a>} The result of this translation.
-* @throws {Error} An exception if the translation fails.
+* @see goog.vec.Mat4.makePerspective
 */</pre>
-<span class="code">var translate = m.<span class="identifier">translate</span>($VECTOR);</span><br></div><div class="public" id="createIdentityMatrix">
+<span class="code">X.matrix.<span class="identifier">makePerspective</span>();</span><br></div><div class="public" id="multiply">
 <pre>/**
-* Creates a square identity matrix. i.e. for n = 3:
-*
-* 
-* [ 1 0 0 ]
-* [ 0 1 0 ]
-* [ 0 0 1 ]
-* 
-*
-* @param {number} n The size of the square identity matrix.
-* @return {!<a href="matrix.html">X.matrix</a>} Identity matrix of width and height {@code n}.
+* @see goog.vec.Mat4.multMat
 */</pre>
-<span class="code">var createIdentityMatrix = X.matrix.<span class="identifier">createIdentityMatrix</span>($N);</span><br></div>
+<span class="code">X.matrix.<span class="identifier">multiply</span>();</span><br></div><div class="public" id="multiplyByVector">
+<pre>/**
+* Multiply the matrix by a vector.
+*
+* @param {!Float32Array} mat The matrix.
+* @param {!number} x The x coordinate of the vector.
+* @param {!number} y The y coordinate of the vector.
+* @param {!number} z The z coordinate of the vector.
+* @return {!<a href="vector.html">X.vector</a>} The resulting vector.
+*/</pre>
+<span class="code">var multiplyByVector = X.matrix.<span class="identifier">multiplyByVector</span>($MAT, $X, $Y, $Z);</span><br></div><div class="public" id="rotate">
+<pre>/**
+* @see goog.vec.Mat4.rotate
+*/</pre>
+<span class="code">X.matrix.<span class="identifier">rotate</span>();</span><br></div><div class="public" id="rotateX">
+<pre>/**
+* @see goog.vec.Mat4.rotateX
+*/</pre>
+<span class="code">X.matrix.<span class="identifier">rotateX</span>();</span><br></div><div class="public" id="rotateY">
+<pre>/**
+* @see goog.vec.Mat4.rotateY
+*/</pre>
+<span class="code">X.matrix.<span class="identifier">rotateY</span>();</span><br></div><div class="public" id="rotateZ">
+<pre>/**
+* @see goog.vec.Mat4.rotateZ
+*/</pre>
+<span class="code">X.matrix.<span class="identifier">rotateZ</span>();</span><br></div><div class="public" id="scale">
+<pre>/**
+* @see goog.vec.Mat4.scale
+*/</pre>
+<span class="code">X.matrix.<span class="identifier">scale</span>();</span><br></div><div class="public" id="swapCols">
+<pre>/**
+* Swap two columns of a matrix.
+*
+* @param {!Float32Array} mat The matrix.
+* @param {!number} col1 The index of the first column.
+* @param {!number} col2 The index of the second column.
+* @return {!Float32Array} The resulting matrix.
+*/</pre>
+<span class="code">var swapCols = X.matrix.<span class="identifier">swapCols</span>($MAT, $COL1, $COL2);</span><br></div><div class="public" id="swapRows">
+<pre>/**
+* Swap two rows of a matrix.
+*
+* @param {!Float32Array} mat The matrix.
+* @param {!number} row1 The index of the first row.
+* @param {!number} row2 The index of the second row.
+* @return {!Float32Array} The resulting matrix.
+*/</pre>
+<span class="code">var swapRows = X.matrix.<span class="identifier">swapRows</span>($MAT, $ROW1, $ROW2);</span><br></div><div class="public" id="translate">
+<pre>/**
+* @see goog.vec.Mat4.translate
+*/</pre>
+<span class="code">X.matrix.<span class="identifier">translate</span>();</span><br></div><div class="public" id="transpose">
+<pre>/**
+* @see goog.vec.Mat4.transpose
+*/</pre>
+<span class="code">X.matrix.<span class="identifier">transpose</span>();</span><br></div>
 	</div>
 
   <div id="toolbox">
   <center><button id="togglBtn" type="button" onclick="javascript:toggleInternals();">Show Internals</button></center><br><br>
   <b>CONSTRUCTORS</b><br>
-  <span class="public_quicklink"><a href="#matrix">X.matrix</a><br></span><br>
+  <br>
   <b>PROPERTIES</b><br>
-  <span class="private_quicklink"><a href="#_classname">_classname</a><br></span><br>
+  <br>
   <b>GETTERS/SETTERS</b><br>
   <br>
   <b>FUNCTIONS</b><br>
-  <span class="public_quicklink"><a href="#flatten">flatten</a><br></span><span class="public_quicklink"><a href="#multiplyByVector">multiplyByVector</a><br></span><span class="public_quicklink"><a href="#rotate">rotate</a><br></span><span class="public_quicklink"><a href="#swapCols">swapCols</a><br></span><span class="public_quicklink"><a href="#swapRows">swapRows</a><br></span><span class="public_quicklink"><a href="#translate">translate</a><br></span><br>
+  <br>
   <b>STATIC</b><br>
-  <span class="public_quicklink"><a href="#createIdentityMatrix">createIdentityMatrix</a><br></span><br><br><br>
+  <span class="public_quicklink"><a href="#clone">clone</a><br></span><span class="public_quicklink"><a href="#determinant">determinant</a><br></span><span class="public_quicklink"><a href="#identity">identity</a><br></span><span class="public_quicklink"><a href="#invert">invert</a><br></span><span class="public_quicklink"><a href="#makeFrustum">makeFrustum</a><br></span><span class="public_quicklink"><a href="#makeLookAt">makeLookAt</a><br></span><span class="public_quicklink"><a href="#makeOrtho">makeOrtho</a><br></span><span class="public_quicklink"><a href="#makePerspective">makePerspective</a><br></span><span class="public_quicklink"><a href="#multiply">multiply</a><br></span><span class="public_quicklink"><a href="#multiplyByVector">multiplyByVector</a><br></span><span class="public_quicklink"><a href="#rotate">rotate</a><br></span><span class="public_quicklink"><a href="#rotateX">rotateX</a><br></span><span class="public_quicklink"><a href="#rotateY">rotateY</a><br></span><span class="public_quicklink"><a href="#rotateZ">rotateZ</a><br></span><span class="public_quicklink"><a href="#scale">scale</a><br></span><span class="public_quicklink"><a href="#swapCols">swapCols</a><br></span><span class="public_quicklink"><a href="#swapRows">swapRows</a><br></span><span class="public_quicklink"><a href="#translate">translate</a><br></span><span class="public_quicklink"><a href="#transpose">transpose</a><br></span><br><br><br>
   <center><small><a href="https://github.com/xtk/X/blob/master/math/matrix.js" target="_blank">SOURCECODE</a><br></small></center>
   </div>	
 	

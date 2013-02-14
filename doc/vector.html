@@ -52,9 +52,7 @@
   function drawVisualization() {
     // Create and populate the data table.
     var data = google.visualization.arrayToDataTable([
-      [{v:"goog.events.EventTarget",f:"<font color=green>goog.events.EventTarget</font>"},null,null],
-["X.base","goog.events.EventTarget",null],
-["X.array","X.base",null],
+      [{v:"X.vector",f:"<font color=green>X.vector</font>"},null,null],
 
     ]);
   
@@ -74,131 +72,96 @@
 	<div class="menu"><b>X</b><br><span class="menuitem"><a href="counter.html">X.counter</a></span><br><br><b>CORE</b><br><span class="menuitem"><a href="base.html">X.base</a></span><br><span class="menuitem"><a href="colortable.html">X.colortable</a></span><br><span class="menuitem"><a href="event.html">X.event</a></span><br><span class="menuitem"><a href="file.html">X.file</a></span><br><span class="menuitem"><a href="HoverEndEvent.html">X.HoverEndEvent</a></span><br><span class="menuitem"><a href="HoverEvent.html">X.HoverEvent</a></span><br><span class="menuitem"><a href="ModifiedEvent.html">X.ModifiedEvent</a></span><br><span class="menuitem"><a href="PanEvent.html">X.PanEvent</a></span><br><span class="menuitem"><a href="ProgressEvent.html">X.ProgressEvent</a></span><br><span class="menuitem"><a href="RenderEvent.html">X.RenderEvent</a></span><br><span class="menuitem"><a href="ResetViewEvent.html">X.ResetViewEvent</a></span><br><span class="menuitem"><a href="RotateEvent.html">X.RotateEvent</a></span><br><span class="menuitem"><a href="scalars.html">X.scalars</a></span><br><span class="menuitem"><a href="ScrollEvent.html">X.ScrollEvent</a></span><br><span class="menuitem"><a href="texture.html">X.texture</a></span><br><span class="menuitem"><a href="transform.html">X.transform</a></span><br><span class="menuitem"><a href="triplets.html">X.triplets</a></span><br><span class="menuitem"><a href="WindowLevelEvent.html">X.WindowLevelEvent</a></span><br><span class="menuitem"><a href="ZoomEvent.html">X.ZoomEvent</a></span><br><br><b>INJECTS</b><br><span class="menuitem"><a href="constructable.html">X.constructable</a></span><br><span class="menuitem"><a href="displayable.html">X.displayable</a></span><br><span class="menuitem"><a href="loadable.html">X.loadable</a></span><br><span class="menuitem"><a href="thresholdable.html">X.thresholdable</a></span><br><br><b>IO</b><br><span class="menuitem"><a href="interactor.html">X.interactor</a></span><br><span class="menuitem"><a href="interactor2D.html">X.interactor2D</a></span><br><span class="menuitem"><a href="interactor3D.html">X.interactor3D</a></span><br><span class="menuitem"><a href="loader.html">X.loader</a></span><br><span class="menuitem"><a href="parser.html">X.parser</a></span><br><span class="menuitem"><a href="parserCRV.html">X.parserCRV</a></span><br><span class="menuitem"><a href="parserDCM.html">X.parserDCM</a></span><br><span class="menuitem"><a href="parserFSM.html">X.parserFSM</a></span><br><span class="menuitem"><a href="parserIMAGE.html">X.parserIMAGE</a></span><br><span class="menuitem"><a href="parserLBL.html">X.parserLBL</a></span><br><span class="menuitem"><a href="parserLUT.html">X.parserLUT</a></span><br><span class="menuitem"><a href="parserMGZ.html">X.parserMGZ</a></span><br><span class="menuitem"><a href="parserNII.html">X.parserNII</a></span><br><span class="menuitem"><a href="parserNRRD.html">X.parserNRRD</a></span><br><span class="menuitem"><a href="parserOBJ.html">X.parserOBJ</a></span><br><span class="menuitem"><a href="parserSTL.html">X.parserSTL</a></span><br><span class="menuitem"><a href="parserTRK.html">X.parserTRK</a></span><br><span class="menuitem"><a href="parserVTK.html">X.parserVTK</a></span><br><br><b>MATH</b><br><span class="menuitem"><a href="array.html">X.array</a></span><br><span class="menuitem"><a href="matrix.html">X.matrix</a></span><br><span class="menuitem"><a href="vector.html">X.vector</a></span><br><br><b>OBJECTS</b><br><span class="menuitem"><a href="cube.html">X.cube</a></span><br><span class="menuitem"><a href="cylinder.html">X.cylinder</a></span><br><span class="menuitem"><a href="fibers.html">X.fibers</a></span><br><span class="menuitem"><a href="labelmap.html">X.labelmap</a></span><br><span class="menuitem"><a href="mesh.html">X.mesh</a></span><br><span class="menuitem"><a href="object.html">X.object</a></span><br><span class="menuitem"><a href="slice.html">X.slice</a></span><br><span class="menuitem"><a href="sphere.html">X.sphere</a></span><br><span class="menuitem"><a href="volume.html">X.volume</a></span><br><br><b>UI</b><br><span class="menuitem"><a href="caption.html">X.caption</a></span><br><span class="menuitem"><a href="progressbar.html">X.progressbar</a></span><br><br><b>VISUALIZATION</b><br><span class="menuitem"><a href="buffer.html">X.buffer</a></span><br><span class="menuitem"><a href="camera.html">X.camera</a></span><br><span class="menuitem"><a href="camera2D.html">X.camera2D</a></span><br><span class="menuitem"><a href="camera3D.html">X.camera3D</a></span><br><span class="menuitem"><a href="indexer.html">X.indexer</a></span><br><span class="menuitem"><a href="renderer.html">X.renderer</a></span><br><span class="menuitem"><a href="renderer2D.html">X.renderer2D</a></span><br><span class="menuitem"><a href="renderer3D.html">X.renderer3D</a></span><br><span class="menuitem"><a href="shaders.html">X.shaders</a></span><br><br></div>
 	<div id="diagram"></div>
 	<div class="content">
-		<h2>X.array</h2>
-		<div class="private" id="array">
+		<h2>X.vector</h2>
+		<div class="public" id="vector">
 <pre>/**
-* Create an array which can be sorted in-place using merge sort.
-*
 * @constructor
-* @param {Function} comparator
-* @extends <a href="base.html">X.base</a>
+* @see goog.math.Vec3
 */</pre>
-<span class="code">var a = new <span class="identifier">X.array()</span>;</span><br></div><div class="private" id="_array">
+<span class="code">var v = new <span class="identifier">X.vector()</span>;</span><br></div><div class="public" id="xx_get">
 <pre>/**
-* The underlying array.
+* Get the x component of this vector.
 *
-* @type {!Array}
-* @protected
-*/</pre>
-<span class="code">a.<span class="identifier">_array</span> = $_ARRAY;</span><br></div><div class="private" id="_classname">
-<pre>/**
-* The className of this class.
-*
-* @type {string}
-* @protected
-*/</pre>
-<span class="code">a.<span class="identifier">_classname</span> = $_CLASSNAME;</span><br></div><div class="private" id="_comparator">
-<pre>/**
-* The void pointer to a comparator function.
-*
-* @type {Function}
-* @protected
-*/</pre>
-<span class="code">a.<span class="identifier">_comparator</span> = $_COMPARATOR;</span><br></div><div class="private" id="_dirty">
-<pre>/**
-* The 'dirty' flag of this object.
-*
-* @type {boolean}
-* @protected
-*/</pre>
-<span class="code">a.<span class="identifier">_dirty</span> = $_DIRTY;</span><br></div><div class="private" id="_id">
-<pre>/**
-* The uniqueId of this instance. Each class instance in XTK has a uniqueId.
-*
-* @type {number}
-* @protected
-*/</pre>
-<span class="code">a.<span class="identifier">_id</span> = $_ID;</span><br></div><div class="public" id="classname_get">
-<pre>/**
-* Get the className of this object.
-*
-* @return {string} The className of this object.
+* @return {number} The x component of this vector.
 * @public
 */</pre>
-<span class="code">var _classname = a.<span class="identifier">classname</span>;</span><br></div><div class="public" id="id_get">
+<span class="code">var _xx = v.<span class="identifier">xx</span>;</span><br></div><div class="public" id="yy_get">
 <pre>/**
-* Get the id of this instance.
+* Get the y component of this vector.
 *
-* @return {string} The className of this object.
+* @return {number} The y component of this vector.
 * @public
 */</pre>
-<span class="code">var _id = a.<span class="identifier">id</span>;</span><br></div><div class="private" id="add">
+<span class="code">var _yy = v.<span class="identifier">yy</span>;</span><br></div><div class="public" id="zz_get">
 <pre>/**
-* Add an object to the array.
+* Get the z component of this vector.
 *
-* @param {*} object The object to add.
-* @return {boolean} TRUE if everything went fine.
+* @return {number} The z component of this vector.
+* @public
 */</pre>
-<span class="code">var add = a.<span class="identifier">add</span>($OBJECT);</span><br></div><div class="private" id="clear">
+<span class="code">var _zz = v.<span class="identifier">zz</span>;</span><br></div><div class="public" id="add">
 <pre>/**
-* Completely clear the array.
+* @see goog.math.Vec3.prototype.add
 */</pre>
-<span class="code">a.<span class="identifier">clear</span>();</span><br></div><div class="private" id="insert_">
+<span class="code">v.<span class="identifier">add</span>();</span><br></div><div class="public" id="clone">
 <pre>/**
-* Orderly insert an element. This is part of the in-place sorting.
+* @see goog.math.Vec3.prototype.clone
+*/</pre>
+<span class="code">v.<span class="identifier">clone</span>();</span><br></div><div class="public" id="invert">
+<pre>/**
+* @see goog.math.Vec3.prototype.invert
+*/</pre>
+<span class="code">v.<span class="identifier">invert</span>();</span><br></div><div class="public" id="magnitude">
+<pre>/**
+* @see goog.math.Vec3.prototype.magnitude
+*/</pre>
+<span class="code">v.<span class="identifier">magnitude</span>();</span><br></div><div class="public" id="normalize">
+<pre>/**
+* Normalize the vector. The goog.math.Vec3.prototype.normalize
+* did not check on a magnitude of 0 resulting in an error.
 *
-* @param {!number} begin The start index.
-* @param {!number} end The end index.
-* @param {*} v The value/object to insert.
+* @return {!<a href="vector.html">X.vector</a>|!goog.math.Vec3} The normalized vector.
 */</pre>
-<span class="code">a.<span class="identifier">insert_</span>($BEGIN, $END, $V);</span><br></div><div class="private" id="merge_inplace_">
+<span class="code">var normalize = v.<span class="identifier">normalize</span>();</span><br></div><div class="public" id="scale">
 <pre>/**
-* Merge component of the in-place sorting.
-*
-* @param {!number} begin The start index.
-* @param {!number} begin_right The start index from the right.
-* @param {!number} end The end index.
+* @see goog.math.Vec3.prototype.scale
 */</pre>
-<span class="code">a.<span class="identifier">merge_inplace_</span>($BEGIN, $BEGIN_RIGHT, $END);</span><br></div><div class="private" id="msort_">
+<span class="code">v.<span class="identifier">scale</span>();</span><br></div><div class="public" id="subtract">
 <pre>/**
-* Recursive function to perform in-place merge sort.
-*
-* @param {!number} begin The start index.
-* @param {!number} end The end index.
+* @see goog.math.Vec3.prototype.subtract
 */</pre>
-<span class="code">a.<span class="identifier">msort_</span>($BEGIN, $END);</span><br></div><div class="private" id="sort">
+<span class="code">v.<span class="identifier">subtract</span>();</span><br></div><div class="public" id="cross">
 <pre>/**
-* Start the in-place merge sort on the complete array.
+* @see goog.math.Vec3.cross
 */</pre>
-<span class="code">a.<span class="identifier">sort</span>();</span><br></div><div class="private" id="swap_">
+<span class="code">X.vector.<span class="identifier">cross</span>();</span><br></div><div class="public" id="distance">
 <pre>/**
-* Swap two elements in the array.
-*
-* @param {!number} index1 Index of element1.
-* @param {!number} index2 Index of element2.
+* @see goog.math.Vec3.distance
 */</pre>
-<span class="code">a.<span class="identifier">swap_</span>($INDEX1, $INDEX2);</span><br></div><div class="private" id="values">
+<span class="code">X.vector.<span class="identifier">distance</span>();</span><br></div><div class="public" id="dot">
 <pre>/**
-* Get the complete array.
-*
-* @return {!Array} The complete array.
+* @see goog.math.Vec3.dot
 */</pre>
-<span class="code">var values = a.<span class="identifier">values</span>();</span><br></div>
+<span class="code">X.vector.<span class="identifier">dot</span>();</span><br></div><div class="public" id="lerp">
+<pre>/**
+* @see goog.math.Vec3.lerp
+*/</pre>
+<span class="code">X.vector.<span class="identifier">lerp</span>();</span><br></div>
 	</div>
 
   <div id="toolbox">
   <center><button id="togglBtn" type="button" onclick="javascript:toggleInternals();">Show Internals</button></center><br><br>
   <b>CONSTRUCTORS</b><br>
-  <span class="private_quicklink"><a href="#array">X.array</a><br></span><br>
+  <span class="public_quicklink"><a href="#vector">X.vector</a><br></span><br>
   <b>PROPERTIES</b><br>
-  <span class="private_quicklink"><a href="#_array">_array</a><br></span><span class="private_quicklink"><a href="#_classname">_classname</a><br></span><span class="private_quicklink"><a href="#_comparator">_comparator</a><br></span><span class="private_quicklink"><a href="#_dirty">_dirty</a><br></span><span class="private_quicklink"><a href="#_id">_id</a><br></span><br>
+  <br>
   <b>GETTERS/SETTERS</b><br>
-  <span class="public_quicklink"><a href="#classname_get">classname</a><br></span><span class="public_quicklink"><a href="#id_get">id</a><br></span><br>
+  <span class="public_quicklink"><a href="#xx_get">xx</a><br></span><span class="public_quicklink"><a href="#yy_get">yy</a><br></span><span class="public_quicklink"><a href="#zz_get">zz</a><br></span><br>
   <b>FUNCTIONS</b><br>
-  <span class="private_quicklink"><a href="#add">add</a><br></span><span class="private_quicklink"><a href="#clear">clear</a><br></span><span class="private_quicklink"><a href="#insert_">insert_</a><br></span><span class="private_quicklink"><a href="#merge_inplace_">merge_inplace_</a><br></span><span class="private_quicklink"><a href="#msort_">msort_</a><br></span><span class="private_quicklink"><a href="#sort">sort</a><br></span><span class="private_quicklink"><a href="#swap_">swap_</a><br></span><span class="private_quicklink"><a href="#values">values</a><br></span><br>
+  <span class="public_quicklink"><a href="#add">add</a><br></span><span class="public_quicklink"><a href="#clone">clone</a><br></span><span class="public_quicklink"><a href="#invert">invert</a><br></span><span class="public_quicklink"><a href="#magnitude">magnitude</a><br></span><span class="public_quicklink"><a href="#normalize">normalize</a><br></span><span class="public_quicklink"><a href="#scale">scale</a><br></span><span class="public_quicklink"><a href="#subtract">subtract</a><br></span><br>
   <b>STATIC</b><br>
-  <br><br><br>
-  <center><small><a href="https://github.com/xtk/X/blob/master/math/array.js" target="_blank">SOURCECODE</a><br></small></center>
+  <span class="public_quicklink"><a href="#cross">cross</a><br></span><span class="public_quicklink"><a href="#distance">distance</a><br></span><span class="public_quicklink"><a href="#dot">dot</a><br></span><span class="public_quicklink"><a href="#lerp">lerp</a><br></span><br><br><br>
+  <center><small><a href="https://github.com/xtk/X/blob/master/math/vector.js" target="_blank">SOURCECODE</a><br></small></center>
   </div>	
 	
 	<br><br><br>
