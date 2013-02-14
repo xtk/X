@@ -342,6 +342,16 @@ X.renderer3D.prototype.init = function() {
           this._width, this._height, 0, this._context.RGB,
           this._context.UNSIGNED_BYTE, null);
 
+      this._context.texParameteri(this._context.TEXTURE_2D,
+          this._context.TEXTURE_WRAP_S, this._context.CLAMP_TO_EDGE);
+      this._context.texParameteri(this._context.TEXTURE_2D,
+          this._context.TEXTURE_WRAP_T, this._context.CLAMP_TO_EDGE);
+
+      this._context.texParameteri(this._context.TEXTURE_2D,
+          this._context.TEXTURE_MAG_FILTER, this._context.NEAREST);
+      this._context.texParameteri(this._context.TEXTURE_2D,
+          this._context.TEXTURE_MIN_FILTER, this._context.NEAREST);
+
       this._context.bindFramebuffer(this._context.FRAMEBUFFER, pickFrameBuffer);
       this._context.bindRenderbuffer(this._context.RENDERBUFFER,
           pickRenderBuffer);
