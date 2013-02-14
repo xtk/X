@@ -46,7 +46,7 @@ class Documenter( object ):
     self.__totalSymbols = 0
 
     self.__files = {}
-    self.__allclasses = [] # we only need a list here
+    self.__allclasses = []  # we only need a list here
     self.__inheritances = {}
     self.__exportations = {}
 
@@ -89,6 +89,9 @@ class Documenter( object ):
     filefinder = JSFileFinder()
     jsfiles = filefinder.run()
 
+
+    # jsfiles = ['/chb/users/daniel.haehn/Projects/X/math/matrix.js']
+
     # .. and loop through them
     for filename in jsfiles:
 
@@ -112,9 +115,9 @@ class Documenter( object ):
 
       # symbol information
       type = self.TYPES['undefined']
-      privacy = self.PRIVACY['private'] # by default private
-      params = [] # store the parameters of functions
-      returns = [] # and if the function has a return value
+      privacy = self.PRIVACY['private']  # by default private
+      params = []  # store the parameters of functions
+      returns = []  # and if the function has a return value
 
       # forward loop through file
       for line in lines:
@@ -130,7 +133,7 @@ class Documenter( object ):
 
           # check for JSDOC
           if line[0:len( self.JSDOCSTART )] == self.JSDOCSTART:
-            #found start of JSDOC
+            # found start of JSDOC
             jsdocBuffer += line[0:len( self.JSDOCSTART )]
             jsdocActive = True
             continue
@@ -185,9 +188,9 @@ class Documenter( object ):
           if queryIdentifier:
             # store the Identifier and the corresponding JSDOC
 
-            identifier = line.split( ' ' )[0] # split by blank
-            identifierSplitted = identifier.split( '.' ) # split by dot
-            #classname = identifierSplitted[1] # should always be the classname      
+            identifier = line.split( ' ' )[0]  # split by blank
+            identifierSplitted = identifier.split( '.' )  # split by dot
+            # classname = identifierSplitted[1] # should always be the classname
             identifier = identifierSplitted[-1]
 
             # check for namespace
@@ -239,7 +242,7 @@ class Documenter( object ):
                     self.__inheritances[classname] = []
 
                   self.__inheritances[classname].extend( inherits )
-                  inherits = [] # reset the inheritances
+                  inherits = []  # reset the inheritances
 
                 # always add to classes
                 self.__allclasses.append( classname )
@@ -284,7 +287,7 @@ class Documenter( object ):
             queryIdentifier = False
 
       # add to files
-      #filename = os.path.basename( filename )
+      # filename = os.path.basename( filename )
       self.__files[filename] = classes
       self.__exportations[classname] = exports
 
@@ -322,7 +325,7 @@ class Documenter( object ):
 
     #
     # create the left menu
-    # 
+    #
     leftMenuContent = ''
     for folder in sorted( self.__leftMenu.iterkeys() ):
       leftMenuContent += '<b>' + folder.upper() + '</b><br>'
@@ -349,7 +352,7 @@ class Documenter( object ):
           output = t.read()
 
         title = config.SOFTWARE + ' API'
-        classname = c # the classname
+        classname = c  # the classname
         content = ''
         hasPublic = False
 
@@ -387,7 +390,7 @@ class Documenter( object ):
           content += '<pre>' + jsdoc + '</pre>' + '\n'
 
           identifier = s
-          #prefix = NAMESPACE + '.'
+          # prefix = NAMESPACE + '.'
           identifierCode = identifier
 
           # check different types
@@ -565,7 +568,7 @@ class Documenter( object ):
     '''
     output = ""
 
-    # attach namespace  
+    # attach namespace
     classnameString = classname
     if classname.find( '.' ) == -1:
       classnameString = self.NAMESPACE + '.' + classname
