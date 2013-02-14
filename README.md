@@ -71,6 +71,12 @@
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/15/"><img src="http://xtk.github.com/lessonsgfx/15/minicaption.png" alt="lesson15" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/toolkit/edge/xtk/lessons/tree/master/15/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
 <td valign="top"><a href="http://lessons.goxtk.com/15/"><b>Lesson 15: D-I-C-O-M!</b></a><br>Here we visualize a brain MR scan read from DICOM files.</td>
 </tr>
+<tr>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/16/"><img src="http://xtk.github.com/lessonsgfx/16/minicaption.png" alt="lesson16" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/toolkit/edge/xtk/lessons/tree/master/16/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
+<td valign="top"><a href="http://lessons.goxtk.com/16/"><b>Lesson 16: 10 PRINT 3D</b></a><br>A 3D version of the excellent <a href='http://10print.org/' target=_blank>10 PRINT</a> pattern showcasing advanced XTK object generation.</td>
+<td valign="middle" width="100"></td>
+<td valign="top"></td>
+</tr>
 </table>
 
 ## Download
