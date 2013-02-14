@@ -90,7 +90,7 @@ class Documenter( object ):
     jsfiles = filefinder.run()
 
 
-    # jsfiles = ['/chb/users/daniel.haehn/Projects/X/math/matrix.js']
+    #    jsfiles = ['/chb/users/daniel.haehn/Projects/X/math/matrix.js']
 
     # .. and loop through them
     for filename in jsfiles:
@@ -108,8 +108,8 @@ class Documenter( object ):
       queryIdentifier = False
       jsdocBuffer = ''
 
-      # class information
-      classname = ''
+      # class information (use the filename by default)
+      classname = os.path.splitext( os.path.split( filename )[1] )[0]
       inherits = []
       exports = []
 
@@ -221,20 +221,6 @@ class Documenter( object ):
                 type = self.TYPES['constructor']
                 classname = identifier
 
-                # we have the current filename here as j
-                subfolder = os.path.dirname( filename ).split( os.sep )[-1]
-
-                # ignore toplevel files
-                if not subfolder == '..':
-
-                  # check if we have already files from this subfolder
-                  if not self.__leftMenu.has_key( subfolder ):
-                    self.__leftMenu[subfolder] = []
-
-                  # add this file if it does not exist
-                  if self.__leftMenu[subfolder].count( classname ) == 0:
-                    self.__leftMenu[subfolder].append( classname )
-
                 # check if we have parent classes, then update the inheritance table
                 if len( inherits ) > 0:
                   # add to inheritances
@@ -271,6 +257,20 @@ class Documenter( object ):
             if not classes.has_key( classname ):
               # no symbols for this class yet
               classes[classname] = {}
+
+            # grab the subfolder name
+            subfolder = os.path.dirname( filename ).split( os.sep )[-1]
+
+            # ignore toplevel files and also the NAMESPACE declaration
+            if not subfolder == '..' and not classname == self.NAMESPACE:
+
+              # check if we have already files from this subfolder
+              if not self.__leftMenu.has_key( subfolder ):
+                self.__leftMenu[subfolder] = []
+
+              # add this file if it does not exist
+              if self.__leftMenu[subfolder].count( classname ) == 0:
+                self.__leftMenu[subfolder].append( classname )
 
             # add the current symbol
             classes[classname][identifier] = {'public':privacy, 'type':type, 'doc':jsdocBuffer, 'params':params, 'returns':returns}
@@ -366,7 +366,6 @@ class Documenter( object ):
         getterssetters = ''
         functions = ''
         static = ''
-
 
         for s in symbolList:
 
