@@ -151,20 +151,93 @@ X.matrix.swapCols = function(mat, col1, col2) {
 };
 
 // expose the following goog.vec.Mat4 functionality
+/**
+ * @see goog.vec.Mat4.createFloat32Identity
+ */
 X.matrix.identity = goog.vec.Mat4.createFloat32Identity;
+
+
+/**
+ * @see goog.vec.Mat4.cloneFloat32
+ */
 X.matrix.clone = goog.vec.Mat4.cloneFloat32;
+
+
+/**
+ * @see goog.vec.Mat4.transpose
+ */
 X.matrix.transpose = goog.vec.Mat4.transpose;
+
+
+/**
+ * @see goog.vec.Mat4.determinant
+ */
 X.matrix.determinant = goog.vec.Mat4.determinant;
+
+
+/**
+ * @see goog.vec.Mat4.invert
+ */
 X.matrix.invert = goog.vec.Mat4.invert;
+
+
+/**
+ * @see goog.vec.Mat4.makePerspective
+ */
 X.matrix.makePerspective = goog.vec.Mat4.makePerspective;
+
+
+/**
+ * @see goog.vec.Mat4.makeFrustum
+ */
 X.matrix.makeFrustum = goog.vec.Mat4.makeFrustum;
+
+
+/**
+ * @see goog.vec.Mat4.makeOrtho
+ */
 X.matrix.makeOrtho = goog.vec.Mat4.makeOrtho;
+
+
+/**
+ * @see goog.vec.Mat4.multMat
+ */
 X.matrix.multiply = goog.vec.Mat4.multMat;
+
+
+/**
+ * @see goog.vec.Mat4.translate
+ */
 X.matrix.translate = goog.vec.Mat4.translate;
+
+
+/**
+ * @see goog.vec.Mat4.scale
+ */
 X.matrix.scale = goog.vec.Mat4.scale;
+
+
+/**
+ * @see goog.vec.Mat4.rotate
+ */
 X.matrix.rotate = goog.vec.Mat4.rotate;
+
+
+/**
+ * @see goog.vec.Mat4.rotateX
+ */
 X.matrix.rotateX = goog.vec.Mat4.rotateX;
+
+
+/**
+ * @see goog.vec.Mat4.rotateY
+ */
 X.matrix.rotateY = goog.vec.Mat4.rotateY;
+
+
+/**
+ * @see goog.vec.Mat4.rotateZ
+ */
 X.matrix.rotateZ = goog.vec.Mat4.rotateZ;
 
 
