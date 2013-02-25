@@ -305,7 +305,7 @@ X.renderer.prototype.onResize_ = function() {
   }
 
   // .. and re-draw
-  this.resetViewAndRender();
+  //this.resetViewAndRender();
 
 };
 

@@ -365,7 +365,7 @@ X.renderer2D.prototype.init = function() {
  */
 X.renderer2D.prototype.rotate = function() {
 
-  this._camera._view[1]++; 
+  this._camera._view[1]++;
 
 };
 
@@ -376,6 +376,20 @@ X.renderer2D.prototype.rotate = function() {
 X.renderer2D.prototype.rotateCounter = function() {
 
   this._camera._view[1]--;
+
+};
+
+
+/**
+ * @inheritDoc
+ */
+X.renderer2D.prototype.onResize_ = function() {
+
+  // call the super class
+  goog.base(this, 'onResize_');
+
+  // in 2D we also want to perform auto scaling
+  this.autoScale_();
 
 };
 
