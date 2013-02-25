@@ -129,16 +129,6 @@ X.renderer2D = function() {
   this._sliceHeightSpacing = 0;
 
   /**
-   * The current rotation factor. This is positive to rotate clockwise and
-   * negative to rotate counter-clockwise. The factor is multiplied by 90
-   * degrees.
-   *
-   * @type {number}
-   * @protected
-   */
-  this._rotation = 0;
-
-  /**
    * The buffer of the current slice index.
    *
    * @type {!number}
@@ -375,7 +365,7 @@ X.renderer2D.prototype.init = function() {
  */
 X.renderer2D.prototype.rotate = function() {
 
-  this._rotation++;
+  this._camera._view[1]++; 
 
 };
 
@@ -385,7 +375,7 @@ X.renderer2D.prototype.rotate = function() {
  */
 X.renderer2D.prototype.rotateCounter = function() {
 
-  this._rotation--;
+  this._camera._view[1]--;
 
 };
 
@@ -792,10 +782,11 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       _normalizedScale);
 
   // rotate
-  this._context.rotate(Math.PI * 0.5 * this._rotation);
+  var _rotation = _view[1];
+  this._context.rotate(Math.PI * 0.5 * _rotation);
 
   // the padding x and y have to be adjusted because of the rotation
-  switch (this._rotation % 4) {
+  switch (_rotation % 4) {
 
   case 0:
     // padding is fine;
