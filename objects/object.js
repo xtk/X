@@ -171,6 +171,8 @@ X.object.prototype.copy_ = function(object) {
 
   this._magicmode = object._magicmode;
 
+  this._pickable = object._pickable;
+
   this._pointIndices = object._pointIndices.slice();
 
   this._dirty = true;

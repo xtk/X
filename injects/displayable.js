@@ -175,6 +175,14 @@ X.displayable = function() {
    * @protected
    */
   this._distance = 0;
+
+  /**
+   * The flag if this object is pickable.
+   *
+   * @type {!boolean}
+   * @protected
+   */
+  this._pickable = true;
   
 };
 
@@ -593,4 +601,38 @@ X.displayable.prototype.__defineSetter__('linewidth', function(width) {
   
   // no modified event since the rendering loop always checks it
   
+});
+
+
+/**
+ * Get the pickable flag.
+ *
+ * @return {!boolean} The pickable flag.
+ */
+X.displayable.prototype.__defineGetter__('pickable', function() {
+
+  return this._pickable;
+
+});
+
+
+/**
+ * Set the pickable flag.
+ *
+ * @param {!boolean} pickable The pickable flag.
+ */
+X.displayable.prototype.__defineSetter__('pickable', function(pickable) {
+
+  if (!goog.isBoolean(pickable)) {
+
+    throw new Error('Invalid pickable setting.');
+
+  }
+
+  this._pickable = pickable;
+
+  this._dirty = true;
+
+  // no modified event since the rendering loop always checks it
+
 });
