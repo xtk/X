@@ -1599,6 +1599,13 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 
       }
 
+      // check picking mode and object pickable
+      if (picking && !object._pickable) {
+
+        // object not pickable, continue to next one
+        continue;
+      }
+
       var id = object._id;
 
       var magicMode = object._magicmode;

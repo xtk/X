@@ -29,6 +29,7 @@ function testXobjectCopy() {
   o.linewidth = 3;
   o.caption = 'testing';
   o.magicmode = true;
+  o.pickable = false;
 
   // now we want to copy the object
   var o2 = new X.object(o);
@@ -64,5 +65,6 @@ function testXobjectCopy() {
   assertEquals(o.linewidth, o2.linewidth);
   assertEquals(o.caption, o2.caption);
   assertEquals(o.magicmode, o2.magicmode);
+  assertEquals(o.pickable, o2.pickable);
 
 }
