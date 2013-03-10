@@ -59,7 +59,7 @@ X.file = function(path) {
    * The file path.
    *
    * @type {?string}
-   * @public
+   * @protected
    */
   this._path = path;
 
