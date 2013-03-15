@@ -5,6 +5,7 @@
 #
 
 import os
+import stat
 import sys
 import subprocess
 
@@ -46,6 +47,11 @@ class DepsGenerator( object ):
     #
     # call the closure depswriter
     #
+    
+    # make sure the depswriter is executable
+    st = os.stat( config.CLOSUREDEPSWRITER_PATH )
+    os.chmod( config.CLOSUREDEPSWRITER_PATH, st.st_mode | stat.S_IEXEC )    
+    
     command = [config.CLOSUREDEPSWRITER_PATH]
     command.extend( arguments )
 

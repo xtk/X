@@ -70,6 +70,7 @@ XBUILD_PATH = os.path.abspath( os.path.dirname( sys.argv[0] ) )
 SOFTWARE_PATH = os.path.normpath( XBUILD_PATH + os.sep + '..' + os.sep )
 
 CLOSURELIBRARY_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/google-closure-library/closure/' ) )
+CLOSURELIBRARY_DEPS_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PATH, 'goog/deps.js' ) )
 CLOSURELIBRARY_PYTHON_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PATH, 'bin/build/' ) )
 CLOSUREBUILDER_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PYTHON_PATH, 'closurebuilder.py' ) )
 CLOSUREDEPSWRITER_PATH = os.path.normpath( os.path.join( CLOSURELIBRARY_PYTHON_PATH, 'depswriter.py' ) )

@@ -6,6 +6,7 @@
 
 import datetime
 import os
+import stat
 import sys
 import subprocess
 
@@ -33,7 +34,7 @@ class Builder( object ):
     filefinder = JSFileFinder()
     jsfiles = filefinder.run()
 
-    arguments = []
+    arguments = []          
 
     # add js files
     for j in jsfiles:
@@ -59,6 +60,10 @@ class Builder( object ):
     arguments.extend( ['-f', '--summary_detail_level=3'] ) # always show summary
     arguments.extend( [ '-f', '--define=goog.DEBUG=false'] ) # turn of closure library debugging
 
+    # add the goog/deps.js file from closure according to
+    # https://code.google.com/p/closure-library/wiki/FrequentlyAskedQuestions#When_I_compile_with_type-checking_on,_I_get_warnings_about_unkno
+    arguments.extend( [ '-f', '--js=' + config.CLOSURELIBRARY_DEPS_PATH] )
+
     # if enabled, set debug options
     if options.debug:
       arguments.extend( ['-f', '--debug'] )
@@ -68,6 +73,11 @@ class Builder( object ):
     #
     # call the compiler (through the closure builder)
     #
+    
+    # make sure the closurebuilder is executable
+    st = os.stat( config.CLOSUREBUILDER_PATH )
+    os.chmod( config.CLOSUREBUILDER_PATH, st.st_mode | stat.S_IEXEC )
+    
     command = [config.CLOSUREBUILDER_PATH]
     command.extend( arguments )
 
