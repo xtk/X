@@ -272,18 +272,23 @@ X.slice.prototype.create_ = function() {
       this._front[2]);
   var upVector = new goog.math.Vec3(this._up[0], this._up[1], this._up[2]);
   var rightVector = goog.math.Vec3.cross(upVector, frontVector);
+  
+  console.log(frontVector);
+  console.log(upVector);
+  console.log(rightVector);
+  
   var centerVector = new goog.math.Vec3(this._center[0], this._center[1],
       this._center[2]);
 
   // TODO generalize for arbitary slicing
   var sizeVector = new goog.math.Vec3(1, 1, 1);
   if (frontVector.x == 1) {
-    sizeVector = new goog.math.Vec3(this._center[0], this._height / 2,
-        this._width / 2);
+    sizeVector = new goog.math.Vec3(this._center[0], this._width / 2,
+        this._height / 2);
     this._textureCoordinateMap = [0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0];
   } else if (frontVector.y == 1) {
-    sizeVector = new goog.math.Vec3(this._width / 2, this._center[1],
-        this._height / 2);
+    sizeVector = new goog.math.Vec3(this._height / 2, this._center[1],
+        this._width / 2);
     this._textureCoordinateMap = [0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1];
   } else if (frontVector.z == 1) {
     sizeVector = new goog.math.Vec3(this._width / 2, this._height / 2,
@@ -304,6 +309,8 @@ X.slice.prototype.create_ = function() {
   point0 = new goog.math.Vec3(point0.x * sizeVector.x, point0.y * sizeVector.y,
       point0.z * sizeVector.z);
   point0.add(centerVector);
+  
+  console.log(point0);
 
   var point1 = goog.math.Vec3.sum(rightVector.clone().invert(), upVector);
   point1 = new goog.math.Vec3(point1.x * sizeVector.x, point1.y * sizeVector.y,
@@ -337,7 +344,7 @@ X.slice.prototype.create_ = function() {
   this._points.add(point3.x, point3.y, point3.z); // 3
   this._points.add(point4.x, point4.y, point4.z); // 4
   this._points.add(point5.x, point5.y, point5.z); // 5
-
+  
   // add the normals based on the orientation (we don't really need them since
   // we assume each Slice has a texture)
   this._normals.add(frontVector.x, frontVector.y, frontVector.z);

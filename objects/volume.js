@@ -246,7 +246,11 @@ X.volume.prototype.copy_ = function(volume) {
  * 
  * @private
  */
-X.volume.prototype.create_ = function(_scan_direction_int) {
+X.volume.prototype.create_ = function(_scan_direction, _scan_direction_vec) {
+  
+  var _scan_direction_int = _scan_direction;
+  console.log('vector');
+  console.log(_scan_direction_vec);
   // xyz is 0-1-2
   // XYZ is
   // SAGITTAL - AXIAL - CORONAL -
@@ -279,12 +283,26 @@ X.volume.prototype.create_ = function(_scan_direction_int) {
   
   var xyz = 0;
   for (xyz = 0; xyz < 3; xyz++) {
+    // dimension: [rows, cols, nb_slices]
+    // spacing: [rows_spacing, cols_spacing, slices_spacing]
+    //
+    // _orient: 0 - > SAGITTAL
+    //          1 - > CORONAL
+    //          2 - > AXIAL
+    //
+    // xyz: 0 - > SAGITTAL
+    //      1 - > CORONAL
+    //      2 - > AXIAL
+    //
+    
     console.log('slice id: ' + xyz);
-    var _xyz = (xyz + (_orient%2)*(2-_orient%3))%3;
+    var _xyz = (xyz + ((_orient+1)%3)*(2 - (_orient)%2))%3;
     console.log('_xyz: ' + _xyz);
     
     var halfDimension = (this._dimensions[_xyz] - 1) / 2;
     var _indexCenter = halfDimension;
+    // the container and indices
+    var slices = this._children[xyz]._children;
     var i = 0;
     for (i = 0; i < this._dimensions[_xyz]; i++) {
       var _position = (-halfDimension * this._spacing[_xyz])
@@ -294,48 +312,30 @@ X.volume.prototype.create_ = function(_scan_direction_int) {
           this._center[2] ], [ this._center[0], this._center[1],
           this._center[2] + _position ]);
       var _front = new Array([ 1, 0, 0 ], [ 0, 1, 0 ], [ 0, 0, 1 ]);
-      var _up = new Array([ 0, 1, 0 ], [ 0, 0, -1 ], [ 0, 1, 0 ]);
-      // the container and indices
-      var slices = this._children[xyz]._children;
+      var _up = new Array( [ 0, 0, 1 ], [ 0, 0, -1 ], [ 0, 1, 0] );
       // dimensions
-      var width = 0;
-      var height = 0;
       var borderColor = [ 1, 1, 1 ];
       var borders = this._borders;
       if (xyz == 0) {
-        // SAGITTAL
-        // if sagittal, k=2 orientation, 2 current (0-1)
-        // if coronal, k=1 orientation, 2 next (1-2)
-        // ------------ k=0 ---------------- (2-0)
-        var _ind = (_orient + 1) % 3;
-        height = this._dimensions[_ind] * this._spacing[_ind]
-            - this._spacing[_ind];
-        
-        _ind = (_orient ) % 3;
-        width = this._dimensions[_ind] * this._spacing[_ind]
-            - this._spacing[_ind];
-                
         borderColor = [ 1, 1, 0 ];
       } else if (xyz == 1) {
-        // AXIAL
-        var _ind = (_orient) % 3;
-        height = this._dimensions[_ind] * this._spacing[_ind]
-            - this._spacing[_ind];
-        _ind = (_orient + 2 ) % 3;
-        width = this._dimensions[_ind] * this._spacing[_ind]
-            - this._spacing[_ind];
-        
-        borderColor = [ 1, 0, 0 ];
-      } else if (xyz == 2) {
         // CORONAL
-        var _ind = (_orient + 1) % 3;
-        height = this._dimensions[_ind] * this._spacing[_ind]
-            - this._spacing[_ind];
-        _ind = (_orient + 2 ) % 3;
-        width = this._dimensions[_ind] * this._spacing[_ind]
-            - this._spacing[_ind];
         borderColor = [ 0, 1, 0 ];
+      } else if (xyz == 2) {
+        // AXIAL
+        borderColor = [ 1, 0, 0 ];
       }
+      
+      // slices dimensions
+      var _ind = (_xyz + 1) % 3;
+      // rows
+      var width = this._dimensions[_ind] * this._spacing[_ind]
+          - this._spacing[_ind];
+      _ind = (_xyz + 2) % 3;
+      // cols
+      var height = this._dimensions[_ind] * this._spacing[_ind]
+          - this._spacing[_ind];
+      
       // for labelmaps, don't create the borders since this would create them 2x
       if (goog.isDefAndNotNull(this._volume)) {
         borders = false;
@@ -351,8 +351,6 @@ X.volume.prototype.create_ = function(_scan_direction_int) {
       slices.push(_slice);
     }
 
-    console.log('slices');
-    console.log(slices);
     console.log('color');
     console.log(borderColor);
     console.log('dimension');

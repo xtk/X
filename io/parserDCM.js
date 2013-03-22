@@ -131,22 +131,26 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       return Math.abs(v);
     });
     var _y_max = _y_abs_cosine.indexOf(Math.max.apply(Math, _y_abs_cosine));
+    
     var _scan_direction_int = _x_max + _y_max;
     var _scan_direction = "";
     
     switch (_scan_direction_int) {
     case 1:
       _scan_direction = "AXIAL";
+      _scan_direction_int = 2;
       break;
     case 2:
       _scan_direction = "CORONAL";
+      _scan_direction_int = 1;
       break;
     case 3:
       _scan_direction = "SAGITTAL";
+      _scan_direction_int = 0;
       break;
     default:
       _scan_direction = "unrecognized - assume SAGITTAL";
-    _scan_direction_int = 3;
+      _scan_direction_int = 3;
       break;
     }
     // get scan direction
@@ -161,8 +165,10 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     console.log('pixdim');
     console.log(MRI.pixdim);
     
+    var orient = [_x_cosine[_x_max]<0?-1:1, _y_cosine[_y_max]<0?-1:1];
+    
     // create the object
-    object.create_(_scan_direction_int);
+    object.create_(_scan_direction_int, orient);
     // X.TIMERSTOP('create');
     // re-slice the data according each direction
     // anatomical_orientation

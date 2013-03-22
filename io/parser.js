@@ -277,6 +277,8 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
  * @return {!Array} The volume data as a 3D Array.
  */
 X.parser.prototype.reslice = function(object, MRI) {
+  return;
+  
   // our orientation is RAS: 6 (110)
   var _orientation = 6;
   // scan orientation
@@ -293,6 +295,9 @@ X.parser.prototype.reslice = function(object, MRI) {
     return Math.abs(v);
   });
   var _y_max = _y_abs_cosine.indexOf(Math.max.apply(Math, _y_abs_cosine));
+  
+  // 0 + 1: x + y = z: SAGITTAL...
+  // etc.
   var _scan_direction_int = _x_max + _y_max;
   var _scan_direction = "";
   
@@ -312,6 +317,9 @@ X.parser.prototype.reslice = function(object, MRI) {
   }
 
   var _orient = _scan_direction_int;
+  
+  _scan_direction_int = _scan_direction_int%3;
+  
   console.log('_orient: ' + _orient);
   
   console.log('RESLICING!');
@@ -421,6 +429,8 @@ X.parser.prototype.reslice = function(object, MRI) {
     }
   }
   
+  return;
+  
   // 2- Create slices in good directions
   
   
@@ -429,37 +439,36 @@ X.parser.prototype.reslice = function(object, MRI) {
   // this step creates the slices in X-direction and fills the 3d image array at
   // the same time
   // combining the two operations saves some time..
-
-  
-  return;
-  
   // check if further reslicing is requested
   if (object._reslicing) {
     // we do want to reslice
     // now check for special optimized cases
     // RESLICE 1D which is a special when the cols == rows to speed up the
     // reslice
-    if (colsCount != rowsCount) {
-      if (hasLabelMap) {
+    if(true){
+    //if (colsCount != rowsCount) {
+      if (false) {
         if (!object._colortable) {
           this.reslice1D_(slices, colsCount, rowsCount, image, max,
-              object._slicesY, object._labelmap._slicesY, true);
+              object._children[(_treu +1) %3], object._labelmap._children[(_treu +1) %3], true);
           this.reslice1D_(slices, rowsCount, colsCount, image, max,
-              object._slicesX, object._labelmap._slicesX, false);
+              object._children[(_treu +2) %3], object._labelmap._children[(_treu +2) %3], false);
         } else {
           this.reslice1DColorTable_(slices, colsCount, rowsCount, realImage,
-              max, object._colortable, object._slicesY,
-              object._labelmap._slicesY, true);
+              max, object._colortable, object._children[(_treu +1) %3],
+              object._labelmap._children[(_treu +1) %3], true);
           this.reslice1DColorTable_(slices, rowsCount, colsCount, realImage,
-              max, object._colortable, object._slicesX,
-              object._labelmap._slicesX, false);
+              max, object._colortable, object._children[(_treu +2) %3],
+              object._labelmap._children[(_treu +2) %3], false);
         }
       } else {
+        console.log((_treu +1) %3);
+        console.log((_treu +2) %3);
         if (!object._colortable) {
           this.reslice1D_(slices, colsCount, rowsCount, image, max,
-              object._slicesY, null, true);
-          this.reslice1D_(slices, rowsCount, colsCount, image, max,
-              object._slicesX, null, false);
+              object._children[(_treu +1) %3], null, true);
+          this.reslice1D_(slices, colsCount, rowsCount, image, max,
+              object._children[(_treu +2) %3], null, true);
         } else {
           this.reslice1DColorTable_(slices, colsCount, rowsCount, realImage,
               max, object._colortable, object._slicesY, null, true);
@@ -517,6 +526,8 @@ X.parser.prototype.reslice = function(object, MRI) {
  */
 X.parser.prototype.reslice1D_ = function(sizeX, sizeY, sizeZ, image, max,
     targetSlice, targetLabelMap, invert) {
+  
+  console.log(targetSlice);
   var textureArraySize = 4 * sizeX * sizeY;
   var col = 0;
   for (col = 0; col < sizeZ; col++) {
