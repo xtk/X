@@ -150,7 +150,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       break;
     default:
       _scan_direction = "unrecognized - assume SAGITTAL";
-      _scan_direction_int = 3;
+      _scan_direction_int = 0;
       break;
     }
     // get scan direction

@@ -277,7 +277,6 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
  * @return {!Array} The volume data as a 3D Array.
  */
 X.parser.prototype.reslice = function(object, MRI) {
-  return;
   
   // our orientation is RAS: 6 (110)
   var _orientation = 6;
@@ -304,18 +303,23 @@ X.parser.prototype.reslice = function(object, MRI) {
   switch (_scan_direction_int) {
   case 1:
     _scan_direction = "AXIAL";
+    _scan_direction_int = 2;
     break;
   case 2:
-    _scan_direction = "CORONA";
+    _scan_direction = "CORONAL";
+    _scan_direction_int = 1;
     break;
   case 3:
     _scan_direction = "SAGITTAL";
+    _scan_direction_int = 0;
     break;
   default:
-    _scan_direction = "AXIAL";
+    _scan_direction = "unrecognized - assume SAGITTAL";
+    _scan_direction_int = 0;
     break;
   }
 
+  var orient = [_x_cosine[_x_max]<0?-1:1, _y_cosine[_y_max]<0?-1:1];
   var _orient = _scan_direction_int;
   
   _scan_direction_int = _scan_direction_int%3;
@@ -357,8 +361,6 @@ X.parser.prototype.reslice = function(object, MRI) {
   var col = 0;
   var p = 0;
   var textureArraySize = 4 * numberPixelsPerSlice;
-  var _treu = (_scan_direction_int) % 3;
-  console.log('treu: '+_treu);
   for (z = 0; z < slices; z++) {
     image[z] = new Array(rowsCount);
     realImage[z] = new Array(rowsCount);
@@ -415,7 +417,7 @@ X.parser.prototype.reslice = function(object, MRI) {
     pixelTexture._rawDataWidth = colsCount;
     pixelTexture._rawDataHeight = rowsCount;
     
-    currentSlice = object._children[_treu]._children[z];
+    currentSlice = object._children[_scan_direction_int]._children[z];
     
     console.log(z);
     console.log(currentSlice);
@@ -425,11 +427,9 @@ X.parser.prototype.reslice = function(object, MRI) {
       // if this object has a labelmap,
       // we have it loaded at this point (for sure)
       // ..so we can attach it as the second texture to this slice
-      currentSlice._labelmap = object._labelmap._children[_treu]._children[z]._texture;
+      currentSlice._labelmap = object._labelmap._children[_scan_direction_int]._children[z]._texture;
     }
   }
-  
-  return;
   
   // 2- Create slices in good directions
   
@@ -440,6 +440,8 @@ X.parser.prototype.reslice = function(object, MRI) {
   // the same time
   // combining the two operations saves some time..
   // check if further reslicing is requested
+
+  return;
   if (object._reslicing) {
     // we do want to reslice
     // now check for special optimized cases
@@ -449,26 +451,26 @@ X.parser.prototype.reslice = function(object, MRI) {
     //if (colsCount != rowsCount) {
       if (false) {
         if (!object._colortable) {
-          this.reslice1D_(slices, colsCount, rowsCount, image, max,
-              object._children[(_treu +1) %3], object._labelmap._children[(_treu +1) %3], true);
+          this.reslice1D_(slices, rowsCount, rowsCount, image, max,
+              object._children[(_scan_direction_int +1) %3], object._labelmap._children[(_scan_direction_int +1) %3], true);
           this.reslice1D_(slices, rowsCount, colsCount, image, max,
-              object._children[(_treu +2) %3], object._labelmap._children[(_treu +2) %3], false);
+              object._children[(_scan_direction_int +2) %3], object._labelmap._children[(_scan_direction_int +2) %3], false);
         } else {
-          this.reslice1DColorTable_(slices, colsCount, rowsCount, realImage,
-              max, object._colortable, object._children[(_treu +1) %3],
-              object._labelmap._children[(_treu +1) %3], true);
           this.reslice1DColorTable_(slices, rowsCount, colsCount, realImage,
-              max, object._colortable, object._children[(_treu +2) %3],
-              object._labelmap._children[(_treu +2) %3], false);
+              max, object._colortable, object._children[(_scan_direction_int +1) %3],
+              object._labelmap._children[(_scan_direction_int +1) %3], true);
+          this.reslice1DColorTable_(slices, rowsCount, colsCount, realImage,
+              max, object._colortable, object._children[(_scan_direction_int +2) %3],
+              object._labelmap._children[(_scan_direction_int +2) %3], false);
         }
       } else {
-        console.log((_treu +1) %3);
-        console.log((_treu +2) %3);
+        console.log((_scan_direction_int +1) %3);
+        console.log((_scan_direction_int +2) %3);
         if (!object._colortable) {
-          this.reslice1D_(slices, colsCount, rowsCount, image, max,
-              object._children[(_treu +1) %3], null, true);
-          this.reslice1D_(slices, colsCount, rowsCount, image, max,
-              object._children[(_treu +2) %3], null, true);
+          this.reslice1D_(slices, rowsCount, colsCount, image, max,
+              object._children[(_scan_direction_int +1) %3], null, false);
+          this.reslice1D_(slices, rowsCount, colsCount, image, max,
+              object._children[(_scan_direction_int +2) %3], null, false);
         } else {
           this.reslice1DColorTable_(slices, colsCount, rowsCount, realImage,
               max, object._colortable, object._slicesY, null, true);
