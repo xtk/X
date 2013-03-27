@@ -410,24 +410,24 @@ X.parser.prototype.reslice = function(object, MRI) {
         // map slice/row/col to xyz
         // using orientation
         // todo direction too
-        var _slice = (slices + orient[0] * orient[1] * slice) % slices;
-        var _row = (rowsCount + orient[0] * row) % rowsCount;
-        var _col = (colsCount + orient[1] * col) % colsCount;
+        var _slice = slice;//(slices + orient[0] * orient[1] * slice) % slices;
+        var _row = row;//(rowsCount + orient[0] * row) % rowsCount;
+        var _col = col;//(colsCount + orient[1] * col) % colsCount;
         if (_scan_direction_int == 0) {
           // sagittal
           // use vectors
-          image[slice][_row][_col] = 255 * (pixelValue / max);
-          realImage[slice][_row][_col] = pixelValue;
+          image[slice][_col][_row] = 255 * (pixelValue / max);
+          realImage[slice][_col][_row] = pixelValue;
         } else if (_scan_direction_int == 1) {
           // coronal
           image[_col][slice][_row] = 255 * (pixelValue / max);
           realImage[_col][slice][_row] = pixelValue;
         } else {
           // axial
-          image[_row][_col][slice] = 255 * (pixelValue / max);
-          realImage[_row][_col][slice] = pixelValue;
-          //image[_col][_row][slice] = 255 * (pixelValue / max);
-          //realImage[_col][_row][slice] = pixelValue;
+          //image[_row][_col][slice] = 255 * (pixelValue / max);
+          //realImage[_row][_col][slice] = pixelValue;
+          image[_col][_row][slice] = 255 * (pixelValue / max);
+          realImage[_col][_row][slice] = pixelValue;
         }
         p++;
       }
@@ -484,9 +484,11 @@ X.parser.prototype.reslice = function(object, MRI) {
             //pixelValue = image[jmax-j-1][kmax - k -1 ][i];
             pixelValue = image[j][k][i];
             
-            //arr2.push(p);
-            //arr1.push(((1+p)*kmax)%(jmax*kmax + 1) - 1);
-            //textureStartIndex = ((1+p)*kmax)%(jmax*kmax + 1) - 1;
+            
+            
+            arr2.push(textureStartIndex);
+            //textureStartIndex = 4*(((1+p)*kmax)%(jmax*kmax + 1)) -1;
+            arr1.push(textureStartIndex);
             //textureStartIndex = ((1+p)*kmax)%(jmax*kmax) - 1;
             //console.log('p = ' + (p*jmax)%(p*kmax));
           }
@@ -499,6 +501,7 @@ X.parser.prototype.reslice = function(object, MRI) {
           textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
           textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
           textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
+          
           p++;
         }
       }
@@ -515,7 +518,7 @@ X.parser.prototype.reslice = function(object, MRI) {
       }
       var currentSlice = targetSlice._children[_ind];
       currentSlice._texture = pixelTexture;
-    }
+          }
   }
   
   console.log(arr1);

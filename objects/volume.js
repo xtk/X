@@ -312,7 +312,7 @@ X.volume.prototype.create_ = function(_scan_direction, _scan_direction_vec) {
           this._center[2] ], [ this._center[0], this._center[1],
           this._center[2] + _position ]);
       var _front = new Array([ 1, 0, 0 ], [ 0, 1, 0 ], [ 0, 0, 1 ]);
-      var _up = new Array( [ 0, 0, 1 ], [ 0, 0, -1 ], [ 0, 1, 0] );
+      var _up = new Array( [ 0, 0, 1 ], [ 0, 0, -1 ], [ 1, 0, 0] );
       // dimensions
       var borderColor = [ 1, 1, 1 ];
       var borders = this._borders;
