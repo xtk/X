@@ -128,7 +128,10 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   var MRI = {
     data: null,
     min: Infinity,
-    max: -Infinity
+    max: -Infinity,
+    image_position : null,
+    image_orientation : null,
+    anatomical_orientation : 5
   };
   
   //
@@ -176,11 +179,68 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
     object._upperThreshold = max;
   }
   
+  console.log(this.vectors);
+  
+  var tmp_orient = [];
+  tmp_orient.push(this.vectors[0][0]);
+  tmp_orient.push(this.vectors[0][1]);
+  tmp_orient.push(this.vectors[0][2]);
+  tmp_orient.push(this.vectors[1][0]);
+  tmp_orient.push(this.vectors[1][1]);
+  tmp_orient.push(this.vectors[1][2]);
+  MRI.image_orientation = tmp_orient;
+  
+  var _x_cosine = this.vectors[0];
+  var _x_abs_cosine = _x_cosine.map(function(v) {
+    return Math.abs(v);
+  });
+  var _x_max = _x_abs_cosine.indexOf(Math.max.apply(Math, _x_abs_cosine));
+  
+  // y cosine = row
+  var _y_cosine = this.vectors[1];
+  var _y_abs_cosine = _y_cosine.map(function(v) {
+    return Math.abs(v);
+  });
+  var _y_max = _y_abs_cosine.indexOf(Math.max.apply(Math, _y_abs_cosine));
+  
+  var _scan_direction_int = _x_max + _y_max;
+  var _scan_direction = "";
+  
+  switch (_scan_direction_int) {
+  case 1:
+    _scan_direction = "AXIAL";
+    _scan_direction_int = 2;
+    break;
+  case 2:
+    _scan_direction = "CORONAL";
+    _scan_direction_int = 1;
+    break;
+  case 3:
+    _scan_direction = "SAGITTAL";
+    _scan_direction_int = 0;
+    break;
+  default:
+    _scan_direction = "unrecognized - assume SAGITTAL";
+    _scan_direction_int = 0;
+    break;
+  }
+  // get scan direction
+  console.log('x cosine');
+  console.log(_x_cosine);
+  console.log(_x_max);
+  console.log('y cosine');
+  console.log(_y_cosine);
+  console.log(_y_max);
+  console.log('scan direction');
+  console.log(_scan_direction);
+  
+  var orient = [_x_cosine[_x_max]<0?-1:1, _y_cosine[_y_max]<0?-1:1];
+  
   // create the object
-  object.create_();
+  object.create_(_scan_direction_int, orient);
   
   X.TIMERSTOP(this._classname + '.parse');
-  
+
   // now we have the values and need to reslice in the 3 orthogonal directions
   // and create the textures for each slice
   object._image = this.reslice(object, MRI);

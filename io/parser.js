@@ -410,9 +410,9 @@ X.parser.prototype.reslice = function(object, MRI) {
         // map slice/row/col to xyz
         // using orientation
         // todo direction too
-        var _slice = slice;//(slices + orient[0] * orient[1] * slice) % slices;
-        var _row = row;//(rowsCount + orient[0] * row) % rowsCount;
-        var _col = col;//(colsCount + orient[1] * col) % colsCount;
+        var _slice = (slices + orient[0] * orient[1] * slice) % slices;
+        var _row = (rowsCount + orient[0] * row) % rowsCount;
+        var _col = (colsCount + orient[1] * col) % colsCount;
         if (_scan_direction_int == 0) {
           // sagittal
           // use vectors
