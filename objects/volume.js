@@ -328,11 +328,11 @@ X.volume.prototype.create_ = function(_scan_direction, _scan_direction_vec) {
       
       // slices dimensions
       var _ind = (_xyz + 1) % 3;
-      // rows
+      // cols
       var width = this._dimensions[_ind] * this._spacing[_ind]
           - this._spacing[_ind];
       _ind = (_xyz + 2) % 3;
-      // cols
+      // rows
       var height = this._dimensions[_ind] * this._spacing[_ind]
           - this._spacing[_ind];
       

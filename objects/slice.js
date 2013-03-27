@@ -273,10 +273,6 @@ X.slice.prototype.create_ = function() {
   var upVector = new goog.math.Vec3(this._up[0], this._up[1], this._up[2]);
   var rightVector = goog.math.Vec3.cross(upVector, frontVector);
   
-  console.log(frontVector);
-  console.log(upVector);
-  console.log(rightVector);
-  
   var centerVector = new goog.math.Vec3(this._center[0], this._center[1],
       this._center[2]);
 
@@ -309,8 +305,6 @@ X.slice.prototype.create_ = function() {
   point0 = new goog.math.Vec3(point0.x * sizeVector.x, point0.y * sizeVector.y,
       point0.z * sizeVector.z);
   point0.add(centerVector);
-  
-  console.log(point0);
 
   var point1 = goog.math.Vec3.sum(rightVector.clone().invert(), upVector);
   point1 = new goog.math.Vec3(point1.x * sizeVector.x, point1.y * sizeVector.y,
