@@ -130,7 +130,8 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
     min: Infinity,
     max: -Infinity,
     image_position : null,
-    image_orientation : null,
+    space : null,
+    space_orientation : null,
     anatomical_orientation : 5
   };
   
@@ -188,7 +189,12 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   tmp_orient.push(this.vectors[1][0]);
   tmp_orient.push(this.vectors[1][1]);
   tmp_orient.push(this.vectors[1][2]);
-  MRI.image_orientation = tmp_orient;
+  tmp_orient.push(this.vectors[2][0]);
+  tmp_orient.push(this.vectors[2][1]);
+  tmp_orient.push(this.vectors[2][2]);
+  
+  MRI.space = this.space;
+  MRI.space_orientation = tmp_orient;
   
   var _x_cosine = this.vectors[0];
   var _x_abs_cosine = _x_cosine.map(function(v) {
@@ -383,6 +389,9 @@ X.parserNRRD.prototype.fieldFunctions = {
       }
       return _results;
     })();
+  },
+  'space': function(data) {
+    return this.space = data.split("-");
   },
   'space directions': function(data) {
 
