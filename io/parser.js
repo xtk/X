@@ -461,10 +461,20 @@ X.parser.prototype.reslice = function(object, MRI) {
       var _position = (-halfDimension * _spacing[_tk]) +
       (_k * _spacing[_tk]);
       // center
-      var _center = [object._center[0],object.center[1],object.center[2]];
+      var _center = [object._center[0],object._center[1],object._center[2]];
       // move center along normal
       // 0 should be hard coded
-      _center[0] += _position;
+      // find normal direction and use it!
+      if(_norm_cosine[_tk][0] != 0){
+        _center[0] += _position;
+      }
+      else if(_norm_cosine[_tk][1] != 0){
+        _center[1] += _position;
+      }
+      else{
+        _center[2] += _position;
+      }
+
       
       // create the slice
       // .. new slice
@@ -484,9 +494,9 @@ X.parser.prototype.reslice = function(object, MRI) {
           var _pix_val = 0;
           // order pixels based on cosine directions?
           // y flip?
-          var _li = (_dim[_ti] + _orient[_ti] * _i) % _dim[_ti];
-          var _lj = (_dim[_tj] + _orient[_tj] * _j) % _dim[_tj];
-          var _lk = (_dim[_tk] + _orient[_tk] * _k) % _dim[_tk];
+          var _li = _i;//(_dim[_ti] + _orient[_ti] * _i) % _dim[_ti];
+          var _lj = _j;//(_dim[_tj] + _orient[_tj] * _j) % _dim[_tj];
+          var _lk = _k;//(_dim[_tk] + _orient[_tk] * _k) % _dim[_tk];
 
           if(xyz == 0){
             _pix_val = image[_li][_lj][_lk];
