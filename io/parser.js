@@ -326,6 +326,12 @@ X.parser.prototype.reslice = function(object, MRI) {
   _z_norm_cosine[_z_max] = _z_cosine[_z_max] < 0 ? -1 : 1;
   var _orient = [ _x_norm_cosine[_x_max], _y_norm_cosine[_y_max],
       _z_norm_cosine[_z_max] ];
+  
+  
+  // might be usefull to loop
+  var _norm_cosine = [_x_norm_cosine, _y_norm_cosine, _z_norm_cosine];
+  // _orient might be useful too
+  
   // allocate volume
   // rows, cols and slices (ijk dimensions)
   var _dim = object._dimensions;
@@ -397,10 +403,6 @@ X.parser.prototype.reslice = function(object, MRI) {
   console.log(_x_norm_cosine);
   console.log(_y_norm_cosine);
   console.log(_z_norm_cosine);
-  
-  // might be usefull to loop
-  var _norm_cosine = [_x_norm_cosine, _y_norm_cosine, _z_norm_cosine];
-  // _orient might be useful too
   
   var xyz = 0;
   for (xyz = 0; xyz < 3; xyz++) {
@@ -502,7 +504,7 @@ X.parser.prototype.reslice = function(object, MRI) {
       var targetSlice = _slice;
       var textureForCurrentSlice = new Uint8Array(textureSize);
       
-      console.log(_orient);
+      //console.log(_orient);
       
       for(_j = 0; _j < jmax; _j++){
         _i = 0;

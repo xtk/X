@@ -541,34 +541,215 @@ X.renderer2D.prototype.update_ = function(object) {
   var _sliceHeight = 0;
   var _dimensions = object._dimensions;
   var _spacing = object._spacing;
+  
+  console.log(object);
+  
+  /////
+  
+  var MRI = object._MRI;
+  
+    // scan space
+    var _space = MRI.space;
+    // scan space orientation
+    var _space_orientation = MRI.space_orientation;
+    console.log('space: ' + _space);
+    console.log('space orientation: ' + _space_orientation);
+    // Go to Right-Anterior-Superior for now!
+    var _ras_space_orientation = _space_orientation;
+    if (_space[0] != 'right') {
+      _ras_space_orientation[0] = -_ras_space_orientation[0];
+      _ras_space_orientation[3] = -_ras_space_orientation[3];
+      _ras_space_orientation[6] = -_ras_space_orientation[6];
+    }
+    if (_space[1] != 'anterior') {
+      _ras_space_orientation[1] = -_ras_space_orientation[1];
+      _ras_space_orientation[4] = -_ras_space_orientation[4];
+      _ras_space_orientation[7] = -_ras_space_orientation[7];
+    }
+    if (_space[2] != 'superior') {
+      _ras_space_orientation[2] = -_ras_space_orientation[2];
+      _ras_space_orientation[5] = -_ras_space_orientation[5];
+      _ras_space_orientation[8] = -_ras_space_orientation[8];
+    }
+    console.log('RAS space orientation: ' + _ras_space_orientation);
+    // Go to IJK space
+    // Get ijk orientation
+    var _x_cosine = _space_orientation.slice(0, 3);
+    var _x_abs_cosine = _x_cosine.map(function(v) {
+      return Math.abs(v);
+    });
+    var _x_max = _x_abs_cosine.indexOf(Math.max.apply(Math, _x_abs_cosine));
+    var _x_norm_cosine = [ 0, 0, 0 ];
+    _x_norm_cosine[_x_max] = _x_cosine[_x_max] < 0 ? -1 : 1;
+    var _y_cosine = _space_orientation.slice(3, 6);
+    var _y_abs_cosine = _y_cosine.map(function(v) {
+      return Math.abs(v);
+    });
+    var _y_max = _y_abs_cosine.indexOf(Math.max.apply(Math, _y_abs_cosine));
+    var _y_norm_cosine = [ 0, 0, 0 ];
+    _y_norm_cosine[_y_max] = _y_cosine[_y_max] < 0 ? -1 : 1;
+    var _z_cosine = _space_orientation.slice(6, 9);
+    var _z_abs_cosine = _z_cosine.map(function(v) {
+      return Math.abs(v);
+    });
+    var _z_max = _z_abs_cosine.indexOf(Math.max.apply(Math, _z_abs_cosine));
+    var _z_norm_cosine = [ 0, 0, 0 ];
+    _z_norm_cosine[_z_max] = _z_cosine[_z_max] < 0 ? -1 : 1;
+    var _orient = [ _x_norm_cosine[_x_max], _y_norm_cosine[_y_max],
+        _z_norm_cosine[_z_max] ];
+    
+    
+    // might be usefull to loop
+    var _norm_cosine = [_x_norm_cosine, _y_norm_cosine, _z_norm_cosine];
+    // _orient might be useful too
+    var _dim = object._dimensions;
+    var _spacing = object._spacing;
+  
+  
+  
+  /////
 
   // check the orientation and store a pointer to the slices
+  var xyz = 0;
   if (this._orientation == 'X') {
-
-    this._slices = object._slicesX._children;
+    xyz = 0;
+    var _ti = xyz;
+    var _tj = (_ti + 1) % 3;
+    var _tk = (_ti + 2) % 3;
+    var textureSize = 4 * _dim[_ti] * _dim[_tj];
+    _k = 0;
+    var imax = _dim[_ti];
+    var jmax = _dim[_tj];
+    var kmax = _dim[_tk];    
+    // CREATE SLICE in normal direction
+    var halfDimension = (kmax - 1) / 2;
+    var _indexCenter = halfDimension;
+    // up = i direction
+    var _right = _norm_cosine[_ti];
+    // up = i direction
+    var _up = _norm_cosine[_tj];
+    // front = normal direction
+    var _front = _norm_cosine[_tk];
+    // color
+    var _color = [1,1,1];
+    if(_norm_cosine[_tk][2] != 0){
+      _color = [1,0,0];
+    }
+    else if(_norm_cosine[_tk][1] != 0){
+      _color = [0,1,0];
+    }
+    else{
+      _color = [1,1,0];
+    }
+    // size
+//    var _width = imax * _spacing[_ti];
+//    var _height = jmax * _spacing[_tj];
+    var _width = imax * _spacing[_ti];
+    var _height = jmax * _spacing[_tj];
+    
+    
+    
+    this._slices = object._children[_tk]._children;
     // the X oriented texture is twisted ..
     // this means the indices are switched
-    _sliceWidth = _dimensions[1];
-    _sliceHeight = _dimensions[2];
-    this._sliceWidthSpacing = _spacing[1];
-    this._sliceHeightSpacing = _spacing[2];
+    _sliceWidth = _width;
+    _sliceHeight = _height;
+    this._sliceWidthSpacing =  _spacing[_ti];
+    this._sliceHeightSpacing = _spacing[_tj];
 
   } else if (this._orientation == 'Y') {
+    xyz = 1;
+    
+    var _ti = xyz;
+    var _tj = (_ti + 1) % 3;
+    var _tk = (_ti + 2) % 3;
+    var textureSize = 4 * _dim[_ti] * _dim[_tj];
+    _k = 0;
+    var imax = _dim[_ti];
+    var jmax = _dim[_tj];
+    var kmax = _dim[_tk];    
+    // CREATE SLICE in normal direction
+    var halfDimension = (kmax - 1) / 2;
+    var _indexCenter = halfDimension;
+    // up = i direction
+    var _right = _norm_cosine[_ti];
+    // up = i direction
+    var _up = _norm_cosine[_tj];
+    // front = normal direction
+    var _front = _norm_cosine[_tk];
+    // color
+    var _color = [1,1,1];
+    if(_norm_cosine[_tk][2] != 0){
+      _color = [1,0,0];
+    }
+    else if(_norm_cosine[_tk][1] != 0){
+      _color = [0,1,0];
+    }
+    else{
+      _color = [1,1,0];
+    }
+    // size
+//    var _width = imax * _spacing[_ti];
+//    var _height = jmax * _spacing[_tj];
+    var _width = imax * _spacing[_ti];
+    var _height = jmax * _spacing[_tj];
+    
+    
+    
+    this._slices = object._children[_tk]._children;
+    // the X oriented texture is twisted ..
+    // this means the indices are switched
+    _sliceWidth = _width;
+    _sliceHeight = _height;
+    this._sliceWidthSpacing =  _spacing[_ti];
+    this._sliceHeightSpacing = _spacing[_tj];
 
-    this._slices = object._slicesY._children;
-    _sliceWidth = _dimensions[0];
-    _sliceHeight = _dimensions[2];
-    this._sliceWidthSpacing = _spacing[0];
-    this._sliceHeightSpacing = _spacing[2];
-
-  } else if (this._orientation == 'Z') {
-
-    this._slices = object._slicesZ._children;
-    _sliceWidth = _dimensions[0];
-    _sliceHeight = _dimensions[1];
-    this._sliceWidthSpacing = _spacing[0];
-    this._sliceHeightSpacing = _spacing[1];
-
+  }
+  else{
+    xyz = 2;
+    var _ti = xyz;
+    var _tj = (_ti + 1) % 3;
+    var _tk = (_ti + 2) % 3;
+    var textureSize = 4 * _dim[_ti] * _dim[_tj];
+    _k = 0;
+    var imax = _dim[_ti];
+    var jmax = _dim[_tj];
+    var kmax = _dim[_tk];    
+    // CREATE SLICE in normal direction
+    var halfDimension = (kmax - 1) / 2;
+    var _indexCenter = halfDimension;
+    // up = i direction
+    var _right = _norm_cosine[_ti];
+    // up = i direction
+    var _up = _norm_cosine[_tj];
+    // front = normal direction
+    var _front = _norm_cosine[_tk];
+    // color
+    var _color = [1,1,1];
+    if(_norm_cosine[_tk][2] != 0){
+      _color = [1,0,0];
+    }
+    else if(_norm_cosine[_tk][1] != 0){
+      _color = [0,1,0];
+    }
+    else{
+      _color = [1,1,0];
+    }
+    // size
+//    var _width = imax * _spacing[_ti];
+//    var _height = jmax * _spacing[_tj];
+    var _width = imax * _spacing[_ti];
+    var _height = jmax * _spacing[_tj];
+    
+    
+    
+    this._slices = object._children[_tk]._children;
+    // the X oriented texture is twisted ..
+    // this means the indices are switched
+    _sliceWidth = _width;
+    _sliceHeight = _height;
+    this._sliceWidthSpacing =  _spacing[_ti];
+    this._sliceHeightSpacing = _spacing[_tj];
   }
 
   // .. and store the dimensions

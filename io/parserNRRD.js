@@ -249,6 +249,8 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
 
   // now we have the values and need to reslice in the 3 orthogonal directions
   // and create the textures for each slice
+  // to be added
+  object._MRI = MRI;
   object._image = this.reslice(object, MRI);
   
   // the object should be set up here, so let's fire a modified event
