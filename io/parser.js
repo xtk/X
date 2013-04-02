@@ -403,7 +403,7 @@ X.parser.prototype.reslice = function(object, MRI) {
   // _orient might be useful too
   
   var xyz = 0;
-  for (xyz = 0; xyz < 1; xyz++) {
+  for (xyz = 0; xyz < 3; xyz++) {
     var _ti = xyz;
     var _tj = (_ti + 1) % 3;
     var _tk = (_ti + 2) % 3;
@@ -480,22 +480,20 @@ X.parser.prototype.reslice = function(object, MRI) {
         _i = 0;
         for(_i = 0; _i < imax; _i++){
           var _pix_val = 0;
-          // order pixels based on cosine directions
+          // order pixels based on cosine directions?
+          // y flip?
           var _li = (_dim[_ti] + _orient[_ti] * _i) % _dim[_ti];
           var _lj = (_dim[_tj] + _orient[_tj] * _j) % _dim[_tj];
           var _lk = (_dim[_tk] + _orient[_tk] * _k) % _dim[_tk];
-          
-          // use normal to know how pixels are arranged
-          if(_norm_cosine[_tk][0] != 0){
-            // use slice orientation?
+
+          if(xyz == 0){
+            _pix_val = image[_li][_lj][_lk];
+          }
+          else if(xyz == 1){
             _pix_val = image[_lk][_li][_lj];
           }
-          else if(_norm_cosine[_tk][1] != 0){
-            // use slice orientation?
-            _pix_val = image[_lj][_lk][_li];
-          }
           else{
-            _pix_val = image[_li][_lj][_lk];
+            _pix_val = image[_lj][_lk][_li];
           }
           
            var pixelValue_r = _pix_val;
