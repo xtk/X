@@ -428,6 +428,8 @@ X.parser.prototype.reslice = function(object, MRI) {
     var halfDimension = (kmax - 1) / 2;
     var _indexCenter = halfDimension;
     // up = i direction
+    var _right = _norm_cosine[_ti];
+    // up = i direction
     var _up = _norm_cosine[_tj];
     // front = normal direction
     var _front = _norm_cosine[_tk];
@@ -458,6 +460,17 @@ X.parser.prototype.reslice = function(object, MRI) {
       
       // CREATE SLICE
       // position
+      /*var _orgi = 1;
+      if(_norm_cosine[_tk][0] != 0){
+        _orgi = _norm_cosine[_tk][0];
+      }
+      else if(_norm_cosine[_tk][1] != 0){
+        _orgi = _norm_cosine[_tk][1];
+      }
+      else{
+        _orgi = _norm_cosine[_tk][2];
+      }*/
+      
       var _position = (-halfDimension * _spacing[_tk]) +
       (_k * _spacing[_tk]);
       // center
@@ -466,20 +479,20 @@ X.parser.prototype.reslice = function(object, MRI) {
       // 0 should be hard coded
       // find normal direction and use it!
       if(_norm_cosine[_tk][0] != 0){
-        _center[0] += _position;
+        _center[0] += _norm_cosine[_tk][0]*_position;
       }
       else if(_norm_cosine[_tk][1] != 0){
-        _center[1] += _position;
+        _center[1] += _norm_cosine[_tk][1]*_position;
       }
       else{
-        _center[2] += _position;
+        _center[2] += _norm_cosine[_tk][2]*_position;
       }
 
       
       // create the slice
       // .. new slice
       var _slice = new X.slice();
-      _slice.setup(_center, _front, _up, _width, _height, true,
+      _slice.setup(_center, _front, _up, _right, _width, _height, true,
           _color);
       // map slice to volume
       _slice._volume = object;
@@ -488,24 +501,27 @@ X.parser.prototype.reslice = function(object, MRI) {
 
       var targetSlice = _slice;
       var textureForCurrentSlice = new Uint8Array(textureSize);
+      
+      console.log(_orient);
+      
       for(_j = 0; _j < jmax; _j++){
         _i = 0;
         for(_i = 0; _i < imax; _i++){
           var _pix_val = 0;
           // order pixels based on cosine directions?
           // y flip?
-          var _li = _i;//(_dim[_ti] + _orient[_ti] * _i) % _dim[_ti];
-          var _lj = _j;//(_dim[_tj] + _orient[_tj] * _j) % _dim[_tj];
-          var _lk = _k;//(_dim[_tk] + _orient[_tk] * _k) % _dim[_tk];
+          //var _li = (_dim[_ti] + _orient[_ti] * _i) % _dim[_ti];
+          //var _lj = (_dim[_tj] + _orient[_tj] * _j) % _dim[_tj];
+          //var _lk = (_dim[_tk] + _orient[_tk] * _k) % _dim[_tk];
 
           if(xyz == 0){
-            _pix_val = image[_li][_lj][_lk];
+            _pix_val = image[_i][_j][_k];
           }
           else if(xyz == 1){
-            _pix_val = image[_lk][_li][_lj];
+            _pix_val = image[_k][_i][_j];
           }
           else{
-            _pix_val = image[_lj][_lk][_li];
+            _pix_val = image[_j][_k][_i];
           }
           
            var pixelValue_r = _pix_val;

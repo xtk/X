@@ -81,6 +81,8 @@ X.slice = function(slice) {
    * @protected
    */
   this._up = [0, 1, 0];
+  
+  this._right= [1, 0, 0];
 
   /**
    * The width of this slice.
@@ -190,7 +192,7 @@ X.slice.prototype.copy_ = function(slice) {
  * @param {!boolean=} borders Enable or disable borders.
  * @param {!Array=} borderColor The optional borderColor.
  */
-X.slice.prototype.setup = function(center, front, up, width, height, borders,
+X.slice.prototype.setup = function(center, front, up, right, width, height, borders,
     borderColor) {
 
 
@@ -246,6 +248,8 @@ X.slice.prototype.setup = function(center, front, up, width, height, borders,
   this._front = front;
 
   this._up = up;
+  
+  this._right = right;
 
   this._width = width;
 
@@ -271,7 +275,7 @@ X.slice.prototype.create_ = function() {
   var frontVector = new goog.math.Vec3(this._front[0], this._front[1],
       this._front[2]);
   var upVector = new goog.math.Vec3(this._up[0], this._up[1], this._up[2]);
-  var rightVector = goog.math.Vec3.cross(upVector, frontVector);
+  var rightVector = new goog.math.Vec3(this._right[0], this._right[1], this._right[2]);
   
   var centerVector = new goog.math.Vec3(this._center[0], this._center[1],
       this._center[2]);
