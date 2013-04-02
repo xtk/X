@@ -428,7 +428,7 @@ X.parser.prototype.reslice = function(object, MRI) {
     var halfDimension = (kmax - 1) / 2;
     var _indexCenter = halfDimension;
     // up = i direction
-    var _up = _norm_cosine[_ti];
+    var _up = _norm_cosine[_tj];
     // front = normal direction
     var _front = _norm_cosine[_tk];
     // color
@@ -443,6 +443,8 @@ X.parser.prototype.reslice = function(object, MRI) {
       _color = [1,1,0];
     }
     // size
+//    var _width = imax * _spacing[_ti];
+//    var _height = jmax * _spacing[_tj];
     var _width = imax * _spacing[_ti];
     var _height = jmax * _spacing[_tj];
 
@@ -520,31 +522,6 @@ X.parser.prototype.reslice = function(object, MRI) {
       // push slice
       object._children[_tk]._children.push(targetSlice);
     }
-    
-    /*
-     * for (_k = 0; _k < kmax; _k++) { var textureForCurrentSlice = new
-     * Uint8Array(textureArraySize); var p = 0; _j = 0; for (_j = 0; _j < jmax;
-     * _j++) { _i = 0; for (_i = 0; _i < imax; _i++) { var pixelValue = 0; //
-     * map i,j,k given orientation... var textureStartIndex = p * 4; /* var _li =
-     * (_dim[0] + _orient[0] * _i) % _dim[0]; var _lj = (_dim[1] + _orient[1] *
-     * _j) % _dim[1]; var _lk = (_dim[2] + _orient[2] * _k) % _dim[2];
-     */
-    /*
-     * if (xyz == 0) { // sagittal pixelValue = image[_i][_j][_k]; } else if
-     * (xyz == 1) { // coronal pixelValue = image[_k][_i][_j]; } else { // axial
-     * pixelValue = image[_j][_k][_i]; }
-     * 
-     * //var pixelValue_r = pixelValue; //var pixelValue_g = pixelValue; //var
-     * pixelValue_b = pixelValue; //var pixelValue_a = 255;
-     * //textureForCurrentSlice[textureStartIndex] = pixelValue_r;
-     * //textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
-     * //textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
-     * //textureForCurrentSlice[++textureStartIndex] = pixelValue_a; //p++; } }
-     */
-    // var pixelTexture = new X.texture();
-    // pixelTexture._rawData = textureForCurrentSlice;
-    // pixelTexture._rawDataWidth = jmax;
-    // pixelTexture._rawDataHeight = kmax;
     // use orientation for target too
     // var _ind = _i;
     /*
@@ -553,219 +530,6 @@ X.parser.prototype.reslice = function(object, MRI) {
     // var currentSlice = targetSlice._children[_ind];
     // currentSlice._texture = pixelTexture;
     // }
-  }
-  return realImage;
-  // scan direction? AXIAL, CORONAL OR SAGITTAL?
-  // http://www.mathworks.com/matlabcentral/fileexchange/22508-siemens-dicom-sort-and-convert-to-nifti/content/get_header_parameters.m
-  // 0 + 1: x + y = z: SAGITTAL...
-  // etc.
-  var _scan_direction_int = _x_max + _y_max;
-  var _scan_direction = "";
-  switch (_scan_direction_int) {
-  case 1:
-    _scan_direction = "AXIAL";
-    _scan_direction_int = 2;
-    break;
-  case 2:
-    _scan_direction = "CORONAL";
-    _scan_direction_int = 1;
-    break;
-  case 3:
-    _scan_direction = "SAGITTAL";
-    _scan_direction_int = 0;
-    break;
-  default:
-    _scan_direction = "unrecognized - assume SAGITTAL";
-    _scan_direction_int = 0;
-    break;
-  }
-  var _orient = _scan_direction_int;
-  _scan_direction_int = _scan_direction_int % 3;
-  console.log('_orient: ' + _orient);
-  console.log('orient: ' + orient);
-  console.log('RESLICING!');
-  X.TIMER(this._classname + '.reslice');
-  var sizes = object._dimensions;
-  var max = MRI.max;
-  var datastream = MRI.data;
-  // number of slices in scan direction
-  var slices = sizes[2];
-  // number of rows in each slice in scan direction
-  var rowsCount = sizes[1];
-  // number of cols in each slice in scan direction
-  var colsCount = sizes[0];
-  // do we have a labelmap?
-  var hasLabelMap = object._labelmap != null;
-  // slice dimensions in scan direction
-  var numberPixelsPerSlice = rowsCount * colsCount;
-  // console.log(image);
-  var pixelValue = 0;
-  // reference the color table for easy access
-  var _colorTable = null;
-  if (object._colortable) {
-    _colorTable = object._colortable._map;
-  }
-  // 1- Create 3D volume
-  // allocate volume [x][y][y]
-  // create slices in all directions
-  var ind_nb_sagittal = (((_scan_direction_int + 1) % 3) * (2 - (_scan_direction_int) % 2)) % 3;
-  var ind_nb_coronal = (((_scan_direction_int + 1) % 3)
-      * (2 - (_scan_direction_int) % 2) + 1) % 3;
-  var ind_nb_axial = (((_scan_direction_int + 1) % 3)
-      * (2 - (_scan_direction_int) % 2) + 2) % 3;
-  console.log('nb sag');
-  console.log(sizes[ind_nb_sagittal]);
-  console.log('nb coro');
-  console.log(sizes[ind_nb_coronal]);
-  console.log('nb ax');
-  console.log(sizes[ind_nb_axial]);
-  // GO SAGITAL!
-  // texture array size
-  // slices dimensions
-  var x = 0;
-  var xmax = sizes[(((_scan_direction_int + 1) % 3) * (2 - (_scan_direction_int) % 2)) % 3];
-  var y = 0;
-  var ymax = sizes[(1 + ((_scan_direction_int + 1) % 3)
-      * (2 - (_scan_direction_int) % 2)) % 3];
-  var z = 0;
-  var zmax = sizes[(2 + ((_scan_direction_int + 1) % 3)
-      * (2 - (_scan_direction_int) % 2)) % 3];
-  console.log('**ALLOCATION**');
-  console.log('xmax: ' + xmax);
-  console.log('ymax: ' + ymax);
-  console.log('zmax: ' + zmax);
-  // allocate 3d image array [slices][rows][cols]
-  // use image for fast looping
-  var image = new Array(xmax);
-  // use real image to return real values
-  var realImage = new Array(xmax);
-  for (x = 0; x < xmax; x++) {
-    image[x] = new Array(ymax);
-    realImage[x] = new Array(ymax);
-    y = 0;
-    for (y = 0; y < ymax; y++) {
-      image[x][y] = new MRI.data.constructor(zmax);
-      realImage[x][y] = new MRI.data.constructor(zmax);
-    }
-  }
-  console.log('**FILLING**');
-  console.log('slice: ' + slices);
-  console.log('row: ' + rowsCount);
-  console.log('col: ' + colsCount);
-  // fill volume
-  // using scan orientation
-  var slice = 0;
-  var row = 0;
-  var col = 0;
-  var p = 0;
-  for (slice = 0; slice < slices; slice++) {
-    // grab the pixels for the current slice in scan direction
-    var currentSlice = datastream.subarray(slice * (numberPixelsPerSlice),
-        (slice + 1) * numberPixelsPerSlice);
-    // now loop through all pixels of the current slice
-    row = 0;
-    col = 0;
-    p = 0; // just a counter
-    for (row = 0; row < rowsCount; row++) {
-      for (col = 0; col < colsCount; col++) {
-        // map pixel values
-        pixelValue = currentSlice[p];
-        // save the pixelValue in the 3d image data
-        // map slice/row/col to xyz
-        // using orientation
-        // todo direction too
-        // ijk to ras
-        var _slice = (slices + orient[2] * slice) % slices;
-        var _row = (rowsCount + orient[1] * row) % rowsCount;
-        var _col = (colsCount + orient[0] * col) % colsCount;
-        if (_scan_direction_int == 0) {
-          // sagittal
-          // use vectors
-          image[_slice][_col][_row] = 255 * (pixelValue / max);
-          realImage[_slice][_col][_row] = pixelValue;
-        } else if (_scan_direction_int == 1) {
-          // coronal
-          image[_col][_slice][_row] = 255 * (pixelValue / max);
-          realImage[_col][_slice][_row] = pixelValue;
-        } else {
-          // axial
-          // image[_row][_col][slice] = 255 * (pixelValue / max);
-          // realImage[_row][_col][slice] = pixelValue;
-          image[_col][_row][_slice] = 255 * (pixelValue / max);
-          realImage[_col][_row][_slice] = pixelValue;
-        }
-        p++;
-      }
-    }
-  }
-  // create slices in all directions
-  // xyz = 0 -> SAGITTAL
-  // 1 -> CORONAL
-  // 2 -> AXIAL
-  var arr1 = [];
-  var arr2 = [];
-  var xyz = 0;
-  for (xyz = 0; xyz < 3; xyz++) {
-    var _xyz = (xyz + ((_scan_direction_int + 1) % 3)
-        * (2 - (_scan_direction_int) % 2)) % 3;
-    var _rows = (_xyz + 1) % 3;
-    var _cols = (_xyz + 2) % 3;
-    var textureArraySize = 4 * sizes[_cols] * sizes[_rows];
-    var targetSlice = object._children[xyz]
-    var i = 0;
-    var imax = sizes[_xyz];
-    var jmax = sizes[_rows];
-    var kmax = sizes[_cols];
-    console.log('**SLICING**');
-    console.log('xyz: ' + xyz);
-    console.log('_xyz: ' + _xyz);
-    console.log('i: ' + imax);
-    console.log('j: ' + jmax);
-    console.log('k: ' + kmax);
-    for (i = 0; i < imax; i++) {
-      var textureForCurrentSlice = new Uint8Array(textureArraySize);
-      var p = 0;
-      var j = 0;
-      for (j = 0; j < jmax; j++) {
-        var k = 0;
-        for (k = 0; k < kmax; k++) {
-          var pixelValue = 0;
-          // map i,j,k given orientation...
-          var textureStartIndex = p * 4;
-          if (xyz == 0) {
-            // sagittal
-            pixelValue = image[i][j][k];
-          } else if (xyz == 1) {
-            // coronal
-            pixelValue = image[k][i][j];
-          } else {
-            // axial
-            pixelValue = image[j][k][i];
-          }
-          var pixelValue_r = pixelValue;
-          var pixelValue_g = pixelValue;
-          var pixelValue_b = pixelValue;
-          var pixelValue_a = 255;
-          textureForCurrentSlice[textureStartIndex] = pixelValue_r;
-          textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
-          textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
-          textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
-          p++;
-        }
-      }
-      var pixelTexture = new X.texture();
-      pixelTexture._rawData = textureForCurrentSlice;
-      pixelTexture._rawDataWidth = kmax;
-      pixelTexture._rawDataHeight = jmax;
-      // use orientation for target too
-      var _ind = i;
-      // invert y axis for y-slice index
-      if (xyz == 1) {
-        _ind = imax - 1 - i;
-      }
-      var currentSlice = targetSlice._children[_ind];
-      currentSlice._texture = pixelTexture;
-    }
   }
   X.TIMERSTOP(this._classname + '.reslice');
   return realImage;
