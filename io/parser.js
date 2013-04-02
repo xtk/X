@@ -329,6 +329,7 @@ X.parser.prototype.reslice = function(object, MRI) {
   // allocate volume
   // rows, cols and slices (ijk dimensions)
   var _dim = object._dimensions;
+  var _spacing = object._spacing;
   var max = MRI.max;
   var datastream = MRI.data;
   var image = new Array(_dim[0]);
@@ -402,7 +403,7 @@ X.parser.prototype.reslice = function(object, MRI) {
   // _orient might be useful too
   
   var xyz = 0;
-  for (xyz = 0; xyz < 3; xyz++) {
+  for (xyz = 0; xyz < 1; xyz++) {
     var _ti = xyz;
     var _tj = (_ti + 1) % 3;
     var _tk = (_ti + 2) % 3;
@@ -423,32 +424,85 @@ X.parser.prototype.reslice = function(object, MRI) {
     console.log('second: ' + image[0].length);
     console.log('third: ' +  image[0][0].length);
     
+    // CREATE SLICE in normal direction
+    var halfDimension = (kmax - 1) / 2;
+    var _indexCenter = halfDimension;
+    // up = i direction
+    var _up = _norm_cosine[_ti];
+    // front = normal direction
+    var _front = _norm_cosine[_tk];
+    // color
+    var _color = [1,1,1];
+    if(_norm_cosine[_tk][2] != 0){
+      _color = [1,0,0];
+    }
+    else if(_norm_cosine[_tk][1] != 0){
+      _color = [0,1,0];
+    }
+    else{
+      _color = [1,1,0];
+    }
+    // size
+    var _width = imax * _spacing[_ti];
+    var _height = jmax * _spacing[_tj];
+
+    console.log('spacing: ' +  _spacing);
+    console.log('width: ' +  _width);
+    console.log('height: ' +  _height);
+    
     for(_k = 0; _k < kmax; _k++){
       _j = 0;
       var _p = 0;
+      
+      // CREATE SLICE
+      // position
+      var _position = (-halfDimension * _spacing[_tk]) +
+      (_k * _spacing[_tk]);
+      // center
+      var _center = [object._center[0],object.center[1],object.center[2]];
+      // move center along normal
+      // 0 should be hard coded
+      _center[0] += _position;
+      
+      // create the slice
+      // .. new slice
+      var _slice = new X.slice();
+      _slice.setup(_center, _front, _up, _width, _height, true,
+          _color);
+      // map slice to volume
+      _slice._volume = object;
+      // only show the middle slice, hide everything else
+      _slice['visible'] = (_k == Math.floor(_indexCenter));
+
+      var targetSlice = _slice;
       var textureForCurrentSlice = new Uint8Array(textureSize);
       for(_j = 0; _j < jmax; _j++){
         _i = 0;
         for(_i = 0; _i < imax; _i++){
           var _pix_val = 0;
+          // order pixels based on cosine directions
+          var _li = (_dim[_ti] + _orient[_ti] * _i) % _dim[_ti];
+          var _lj = (_dim[_tj] + _orient[_tj] * _j) % _dim[_tj];
+          var _lk = (_dim[_tk] + _orient[_tk] * _k) % _dim[_tk];
+          
           // use normal to know how pixels are arranged
-          if(_norm_cosine[_tk][2] != 0){
+          if(_norm_cosine[_tk][0] != 0){
             // use slice orientation?
-            _pix_val = image[_i][_j][_k];
+            _pix_val = image[_lk][_li][_lj];
           }
           else if(_norm_cosine[_tk][1] != 0){
             // use slice orientation?
-            _pix_val = image[_j][_k][_i];
+            _pix_val = image[_lj][_lk][_li];
           }
           else{
-            // use slice orientation?
-            _pix_val = image[_k][_i][_j];
+            _pix_val = image[_li][_lj][_lk];
           }
           
-           var pixelValue_r = pixelValue;
-           var pixelValue_g = pixelValue;
-           var pixelValue_b = pixelValue;
+           var pixelValue_r = _pix_val;
+           var pixelValue_g = _pix_val;
+           var pixelValue_b = _pix_val;
            var pixelValue_a = 255;
+           var textureStartIndex = _p * 4;
            textureForCurrentSlice[textureStartIndex] = pixelValue_r;
            textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
            textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
@@ -459,6 +513,14 @@ X.parser.prototype.reslice = function(object, MRI) {
       
       // slice normal?
       // slice orientation?
+      var pixelTexture = new X.texture();
+      pixelTexture._rawData = textureForCurrentSlice;
+      pixelTexture._rawDataWidth = imax;
+      pixelTexture._rawDataHeight = jmax;
+      targetSlice._texture = pixelTexture;
+      
+      // push slice
+      object._children[_tk]._children.push(targetSlice);
     }
     
     /*

@@ -389,7 +389,7 @@ X.volume.prototype.create_ = function(_scan_direction, _scan_direction_vec) {
     var halfDimension = (this._dimensions[xyz] - 1) / 2;
 
     var _indexCenter = halfDimension;
-
+/*
     var i = 0;
     for (i = 0; i < this._dimensions[xyz]; i++) {
 
@@ -448,7 +448,7 @@ X.volume.prototype.create_ = function(_scan_direction, _scan_direction_vec) {
       slices.push(_slice);
 
     }
-
+*/
     // by default, all the 'middle' slices are shown
     if (xyz == 0) {
       this._indexX = _indexCenter;
@@ -534,6 +534,7 @@ X.volume.prototype.slicing_ = function() {
       oldIndex = this._indexZold;
       this._indexZold = this._indexZ;
     }
+    /*
     // hide the old slice
     var _oldSlice = _child._children[parseInt(oldIndex, 10)];
     _oldSlice['visible'] = false;
@@ -542,6 +543,7 @@ X.volume.prototype.slicing_ = function() {
     var _currentSlice = _child._children[parseInt(currentIndex, 10)];
     _currentSlice['visible'] = true;
     _currentSlice._opacity = 1.0;
+    */
   }
 };
 /**
