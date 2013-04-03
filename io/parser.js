@@ -550,6 +550,20 @@ X.parser.prototype.reslice = function(object, MRI) {
       // push slice
       object._children[_tk]._children.push(targetSlice);
     }
+    
+    // set slice index
+    // by default, all the 'middle' slices are shown
+    if (xyz == 0) {
+      object._indexX = halfDimension;
+      object._indexXold = halfDimension;
+    } else if (xyz == 1) {
+      object._indexY = halfDimension;
+      object._indexYold = halfDimension;
+    } else if (xyz == 2) {
+      object._indexZ = halfDimension;
+      object._indexZold = halfDimension;
+    }
+    
     // use orientation for target too
     // var _ind = _i;
     /*
@@ -559,6 +573,9 @@ X.parser.prototype.reslice = function(object, MRI) {
     // currentSlice._texture = pixelTexture;
     // }
   }
+  
+  object._dirty = true;
+  
   X.TIMERSTOP(this._classname + '.reslice');
   return realImage;
 };

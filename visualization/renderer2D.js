@@ -335,7 +335,7 @@ X.renderer2D.prototype.init = function() {
   goog.base(this, 'init', '2d');
 
   // use the background color of the container by setting transparency here
-  this._context.fillStyle = "rgba(0,0,0,0)";
+  this._context.fillStyle = "rgba(200,25,25,0)";
   // .. and size
   this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
 
@@ -541,9 +541,6 @@ X.renderer2D.prototype.update_ = function(object) {
   var _sliceHeight = 0;
   var _dimensions = object._dimensions;
   var _spacing = object._spacing;
-  
-  console.log(object);
-  
   /////
   
   var MRI = object._MRI;
@@ -621,15 +618,6 @@ X.renderer2D.prototype.update_ = function(object) {
     var imax = _dim[_ti];
     var jmax = _dim[_tj];
     var kmax = _dim[_tk];    
-    // CREATE SLICE in normal direction
-    var halfDimension = (kmax - 1) / 2;
-    var _indexCenter = halfDimension;
-    // up = i direction
-    var _right = _norm_cosine[_ti];
-    // up = i direction
-    var _up = _norm_cosine[_tj];
-    // front = normal direction
-    var _front = _norm_cosine[_tk];
     // color
     var _color = [1,1,1];
     if(_norm_cosine[_tk][2] != 0){
@@ -642,12 +630,8 @@ X.renderer2D.prototype.update_ = function(object) {
       _color = [1,1,0];
     }
     // size
-//    var _width = imax * _spacing[_ti];
-//    var _height = jmax * _spacing[_tj];
-    var _width = imax * _spacing[_ti];
-    var _height = jmax * _spacing[_tj];
-    
-    
+    var _width = imax;
+    var _height = jmax;
     
     this._slices = object._children[_tk]._children;
     // the X oriented texture is twisted ..
@@ -668,17 +652,6 @@ X.renderer2D.prototype.update_ = function(object) {
     var imax = _dim[_ti];
     var jmax = _dim[_tj];
     var kmax = _dim[_tk];    
-    // CREATE SLICE in normal direction
-    var halfDimension = (kmax - 1) / 2;
-    var _indexCenter = halfDimension;
-    // up = i direction
-    var _right = _norm_cosine[_ti];
-    // up = i direction
-    var _up = _norm_cosine[_tj];
-    // front = normal direction
-    var _front = _norm_cosine[_tk];
-    // color
-    var _color = [1,1,1];
     if(_norm_cosine[_tk][2] != 0){
       _color = [1,0,0];
     }
@@ -689,12 +662,8 @@ X.renderer2D.prototype.update_ = function(object) {
       _color = [1,1,0];
     }
     // size
-//    var _width = imax * _spacing[_ti];
-//    var _height = jmax * _spacing[_tj];
-    var _width = imax * _spacing[_ti];
-    var _height = jmax * _spacing[_tj];
-    
-    
+    var _width = imax;
+    var _height = jmax;
     
     this._slices = object._children[_tk]._children;
     // the X oriented texture is twisted ..
@@ -714,17 +683,8 @@ X.renderer2D.prototype.update_ = function(object) {
     _k = 0;
     var imax = _dim[_ti];
     var jmax = _dim[_tj];
-    var kmax = _dim[_tk];    
-    // CREATE SLICE in normal direction
-    var halfDimension = (kmax - 1) / 2;
-    var _indexCenter = halfDimension;
-    // up = i direction
-    var _right = _norm_cosine[_ti];
-    // up = i direction
-    var _up = _norm_cosine[_tj];
-    // front = normal direction
-    var _front = _norm_cosine[_tk];
-    // color
+    var kmax = _dim[_tk];
+    
     var _color = [1,1,1];
     if(_norm_cosine[_tk][2] != 0){
       _color = [1,0,0];
@@ -736,12 +696,8 @@ X.renderer2D.prototype.update_ = function(object) {
       _color = [1,1,0];
     }
     // size
-//    var _width = imax * _spacing[_ti];
-//    var _height = jmax * _spacing[_tj];
-    var _width = imax * _spacing[_ti];
-    var _height = jmax * _spacing[_tj];
-    
-    
+    var _width = imax;
+    var _height = jmax;
     
     this._slices = object._children[_tk]._children;
     // the X oriented texture is twisted ..
@@ -841,6 +797,11 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   //
   var _volume = this._topLevelObjects[0];
   var _currentSlice = _volume['index' + this._orientation];
+  
+/*  console.log(_volume);
+  console.log(this._orientation);
+  console.log(_currentSlice);
+  return;*/
 
   // .. here is the current slice
   var _slice = this._slices[parseInt(_currentSlice, 10)];
@@ -932,7 +893,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
       }
 
-      var _invertedIndex = (_pixelsLength - 1 - _index);
+/*      var _invertedIndex = (_pixelsLength - 1 - _index);
 
       _pixels[_invertedIndex - 3] = _color[0]; // r
       _pixels[_invertedIndex - 2] = _color[1]; // g
@@ -944,7 +905,17 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       _labelPixels[_invertedIndex - 2] = _label[1]; // g
       _labelPixels[_invertedIndex - 1] = _label[2]; // b
       _labelPixels[_invertedIndex] = _label[3]; // a
+*/
+      _pixels[_index] = _color[0]; // r
+      _pixels[_index + 1] = _color[1]; // g
+      _pixels[_index + 2] = _color[2]; // b
+      _pixels[_index + 3] = _color[3]; // a
 
+
+      _labelPixels[_index] = _label[0]; // r
+      _labelPixels[_index +1] = _label[1]; // g
+      _labelPixels[_index + 2] = _label[2]; // b
+      _labelPixels[_index + 3] = _label[3]; // a
 
       _index = _index + 4; // increase by 4 units for r,g,b,a
 
