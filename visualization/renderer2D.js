@@ -553,7 +553,7 @@ X.renderer2D.prototype.update_ = function(object) {
     console.log('space orientation: ' + _space_orientation);
     // Go to Right-Anterior-Superior for now!
     var _ras_space_orientation = _space_orientation;
-    if (_space[0] != 'right') {
+    /*if (_space[0] != 'right') {
       _ras_space_orientation[0] = -_ras_space_orientation[0];
       _ras_space_orientation[3] = -_ras_space_orientation[3];
       _ras_space_orientation[6] = -_ras_space_orientation[6];
@@ -567,25 +567,25 @@ X.renderer2D.prototype.update_ = function(object) {
       _ras_space_orientation[2] = -_ras_space_orientation[2];
       _ras_space_orientation[5] = -_ras_space_orientation[5];
       _ras_space_orientation[8] = -_ras_space_orientation[8];
-    }
+    }*/
     console.log('RAS space orientation: ' + _ras_space_orientation);
     // Go to IJK space
     // Get ijk orientation
-    var _x_cosine = _space_orientation.slice(0, 3);
+    var _x_cosine = _ras_space_orientation.slice(0, 3);
     var _x_abs_cosine = _x_cosine.map(function(v) {
       return Math.abs(v);
     });
     var _x_max = _x_abs_cosine.indexOf(Math.max.apply(Math, _x_abs_cosine));
     var _x_norm_cosine = [ 0, 0, 0 ];
     _x_norm_cosine[_x_max] = _x_cosine[_x_max] < 0 ? -1 : 1;
-    var _y_cosine = _space_orientation.slice(3, 6);
+    var _y_cosine = _ras_space_orientation.slice(3, 6);
     var _y_abs_cosine = _y_cosine.map(function(v) {
       return Math.abs(v);
     });
     var _y_max = _y_abs_cosine.indexOf(Math.max.apply(Math, _y_abs_cosine));
     var _y_norm_cosine = [ 0, 0, 0 ];
     _y_norm_cosine[_y_max] = _y_cosine[_y_max] < 0 ? -1 : 1;
-    var _z_cosine = _space_orientation.slice(6, 9);
+    var _z_cosine = _ras_space_orientation.slice(6, 9);
     var _z_abs_cosine = _z_cosine.map(function(v) {
       return Math.abs(v);
     });
@@ -594,6 +594,7 @@ X.renderer2D.prototype.update_ = function(object) {
     _z_norm_cosine[_z_max] = _z_cosine[_z_max] < 0 ? -1 : 1;
     var _orient = [ _x_norm_cosine[_x_max], _y_norm_cosine[_y_max],
         _z_norm_cosine[_z_max] ];
+    this._orient = _orient;
     
     
     // might be usefull to loop
@@ -603,6 +604,7 @@ X.renderer2D.prototype.update_ = function(object) {
     var _spacing = object._spacing;
   
   
+    this._norm_cosine = _norm_cosine;
   
   /////
 
@@ -704,6 +706,11 @@ X.renderer2D.prototype.update_ = function(object) {
     this._sliceHeightSpacing = _spacing[_tj];
   }
 
+/*  
+  if(this._norm_cosine[_tk][1] != 0){
+    this._camera._view[1]++;
+  }*/
+  
   // .. and store the dimensions
   this._sliceWidth = _sliceWidth;
   this._sliceHeight = _sliceHeight;
@@ -783,7 +790,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   // transform the canvas according to the view matrix
   var _x = 1 * _view[12];
-  var _y = -1 * _view[13]; // we need to flip y here
+  var _y = 1 * _view[13]; // we need to flip y here
+  
+  
   // .. this includes zoom
   var _normalizedScale = Math.max(_view[14], 0.6);
   this._context.setTransform(_normalizedScale, 0, 0, _normalizedScale, _x, _y);
@@ -883,31 +892,83 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         }
 
       }
+      
+      // invert i
+      // this.width
+      // invert j
+      // this.height
+      // this._norm_cosine
+      // if coronal, we rotate!
+      var xyz = 0;
+      if (this._orientation == 'X') {
+        xyz = 0;
+      }
+      else if(this._orientation == 'Y'){
+        xyz = 1;
+      }
+      else{
+        xyz = 2;
+      }
+      
+      var _ti = xyz;
+      var _tj = (_ti + 1) % 3;
+      var _tk = (_ti + 2) % 3;
+      //_sliceWidth;
+      //_sliceHeight;
+      //this._orient;
 
-/*      var _invertedIndex = (_pixelsLength - 1 - _index);
-
-      _pixels[_invertedIndex - 3] = _color[0]; // r
-      _pixels[_invertedIndex - 2] = _color[1]; // g
-      _pixels[_invertedIndex - 1] = _color[2]; // b
-      _pixels[_invertedIndex] = _color[3]; // a
-
-
-      _labelPixels[_invertedIndex - 3] = _label[0]; // r
-      _labelPixels[_invertedIndex - 2] = _label[1]; // g
-      _labelPixels[_invertedIndex - 1] = _label[2]; // b
-      _labelPixels[_invertedIndex] = _label[3]; // a
-*/
-      _pixels[_index] = _color[0]; // r
-      _pixels[_index + 1] = _color[1]; // g
-      _pixels[_index + 2] = _color[2]; // b
-      _pixels[_index + 3] = _color[3]; // a
+      
+      if(this._orient[_ti] == -1){
+        if(this._orient[_tj] == -1){
+          //1, 1
+          _pixels[_index] = _color[0]; // r
+          _pixels[_index + 1] = _color[1]; // g
+          _pixels[_index + 2] = _color[2]; // b
+          _pixels[_index + 3] = _color[3]; // a
 
 
-      _labelPixels[_index] = _label[0]; // r
-      _labelPixels[_index +1] = _label[1]; // g
-      _labelPixels[_index + 2] = _label[2]; // b
-      _labelPixels[_index + 3] = _label[3]; // a
+          _labelPixels[_index] = _label[0]; // r
+          _labelPixels[_index +1] = _label[1]; // g
+          _labelPixels[_index + 2] = _label[2]; // b
+          _labelPixels[_index + 3] = _label[3]; // a
+        }
+        else {
+          // 1, -1
+          // invert rows
+          var _invertedIndex = (4*_sliceWidth)*(_sliceHeight - Math.floor(_index/(4*_sliceWidth))) + _index%(4*_sliceWidth);
 
+          _pixels[_invertedIndex] = _color[0]; // r
+          _pixels[_invertedIndex + 1] = _color[1]; // g
+          _pixels[_invertedIndex + 2] = _color[2]; // b
+          _pixels[_invertedIndex + 3] = _color[3]; // a
+
+          _labelPixels[_invertedIndex] = _label[0]; // r
+          _labelPixels[_invertedIndex + 1] = _label[1]; // g
+          _labelPixels[_invertedIndex + 2] = _label[2]; // b
+          _labelPixels[_invertedIndex + 3] = _label[3]; // a
+          
+        }
+      }
+      else {
+        if(this._orient[_tj] == -1){
+          // -1, 1
+          console.log('-1, 1');
+        }
+        else {
+          // -1, -1
+          var _invertedIndex = _pixelsLength - 1 - _index;
+          _pixels[_invertedIndex - 3] = _color[0]; // r
+          _pixels[_invertedIndex - 2] = _color[1]; // g
+          _pixels[_invertedIndex - 1] = _color[2]; // b
+          _pixels[_invertedIndex] = _color[3]; // a
+
+          _labelPixels[_invertedIndex - 3] = _label[0]; // r
+          _labelPixels[_invertedIndex - 2] = _label[1]; // g
+          _labelPixels[_invertedIndex - 1] = _label[2]; // b
+          _labelPixels[_invertedIndex] = _label[3]; // a
+        }
+      }
+      
       _index = _index + 4; // increase by 4 units for r,g,b,a
 
     } while (_index < _pixelsLength);
@@ -941,6 +1002,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // rotate
   var _rotation = _view[1];
   this._context.rotate(Math.PI * 0.5 * _rotation);
+  
+  //console.log(_rotation);
 
   // the padding x and y have to be adjusted because of the rotation
   switch (_rotation % 4) {

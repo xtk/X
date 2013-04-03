@@ -303,21 +303,21 @@ X.parser.prototype.reslice = function(object, MRI) {
   console.log('RAS space orientation: ' + _ras_space_orientation);
   // Go to IJK space
   // Get ijk orientation
-  var _x_cosine = _space_orientation.slice(0, 3);
+  var _x_cosine = _ras_space_orientation.slice(0, 3);
   var _x_abs_cosine = _x_cosine.map(function(v) {
     return Math.abs(v);
   });
   var _x_max = _x_abs_cosine.indexOf(Math.max.apply(Math, _x_abs_cosine));
   var _x_norm_cosine = [ 0, 0, 0 ];
   _x_norm_cosine[_x_max] = _x_cosine[_x_max] < 0 ? -1 : 1;
-  var _y_cosine = _space_orientation.slice(3, 6);
+  var _y_cosine = _ras_space_orientation.slice(3, 6);
   var _y_abs_cosine = _y_cosine.map(function(v) {
     return Math.abs(v);
   });
   var _y_max = _y_abs_cosine.indexOf(Math.max.apply(Math, _y_abs_cosine));
   var _y_norm_cosine = [ 0, 0, 0 ];
   _y_norm_cosine[_y_max] = _y_cosine[_y_max] < 0 ? -1 : 1;
-  var _z_cosine = _space_orientation.slice(6, 9);
+  var _z_cosine = _ras_space_orientation.slice(6, 9);
   var _z_abs_cosine = _z_cosine.map(function(v) {
     return Math.abs(v);
   });
