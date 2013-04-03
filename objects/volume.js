@@ -275,11 +275,11 @@ X.volume.prototype.modified = function(propagateEvent) {
       if (this._volumeRendering) {
         // first, hide possible slicing slices but only if volume rendering was
         // just switched on
-        var _sliceX = this._children[2]._children[parseInt(this._indexX, 10)];
+        var _sliceX = this._children[0]._children[parseInt(this._indexX, 10)];
         _sliceX['visible'] = false;
-        var _sliceY = this._children[0]._children[parseInt(this._indexY, 10)];
+        var _sliceY = this._children[1]._children[parseInt(this._indexY, 10)];
         _sliceY['visible'] = false;
-        var _sliceZ = this._children[1]._children[parseInt(this._indexZ, 10)];
+        var _sliceZ = this._children[2]._children[parseInt(this._indexZ, 10)];
         _sliceZ['visible'] = false;
       } else {
         // hide the volume rendering slices
@@ -312,7 +312,7 @@ X.volume.prototype.slicing_ = function() {
   // display the current slices in X,Y and Z direction
   var xyz = 0; // 0 for x, 1 for y, 2 for z
   for (xyz = 0; xyz < 3; xyz++) {
-    var _child = this._children[(xyz +2) %3];
+    var _child = this._children[xyz];
     var currentIndex = 0;
     var oldIndex = 0;
     // buffer the old indices

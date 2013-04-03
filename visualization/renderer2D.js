@@ -633,9 +633,7 @@ X.renderer2D.prototype.update_ = function(object) {
     var _width = imax;
     var _height = jmax;
     
-    this._slices = object._children[_tk]._children;
-    // the X oriented texture is twisted ..
-    // this means the indices are switched
+    this._slices = object._children[xyz]._children;
     _sliceWidth = _width;
     _sliceHeight = _height;
     this._sliceWidthSpacing =  _spacing[_ti];
@@ -665,9 +663,7 @@ X.renderer2D.prototype.update_ = function(object) {
     var _width = imax;
     var _height = jmax;
     
-    this._slices = object._children[_tk]._children;
-    // the X oriented texture is twisted ..
-    // this means the indices are switched
+    this._slices = object._children[xyz]._children;
     _sliceWidth = _width;
     _sliceHeight = _height;
     this._sliceWidthSpacing =  _spacing[_ti];
@@ -699,7 +695,7 @@ X.renderer2D.prototype.update_ = function(object) {
     var _width = imax;
     var _height = jmax;
     
-    this._slices = object._children[_tk]._children;
+    this._slices = object._children[xyz]._children;
     // the X oriented texture is twisted ..
     // this means the indices are switched
     _sliceWidth = _width;
@@ -798,11 +794,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _volume = this._topLevelObjects[0];
   var _currentSlice = _volume['index' + this._orientation];
   
-/*  console.log(_volume);
-  console.log(this._orientation);
-  console.log(_currentSlice);
-  return;*/
-
   // .. here is the current slice
   var _slice = this._slices[parseInt(_currentSlice, 10)];
   var _sliceData = _slice._texture._rawData;

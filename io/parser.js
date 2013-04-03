@@ -548,7 +548,7 @@ X.parser.prototype.reslice = function(object, MRI) {
       targetSlice._texture = pixelTexture;
       
       // push slice
-      object._children[_tk]._children.push(targetSlice);
+      object._children[xyz]._children.push(targetSlice);
     }
     
     // set slice index
