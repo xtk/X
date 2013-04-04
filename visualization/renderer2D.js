@@ -615,6 +615,76 @@ X.renderer2D.prototype.autoScale_ = function() {
 };
 
 
+X.renderer2D.prototype.xy2ijk = function(x, y) {
+
+  var _view = this._camera._view;
+
+  var _center = [this._width / 2, this._height / 2];
+
+  var _x = 1 * _view[12];
+  var _y = -1 * _view[13]; // we need to flip y here
+  // .. this includes zoom
+  var _normalizedScale = Math.max(_view[14], 0.6);
+
+  var _sliceWidth = this._sliceWidth;
+  var _sliceHeight = this._sliceHeight;
+  var _offset_x = -_sliceWidth * this._sliceWidthSpacing / 2 + _x;
+  var _offset_y = -_sliceHeight * this._sliceHeightSpacing / 2 + _y;
+
+  var _image_height2xy = _normalizedScale * _sliceHeight *
+      this._sliceHeightSpacing;
+  var _image_width2xy = _normalizedScale * _sliceWidth *
+      this._sliceWidthSpacing;
+
+
+  var _image_left2xy = _center[0] + (_normalizedScale * _offset_x);
+  var _image_top2xy = _center[1] + (_normalizedScale * _offset_y);
+  var _image_right2xy = _image_left2xy + _image_width2xy;
+  var _image_bottom2xy = _image_top2xy + _image_height2xy;
+
+
+  // check if we probe inside the image
+  if (x < Math.floor(_image_left2xy) || x >= Math.ceil(_image_right2xy) ||
+      y < Math.floor(_image_top2xy) || y >= Math.ceil(_image_bottom2xy)) {
+
+    // we are outside of the image area
+    return null;
+
+  }
+
+  // now grab the IJK coords
+  var _volume = this._topLevelObjects[0];
+
+  var _a = 0;
+  var _b = 0;
+
+  // check the orientation and store a pointer to the slices
+  if (this._orientation == 'X') {
+
+    _a = Math.max((x - _image_left2xy) / (_image_width2xy / _volume.dimensions[1]), 0);
+    _b = (y - _image_top2xy) / (_image_height2xy / _volume.dimensions[2]);
+
+    return [Math.round(_volume.indexX), Math.round(_a), Math.round(_b)];
+
+  } else if (this._orientation == 'Y') {
+
+    _a = Math.max((x - _image_left2xy) / (_image_width2xy / _volume.dimensions[0]), 0);
+    _b = (y - _image_top2xy) / (_image_height2xy / _volume.dimensions[2]);
+
+    return [Math.round(_a), Math.round(_volume.indexY), Math.round(_b)];
+
+  } else if (this._orientation == 'Z') {
+
+    _a = Math.max((x - _image_left2xy) / (_image_width2xy / _volume.dimensions[1]), 0);
+    _b = (y - _image_top2xy) / (_image_height2xy / _volume.dimensions[0]);
+
+    return [Math.round(_a), Math.round(_b), Math.round(_volume.indexZ)];
+
+  }
+
+};
+
+
 /**
  * @inheritDoc
  */
@@ -865,6 +935,8 @@ goog.exportSymbol('X.renderer2D.prototype.rotateCounter',
     X.renderer2D.prototype.rotateCounter);
 goog.exportSymbol('X.renderer2D.prototype.resetViewAndRender',
     X.renderer2D.prototype.resetViewAndRender);
+goog.exportSymbol('X.renderer2D.prototype.xy2ijk',
+    X.renderer2D.prototype.xy2ijk);
 goog.exportSymbol('X.renderer2D.prototype.render',
     X.renderer2D.prototype.render);
 goog.exportSymbol('X.renderer2D.prototype.destroy',
