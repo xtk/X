@@ -360,6 +360,9 @@ X.parserNRRD.prototype.fieldFunctions = {
     case 'float':
       this.__array = Float32Array;
       break;
+    case 'double':
+      this.__array = Float64Array;
+      break;
     default:
       throw new Error('Unsupported NRRD data type: ' + data);
     }

@@ -610,11 +610,20 @@ X.renderer2D.prototype.update_ = function(object) {
 
   // check the orientation and store a pointer to the slices
   var xyz = 0;
+  
+    
   if (this._orientation == 'X') {
     xyz = 0;
     var _ti = xyz;
     var _tj = (_ti + 1) % 3;
     var _tk = (_ti + 2) % 3;
+    
+    if(this._norm_cosine[_tk][1] != 0){
+      var _tmp = _ti;
+      _ti = _tj;
+      _tj = _tmp;
+    }
+    
     var textureSize = 4 * _dim[_ti] * _dim[_tj];
     _k = 0;
     var imax = _dim[_ti];
@@ -647,6 +656,13 @@ X.renderer2D.prototype.update_ = function(object) {
     var _ti = xyz;
     var _tj = (_ti + 1) % 3;
     var _tk = (_ti + 2) % 3;
+    
+    if(this._norm_cosine[_tk][1] != 0){
+      var _tmp = _ti;
+      _ti = _tj;
+      _tj = _tmp;
+    }
+    
     var textureSize = 4 * _dim[_ti] * _dim[_tj];
     _k = 0;
     var imax = _dim[_ti];
@@ -677,6 +693,13 @@ X.renderer2D.prototype.update_ = function(object) {
     var _ti = xyz;
     var _tj = (_ti + 1) % 3;
     var _tk = (_ti + 2) % 3;
+    
+    if(this._norm_cosine[_tk][1] != 0){
+      var _tmp = _ti;
+      _ti = _tj;
+      _tj = _tmp;
+    }
+    
     var textureSize = 4 * _dim[_ti] * _dim[_tj];
     _k = 0;
     var imax = _dim[_ti];
@@ -705,11 +728,6 @@ X.renderer2D.prototype.update_ = function(object) {
     this._sliceWidthSpacing =  _spacing[_ti];
     this._sliceHeightSpacing = _spacing[_tj];
   }
-
-/*  
-  if(this._norm_cosine[_tk][1] != 0){
-    this._camera._view[1]++;
-  }*/
   
   // .. and store the dimensions
   this._sliceWidth = _sliceWidth;
@@ -913,6 +931,16 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       var _ti = xyz;
       var _tj = (_ti + 1) % 3;
       var _tk = (_ti + 2) % 3;
+      
+      var _tmp_indx = _index;
+      
+      if(this._norm_cosine[_tk][1] != 0){
+        var _tmp = _ti;
+        _ti = _tj;
+        _tj = _tmp;
+        
+        _index = 4*(((_index/4)%(_sliceHeight))*_sliceWidth + Math.floor((_index/4)/_sliceHeight));
+      }
       //_sliceWidth;
       //_sliceHeight;
       //this._orient;
@@ -933,7 +961,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
           _labelPixels[_index + 3] = _label[3]; // a
         }
         else {
-          // 1, -1
+          // 1, 1
           // invert rows
           var _invertedIndex = (4*_sliceWidth)*(_sliceHeight - Math.floor(_index/(4*_sliceWidth))) + _index%(4*_sliceWidth);
 
@@ -946,16 +974,26 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
           _labelPixels[_invertedIndex + 1] = _label[1]; // g
           _labelPixels[_invertedIndex + 2] = _label[2]; // b
           _labelPixels[_invertedIndex + 3] = _label[3]; // a
-          
         }
       }
       else {
         if(this._orient[_tj] == -1){
           // -1, 1
-          console.log('-1, 1');
+          // invert cols
+          var _invertedIndex = (4*_sliceWidth)*(Math.floor(_index/(4*_sliceWidth))) - _index%(4*_sliceWidth);
+
+          _pixels[_invertedIndex] = _color[0]; // r
+          _pixels[_invertedIndex + 1] = _color[1]; // g
+          _pixels[_invertedIndex + 2] = _color[2]; // b
+          _pixels[_invertedIndex + 3] = _color[3]; // a
+
+          _labelPixels[_invertedIndex] = _label[0]; // r
+          _labelPixels[_invertedIndex + 1] = _label[1]; // g
+          _labelPixels[_invertedIndex + 2] = _label[2]; // b
+          _labelPixels[_invertedIndex + 3] = _label[3]; // a
         }
         else {
-          // -1, -1
+          // -1, 1
           var _invertedIndex = _pixelsLength - 1 - _index;
           _pixels[_invertedIndex - 3] = _color[0]; // r
           _pixels[_invertedIndex - 2] = _color[1]; // g
@@ -969,7 +1007,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         }
       }
       
-      _index = _index + 4; // increase by 4 units for r,g,b,a
+      //var _tmp_indx = _index;
+      _index = _tmp_indx + 4; // increase by 4 units for r,g,b,a
 
     } while (_index < _pixelsLength);
 
