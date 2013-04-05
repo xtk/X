@@ -477,12 +477,13 @@ X.renderer2D.prototype.update_ = function(object) {
   var jmax = _dim[_tj];
   var kmax = _dim[_tk];
   var _color = [ 1, 1, 1 ];
+  var container = goog.dom.getElement(this._container);
   if (_norm_cosine[_tk][2] != 0) {
-    _color = [ 1, 0, 0 ];
+    container.style["border-top"] = "2px solid red";
   } else if (_norm_cosine[_tk][1] != 0) {
-    _color = [ 0, 1, 0 ];
+    container.style["border-top"] = "2px solid green";
   } else {
-    _color = [ 1, 1, 0 ];
+    container.style["border-top"] = "2px solid yellow";
   }
   // size
   var _width = imax;
