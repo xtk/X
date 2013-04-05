@@ -179,13 +179,25 @@ X.renderer2D.prototype.onScroll_ = function(event) {
     return;
   }
   // switch between different orientations
+  
+  var xyz = 2;
+  if (this._orientation == 'X') {
+    xyz = 2;
+  } else if (this._orientation == 'Y') {
+    xyz = 0;
+  } else {
+    xyz = 1;
+  }
+  
+  console.log(this._orient[xyz]);
+  
   var _orientation = this._orientation;
   if (event._up) {
     // yes, scroll up
-    _volume['index' + _orientation] = _volume['index' + _orientation] + 1;
+    _volume['index' + _orientation] = _volume['index' + _orientation] + 1*this._orient[xyz];
   } else {
     // yes, so scroll down
-    _volume['index' + _orientation] = _volume['index' + _orientation] - 1;
+    _volume['index' + _orientation] = _volume['index' + _orientation] - 1*this._orient[xyz];
   }
   // execute the callback
   eval('this.onScroll();');
@@ -655,40 +667,32 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       var _tj = (_ti + 1) % 3;
       var _tk = (_ti + 2) % 3;
       var _tmp_indx = _index;
-      
       var _oi = this._orient[_ti];
       var _oj = this._orient[_tj];
-      
       if (this._norm_cosine[_tk][0] != 0) {
-        _oi = -1*this._orient[_ti];
-      }
-      else if (this._norm_cosine[_tk][1] != 0) {
+        _oi = -1 * this._orient[_ti];
+      } else if (this._norm_cosine[_tk][1] != 0) {
         var _tmp = _ti;
         _ti = _tj;
         _tj = _tmp;
         _index = 4 * (((_index / 4) % (_sliceHeight)) * _sliceWidth + Math
             .floor((_index / 4) / _sliceHeight));
-        
         _oi = this._orient[_ti];
         _oj = this._orient[_tj];
-        
-        if(this._convention == 0){
+        if (this._convention == 0) {
+          // in radiology
+          // in RAS
+          // right is left -> invert X
+          _oi = -1 * this._orient[_ti];
+        }
+      } else {
+        if (this._convention == 0) {
           // in radiology
           // in RAS
           // right is left -> invert X
           _oi = -1 * this._orient[_ti];
         }
       }
-      else{
-        if(this._convention == 0){
-          // in radiology
-          // in RAS
-          // right is left -> invert X
-          _oi = -1 * this._orient[_ti];
-        }
-      }
-      
-      
       // _sliceWidth;
       // _sliceHeight;
       // this._orient;
@@ -708,7 +712,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
           _labelPixels[_invertedIndex + 1] = _label[1]; // g
           _labelPixels[_invertedIndex + 2] = _label[2]; // b
           _labelPixels[_invertedIndex + 3] = _label[3]; // a
-
         } else {
           // 1, -1
           // invert nothing
