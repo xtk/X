@@ -624,6 +624,11 @@ X.renderer2D.prototype.autoScale_ = function() {
  */
 X.renderer2D.prototype.xy2ijk = function(x, y) {
 
+  var _volume = this._topLevelObjects[0];
+  var _dimX = _volume._dimensions[0];
+  var _dimY = _volume._dimensions[1];
+  var _dimZ = _volume._dimensions[2];
+  
   var _view = this._camera._view;
 
   var _center = [this._width / 2, this._height / 2];
@@ -633,39 +638,75 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   // .. this includes zoom
   var _normalizedScale = Math.max(_view[14], 0.6);
 
+  var _rotation = _view[1];
+  
   var _sliceWidth = this._sliceWidth;
   var _sliceHeight = this._sliceHeight;
   var _offset_x = -_sliceWidth * this._sliceWidthSpacing / 2 + _x;
   var _offset_y = -_sliceHeight * this._sliceHeightSpacing / 2 + _y;
 
+  // the padding x and y have to be adjusted because of the rotation
+  switch (_rotation % 4) {
+
+  case 0:
+    // padding is fine;
+    break;
+  case 1:
+    // padding is twisted
+    var _buf = _offset_x;
+    _offset_x = _offset_y;
+    _offset_y = -_buf;
+    
+    var _buf2 = _dimX;
+    _dimX = _dimY;
+    _dimY = _buf2;
+    
+    console.log('rot');
+    
+    break;
+  case 2:
+    // padding is inverted
+    _x *= -1;
+    _y *= -1;
+    break;
+  case 3:
+    // padding is twisted
+    var _buf = _x;
+    _x = -_y;
+    _y = _buf;
+    break;
+
+  }
+  
+  
   var _image_height2xy = _normalizedScale * _sliceHeight *
       this._sliceHeightSpacing;
   var _image_width2xy = _normalizedScale * _sliceWidth *
       this._sliceWidthSpacing;
 
-
   var _image_left2xy = _center[0] + (_normalizedScale * _offset_x);
-  var _image_top2xy = _center[1] + (_normalizedScale * _offset_y);
+  var _image_top2xy = _center[1] + (_normalizedScale * _offset_y);     
+  
+  console.log(_image_left2xy, _image_top2xy);
+  
   //var _image_right2xy = _image_left2xy + _image_width2xy;
   //var _image_bottom2xy = _image_top2xy + _image_height2xy;
 
   // now grab the IJK coords
-  var _volume = this._topLevelObjects[0];
-
   var _a = 0;
   var _b = 0;
 
   // check the orientation and store a pointer to the slices
   if (this._orientation == 'X') {
 
-    _a = _volume._dimensions[1] - Math.floor((x - _image_left2xy) / (_image_width2xy / _volume._dimensions[1]));
-    _b = _volume._dimensions[2] - Math.floor((y - _image_top2xy) / (_image_height2xy / _volume._dimensions[2]));
+    _a = _dimY - Math.floor((x - _image_left2xy) / (_image_width2xy / _dimY));
+    _b = _dimZ - Math.floor((y - _image_top2xy) / (_image_height2xy / _dimZ));
 
-    if (_a < 0 || _a >= _volume._dimensions[1]) {
+    if (_a < 0 || _a >= _dimY) {
       return null;
     }
     
-    if (_b < 0 || _b >= _volume._dimensions[2]) {
+    if (_b < 0 || _b >= _dimZ) {
       return null;
     }    
     
@@ -673,14 +714,14 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
     
   } else if (this._orientation == 'Y') {
 
-    _a = _volume._dimensions[0] - Math.floor((x - _image_left2xy) / (_image_width2xy / _volume._dimensions[0]));
-    _b = _volume._dimensions[2] - Math.floor((y - _image_top2xy) / (_image_height2xy / _volume._dimensions[2]));
+    _a = _dimX - Math.floor((x - _image_left2xy) / (_image_width2xy / _dimX));
+    _b = _dimZ - Math.floor((y - _image_top2xy) / (_image_height2xy / _dimZ));
 
-    if (_a < 0 || _a >= _volume._dimensions[0]) {
+    if (_a < 0 || _a >= _dimX) {
       return null;
     }
     
-    if (_b < 0 || _b >= _volume._dimensions[2]) {
+    if (_b < 0 || _b >= _dimZ) {
       return null;
     }    
     
@@ -688,14 +729,14 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
     
   } else if (this._orientation == 'Z') {
 
-    _a = _volume._dimensions[0] - Math.floor((x - _image_left2xy) / (_image_width2xy / _volume._dimensions[0]));
-    _b = _volume._dimensions[1] - Math.floor((y - _image_top2xy) / (_image_height2xy / _volume._dimensions[1]));
+    _a = _dimX - Math.floor((x - _image_left2xy) / (_image_width2xy / _dimX));
+    _b = _dimY - Math.floor((y - _image_top2xy) / (_image_height2xy / _dimY));
 
-    if (_a < 0 || _a >= _volume._dimensions[0]) {
+    if (_a < 0 || _a >= _dimX) {
       return null;
     }
     
-    if (_b < 0 || _b >= _volume._dimensions[1]) {
+    if (_b < 0 || _b >= _dimY) {
       return null;
     }    
     
