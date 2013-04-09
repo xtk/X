@@ -649,11 +649,9 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   var _image_left2xy = _center[0] - (_sliceWidthScaled / 2);
   var _image_top2xy = _center[1] - (_sliceHeightScaled / 2);
 
-  var _offset_x = -this._sliceWidth * this._sliceWidthSpacing / 2 + _x;
-  var _offset_y = -this._sliceHeight * this._sliceHeightSpacing / 2 + _y;
-
-  //_image_left2xy += _offset_x*_normalizedScale;
-  //_image_top2xy += _offset_y*_normalizedScale;
+  // incorporate the padding offsets (but they have to be scaled)
+  _image_left2xy += _x*_normalizedScale;
+  _image_top2xy += _y*_normalizedScale;
 
   //console.log(_x,_y, (_sliceWidthScaled / 2),(_sliceHeightScaled / 2));
 
@@ -752,7 +750,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _y = -1 * _view[13]; // we need to flip y here
   // .. this includes zoom
   var _normalizedScale = Math.max(_view[14], 0.6);
-  this._context.setTransform(_normalizedScale, 0, 0, _normalizedScale, _x, _y);
+  this._context.setTransform(_normalizedScale, 0, 0, _normalizedScale, 0, 0);
 
   //
   // grab the volume and current slice
@@ -992,17 +990,18 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
         // in x-direction
         this._context.setTransform(1, 0, 0, 1, 0, 0);
+        this._context.lineWidth = 1;
         this._context.beginPath();
-        this._context.moveTo(this._interactor._mousePosition[0],0);
-        this._context.lineTo(this._interactor._mousePosition[0],this._height);
+        this._context.moveTo(this._interactor._mousePosition[0]+0.5,0);
+        this._context.lineTo(this._interactor._mousePosition[0]+0.5,this._height);
         this._context.strokeStyle = _xColor;
         this._context.stroke();
         this._context.closePath();
 
         // in y-direction
         this._context.beginPath();
-        this._context.moveTo(0, this._interactor._mousePosition[1]);
-        this._context.lineTo(this._width, this._interactor._mousePosition[1]);
+        this._context.moveTo(0, this._interactor._mousePosition[1]+0.5);
+        this._context.lineTo(this._width, this._interactor._mousePosition[1]+0.5);
         this._context.strokeStyle = _yColor;
         this._context.stroke();
         this._context.closePath();
