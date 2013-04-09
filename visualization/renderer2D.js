@@ -65,6 +65,30 @@ X.renderer2D = function() {
   this._orientation = null;
 
   /**
+   * The array of orientation colors.
+   *
+   * @type {!Array}
+   * @protected
+   */
+  this._orientationColors = ['yellow', 'red', 'green'];
+
+  /**
+   * The X index of the perpendicular slice.
+   *
+   * @type {!number}
+   * @protected
+   */
+  this._orientatonIndexX = 1;
+
+  /**
+   * The Y index of the perpendicular slice.
+   *
+   * @type {!number}
+   * @protected
+   */
+  this._orientatonIndexY = 2;
+
+  /**
    * A frame buffer for slice data.
    *
    * @type {?Element}
@@ -334,6 +358,25 @@ X.renderer2D.prototype.init = function() {
   // call the superclass' init method
   goog.base(this, 'init', '2d');
 
+  // set the perpendicular indicies depending on orientation
+  if (this._orientation == 'X') {
+
+    this._orientatonIndexX = 1;
+    this._orientatonIndexY = 2;
+
+  } else if (this._orientation == 'Y') {
+
+    this._orientatonIndexX = 0;
+    this._orientatonIndexY = 2;
+
+  } else if (this._orientation == 'Z') {
+
+    this._orientatonIndexX = 0;
+    this._orientatonIndexY = 1;
+
+  }
+
+
   // use the background color of the container by setting transparency here
   this._context.fillStyle = "rgba(0,0,0,0)";
   // .. and size
@@ -542,32 +585,25 @@ X.renderer2D.prototype.update_ = function(object) {
   var _dimensions = object._dimensions;
   var _spacing = object._spacing;
 
+  _sliceWidth = _dimensions[this._orientatonIndexX];
+  _sliceHeight = _dimensions[this._orientatonIndexY];
+  this._sliceWidthSpacing = _spacing[this._orientatonIndexX];
+  this._sliceHeightSpacing = _spacing[this._orientatonIndexY];
+
+  // store a pointer to the slices
+
   // check the orientation and store a pointer to the slices
   if (this._orientation == 'X') {
 
     this._slices = object._slicesX._children;
-    // the X oriented texture is twisted ..
-    // this means the indices are switched
-    _sliceWidth = _dimensions[1];
-    _sliceHeight = _dimensions[2];
-    this._sliceWidthSpacing = _spacing[1];
-    this._sliceHeightSpacing = _spacing[2];
 
   } else if (this._orientation == 'Y') {
 
     this._slices = object._slicesY._children;
-    _sliceWidth = _dimensions[0];
-    _sliceHeight = _dimensions[2];
-    this._sliceWidthSpacing = _spacing[0];
-    this._sliceHeightSpacing = _spacing[2];
 
   } else if (this._orientation == 'Z') {
 
     this._slices = object._slicesZ._children;
-    _sliceWidth = _dimensions[0];
-    _sliceHeight = _dimensions[1];
-    this._sliceWidthSpacing = _spacing[0];
-    this._sliceHeightSpacing = _spacing[1];
 
   }
 
@@ -625,9 +661,6 @@ X.renderer2D.prototype.autoScale_ = function() {
 X.renderer2D.prototype.xy2ijk = function(x, y) {
 
   var _volume = this._topLevelObjects[0];
-  var _dimX = _volume._dimensions[0];
-  var _dimY = _volume._dimensions[1];
-  var _dimZ = _volume._dimensions[2];
 
   var _view = this._camera._view;
 
@@ -659,55 +692,29 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   var _a = 0;
   var _b = 0;
 
-  // check the orientation and store a pointer to the slices
-  if (this._orientation == 'X') {
+  // pre-fill the output array with the current volume indices
+  var _ijk = [Math.floor(_volume._indexX), Math.floor(_volume._indexY), Math.floor(_volume._indexZ)];
 
-    _a = Math.floor(_dimY - ( ( (x - _image_left2xy) / _sliceWidthScaled ) * _dimY));
-    _b = Math.floor(_dimZ - ( ( (y - _image_top2xy) / _sliceHeightScaled ) * _dimZ));
+  // now replace the values according to the orientation indices
+  var _dim1 = _volume._dimensions[this._orientatonIndexX];
+  var _dim2 = _volume._dimensions[this._orientatonIndexY];
 
-    if (_a < 0 || _a >= _dimY) {
-      return null;
-    }
+  _a = Math.floor(_dim1 - ( ( (x - _image_left2xy) / _sliceWidthScaled ) * _dim1));
+  _b = Math.floor(_dim2 - ( ( (y - _image_top2xy) / _sliceHeightScaled ) * _dim2));
 
-    if (_b < 0 || _b >= _dimZ) {
-      return null;
-    }
-
-    return [Math.floor(_volume._indexX), _a, _b];
-
-  } else if (this._orientation == 'Y') {
-
-    _a = Math.floor(_dimX - ( ( (x - _image_left2xy) / _sliceWidthScaled ) * _dimX));
-    _b = Math.floor(_dimZ - ( ( (y - _image_top2xy) / _sliceHeightScaled ) * _dimZ));
-
-    if (_a < 0 || _a >= _dimX) {
-      return null;
-    }
-
-    if (_b < 0 || _b >= _dimZ) {
-      return null;
-    }
-
-    return [_a, Math.floor(_volume._indexY), _b];
-
-  } else if (this._orientation == 'Z') {
-
-    _a = Math.floor(_dimX - ( ( (x - _image_left2xy) / _sliceWidthScaled ) * _dimX));
-    _b = Math.floor(_dimY - ( ( (y - _image_top2xy) / _sliceHeightScaled ) * _dimY));
-
-    if (_a < 0 || _a >= _dimX) {
-      return null;
-    }
-
-    if (_b < 0 || _b >= _dimY) {
-      return null;
-    }
-
-    return [_a, _b, Math.floor(_volume._indexZ)];
-
+  if (_a < 0 || _a >= _dim1) {
+    return null;
   }
 
-  return null;
+  if (_b < 0 || _b >= _dim2) {
+    return null;
+  }
+
+  // the indices also indicate which part of IJK to replace by a and b
+  _ijk[this._orientatonIndexX] = _a;
+  _ijk[this._orientatonIndexY] = _b;
+
+  return _ijk;
 
 };
 
@@ -956,37 +963,17 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
         // we are over the slice
 
-        var _xColor = null;
-        var _yColor = null;
+        var _xColor = this._orientationColors[this._orientatonIndexX];
+        var _yColor = this._orientationColors[this._orientatonIndexY];
 
         // update the volume
-        if (this._orientation == 'X') {
+        volume._indexX = ijk[0];
+        volume._indexY = ijk[1];
+        volume._indexZ = ijk[2];
+        volume.modified(false);
 
-          volume._indexY = ijk[1];
-          volume._indexZ = ijk[2];
-          volume.modified(false);
-          _xColor = 'red';
-          _yColor = 'green';
-
-        } else if (this._orientation == 'Y') {
-
-          volume._indexX = ijk[0];
-          volume._indexZ = ijk[2];
-          volume.modified(false);
-          _xColor = 'yellow';
-          _yColor = 'green';
-
-        } else if (this._orientation == 'Z') {
-
-          volume._indexX = ijk[0];
-          volume._indexY = ijk[1];
-          volume.modified(false);
-          _xColor = 'yellow';
-          _yColor = 'red';
-
-        }
-
-        // draw the navigators
+        // draw the navigators (we add 0.5 to the coords to get crisp 1px lines)
+        // see http://diveintohtml5.info/canvas.html#paths
 
         // in x-direction
         this._context.setTransform(1, 0, 0, 1, 0, 0);
