@@ -214,6 +214,14 @@ X.interactor = function(element) {
   this._touchHoverTrigger = null;
 
   /**
+   * The shift down flag.
+   *
+   * @type {boolean}
+   * @protected
+   */
+  this._shiftDown = false;
+
+  /**
    * The configuration of this interactor.
    *
    * @enum {boolean}
@@ -945,6 +953,9 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
 
   // is shift down?
   var shiftDown = event.shiftKey;
+
+  // store the shiftState
+  this._shiftDown = shiftDown;
 
   // grab the current mouse position
   this._mousePosition = [event.offsetX, event.offsetY];
