@@ -617,7 +617,7 @@ X.renderer2D.prototype.autoScale_ = function() {
 
 /**
  * Convert viewport (canvas) coordinates to volume (index) coordinates.
- * 
+ *
  * @param x The x coordinate.
  * @param y The y coordinate.
  * @return {?Array} An array of [i,j,k] coordinates or null if out of frame.
@@ -628,69 +628,34 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   var _dimX = _volume._dimensions[0];
   var _dimY = _volume._dimensions[1];
   var _dimZ = _volume._dimensions[2];
-  
+
   var _view = this._camera._view;
+
+  // padding offsets
+  var _x = 1 * _view[12];
+  var _y = -1 * _view[13]; // we need to flip y here
+  // .. and zoom
+  var _normalizedScale = Math.max(_view[14], 0.6);
 
   var _center = [this._width / 2, this._height / 2];
 
-  var _x = 1 * _view[12];
-  var _y = -1 * _view[13]; // we need to flip y here
-  // .. this includes zoom
-  var _normalizedScale = Math.max(_view[14], 0.6);
-
   var _rotation = _view[1];
-  
-  var _sliceWidth = this._sliceWidth;
-  var _sliceHeight = this._sliceHeight;
-  var _offset_x = -_sliceWidth * this._sliceWidthSpacing / 2 + _x;
-  var _offset_y = -_sliceHeight * this._sliceHeightSpacing / 2 + _y;
 
-  // the padding x and y have to be adjusted because of the rotation
-  switch (_rotation % 4) {
+  // the slice dimensions in canvas coordinates
+  var _sliceWidthScaled = this._sliceWidth * this._sliceWidthSpacing * _normalizedScale;
+  var _sliceHeightScaled = this._sliceHeight * this._sliceHeightSpacing * _normalizedScale;
 
-  case 0:
-    // padding is fine;
-    break;
-  case 1:
-    // padding is twisted
-    var _buf = _offset_x;
-    _offset_x = _offset_y;
-    _offset_y = -_buf;
-    
-    var _buf2 = _dimX;
-    _dimX = _dimY;
-    _dimY = _buf2;
-    
-    console.log('rot');
-    
-    break;
-  case 2:
-    // padding is inverted
-    _x *= -1;
-    _y *= -1;
-    break;
-  case 3:
-    // padding is twisted
-    var _buf = _x;
-    _x = -_y;
-    _y = _buf;
-    break;
+  // the image borders on the left and top in canvas coordinates
+  var _image_left2xy = _center[0] - (_sliceWidthScaled / 2);
+  var _image_top2xy = _center[1] - (_sliceHeightScaled / 2);
 
-  }
-  
-  
-  var _image_height2xy = _normalizedScale * _sliceHeight *
-      this._sliceHeightSpacing;
-  var _image_width2xy = _normalizedScale * _sliceWidth *
-      this._sliceWidthSpacing;
+  var _offset_x = -this._sliceWidth * this._sliceWidthSpacing / 2 + _x;
+  var _offset_y = -this._sliceHeight * this._sliceHeightSpacing / 2 + _y;
 
-  var _image_left2xy = _center[0] + (_normalizedScale * _offset_x);
-  var _image_top2xy = _center[1] + (_normalizedScale * _offset_y);     
-  
-  console.log(_image_left2xy, _image_top2xy);
-  
-  //var _image_right2xy = _image_left2xy + _image_width2xy;
-  //var _image_bottom2xy = _image_top2xy + _image_height2xy;
+  //_image_left2xy += _offset_x*_normalizedScale;
+  //_image_top2xy += _offset_y*_normalizedScale;
+
+  //console.log(_x,_y, (_sliceWidthScaled / 2),(_sliceHeightScaled / 2));
 
   // now grab the IJK coords
   var _a = 0;
@@ -699,53 +664,53 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   // check the orientation and store a pointer to the slices
   if (this._orientation == 'X') {
 
-    _a = _dimY - Math.floor((x - _image_left2xy) / (_image_width2xy / _dimY));
-    _b = _dimZ - Math.floor((y - _image_top2xy) / (_image_height2xy / _dimZ));
+    _a = Math.floor(_dimY - ( ( (x - _image_left2xy) / _sliceWidthScaled ) * _dimY));
+    _b = Math.floor(_dimZ - ( ( (y - _image_top2xy) / _sliceHeightScaled ) * _dimZ));
 
     if (_a < 0 || _a >= _dimY) {
       return null;
     }
-    
+
     if (_b < 0 || _b >= _dimZ) {
       return null;
-    }    
-    
+    }
+
     return [Math.floor(_volume._indexX), _a, _b];
-    
+
   } else if (this._orientation == 'Y') {
 
-    _a = _dimX - Math.floor((x - _image_left2xy) / (_image_width2xy / _dimX));
-    _b = _dimZ - Math.floor((y - _image_top2xy) / (_image_height2xy / _dimZ));
+    _a = Math.floor(_dimX - ( ( (x - _image_left2xy) / _sliceWidthScaled ) * _dimX));
+    _b = Math.floor(_dimZ - ( ( (y - _image_top2xy) / _sliceHeightScaled ) * _dimZ));
 
     if (_a < 0 || _a >= _dimX) {
       return null;
     }
-    
+
     if (_b < 0 || _b >= _dimZ) {
       return null;
-    }    
-    
+    }
+
     return [_a, Math.floor(_volume._indexY), _b];
-    
+
   } else if (this._orientation == 'Z') {
 
-    _a = _dimX - Math.floor((x - _image_left2xy) / (_image_width2xy / _dimX));
-    _b = _dimY - Math.floor((y - _image_top2xy) / (_image_height2xy / _dimY));
+    _a = Math.floor(_dimX - ( ( (x - _image_left2xy) / _sliceWidthScaled ) * _dimX));
+    _b = Math.floor(_dimY - ( ( (y - _image_top2xy) / _sliceHeightScaled ) * _dimY));
 
     if (_a < 0 || _a >= _dimX) {
       return null;
     }
-    
+
     if (_b < 0 || _b >= _dimY) {
       return null;
-    }    
-    
+    }
+
     return [_a, _b, Math.floor(_volume._indexZ)];
 
   }
 
   return null;
-  
+
 };
 
 
@@ -976,6 +941,76 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     this._context.drawImage(this._labelFrameBuffer, _offset_x, _offset_y,
         _sliceWidth * this._sliceWidthSpacing, _sliceHeight *
             this._sliceHeightSpacing);
+  }
+
+  // if enabled, show slice navigators
+  if (this._config['SLICENAVIGATORS']) {
+
+    // but only if the shift key is down and the left mouse is not
+    if (this._interactor._mouseInside && this._interactor._shiftDown && !this._interactor._leftButtonDown) {
+
+      var _mousePosition = this._interactor._mousePosition;
+
+      // check if we are over the slice
+      var ijk = this.xy2ijk(_mousePosition[0], _mousePosition[1]);
+
+      if (ijk) {
+
+        // we are over the slice
+
+        var _xColor = null;
+        var _yColor = null;
+
+        // update the volume
+        if (this._orientation == 'X') {
+
+          volume._indexY = ijk[1];
+          volume._indexZ = ijk[2];
+          volume.modified(false);
+          _xColor = 'red';
+          _yColor = 'green';
+
+        } else if (this._orientation == 'Y') {
+
+          volume._indexX = ijk[0];
+          volume._indexZ = ijk[2];
+          volume.modified(false);
+          _xColor = 'yellow';
+          _yColor = 'green';
+
+        } else if (this._orientation == 'Z') {
+
+          volume._indexX = ijk[0];
+          volume._indexY = ijk[1];
+          volume.modified(false);
+          _xColor = 'yellow';
+          _yColor = 'red';
+
+        }
+
+        // draw the navigators
+
+        // in x-direction
+        this._context.setTransform(1, 0, 0, 1, 0, 0);
+        this._context.beginPath();
+        this._context.moveTo(this._interactor._mousePosition[0],0);
+        this._context.lineTo(this._interactor._mousePosition[0],this._height);
+        this._context.strokeStyle = _xColor;
+        this._context.stroke();
+        this._context.closePath();
+
+        // in y-direction
+        this._context.beginPath();
+        this._context.moveTo(0, this._interactor._mousePosition[1]);
+        this._context.lineTo(this._width, this._interactor._mousePosition[1]);
+        this._context.strokeStyle = _yColor;
+        this._context.stroke();
+        this._context.closePath();
+
+      }
+
+    }
+
   }
 
 };

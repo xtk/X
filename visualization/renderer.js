@@ -194,7 +194,8 @@ X.renderer = function() {
    */
   this._config = {
     'PROGRESSBAR_ENABLED': true,
-    'INTERMEDIATE_RENDERING': false
+    'INTERMEDIATE_RENDERING': false,
+    'SLICENAVIGATORS': true
   };
 
   /**
@@ -335,6 +336,9 @@ X.renderer.prototype.onScroll_ = function(event) {
  * default values are:
  *
  * <pre>
+ * config.PROGRESSBAR_ENABLED: true
+ * config.INTERMEDIATE_RENDERING: false
+ * config.SLICENAVIGATORS: true
  * config.PROGRESSBAR_ENABLED: true
  * </pre>
  *
