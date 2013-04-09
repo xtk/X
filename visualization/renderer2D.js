@@ -672,8 +672,6 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
 
   var _center = [this._width / 2, this._height / 2];
 
-  var _rotation = _view[1];
-
   // the slice dimensions in canvas coordinates
   var _sliceWidthScaled = this._sliceWidth * this._sliceWidthSpacing * _normalizedScale;
   var _sliceHeightScaled = this._sliceHeight * this._sliceHeightSpacing * _normalizedScale;
@@ -685,8 +683,6 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   // incorporate the padding offsets (but they have to be scaled)
   _image_left2xy += _x*_normalizedScale;
   _image_top2xy += _y*_normalizedScale;
-
-  //console.log(_x,_y, (_sliceWidthScaled / 2),(_sliceHeightScaled / 2));
 
   // now grab the IJK coords
   var _a = 0;
@@ -967,10 +963,10 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         var _yColor = this._orientationColors[this._orientatonIndexY];
 
         // update the volume
-        volume._indexX = ijk[0];
-        volume._indexY = ijk[1];
-        volume._indexZ = ijk[2];
-        volume.modified(false);
+        _volume._indexX = ijk[0];
+        _volume._indexY = ijk[1];
+        _volume._indexZ = ijk[2];
+        _volume.modified(false);
 
         // draw the navigators (we add 0.5 to the coords to get crisp 1px lines)
         // see http://diveintohtml5.info/canvas.html#paths
