@@ -1970,26 +1970,26 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
  */
 X.renderer.prototype.remove_ = function(object) {
 
+	// check if this object has children
+	if (object._children.length > 0) {
+
+		// loop through the children and recursively remove the objects
+		var children = object._children;
+		var numberOfChildren = children.length;
+		var c = 0;
+
+		for (c = 0; c < numberOfChildren; c++) {
+
+			this.remove_(children[c]);
+
+		}
+
+	}
+
   var id = object._id;
 
   // check if the object exists
   if (this.get(id)) {
-
-    // check if this object has children
-    if (object._children.length > 0) {
-
-      // loop through the children and recursively setup the object
-      var children = object._children;
-      var numberOfChildren = children.length;
-      var c = 0;
-
-      for (c = 0; c < numberOfChildren; c++) {
-
-        this.remove_(children[c]);
-
-      }
-
-    }
 
     var oldTexturePositionBuffer = this._texturePositionBuffers.get(id);
     if (goog.isDefAndNotNull(oldTexturePositionBuffer)) {
