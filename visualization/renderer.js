@@ -715,7 +715,7 @@ X.renderer.prototype.remove = function(object) {
   }
 
   if (!goog.isDefAndNotNull(object)) {
-    window.console.log(object);
+
     throw new Error('Illegal object.');
 
   }

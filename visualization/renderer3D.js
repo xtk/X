@@ -1968,7 +1968,10 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
  * @throws {Error} If anything goes wrong.
  * @protected
  */
-X.renderer.prototype.remove_ = function(object) {
+X.renderer3D.prototype.remove_ = function(object) {
+
+	// call the remove_ method of the superclass
+	goog.base(this, 'remove_', object);
 
 	// check if this object has children
 	if (object._children.length > 0) {
