@@ -92,6 +92,27 @@ X.array.prototype.add = function(object) {
 
 
 /**
+ * Remove an object from the array.
+ *
+ * @param {*} object The object to remove.
+ * @return {boolean} TRUE if everything went fine.
+ */
+X.array.prototype.remove = function(object) {
+
+  var _index = this._array.indexOf(object);
+
+  if (_index > -1) {
+
+    this._array.splice(_index, 1);
+
+  }
+
+  return true;
+
+};
+
+
+/**
  * Completely clear the array.
  */
 X.array.prototype.clear = function() {
