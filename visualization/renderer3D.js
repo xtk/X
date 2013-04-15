@@ -1962,6 +1962,122 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 
 
 /**
+ * Internal function to perform the actual removing of the object.
+ *
+ * @param(!X.object} object The object to remove from the renderer.
+ * @throws {Error} If anything goes wrong.
+ * @protected
+ */
+X.renderer.prototype.remove_ = function(object) {
+
+  var id = object._id;
+
+  // check if the object exists
+  if (this.get(id)) {
+
+    // check if this object has children
+    if (object._children.length > 0) {
+
+      // loop through the children and recursively setup the object
+      var children = object._children;
+      var numberOfChildren = children.length;
+      var c = 0;
+
+      for (c = 0; c < numberOfChildren; c++) {
+
+        this.remove_(children[c]);
+
+      }
+
+    }
+
+    var oldTexturePositionBuffer = this._texturePositionBuffers.get(id);
+    if (goog.isDefAndNotNull(oldTexturePositionBuffer)) {
+
+      if (this._context.isBuffer(oldTexturePositionBuffer._glBuffer)) {
+
+        this._context.deleteBuffer(oldTexturePositionBuffer._glBuffer);
+
+      }
+
+    }
+
+    if (object.texture) {
+      var _texture = this._textures.get(object._texture._id);
+
+      if (_texture) {
+
+        this._context.deleteTexture(_texture);
+
+        this._textures.remove(object._texture._id);
+
+      }
+
+    }
+
+    var oldVertexBuffer = this._vertexBuffers.get(id);
+    if (goog.isDefAndNotNull(oldVertexBuffer)) {
+
+      if (this._context.isBuffer(oldVertexBuffer._glBuffer)) {
+
+        this._context.deleteBuffer(oldVertexBuffer._glBuffer);
+
+      }
+
+    }
+
+
+    var oldNormalBuffer = this._vertexBuffers.get(id);
+    if (goog.isDefAndNotNull(oldNormalBuffer)) {
+
+      if (this._context.isBuffer(oldNormalBuffer._glBuffer)) {
+
+        this._context.deleteBuffer(oldNormalBuffer._glBuffer);
+
+      }
+
+    }
+
+    var oldColorBuffer = this._colorBuffers.get(id);
+    if (goog.isDefAndNotNull(oldColorBuffer)) {
+
+      if (this._context.isBuffer(oldColorBuffer._glBuffer)) {
+
+        this._context.deleteBuffer(oldColorBuffer._glBuffer);
+
+      }
+
+    }
+
+    var oldScalarBuffer = this._scalarBuffers.get(id);
+    if (goog.isDefAndNotNull(oldScalarBuffer)) {
+
+      if (this._context.isBuffer(oldScalarBuffer._glBuffer)) {
+
+        this._context.deleteBuffer(oldScalarBuffer._glBuffer);
+
+      }
+
+    }
+
+    this._vertexBuffers.remove(id);
+    this._normalBuffers.remove(id);
+    this._colorBuffers.remove(id);
+    this._texturePositionBuffers.remove(id);
+    this._scalarBuffers.remove(id);
+
+    this._objects.remove(object);
+
+    return true;
+
+  }
+
+  return false;
+
+};
+
+
+/**
  * @inheritDoc
  */
 X.renderer3D.prototype.destroy = function() {

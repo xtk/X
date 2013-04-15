@@ -700,6 +700,46 @@ X.renderer.prototype.add = function(object) {
 
 
 /**
+ * Remove an object and all its children from the renderer while the render
+ * loop is running.
+ *
+ * @param(!X.object} object The object to remove from the renderer.
+ * @throws {Error} An exception if something goes wrong.
+ */
+X.renderer.prototype.remove = function(object) {
+
+  if (!this._canvas || !this._context) {
+
+    throw new Error('The renderer was not initialized properly.');
+
+  }
+
+  if (!goog.isDefAndNotNull(object)) {
+    window.console.log(object);
+    throw new Error('Illegal object.');
+
+  }
+
+	this.remove_(object);
+
+};
+
+
+/**
+ * Internal function to perform the actual removing of the object.
+ * To be overridden in subclasses.
+ *
+ * @param(!X.object} object The object to remove from the renderer.
+ * @throws {Error} If anything goes wrong.
+ * @protected
+ */
+X.renderer.prototype.remove_ = function(object) {
+
+	// do nothing
+};
+
+
+/**
  * Configure a displayable object within this renderer. The object can be a
  * newly created one or an existing one. A X.renderer.render() call has to be
  * initiated to display the object.
