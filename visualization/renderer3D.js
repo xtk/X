@@ -1962,16 +1962,12 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 
 
 /**
- * Internal function to perform the actual removing of the object.
- *
- * @param(!X.object} object The object to remove from the renderer.
- * @throws {Error} If anything goes wrong.
- * @protected
+ * @inheritDoc
  */
-X.renderer3D.prototype.remove_ = function(object) {
+X.renderer3D.prototype.remove = function(object) {
 
 	// call the remove_ method of the superclass
-	goog.base(this, 'remove_', object);
+	goog.base(this, 'remove', object);
 
 	// check if this object has children
 	if (object._children.length > 0) {
@@ -1983,7 +1979,7 @@ X.renderer3D.prototype.remove_ = function(object) {
 
 		for (c = 0; c < numberOfChildren; c++) {
 
-			this.remove_(children[c]);
+			this.remove(children[c]);
 
 		}
 
@@ -2112,6 +2108,8 @@ goog.exportSymbol('X.renderer3D.prototype.render',
     X.renderer3D.prototype.render);
 goog.exportSymbol('X.renderer3D.prototype.destroy',
     X.renderer3D.prototype.destroy);
+goog.exportSymbol('X.renderer3D.prototype.remove',
+    X.renderer3D.prototype.remove);
 goog.exportSymbol('X.renderer3D.prototype.resetBoundingBox',
     X.renderer3D.prototype.resetBoundingBox);
 goog.exportSymbol('X.renderer3D.prototype.resetViewAndRender',

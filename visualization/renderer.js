@@ -700,11 +700,12 @@ X.renderer.prototype.add = function(object) {
 
 
 /**
- * Remove an object and all its children from the renderer while the render
- * loop is running.
+ * Remove an existing object and all its children from the rendering context.
  *
- * @param(!X.object} object The object to remove from the renderer.
+ * @param {!X.object} object The object to remove from the renderer.
+ * @return {boolean} TRUE or FALSE depending on success.
  * @throws {Error} An exception if something goes wrong.
+ * @public
  */
 X.renderer.prototype.remove = function(object) {
 
@@ -720,22 +721,10 @@ X.renderer.prototype.remove = function(object) {
 
   }
 
-	this.remove_(object);
+	// to be overloaded
 
-};
+  return false;
 
-
-/**
- * Internal function to perform the actual removing of the object.
- * To be overridden in subclasses.
- *
- * @param(!X.object} object The object to remove from the renderer.
- * @throws {Error} If anything goes wrong.
- * @protected
- */
-X.renderer.prototype.remove_ = function(object) {
-
-	// do nothing
 };
 
 
