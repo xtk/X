@@ -1439,6 +1439,11 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   // call the render_ method of the superclass
   goog.base(this, 'render_', picking, invoked);
 
+  // clear the canvas
+  this._context.viewport(0, 0, this._width, this._height);
+  this._context.clear(this._context.COLOR_BUFFER_BIT |
+      this._context.DEPTH_BUFFER_BIT);
+
   // only proceed if there are actually objects to render
   var _objects = this._objects.values();
   var _numberOfObjects = _objects.length;
@@ -1460,11 +1465,6 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
     this._context.bindFramebuffer(this._context.FRAMEBUFFER, null);
 
   }
-
-  // clear the canvas
-  this._context.viewport(0, 0, this._width, this._height);
-  this._context.clear(this._context.COLOR_BUFFER_BIT |
-      this._context.DEPTH_BUFFER_BIT);
 
   // grab the current perspective from the camera
   var perspectiveMatrix = this._camera._perspective;
