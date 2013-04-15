@@ -702,6 +702,9 @@ X.renderer.prototype.add = function(object) {
  */
 X.renderer.prototype.modify_ = function(object) {
 
+	// no recursive call on volumes for performance reasons
+	if (object instanceof X.volume) return;
+
   // check if this object has children
   if (object._children.length > 0) {
 
