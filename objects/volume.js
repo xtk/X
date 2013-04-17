@@ -429,6 +429,10 @@ X.volume.prototype.modified = function(propagateEvent) {
 
     }
 
+    if (!this._visible) {
+      return;
+    }
+
     if (this._volumeRendering) {
 
       // prepare volume rendering
@@ -544,8 +548,36 @@ X.volume.prototype.__defineSetter__('volumeRendering',
  */
 X.volume.prototype.__defineSetter__('visible', function(visible) {
 
-  // we do not want to propagate to the children here
-  this._visible = visible;
+  if (visible) {
+
+    // here we have to only set specific children to visible using
+    // the modified function without down propagation..
+    this._visible = visible;
+
+    // .. but then call the modified function to show/hide individual or
+    // all slices depending on the volume rendering setting
+    this.modified(false);
+
+  } else {
+
+    // since nothing should be visible we just use the setter of the
+    // X.displayable inject which propagates everything down
+    // loop through the children and set the new visibility
+    var children = this._children;
+    var numberOfChildren = children.length;
+    var c = 0;
+
+    for (c = 0; c < numberOfChildren; c++) {
+
+      children[c]['visible'] = visible;
+
+    }
+
+    this._visible = visible;
+
+    this._dirty = true;
+
+  }
 
 });
 
