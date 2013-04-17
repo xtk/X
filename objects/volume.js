@@ -546,6 +546,16 @@ X.volume.prototype.__defineSetter__('volumeRendering',
 /**
  * @inheritDoc
  */
+X.volume.prototype.__defineGetter__('visible', function() {
+
+  return this._visible;
+
+});
+
+
+/**
+ * @inheritDoc
+ */
 X.volume.prototype.__defineSetter__('visible', function(visible) {
 
   if (visible) {
