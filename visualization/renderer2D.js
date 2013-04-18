@@ -192,6 +192,14 @@ X.renderer2D = function() {
    */
   this._windowHigh = -1;
 
+  /**
+   * The buffer of the showOnly labelmap color.
+   *
+   * @type {!Float32Array}
+   * @protected
+   */
+  this._labelmapShowOnlyColor = new Float32Array([-255, -255, -255, -255]);
+
 };
 // inherit from X.base
 goog.inherits(X.renderer2D, X.renderer);
@@ -759,6 +767,17 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // grab the volume and current slice
   //
   var _volume = this._topLevelObjects[0];
+
+  var _labelmap = _volume._labelmap;
+
+  var _labelmapShowOnlyColor = null;
+  if (_labelmap) {
+
+    // since there is a labelmap, get the showOnlyColor property
+    _labelmapShowOnlyColor = _volume._labelmap._showOnlyColor;
+
+  }
+
   var _currentSlice = _volume['index' + this._orientation];
 
   // .. here is the current slice
@@ -799,9 +818,12 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // - if the _currentSlice has changed
   // - if the threshold has changed
   // - if the window/level has changed
+  // - the labelmap show only color has changed
   var _redraw_required = (this._currentSlice != _currentSlice ||
       this._lowerThreshold != _lowerThreshold ||
-      this._upperThreshold != _upperThreshold || this._windowLow != _windowLow || this._windowHigh != _windowHigh);
+      this._upperThreshold != _upperThreshold ||
+      this._windowLow != _windowLow || this._windowHigh != _windowHigh || (_labelmapShowOnlyColor && !X.array
+      .compare(_labelmapShowOnlyColor, this._labelmapShowOnlyColor, 0, 0, 4)));
 
   if (_redraw_required) {
 
@@ -844,8 +866,27 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         if (_currentLabelMap) {
 
           // we have a label map here
-          _label = [_labelData[_index], _labelData[_index + 1],
-                    _labelData[_index + 2], _labelData[_index + 3]];
+
+          // check if all labels are shown or only one
+          if (_labelmapShowOnlyColor[3] == -255) {
+
+
+            // all labels are shown
+            _label = [_labelData[_index], _labelData[_index + 1],
+                      _labelData[_index + 2], _labelData[_index + 3]];
+
+          } else {
+
+            // show only the label which matches in color
+            if (X.array.compare(_labelmapShowOnlyColor, _labelData, 0, _index, 4)) {
+
+              // this label matches
+              _label = [_labelData[_index], _labelData[_index + 1],
+                        _labelData[_index + 2], _labelData[_index + 3]];
+
+            }
+
+          }
 
         }
 
@@ -880,6 +921,12 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     this._upperThreshold = _upperThreshold;
     this._windowLow = _windowLow;
     this._windowHigh = _windowHigh;
+    if (_currentLabelMap) {
+
+      // only update the setting if we have a labelmap
+      this._labelmapShowOnlyColor = _labelmapShowOnlyColor;
+
+    }
 
   }
 
