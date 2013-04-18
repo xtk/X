@@ -1,30 +1,30 @@
 /*
- * 
+ *
  *                  xxxxxxx      xxxxxxx
- *                   x:::::x    x:::::x 
- *                    x:::::x  x:::::x  
- *                     x:::::xx:::::x   
- *                      x::::::::::x    
- *                       x::::::::x     
- *                       x::::::::x     
- *                      x::::::::::x    
- *                     x:::::xx:::::x   
- *                    x:::::x  x:::::x  
- *                   x:::::x    x:::::x 
+ *                   x:::::x    x:::::x
+ *                    x:::::x  x:::::x
+ *                     x:::::xx:::::x
+ *                      x::::::::::x
+ *                       x::::::::x
+ *                       x::::::::x
+ *                      x::::::::::x
+ *                     x:::::xx:::::x
+ *                    x:::::x  x:::::x
+ *                   x:::::x    x:::::x
  *              THE xxxxxxx      xxxxxxx TOOLKIT
- *                    
+ *
  *                  http://www.goXTK.com
- *                   
+ *
  * Copyright (c) 2012 The X Toolkit Developers <dev@goXTK.com>
- *                   
+ *
  *    The X Toolkit (XTK) is licensed under the MIT License:
  *      http://www.opensource.org/licenses/mit-license.php
- * 
+ *
  *      "Free software" is a matter of liberty, not price.
  *      "Free" as in "free speech", not as in "free beer".
  *                                         - Richard M. Stallman
- * 
- * 
+ *
+ *
  */
 
 // provides
@@ -37,7 +37,7 @@ goog.require('X.base');
 
 /**
  * Create a pair of shaders which consists of a vertex and a fragment shader.
- * 
+ *
  * @constructor
  * @extends X.base
  */
@@ -46,20 +46,20 @@ X.shaders = function() {
   //
   // call the standard constructor of X.base
   goog.base(this);
-  
+
   //
   // class attributes
-  
+
   /**
    * @inheritDoc
    * @const
    */
   this._classname = 'shaders';
-  
+
   /**
    * The vertex shader source of this shader pair. By default, a basic shader
    * supporting vertex positions and vertex colors is defined.
-   * 
+   *
    * @type {!string}
    * @protected
    */
@@ -159,11 +159,11 @@ X.shaders = function() {
   t += '  gl_Position = perspective * fVertexPosition;\n';
   t += '}\n';
   this._vertexshaderSource = t;
-  
+
   /**
    * The fragment shader source of this shader pair. By default, a basic shader
    * supporting fragment colors is defined.
-   * 
+   *
    * @type {!string}
    * @protected
    */
@@ -180,6 +180,7 @@ X.shaders = function() {
   t2 += 'uniform sampler2D textureSampler2;\n';
   t2 += 'uniform float objectOpacity;\n';
   t2 += 'uniform float labelmapOpacity;\n';
+  t2 += 'uniform vec4 labelmapColor;\n';
   t2 += 'uniform float volumeLowerThreshold;\n';
   t2 += 'uniform float volumeUpperThreshold;\n';
   t2 += 'uniform float volumeScalarMin;\n';
@@ -219,13 +220,24 @@ X.shaders = function() {
   t2 += '   }\n';
   t2 += '   if (useLabelMapTexture) {\n'; // special case for label maps
   t2 += '     vec4 texture2 = texture2D(textureSampler2,fragmentTexturePos);\n';
-  t2 += '     if (texture2.a > 0.0) {\n'; // check if this is the background
+  t2 += '     if (texture2.a > 0.0) {\n'; // check if this is not the background
   // label
-  t2 += '       if (labelmapOpacity < 1.0) {\n'; // transparent label map
-  t2 += '         textureSum = mix(texture2, textureSum, 1.0 - labelmapOpacity);\n';
-  t2 += '       } else {\n';
-  t2 += '         textureSum = texture2;\n'; // fully opaque label map
-  t2 += '       }\n';
+  t2 += '         if (labelmapColor.a != -255.0) {\n'; // check if only one color should be shown
+  t2 += '           if (all(equal(floor(texture2 * vec4(255)), labelmapColor))) {\n'; // if equal, mix colors
+  t2 += '             if (labelmapOpacity < 1.0) {\n'; // transparent label map
+  t2 += '               textureSum = mix(texture2, textureSum, 1.0 - labelmapOpacity);\n';
+  t2 += '             } else {\n';
+  t2 += '               textureSum = texture2;\n'; // fully opaque label map
+  t2 += '             }\n';
+  t2 += '           }\n';
+  t2 += '         } else {\n';  // if not only one color, always mix
+  t2 += '           if (labelmapOpacity < 1.0) {\n'; // transparent label map
+  t2 += '             textureSum = mix(texture2, textureSum, 1.0 - labelmapOpacity);\n';
+  t2 += '           } else {\n';
+  t2 += '             textureSum = texture2;\n'; // fully opaque label map
+  t2 += '           }\n';
+  t2 += '         }\n';
+
   t2 += '     }\n';
   t2 += '   }\n';
   // threshold functionality for 1-channel volumes
@@ -268,7 +280,7 @@ X.shaders = function() {
   t2 += ' }\n';
   t2 += '}\n';
   this._fragmentshaderSource = t2;
-  
+
 
 };
 // inherit from X.base
@@ -277,7 +289,7 @@ goog.inherits(X.shaders, X.base);
 
 /**
  * The X.shaders' vertex attributes.
- * 
+ *
  * @enum {string}
  * @protected
  */
@@ -292,7 +304,7 @@ X.shaders.attributes = {
 
 /**
  * The X.shaders' uniforms.
- * 
+ *
  * @enum {string}
  * @protected
  */
@@ -319,6 +331,7 @@ X.shaders.uniforms = {
   USETEXTURE: 'useTexture',
   USELABELMAPTEXTURE: 'useLabelMapTexture',
   LABELMAPOPACITY: 'labelmapOpacity',
+  LABELMAPCOLOR: 'labelmapColor',
   TEXTURESAMPLER: 'textureSampler',
   TEXTURESAMPLER2: 'textureSampler2',
   VOLUMELOWERTHRESHOLD: 'volumeLowerThreshold',
@@ -335,42 +348,42 @@ X.shaders.uniforms = {
 
 /**
  * Get the vertex shader source of this shader pair.
- * 
+ *
  * @return {!string} The vertex shader source.
  */
 X.shaders.prototype.vertex = function() {
 
   return this._vertexshaderSource;
-  
+
 };
 
 
 /**
  * Get the fragment shader source of this shader pair.
- * 
+ *
  * @return {!string} The fragment shader source.
  */
 X.shaders.prototype.fragment = function() {
 
   return this._fragmentshaderSource;
-  
+
 };
 
 
 /**
  * Checks if this configured shaders object is valid in terms of using the
  * defined attributes and uniforms.
- * 
+ *
  * @return {boolean} TRUE or FALSE depending on success.
  * @throws {Error} An exception if the shader is invalid.
  */
 X.shaders.prototype.validate = function() {
 
   // check if the shader sources are compatible to the attributes and uniforms
-  
+
   var attributes = Object.keys(X.shaders.attributes);
   var uniforms = Object.keys(X.shaders.uniforms);
-  
+
   // check if all attributes are used either in the vertex or the fragment
   // shader
   var attributesValid = attributes.every(function(a) {
@@ -378,15 +391,15 @@ X.shaders.prototype.validate = function() {
     a = X.shaders.attributes[a];
     return (this._vertexshaderSource.search(a) != -1) ||
         (this._fragmentshaderSource.search(a) != -1);
-    
+
   }.bind(this));
-  
+
   if (!attributesValid) {
-    
+
     throw new Error('Could not find all attributes in the shader sources.');
-    
+
   }
-  
+
   // check if all attributes are used either in the vertex or the fragment
   // shader
   var uniformsValid = uniforms.every(function(u) {
@@ -394,15 +407,15 @@ X.shaders.prototype.validate = function() {
     u = X.shaders.uniforms[u];
     return (this._vertexshaderSource.search(u) != -1) ||
         (this._fragmentshaderSource.search(u) != -1);
-    
+
   }.bind(this));
-  
+
   if (!uniformsValid) {
-    
+
     throw new Error('Could not find all uniforms in the shader sources.');
-    
+
   }
-  
+
   return true;
-  
+
 };

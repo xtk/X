@@ -1549,6 +1549,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       .get(X.shaders.uniforms.SCALARSMAXTHRESHOLD);
   var uObjectOpacity = uLocations.get(X.shaders.uniforms.OBJECTOPACITY);
   var uLabelMapOpacity = uLocations.get(X.shaders.uniforms.LABELMAPOPACITY);
+  var uLabelMapColor = uLocations.get(X.shaders.uniforms.LABELMAPCOLOR);
   var uUseTexture = uLocations.get(X.shaders.uniforms.USETEXTURE);
   var uUseLabelMapTexture = uLocations
       .get(X.shaders.uniforms.USELABELMAPTEXTURE);
@@ -1859,6 +1860,9 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 
           // propagate label map opacity
           this._context.uniform1f(uLabelMapOpacity, labelmap._opacity);
+
+          // propagate the labelmap show only color
+          this._context.uniform4fv(uLabelMapColor, labelmap._showOnlyColor);
 
         }
 
