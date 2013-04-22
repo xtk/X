@@ -77,7 +77,7 @@ X.camera = function(width, height) {
    * @type {!X.vector}
    * @protected
    */
-  this._position = new X.vector(0, 0, 100);
+  this._position = new X.vector(0, 100, 0);
 
   /**
    * The focus point of this camera, by default 0, 0, 0.
@@ -93,7 +93,7 @@ X.camera = function(width, height) {
    * @type {!X.vector}
    * @protected
    */
-  this._up = new X.vector(0, 1, 0);
+  this._up = new X.vector(0, 0, 1);
 
   /**
    * The view matrix.
