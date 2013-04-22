@@ -419,49 +419,23 @@ X.renderer2D.prototype.update_ = function(object) {
   var _sliceHeight = 0;
   var _dimensions = object._dimensions;
   var _spacing = object._spacing;
-  // ///
-  var MRI = object._MRI;
   // scan space
-  var _space = MRI.space;
+  var _space = object._info.space;
   // scan space orientation
-  var _space_orientation = MRI.space_orientation;
+  var _space_orientation = object._info.space_orientation;
   console.log('space: ' + _space);
   console.log('space orientation: ' + _space_orientation);
   // Go to Right-Anterior-Superior for now!
-  var _ras_space_orientation = _space_orientation;
+  var _ras_space_orientation = object._info.space_orientation;
   console.log('RAS space orientation: ' + _ras_space_orientation);
-  // Go to IJK space
-  // Get ijk orientation
-  var _x_cosine = _ras_space_orientation.slice(0, 3);
-  var _x_abs_cosine = _x_cosine.map(function(v) {
-    return Math.abs(v);
-  });
-  var _x_max = _x_abs_cosine.indexOf(Math.max.apply(Math, _x_abs_cosine));
-  var _x_norm_cosine = [ 0, 0, 0 ];
-  _x_norm_cosine[_x_max] = _x_cosine[_x_max] < 0 ? -1 : 1;
-  var _y_cosine = _ras_space_orientation.slice(3, 6);
-  var _y_abs_cosine = _y_cosine.map(function(v) {
-    return Math.abs(v);
-  });
-  var _y_max = _y_abs_cosine.indexOf(Math.max.apply(Math, _y_abs_cosine));
-  var _y_norm_cosine = [ 0, 0, 0 ];
-  _y_norm_cosine[_y_max] = _y_cosine[_y_max] < 0 ? -1 : 1;
-  var _z_cosine = _ras_space_orientation.slice(6, 9);
-  var _z_abs_cosine = _z_cosine.map(function(v) {
-    return Math.abs(v);
-  });
-  var _z_max = _z_abs_cosine.indexOf(Math.max.apply(Math, _z_abs_cosine));
-  var _z_norm_cosine = [ 0, 0, 0 ];
-  _z_norm_cosine[_z_max] = _z_cosine[_z_max] < 0 ? -1 : 1;
-  var _orient = [ _x_norm_cosine[_x_max], _y_norm_cosine[_y_max],
-      _z_norm_cosine[_z_max] ];
-  this._orient = _orient;
+
+  this._orient = object._info.orientation;;
   // might be usefull to loop
-  var _norm_cosine = [ _x_norm_cosine, _y_norm_cosine, _z_norm_cosine ];
+  var _norm_cosine = object._info.norm_cosine;
   // _orient might be useful too
   var _dim = object._dimensions;
   var _spacing = object._spacing;
-  this._norm_cosine = _norm_cosine;
+  this._norm_cosine = object._info.norm_cosine;
   // neurology convention
   // invert cols in axial and coronal
   this._convention = 0;

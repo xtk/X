@@ -272,72 +272,27 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
  * 
  * @param {!X.object}
  *          object The X.volume to fill.
- * @param {!Object}
- *          MRI The MRI object which contains the min, max, data and type.
  * @return {!Array} The volume data as a 3D Array.
  */
-X.parser.prototype.reslice = function(object, MRI) {
+X.parser.prototype.reslice = function(object) {
   // scan space
-  var _space = MRI.space;
+  var _space = object._info.space;
   // scan space orientation
-  var _space_orientation = MRI.space_orientation;
+  var _space_orientation = object._info.space_orientation;
   console.log('space: ' + _space);
   console.log('space orientation: ' + _space_orientation);
   // Go to Right-Anterior-Superior for now!
-  var _ras_space_orientation = _space_orientation;
-  if (_space[0] != 'right') {
-    _ras_space_orientation[0] = -_ras_space_orientation[0];
-    _ras_space_orientation[3] = -_ras_space_orientation[3];
-    _ras_space_orientation[6] = -_ras_space_orientation[6];
-  }
-  if (_space[1] != 'anterior') {
-    _ras_space_orientation[1] = -_ras_space_orientation[1];
-    _ras_space_orientation[4] = -_ras_space_orientation[4];
-    _ras_space_orientation[7] = -_ras_space_orientation[7];
-  }
-  if (_space[2] != 'superior') {
-    _ras_space_orientation[2] = -_ras_space_orientation[2];
-    _ras_space_orientation[5] = -_ras_space_orientation[5];
-    _ras_space_orientation[8] = -_ras_space_orientation[8];
-  }
+  var _ras_space_orientation = object._info.ras_space_orientation;
   console.log('RAS space orientation: ' + _ras_space_orientation);
-  // Go to IJK space
-  // Get ijk orientation
-  var _x_cosine = _ras_space_orientation.slice(0, 3);
-  var _x_abs_cosine = _x_cosine.map(function(v) {
-    return Math.abs(v);
-  });
-  var _x_max = _x_abs_cosine.indexOf(Math.max.apply(Math, _x_abs_cosine));
-  var _x_norm_cosine = [ 0, 0, 0 ];
-  _x_norm_cosine[_x_max] = _x_cosine[_x_max] < 0 ? -1 : 1;
-  var _y_cosine = _ras_space_orientation.slice(3, 6);
-  var _y_abs_cosine = _y_cosine.map(function(v) {
-    return Math.abs(v);
-  });
-  var _y_max = _y_abs_cosine.indexOf(Math.max.apply(Math, _y_abs_cosine));
-  var _y_norm_cosine = [ 0, 0, 0 ];
-  _y_norm_cosine[_y_max] = _y_cosine[_y_max] < 0 ? -1 : 1;
-  var _z_cosine = _ras_space_orientation.slice(6, 9);
-  var _z_abs_cosine = _z_cosine.map(function(v) {
-    return Math.abs(v);
-  });
-  var _z_max = _z_abs_cosine.indexOf(Math.max.apply(Math, _z_abs_cosine));
-  var _z_norm_cosine = [ 0, 0, 0 ];
-  _z_norm_cosine[_z_max] = _z_cosine[_z_max] < 0 ? -1 : 1;
-  var _orient = [ _x_norm_cosine[_x_max], _y_norm_cosine[_y_max],
-      _z_norm_cosine[_z_max] ];
   
-  
-  // might be usefull to loop
-  var _norm_cosine = [_x_norm_cosine, _y_norm_cosine, _z_norm_cosine];
+  var _norm_cosine = object._info.norm_cosine;
   // _orient might be useful too
-  
   // allocate volume
   // rows, cols and slices (ijk dimensions)
   var _dim = object._dimensions;
   var _spacing = object._spacing;
-  var max = MRI.max;
-  var datastream = MRI.data;
+  var max = object._info.max;
+  var datastream = object._info.data;
   var image = new Array(_dim[0]);
   // use real image to return real values
   var realImage = new Array(_dim[0]);
@@ -347,8 +302,8 @@ X.parser.prototype.reslice = function(object, MRI) {
     realImage[_i] = new Array(_dim[1]);
     _j = 0;
     for (_j = 0; _j < _dim[1]; _j++) {
-      image[_i][_j] = new MRI.data.constructor(_dim[2]);
-      realImage[_i][_j] = new MRI.data.constructor(_dim[2]);
+      image[_i][_j] = new object._info.data.constructor(_dim[2]);
+      realImage[_i][_j] = new object._info.data.constructor(_dim[2]);
     }
   }
   console.log('Empty image:');
@@ -383,7 +338,7 @@ X.parser.prototype.reslice = function(object, MRI) {
         // var _li = (_dim[0] + _orient[0] * _i) % _dim[0];
         // var _lj = (_dim[1] + _orient[1] * _j) % _dim[1];
         // var _lk = (_dim[2] + _orient[2] * _k) % _dim[2];
-        image[_i][_j][_k] = 255 * (_pix_value / MRI.max);
+        image[_i][_j][_k] = 255 * (_pix_value / object._info.max);
         realImage[_i][_j][_k] = _pix_value;
         // image[_li][_lj][_lk] = 255 * (_pix_value / MRI.max);
         // realImage[_li][_lj][_lk] = _pix_value;
@@ -400,10 +355,6 @@ X.parser.prototype.reslice = function(object, MRI) {
   // slice in scan direction without texture yet
   // slice in scan next direction
   // slice in scan next - next direction
-  console.log(_x_norm_cosine);
-  console.log(_y_norm_cosine);
-  console.log(_z_norm_cosine);
-  
   var xyz = 0;
   for (xyz = 0; xyz < 3; xyz++) {
     var _ti = xyz;
@@ -424,8 +375,7 @@ X.parser.prototype.reslice = function(object, MRI) {
     console.log('normal: ' + _norm_cosine[_tk]);
     console.log('first: ' + image.length);
     console.log('second: ' + image[0].length);
-    console.log('third: ' +  image[0][0].length);
-    
+    console.log('third: ' + image[0][0].length);
     // CREATE SLICE in normal direction
     var halfDimension = (kmax - 1) / 2;
     var _indexCenter = halfDimension;
@@ -436,109 +386,84 @@ X.parser.prototype.reslice = function(object, MRI) {
     // front = normal direction
     var _front = _norm_cosine[_tk];
     // color
-    var _color = [1,1,1];
-    if(_norm_cosine[_tk][2] != 0){
-      _color = [1,0,0];
-    }
-    else if(_norm_cosine[_tk][1] != 0){
-      _color = [0,1,0];
-    }
-    else{
-      _color = [1,1,0];
+    var _color = [ 1, 1, 1 ];
+    if (_norm_cosine[_tk][2] != 0) {
+      _color = [ 1, 0, 0 ];
+    } else if (_norm_cosine[_tk][1] != 0) {
+      _color = [ 0, 1, 0 ];
+    } else {
+      _color = [ 1, 1, 0 ];
     }
     // size
-//    var _width = imax * _spacing[_ti];
-//    var _height = jmax * _spacing[_tj];
+    // var _width = imax * _spacing[_ti];
+    // var _height = jmax * _spacing[_tj];
     var _width = imax * _spacing[_ti];
     var _height = jmax * _spacing[_tj];
-
-    console.log('spacing: ' +  _spacing);
-    console.log('width: ' +  _width);
-    console.log('height: ' +  _height);
-    
-    for(_k = 0; _k < kmax; _k++){
+    console.log('spacing: ' + _spacing);
+    console.log('width: ' + _width);
+    console.log('height: ' + _height);
+    for (_k = 0; _k < kmax; _k++) {
       _j = 0;
       var _p = 0;
-      
       // CREATE SLICE
       // position
-      /*var _orgi = 1;
-      if(_norm_cosine[_tk][0] != 0){
-        _orgi = _norm_cosine[_tk][0];
-      }
-      else if(_norm_cosine[_tk][1] != 0){
-        _orgi = _norm_cosine[_tk][1];
-      }
-      else{
-        _orgi = _norm_cosine[_tk][2];
-      }*/
-      
-      var _position = (-halfDimension * _spacing[_tk]) +
-      (_k * _spacing[_tk]);
+      /*
+       * var _orgi = 1; if(_norm_cosine[_tk][0] != 0){ _orgi =
+       * _norm_cosine[_tk][0]; } else if(_norm_cosine[_tk][1] != 0){ _orgi =
+       * _norm_cosine[_tk][1]; } else{ _orgi = _norm_cosine[_tk][2]; }
+       */
+      var _position = (-halfDimension * _spacing[_tk]) + (_k * _spacing[_tk]);
       // center
-      var _center = [object._center[0],object._center[1],object._center[2]];
+      var _center = [ object._center[0], object._center[1], object._center[2] ];
       // move center along normal
       // 0 should be hard coded
       // find normal direction and use it!
-      if(_norm_cosine[_tk][0] != 0){
-        _center[0] += _norm_cosine[_tk][0]*_position;
+      if (_norm_cosine[_tk][0] != 0) {
+        _center[0] += _norm_cosine[_tk][0] * _position;
+      } else if (_norm_cosine[_tk][1] != 0) {
+        _center[1] += _norm_cosine[_tk][1] * _position;
+      } else {
+        _center[2] += _norm_cosine[_tk][2] * _position;
       }
-      else if(_norm_cosine[_tk][1] != 0){
-        _center[1] += _norm_cosine[_tk][1]*_position;
-      }
-      else{
-        _center[2] += _norm_cosine[_tk][2]*_position;
-      }
-
-      
       // create the slice
       // .. new slice
       var _slice = new X.slice();
-      _slice.setup(_center, _front, _up, _right, _width, _height, true,
-          _color);
+      _slice.setup(_center, _front, _up, _right, _width, _height, true, _color);
       // map slice to volume
       _slice._volume = object;
       // only show the middle slice, hide everything else
       _slice['visible'] = (_k == Math.floor(_indexCenter));
-
       var targetSlice = _slice;
       var textureForCurrentSlice = new Uint8Array(textureSize);
-      
-      //console.log(_orient);
-      
-      for(_j = 0; _j < jmax; _j++){
+      // console.log(_orient);
+      for (_j = 0; _j < jmax; _j++) {
         _i = 0;
-        for(_i = 0; _i < imax; _i++){
+        for (_i = 0; _i < imax; _i++) {
           var _pix_val = 0;
           // order pixels based on cosine directions?
           // y flip?
-          //var _li = (_dim[_ti] + _orient[_ti] * _i) % _dim[_ti];
-          //var _lj = (_dim[_tj] + _orient[_tj] * _j) % _dim[_tj];
-          //var _lk = (_dim[_tk] + _orient[_tk] * _k) % _dim[_tk];
-
-          if(xyz == 0){
+          // var _li = (_dim[_ti] + _orient[_ti] * _i) % _dim[_ti];
+          // var _lj = (_dim[_tj] + _orient[_tj] * _j) % _dim[_tj];
+          // var _lk = (_dim[_tk] + _orient[_tk] * _k) % _dim[_tk];
+          if (xyz == 0) {
             _pix_val = image[_i][_j][_k];
-          }
-          else if(xyz == 1){
+          } else if (xyz == 1) {
             _pix_val = image[_k][_i][_j];
-          }
-          else{
+          } else {
             _pix_val = image[_j][_k][_i];
           }
-          
-           var pixelValue_r = _pix_val;
-           var pixelValue_g = _pix_val;
-           var pixelValue_b = _pix_val;
-           var pixelValue_a = 255;
-           var textureStartIndex = _p * 4;
-           textureForCurrentSlice[textureStartIndex] = pixelValue_r;
-           textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
-           textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
-           textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
+          var pixelValue_r = _pix_val;
+          var pixelValue_g = _pix_val;
+          var pixelValue_b = _pix_val;
+          var pixelValue_a = 255;
+          var textureStartIndex = _p * 4;
+          textureForCurrentSlice[textureStartIndex] = pixelValue_r;
+          textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
+          textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
+          textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
           _p++;
         }
       }
-      
       // slice normal?
       // slice orientation?
       var pixelTexture = new X.texture();
@@ -546,11 +471,9 @@ X.parser.prototype.reslice = function(object, MRI) {
       pixelTexture._rawDataWidth = imax;
       pixelTexture._rawDataHeight = jmax;
       targetSlice._texture = pixelTexture;
-      
       // push slice
       object._children[xyz]._children.push(targetSlice);
     }
-    
     // set slice index
     // by default, all the 'middle' slices are shown
     if (xyz == 0) {
@@ -563,7 +486,6 @@ X.parser.prototype.reslice = function(object, MRI) {
       object._indexZ = halfDimension;
       object._indexZold = halfDimension;
     }
-    
     // use orientation for target too
     // var _ind = _i;
     /*
@@ -573,9 +495,7 @@ X.parser.prototype.reslice = function(object, MRI) {
     // currentSlice._texture = pixelTexture;
     // }
   }
-  
   object._dirty = true;
-  
   X.TIMERSTOP(this._classname + '.reslice');
   return realImage;
 };

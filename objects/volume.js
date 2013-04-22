@@ -201,6 +201,9 @@ X.volume = function(volume) {
    * @protected
    */
   this._reslicing = true;
+  
+  this._info = null;
+  
   // inject functionality
   inject(this, new X.loadable()); // this object is loadable from a file
   inject(this, new X.thresholdable()); // this object is thresholdable
@@ -246,7 +249,7 @@ X.volume.prototype.copy_ = function(volume) {
  * 
  * @private
  */
-X.volume.prototype.create_ = function(_scan_direction, _scan_direction_vec) {
+X.volume.prototype.create_ = function(_info) {
   // remove all old children
   this._children.length = 0;
   this._slicesX._children.length = 0;
@@ -256,6 +259,8 @@ X.volume.prototype.create_ = function(_scan_direction, _scan_direction_vec) {
   this._children.push(this._slicesX);
   this._children.push(this._slicesY);
   this._children.push(this._slicesZ);
+  
+  this._info = _info;
   
   this._dirty = true;
 };
@@ -592,6 +597,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
     // we do not have to do anything
     return;
   }
+  
   // hide old volume rendering slices
   var _child = this._children[this._volumeRenderingDirection];
   _child['visible'] = false;
