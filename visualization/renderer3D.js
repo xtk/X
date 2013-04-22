@@ -39,6 +39,7 @@ goog.require('X.shaders');
 goog.require('X.triplets');
 goog.require('X.vector');
 goog.require('goog.structs.Map');
+goog.require('goog.style');
 
 
 
@@ -1200,8 +1201,10 @@ X.renderer3D.prototype.showCaption_ = function(x, y) {
 
     if (caption) {
 
-      var t = new X.caption(this._container, this._container.offsetLeft + x +
-          10, this._container.offsetTop + y + 10, this._interactor);
+			var pos = goog.style.getClientPosition(this._container);
+
+      var t = new X.caption(this._container, pos.x + x +
+          10, pos.y + y + 10, this._interactor);
       t.setHtml(caption);
 
     }
