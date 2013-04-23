@@ -492,11 +492,11 @@ X.renderer2D.prototype.update_ = function(object) {
   var _color = [ 1, 1, 1 ];
   var container = goog.dom.getElement(this._container);
   if (_norm_cosine[_tk][2] != 0) {
-    container.style["border-top"] = "2px solid red";
+    container.style.borderTop = "2px solid red";
   } else if (_norm_cosine[_tk][1] != 0) {
-    container.style["border-top"] = "2px solid green";
+    container.style.borderTop = "2px solid green";
   } else {
-    container.style["border-top"] = "2px solid yellow";
+    container.style.borderTop = "2px solid yellow";
   }
   // size
   var _width = imax;

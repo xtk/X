@@ -751,6 +751,10 @@ X.volume.prototype.__defineSetter__('reslicing', function(reslicing) {
  *          direction The direction of the volume rendering (0==x,1==y,2==z).
  * @protected
  */
+
+// entry point
+// convert here!!!
+
 X.volume.prototype.volumeRendering_ = function(direction) {
   if ((!this._volumeRendering)
       || (!this._dirty && direction == this._volumeRenderingDirection)) {

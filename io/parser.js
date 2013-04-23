@@ -279,11 +279,8 @@ X.parser.prototype.reslice = function(object) {
   var _space = object._info.space;
   // scan space orientation
   var _space_orientation = object._info.space_orientation;
-  console.log('space: ' + _space);
-  console.log('space orientation: ' + _space_orientation);
   // Go to Right-Anterior-Superior for now!
   var _ras_space_orientation = object._info.ras_space_orientation;
-  console.log('RAS space orientation: ' + _ras_space_orientation);
   
   var _norm_cosine = object._info.norm_cosine;
   // _orient might be useful too
@@ -306,8 +303,6 @@ X.parser.prototype.reslice = function(object) {
       realImage[_i][_j] = new object._info.data.constructor(_dim[2]);
     }
   }
-  console.log('Empty image:');
-  console.log(image);
   // XYS to IJK
   // (fill volume)
   var _nb_pix_per_slice = _dim[0] * _dim[1];
@@ -346,8 +341,6 @@ X.parser.prototype.reslice = function(object) {
       }
     }
   }
-  console.log('Full image:');
-  console.log(image);
   // IJK to XYS
   // (Axial, Sagittal, Coronal)
   // reslice image
@@ -365,17 +358,6 @@ X.parser.prototype.reslice = function(object) {
     var imax = _dim[_ti];
     var jmax = _dim[_tj];
     var kmax = _dim[_tk];
-    console.log('**SLICING**');
-    console.log('k: ' + kmax);
-    console.log('j: ' + jmax);
-    console.log('i: ' + imax);
-    console.log('textureSize: ' + textureSize);
-    console.log('x axis: ' + _norm_cosine[_ti]);
-    console.log('y axis: ' + _norm_cosine[_tj]);
-    console.log('normal: ' + _norm_cosine[_tk]);
-    console.log('first: ' + image.length);
-    console.log('second: ' + image[0].length);
-    console.log('third: ' + image[0][0].length);
     // CREATE SLICE in normal direction
     var halfDimension = (kmax - 1) / 2;
     var _indexCenter = halfDimension;
@@ -399,9 +381,6 @@ X.parser.prototype.reslice = function(object) {
     // var _height = jmax * _spacing[_tj];
     var _width = imax * _spacing[_ti];
     var _height = jmax * _spacing[_tj];
-    console.log('spacing: ' + _spacing);
-    console.log('width: ' + _width);
-    console.log('height: ' + _height);
     for (_k = 0; _k < kmax; _k++) {
       _j = 0;
       var _p = 0;
@@ -434,12 +413,7 @@ X.parser.prototype.reslice = function(object) {
       else{
         _slice['visible'] = (_k == Math.ceil(_indexCenter));
       }
-      
-      if(_slice['visible'] == true){
-      console.log("OUUUUUUUUUCH: " + _indexCenter);
-      console.log("floor: " + Math.floor(_indexCenter));
-      console.log("k: " + _k);
-      }
+
       var targetSlice = _slice;
       var textureForCurrentSlice = new Uint8Array(textureSize);
       // console.log(_orient);
