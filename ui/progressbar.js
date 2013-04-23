@@ -33,6 +33,7 @@ goog.provide('X.progressbar');
 // requires
 goog.require('X.base');
 goog.require('goog.dom');
+goog.require('goog.style');
 goog.require('goog.ui.ProgressBar');
 
 
@@ -157,9 +158,10 @@ X.progressbar.prototype.init_ = function() {
 
   // enable relative positioning for the main container
   // this is required to place the progressBar in the center
+
+	var position = goog.style.getComputedStyle(this._parent, "position");
   
-  if (this._parent.style.position == 'static' ||
-      this._parent.style.position == '') {
+  if (position == 'static' || position == '') {
     // buffer the original setting
     this._parent_position_original = this._parent.style.position;
     this._parent.style.position = 'relative';
