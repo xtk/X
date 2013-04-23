@@ -418,13 +418,9 @@ X.parser.prototype.reslice = function(object) {
       // move center along normal
       // 0 should be hard coded
       // find normal direction and use it!
-      if (_norm_cosine[_tk][0] != 0) {
         _center[0] += _norm_cosine[_tk][0] * _position;
-      } else if (_norm_cosine[_tk][1] != 0) {
         _center[1] += _norm_cosine[_tk][1] * _position;
-      } else {
         _center[2] += _norm_cosine[_tk][2] * _position;
-      }
       // create the slice
       // .. new slice
       var _slice = new X.slice();
@@ -432,7 +428,18 @@ X.parser.prototype.reslice = function(object) {
       // map slice to volume
       _slice._volume = object;
       // only show the middle slice, hide everything else
-      _slice['visible'] = (_k == Math.floor(_indexCenter));
+      if(object._info.orientation[_tk] > 0){
+        _slice['visible'] = (_k == Math.floor(_indexCenter));
+      }
+      else{
+        _slice['visible'] = (_k == Math.ceil(_indexCenter));
+      }
+      
+      if(_slice['visible'] == true){
+      console.log("OUUUUUUUUUCH: " + _indexCenter);
+      console.log("floor: " + Math.floor(_indexCenter));
+      console.log("k: " + _k);
+      }
       var targetSlice = _slice;
       var textureForCurrentSlice = new Uint8Array(textureSize);
       // console.log(_orient);
@@ -472,12 +479,19 @@ X.parser.prototype.reslice = function(object) {
       pixelTexture._rawDataHeight = jmax;
       targetSlice._texture = pixelTexture;
       // push slice
-      object._children[xyz]._children.push(targetSlice);
+      if(object._info.orientation[_tk] > 0){
+        object._children[xyz]._children.push(targetSlice);
+      }
+      else{
+        object._children[xyz]._children.unshift(targetSlice);
+      }
+
     }
     // set slice index
     // by default, all the 'middle' slices are shown
     if (xyz == 0) {
       object._indexX = halfDimension;
+      console.log("hello: " + object._indexX);
       object._indexXold = halfDimension;
     } else if (xyz == 1) {
       object._indexY = halfDimension;
@@ -486,14 +500,6 @@ X.parser.prototype.reslice = function(object) {
       object._indexZ = halfDimension;
       object._indexZold = halfDimension;
     }
-    // use orientation for target too
-    // var _ind = _i;
-    /*
-     * // invert y axis for y-slice index if (xyz == 1) { _ind = imax - 1 - i; }
-     */
-    // var currentSlice = targetSlice._children[_ind];
-    // currentSlice._texture = pixelTexture;
-    // }
   }
   object._dirty = true;
   X.TIMERSTOP(this._classname + '.reslice');

@@ -209,6 +209,7 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   // and create the textures for each slice
   // to be added
   object._image = this.reslice(object);
+  object.map_();
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;

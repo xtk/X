@@ -89,6 +89,10 @@ X.volume = function(volume) {
    * @public
    */
   this._indexX = 0;
+  this._indexIS = 0;
+  this._indexLR = 0;
+  this._indexPA = 0;
+  this._dimensionsRAS = [ 10, 10, 10 ];
   /**
    * The index of the formerly shown slice in X-direction.
    * 
@@ -262,7 +266,56 @@ X.volume.prototype.create_ = function(_info) {
   
   this._info = _info;
   
+  var _norm_cosine = _info.norm_cosine;
+  if( _norm_cosine[2][0] != 0 ){
+    this._indexLR = this._indexX;
+    this._indexPA = this._indexY;
+    this._indexIS = this._indexZ;
+    //this._dimensionsILP = [ 10, 10, 10 ];
+  }
+  else if( _norm_cosine[2][1] != 0 ){
+    this._indexLR = this._indexZ;
+    this._indexPA = this._indexX;
+    this._indexIS = this._indexY;
+    this._dimensionsILP = [ 10, 10, 10 ];
+  }
+  else{
+    this._indexLR = this._indexY;
+    this._indexPA = this._indexZ;
+    this._indexIS = this._indexX;
+    //this._dimensionsILP = [ 10, 10, 10 ];
+  }
+
+  
   this._dirty = true;
+};
+
+X.volume.prototype.map_ = function() {
+  var _norm_cosine = this._info.norm_cosine;
+  if( _norm_cosine[2][0] != 0 ){
+    this._indexLR = this._indexX;
+    this._indexPA = this._indexY;
+    this._indexIS = this._indexZ;
+    this._dimensionsRAS[0] = this._dimensions[2];
+    this._dimensionsRAS[1] = this._dimensions[0];
+    this._dimensionsRAS[2] = this._dimensions[1];
+  }
+  else if( _norm_cosine[2][1] != 0 ){
+    this._indexLR = this._indexZ;
+    this._indexPA = this._indexX;
+    this._indexIS = this._indexY;
+    this._dimensionsRAS[0] = this._dimensions[1];
+    this._dimensionsRAS[1] = this._dimensions[2];
+    this._dimensionsRAS[2] = this._dimensions[0];
+  }
+  else{
+    this._indexLR = this._indexY;
+    this._indexPA = this._indexZ;
+    this._indexIS = this._indexX;
+    this._dimensionsRAS[0] = this._dimensions[0];
+    this._dimensionsRAS[1] = this._dimensions[1];
+    this._dimensionsRAS[2] = this._dimensions[2];
+  }
 };
 /**
  * Re-show the slices or re-activate the volume rendering for this volume.
@@ -353,6 +406,10 @@ X.volume.prototype.slicing_ = function() {
 X.volume.prototype.__defineGetter__('dimensions', function() {
   return this._dimensions;
 });
+
+X.volume.prototype.__defineGetter__('dimensionsRAS', function() {
+  return this._dimensionsRAS;
+});
 /**
  * Get the volume rendering setting of this X.volume.
  * 
@@ -436,6 +493,109 @@ X.volume.prototype.__defineGetter__('labelmap', function() {
  * @return {!number} The slice index in X-direction.
  * @public
  */
+
+/**
+ * Get the slice index in X-direction.
+ * 
+ * @return {!number} The slice index in X-direction.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('indexIS', function() {
+  return this._indexIS;
+});
+/**
+ * Set the slice index in X-direction.
+ * 
+ * @param {!number}
+ *          indexX The slice index in X-direction.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('indexIS', function(indexIS) {
+  if (goog.isNumber(indexIS)) {
+    var _norm_cosine = this._info.norm_cosine;
+    if( _norm_cosine[2][0] != 0 ){
+      this._indexZ = indexIS;
+    }
+    else if( _norm_cosine[2][1] != 0 ){
+      this._indexY = indexIS;
+    }
+    else{
+      this._indexX = indexIS;
+    }
+    this._indexIS = indexIS;
+    // fire a modified event without propagation for fast slicing
+    this.modified(false);
+  }
+});
+/**
+ * Get the slice index in Y-direction.
+ * 
+ * @return {!number} The slice index in Y-direction.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('indexLR', function() {
+  return this._indexLR;
+});
+/**
+ * Set the slice index in Y-direction.
+ * 
+ * @param {!number}
+ *          indexY The slice index in Y-direction.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('indexLR', function(indexLR) {
+  if (goog.isNumber(indexLR)) {
+    // map variables based on orientation
+    var _norm_cosine = this._info.norm_cosine;
+    if( _norm_cosine[2][0] != 0 ){
+      this._indexX = indexLR;
+    }
+    else if( _norm_cosine[2][1] != 0 ){
+      this._indexZ = indexLR;
+    }
+    else{
+      this._indexY = indexLR;
+    }
+    this._indexLR = indexLR;
+    // fire a modified event without propagation for fast slicing
+    this.modified(false);
+  }
+});
+/**
+ * Get the slice index in Z-direction.
+ * 
+ * @return {!number} The slice index in Z-direction.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('indexPA', function() {
+  return this._indexPA;
+});
+/**
+ * Set the slice index in Z-direction.
+ * 
+ * @param {!number}
+ *          indexZ The slice index in Z-direction.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('indexPA', function(indexPA) {
+  if (goog.isNumber(indexPA)) {
+    // map variables based on orientation
+    var _norm_cosine = this._info.norm_cosine;
+    if( _norm_cosine[2][0] != 0 ){
+      this._indexY = indexPA;
+    }
+    else if( _norm_cosine[2][1] != 0 ){
+      this._indexX = indexPA;
+    }
+    else{
+      this._indexZ = indexPA;
+    }
+    this._indexPA = indexPA;
+    // fire a modified event without propagation for fast slicing
+    this.modified(false);
+  }
+});
+
 X.volume.prototype.__defineGetter__('indexX', function() {
   return this._indexX;
 });

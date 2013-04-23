@@ -339,6 +339,37 @@ X.renderer2D.prototype.resetViewAndRender = function() {
 /**
  * @inheritDoc
  */
+
+X.renderer2D.prototype.getOrientation_ = function(normCosines, orientation) {
+  if (orientation == 'X') {
+    // give me the sagittal!
+    if(normCosines[2][0] != 0){
+      return 0;
+    }
+    else if(normCosines[0][0] != 0){
+      return 1;
+    }
+    return 2;
+  } else if (orientation == 'Y') {
+    // give me the coronal!
+    if(normCosines[2][1] != 0){
+      return 0;
+    }
+    else if(normCosines[0][1] != 0){
+      return 1;
+    }
+    return 2;
+  } else {
+    // give me the axial!
+    if(normCosines[2][2] != 0){
+      return 0;
+    }
+    else if(normCosines[0][2] != 0){
+      return 1;
+    }
+    return 2;
+  }
+}
 X.renderer2D.prototype.update_ = function(object) {
   // call the update_ method of the superclass
   goog.base(this, 'update_', object);
@@ -441,14 +472,9 @@ X.renderer2D.prototype.update_ = function(object) {
   this._convention = 0;
   // ///
   // check the orientation and store a pointer to the slices
-  var xyz = 0;
-  if (this._orientation == 'X') {
-    xyz = 0;
-  } else if (this._orientation == 'Y') {
-    xyz = 1;
-  } else {
-    xyz = 2;
-  }
+  var xyz = this.getOrientation_(_norm_cosine, this._orientation);
+
+  console.log("xyz: " + xyz);
   var _ti = xyz;
   var _tj = (_ti + 1) % 3;
   var _tk = (_ti + 2) % 3;
@@ -548,7 +574,18 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // grab the volume and current slice
   //
   var _volume = this._topLevelObjects[0];
-  var _currentSlice = _volume['index' + this._orientation];
+  var xyz = this.getOrientation_(this._norm_cosine, this._orientation);
+  var test = "";
+  if(xyz == 0){
+    test = "X";
+  }
+  else if(xyz == 1){
+    test = "Y";
+  }
+  else{
+    test = "Z";
+  }
+  var _currentSlice = _volume['index' + test];
   // .. here is the current slice
   var _slice = this._slices[parseInt(_currentSlice, 10)];
   var _sliceData = _slice._texture._rawData;
@@ -629,14 +666,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       // this.height
       // this._norm_cosine
       // if coronal, we rotate!
-      var xyz = 0;
-      if (this._orientation == 'X') {
-        xyz = 0;
-      } else if (this._orientation == 'Y') {
-        xyz = 1;
-      } else {
-        xyz = 2;
-      }
+      var xyz = this.getOrientation_(this._norm_cosine, this._orientation);
       var _ti = xyz;
       var _tj = (_ti + 1) % 3;
       var _tk = (_ti + 2) % 3;
