@@ -180,24 +180,25 @@ X.renderer2D.prototype.onScroll_ = function(event) {
   }
   // switch between different orientations
   
-  var xyz = 2;
-  if (this._orientation == 'X') {
-    xyz = 2;
-  } else if (this._orientation == 'Y') {
-    xyz = 0;
-  } else {
-    xyz = 1;
+  var xyz = this.getOrientation_(this._norm_cosine, this._orientation);
+  var test = "";
+  if(xyz == 0){
+    test = "X";
+  }
+  else if(xyz == 1){
+    test = "Y";
+  }
+  else{
+    test = "Z";
   }
   
-  console.log(this._orient[xyz]);
-  
-  var _orientation = this._orientation;
+  var _orientation = test;
   if (event._up) {
     // yes, scroll up
-    _volume['index' + _orientation] = _volume['index' + _orientation] + 1*this._orient[xyz];
+    _volume['index' + _orientation] = _volume['index' + _orientation] + 1;
   } else {
     // yes, so scroll down
-    _volume['index' + _orientation] = _volume['index' + _orientation] - 1*this._orient[xyz];
+    _volume['index' + _orientation] = _volume['index' + _orientation] - 1;
   }
   // execute the callback
   eval('this.onScroll();');
