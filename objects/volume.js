@@ -751,13 +751,27 @@ X.volume.prototype.__defineSetter__('reslicing', function(reslicing) {
  *          direction The direction of the volume rendering (0==x,1==y,2==z).
  * @protected
  */
-
-// entry point
-// convert here!!!
+// 0: sagittal
+// 1: coronal
+// 3: axial
 
 X.volume.prototype.volumeRendering_ = function(direction) {
+  
+  var _dir = (direction + 2) %3;
+  
+  var _norm_cosine = this._info.norm_cosine;
+  if( _norm_cosine[0][_dir] != 0 ){
+    _dir = 2;
+  }
+  else if( _norm_cosine[1][_dir] != 0 ){
+    _dir = 0;
+  }
+  else{
+    _dir = 1;
+  }
+  
   if ((!this._volumeRendering)
-      || (!this._dirty && direction == this._volumeRenderingDirection)) {
+      || (!this._dirty && _dir == this._volumeRenderingDirection)) {
     // we do not have to do anything
     return;
   }
@@ -766,7 +780,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   var _child = this._children[this._volumeRenderingDirection];
   _child['visible'] = false;
   // show new volume rendering slices, but don't show the borders
-  _child = this._children[direction];
+  _child = this._children[_dir];
   var _numberOfSlices = _child._children.length;
   var i;
   for (i = 0; i < _numberOfSlices; i++) {
@@ -774,7 +788,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   }
   // _child['visible'] = true;
   // store the direction
-  this._volumeRenderingDirection = direction;
+  this._volumeRenderingDirection = _dir;
   this._dirty = false;
 };
 // export symbols (required for advanced compilation)

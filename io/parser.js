@@ -416,7 +416,7 @@ X.parser.prototype.reslice = function(object) {
 
       var targetSlice = _slice;
       var textureForCurrentSlice = new Uint8Array(textureSize);
-      // console.log(_orient);
+
       for (_j = 0; _j < jmax; _j++) {
         _i = 0;
         for (_i = 0; _i < imax; _i++) {
@@ -465,7 +465,6 @@ X.parser.prototype.reslice = function(object) {
     // by default, all the 'middle' slices are shown
     if (xyz == 0) {
       object._indexX = halfDimension;
-      console.log("hello: " + object._indexX);
       object._indexXold = halfDimension;
     } else if (xyz == 1) {
       object._indexY = halfDimension;
@@ -502,7 +501,6 @@ X.parser.prototype.reslice = function(object) {
  */
 X.parser.prototype.reslice1D_ = function(sizeX, sizeY, sizeZ, image, max,
     targetSlice, targetLabelMap, invert) {
-  console.log(targetSlice);
   var textureArraySize = 4 * sizeX * sizeY;
   var col = 0;
   for (col = 0; col < sizeZ; col++) {
