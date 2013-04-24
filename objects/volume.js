@@ -266,27 +266,6 @@ X.volume.prototype.create_ = function(_info) {
   
   this._info = _info;
   
-  var _norm_cosine = _info.norm_cosine;
-  if( _norm_cosine[2][0] != 0 ){
-    this._indexLR = this._indexX;
-    this._indexPA = this._indexY;
-    this._indexIS = this._indexZ;
-    //this._dimensionsILP = [ 10, 10, 10 ];
-  }
-  else if( _norm_cosine[2][1] != 0 ){
-    this._indexLR = this._indexZ;
-    this._indexPA = this._indexX;
-    this._indexIS = this._indexY;
-    this._dimensionsILP = [ 10, 10, 10 ];
-  }
-  else{
-    this._indexLR = this._indexY;
-    this._indexPA = this._indexZ;
-    this._indexIS = this._indexX;
-    //this._dimensionsILP = [ 10, 10, 10 ];
-  }
-
-  
   this._dirty = true;
 };
 
