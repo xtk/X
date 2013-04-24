@@ -281,8 +281,13 @@ X.parser.prototype.reslice = function(object) {
   var _space_orientation = object._info.space_orientation;
   // Go to Right-Anterior-Superior for now!
   var _ras_space_orientation = object._info.ras_space_orientation;
-  
   var _norm_cosine = object._info.norm_cosine;
+  // labelmap and color tables
+  var hasLabelMap = object._labelmap != null;
+  var _colorTable = null;
+  if (object._colortable) {
+    _colorTable = object._colortable._map;
+  }
   // _orient might be useful too
   // allocate volume
   // rows, cols and slices (ijk dimensions)
@@ -397,9 +402,9 @@ X.parser.prototype.reslice = function(object) {
       // move center along normal
       // 0 should be hard coded
       // find normal direction and use it!
-        _center[0] += _norm_cosine[_tk][0] * _position;
-        _center[1] += _norm_cosine[_tk][1] * _position;
-        _center[2] += _norm_cosine[_tk][2] * _position;
+      _center[0] += _norm_cosine[_tk][0] * _position;
+      _center[1] += _norm_cosine[_tk][1] * _position;
+      _center[2] += _norm_cosine[_tk][2] * _position;
       // create the slice
       // .. new slice
       var _slice = new X.slice();
@@ -407,36 +412,40 @@ X.parser.prototype.reslice = function(object) {
       // map slice to volume
       _slice._volume = object;
       // only show the middle slice, hide everything else
-      if(object._info.orientation[_tk] > 0){
+      if (object._info.orientation[_tk] > 0) {
         _slice['visible'] = (_k == Math.floor(_indexCenter));
-      }
-      else{
+      } else {
         _slice['visible'] = (_k == Math.ceil(_indexCenter));
       }
-
       var targetSlice = _slice;
       var textureForCurrentSlice = new Uint8Array(textureSize);
-
       for (_j = 0; _j < jmax; _j++) {
         _i = 0;
         for (_i = 0; _i < imax; _i++) {
           var _pix_val = 0;
-          // order pixels based on cosine directions?
-          // y flip?
-          // var _li = (_dim[_ti] + _orient[_ti] * _i) % _dim[_ti];
-          // var _lj = (_dim[_tj] + _orient[_tj] * _j) % _dim[_tj];
-          // var _lk = (_dim[_tk] + _orient[_tk] * _k) % _dim[_tk];
           if (xyz == 0) {
-            _pix_val = image[_i][_j][_k];
+            _pix_val = realImage[_i][_j][_k];
           } else if (xyz == 1) {
-            _pix_val = image[_k][_i][_j];
+            _pix_val = realImage[_k][_i][_j];
           } else {
-            _pix_val = image[_j][_k][_i];
+            _pix_val = realImage[_j][_k][_i];
           }
-          var pixelValue_r = _pix_val;
-          var pixelValue_g = _pix_val;
-          var pixelValue_b = _pix_val;
-          var pixelValue_a = 255;
+          var pixelValue_r = pixelValue_g = pixelValue_b = pixelValue_a = 0;
+          if (_colorTable) {
+            // color table!
+            var lookupValue = _colorTable.get(Math.floor(_pix_val));
+            // check for out of range and use the last label value in this case
+            if (!lookupValue) {
+              lookupValue = [ 0, 1, 0.1, 0.2, 1 ];
+            }
+            pixelValue_r = 255 * lookupValue[1];
+            pixelValue_g = 255 * lookupValue[2];
+            pixelValue_b = 255 * lookupValue[3];
+            pixelValue_a = 255 * lookupValue[4];
+          } else {
+            pixelValue_r = pixelValue_g = pixelValue_b = 255 * (_pix_val / object._info.max);
+            pixelValue_a = 255;
+          }
           var textureStartIndex = _p * 4;
           textureForCurrentSlice[textureStartIndex] = pixelValue_r;
           textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
@@ -453,13 +462,17 @@ X.parser.prototype.reslice = function(object) {
       pixelTexture._rawDataHeight = jmax;
       targetSlice._texture = pixelTexture;
       // push slice
-      if(object._info.orientation[_tk] > 0){
+      if (object._info.orientation[_tk] > 0) {
         object._children[xyz]._children.push(targetSlice);
-      }
-      else{
+      } else {
         object._children[xyz]._children.unshift(targetSlice);
       }
-
+      if (hasLabelMap) {
+        // if this object has a labelmap,
+        // we have it loaded at this point (for sure)
+        // ..so we can attach it as the second texture to this slice
+        targetSlice._labelmap = object._labelmap._children[xyz]._children[_k]._texture;
+      }
     }
     // set slice index
     // by default, all the 'middle' slices are shown
