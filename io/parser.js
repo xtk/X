@@ -333,15 +333,8 @@ X.parser.prototype.reslice = function(object) {
         // 2 ...
         // map pixel values
         _pix_value = _current_k[_data_pointer];
-        // to ensure it fits in matrix,
-        // then in the reslice, we also take orientation into account
-        // var _li = (_dim[0] + _orient[0] * _i) % _dim[0];
-        // var _lj = (_dim[1] + _orient[1] * _j) % _dim[1];
-        // var _lk = (_dim[2] + _orient[2] * _k) % _dim[2];
         image[_i][_j][_k] = 255 * (_pix_value / object._info.max);
         realImage[_i][_j][_k] = _pix_value;
-        // image[_li][_lj][_lk] = 255 * (_pix_value / MRI.max);
-        // realImage[_li][_lj][_lk] = _pix_value;
         _data_pointer++;
       }
     }
@@ -391,11 +384,6 @@ X.parser.prototype.reslice = function(object) {
       var _p = 0;
       // CREATE SLICE
       // position
-      /*
-       * var _orgi = 1; if(_norm_cosine[_tk][0] != 0){ _orgi =
-       * _norm_cosine[_tk][0]; } else if(_norm_cosine[_tk][1] != 0){ _orgi =
-       * _norm_cosine[_tk][1]; } else{ _orgi = _norm_cosine[_tk][2]; }
-       */
       var _position = (-halfDimension * _spacing[_tk]) + (_k * _spacing[_tk]);
       // center
       var _center = [ object._center[0], object._center[1], object._center[2] ];
@@ -411,8 +399,8 @@ X.parser.prototype.reslice = function(object) {
       var borders = true;
       // for labelmaps, don't create the borders since this would create them 2x
       // hasLabelMap == true means we are the volume
-      // hasLabelMap == true means we are the labelmap
-      if (!hasLabelMap) {
+      // hasLabelMap == false means we are the labelmap
+      if (goog.isDefAndNotNull(object._volume) && !hasLabelMap) {
         borders = false;
       }
       
@@ -462,8 +450,6 @@ X.parser.prototype.reslice = function(object) {
           _p++;
         }
       }
-      // slice normal?
-      // slice orientation?
       var pixelTexture = new X.texture();
       pixelTexture._rawData = textureForCurrentSlice;
       pixelTexture._rawDataWidth = imax;
