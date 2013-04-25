@@ -275,20 +275,12 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
  * @return {!Array} The volume data as a 3D Array.
  */
 X.parser.prototype.reslice = function(object) {
-  // scan space
-  var _space = object._info.space;
-  // scan space orientation
-  var _space_orientation = object._info.space_orientation;
-  // Go to Right-Anterior-Superior for now!
-  var _ras_space_orientation = object._info.ras_space_orientation;
-  var _norm_cosine = object._info.norm_cosine;
   // labelmap and color tables
   var hasLabelMap = object._labelmap != null;
   var _colorTable = null;
   if (object._colortable) {
     _colorTable = object._colortable._map;
   }
-  // _orient might be useful too
   // allocate volume
   // rows, cols and slices (ijk dimensions)
   var _dim = object._dimensions;
@@ -310,6 +302,7 @@ X.parser.prototype.reslice = function(object) {
   }
   // XYS to IJK
   // (fill volume)
+  var _norm_cosine = object._info.norm_cosine;
   var _nb_pix_per_slice = _dim[0] * _dim[1];
   var _pix_value = 0;
   _k = 0;
@@ -340,12 +333,7 @@ X.parser.prototype.reslice = function(object) {
     }
   }
   // IJK to XYS
-  // (Axial, Sagittal, Coronal)
-  // reslice image
-  // use 3 orientation matrices to extract slices
-  // slice in scan direction without texture yet
-  // slice in scan next direction
-  // slice in scan next - next direction
+  // reslice image (Axial, Sagittal, Coronal)
   var xyz = 0;
   for (xyz = 0; xyz < 3; xyz++) {
     var _ti = xyz;
@@ -359,9 +347,9 @@ X.parser.prototype.reslice = function(object) {
     // CREATE SLICE in normal direction
     var halfDimension = (kmax - 1) / 2;
     var _indexCenter = halfDimension;
-    // up = i direction
+    // right = i direction
     var _right = _norm_cosine[_ti];
-    // up = i direction
+    // up = j direction
     var _up = _norm_cosine[_tj];
     // front = normal direction
     var _front = _norm_cosine[_tk];
@@ -375,8 +363,6 @@ X.parser.prototype.reslice = function(object) {
       _color = [ 1, 1, 0 ];
     }
     // size
-    // var _width = imax * _spacing[_ti];
-    // var _height = jmax * _spacing[_tj];
     var _width = imax * _spacing[_ti];
     var _height = jmax * _spacing[_tj];
     for (_k = 0; _k < kmax; _k++) {
@@ -403,8 +389,8 @@ X.parser.prototype.reslice = function(object) {
       if (goog.isDefAndNotNull(object._volume) && !hasLabelMap) {
         borders = false;
       }
-      
-      _slice.setup(_center, _front, _up, _right, _width, _height, borders, _color);
+      _slice.setup(_center, _front, _up, _right, _width, _height, borders,
+          _color);
       // map slice to volume
       _slice._volume = object;
       // only show the middle slice, hide everything else
@@ -419,6 +405,7 @@ X.parser.prototype.reslice = function(object) {
         _i = 0;
         for (_i = 0; _i < imax; _i++) {
           var _pix_val = 0;
+          // rotate indices depending on which orientation we are targetting
           if (xyz == 0) {
             _pix_val = realImage[_i][_j][_k];
           } else if (xyz == 1) {
@@ -480,8 +467,10 @@ X.parser.prototype.reslice = function(object) {
       object._indexZ = halfDimension;
       object._indexZold = halfDimension;
     }
+    if (!object._reslicing) {
+      break;
+    }
   }
-  object._dirty = true;
   X.TIMERSTOP(this._classname + '.reslice');
   return realImage;
 };
