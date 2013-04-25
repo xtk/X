@@ -49,7 +49,7 @@ X.renderer2D = function() {
    */
   this._classname = 'renderer2D';
   /**
-   * The orientation of this renderer.
+   * The orientation of this renderer. X: SAGITTAL Y: CORONAL Z: AXIAL
    * 
    * @type {?string}
    * @protected
@@ -146,6 +146,13 @@ X.renderer2D = function() {
    * @protected
    */
   this._windowHigh = -1;
+  /**
+   * The convention we follow to draw the 2D slices.
+   * 
+   * @type {!string}
+   * @protected
+   */
+  this._convention = 'RADIOLOGY';
 };
 // inherit from X.base
 goog.inherits(X.renderer2D, X.renderer);
@@ -179,26 +186,21 @@ X.renderer2D.prototype.onScroll_ = function(event) {
     return;
   }
   // switch between different orientations
-  
-  var xyz = this.getOrientation_(this._norm_cosine, this._orientation);
-  var test = "";
-  if(xyz == 0){
-    test = "X";
+  var xyz = this.containerIndex_(_volume._info.norm_cosine, this._orientation);
+  var _orientation = "";
+  if (xyz == 0) {
+    _orientation = "indexX";
+  } else if (xyz == 1) {
+    _orientation = "indexY";
+  } else {
+    _orientation = "indexZ";
   }
-  else if(xyz == 1){
-    test = "Y";
-  }
-  else{
-    test = "Z";
-  }
-  
-  var _orientation = test;
   if (event._up) {
     // yes, scroll up
-    _volume['index' + _orientation] = _volume['index' + _orientation] + 1;
+    _volume[_orientation] = _volume[_orientation] + 1;
   } else {
     // yes, so scroll down
-    _volume['index' + _orientation] = _volume['index' + _orientation] - 1;
+    _volume[_orientation] = _volume[_orientation] - 1;
   }
   // execute the callback
   eval('this.onScroll();');
@@ -266,6 +268,32 @@ X.renderer2D.prototype.__defineSetter__('orientation', function(orientation) {
     throw new Error('Invalid orientation.');
   }
   this._orientation = orientation;
+});
+/**
+ * Get the convention of this renderer. Valid orientations are 'RADIOLOGY' and
+ * 'NEUROLOGY'
+ * 
+ * @return {?string} The convention of this renderer.
+ */
+X.renderer2D.prototype.__defineGetter__('convention', function() {
+  return this._convention;
+});
+/**
+ * Set the convention for this renderer. Valid orientations are 'RADIOLOGY' and
+ * 'NEUROLOGY'
+ * 
+ * @param {!string}
+ *          convention The convention for this renderer: 'RADIOLOGY' or
+ *          'NEUROLOGY'
+ * @throws {Error}
+ *           An error, if the given orientation was wrong.
+ */
+X.renderer2D.prototype.__defineSetter__('convention', function(convention) {
+  convention = convention.toUpperCase();
+  if (convention != 'RADIOLOGY' && convention != 'NEUROLOGY') {
+    throw new Error('Invalid convention.');
+  }
+  this._convention = convention;
 });
 /**
  * @inheritDoc
@@ -338,34 +366,39 @@ X.renderer2D.prototype.resetViewAndRender = function() {
   // this.render_(false, false);
 };
 /**
- * @inheritDoc
+ * Convenience method to get the index of the volume container for a given
+ * orientation.
+ * 
+ * @param {!Array}
+ *          normCosines The volume cosines directions.
+ * @param {!string}
+ *          targetOrientation The orientation required.
+ * @return {!number} The index of the volume children.
+ * @protected
  */
-
-X.renderer2D.prototype.getOrientation_ = function(normCosines, orientation) {
-  if (orientation == 'X') {
+X.renderer2D.prototype.containerIndex_ = function(normCosines,
+    targetOrientation) {
+  if (targetOrientation == 'X') {
     // give me the sagittal!
-    if(normCosines[2][0] != 0){
+    if (normCosines[2][0] != 0) {
       return 0;
-    }
-    else if(normCosines[0][0] != 0){
+    } else if (normCosines[0][0] != 0) {
       return 1;
     }
     return 2;
-  } else if (orientation == 'Y') {
+  } else if (targetOrientation == 'Y') {
     // give me the coronal!
-    if(normCosines[2][1] != 0){
+    if (normCosines[2][1] != 0) {
       return 0;
-    }
-    else if(normCosines[0][1] != 0){
+    } else if (normCosines[0][1] != 0) {
       return 1;
     }
     return 2;
   } else {
     // give me the axial!
-    if(normCosines[2][2] != 0){
+    if (normCosines[2][2] != 0) {
       return 0;
-    }
-    else if(normCosines[0][2] != 0){
+    } else if (normCosines[0][2] != 0) {
       return 1;
     }
     return 2;
@@ -451,44 +484,24 @@ X.renderer2D.prototype.update_ = function(object) {
   var _sliceHeight = 0;
   var _dimensions = object._dimensions;
   var _spacing = object._spacing;
-  // scan space
-  var _space = object._info.space;
-  // scan space orientation
-  var _space_orientation = object._info.space_orientation;
-  console.log('space: ' + _space);
-  console.log('space orientation: ' + _space_orientation);
-  // Go to Right-Anterior-Superior for now!
-  var _ras_space_orientation = object._info.space_orientation;
-  console.log('RAS space orientation: ' + _ras_space_orientation);
-
-  this._orient = object._info.orientation;;
-  // might be usefull to loop
+  // normalized cosines
   var _norm_cosine = object._info.norm_cosine;
-  // _orient might be useful too
+  // vloume dimensions
   var _dim = object._dimensions;
-  var _spacing = object._spacing;
-  this._norm_cosine = object._info.norm_cosine;
-  // neurology convention
-  // invert cols in axial and coronal
-  this._convention = 0;
-  // ///
   // check the orientation and store a pointer to the slices
-  var xyz = this.getOrientation_(_norm_cosine, this._orientation);
-
-  console.log("xyz: " + xyz);
-  var _ti = xyz;
+  var _xyz = this.containerIndex_(_norm_cosine, this._orientation);
+  var _ti = _xyz;
   var _tj = (_ti + 1) % 3;
   var _tk = (_ti + 2) % 3;
-  if (this._norm_cosine[_tk][1] != 0) {
+  // invert rows and cols in the coronal view
+  if (_norm_cosine[_tk][1] != 0) {
     var _tmp = _ti;
     _ti = _tj;
     _tj = _tmp;
   }
   var textureSize = 4 * _dim[_ti] * _dim[_tj];
-  _k = 0;
   var imax = _dim[_ti];
   var jmax = _dim[_tj];
-  var kmax = _dim[_tk];
   var _color = [ 1, 1, 1 ];
   var container = goog.dom.getElement(this._container);
   if (_norm_cosine[_tk][2] != 0) {
@@ -501,7 +514,7 @@ X.renderer2D.prototype.update_ = function(object) {
   // size
   var _width = imax;
   var _height = jmax;
-  this._slices = object._children[xyz]._children;
+  this._slices = object._children[_xyz]._children;
   // the X oriented texture is twisted ..
   // this means the indices are switched
   _sliceWidth = _width;
@@ -575,18 +588,15 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // grab the volume and current slice
   //
   var _volume = this._topLevelObjects[0];
-  var xyz = this.getOrientation_(this._norm_cosine, this._orientation);
-  var test = "";
-  if(xyz == 0){
-    test = "X";
+  var xyz = this.containerIndex_(_volume._info.norm_cosine, this._orientation);
+  var _currentSlice = null;
+  if (xyz == 0) {
+    _currentSlice = _volume['indexX'];
+  } else if (xyz == 1) {
+    _currentSlice = _volume['indexY'];
+  } else {
+    _currentSlice = _volume['indexZ'];
   }
-  else if(xyz == 1){
-    test = "Y";
-  }
-  else{
-    test = "Z";
-  }
-  var _currentSlice = _volume['index' + test];
   // .. here is the current slice
   var _slice = this._slices[parseInt(_currentSlice, 10)];
   var _sliceData = _slice._texture._rawData;
@@ -661,47 +671,40 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
               _labelData[_index + 2], _labelData[_index + 3] ];
         }
       }
-      // invert i
-      // this.width
-      // invert j
-      // this.height
-      // this._norm_cosine
-      // if coronal, we rotate!
-      var xyz = this.getOrientation_(this._norm_cosine, this._orientation);
+
+      // 1- SETUP THE PARSING DIRECTION AND INDICES BASED ON ORIENTATION
+      // AND CONVENTION
       var _ti = xyz;
       var _tj = (_ti + 1) % 3;
       var _tk = (_ti + 2) % 3;
       var _tmp_indx = _index;
-      var _oi = this._orient[_ti];
-      var _oj = this._orient[_tj];
-      if (this._norm_cosine[_tk][0] != 0) {
-        _oi = -1 * this._orient[_ti];
-      } else if (this._norm_cosine[_tk][1] != 0) {
-        var _tmp = _ti;
-        _ti = _tj;
-        _tj = _tmp;
+      var _oi = _volume._info.orientation[_ti];
+      var _oj = _volume._info.orientation[_tj];
+      if (_volume._info.norm_cosine[_tk][0] != 0) {
+        // IF SAGITTAL, invert row orientation
+        _oi = -1 * _volume._info.orientation[_ti];
+      } else if (_volume._info.norm_cosine[_tk][1] != 0) {
+        // IF CORONAL, switch rows and cols
+        // re-map index according to rows/cols switch
         _index = 4 * (((_index / 4) % (_sliceHeight)) * _sliceWidth + Math
             .floor((_index / 4) / _sliceHeight));
-        _oi = this._orient[_ti];
-        _oj = this._orient[_tj];
-        if (this._convention == 0) {
-          // in radiology
-          // in RAS
-          // right is left -> invert X
-          _oi = -1 * this._orient[_ti];
+        // update directions
+        _oi = _volume._info.orientation[_tj];
+        _oj = _volume._info.orientation[_ti];
+        if (this._convention == 'RADIOLOGY') {
+          // IF RADIOLOGY CONVENTION
+          // right of image is left of patient -> invert X as in SAGITTAL
+          _oi = -1 * _volume._info.orientation[_tj];
         }
       } else {
-        if (this._convention == 0) {
-          // in radiology
-          // in RAS
-          // right is left -> invert X
-          _oi = -1 * this._orient[_ti];
+        if (this._convention == 'RADIOLOGY') {
+          // IF RADIOLOGY CONVENTION
+          // right of image is left of patient -> invert X as in SAGITTAL
+          _oi = -1 * _volume._info.orientation[_ti];
         }
       }
-      // _sliceWidth;
-      // _sliceHeight;
-      // this._orient;
-      // this._convention
+
+      // PIXEL mapping depending on the orientations
       if (_oi == 1) {
         if (_oj == 1) {
           // 1, 1
