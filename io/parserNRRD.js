@@ -99,13 +99,11 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
     data : null,
     min : Infinity,
     max : -Infinity,
-    image_position : null,
     space : null,
     space_orientation : null,
     ras_space_orientation : null,
     orientation : null,
-    norm_cosine : null,
-    anatomical_orientation : 5
+    norm_cosine : null
   };
   //
   // parse the (unzipped) data to a datastream of the correct type
@@ -115,15 +113,10 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   var min_max = this.arrayMinMax(MRI.data);
   var min = MRI.min = min_max[0];
   var max = MRI.max = min_max[1];
-  //
-  // we know enough to create the object
-  // origin
-  // var _origin = this['space origin'];
-  // _origin = _origin.slice(1, _origin.length).split(',');
-  // object._center[0] = parseFloat(_origin[0]) - this.sizes[0] / 2;
-  // object._center[1] = parseFloat(_origin[1]) - this.sizes[1] / 2;
-  // object._center[2] = parseFloat(_origin[2]) - this.sizes[2] / 2;
-  // dimensions
+  // attach the scalar range to the volume
+  object._min = object._windowLow = min;
+  object._max = object._windowHigh = max;
+  // get the image dimensions
   object._dimensions = [ this.sizes[0], this.sizes[1], this.sizes[2] ];
   // spacing
   var spacingX = new goog.math.Vec3(this.vectors[0][0], this.vectors[0][1],
@@ -133,9 +126,6 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   var spacingZ = new goog.math.Vec3(this.vectors[2][0], this.vectors[2][1],
       this.vectors[2][2]).magnitude();
   object._spacing = [ spacingX, spacingY, spacingZ ];
-  // attach the scalar range to the volume
-  object._min = object._windowLow = min;
-  object._max = object._windowHigh = max;
   // .. and set the default threshold
   // only if the threshold was not already set
   if (object._lowerThreshold == -Infinity) {
@@ -144,64 +134,25 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   if (object._upperThreshold == Infinity) {
     object._upperThreshold = max;
   }
-  console.log(this.vectors);
-  var tmp_orient = [];
-  tmp_orient.push(this.vectors[0][0]);
-  tmp_orient.push(this.vectors[0][1]);
-  tmp_orient.push(this.vectors[0][2]);
-  tmp_orient.push(this.vectors[1][0]);
-  tmp_orient.push(this.vectors[1][1]);
-  tmp_orient.push(this.vectors[1][2]);
-  tmp_orient.push(this.vectors[2][0]);
-  tmp_orient.push(this.vectors[2][1]);
-  tmp_orient.push(this.vectors[2][2]);
+  // MRI space ['right', 'anterior','superior'], etc.
   MRI.space = this.space;
-  MRI.space_orientation = tmp_orient;
-  var _ras_space_orientation = MRI.space_orientation;
-  if (this.space[0] != 'right') {
-    _ras_space_orientation[0] = -_ras_space_orientation[0];
-    _ras_space_orientation[3] = -_ras_space_orientation[3];
-    _ras_space_orientation[6] = -_ras_space_orientation[6];
-  }
-  if (this.space[1] != 'anterior') {
-    _ras_space_orientation[1] = -_ras_space_orientation[1];
-    _ras_space_orientation[4] = -_ras_space_orientation[4];
-    _ras_space_orientation[7] = -_ras_space_orientation[7];
-  }
-  if (this.space[2] != 'superior') {
-    _ras_space_orientation[2] = -_ras_space_orientation[2];
-    _ras_space_orientation[5] = -_ras_space_orientation[5];
-    _ras_space_orientation[8] = -_ras_space_orientation[8];
-  }
-  MRI.ras_space_orientation = _ras_space_orientation;
-  // Go to IJK space
-  // Get ijk orientation
-  var _x_cosine = _ras_space_orientation.slice(0, 3);
-  var _x_abs_cosine = _x_cosine.map(function(v) {
-    return Math.abs(v);
-  });
-  var _x_max = _x_abs_cosine.indexOf(Math.max.apply(Math, _x_abs_cosine));
-  var _x_norm_cosine = [ 0, 0, 0 ];
-  _x_norm_cosine[_x_max] = _x_cosine[_x_max] < 0 ? -1 : 1;
-  var _y_cosine = _ras_space_orientation.slice(3, 6);
-  var _y_abs_cosine = _y_cosine.map(function(v) {
-    return Math.abs(v);
-  });
-  var _y_max = _y_abs_cosine.indexOf(Math.max.apply(Math, _y_abs_cosine));
-  var _y_norm_cosine = [ 0, 0, 0 ];
-  _y_norm_cosine[_y_max] = _y_cosine[_y_max] < 0 ? -1 : 1;
-  var _z_cosine = _ras_space_orientation.slice(6, 9);
-  var _z_abs_cosine = _z_cosine.map(function(v) {
-    return Math.abs(v);
-  });
-  var _z_max = _z_abs_cosine.indexOf(Math.max.apply(Math, _z_abs_cosine));
-  var _z_norm_cosine = [ 0, 0, 0 ];
-  _z_norm_cosine[_z_max] = _z_cosine[_z_max] < 0 ? -1 : 1;
-  //
-  MRI.orientation = [ _x_norm_cosine[_x_max], _y_norm_cosine[_y_max],
-      _z_norm_cosine[_z_max] ];
-  // might be usefull to loop
-  MRI.norm_cosine = [ _x_norm_cosine, _y_norm_cosine, _z_norm_cosine ];
+  // cosines directions in given space
+  MRI.space_orientation = [];
+  MRI.space_orientation.push(this.vectors[0][0]);
+  MRI.space_orientation.push(this.vectors[0][1]);
+  MRI.space_orientation.push(this.vectors[0][2]);
+  MRI.space_orientation.push(this.vectors[1][0]);
+  MRI.space_orientation.push(this.vectors[1][1]);
+  MRI.space_orientation.push(this.vectors[1][2]);
+  MRI.space_orientation.push(this.vectors[2][0]);
+  MRI.space_orientation.push(this.vectors[2][1]);
+  MRI.space_orientation.push(this.vectors[2][2]);
+  // cosines direction in RAS space
+  MRI.ras_space_orientation = this.toRAS(MRI.space, MRI.space_orientation);
+  // get orientation and normalized cosines
+  var orient_norm = this.orientnormalize(MRI.ras_space_orientation);
+  MRI.orientation = orient_norm[0];
+  MRI.norm_cosine = orient_norm[1];
   // create the object
   object.create_(MRI);
   X.TIMERSTOP(this._classname + '.parse');

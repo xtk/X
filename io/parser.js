@@ -265,6 +265,70 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
   return array;
 };
 /**
+ * Convert orientation to RAS
+ * 
+ * @param {!Array}
+ *          space The space we are in (RAS, LPS, etc.).
+ * @param {!Array}
+ *          orientation The orientation in current space.
+ * @return {!Array} The RAS orienation array.
+ */
+X.parser.prototype.toRAS = function(space, orientation) {
+  var _ras_space_orientation = orientation;
+  if (this.space[0] != 'right') {
+    _ras_space_orientation[0] = -_ras_space_orientation[0];
+    _ras_space_orientation[3] = -_ras_space_orientation[3];
+    _ras_space_orientation[6] = -_ras_space_orientation[6];
+  }
+  if (this.space[1] != 'anterior') {
+    _ras_space_orientation[1] = -_ras_space_orientation[1];
+    _ras_space_orientation[4] = -_ras_space_orientation[4];
+    _ras_space_orientation[7] = -_ras_space_orientation[7];
+  }
+  if (this.space[2] != 'superior') {
+    _ras_space_orientation[2] = -_ras_space_orientation[2];
+    _ras_space_orientation[5] = -_ras_space_orientation[5];
+    _ras_space_orientation[8] = -_ras_space_orientation[8];
+  }
+  return _ras_space_orientation;
+};
+/**
+ * Get orientation on normalized cosines
+ * 
+ * @param {!Array}
+ *          rasorientation The orientation in RAS space.
+ * @return {!Array} The orientation and the normalized cosines.
+ */
+X.parser.prototype.orientnormalize = function(rasorientation) {
+  var _x_cosine = rasorientation.slice(0, 3);
+  var _x_abs_cosine = _x_cosine.map(function(v) {
+    return Math.abs(v);
+  });
+  var _x_max = _x_abs_cosine.indexOf(Math.max.apply(Math, _x_abs_cosine));
+  var _x_norm_cosine = [ 0, 0, 0 ];
+  _x_norm_cosine[_x_max] = _x_cosine[_x_max] < 0 ? -1 : 1;
+  var _y_cosine = rasorientation.slice(3, 6);
+  var _y_abs_cosine = _y_cosine.map(function(v) {
+    return Math.abs(v);
+  });
+  var _y_max = _y_abs_cosine.indexOf(Math.max.apply(Math, _y_abs_cosine));
+  var _y_norm_cosine = [ 0, 0, 0 ];
+  _y_norm_cosine[_y_max] = _y_cosine[_y_max] < 0 ? -1 : 1;
+  var _z_cosine = rasorientation.slice(6, 9);
+  var _z_abs_cosine = _z_cosine.map(function(v) {
+    return Math.abs(v);
+  });
+  var _z_max = _z_abs_cosine.indexOf(Math.max.apply(Math, _z_abs_cosine));
+  var _z_norm_cosine = [ 0, 0, 0 ];
+  _z_norm_cosine[_z_max] = _z_cosine[_z_max] < 0 ? -1 : 1;
+  // 
+  var orientation = [ _x_norm_cosine[_x_max], _y_norm_cosine[_y_max],
+      _z_norm_cosine[_z_max] ];
+  // might be usefull to loop
+  var norm_cosine = [ _x_norm_cosine, _y_norm_cosine, _z_norm_cosine ];
+  return [ orientation, norm_cosine ];
+};
+/**
  * Reslice a data stream to fill the slices of an X.volume in X,Y and Z
  * directions. The given volume (object) has to be created at this point
  * according to the proper dimensions. This also takes care of a possible
