@@ -130,7 +130,7 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
   X.TIMERSTOP(this._classname + '.parse');
 
   // re-slice the data according each direction
-  object._image = this.reslice(object, MRI);
+  object._image = this.reslice(object);
 
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();

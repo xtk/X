@@ -366,7 +366,7 @@ X.parser.prototype.reslice = function(object) {
   }
   // XYS to IJK
   // (fill volume)
-  var _norm_cosine = object._info.norm_cosine;
+  var _norm_cosine = object._info['norm_cosine'];
   var _nb_pix_per_slice = _dim[0] * _dim[1];
   var _pix_value = 0;
   _k = 0;
@@ -456,9 +456,9 @@ X.parser.prototype.reslice = function(object) {
       _slice.setup(_center, _front, _up, _right, _width, _height, borders,
           _color);
       // map slice to volume
-      _slice._volume = object;
+      _slice._volume = /** @type {X.volume} */ (object);
       // only show the middle slice, hide everything else
-      if (object._info.orientation[_tk] > 0) {
+      if (object._info['orientation'][_tk] > 0) {
         _slice['visible'] = (_k == Math.floor(_indexCenter));
       } else {
         _slice['visible'] = (_k == Math.ceil(_indexCenter));
@@ -477,7 +477,10 @@ X.parser.prototype.reslice = function(object) {
           } else {
             _pix_val = realImage[_j][_k][_i];
           }
-          var pixelValue_r = pixelValue_g = pixelValue_b = pixelValue_a = 0;
+          var pixelValue_r = 0;
+          var pixelValue_g = 0;
+          var pixelValue_b = 0;
+          var pixelValue_a = 0;
           if (_colorTable) {
             // color table!
             var lookupValue = _colorTable.get(Math.floor(_pix_val));
@@ -507,7 +510,7 @@ X.parser.prototype.reslice = function(object) {
       pixelTexture._rawDataHeight = jmax;
       targetSlice._texture = pixelTexture;
       // push slice
-      if (object._info.orientation[_tk] > 0) {
+      if (object._info['orientation'][_tk] > 0) {
         object._children[xyz]._children.push(targetSlice);
       } else {
         object._children[xyz]._children.unshift(targetSlice);

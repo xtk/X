@@ -154,16 +154,16 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       break;
     }
     // get scan direction
-    console.log('x cosine');
-    console.log(_x_cosine);
-    console.log(_x_max);
-    console.log('y cosine');
-    console.log(_y_cosine);
-    console.log(_y_max);
-    console.log('scan direction');
-    console.log(_scan_direction);
-    console.log('pixdim');
-    console.log(MRI.pixdim);
+//    console.log('x cosine');
+//    console.log(_x_cosine);
+//    console.log(_x_max);
+//    console.log('y cosine');
+//    console.log(_y_cosine);
+//    console.log(_y_max);
+//    console.log('scan direction');
+//    console.log(_scan_direction);
+//    console.log('pixdim');
+//    console.log(MRI.pixdim);
     
     var orient = [_x_cosine[_x_max]<0?-1:1, _y_cosine[_y_max]<0?-1:1];
     
@@ -172,7 +172,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     // X.TIMERSTOP('create');
     // re-slice the data according each direction
     // anatomical_orientation
-    object._image = this.reslice(object, MRI);
+    object._image = this.reslice(object);
     // get orientation
     // ijktoras
     // rastoijk
@@ -339,7 +339,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
           break;
         case 0x0032:
           // image position
-          console.log("image position");
+          //console.log("image position");
           // pixel spacing
           var _image_position = '';
           // pixel spacing is a delimited string (ASCII)
@@ -354,12 +354,12 @@ X.parserDCM.prototype.parseStream = function(data, object) {
           _image_position = _image_position.split("\\");
           MRI.image_position = [ +_image_position[0], +_image_position[1],
               +_image_position[2] ];
-          console.log(MRI.image_position);
+          //console.log(MRI.image_position);
           _tagCount--;
           break;
         case 0x0037:
           // image orientation
-          console.log("image orientation");
+          //console.log("image orientation");
           // pixel spacing
           var _image_orientation = '';
           // pixel spacing is a delimited string (ASCII)
@@ -376,7 +376,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
               +_image_orientation[1], +_image_orientation[2],
               +_image_orientation[3], +_image_orientation[4],
               +_image_orientation[5] ];
-          console.log(MRI.image_orientation);
+          //console.log(MRI.image_orientation);
           _tagCount--;
           break;
         }
@@ -389,7 +389,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
         switch (_tagSpecific) {
         case 0x2210:
           // anatomical orientation
-          console.log("anatomical orientation");
+          //console.log("anatomical orientation");
           // pixel spacing
           var _anatomical_orientation = '';
           // pixel spacing is a delimited string (ASCII)
@@ -402,7 +402,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _anatomical_orientation += String.fromCharCode(_b1);
           }
           _anatomical_orientation = _anatomical_orientation.split("\\");
-          console.log(_anatomical_orientation);
+          //console.log(_anatomical_orientation);
           // MRI.image_orientation = [ +_image_orientation[0],
           // +_image_orientation[1], +_image_orientation[2],
           // +_image_orientation[3], +_image_orientation[4],
