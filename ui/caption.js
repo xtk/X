@@ -165,14 +165,6 @@ goog.inherits(X.caption, goog.ui.Tooltip);
  * @private
  */
 X.caption.prototype.init_ = function() {
-
-  // enable relative positioning for the main container
-  // this is required to place the progressBar in the center
-  
-  if (this._parent.style.position == 'static' ||
-      this._parent.style.position == '') {
-    this._parent.style.position = 'relative';
-  }
   
   //
   // apply CSS styles to the document
