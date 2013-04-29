@@ -194,7 +194,8 @@ X.renderer = function() {
    */
   this._config = {
     'PROGRESSBAR_ENABLED': true,
-    'INTERMEDIATE_RENDERING': false
+    'INTERMEDIATE_RENDERING': false,
+    'SLICENAVIGATORS': true
   };
 
   /**
@@ -335,6 +336,9 @@ X.renderer.prototype.onScroll_ = function(event) {
  * default values are:
  *
  * <pre>
+ * config.PROGRESSBAR_ENABLED: true
+ * config.INTERMEDIATE_RENDERING: false
+ * config.SLICENAVIGATORS: true
  * config.PROGRESSBAR_ENABLED: true
  * </pre>
  *
@@ -691,6 +695,35 @@ X.renderer.prototype.add = function(object) {
   this._topLevelObjects.push(object);
 
   this.update_(object);
+
+};
+
+
+/**
+ * Remove an existing object and all its children from the rendering context.
+ *
+ * @param {!X.object} object The object to remove from the renderer.
+ * @return {boolean} TRUE or FALSE depending on success.
+ * @throws {Error} An exception if something goes wrong.
+ * @public
+ */
+X.renderer.prototype.remove = function(object) {
+
+  if (!this._canvas || !this._context) {
+
+    throw new Error('The renderer was not initialized properly.');
+
+  }
+
+  if (!goog.isDefAndNotNull(object)) {
+
+    throw new Error('Illegal object.');
+
+  }
+
+	// to be overloaded
+
+  return false;
 
 };
 

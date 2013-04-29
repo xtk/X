@@ -56,6 +56,27 @@ X.renderer2D = function() {
    */
   this._orientation = null;
   /**
+   * The array of orientation colors.
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._orientationColors = [ 'yellow', 'red', 'green' ];
+  /**
+   * The X index of the perpendicular slice.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._orientatonIndexX = 1;
+  /**
+   * The Y index of the perpendicular slice.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._orientatonIndexY = 2;
+  /**
    * A frame buffer for slice data.
    * 
    * @type {?Element}
@@ -146,6 +167,13 @@ X.renderer2D = function() {
    * @protected
    */
   this._windowHigh = -1;
+  /**
+   * The buffer of the showOnly labelmap color.
+   * 
+   * @type {!Float32Array}
+   * @protected
+   */
+  this._labelmapShowOnlyColor = new Float32Array([ -255, -255, -255, -255 ]);
   /**
    * The convention we follow to draw the 2D slices.
    * 
@@ -305,8 +333,19 @@ X.renderer2D.prototype.init = function() {
   }
   // call the superclass' init method
   goog.base(this, 'init', '2d');
+  // set the perpendicular indicies depending on orientation
+  if (this._orientation == 'X') {
+    this._orientatonIndexX = 1;
+    this._orientatonIndexY = 2;
+  } else if (this._orientation == 'Y') {
+    this._orientatonIndexX = 0;
+    this._orientatonIndexY = 2;
+  } else if (this._orientation == 'Z') {
+    this._orientatonIndexX = 0;
+    this._orientatonIndexY = 1;
+  }
   // use the background color of the container by setting transparency here
-  this._context.fillStyle = "rgba(200,25,25,0)";
+  this._context.fillStyle = "rgba(0,0,0,0)";
   // .. and size
   this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
   // create an invisible canvas as a framebuffer
@@ -404,6 +443,9 @@ X.renderer2D.prototype.containerIndex_ = function(normCosines,
     return 2;
   }
 }
+/**
+ * @inheritDoc
+ */
 X.renderer2D.prototype.update_ = function(object) {
   // call the update_ method of the superclass
   goog.base(this, 'update_', object);
@@ -583,11 +625,17 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _y = 1 * _view[13]; // we need to flip y here
   // .. this includes zoom
   var _normalizedScale = Math.max(_view[14], 0.6);
-  this._context.setTransform(_normalizedScale, 0, 0, _normalizedScale, _x, _y);
+  this._context.setTransform(_normalizedScale, 0, 0, _normalizedScale, 0, 0);
   //
   // grab the volume and current slice
   //
   var _volume = this._topLevelObjects[0];
+  var _labelmap = _volume._labelmap;
+  var _labelmapShowOnlyColor = null;
+  if (_labelmap) {
+    // since there is a labelmap, get the showOnlyColor property
+    _labelmapShowOnlyColor = _volume._labelmap._showOnlyColor;
+  }
   var xyz = this.containerIndex_(_volume._normcosine, this._orientation);
   var _currentSlice = null;
   if (xyz == 0) {
@@ -631,10 +679,12 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // - if the _currentSlice has changed
   // - if the threshold has changed
   // - if the window/level has changed
+  // - the labelmap show only color has changed
   var _redraw_required = (this._currentSlice != _currentSlice
       || this._lowerThreshold != _lowerThreshold
       || this._upperThreshold != _upperThreshold
-      || this._windowLow != _windowLow || this._windowHigh != _windowHigh);
+      || this._windowLow != _windowLow || this._windowHigh != _windowHigh || (_labelmapShowOnlyColor && !X.array
+      .compare(_labelmapShowOnlyColor, this._labelmapShowOnlyColor, 0, 0, 4)));
   if (_redraw_required) {
     // loop through the pixels and draw them to the invisible canvas
     // from bottom right up
@@ -667,11 +717,22 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
             Math.floor(_color.z), 255 ];
         if (_currentLabelMap) {
           // we have a label map here
-          _label = [ _labelData[_index], _labelData[_index + 1],
-              _labelData[_index + 2], _labelData[_index + 3] ];
+          // check if all labels are shown or only one
+          if (_labelmapShowOnlyColor[3] == -255) {
+            // all labels are shown
+            _label = [ _labelData[_index], _labelData[_index + 1],
+                _labelData[_index + 2], _labelData[_index + 3] ];
+          } else {
+            // show only the label which matches in color
+            if (X.array.compare(_labelmapShowOnlyColor, _labelData, 0, _index,
+                4)) {
+              // this label matches
+              _label = [ _labelData[_index], _labelData[_index + 1],
+                  _labelData[_index + 2], _labelData[_index + 3] ];
+            }
+          }
         }
       }
-
       // 1- SETUP THE PARSING DIRECTION AND INDICES BASED ON ORIENTATION
       // AND CONVENTION
       var _ti = xyz;
@@ -703,7 +764,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
           _oi = -1 * _volume._orientation[_ti];
         }
       }
-
       // PIXEL mapping depending on the orientations
       if (_oi == 1) {
         if (_oj == 1) {
@@ -774,6 +834,10 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     this._upperThreshold = _upperThreshold;
     this._windowLow = _windowLow;
     this._windowHigh = _windowHigh;
+    if (_currentLabelMap) {
+      // only update the setting if we have a labelmap
+      this._labelmapShowOnlyColor = _labelmapShowOnlyColor;
+    }
   }
   //
   // the actual drawing (rendering) happens here
@@ -787,7 +851,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // rotate
   var _rotation = _view[1];
   this._context.rotate(Math.PI * 0.5 * _rotation);
-  // console.log(_rotation);
   // the padding x and y have to be adjusted because of the rotation
   switch (_rotation % 4) {
   case 0:
@@ -803,6 +866,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   case 2:
     // padding is inverted
     _x *= -1;
+    _y *= -1;
     break;
   case 3:
     // padding is twisted
@@ -825,6 +889,46 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         _sliceWidth * this._sliceWidthSpacing, _sliceHeight
             * this._sliceHeightSpacing);
   }
+  // if enabled, show slice navigators
+  if (this._config['SLICENAVIGATORS']) {
+    // but only if the shift key is down and the left mouse is not
+    if (this._interactor._mouseInside && this._interactor._shiftDown
+        && !this._interactor._leftButtonDown) {
+      var _mousePosition = this._interactor._mousePosition;
+      // check if we are over the slice
+      var ijk = this.xy2ijk(_mousePosition[0], _mousePosition[1]);
+      if (ijk) {
+        // we are over the slice
+        var _xColor = this._orientationColors[this._orientatonIndexX];
+        var _yColor = this._orientationColors[this._orientatonIndexY];
+        // update the volume
+        _volume._indexX = ijk[0];
+        _volume._indexY = ijk[1];
+        _volume._indexZ = ijk[2];
+        _volume.modified(false);
+        // draw the navigators (we add 0.5 to the coords to get crisp 1px lines)
+        // see http://diveintohtml5.info/canvas.html#paths
+        // in x-direction
+        this._context.setTransform(1, 0, 0, 1, 0, 0);
+        this._context.lineWidth = 1;
+        this._context.beginPath();
+        this._context.moveTo(this._interactor._mousePosition[0] + 0.5, 0);
+        this._context.lineTo(this._interactor._mousePosition[0] + 0.5,
+            this._height);
+        this._context.strokeStyle = _xColor;
+        this._context.stroke();
+        this._context.closePath();
+        // in y-direction
+        this._context.beginPath();
+        this._context.moveTo(0, this._interactor._mousePosition[1] + 0.5);
+        this._context.lineTo(this._width,
+            this._interactor._mousePosition[1] + 0.5);
+        this._context.strokeStyle = _yColor;
+        this._context.stroke();
+        this._context.closePath();
+      }
+    }
+  }
 };
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer2D', X.renderer2D);
@@ -845,6 +949,8 @@ goog.exportSymbol('X.renderer2D.prototype.rotateCounter',
     X.renderer2D.prototype.rotateCounter);
 goog.exportSymbol('X.renderer2D.prototype.resetViewAndRender',
     X.renderer2D.prototype.resetViewAndRender);
+goog.exportSymbol('X.renderer2D.prototype.xy2ijk',
+    X.renderer2D.prototype.xy2ijk);
 goog.exportSymbol('X.renderer2D.prototype.render',
     X.renderer2D.prototype.render);
 goog.exportSymbol('X.renderer2D.prototype.destroy',

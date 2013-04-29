@@ -39,6 +39,7 @@ goog.require('X.shaders');
 goog.require('X.triplets');
 goog.require('X.vector');
 goog.require('goog.structs.Map');
+goog.require('goog.style');
 
 
 
@@ -1200,8 +1201,10 @@ X.renderer3D.prototype.showCaption_ = function(x, y) {
 
     if (caption) {
 
-      var t = new X.caption(this._container, this._container.offsetLeft + x +
-          10, this._container.offsetTop + y + 10, this._interactor);
+			var pos = goog.style.getClientPosition(this._container);
+
+      var t = new X.caption(this._container, pos.x + x +
+          10, pos.y + y + 10, this._interactor);
       t.setHtml(caption);
 
     }
@@ -1439,6 +1442,11 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   // call the render_ method of the superclass
   goog.base(this, 'render_', picking, invoked);
 
+  // clear the canvas
+  this._context.viewport(0, 0, this._width, this._height);
+  this._context.clear(this._context.COLOR_BUFFER_BIT |
+      this._context.DEPTH_BUFFER_BIT);
+
   // only proceed if there are actually objects to render
   var _objects = this._objects.values();
   var _numberOfObjects = _objects.length;
@@ -1460,11 +1468,6 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
     this._context.bindFramebuffer(this._context.FRAMEBUFFER, null);
 
   }
-
-  // clear the canvas
-  this._context.viewport(0, 0, this._width, this._height);
-  this._context.clear(this._context.COLOR_BUFFER_BIT |
-      this._context.DEPTH_BUFFER_BIT);
 
   // grab the current perspective from the camera
   var perspectiveMatrix = this._camera._perspective;
@@ -1549,6 +1552,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       .get(X.shaders.uniforms.SCALARSMAXTHRESHOLD);
   var uObjectOpacity = uLocations.get(X.shaders.uniforms.OBJECTOPACITY);
   var uLabelMapOpacity = uLocations.get(X.shaders.uniforms.LABELMAPOPACITY);
+  var uLabelMapColor = uLocations.get(X.shaders.uniforms.LABELMAPCOLOR);
   var uUseTexture = uLocations.get(X.shaders.uniforms.USETEXTURE);
   var uUseLabelMapTexture = uLocations
       .get(X.shaders.uniforms.USELABELMAPTEXTURE);
@@ -1860,6 +1864,9 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
           // propagate label map opacity
           this._context.uniform1f(uLabelMapOpacity, labelmap._opacity);
 
+          // propagate the labelmap show only color
+          this._context.uniform4fv(uLabelMapColor, labelmap._showOnlyColor);
+
         }
 
       }
@@ -1964,6 +1971,121 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 /**
  * @inheritDoc
  */
+X.renderer3D.prototype.remove = function(object) {
+
+	// call the remove_ method of the superclass
+	goog.base(this, 'remove', object);
+
+	// check if this object has children
+	if (object._children.length > 0) {
+
+		// loop through the children and recursively remove the objects
+		var children = object._children;
+		var numberOfChildren = children.length;
+		var c = 0;
+
+		for (c = 0; c < numberOfChildren; c++) {
+
+			this.remove(children[c]);
+
+		}
+
+	}
+
+  var id = object._id;
+
+  // check if the object exists
+  if (this.get(id)) {
+
+    var oldTexturePositionBuffer = this._texturePositionBuffers.get(id);
+    if (goog.isDefAndNotNull(oldTexturePositionBuffer)) {
+
+      if (this._context.isBuffer(oldTexturePositionBuffer._glBuffer)) {
+
+        this._context.deleteBuffer(oldTexturePositionBuffer._glBuffer);
+
+      }
+
+    }
+
+    if (object.texture) {
+      var _texture = this._textures.get(object._texture._id);
+
+      if (_texture) {
+
+        this._context.deleteTexture(_texture);
+
+        this._textures.remove(object._texture._id);
+
+      }
+
+    }
+
+    var oldVertexBuffer = this._vertexBuffers.get(id);
+    if (goog.isDefAndNotNull(oldVertexBuffer)) {
+
+      if (this._context.isBuffer(oldVertexBuffer._glBuffer)) {
+
+        this._context.deleteBuffer(oldVertexBuffer._glBuffer);
+
+      }
+
+    }
+
+
+    var oldNormalBuffer = this._vertexBuffers.get(id);
+    if (goog.isDefAndNotNull(oldNormalBuffer)) {
+
+      if (this._context.isBuffer(oldNormalBuffer._glBuffer)) {
+
+        this._context.deleteBuffer(oldNormalBuffer._glBuffer);
+
+      }
+
+    }
+
+    var oldColorBuffer = this._colorBuffers.get(id);
+    if (goog.isDefAndNotNull(oldColorBuffer)) {
+
+      if (this._context.isBuffer(oldColorBuffer._glBuffer)) {
+
+        this._context.deleteBuffer(oldColorBuffer._glBuffer);
+
+      }
+
+    }
+
+    var oldScalarBuffer = this._scalarBuffers.get(id);
+    if (goog.isDefAndNotNull(oldScalarBuffer)) {
+
+      if (this._context.isBuffer(oldScalarBuffer._glBuffer)) {
+
+        this._context.deleteBuffer(oldScalarBuffer._glBuffer);
+
+      }
+
+    }
+
+    this._vertexBuffers.remove(id);
+    this._normalBuffers.remove(id);
+    this._colorBuffers.remove(id);
+    this._texturePositionBuffers.remove(id);
+    this._scalarBuffers.remove(id);
+
+    this._objects.remove(object);
+
+    return true;
+
+  }
+
+  return false;
+
+};
+
+
+/**
+ * @inheritDoc
+ */
 X.renderer3D.prototype.destroy = function() {
 
   // remove all shaders
@@ -1993,6 +2115,8 @@ goog.exportSymbol('X.renderer3D.prototype.render',
     X.renderer3D.prototype.render);
 goog.exportSymbol('X.renderer3D.prototype.destroy',
     X.renderer3D.prototype.destroy);
+goog.exportSymbol('X.renderer3D.prototype.remove',
+    X.renderer3D.prototype.remove);
 goog.exportSymbol('X.renderer3D.prototype.resetBoundingBox',
     X.renderer3D.prototype.resetBoundingBox);
 goog.exportSymbol('X.renderer3D.prototype.resetViewAndRender',
