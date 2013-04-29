@@ -1,6 +1,6 @@
 /*
  * 
-  *                  xxxxxxx      xxxxxxx
+ *                  xxxxxxx      xxxxxxx
  *                   x:::::x    x:::::x 
  *                    x:::::x  x:::::x  
  *                     x:::::xx:::::x   
@@ -111,71 +111,22 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       object._upperThreshold = max;
     }
     // X.TIMER('create');
-    
-    // our orientation is RAS: 6 (110)
-    var _orientation = 6;
-    // scan orientation
-    var _scan_orientation = MRI.anatomical_orientation;
-    // scan direction? AXIAL, CORONAL OR SAGITTAL?
-    // x cosine = col
-    // http://www.mathworks.com/matlabcentral/fileexchange/22508-siemens-dicom-sort-and-convert-to-nifti/content/get_header_parameters.m
-    var _x_cosine = MRI.image_orientation.slice(0, 3);
-    var _x_abs_cosine = _x_cosine.map(function(v) {
-      return Math.abs(v);
-    });
-    var _x_max = _x_abs_cosine.indexOf(Math.max.apply(Math, _x_abs_cosine));
-    
-    // y cosine = row
-    var _y_cosine = MRI.image_orientation.slice(3, 6);
-    var _y_abs_cosine = _y_cosine.map(function(v) {
-      return Math.abs(v);
-    });
-    var _y_max = _y_abs_cosine.indexOf(Math.max.apply(Math, _y_abs_cosine));
-    
-    var _scan_direction_int = _x_max + _y_max;
-    var _scan_direction = "";
-    
-    switch (_scan_direction_int) {
-    case 1:
-      _scan_direction = "AXIAL";
-      _scan_direction_int = 2;
-      break;
-    case 2:
-      _scan_direction = "CORONAL";
-      _scan_direction_int = 1;
-      break;
-    case 3:
-      _scan_direction = "SAGITTAL";
-      _scan_direction_int = 0;
-      break;
-    default:
-      _scan_direction = "unrecognized - assume SAGITTAL";
-      _scan_direction_int = 0;
-      break;
-    }
-    // get scan direction
-//    console.log('x cosine');
-//    console.log(_x_cosine);
-//    console.log(_x_max);
-//    console.log('y cosine');
-//    console.log(_y_cosine);
-//    console.log(_y_max);
-//    console.log('scan direction');
-//    console.log(_scan_direction);
-//    console.log('pixdim');
-//    console.log(MRI.pixdim);
-    
-    var orient = [_x_cosine[_x_max]<0?-1:1, _y_cosine[_y_max]<0?-1:1];
-    
+    MRI.space = [ 'left', 'posterior', 'superior' ];
+    MRI.space_orientation = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+    // cosines direction in RAS space
+    MRI.ras_space_orientation = this.toRAS(MRI.space, MRI.space_orientation);
+    // get orientation and normalized cosines
+    var orient_norm = this.orientnormalize(MRI.ras_space_orientation);
+    MRI.orientation = orient_norm[0];
+    MRI.norm_cosine = orient_norm[1];
+    // X.TIMER('create');
     // create the object
-    object.create_(_scan_direction_int, orient);
+    object.create_(MRI);
     // X.TIMERSTOP('create');
     // re-slice the data according each direction
     // anatomical_orientation
     object._image = this.reslice(object);
-    // get orientation
-    // ijktoras
-    // rastoijk
+    object.map_();
   }
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
@@ -240,10 +191,11 @@ X.parserDCM.prototype.parseStream = function(data, object) {
       data : null,
       min : Infinity,
       max : -Infinity,
-      image_position : null,
-      image_orientation : null,
-      anatomical_orientation : 5
-    // default is LPS
+      space : null,
+      space_orientation : null,
+      ras_space_orientation : null,
+      orientation : null,
+      norm_cosine : null
     };
     // check how many slices we have
     MRI.number_of_slices = object._file.length;
@@ -339,7 +291,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
           break;
         case 0x0032:
           // image position
-          //console.log("image position");
+          // console.log("image position");
           // pixel spacing
           var _image_position = '';
           // pixel spacing is a delimited string (ASCII)
@@ -354,12 +306,12 @@ X.parserDCM.prototype.parseStream = function(data, object) {
           _image_position = _image_position.split("\\");
           MRI.image_position = [ +_image_position[0], +_image_position[1],
               +_image_position[2] ];
-          //console.log(MRI.image_position);
+          // console.log(MRI.image_position);
           _tagCount--;
           break;
         case 0x0037:
           // image orientation
-          //console.log("image orientation");
+          // console.log("image orientation");
           // pixel spacing
           var _image_orientation = '';
           // pixel spacing is a delimited string (ASCII)
@@ -376,7 +328,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
               +_image_orientation[1], +_image_orientation[2],
               +_image_orientation[3], +_image_orientation[4],
               +_image_orientation[5] ];
-          //console.log(MRI.image_orientation);
+          // console.log(MRI.image_orientation);
           _tagCount--;
           break;
         }
@@ -389,7 +341,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
         switch (_tagSpecific) {
         case 0x2210:
           // anatomical orientation
-          //console.log("anatomical orientation");
+          // console.log("anatomical orientation");
           // pixel spacing
           var _anatomical_orientation = '';
           // pixel spacing is a delimited string (ASCII)
@@ -402,7 +354,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _anatomical_orientation += String.fromCharCode(_b1);
           }
           _anatomical_orientation = _anatomical_orientation.split("\\");
-          //console.log(_anatomical_orientation);
+          // console.log(_anatomical_orientation);
           // MRI.image_orientation = [ +_image_orientation[0],
           // +_image_orientation[1], +_image_orientation[2],
           // +_image_orientation[3], +_image_orientation[4],

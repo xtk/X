@@ -124,14 +124,23 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
     object._upperThreshold = max;
   }
   
+  MRI.space = [ 'right', 'anterior', 'superior' ];
+  MRI.space_orientation = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+  // cosines direction in RAS space
+  MRI.ras_space_orientation = this.toRAS(MRI.space, MRI.space_orientation);
+  // get orientation and normalized cosines
+  var orient_norm = this.orientnormalize(MRI.ras_space_orientation);
+  MRI.orientation = orient_norm[0];
+  MRI.norm_cosine = orient_norm[1];
+  
   // create the object
-  object.create_();
+  object.create_(MRI);
   
   X.TIMERSTOP(this._classname + '.parse');
   
   // re-slice the data according each direction
   object._image = this.reslice(object);
-  
+  object.map_();
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
@@ -201,7 +210,12 @@ X.parserNII.prototype.parseStream = function(data) {
     magic: null, // *!< MUST be "ni1\0" or "n+1\0". */
     data: null,
     min: Infinity,
-    max: -Infinity
+    max: -Infinity,
+    space : null,
+    space_orientation : null,
+    ras_space_orientation : null,
+    orientation : null,
+    norm_cosine : null
   };
   
   // header_key substruct

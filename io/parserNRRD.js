@@ -100,10 +100,10 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
     min : Infinity,
     max : -Infinity,
     space : null,
-    space_orientation : null,
-    ras_space_orientation : null,
+    spaceorientation : null,
+    rasspaceorientation : null,
     orientation : null,
-    norm_cosine : null
+    normcosine : null
   };
   //
   // parse the (unzipped) data to a datastream of the correct type
@@ -135,24 +135,26 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
     object._upperThreshold = max;
   }
   // MRI space ['right', 'anterior','superior'], etc.
-  MRI.space = this.space;
+  MRI.space = MRI.space = this.space;
   // cosines directions in given space
-  MRI.space_orientation = [];
-  MRI.space_orientation.push(this.vectors[0][0]);
-  MRI.space_orientation.push(this.vectors[0][1]);
-  MRI.space_orientation.push(this.vectors[0][2]);
-  MRI.space_orientation.push(this.vectors[1][0]);
-  MRI.space_orientation.push(this.vectors[1][1]);
-  MRI.space_orientation.push(this.vectors[1][2]);
-  MRI.space_orientation.push(this.vectors[2][0]);
-  MRI.space_orientation.push(this.vectors[2][1]);
-  MRI.space_orientation.push(this.vectors[2][2]);
+  MRI.spaceorientation = [];
+  MRI.spaceorientation.push(this.vectors[0][0]);
+  MRI.spaceorientation.push(this.vectors[0][1]);
+  MRI.spaceorientation.push(this.vectors[0][2]);
+  MRI.spaceorientation.push(this.vectors[1][0]);
+  MRI.spaceorientation.push(this.vectors[1][1]);
+  MRI.spaceorientation.push(this.vectors[1][2]);
+  MRI.spaceorientation.push(this.vectors[2][0]);
+  MRI.spaceorientation.push(this.vectors[2][1]);
+  MRI.spaceorientation.push(this.vectors[2][2]);
+  
+  MRI.spaceorientation = MRI.spaceorientation;
   // cosines direction in RAS space
-  MRI.ras_space_orientation = this.toRAS(MRI.space, MRI.space_orientation);
+  MRI.rasspaceorientation = this.toRAS(MRI.space, MRI.spaceorientation);
   // get orientation and normalized cosines
-  var orient_norm = this.orientnormalize(MRI.ras_space_orientation);
-  MRI.orientation = orient_norm[0];
-  MRI.norm_cosine = orient_norm[1];
+  var orient_norm = this.orientnormalize(MRI.rasspaceorientation);
+  MRI.orientation = MRI.orientation = orient_norm[0];
+  MRI.normcosine = MRI.normcosine = orient_norm[1];
   // create the object
   object.create_(MRI);
   X.TIMERSTOP(this._classname + '.parse');
