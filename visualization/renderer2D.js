@@ -792,23 +792,23 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   switch (_rotation % 4) {
   case 0:
     // padding is fine;
+    _y *= -1;
     break;
   case 1:
     // padding is twisted
     var _buf = _x;
     _x = _y;
-    _y = -_buf;
+    _y = _buf;
     break;
   case 2:
     // padding is inverted
     _x *= -1;
-    _y *= -1;
     break;
   case 3:
     // padding is twisted
     var _buf = _x;
     _x = -_y;
-    _y = _buf;
+    _y = -_buf;
     break;
   }
   var _offset_x = -_sliceWidth * this._sliceWidthSpacing / 2 + _x;
