@@ -186,7 +186,7 @@ X.renderer2D.prototype.onScroll_ = function(event) {
     return;
   }
   // switch between different orientations
-  var xyz = this.containerIndex_(_volume._info['norm_cosine'], this._orientation);
+  var xyz = this.containerIndex_(_volume._normcosine, this._orientation);
   var _orientation = "";
   if (xyz == 0) {
     _orientation = "indexX";
@@ -485,7 +485,7 @@ X.renderer2D.prototype.update_ = function(object) {
   var _dimensions = object._dimensions;
   var _spacing = object._spacing;
   // normalized cosines
-  var _norm_cosine = object._info['norm_cosine'];
+  var _norm_cosine = object._normcosine;
   // vloume dimensions
   var _dim = object._dimensions;
   // check the orientation and store a pointer to the slices
@@ -588,7 +588,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // grab the volume and current slice
   //
   var _volume = this._topLevelObjects[0];
-  var xyz = this.containerIndex_(_volume._info['norm_cosine'], this._orientation);
+  var xyz = this.containerIndex_(_volume._normcosine, this._orientation);
   var _currentSlice = null;
   if (xyz == 0) {
     _currentSlice = _volume['indexX'];
@@ -678,29 +678,29 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       var _tj = (_ti + 1) % 3;
       var _tk = (_ti + 2) % 3;
       var _tmp_indx = _index;
-      var _oi = _volume._info['orientation'][_ti];
-      var _oj = _volume._info['orientation'][_tj];
-      if (_volume._info['norm_cosine'][_tk][0] != 0) {
+      var _oi = _volume._orientation[_ti];
+      var _oj = _volume._orientation[_tj];
+      if (_volume._normcosine[_tk][0] != 0) {
         // IF SAGITTAL, invert row orientation
-        _oi = -1 * _volume._info['orientation'][_ti];
-      } else if (_volume._info['norm_cosine'][_tk][1] != 0) {
+        _oi = -1 * _volume._orientation[_ti];
+      } else if (_volume._normcosine[_tk][1] != 0) {
         // IF CORONAL, switch rows and cols
         // re-map index according to rows/cols switch
         _index = 4 * (((_index / 4) % (_sliceHeight)) * _sliceWidth + Math
             .floor((_index / 4) / _sliceHeight));
         // update directions
-        _oi = _volume._info['orientation'][_tj];
-        _oj = _volume._info['orientation'][_ti];
+        _oi = _volume._orientation[_tj];
+        _oj = _volume._orientation[_ti];
         if (this._convention == 'RADIOLOGY') {
           // IF RADIOLOGY CONVENTION
           // right of image is left of patient -> invert X as in SAGITTAL
-          _oi = -1 * _volume._info['orientation'][_tj];
+          _oi = -1 * _volume._orientation[_tj];
         }
       } else {
         if (this._convention == 'RADIOLOGY') {
           // IF RADIOLOGY CONVENTION
           // right of image is left of patient -> invert X as in SAGITTAL
-          _oi = -1 * _volume._info['orientation'][_ti];
+          _oi = -1 * _volume._orientation[_ti];
         }
       }
 

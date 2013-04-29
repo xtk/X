@@ -230,12 +230,54 @@ X.volume = function(volume) {
    */
   this._reslicing = true;
   /**
-   * Useful information about the volume, such as scan direction, cosines,etc.
+   * The space in which image was acquired
    * 
    * @type {!Array}
    * @protected
    */
-  this._info = [];
+  this._space = [ 'left', 'posterior', 'superior' ];
+  /**
+   * The image orientation
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._spaceorientation = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+  /**
+   * The image orientation in RAS space
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._rasspaceorientation = [ -1, 0, 0, 0, -1, 0, 0, 0, 1 ];
+  /**
+   * The orientation of each cosine
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._orientation = [ -1, -1, 1 ];
+  /**
+   * The normalized cosines
+   * 
+   * @type {!Array}
+   * @protected
+   */
+  this._normcosine = [ [ -1, 0, 0 ], [ 0, -1, 0 ], [ 0, 0, 1 ] ];
+  /**
+   * The max intensity in the image
+   * 
+   * @type {!number}
+   * @private
+   */
+  this._max = 0;
+  /**
+   * The image pixels
+   * 
+   * @type {?Array}
+   * @protected
+   */
+  this._data = null;
   // inject functionality
   inject(this, new X.loadable()); // this object is loadable from a file
   inject(this, new X.thresholdable()); // this object is thresholdable
@@ -271,6 +313,14 @@ X.volume.prototype.copy_ = function(volume) {
   this._slicesX = new X.object(volume._slicesX);
   this._slicesY = new X.object(volume._slicesY);
   this._slicesZ = new X.object(volume._slicesZ);
+  this._space = volume.space;
+  this._spaceorientation = volume._spaceorientation;
+  this._rasspaceorientation = volume._rasspaceorientation;
+  this._orientation = volume._orientation;
+  this._normcosine = volume._normcosine;
+  this._max = volume._max;
+  this._data = volume._data;
+  // all info
   // TODO threshold
   this._volumeRendering = volume._volumeRendering;
   this._volumeRenderingOld = volume._volumeRenderingOld;
@@ -295,7 +345,16 @@ X.volume.prototype.create_ = function(_info) {
   this._children.push(this._slicesX);
   this._children.push(this._slicesY);
   this._children.push(this._slicesZ);
-  this._info = _info;
+  // setup image specific information
+  this._space = _info.space;
+  this._spaceorientation = _info.spaceorientation;
+  this._rasspaceorientation = _info.rasspaceorientation;
+  this._orientation = _info.orientation;
+  this._normcosine = _info.normcosine;
+  this._max = _info.max;
+  this._data = _info.data;
+  
+  
   this._dirty = true;
 };
 /**
@@ -304,14 +363,14 @@ X.volume.prototype.create_ = function(_info) {
  * @private
  */
 X.volume.prototype.map_ = function() {
-  if (this._info['norm_cosine'][2][0] != 0) {
+  if (this._normcosine[2][0] != 0) {
     this._indexLR = this._indexX;
     this._indexPA = this._indexY;
     this._indexIS = this._indexZ;
     this._dimensionsRAS[0] = this._dimensions[2];
     this._dimensionsRAS[1] = this._dimensions[0];
     this._dimensionsRAS[2] = this._dimensions[1];
-  } else if (this._info['norm_cosine'][2][1] != 0) {
+  } else if (this._normcosine[2][1] != 0) {
     this._indexLR = this._indexZ;
     this._indexPA = this._indexX;
     this._indexIS = this._indexY;
@@ -504,9 +563,9 @@ X.volume.prototype.__defineGetter__('labelmap', function() {
  */
 X.volume.prototype.__defineGetter__('indexIS', function() {
   // map variables based on orientation
-  if (this._info['norm_cosine'][2][0] != 0) {
+  if (this._normcosine[2][0] != 0) {
     this._indexIS = this._indexZ;
-  } else if (this._info['norm_cosine'][2][1] != 0) {
+  } else if (this._normcosine[2][1] != 0) {
     this._indexIS = this._indexY;
   } else {
     this._indexIS = this._indexX;
@@ -523,9 +582,9 @@ X.volume.prototype.__defineGetter__('indexIS', function() {
 X.volume.prototype.__defineSetter__('indexIS', function(indexIS) {
   if (goog.isNumber(indexIS)) {
     // map variables based on orientation
-    if (this._info['norm_cosine'][2][0] != 0) {
+    if (this._normcosine[2][0] != 0) {
       this._indexZ = indexIS;
-    } else if (this._info['norm_cosine'][2][1] != 0) {
+    } else if (this._normcosine[2][1] != 0) {
       this._indexY = indexIS;
     } else {
       this._indexX = indexIS;
@@ -543,9 +602,9 @@ X.volume.prototype.__defineSetter__('indexIS', function(indexIS) {
  */
 X.volume.prototype.__defineGetter__('indexLR', function() {
   // map variables based on orientation
-  if (this._info['norm_cosine'][2][0] != 0) {
+  if (this._normcosine[2][0] != 0) {
     this._indexLR = this._indexX;
-  } else if (this._info['norm_cosine'][2][1] != 0) {
+  } else if (this._normcosine[2][1] != 0) {
     this._indexLR = this._indexZ;
   } else {
     this._indexLR = this._indexY;
@@ -562,9 +621,9 @@ X.volume.prototype.__defineGetter__('indexLR', function() {
 X.volume.prototype.__defineSetter__('indexLR', function(indexLR) {
   if (goog.isNumber(indexLR)) {
     // map variables based on orientation
-    if (this._info['norm_cosine'][2][0] != 0) {
+    if (this._normcosine[2][0] != 0) {
       this._indexX = indexLR;
-    } else if (this._info['norm_cosine'][2][1] != 0) {
+    } else if (this._normcosine[2][1] != 0) {
       this._indexZ = indexLR;
     } else {
       this._indexY = indexLR;
@@ -582,9 +641,9 @@ X.volume.prototype.__defineSetter__('indexLR', function(indexLR) {
  */
 X.volume.prototype.__defineGetter__('indexPA', function() {
   // map variables based on orientation
-  if (this._info['norm_cosine'][2][0] != 0) {
+  if (this._normcosine[2][0] != 0) {
     this._indexPA = this._indexY;
-  } else if (this._info['norm_cosine'][2][1] != 0) {
+  } else if (this._normcosine[2][1] != 0) {
     this._indexPA = this._indexX;
   } else {
     this._indexPA = this._indexZ;
@@ -601,9 +660,9 @@ X.volume.prototype.__defineGetter__('indexPA', function() {
 X.volume.prototype.__defineSetter__('indexPA', function(indexPA) {
   if (goog.isNumber(indexPA)) {
     // map variables based on orientation
-    if (this._info['norm_cosine'][2][0] != 0) {
+    if (this._normcosine[2][0] != 0) {
       this._indexY = indexPA;
-    } else if (this._info['norm_cosine'][2][1] != 0) {
+    } else if (this._normcosine[2][1] != 0) {
       this._indexX = indexPA;
     } else {
       this._indexZ = indexPA;
@@ -781,9 +840,9 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   // direction 1: coronal container
   // direction 3: axial container
   var _dir = (direction + 2) % 3;
-  if (this._info['norm_cosine'][0][_dir] != 0) {
+  if (this._normcosine[0][_dir] != 0) {
     _dir = 2;
-  } else if (this._info['norm_cosine'][1][_dir] != 0) {
+  } else if (this._normcosine[1][_dir] != 0) {
     _dir = 0;
   } else {
     _dir = 1;

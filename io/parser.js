@@ -349,8 +349,8 @@ X.parser.prototype.reslice = function(object) {
   // rows, cols and slices (ijk dimensions)
   var _dim = object._dimensions;
   var _spacing = object._spacing;
-  var max = object._info.max;
-  var datastream = object._info.data;
+  var max = object._max;
+  var datastream = object._data;
   var image = new Array(_dim[0]);
   // use real image to return real values
   var realImage = new Array(_dim[0]);
@@ -360,13 +360,13 @@ X.parser.prototype.reslice = function(object) {
     realImage[_i] = new Array(_dim[1]);
     _j = 0;
     for (_j = 0; _j < _dim[1]; _j++) {
-      image[_i][_j] = new object._info.data.constructor(_dim[2]);
-      realImage[_i][_j] = new object._info.data.constructor(_dim[2]);
+      image[_i][_j] = new object._data.constructor(_dim[2]);
+      realImage[_i][_j] = new object._data.constructor(_dim[2]);
     }
   }
   // XYS to IJK
   // (fill volume)
-  var _norm_cosine = object._info['norm_cosine'];
+  var _norm_cosine = object._normcosine;
   var _nb_pix_per_slice = _dim[0] * _dim[1];
   var _pix_value = 0;
   _k = 0;
@@ -390,7 +390,7 @@ X.parser.prototype.reslice = function(object) {
         // 2 ...
         // map pixel values
         _pix_value = _current_k[_data_pointer];
-        image[_i][_j][_k] = 255 * (_pix_value / object._info.max);
+        image[_i][_j][_k] = 255 * (_pix_value / object._max);
         realImage[_i][_j][_k] = _pix_value;
         _data_pointer++;
       }
@@ -458,7 +458,7 @@ X.parser.prototype.reslice = function(object) {
       // map slice to volume
       _slice._volume = /** @type {X.volume} */ (object);
       // only show the middle slice, hide everything else
-      if (object._info['orientation'][_tk] > 0) {
+      if (object._orientation[_tk] > 0) {
         _slice['visible'] = (_k == Math.floor(_indexCenter));
       } else {
         _slice['visible'] = (_k == Math.ceil(_indexCenter));
@@ -493,7 +493,7 @@ X.parser.prototype.reslice = function(object) {
             pixelValue_b = 255 * lookupValue[3];
             pixelValue_a = 255 * lookupValue[4];
           } else {
-            pixelValue_r = pixelValue_g = pixelValue_b = 255 * (_pix_val / object._info.max);
+            pixelValue_r = pixelValue_g = pixelValue_b = 255 * (_pix_val / object._max);
             pixelValue_a = 255;
           }
           var textureStartIndex = _p * 4;
@@ -510,7 +510,7 @@ X.parser.prototype.reslice = function(object) {
       pixelTexture._rawDataHeight = jmax;
       targetSlice._texture = pixelTexture;
       // push slice
-      if (object._info['orientation'][_tk] > 0) {
+      if (object._orientation[_tk] > 0) {
         object._children[xyz]._children.push(targetSlice);
       } else {
         object._children[xyz]._children.unshift(targetSlice);
