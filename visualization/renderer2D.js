@@ -33,11 +33,12 @@ goog.require('X.renderer');
 goog.require('goog.math.Vec3');
 /**
  * Create a 2D renderer inside a given DOM Element.
- * 
+ *
  * @constructor
  * @extends X.renderer
  */
 X.renderer2D = function() {
+
   //
   // call the standard constructor of X.renderer
   goog.base(this);
@@ -50,119 +51,119 @@ X.renderer2D = function() {
   this._classname = 'renderer2D';
   /**
    * The orientation of this renderer. X: SAGITTAL Y: CORONAL Z: AXIAL
-   * 
+   *
    * @type {?string}
    * @protected
    */
   this._orientation = null;
   /**
    * The array of orientation colors.
-   * 
+   *
    * @type {!Array}
    * @protected
    */
   this._orientationColors = [];
   /**
    * A frame buffer for slice data.
-   * 
+   *
    * @type {?Element}
    * @protected
    */
   this._frameBuffer = null;
   /**
    * The rendering context of the slice frame buffer.
-   * 
+   *
    * @type {?Object}
    * @protected
    */
   this._frameBufferContext = null;
   /**
    * A frame buffer for label data.
-   * 
+   *
    * @type {?Element}
    * @protected
    */
   this._labelFrameBuffer = null;
   /**
    * The rendering context of the label frame buffer.
-   * 
+   *
    * @type {?Object}
    * @protected
    */
   this._labelFrameBufferContext = null;
   /**
    * The current slice width.
-   * 
+   *
    * @type {number}
    * @protected
    */
   this._sliceWidth = 0;
   /**
    * The current slice height.
-   * 
+   *
    * @type {number}
    * @protected
    */
   this._sliceHeight = 0;
   /**
    * The current slice width spacing.
-   * 
+   *
    * @type {number}
    * @protected
    */
   this._sliceWidthSpacing = 0;
   /**
    * The current slice height spacing.
-   * 
+   *
    * @type {number}
    * @protected
    */
   this._sliceHeightSpacing = 0;
   /**
    * The buffer of the current slice index.
-   * 
+   *
    * @type {!number}
    * @protected
    */
   this._currentSlice = -1;
   /**
    * The buffer of the current lower threshold.
-   * 
+   *
    * @type {!number}
    * @protected
    */
   this._lowerThreshold = -1;
   /**
    * The buffer of the current upper threshold.
-   * 
+   *
    * @type {!number}
    * @protected
    */
   this._upperThreshold = -1;
   /**
    * The buffer of the current w/l low value.
-   * 
+   *
    * @type {!number}
    * @protected
    */
   this._windowLow = -1;
   /**
    * The buffer of the current w/l high value.
-   * 
+   *
    * @type {!number}
    * @protected
    */
   this._windowHigh = -1;
   /**
    * The buffer of the showOnly labelmap color.
-   * 
+   *
    * @type {!Float32Array}
    * @protected
    */
-  this._labelmapShowOnlyColor = new Float32Array([ -255, -255, -255, -255 ]);
+  this._labelmapShowOnlyColor = new Float32Array([-255, -255, -255, -255]);
   /**
    * The convention we follow to draw the 2D slices.
-   * 
+   *
    * @type {!string}
    * @protected
    */
@@ -173,25 +174,28 @@ goog.inherits(X.renderer2D, X.renderer);
 /**
  * Overload this function to execute code after scrolling has completed and just
  * before the next rendering call.
- * 
+ *
  * @public
  */
 X.renderer2D.prototype.onScroll = function() {
+
   // do nothing
 };
 /**
  * Overload this function to execute code after window/level adjustment has
  * completed and just before the next rendering call.
- * 
+ *
  * @public
  */
 X.renderer2D.prototype.onWindowLevel = function() {
+
   // do nothing
 };
 /**
  * @inheritDoc
  */
 X.renderer2D.prototype.onScroll_ = function(event) {
+
   goog.base(this, 'onScroll_', event);
   // grab the current volume
   var _volume = this._topLevelObjects[0];
@@ -223,11 +227,12 @@ X.renderer2D.prototype.onScroll_ = function(event) {
 };
 /**
  * Performs window/level adjustment for the currently loaded volume.
- * 
- * @param {!X.event.WindowLevelEvent}
- *          event The window/level event from the camera.
+ *
+ * @param {!X.event.WindowLevelEvent} event The window/level event from the
+ *          camera.
  */
 X.renderer2D.prototype.onWindowLevel_ = function(event) {
+
   // grab the current volume
   var _volume = this._topLevelObjects[0];
   // .. if there is none, exit right away
@@ -262,21 +267,22 @@ X.renderer2D.prototype.onWindowLevel_ = function(event) {
 /**
  * Get the orientation of this renderer. Valid orientations are 'x','y','z' or
  * null.
- * 
+ *
  * @return {?string} The orientation of this renderer.
  */
 X.renderer2D.prototype.__defineGetter__('orientation', function() {
+
   return this._orientation;
 });
 /**
  * Set the orientation for this renderer. Valid orientations are 'x','y' or 'z'.
- * 
- * @param {!string}
- *          orientation The orientation for this renderer: 'x','y' or 'z'.
- * @throws {Error}
- *           An error, if the given orientation was wrong.
+ *
+ * @param {!string} orientation The orientation for this renderer: 'x','y' or
+ *          'z'.
+ * @throws {Error} An error, if the given orientation was wrong.
  */
 X.renderer2D.prototype.__defineSetter__('orientation', function(orientation) {
+
   orientation = orientation.toUpperCase();
   if (orientation != 'X' && orientation != 'Y' && orientation != 'Z') {
     throw new Error('Invalid orientation.');
@@ -286,23 +292,23 @@ X.renderer2D.prototype.__defineSetter__('orientation', function(orientation) {
 /**
  * Get the convention of this renderer. Valid orientations are 'RADIOLOGY' and
  * 'NEUROLOGY'
- * 
+ *
  * @return {?string} The convention of this renderer.
  */
 X.renderer2D.prototype.__defineGetter__('convention', function() {
+
   return this._convention;
 });
 /**
  * Set the convention for this renderer. Valid orientations are 'RADIOLOGY' and
  * 'NEUROLOGY'
- * 
- * @param {!string}
- *          convention The convention for this renderer: 'RADIOLOGY' or
+ *
+ * @param {!string} convention The convention for this renderer: 'RADIOLOGY' or
  *          'NEUROLOGY'
- * @throws {Error}
- *           An error, if the given orientation was wrong.
+ * @throws {Error} An error, if the given orientation was wrong.
  */
 X.renderer2D.prototype.__defineSetter__('convention', function(convention) {
+
   convention = convention.toUpperCase();
   if (convention != 'RADIOLOGY' && convention != 'NEUROLOGY') {
     throw new Error('Invalid convention.');
@@ -313,6 +319,7 @@ X.renderer2D.prototype.__defineSetter__('convention', function(convention) {
  * @inheritDoc
  */
 X.renderer2D.prototype.init = function() {
+
   // make sure an orientation is configured
   if (!this._orientation) {
     throw new Error('No 2D orientation set.');
@@ -344,18 +351,21 @@ X.renderer2D.prototype.init = function() {
  * Rotate the current view clock-wise.
  */
 X.renderer2D.prototype.rotate = function() {
+
   this._camera._view[1]++;
 };
 /**
  * Rotate the current view counter clock-wise.
  */
 X.renderer2D.prototype.rotateCounter = function() {
+
   this._camera._view[1]--;
 };
 /**
  * @inheritDoc
  */
 X.renderer2D.prototype.onResize_ = function() {
+
   // call the super class
   goog.base(this, 'onResize_');
   // in 2D we also want to perform auto scaling
@@ -365,6 +375,7 @@ X.renderer2D.prototype.onResize_ = function() {
  * @inheritDoc
  */
 X.renderer2D.prototype.resetViewAndRender = function() {
+
   // call the super class
   goog.base(this, 'resetViewAndRender');
   // .. and perform auto scaling
@@ -382,16 +393,15 @@ X.renderer2D.prototype.resetViewAndRender = function() {
 /**
  * Convenience method to get the index of the volume container for a given
  * orientation.
- * 
- * @param {!Array}
- *          normCosines The volume cosines directions.
- * @param {?string}
- *          targetOrientation The orientation required.
+ *
+ * @param {!Array} normCosines The volume cosines directions.
+ * @param {?string} targetOrientation The orientation required.
  * @return {!number} The index of the volume children.
  * @protected
  */
 X.renderer2D.prototype.containerIndex_ = function(normCosines,
     targetOrientation) {
+
   if (targetOrientation == 'X') {
     // give me the sagittal!
     if (normCosines[2][0] != 0) {
@@ -417,11 +427,12 @@ X.renderer2D.prototype.containerIndex_ = function(normCosines,
     }
     return 2;
   }
-}
+};
 /**
  * @inheritDoc
  */
 X.renderer2D.prototype.update_ = function(object) {
+
   // call the update_ method of the superclass
   goog.base(this, 'update_', object);
   // check if object already existed..
@@ -443,8 +454,8 @@ X.renderer2D.prototype.update_ = function(object) {
   //
   // LABEL MAP
   //
-  if (goog.isDefAndNotNull(labelmap) && goog.isDefAndNotNull(labelmap._file)
-      && labelmap._file._dirty) {
+  if (goog.isDefAndNotNull(labelmap) && goog.isDefAndNotNull(labelmap._file) &&
+      labelmap._file._dirty) {
     // a labelmap file is associated to this object and it is dirty..
     // background: we always want to parse label maps first
     // run the update_ function on the labelmap object
@@ -455,8 +466,8 @@ X.renderer2D.prototype.update_ = function(object) {
   //
   // COLOR TABLE
   //
-  if (goog.isDefAndNotNull(colortable)
-      && goog.isDefAndNotNull(colortable._file) && colortable._file._dirty) {
+  if (goog.isDefAndNotNull(colortable) &&
+      goog.isDefAndNotNull(colortable._file) && colortable._file._dirty) {
     // a colortable file is associated to this object and it is dirty..
     // start loading
     this._loader.load(colortable, object);
@@ -499,11 +510,11 @@ X.renderer2D.prototype.update_ = function(object) {
   // should recalculate all the cached values
   var _sliceWidth = 0;
   var _sliceHeight = 0;
-  var _dimensions = object._dimensions;
+
   var _spacing = object._spacing;
   // normalized cosines
   var _norm_cosine = object._normcosine;
-  // vloume dimensions
+  // volume dimensions
   var _dim = object._dimensions;
   // check the orientation and store a pointer to the slices
   var _xyz = this.containerIndex_(_norm_cosine, this._orientation);
@@ -522,18 +533,18 @@ X.renderer2D.prototype.update_ = function(object) {
     _ti = _tj;
     _tj = _tmp;
   }
-  var textureSize = 4 * _dim[_ti] * _dim[_tj];
+//  var textureSize = 4 * _dim[_ti] * _dim[_tj];
   var imax = _dim[_ti];
   var jmax = _dim[_tj];
-  var _color = [ 1, 1, 1 ];
-  var container = goog.dom.getElement(this._container);
-  if (_norm_cosine[_tk][2] != 0) {
-    container.style.borderTop = "2px solid red";
-  } else if (_norm_cosine[_tk][1] != 0) {
-    container.style.borderTop = "2px solid green";
-  } else {
-    container.style.borderTop = "2px solid yellow";
-  }
+//  var _color = [1, 1, 1];
+//  var container = goog.dom.getElement(this._container);
+//  if (_norm_cosine[_tk][2] != 0) {
+//    container.style.borderTop = "2px solid red";
+//  } else if (_norm_cosine[_tk][1] != 0) {
+//    container.style.borderTop = "2px solid green";
+//  } else {
+//    container.style.borderTop = "2px solid yellow";
+//  }
   // size
   var _width = imax;
   var _height = jmax;
@@ -567,6 +578,7 @@ X.renderer2D.prototype.update_ = function(object) {
  * Adjust the zoom (scale) to best fit the current slice.
  */
 X.renderer2D.prototype.autoScale_ = function() {
+
   // let's auto scale for best fit
   var _wScale = this._width / (this._sliceWidth * this._sliceWidthSpacing);
   var _hScale = this._height / (this._sliceHeight * this._sliceHeightSpacing);
@@ -577,14 +589,13 @@ X.renderer2D.prototype.autoScale_ = function() {
 };
 /**
  * Convert viewport (canvas) coordinates to volume (index) coordinates.
- * 
- * @param x
- *          The x coordinate.
- * @param y
- *          The y coordinate.
+ *
+ * @param x The x coordinate.
+ * @param y The y coordinate.
  * @return {?Array} An array of [i,j,k] coordinates or null if out of frame.
  */
 X.renderer2D.prototype.xy2ijk = function(x, y) {
+
   var _volume = this._topLevelObjects[0];
   var _view = this._camera._view;
   // padding offsets
@@ -592,12 +603,12 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   var _y = -1 * _view[13]; // we need to flip y here
   // .. and zoom
   var _normalizedScale = Math.max(_view[14], 0.6);
-  var _center = [ this._width / 2, this._height / 2 ];
+  var _center = [this._width / 2, this._height / 2];
   // the slice dimensions in canvas coordinates
-  var _sliceWidthScaled = this._sliceWidth * this._sliceWidthSpacing
-      * _normalizedScale;
-  var _sliceHeightScaled = this._sliceHeight * this._sliceHeightSpacing
-      * _normalizedScale;
+  var _sliceWidthScaled = this._sliceWidth * this._sliceWidthSpacing *
+      _normalizedScale;
+  var _sliceHeightScaled = this._sliceHeight * this._sliceHeightSpacing *
+      _normalizedScale;
   // the image borders on the left and top in canvas coordinates
   var _image_left2xy = _center[0] - (_sliceWidthScaled / 2);
   var _image_top2xy = _center[1] - (_sliceHeightScaled / 2);
@@ -644,15 +655,15 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
     _tk = _tmp;
   }
   // pre-fill the output array with the current volume indices
-  var _ijk = [ Math.floor(_volume._indexX), Math.floor(_volume._indexY),
-      Math.floor(_volume._indexZ) ];
+  var _ijk = [Math.floor(_volume._indexX), Math.floor(_volume._indexY),
+              Math.floor(_volume._indexZ)];
   // which convention?
   // PIXEL mapping depending on the convention
   if (this._convention == 'RADIOLOGY') {
     // IF RADIOLOGY CONVENTION
     // right of image is left of patient -> invert X as in SAGITTAL
-    _a = Math.floor(_dim1
-        - (((x - _image_left2xy) / _sliceWidthScaled) * _dim1));
+    _a = Math.floor(_dim1 -
+        (((x - _image_left2xy) / _sliceWidthScaled) * _dim1));
   } else {
     _a = Math.floor((((x - _image_left2xy) / _sliceWidthScaled) * _dim1));
   }
@@ -672,6 +683,7 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
  * @inheritDoc
  */
 X.renderer2D.prototype.render_ = function(picking, invoked) {
+
   // call the render_ method of the superclass
   goog.base(this, 'render_', picking, invoked);
   // only proceed if there are actually objects to render
@@ -754,10 +766,10 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // - if the threshold has changed
   // - if the window/level has changed
   // - the labelmap show only color has changed
-  var _redraw_required = (this._currentSlice != _currentSlice
-      || this._lowerThreshold != _lowerThreshold
-      || this._upperThreshold != _upperThreshold
-      || this._windowLow != _windowLow || this._windowHigh != _windowHigh || (_labelmapShowOnlyColor && !X.array
+  var _redraw_required = (this._currentSlice != _currentSlice ||
+      this._lowerThreshold != _lowerThreshold ||
+      this._upperThreshold != _upperThreshold ||
+      this._windowLow != _windowLow || this._windowHigh != _windowHigh || (_labelmapShowOnlyColor && !X.array
       .compare(_labelmapShowOnlyColor, this._labelmapShowOnlyColor, 0, 0, 4)));
   if (_redraw_required) {
     // loop through the pixels and draw them to the invisible canvas
@@ -766,8 +778,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     var _index = 0;
     do {
       // default color and label is just transparent
-      var _color = [ 0, 0, 0, 0 ];
-      var _label = [ 0, 0, 0, 0 ];
+      var _color = [0, 0, 0, 0];
+      var _label = [0, 0, 0, 0];
       // grab the pixel intensity
       var _intensity = _sliceData[_index] / 255 * _maxScalarRange;
       var _origIntensity = _sliceData[_index];
@@ -787,22 +799,22 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         _color = maxColor.scale(_origIntensity).add(
             minColor.scale(255 - _origIntensity));
         // .. and back to an array
-        _color = [ Math.floor(_color.x), Math.floor(_color.y),
-            Math.floor(_color.z), 255 ];
+        _color = [Math.floor(_color.x), Math.floor(_color.y),
+                  Math.floor(_color.z), 255];
         if (_currentLabelMap) {
           // we have a label map here
           // check if all labels are shown or only one
           if (_labelmapShowOnlyColor[3] == -255) {
             // all labels are shown
-            _label = [ _labelData[_index], _labelData[_index + 1],
-                _labelData[_index + 2], _labelData[_index + 3] ];
+            _label = [_labelData[_index], _labelData[_index + 1],
+                      _labelData[_index + 2], _labelData[_index + 3]];
           } else {
             // show only the label which matches in color
             if (X.array.compare(_labelmapShowOnlyColor, _labelData, 0, _index,
                 4)) {
               // this label matches
-              _label = [ _labelData[_index], _labelData[_index + 1],
-                  _labelData[_index + 2], _labelData[_index + 3] ];
+              _label = [_labelData[_index], _labelData[_index + 1],
+                        _labelData[_index + 2], _labelData[_index + 3]];
             }
           }
         }
@@ -862,9 +874,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         if (_oj == 1) {
           // 1, 1
           // invert rows
-          var _invertedIndex = (4 * _sliceWidth)
-              * (_sliceHeight - Math.floor(_index / (4 * _sliceWidth)))
-              + _index % (4 * _sliceWidth);
+          var _invertedIndex = (4 * _sliceWidth) *
+              (_sliceHeight - Math.floor(_index / (4 * _sliceWidth))) + _index %
+              (4 * _sliceWidth);
           _pixels[_invertedIndex] = _color[0]; // r
           _pixels[_invertedIndex + 1] = _color[1]; // g
           _pixels[_invertedIndex + 2] = _color[2]; // b
@@ -901,9 +913,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         } else {
           // -1, -1
           // invert cols
-          var _invertedIndex = (4 * _sliceWidth)
-              * (Math.floor(_index / (4 * _sliceWidth))) - _index
-              % (4 * _sliceWidth);
+          var _invertedIndex = (4 * _sliceWidth) *
+              (Math.floor(_index / (4 * _sliceWidth))) - _index %
+              (4 * _sliceWidth);
           _pixels[_invertedIndex] = _color[0]; // r
           _pixels[_invertedIndex + 1] = _color[1]; // g
           _pixels[_invertedIndex + 2] = _color[2]; // b
@@ -939,8 +951,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // context
   this._context.globalAlpha = 1.0; // draw fully opaque}
   // move to the middle
-  this._context.translate(_width / 2 / _normalizedScale, _height / 2
-      / _normalizedScale);
+  this._context.translate(_width / 2 / _normalizedScale, _height / 2 /
+      _normalizedScale);
   // rotate
   var _rotation = _view[1];
   this._context.rotate(Math.PI * 0.5 * _rotation);
@@ -971,22 +983,22 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _offset_x = -_sliceWidth * this._sliceWidthSpacing / 2 + _x;
   var _offset_y = -_sliceHeight * this._sliceHeightSpacing / 2 + _y;
   // draw the slice
-  this._context.drawImage(this._frameBuffer, _offset_x, _offset_y, _sliceWidth
-      * this._sliceWidthSpacing, _sliceHeight * this._sliceHeightSpacing);
+  this._context.drawImage(this._frameBuffer, _offset_x, _offset_y, _sliceWidth *
+      this._sliceWidthSpacing, _sliceHeight * this._sliceHeightSpacing);
   // draw the labels with a configured opacity
   if (_currentLabelMap && _volume._labelmap._visible) {
     var _labelOpacity = _volume._labelmap._opacity;
     this._context.globalAlpha = _labelOpacity; // draw transparent depending on
     // opacity
     this._context.drawImage(this._labelFrameBuffer, _offset_x, _offset_y,
-        _sliceWidth * this._sliceWidthSpacing, _sliceHeight
-            * this._sliceHeightSpacing);
+        _sliceWidth * this._sliceWidthSpacing, _sliceHeight *
+            this._sliceHeightSpacing);
   }
   // if enabled, show slice navigators
   if (this._config['SLICENAVIGATORS']) {
     // but only if the shift key is down and the left mouse is not
-    if (this._interactor._mouseInside && this._interactor._shiftDown
-        && !this._interactor._leftButtonDown) {
+    if (this._interactor._mouseInside && this._interactor._shiftDown &&
+        !this._interactor._leftButtonDown) {
       var _mousePosition = this._interactor._mousePosition;
       // check if we are over the slice
       var ijk = this.xy2ijk(_mousePosition[0], _mousePosition[1]);
