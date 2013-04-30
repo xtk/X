@@ -403,6 +403,7 @@ X.parser.prototype.reslice = function(object) {
     var _ti = xyz;
     var _tj = (_ti + 1) % 3;
     var _tk = (_ti + 2) % 3;
+    // if coronal, we invert axis tj and tk
     var textureSize = 4 * _dim[_ti] * _dim[_tj];
     _k = 0;
     var imax = _dim[_ti];
@@ -429,6 +430,12 @@ X.parser.prototype.reslice = function(object) {
     // size
     var _width = imax * _spacing[_ti];
     var _height = jmax * _spacing[_tj];
+    if (_norm_cosine[2][1] != 0) {
+      // if coronally acquired
+      var _tmp = _width;
+      _width = _height;
+      _height = _tmp;
+    }
     for (_k = 0; _k < kmax; _k++) {
       _j = 0;
       var _p = 0;
@@ -456,7 +463,8 @@ X.parser.prototype.reslice = function(object) {
       _slice.setup(_center, _front, _up, _right, _width, _height, borders,
           _color);
       // map slice to volume
-      _slice._volume = /** @type {X.volume} */ (object);
+      _slice._volume = /** @type {X.volume} */
+      (object);
       // only show the middle slice, hide everything else
       if (object._orientation[_tk] > 0) {
         _slice['visible'] = (_k == Math.floor(_indexCenter));
