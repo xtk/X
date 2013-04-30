@@ -98,17 +98,32 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
   if (object._upperThreshold == Infinity) {
     object._upperThreshold = max;
   }
+  
+
+  
   MRI.space = [ 'right', 'anterior', 'superior' ];
-  MRI.space_orientation = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+  
+  MRI.spaceorientation = [];
+  MRI.spaceorientation.push( MRI.M_ras[0][0]);
+  MRI.spaceorientation.push( MRI.M_ras[0][1]);
+  MRI.spaceorientation.push( MRI.M_ras[0][2]);
+  MRI.spaceorientation.push( MRI.M_ras[1][0]);
+  MRI.spaceorientation.push( MRI.M_ras[1][1]);
+  MRI.spaceorientation.push( MRI.M_ras[1][2]);
+  MRI.spaceorientation.push( MRI.M_ras[2][0]);
+  MRI.spaceorientation.push( MRI.M_ras[2][1]);
+  MRI.spaceorientation.push( MRI.M_ras[2][2]);
+
   // cosines direction in RAS space
-  MRI.ras_space_orientation = this.toRAS(MRI.space, MRI.space_orientation);
+  MRI.rasspaceorientation = this.toRAS(MRI.space, MRI.spaceorientation);
   // get orientation and normalized cosines
-  var orient_norm = this.orientnormalize(MRI.ras_space_orientation);
+  var orient_norm = this.orientnormalize(MRI.rasspaceorientation);
   MRI.orientation = orient_norm[0];
-  MRI.norm_cosine = orient_norm[1];
+  MRI.normcosine = orient_norm[1];
   // create the object
   object.create_(MRI);
   X.TIMERSTOP(this._classname + '.parse');
+  
   // re-slice the data according each direction
   object._image = this.reslice(object);
   object.map_();
@@ -149,10 +164,10 @@ X.parserMGZ.prototype.parseStream = function(data) {
     min : Infinity,
     max : -Infinity,
     space : null,
-    space_orientation : null,
-    ras_space_orientation : null,
+    spaceorientation : null,
+    rasspaceorientation : null,
     orientation : null,
-    norm_cosine : null
+    normcosine : null
   };
   MRI.version = this.scan('uint');
   MRI.ndim1 = this.scan('uint');

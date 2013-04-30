@@ -275,17 +275,17 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
  */
 X.parser.prototype.toRAS = function(space, orientation) {
   var _ras_space_orientation = orientation;
-  if (this.space[0] != 'right') {
+  if (space[0] != 'right') {
     _ras_space_orientation[0] = -_ras_space_orientation[0];
     _ras_space_orientation[3] = -_ras_space_orientation[3];
     _ras_space_orientation[6] = -_ras_space_orientation[6];
   }
-  if (this.space[1] != 'anterior') {
+  if (space[1] != 'anterior') {
     _ras_space_orientation[1] = -_ras_space_orientation[1];
     _ras_space_orientation[4] = -_ras_space_orientation[4];
     _ras_space_orientation[7] = -_ras_space_orientation[7];
   }
-  if (this.space[2] != 'superior') {
+  if (space[2] != 'superior') {
     _ras_space_orientation[2] = -_ras_space_orientation[2];
     _ras_space_orientation[5] = -_ras_space_orientation[5];
     _ras_space_orientation[8] = -_ras_space_orientation[8];

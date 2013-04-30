@@ -125,13 +125,23 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   }
   
   MRI.space = [ 'right', 'anterior', 'superior' ];
-  MRI.space_orientation = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+  
+  MRI.spaceorientation = [];
+  MRI.spaceorientation.push( MRI.srow_x[0]);
+  MRI.spaceorientation.push( MRI.srow_x[1]);
+  MRI.spaceorientation.push( MRI.srow_x[2]);
+  MRI.spaceorientation.push( MRI.srow_y[0]);
+  MRI.spaceorientation.push( MRI.srow_y[1]);
+  MRI.spaceorientation.push( MRI.srow_y[2]);
+  MRI.spaceorientation.push( MRI.srow_z[0]);
+  MRI.spaceorientation.push( MRI.srow_z[1]);
+  MRI.spaceorientation.push( MRI.srow_z[2]);
   // cosines direction in RAS space
-  MRI.ras_space_orientation = this.toRAS(MRI.space, MRI.space_orientation);
+  MRI.rasspaceorientation = this.toRAS(MRI.space, MRI.spaceorientation);
   // get orientation and normalized cosines
-  var orient_norm = this.orientnormalize(MRI.ras_space_orientation);
+  var orient_norm = this.orientnormalize(MRI.rasspaceorientation);
   MRI.orientation = orient_norm[0];
-  MRI.norm_cosine = orient_norm[1];
+  MRI.normcosine = orient_norm[1];
   
   // create the object
   object.create_(MRI);
@@ -212,10 +222,10 @@ X.parserNII.prototype.parseStream = function(data) {
     min: Infinity,
     max: -Infinity,
     space : null,
-    space_orientation : null,
-    ras_space_orientation : null,
+    spaceorientation : null,
+    rasspaceorientation : null,
     orientation : null,
-    norm_cosine : null
+    normcosine : null
   };
   
   // header_key substruct

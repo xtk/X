@@ -657,7 +657,6 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
     _a = Math.floor((((x - _image_left2xy) / _sliceWidthScaled) * _dim1));
   }
   _b = Math.floor(_dim2 - (((y - _image_top2xy) / _sliceHeightScaled) * _dim2));
-  console.log('a: ' + _a + ' b: ' + _b);
   if (_a < 0 || _a >= _dim1) {
     return null;
   }
@@ -994,7 +993,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       if (ijk) {
         // // we are over the slice
         // update the volume
-        console.log(ijk);
         _volume._indexX = ijk[0];
         _volume._indexY = ijk[1];
         _volume._indexZ = ijk[2];

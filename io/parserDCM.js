@@ -112,13 +112,19 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     }
     // X.TIMER('create');
     MRI.space = [ 'left', 'posterior', 'superior' ];
-    MRI.space_orientation = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
     // cosines direction in RAS space
-    MRI.ras_space_orientation = this.toRAS(MRI.space, MRI.space_orientation);
+    var _x_cosine = new goog.math.Vec3(MRI.spaceorientation[0],
+        MRI.spaceorientation[1], MRI.spaceorientation[2]);// MRI.image_orientation.slice(0,
+                                                          // 3);
+    var _y_cosine = new goog.math.Vec3(MRI.spaceorientation[3],
+        MRI.spaceorientation[4], MRI.spaceorientation[5]);
+    var _z_cosine = goog.math.Vec3.cross(_x_cosine, _y_cosine);
+    MRI.spaceorientation.push(_z_cosine.x, _z_cosine.y, _z_cosine.z);
+    MRI.rasspaceorientation = this.toRAS(MRI.space, MRI.spaceorientation);
     // get orientation and normalized cosines
-    var orient_norm = this.orientnormalize(MRI.ras_space_orientation);
+    var orient_norm = this.orientnormalize(MRI.rasspaceorientation);
     MRI.orientation = orient_norm[0];
-    MRI.norm_cosine = orient_norm[1];
+    MRI.normcosine = orient_norm[1];
     // X.TIMER('create');
     // create the object
     object.create_(MRI);
@@ -134,27 +140,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
   modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
 };
-X.parserDCM.prototype.getOrientation = function(data, object) {
-}
-X.parserDCM.prototype.getIJK2RAS = function(imagePosition, imageOrientation,
-    spacing) {
-}
-/*
- * char * DerivedImagePlane::getOrientation(Vector3D vector) { char
- * *orientation=new char[4]; char *optr = orientation; optr='\0';
- * 
- * char orientationX = vector.getX() < 0 ? 'R' : 'L'; char orientationY =
- * vector.getY() < 0 ? 'A' : 'P'; char orientationZ = vector.getZ() < 0 ? 'F' :
- * 'H';
- * 
- * double absX = fabs(vector.getX()); double absY = fabs(vector.getY()); double
- * absZ = fabs(vector.getZ());
- * 
- * int i; for (i=0; i<3; ++i) { if (absX>.0001 && absX>absY && absX>absZ) {
- * optr++=orientationX; absX=0; } else if (absY>.0001 && absY>absX && absY>absZ) {
- * optr++=orientationY; absY=0; } else if (absZ>.0001 && absZ>absX && absZ>absY) {
- * optr++=orientationZ; absZ=0; } else break; optr='\0'; } return orientation; }
- */
 /**
  * Parse the data stream according to the .nii/.nii.gz file format and return an
  * MRI structure which holds all parsed information.
@@ -191,11 +176,12 @@ X.parserDCM.prototype.parseStream = function(data, object) {
       data : null,
       min : Infinity,
       max : -Infinity,
+      origin : null,
       space : null,
-      space_orientation : null,
-      ras_space_orientation : null,
+      spaceorientation : null,
+      rasspaceorientation : null,
       orientation : null,
-      norm_cosine : null
+      normcosine : null
     };
     // check how many slices we have
     MRI.number_of_slices = object._file.length;
@@ -304,14 +290,12 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _image_position += String.fromCharCode(_b1);
           }
           _image_position = _image_position.split("\\");
-          MRI.image_position = [ +_image_position[0], +_image_position[1],
+          MRI.origin = [ +_image_position[0], +_image_position[1],
               +_image_position[2] ];
-          // console.log(MRI.image_position);
           _tagCount--;
           break;
         case 0x0037:
           // image orientation
-          // console.log("image orientation");
           // pixel spacing
           var _image_orientation = '';
           // pixel spacing is a delimited string (ASCII)
@@ -324,11 +308,10 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _image_orientation += String.fromCharCode(_b1);
           }
           _image_orientation = _image_orientation.split("\\");
-          MRI.image_orientation = [ +_image_orientation[0],
+          MRI.spaceorientation = [ +_image_orientation[0],
               +_image_orientation[1], +_image_orientation[2],
               +_image_orientation[3], +_image_orientation[4],
               +_image_orientation[5] ];
-          // console.log(MRI.image_orientation);
           _tagCount--;
           break;
         }
@@ -341,7 +324,6 @@ X.parserDCM.prototype.parseStream = function(data, object) {
         switch (_tagSpecific) {
         case 0x2210:
           // anatomical orientation
-          // console.log("anatomical orientation");
           // pixel spacing
           var _anatomical_orientation = '';
           // pixel spacing is a delimited string (ASCII)
@@ -353,7 +335,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _anatomical_orientation += String.fromCharCode(_b0);
             _anatomical_orientation += String.fromCharCode(_b1);
           }
-          _anatomical_orientation = _anatomical_orientation.split("\\");
+          // MRI.spaceorientation = _anatomical_orientation.split("\\");
           // console.log(_anatomical_orientation);
           // MRI.image_orientation = [ +_image_orientation[0],
           // +_image_orientation[1], +_image_orientation[2],
