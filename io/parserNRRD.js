@@ -30,10 +30,8 @@
  *     which did not support gzip/gz encoding or other types than int/short, so we added that :)
  *   
  */
-
 // provides
 goog.provide('X.parserNRRD');
-
 // requires
 goog.require('X.event');
 goog.require('X.object');
@@ -41,8 +39,6 @@ goog.require('X.parser');
 goog.require('X.triplets');
 goog.require('goog.math.Vec3');
 goog.require('Zlib.Gunzip');
-
-
 /**
  * Create a parser for .NRRD files.
  * 
@@ -50,110 +46,78 @@ goog.require('Zlib.Gunzip');
  * @extends X.parser
  */
 X.parserNRRD = function() {
-
   //
   // call the standard constructor of X.parser
   goog.base(this);
-  
   //
   // class attributes
-  
   /**
    * @inheritDoc
    * @const
    */
   this._classname = 'parserNRRD';
-  
 };
 // inherit from X.parser
 goog.inherits(X.parserNRRD, X.parser);
-
-
 /**
  * @inheritDoc
  */
 X.parserNRRD.prototype.parse = function(container, object, data, flag) {
-
   X.TIMER(this._classname + '.parse');
-  
   // attach the data so we can use the internal scan function
   this._data = data;
-  
   var _bytes = this.scan('uchar', data.byteLength);
   var _length = _bytes.length;
-  
   var _header = null;
   var _data_start = 0;
-  
   var i;
   for (i = 1; i < _length; i++) {
-    
     if (_bytes[i - 1] == 10 && _bytes[i] == 10) {
-      
       // we found two line breaks in a row
-      
       // now we know what the header is
       _header = this.parseChars(_bytes, 0, i - 2);
-      
       // this is were the data starts
       _data_start = i + 1;
       break;
-      
     }
-    
   }
-  
   // parse the header
   this.parseHeader(_header);
-  
   // now we have all kinds of things attached to this reader..
   // this was done by M. Lauer
   // I don't really like it but it works..
-  
   var _data = _bytes.subarray(_data_start); // the data without header
-  
   if (this.encoding == 'gzip' || this.encoding == 'gz') {
-    
     // we need to decompress the datastream
-    
     // here we start the unzipping and get a typed Uint8Array back
     var inflate = new Zlib.Gunzip(new Uint8Array(_data));
     _data = inflate.decompress();
-    
   }
-  
   // .. let's use the underlying array buffer
   _data = _data.buffer;
-  
   var MRI = {
-    data: null,
-    min: Infinity,
-    max: -Infinity
+    data : null,
+    min : Infinity,
+    max : -Infinity,
+    space : null,
+    spaceorientation : null,
+    rasspaceorientation : null,
+    orientation : null,
+    normcosine : null
   };
-  
   //
   // parse the (unzipped) data to a datastream of the correct type
   //
   MRI.data = new this.__array(_data);
-  
   // get the min and max intensities
   var min_max = this.arrayMinMax(MRI.data);
   var min = MRI.min = min_max[0];
   var max = MRI.max = min_max[1];
-  
-  //
-  // we know enough to create the object
-  
-  // origin
-  // var _origin = this['space origin'];
-  // _origin = _origin.slice(1, _origin.length).split(',');
-  // object._center[0] = parseFloat(_origin[0]) - this.sizes[0] / 2;
-  // object._center[1] = parseFloat(_origin[1]) - this.sizes[1] / 2;
-  // object._center[2] = parseFloat(_origin[2]) - this.sizes[2] / 2;
-  
-  // dimensions
-  object._dimensions = [this.sizes[0], this.sizes[1], this.sizes[2]];
-  
+  // attach the scalar range to the volume
+  object._min = object._windowLow = min;
+  object._max = object._windowHigh = max;
+  // get the image dimensions
+  object._dimensions = [ this.sizes[0], this.sizes[1], this.sizes[2] ];
   // spacing
   var spacingX = new goog.math.Vec3(this.vectors[0][0], this.vectors[0][1],
       this.vectors[0][2]).magnitude();
@@ -161,12 +125,7 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
       this.vectors[1][2]).magnitude();
   var spacingZ = new goog.math.Vec3(this.vectors[2][0], this.vectors[2][1],
       this.vectors[2][2]).magnitude();
-  object._spacing = [spacingX, spacingY, spacingZ];
-  
-
-  // attach the scalar range to the volume
-  object._min = object._windowLow = min;
-  object._max = object._windowHigh = max;
+  object._spacing = [ spacingX, spacingY, spacingZ ];
   // .. and set the default threshold
   // only if the threshold was not already set
   if (object._lowerThreshold == -Infinity) {
@@ -175,33 +134,50 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   if (object._upperThreshold == Infinity) {
     object._upperThreshold = max;
   }
+  // MRI space ['right', 'anterior','superior'], etc.
+  MRI.space = MRI.space = this.space;
+  // cosines directions in given space
+  MRI.spaceorientation = [];
+  MRI.spaceorientation.push(this.vectors[0][0]);
+  MRI.spaceorientation.push(this.vectors[0][1]);
+  MRI.spaceorientation.push(this.vectors[0][2]);
+  MRI.spaceorientation.push(this.vectors[1][0]);
+  MRI.spaceorientation.push(this.vectors[1][1]);
+  MRI.spaceorientation.push(this.vectors[1][2]);
+  MRI.spaceorientation.push(this.vectors[2][0]);
+  MRI.spaceorientation.push(this.vectors[2][1]);
+  MRI.spaceorientation.push(this.vectors[2][2]);
   
+  MRI.spaceorientation = MRI.spaceorientation;
+  // cosines direction in RAS space
+  MRI.rasspaceorientation = this.toRAS(MRI.space, MRI.spaceorientation);
+  // get orientation and normalized cosines
+  var orient_norm = this.orientnormalize(MRI.rasspaceorientation);
+  MRI.orientation = MRI.orientation = orient_norm[0];
+  MRI.normcosine = MRI.normcosine = orient_norm[1];
   // create the object
-  object.create_();
-  
+  object.create_(MRI);
   X.TIMERSTOP(this._classname + '.parse');
-  
   // now we have the values and need to reslice in the 3 orthogonal directions
   // and create the textures for each slice
-  object._image = this.reslice(object, MRI);
-  
+  // to be added
+  object._image = this.reslice(object);
+  object.map_();
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
   modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
-  
 };
-
-
 /**
  * Parse a NRRD file header.
  * 
- * @param {?string} header The NRRD header to parse.
- * @throws {Error} An error, if the NRRD header is not supported or invalid.
+ * @param {?string}
+ *          header The NRRD header to parse.
+ * @throws {Error}
+ *           An error, if the NRRD header is not supported or invalid.
  */
 X.parserNRRD.prototype.parseHeader = function(header) {
-
   var data, field, fn, i, l, lines, m, _i, _len, _results;
   lines = header.split(/\r?\n/);
   for (_i = 0, _len = lines.length; _i < _len; _i++) {
@@ -223,13 +199,13 @@ X.parserNRRD.prototype.parseHeader = function(header) {
   if (!this.isNrrd) {
     throw new Error('Not an NRRD file');
   }
-  if (this.encoding !== 'raw' && this.encoding !== 'gzip' &&
-      this.encoding !== 'gz') {
+  if (this.encoding !== 'raw' && this.encoding !== 'gzip'
+      && this.encoding !== 'gz') {
     throw new Error('Only raw or gz/gzip encoding is allowed');
   }
   if (!this.vectors) {
-    this.vectors = [new goog.math.Vec3(1, 0, 0), new goog.math.Vec3(0, 1, 0),
-                    new goog.math.Vec3(0, 0, 1)];
+    this.vectors = [ new goog.math.Vec3(1, 0, 0), new goog.math.Vec3(0, 1, 0),
+        new goog.math.Vec3(0, 0, 1) ];
     if (this.spacings) {
       _results = [];
       for (i = 0; i <= 2; i++) {
@@ -240,16 +216,13 @@ X.parserNRRD.prototype.parseHeader = function(header) {
     }
   }
 };
-
-
 /**
  * Functions for parsing the NRRD header fields.
  * 
  * @type {Object}
  */
 X.parserNRRD.prototype.fieldFunctions = {
-  'type': function(data) {
-
+  'type' : function(data) {
     switch (data) {
     case 'uchar':
     case 'unsigned char':
@@ -292,28 +265,26 @@ X.parserNRRD.prototype.fieldFunctions = {
     case 'float':
       this.__array = Float32Array;
       break;
+    case 'double':
+      this.__array = Float64Array;
+      break;
     default:
       throw new Error('Unsupported NRRD data type: ' + data);
     }
     return this.type = data;
   },
-  'endian': function(data) {
-
+  'endian' : function(data) {
     return this.endian = data;
   },
-  'encoding': function(data) {
-
+  'encoding' : function(data) {
     return this.encoding = data;
   },
-  'dimension': function(data) {
-
+  'dimension' : function(data) {
     return this.dim = parseInt(data, 10);
   },
-  'sizes': function(data) {
-
+  'sizes' : function(data) {
     var i;
     return this.sizes = (function() {
-
       var _i, _len, _ref, _results;
       _ref = data.split(/\s+/);
       _results = [];
@@ -324,18 +295,18 @@ X.parserNRRD.prototype.fieldFunctions = {
       return _results;
     })();
   },
-  'space directions': function(data) {
-
+  'space' : function(data) {
+    return this.space = data.split("-");
+  },
+  'space directions' : function(data) {
     var f, parts, v;
     parts = data.match(/\(.*?\)/g);
     return this.vectors = (function() {
-
       var _i, _len, _results;
       _results = [];
       for (_i = 0, _len = parts.length; _i < _len; _i++) {
         v = parts[_i];
         _results.push((function() {
-
           var _j, _len2, _ref, _results2;
           _ref = v.slice(1, -1).split(/,/);
           _results2 = [];
@@ -349,12 +320,10 @@ X.parserNRRD.prototype.fieldFunctions = {
       return _results;
     })();
   },
-  'spacings': function(data) {
-
+  'spacings' : function(data) {
     var f, parts;
     parts = data.split(/\s+/);
     return this.spacings = (function() {
-
       var _i, _len, _results;
       _results = [];
       for (_i = 0, _len = parts.length; _i < _len; _i++) {
@@ -365,9 +334,6 @@ X.parserNRRD.prototype.fieldFunctions = {
     })();
   }
 };
-
-
-
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.parserNRRD', X.parserNRRD);
 goog.exportSymbol('X.parserNRRD.prototype.parse', X.parserNRRD.prototype.parse);

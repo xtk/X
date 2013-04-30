@@ -124,14 +124,33 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
     object._upperThreshold = max;
   }
   
+  MRI.space = [ 'right', 'anterior', 'superior' ];
+  
+  MRI.spaceorientation = [];
+  MRI.spaceorientation.push( MRI.srow_x[0]);
+  MRI.spaceorientation.push( MRI.srow_x[1]);
+  MRI.spaceorientation.push( MRI.srow_x[2]);
+  MRI.spaceorientation.push( MRI.srow_y[0]);
+  MRI.spaceorientation.push( MRI.srow_y[1]);
+  MRI.spaceorientation.push( MRI.srow_y[2]);
+  MRI.spaceorientation.push( MRI.srow_z[0]);
+  MRI.spaceorientation.push( MRI.srow_z[1]);
+  MRI.spaceorientation.push( MRI.srow_z[2]);
+  // cosines direction in RAS space
+  MRI.rasspaceorientation = this.toRAS(MRI.space, MRI.spaceorientation);
+  // get orientation and normalized cosines
+  var orient_norm = this.orientnormalize(MRI.rasspaceorientation);
+  MRI.orientation = orient_norm[0];
+  MRI.normcosine = orient_norm[1];
+  
   // create the object
-  object.create_();
+  object.create_(MRI);
   
   X.TIMERSTOP(this._classname + '.parse');
   
   // re-slice the data according each direction
-  object._image = this.reslice(object, MRI);
-  
+  object._image = this.reslice(object);
+  object.map_();
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
@@ -201,7 +220,12 @@ X.parserNII.prototype.parseStream = function(data) {
     magic: null, // *!< MUST be "ni1\0" or "n+1\0". */
     data: null,
     min: Infinity,
-    max: -Infinity
+    max: -Infinity,
+    space : null,
+    spaceorientation : null,
+    rasspaceorientation : null,
+    orientation : null,
+    normcosine : null
   };
   
   // header_key substruct
