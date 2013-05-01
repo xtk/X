@@ -940,7 +940,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   // transform the canvas according to the view matrix
   var _x = 1 * _view[12];
-  var _y = 1 * _view[13]; // we need to flip y here
+  var _y = -1 * _view[13]; // we need to flip y here
 
   // .. this includes zoom
   var _normalizedScale = Math.max(_view[14], 0.6);
