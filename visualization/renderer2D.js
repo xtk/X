@@ -1004,6 +1004,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _labelPixels = _labelmapData.data;
   var _pixelsLength = _pixels.length;
 
+  var _orientation = _volume._orientation;
+  var _normcosine = _volume._normcosine;
+
   // threshold values
   var _maxScalarRange = _volume._max;
   var _lowerThreshold = _volume._lowerThreshold;
@@ -1096,21 +1099,21 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       var _tj = (_ti + 1) % 3;
       var _tk = (_ti + 2) % 3;
       var _tmp_indx = _index;
-      var _oi = _volume._orientation[_ti];
-      var _oj = _volume._orientation[_tj];
+      var _oi = _orientation[_ti];
+      var _oj = _orientation[_tj];
 
-      if (_volume._normcosine[_tk][0] != 0) {
+      if (_normcosine[_tk][0] != 0) {
 
         // IF SAGITTAL, invert row orientation
-        if (_volume._normcosine[2][1] != 0) {
+        if (_normcosine[2][1] != 0) {
 
           // if coronally acquired
           _index = 4 * (((_index / 4) % (_sliceHeight)) * _sliceWidth + Math
               .floor((_index / 4) / _sliceHeight));
 
           // update directions
-          _oi = -_volume._orientation[_tj];
-          _oj = _volume._orientation[_ti];
+          _oi = -_orientation[_tj];
+          _oj = _orientation[_ti];
 
         } else {
 
@@ -1118,18 +1121,18 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
         }
 
-      } else if (_volume._normcosine[_tk][1] != 0) {
+      } else if (_normcosine[_tk][1] != 0) {
 
         // IF CORONAL, switch rows and cols
         // re-map index according to rows/cols switch
-        if (_volume._normcosine[2][1] == 0) {
+        if (_normcosine[2][1] == 0) {
 
           _index = 4 * (((_index / 4) % (_sliceHeight)) * _sliceWidth + Math
               .floor((_index / 4) / _sliceHeight));
 
           // update directions
-          _oi = _volume._orientation[_tj];
-          _oj = _volume._orientation[_ti];
+          _oi = _orientation[_tj];
+          _oj = _orientation[_ti];
 
         }
 
@@ -1143,15 +1146,15 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
       } else {
 
-        if (_volume._normcosine[2][1] != 0) {
+        if (_normcosine[2][1] != 0) {
 
           // if coronally acquired
           _index = 4 * (((_index / 4) % (_sliceHeight)) * _sliceWidth + Math
               .floor((_index / 4) / _sliceHeight));
 
           // update directions
-          _oi = _volume._orientation[_tj];
-          _oj = _volume._orientation[_ti];
+          _oi = _orientation[_tj];
+          _oj = _orientation[_ti];
 
         }
 
