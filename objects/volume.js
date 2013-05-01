@@ -424,6 +424,8 @@ X.volume.prototype.map_ = function() {
   var _normcosine = this._normcosine[2];
   var _dimensions =  this._dimensions;
 
+  // here indexX is the scan direction
+
   if (_normcosine[0] != 0) {
 
     // this is a sagittal scan
