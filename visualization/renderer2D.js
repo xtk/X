@@ -184,12 +184,12 @@ X.renderer2D = function() {
   this._labelmapShowOnlyColor = new Float32Array([-255, -255, -255, -255]);
 
   /**
-   * The convention we follow to draw the 2D slices.
+   * The convention we follow to draw the 2D slices. TRUE for RADIOLOGY, FALSE for NEUROLOGY.
    *
-   * @type {!string}
+   * @type {!boolean}
    * @protected
    */
-  this._convention = 'RADIOLOGY';
+  this._radiological = true;
 
 };
 // inherit from X.base
@@ -360,35 +360,31 @@ X.renderer2D.prototype.__defineSetter__('orientation', function(orientation) {
 
 
 /**
- * Get the convention of this renderer. Valid orientations are 'RADIOLOGY' and
- * 'NEUROLOGY'
+ * Get the convention of this renderer.
  *
- * @return {?string} The convention of this renderer.
+ * @return {!boolean} TRUE if the RADIOLOGY convention is used, FALSE if the
+ *                    NEUROLOGY convention is used.
  */
-X.renderer2D.prototype.__defineGetter__('convention', function() {
+X.renderer2D.prototype.__defineGetter__('radiological', function() {
 
-  return this._convention;
+  return this._radiological;
 
 });
 
 
 /**
- * Set the convention for this renderer. Valid orientations are 'RADIOLOGY' and
- * 'NEUROLOGY'
+ * Set the convention for this renderer. There is a difference between radiological and neurological
+ * convention in terms of treating the coronal left and right.
  *
- * @param {!string} convention The convention for this renderer: 'RADIOLOGY' or
- *          'NEUROLOGY'
- * @throws {Error} An error, if the given orientation was wrong.
+ * Default is the radiological convention.
+ *
+ * @param {!boolean} radiological TRUE if the RADIOLOGY convention is used, FALSE if the
+ *                                NEUROLOGY convention is used.
  */
-X.renderer2D.prototype.__defineSetter__('convention', function(convention) {
+X.renderer2D.prototype.__defineSetter__('radiological', function(radiological) {
 
-  convention = convention.toUpperCase();
+  this._radiological = radiological;
 
-  if (convention != 'RADIOLOGY' && convention != 'NEUROLOGY') {
-    throw new Error('Invalid convention.');
-  }
-
-  this._convention = convention;
 });
 
 
@@ -831,7 +827,7 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
 
   // which convention?
   // PIXEL mapping depending on the convention
-  if (this._convention == 'RADIOLOGY') {
+  if (this._radiological) {
 
     // IF RADIOLOGY CONVENTION
     // right of image is left of patient -> invert X as in SAGITTAL
@@ -1099,7 +1095,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
         }
 
-        if (this._convention == 'RADIOLOGY') {
+        if (this._radiological) {
 
           // IF RADIOLOGY CONVENTION
           // right of image is left of patient -> invert X as in SAGITTAL
@@ -1121,7 +1117,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
         }
 
-        if (this._convention == 'RADIOLOGY') {
+        if (this._radiological) {
 
           // IF RADIOLOGY CONVENTION
           // right of image is left of patient -> invert X as in SAGITTAL
