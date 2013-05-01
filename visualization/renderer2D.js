@@ -436,26 +436,6 @@ X.renderer2D.prototype.init = function() {
 
 
 /**
- * Rotate the current view clock-wise.
- */
-X.renderer2D.prototype.rotate = function() {
-
-  this._camera._view[1]++;
-
-};
-
-
-/**
- * Rotate the current view counter clock-wise.
- */
-X.renderer2D.prototype.rotateCounter = function() {
-
-  this._camera._view[1]--;
-
-};
-
-
-/**
  * @inheritDoc
  */
 X.renderer2D.prototype.onResize_ = function() {
@@ -1258,35 +1238,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   this._context.translate(_width / 2 / _normalizedScale, _height / 2 /
       _normalizedScale);
 
-  // rotate
-  var _rotation = _view[1];
-  this._context.rotate(Math.PI * 0.5 * _rotation);
-
-  // the padding x and y have to be adjusted because of the rotation
-  switch (_rotation % 4) {
-  case 0:
-    // padding is fine;
-    _y *= -1;
-    break;
-  case 1:
-    // padding is twisted
-    var _buf = _x;
-    _x = _y;
-    _y = _buf;
-    break;
-  case 2:
-    // padding is inverted
-    _x *= -1;
-    _y *= -1;
-    break;
-  case 3:
-    // padding is twisted
-    var _buf = _x;
-    _x = -_y;
-    _y = -_buf;
-    break;
-  }
-
   var _offset_x = -_sliceWidth * this._sliceWidthSpacing / 2 + _x;
   var _offset_y = -_sliceHeight * this._sliceHeightSpacing / 2 + _y;
 
@@ -1371,10 +1322,6 @@ goog.exportSymbol('X.renderer2D.prototype.onScroll',
 goog.exportSymbol('X.renderer2D.prototype.onWindowLevel',
     X.renderer2D.prototype.onWindowLevel);
 goog.exportSymbol('X.renderer2D.prototype.get', X.renderer2D.prototype.get);
-goog.exportSymbol('X.renderer2D.prototype.rotate',
-    X.renderer2D.prototype.rotate);
-goog.exportSymbol('X.renderer2D.prototype.rotateCounter',
-    X.renderer2D.prototype.rotateCounter);
 goog.exportSymbol('X.renderer2D.prototype.resetViewAndRender',
     X.renderer2D.prototype.resetViewAndRender);
 goog.exportSymbol('X.renderer2D.prototype.xy2ijk',
