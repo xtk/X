@@ -64,6 +64,15 @@ X.renderer2D = function() {
   this._orientation = null;
 
   /**
+   * The orientation index in respect to the
+   * attached volume and its scan direction.
+   *
+   * @type {!number}
+   * @protected
+   */
+  this._orientationIndex = -1;
+
+  /**
    * The array of orientation colors.
    *
    * @type {!Array}
@@ -238,7 +247,7 @@ X.renderer2D.prototype.onScroll_ = function(event) {
   }
 
   // switch between different orientations
-  var xyz = this.containerIndex_(_volume._normcosine, this._orientation);
+  var xyz = this._orientationIndex;
   var _orientation = "";
 
   if (xyz == 0) {
@@ -375,6 +384,16 @@ X.renderer2D.prototype.__defineSetter__('orientation', function(orientation) {
 
   this._orientation = orientation;
 
+  var _volume = this._topLevelObjects[0];
+
+  // .. if there is a volume, update the orientationIndex
+  if (_volume) {
+
+    // and update the orientationIndex if we have a volume already
+    this._orientationIndex = this.volumeChildrenIndex_(_volume._normcosine, this._orientation);
+
+  }
+
 });
 
 
@@ -497,9 +516,9 @@ X.renderer2D.prototype.resetViewAndRender = function() {
  * @param {!Array} normCosines The volume cosines directions.
  * @param {?string} targetOrientation The orientation required.
  * @return {!number} The index of the volume children.
- * @protected
+ * @private
  */
-X.renderer2D.prototype.containerIndex_ = function(normCosines,
+X.renderer2D.prototype.volumeChildrenIndex_ = function(normCosines,
     targetOrientation) {
 
   if (targetOrientation == 'X') {
@@ -677,8 +696,8 @@ X.renderer2D.prototype.update_ = function(object) {
   var _dim = object._dimensions;
 
   // check the orientation and store a pointer to the slices
-  var _xyz = this.containerIndex_(_norm_cosine, this._orientation);
-  var _ti = _xyz;
+  this._orientationIndex = this.volumeChildrenIndex_(_norm_cosine, this._orientation);
+  var _ti = this._orientationIndex;
   var _tj = (_ti + 1) % 3;
   var _tk = (_ti + 2) % 3;
 
@@ -702,7 +721,7 @@ X.renderer2D.prototype.update_ = function(object) {
   // size
   var _width = imax;
   var _height = jmax;
-  this._slices = object._children[_xyz]._children;
+  this._slices = object._children[this._orientationIndex]._children;
 
   this._sliceWidthSpacing = _spacing[_ti];
   this._sliceHeightSpacing = _spacing[_tj];
@@ -790,7 +809,7 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   // now grab the IJK coords
   var _a = 0;
   var _b = 0;
-  var _ti = this.containerIndex_(_volume._normcosine, this._orientation);
+  var _ti = this._orientationIndex;
   var _tj = (_ti + 1) % 3;
   var _tk = (_ti + 2) % 3;
 
@@ -940,7 +959,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   }
 
-  var xyz = this.containerIndex_(_volume._normcosine, this._orientation);
+  var xyz = this._orientationIndex;
   var _currentSlice = null;
   if (xyz == 0) {
 
