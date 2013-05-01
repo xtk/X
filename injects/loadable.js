@@ -111,6 +111,8 @@ X.loadable.prototype.__defineSetter__('file', function(filepath) {
 
   }
 
+  this._filedata = null;
+
 });
 
 
