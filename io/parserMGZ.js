@@ -37,7 +37,7 @@ goog.require('Zlib.Gunzip');
 /**
  * Create a parser for .MGZ files. Note: MGH/MGZ files are BIG ENDIAN so we need
  * to take care of that..
- * 
+ *
  * @constructor
  * @extends X.parser
  */
@@ -54,7 +54,7 @@ X.parserMGZ = function() {
   this._classname = 'parserMGZ';
   /**
    * Here, the data stream is big endian.
-   * 
+   *
    * @inheritDoc
    */
   this._littleEndian = false;
@@ -98,11 +98,11 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
   if (object._upperThreshold == Infinity) {
     object._upperThreshold = max;
   }
-  
 
-  
+
+
   MRI.space = [ 'right', 'anterior', 'superior' ];
-  
+
   MRI.spaceorientation = [];
   MRI.spaceorientation.push( MRI.M_ras[0][0]);
   MRI.spaceorientation.push( MRI.M_ras[0][1]);
@@ -123,20 +123,22 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
   // create the object
   object.create_(MRI);
   X.TIMERSTOP(this._classname + '.parse');
-  
+
   // re-slice the data according each direction
   object._image = this.reslice(object);
   object.map_();
+
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
   modifiedEvent._container = container;
   this.dispatchEvent(modifiedEvent);
+
 };
 /**
  * Parse the data stream according to the MGH/MGZ file format and return an MRI
  * structure which holds all parsed information.
- * 
+ *
  * @param {!ArrayBuffer}
  *          data The data stream.
  * @return {Object} The MRI structure which holds all parsed information.

@@ -421,32 +421,35 @@ X.volume.prototype.create_ = function(_info) {
  */
 X.volume.prototype.map_ = function() {
 
-  if (this._normcosine[2][0] != 0) {
+  var _normcosine = this._normcosine[2];
+  var _dimensions =  this._dimensions;
+
+  if (_normcosine[0] != 0) {
+
+    // this is a sagittal scan
 
     this._indexLR = this._indexX;
     this._indexPA = this._indexY;
     this._indexIS = this._indexZ;
-    this._dimensionsRAS[0] = this._dimensions[2];
-    this._dimensionsRAS[1] = this._dimensions[0];
-    this._dimensionsRAS[2] = this._dimensions[1];
+    this._dimensionsRAS = [_dimensions[2], _dimensions[0], _dimensions[1]];
 
-  } else if (this._normcosine[2][1] != 0) {
+  } else if (_normcosine[1] != 0) {
+
+    // this is a coronal scan
 
     this._indexLR = this._indexZ;
     this._indexPA = this._indexX;
     this._indexIS = this._indexY;
-    this._dimensionsRAS[0] = this._dimensions[1];
-    this._dimensionsRAS[1] = this._dimensions[2];
-    this._dimensionsRAS[2] = this._dimensions[0];
+    this._dimensionsRAS = [_dimensions[1], _dimensions[2], _dimensions[0]];
 
   } else {
+
+    // this is an axial scan
 
     this._indexLR = this._indexY;
     this._indexPA = this._indexZ;
     this._indexIS = this._indexX;
-    this._dimensionsRAS[0] = this._dimensions[0];
-    this._dimensionsRAS[1] = this._dimensions[1];
-    this._dimensionsRAS[2] = this._dimensions[2];
+    this._dimensionsRAS = _dimensions;
 
   }
 
