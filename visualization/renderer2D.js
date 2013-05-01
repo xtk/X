@@ -56,7 +56,7 @@ X.renderer2D = function() {
   this._classname = 'renderer2D';
 
   /**
-   * The orientation of this renderer. X: SAGITTAL Y: CORONAL Z: AXIAL
+   * The orientation of this renderer.
    *
    * @type {?string}
    * @protected
@@ -338,15 +338,34 @@ X.renderer2D.prototype.__defineGetter__('orientation', function() {
 
 
 /**
- * Set the orientation for this renderer. Valid orientations are 'x','y' or 'z'.
+ * Set the orientation for this renderer. Valid orientations are 'x','y' or 'z' or 'axial',
+ * 'sagittal' or 'coronal'.
+ *
+ * AXIAL == Z
+ * SAGITTAL == X
+ * CORONAL == Y
  *
  * @param {!string} orientation The orientation for this renderer: 'x','y' or
- *          'z'.
+ *          'z' or 'axial', 'sagittal' or 'coronal'.
  * @throws {Error} An error, if the given orientation was wrong.
  */
 X.renderer2D.prototype.__defineSetter__('orientation', function(orientation) {
 
   orientation = orientation.toUpperCase();
+
+  if (orientation == 'AXIAL') {
+
+    orientation = 'Z';
+
+  } else if (orientation == 'SAGITTAL') {
+
+    orientation = 'X';
+
+  } else if (orientation == 'CORONAL') {
+
+    orientation = 'Y';
+
+  }
 
   if (orientation != 'X' && orientation != 'Y' && orientation != 'Z') {
 
