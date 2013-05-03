@@ -1546,6 +1546,10 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   var uScalarsMinColor = uLocations.get(X.shaders.uniforms.SCALARSMINCOLOR);
   var uScalarsMaxColor = uLocations.get(X.shaders.uniforms.SCALARSMAXCOLOR);
   var uScalarsInterpolation = uLocations.get(X.shaders.uniforms.SCALARSINTERPOLATION);
+  var uLabelsCount = uLocations.get(X.shaders.uniforms.LABELSCOUNT);
+  var uLabelIntensities = uLocations.get(X.shaders.uniforms.LABELINTENSITIES);
+  var uLabelMinColor = uLocations.get(X.shaders.uniforms.LABELMINCOLOR);
+  var uLabelMaxColor = uLocations.get(X.shaders.uniforms.LABELMAXCOLOR);
   var uScalarsMinThreshold = uLocations
       .get(X.shaders.uniforms.SCALARSMINTHRESHOLD);
   var uScalarsMaxThreshold = uLocations
@@ -1739,6 +1743,15 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         // propagate scalar interpolation scheme
         this._context.uniform1i(uScalarsInterpolation, parseInt(object._scalars._interpolation, 10));
 
+        // propagate number of labels
+        this._context.uniform1i(uLabelsCount, parseInt(object._scalars._labelsCount, 10));
+        // propogate label intensity array
+        this._context.uniform3fv(uLabelIntensities, object._scalars._labelIntensities);
+        // propogate label mincolor array
+        this._context.uniform4fv(uLabelMinColor, object._scalars._labelMinColor);
+        // propogate label maxcolor array
+        this._context.uniform4fv(uLabelMaxColor, object._scalars._labelMaxColor);
+        
         this._context.bindBuffer(this._context.ARRAY_BUFFER,
             scalarBuffer._glBuffer);
 

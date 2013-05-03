@@ -91,13 +91,54 @@ X.scalars = function() {
    * 	1 - FreeSurfer curvature convention: negative values are interpolated
    * 	    over minColor range, positive curvatures separately over
    * 	    maxColor range.
+   *    2 - LabelArray based scheme -- explicit value ranges are defined, and
+   *        for each range, explicit min and max colors are specified.
    *
    * @type {!number}
    * @protected
    */
   this._interpolation = 0;
 
+  /**
+   * Number of (variable) labels for interpolation scheme 2
+   *
+   * @type {!number}
+   * @protected
+   */
+  this._labelsCount = 0;
 
+  /**
+   * Label intensity range lookup is stored as a vec3 in a ten element
+   * array. In javascript, this is a flat array of size 3 x 10 = 30.
+   *
+   * @type {?Float32Array}
+   * @protected
+   */
+  this._labelIntensities = new Float32Array(30);
+
+  /**
+   * For each label, the minimum color for the label intensity range. 
+   * This is encoded as a 4 element value of [R,G,B,alpha]. For interface
+   * to the shaders, this is a flat array of size 4 x 10 = 40.
+   * 
+   *
+   * @type {?Float32Array}
+   * @protected
+   */
+  this._labelMinColor = new Float32Array(40);
+  
+  /**
+   * For each label, the maxmimum color for the label intensity range. 
+   * This is encoded as a 4 element value of [R,G,B,alpha]. For interface
+   * to the shaders, this is a flat array of size 4 x 10 = 40.
+   * 
+   *
+   * @type {?Float32Array}
+   * @protected
+   */
+  this._labelMaxColor = new Float32Array(40);
+ 
+  
   // inject functionality
   inject(this, new X.loadable()); // this object is loadable from a file
   inject(this, new X.thresholdable()); // this object is thresholdable
@@ -169,7 +210,6 @@ X.scalars.prototype.__defineGetter__('interpolation', function() {
 
 });
 
-
 /**
  * scalarsInterpolation
  * The interpolation scheme for this object.
@@ -186,6 +226,89 @@ X.scalars.prototype.__defineSetter__('interpolation', function(value) {
   this._interpolation = value;
 
 });
+
+
+/**
+ * labelsCount
+ * The number of labels defined for this object.
+ *
+ * @return {!number} The labelsCount variable.
+ */
+X.scalars.prototype.__defineGetter__('labelsCount', function() {
+
+  return this._labelsCount;
+
+});
+
+/**
+ * labelsCount
+ * The number of labels defined for this object.
+ *
+ * @param {!number} value The number of labels.
+ *
+ */
+X.scalars.prototype.__defineSetter__('labelsCount', function(value) {
+
+  this._labelsCount = value;
+
+});
+
+
+/**
+ * labelIntensities
+ * The labelIntensities array -- minimum and maximum values for specific
+ * labels
+ *
+ * @return {!number} The labelIntensities array.
+ */
+X.scalars.prototype.__defineGetter__('labelIntensities', function() {
+
+  return this._labelIntensities;
+
+});
+
+/**
+ * labelIntensities
+ * The labelIntensities array -- minimum and maximum values for specific
+ * labels
+ *
+ * @param {!number} value The labelIntensities array to assign.
+ *
+ */
+X.scalars.prototype.__defineSetter__('labelIntensities', function(value) {
+
+  this._labelIntensities = value;
+
+});
+
+/**
+ * labelMinColor
+ * The labelMinColor array -- the values associated with the "minimum"
+ * intensities in the labelIntensities array.
+ *
+ * @return {!number} The labelMinColor array.
+ */
+X.scalars.prototype.__defineGetter__('labelMinColor', function() {
+
+  return this._labelMinColor;
+
+});
+
+/**
+ * labelMinColor
+ * The labelMinColor array -- the values associated with the "minimum"
+ * intensities in the labelIntensities array.
+ *
+ * @param {!number} value The labelMinColor array to assign.
+ *
+ */
+X.scalars.prototype.__defineSetter__('labelMinColor', function(value) {
+
+  this._labelMinColor = value;
+
+});
+
+
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.scalars', X.scalars);

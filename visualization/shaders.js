@@ -90,6 +90,15 @@ X.shaders = function() {
   t += 'uniform vec3 objectColor;\n';
   t += 'uniform float pointSize;\n';
   t += '\n';
+  // Interpolation scheme 3 allows for 10 "labels" between
+  // given intensity values. The intensity ranges are passed
+  // as vec3's and the colors as vec4's.
+  t += 'uniform int labelsCount;\n';
+  t += 'const int NUM_LABELS = 10;\n';
+  t += 'uniform vec3   labelIntensities[NUM_LABELS];\n';
+  t += 'uniform vec4   labelMinColor[NUM_LABELS];\n';
+  t += 'uniform vec4   labelMaxColor[NUM_LABELS];\n';
+  t += '\n';
   t += 'varying float fDiscardNow;\n';
   t += 'varying vec4 fVertexPosition;\n';
   t += 'varying vec3 fragmentColor;\n';
@@ -98,6 +107,9 @@ X.shaders = function() {
   t += 'varying vec3 fTransformedVertexNormal;\n';
   t += '\n';
   t += 'void main(void) {\n';
+  t += 'vec3 testIntensity = labelIntensities[0];\n';
+  t += 'vec4 testMinColor = labelMinColor[0];\n';
+  t += 'vec4 testMaxColor = labelMaxColor[0];\n';
   // setup varying -> fragment shader
   // use the old mat3 constructor to be compatible with mac/safari
   t += '  fTransformedVertexNormal = mat3(view[0].xyz,view[1].xyz,view[2].xyz) * ';
@@ -122,11 +134,36 @@ X.shaders = function() {
   t += '      }\n';
   t += '    } else {\n';
   t += '      if (scalarsReplaceMode) {\n';
+  t += '        if(scalarsInterpolation == 2) {\n';
+  t += '          vec3  v_intensity;\n';
+  t += '          vec4  v_colorMinAlpha;\n';
+  t += '          vec4  v_colorMaxAlpha;\n';
+  t += '          vec3  v_colorMin;\n';
+  t += '          vec3  v_colorMax;\n';
+  t += '          float f_range;\n';
+  t += '          for(int label=0; label<NUM_LABELS; label++) {\n';
+  t += '              if(label > labelsCount) break;\n';
+  t += '              v_intensity       = labelIntensities[label];\n';
+  t += '              if(scalarValue >= v_intensity[0] && scalarValue < v_intensity[1]) {\n';
+  t += '                  v_colorMinAlpha   = labelMinColor[label];\n';
+  t += '                  v_colorMaxAlpha   = labelMaxColor[label];\n';
+  t += '                  v_colorMin[0]     = v_colorMinAlpha[0];\n';
+  t += '                  v_colorMin[1]     = v_colorMinAlpha[1];\n';
+  t += '                  v_colorMin[2]     = v_colorMinAlpha[2];\n';
+  t += '                  v_colorMax[0]     = v_colorMaxAlpha[0];\n';
+  t += '                  v_colorMax[1]     = v_colorMaxAlpha[1];\n';
+  t += '                  v_colorMax[2]     = v_colorMaxAlpha[2];\n';
+  t += '                  f_range           = v_intensity[1] - v_intensity[0];\n';
+  t += '                  fragmentColor     = scalarValue/f_range * v_colorMax + (1.0 - scalarValue/f_range) * v_colorMin;\n';
+  t += '              } else {\n';
+  t += '                  fragmentColor     = v_colorMax;\n';
+  t += '              }\n';
+  t += '          }\n';
+  t += '        }\n';
   t += '        if (scalarsInterpolation == 1) {\n';
   // the zeroMaxColor is the "zero" point for the interpolation of the "max"
-  // colors
-  // and used for the positive curvatures; similarly the zeroMinColor for the
-  // negative curvatures.
+  // colors and used for the positive curvatures; similarly the zeroMinColor 
+  // for the negative curvatures.
   t += '            vec3 zeroMaxColor;\n';
   t += '            vec3 zeroMinColor;\n';
   t += '            zeroMaxColor[0] = scalarsMaxColor[0]*0.33;\n';
@@ -137,7 +174,8 @@ X.shaders = function() {
   t += '            zeroMinColor[2] = scalarsMinColor[2]*0.33;\n';
   t += '            if(scalarValue < 0.0) {fragmentColor = scalarValue/(scalarsMin) * scalarsMinColor + (1.0 - scalarValue/(scalarsMin)) * (zeroMinColor);}\n';
   t += '            else {fragmentColor = scalarValue/(scalarsMax) * scalarsMaxColor + (1.0 - scalarValue/(scalarsMax)) * (zeroMaxColor);}\n';
-  t += '        } else {\n';
+  t += '        }\n'; 
+  t += '        if (scalarsInterpolation == 0) {\n';
   // t += ' fragmentColor = (scalarValue-scalarsMin)/(scalarsMax-scalarsMin) *
   // scalarsMaxColor + (1.0 - (scalarValue-scalarsMin)/(scalarsMax-scalarsMin))
   // * scalarsMinColor;\n';
@@ -324,6 +362,10 @@ X.shaders.uniforms = {
   SCALARSMINTHRESHOLD: 'scalarsMinThreshold',
   SCALARSMAXTHRESHOLD: 'scalarsMaxThreshold',
   SCALARSINTERPOLATION: 'scalarsInterpolation',
+  LABELSCOUNT: 'labelsCount',
+  LABELINTENSITIES: 'labelIntensities',
+  LABELMINCOLOR: 'labelMinColor',
+  LABELMAXCOLOR: 'labelMaxColor',
   POINTSIZE: 'pointSize',
   OBJECTOPACITY: 'objectOpacity',
   NORMAL: 'normal',
