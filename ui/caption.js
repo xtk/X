@@ -34,6 +34,7 @@ goog.provide('X.caption');
 goog.require('X.base');
 goog.require('X.interactor');
 goog.require('goog.dom');
+goog.require('goog.style');
 goog.require('goog.positioning.ViewportPosition');
 goog.require('goog.ui.Tooltip');
 
@@ -168,9 +169,10 @@ X.caption.prototype.init_ = function() {
 
   // enable relative positioning for the main container
   // this is required to place the progressBar in the center
+
+	var position = goog.style.getComputedStyle(this._parent, "position");
   
-  if (this._parent.style.position == 'static' ||
-      this._parent.style.position == '') {
+  if (position == 'static' || position == '') {
     this._parent.style.position = 'relative';
   }
   
