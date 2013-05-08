@@ -309,6 +309,33 @@ X.scalars.prototype.__defineSetter__('labelMinColor', function(value) {
 });
 
 
+/**
+ * labelMaxColor
+ * The labelMaxColor array -- the values associated with the "maximum"
+ * intensities in the labelIntensities array.
+ *
+ * @return {!number} The labelMaxColor array.
+ */
+X.scalars.prototype.__defineGetter__('labelMaxColor', function() {
+
+  return this._labelMaxColor;
+
+});
+
+/**
+ * labelMaxColor
+ * The labelMaxColor array -- the values associated with the "maximum"
+ * intensities in the labelIntensities array.
+ *
+ * @param {!number} value The labelMaxColor array to assign.
+ *
+ */
+X.scalars.prototype.__defineSetter__('labelMaxColor', function(value) {
+
+  this._labelMaxColor = value;
+
+});
+
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.scalars', X.scalars);
