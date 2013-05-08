@@ -107,9 +107,6 @@ X.shaders = function() {
   t += 'varying vec3 fTransformedVertexNormal;\n';
   t += '\n';
   t += 'void main(void) {\n';
-  t += 'vec3 testIntensity = labelIntensities[0];\n';
-  t += 'vec4 testMinColor = labelMinColor[0];\n';
-  t += 'vec4 testMaxColor = labelMaxColor[0];\n';
   // setup varying -> fragment shader
   // use the old mat3 constructor to be compatible with mac/safari
   t += '  fTransformedVertexNormal = mat3(view[0].xyz,view[1].xyz,view[2].xyz) * ';
@@ -140,7 +137,7 @@ X.shaders = function() {
   t += '          vec4  v_colorMaxAlpha;\n';
   t += '          vec3  v_colorMin;\n';
   t += '          vec3  v_colorMax;\n';
-  t += '          float f_range;\n';
+  t += '          float f_range = 0.0;\n';
   t += '          for(int label=0; label<NUM_LABELS; label++) {\n';
   t += '              if(label > labelsCount) break;\n';
   t += '              v_intensity       = labelIntensities[label];\n';
@@ -154,9 +151,8 @@ X.shaders = function() {
   t += '                  v_colorMax[1]     = v_colorMaxAlpha[1];\n';
   t += '                  v_colorMax[2]     = v_colorMaxAlpha[2];\n';
   t += '                  f_range           = v_intensity[1] - v_intensity[0];\n';
-  t += '                  fragmentColor     = scalarValue/f_range * v_colorMax + (1.0 - scalarValue/f_range) * v_colorMin;\n';
-  t += '              } else {\n';
-  t += '                  fragmentColor     = v_colorMax;\n';
+  t += '                  if(scalarValue<0.0) fragmentColor     = (1.0 + scalarValue/f_range) * v_colorMax + -scalarValue/f_range*v_colorMin;\n';
+  t += '                  else fragmentColor = scalarValue/f_range * v_colorMax + (1.0-scalarValue/f_range)*v_colorMin;\n';
   t += '              }\n';
   t += '          }\n';
   t += '        }\n';
