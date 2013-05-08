@@ -196,6 +196,84 @@ X.parserCRV.prototype.parse = function(container, object, data, flag) {
   maxCurv[1] = posMean + 2.5 * posStdDev;
   
   //
+  // If required, define the interpolation label scheme intensities
+  //
+  if(object._scalars._interpolation == 2) {
+      // Setup intensities for "terrain" interpolation. In a terrain
+      // interpolation, the scalar "curvature" value at a mesh point
+      // is assigned an interpolated value between defined label
+      // values.
+      //
+      // Intensity lookup are encoded as a vec3 tuple, with the
+      // first and second values defining the lower and upper 
+      // threshold values. The third value is currently unused.
+      //
+      // The entire color range is divided into 12 segments. The
+      // lower 6 for shades of blue sea, the upper six for the earth's
+      // green/brown/whites.
+      //
+      // More specifically:
+      //
+      // -6  -5  -4  -3  -2  -1   0   1   2   3   4   5   6 
+      //  |---|---|---|---|---|---|---|---|---|---|---|---|
+      //  |<- deep blues->|<----->|<- green ->|<----->|<->|
+      //                      ^                   ^     ^
+      //                      |             +-----|     |
+      //                 light blues        |       +---+
+      //                                  brown     |
+      //                                          white
+      //
+      var intensitySize = 3; 
+      var v_intensity   = new Float32Array(3);
+      var f_range       = maxCurv[1] - minCurv[1];
+      var f_regionSize  = f_range / 12;
+      if(minCurv[1] < 0 ) {
+          object._scalars._labelIntensities.subArray_set(v_intensity, 0);
+          for(var region = 0; region < 5; region++) {
+              switch(region) {
+              case 0:
+                  v_intensity[0]    = minCurv[1];
+                  v_intensity[1]    = minCurv[1] + f_regionSize * 4;
+                  break;
+              case 1:
+                  v_intensity[0]    = minCurv[1] + f_regionSize * 4;
+                  v_intensity[1]    = 0;
+                  break;
+              case 2:
+                  v_intensity[0]    = 0;
+                  v_intensity[1]    = f_regionSize * 3;
+                  break;
+              case 3:
+                  v_intensity[0]    = f_regionSize * 3;
+                  v_intensity[1]    = f_regionSize * 5;
+                  break;
+              case 4:
+                  v_intensity[0]    = f_regionSize * 5;
+                  v_intensity[1]    = f_regionSize * 6;
+                  break;
+              }
+              v_intensity[2]    = -1.0;
+              object._scalars._labelIntensities.subArray_set(v_intensity, 
+                      (region)*intensitySize);
+          }
+      } else {
+          // Dynamically set the "zero" point to the center of the
+          // min-max range
+          v_intensity[0]    =  minCurv[1];
+          v_intensity[1]    =  minCurv[1] + 3*f_range;
+          v_intensity[2]    = -1.0;
+          var f_zeroPoint   = v_intensity[1];
+          for(var region = 0; region < 3; region++) {
+              v_intensity[0]    = f_zeroPoint + region * f_regionSize;
+              v_intensity[1]    = f_zeroPoint + v_intensity[0] + f_regionSize;
+              v_intensity[2]    = -1.0;
+              object._scalars._labelIntensities.subArray_set(v_intensity, 
+                      (region+1)*intensitySize);
+          }
+      }
+  }
+  
+  //
   // now order the curvature values based on the indices
   //
   
