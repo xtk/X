@@ -270,7 +270,8 @@ X.scalars.prototype.__defineGetter__('labelIntensities', function() {
 /**
  * labelIntensities
  * The labelIntensities array -- minimum and maximum values for specific
- * labels
+ * label ranges. Scalars with a value between a labelIntensity boundary
+ * are colored according to the min/max color arrays lookup.
  *
  * @param {!number} value The labelIntensities array to assign.
  *
