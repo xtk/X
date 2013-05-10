@@ -72,6 +72,174 @@ X.parserCRV = function() {
 // inherit from X.parser
 goog.inherits(X.parserCRV, X.parser);
 
+X.parserCRV.prototype.terrainColorLabels_init = function(XScalarsObject) {
+    //
+    // This method initializes the label colors for terrain coloring.
+    // A single label is assigned to a range of mesh values. This label
+    // has a lower color bound, and an upper color bound. The color assigned
+    // to the mesh point within a label's bound is a smooth interpolation
+    // between the lower and upper label colors, based on the scalar value
+    // at a mesh point.
+    //
+    
+    //
+    // initialize label'ed color ranges
+    //
+    v_labelMinColors    = new Float32Array(40);
+    v_labelMaxColors    = new Float32Array(40);
+
+    // Values on the mesh can be associated with different
+    // label colors. Each label is defined by:
+    // 1.  A range of values from the minimum mesh value to 
+    //     the maximum mesh value that should be covered by
+    //     a given label.
+    // 2a. The "minimum" color that is assigned to the lowest
+    //     mesh value associated with that label.
+    // 2b. The "maximum" color that is assigned to the highest
+    //     mesh value associated with that label.
+    // 2c. Mesh values between the label min and max values are
+    //     smoothly interpolated between the min and max colors.
+    //     If min and max colors for a mesh label are identical,
+    //     no interpolation is performed.
+    
+    // Colors are defined as [R, G, B, alpha] with
+    // RGB values between 0.00 and 1.00.
+
+    // Waters
+    var v_deepBlue      = [0.00, 0.00, 0.33, 1.00];
+    var v_darkBlue      = [0.00, 0.00, 0.60, 1.00];
+    var v_cyan          = [0.10, 0.80, 0.80, 1.00];
+
+    // Low to midLands
+    var v_darkGreen     = [0.00, 0.20, 0.00, 1.00];
+    var v_lightGreen    = [0.20, 0.80, 0.20, 1.00];
+    var v_darkKhaki     = [0.70, 0.70, 0.40, 1.00];
+    var v_khaki         = [0.94, 0.90, 0.55, 1.00];
+
+    // Mountains
+    var v_gray          = [0.20, 0.20, 0.20, 1.00];
+    var v_white         = [1.00, 1.00, 1.00, 1.00];
+    
+    var colorSize = 4;
+    v_labelMinColors.subArray_set(v_deepBlue,   0*colorSize);
+    v_labelMaxColors.subArray_set(v_darkBlue,   0*colorSize);
+
+    v_labelMinColors.subArray_set(v_darkBlue,   1*colorSize);
+    v_labelMaxColors.subArray_set(v_cyan,       1*colorSize);
+
+    v_labelMinColors.subArray_set(v_darkGreen,  2*colorSize);
+    v_labelMaxColors.subArray_set(v_lightGreen, 2*colorSize);    
+    
+    v_labelMinColors.subArray_set(v_lightGreen, 3*colorSize);
+    v_labelMaxColors.subArray_set(v_darkKhaki,  3*colorSize);
+
+    v_labelMinColors.subArray_set(v_darkKhaki,  4*colorSize);
+    v_labelMaxColors.subArray_set(v_khaki,      4*colorSize);
+
+    v_labelMinColors.subArray_set(v_khaki,      5*colorSize);
+    v_labelMaxColors.subArray_set(v_gray,       5*colorSize);
+
+    v_labelMinColors.subArray_set(v_gray,       6*colorSize);
+    v_labelMaxColors.subArray_set(v_white,      6*colorSize);
+
+    XScalarsObject._labelsCount            = 7;
+    XScalarsObject._labelMinColor          = v_labelMinColors;
+    XScalarsObject._labelMaxColor          = v_labelMaxColors;
+    
+};
+
+
+X.parserCRV.prototype.terrainColorLabels_interpolate = 
+    function(aXScalarsObject, af_minScalar, af_maxScalar) {
+    //
+    // Setup intensities for "terrain" interpolation. In RGB space
+    // terrain interpolation can be tricky since moving from one 
+    // color to another can be non-linear. Since the shaders use
+    // the v_intensity[] array for each label to find the interpolation,
+    // we can "tune" the dynamic range of the interpolation slope somewhat
+    // by setting v_intesity[1] to relatively large values. This biases
+    // the color interpolation to be "closer" to v_intensity[0] and picks
+    // up smaller detail if the scalar range is low.
+    //
+    // Intensity lookup are encoded as a vec3 tuple, with the
+    // first and second values defining the lower and upper 
+    // threshold values. The third value is currently unused.
+    //
+    // The entire color range is divided into 14 segments. The
+    // lower 7 for shades of blue sea, the upper 7 for the earth's
+    // green/brown/whites.
+    //
+    // More specifically:
+    //                                      lightGreen
+    //                                          |     khaki   white
+    //                                          |       |       |
+    //                                          V       V       V
+    // -7  -6  -5  -4  -3  -2  -1   0   1   2   3   4   5   6   7
+    //  |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+    //  ^               ^           ^                 ^     ^   
+    //  |               |           |                 |     |   
+    //  +----+      deepBlue     +--+--+              |   gray
+    //       |                   |     |              | 
+    //   darkBlue              cyan  darkGreen     darkKhaki
+    //
+    var intensitySize = 3; 
+    var v_intensity     = new Float32Array(3);
+    var f_range         = af_maxScalar - af_minScalar;
+    var f_regionSize    = f_range / 14;
+    var f_zeroPoint     = 0.0;
+    // If the scalar values are purely positive, set the "zeroPoint" to midway
+    // between f_minScalar and f_maxScalar
+    if(af_minScalar >= 0) {
+        f_zeroPoint     = f_range / 2;
+    }
+    aXScalarsObject._labelIntensities.subArray_set(v_intensity, 0);
+    for(var region = 0; region < aXScalarsObject._labelsCount; region++) {
+        switch(region) {
+        // The sea colours
+        case 0:
+            // deepBlue --> darkblue
+            v_intensity[0]    = af_minScalar;
+            v_intensity[1]    = af_minScalar + f_regionSize * 4.0;
+            break;
+        case 1:
+            // darkBlue --> cyan    
+            v_intensity[0]    = af_minScalar + f_regionSize * 4.0;
+            v_intensity[1]    = f_zeroPoint;
+            break;
+        // Now the land masses
+        case 2:
+            // darkGreen --> lightGreen    
+            v_intensity[0]    = f_zeroPoint;
+            v_intensity[1]    = f_regionSize * 3.0;
+            break;
+        case 3:
+            // lightGreen --> darkKhaki    
+            v_intensity[0]    = f_zeroPoint + f_regionSize * 3.0;
+            v_intensity[1]    = f_zeroPoint + f_regionSize * 7.0;
+            break;
+        case 4:
+            // darkKhaki --> khaki    
+            v_intensity[0]    = f_zeroPoint + f_regionSize * 4.5;
+            v_intensity[1]    = f_zeroPoint + f_regionSize * 28.0;
+            break;
+        case 5:
+            // khaki --> gray
+            v_intensity[0]    = f_zeroPoint + f_regionSize * 5.0;
+            v_intensity[1]    = f_zeroPoint + f_regionSize * 21.0;
+            break;
+        case 6:
+            // gray --> white
+            v_intensity[0]    = f_zeroPoint + f_regionSize * 6.0;
+            v_intensity[1]    = f_zeroPoint + f_regionSize * 14.0;
+            break;
+        }
+        
+        v_intensity[2]    = -1.0;
+        aXScalarsObject._labelIntensities.subArray_set(v_intensity, 
+                (region)*intensitySize);
+    }
+};
+
 
 /**
  * @inheritDoc
@@ -199,78 +367,8 @@ X.parserCRV.prototype.parse = function(container, object, data, flag) {
   // If required, define the interpolation label scheme intensities
   //
   if(object._scalars._interpolation == 2) {
-      // Setup intensities for "terrain" interpolation. In a terrain
-      // interpolation, the scalar "curvature" value at a mesh point
-      // is assigned an interpolated value between defined label
-      // values.
-      //
-      // Intensity lookup are encoded as a vec3 tuple, with the
-      // first and second values defining the lower and upper 
-      // threshold values. The third value is currently unused.
-      //
-      // The entire color range is divided into 12 segments. The
-      // lower 6 for shades of blue sea, the upper six for the earth's
-      // green/brown/whites.
-      //
-      // More specifically:
-      //
-      // -6  -5  -4  -3  -2  -1   0   1   2   3   4   5   6 
-      //  |---|---|---|---|---|---|---|---|---|---|---|---|
-      //  |<- deep blues->|<----->|<- green ->|<----->|<->|
-      //                      ^                   ^     ^
-      //                      |             +-----|     |
-      //                 light blues        |       +---+
-      //                                  brown     |
-      //                                          white
-      //
-      var intensitySize = 3; 
-      var v_intensity   = new Float32Array(3);
-      var f_range       = maxCurv[1] - minCurv[1];
-      var f_regionSize  = f_range / 12;
-      if(minCurv[1] < 0 ) {
-          object._scalars._labelIntensities.subArray_set(v_intensity, 0);
-          for(var region = 0; region < 5; region++) {
-              switch(region) {
-              case 0:
-                  v_intensity[0]    = minCurv[1];
-                  v_intensity[1]    = minCurv[1] + f_regionSize * 4;
-                  break;
-              case 1:
-                  v_intensity[0]    = minCurv[1] + f_regionSize * 4;
-                  v_intensity[1]    = 0;
-                  break;
-              case 2:
-                  v_intensity[0]    = 0;
-                  v_intensity[1]    = f_regionSize * 3;
-                  break;
-              case 3:
-                  v_intensity[0]    = f_regionSize * 3;
-                  v_intensity[1]    = f_regionSize * 5;
-                  break;
-              case 4:
-                  v_intensity[0]    = f_regionSize * 5;
-                  v_intensity[1]    = f_regionSize * 6;
-                  break;
-              }
-              v_intensity[2]    = -1.0;
-              object._scalars._labelIntensities.subArray_set(v_intensity, 
-                      (region)*intensitySize);
-          }
-      } else {
-          // Dynamically set the "zero" point to the center of the
-          // min-max range
-          v_intensity[0]    =  minCurv[1];
-          v_intensity[1]    =  minCurv[1] + 3*f_range;
-          v_intensity[2]    = -1.0;
-          var f_zeroPoint   = v_intensity[1];
-          for(var region = 0; region < 3; region++) {
-              v_intensity[0]    = f_zeroPoint + region * f_regionSize;
-              v_intensity[1]    = f_zeroPoint + v_intensity[0] + f_regionSize;
-              v_intensity[2]    = -1.0;
-              object._scalars._labelIntensities.subArray_set(v_intensity, 
-                      (region+1)*intensitySize);
-          }
-      }
+      this.terrainColorLabels_init(object._scalars);
+      this.terrainColorLabels_interpolate(object.scalars, minCurv[1], maxCurv[1]);
   }
   
   //
