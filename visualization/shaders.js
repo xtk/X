@@ -138,10 +138,11 @@ X.shaders = function() {
   t += '          vec3  v_colorMin;\n';
   t += '          vec3  v_colorMax;\n';
   t += '          float f_range = 0.0;\n';
+  t += '          int label     = 0;\n';
   t += '          for(int label=0; label<NUM_LABELS; label++) {\n';
-  t += '              if(label > labelsCount) break;\n';
+  t += '              if(label >= labelsCount) break;\n';
   t += '              v_intensity       = labelIntensities[label];\n';
-  t += '              if(scalarValue >= v_intensity[0] && scalarValue < v_intensity[1]) {\n';
+  t += '              if(scalarValue >= v_intensity[0]) {\n';
   t += '                  v_colorMinAlpha   = labelMinColor[label];\n';
   t += '                  v_colorMaxAlpha   = labelMaxColor[label];\n';
   t += '                  v_colorMin[0]     = v_colorMinAlpha[0];\n';
@@ -176,7 +177,7 @@ X.shaders = function() {
   // scalarsMaxColor + (1.0 - (scalarValue-scalarsMin)/(scalarsMax-scalarsMin))
   // * scalarsMinColor;\n';
   t += '            fragmentColor = scalarValue * scalarsMaxColor + (1.0 - scalarValue) * scalarsMinColor;\n';
-  t += '          }\n';
+  t += '        }\n';
   t += '      } else {\n';
   t += '        fragmentColor = vertexColor;\n'; // if we don't replace and
   // didn't discard, just use
