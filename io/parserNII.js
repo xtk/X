@@ -128,14 +128,15 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   
   MRI.spaceorientation = [];
   MRI.spaceorientation.push( MRI.srow_x[0]);
-  MRI.spaceorientation.push( MRI.srow_x[1]);
-  MRI.spaceorientation.push( MRI.srow_x[2]);
   MRI.spaceorientation.push( MRI.srow_y[0]);
-  MRI.spaceorientation.push( MRI.srow_y[1]);
-  MRI.spaceorientation.push( MRI.srow_y[2]);
   MRI.spaceorientation.push( MRI.srow_z[0]);
+  MRI.spaceorientation.push( MRI.srow_x[1]);
+  MRI.spaceorientation.push( MRI.srow_y[1]);
   MRI.spaceorientation.push( MRI.srow_z[1]);
+  MRI.spaceorientation.push( MRI.srow_x[2]);
+  MRI.spaceorientation.push( MRI.srow_y[2]);
   MRI.spaceorientation.push( MRI.srow_z[2]);
+    
   // cosines direction in RAS space
   MRI.rasspaceorientation = this.toRAS(MRI.space, MRI.spaceorientation);
   // get orientation and normalized cosines
