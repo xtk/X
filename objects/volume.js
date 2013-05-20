@@ -410,7 +410,6 @@ X.volume.prototype.create_ = function(_info) {
   this._max = _info.max;
   this._data = _info.data;
   this._dirty = true;
-
 };
 
 
@@ -439,10 +438,10 @@ X.volume.prototype.map_ = function() {
 
     // this is a coronal scan
 
-    this._indexLR = this._indexZ;
+    this._indexLR = this._indexY;
     this._indexPA = this._indexX;
-    this._indexIS = this._indexY;
-    this._dimensionsRAS = [_dimensions[1], _dimensions[2], _dimensions[0]];
+    this._indexIS = this._indexZ;
+    this._dimensionsRAS = [_dimensions[0], _dimensions[2], _dimensions[1]];
 
   } else {
 
@@ -454,6 +453,8 @@ X.volume.prototype.map_ = function() {
     this._dimensionsRAS = _dimensions;
 
   }
+  
+  
 
 };
 
@@ -761,17 +762,13 @@ X.volume.prototype.__defineGetter__('labelmap', function() {
 X.volume.prototype.__defineGetter__('indexIS', function() {
 
   // map variables based on orientation
-  if (this._normcosine[2][0] != 0) {
+  if (this._normcosine[2][2] != 0) {
 
-    this._indexIS = this._indexZ;
-
-  } else if (this._normcosine[2][1] != 0) {
-
-    this._indexIS = this._indexY;
+    this._indexIS = this._indexX;
 
   } else {
 
-    this._indexIS = this._indexX;
+    this._indexIS = this._indexZ;
 
   }
 
@@ -792,17 +789,13 @@ X.volume.prototype.__defineSetter__('indexIS', function(indexIS) {
   if (goog.isNumber(indexIS)) {
 
     // map variables based on orientation
-    if (this._normcosine[2][0] != 0) {
+    if (this._normcosine[2][2] != 0) {
 
-      this._indexZ = indexIS;
-
-    } else if (this._normcosine[2][1] != 0) {
-
-      this._indexY = indexIS;
+      this._indexX = indexIS;
 
     } else {
 
-      this._indexX = indexIS;
+      this._indexZ = indexIS;
 
     }
 
@@ -828,10 +821,6 @@ X.volume.prototype.__defineGetter__('indexLR', function() {
   if (this._normcosine[2][0] != 0) {
 
     this._indexLR = this._indexX;
-
-  } else if (this._normcosine[2][1] != 0) {
-
-    this._indexLR = this._indexZ;
 
   } else {
 
@@ -859,10 +848,6 @@ X.volume.prototype.__defineSetter__('indexLR', function(indexLR) {
     if (this._normcosine[2][0] != 0) {
 
       this._indexX = indexLR;
-
-    } else if (this._normcosine[2][1] != 0) {
-
-      this._indexZ = indexLR;
 
     } else {
 
