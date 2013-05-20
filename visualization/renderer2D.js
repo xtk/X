@@ -836,14 +836,15 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   var _dim1 = _volume._dimensions[_ti];
   var _dim2 = _volume._dimensions[_tj];
 
-  if (_volume._normcosine[_tk][1] != 0 || _volume._normcosine[2][1] != 0) {
+  if (_volume._normcosine[_tk][1] != 0) {
 
     // IF CORONAL, switch rows and cols
     // re-map index according to rows/cols switch
     // update directions
-    _dim1 = _volume._dimensions[_tj];
-    _dim2 = _volume._dimensions[_ti];
-
+    var _tmp_dim = _dim1;
+    _dim1 = _dim2;
+    _dim2 = _tmp_dim;
+    
     var _tmp = _tj;
     _tj = _tk;
     _tk = _tmp;
@@ -851,7 +852,9 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   }
 
   if (_volume._normcosine[2][1] != 0) {
-
+    var _tmp_dim = _dim1;
+    _dim1 = _dim2;
+    _dim2 = _tmp_dim;
     // if coronally acquired
     var _tmp = _tj;
     _tj = _tk;
