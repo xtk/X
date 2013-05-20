@@ -74,7 +74,9 @@ X.parserCTM.prototype.parse = function(container, object, data, flag) {
   var p = object._points;
   var n = object._normals;
   
-  var file = new CTM.File(this._data);
+  //var file = new CTM.File(this._data);
+  var file2 = new CTM.File( new CTM.Stream(this) );
+  //var request = retrieve("<your .ctm filename url here>");
   
   X.TIMERSTOP(this._classname + '.parse');
   

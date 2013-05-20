@@ -359,6 +359,7 @@ X.loader.extensions = {
   // support for the following extensions and the mapping to X.parsers as well
   // as some custom flags and the result type
   'OBJ': [X.parserOBJ, null],
+  'CTM': [X.parserCTM, null],
   'STL': [X.parserSTL, null],
   'VTK': [X.parserVTK, null],
   'TRK': [X.parserTRK, null],
