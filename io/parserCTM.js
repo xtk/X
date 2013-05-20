@@ -32,6 +32,7 @@ goog.provide('X.parserCTM');
 
 // requires
 goog.require('X.event');
+goog.require('X.object');
 goog.require('X.parser');
 goog.require('X.triplets');
 
@@ -70,16 +71,54 @@ X.parserCTM.prototype.parse = function(container, object, data, flag) {
   
   this._data = data;
   
+  var request = retrieve(object._file._path);
+  var stream = new CTM.Stream(request.responseText);
+  var file = new CTM.File(stream);
 
-  var p = object._points;
-  var n = object._normals;
-  
-  //var file = new CTM.File(this._data);
-  var file2 = new CTM.File( new CTM.Stream(this) );
-  //var request = retrieve("<your .ctm filename url here>");
-  
+  _length = file.header.vertexCount
+  //object._points = new X.triplets(_length);
+  //object._normals = new X.triplets(_length);
+  object._triangleCount = file.header.triangleCount;
+  var p = object._points
+  var n = object._normals
+  var ind = object._pointIndices;
+
+  var has_normals = false;
+  if (file.body.normals) {
+    has_normals = true;
+    object._normals = n;
+  }
+  object._points = file.body.vertices;
+  object._pointIndices = new Uint16Array(file.body.indices);
+  /*var i = 0;
+  if (has_normals) {
+    for (i = 0; i < (_length*3-2); i+= 3) {
+      n.add(file.body.normals[i], file.body.normals[i+1], file.body.normals[i+2]);
+      p.add(file.body.vertices[i], file.body.vertices[i+1], file.body.vertices[i+2]);
+    }
+  } else {
+    for (i = 0; i < (_length*3-2); i+= 3) {
+
+      var index1 = file.body.indices[i];
+      var index2 = file.body.indices[i + 1];
+      var index3 = file.body.indices[i + 2];
+      
+      // store the ordered vertex indices
+      ind.push(index1);
+      ind.push(index2);
+      ind.push(index3);
+      p.add(file.body.vertices[i], file.body.vertices[i+1], file.body.vertices[i+2]);
+    }
+  }*/
+
   X.TIMERSTOP(this._classname + '.parse');
-  
+  object._points = p;
+  if (has_normals) {
+    object._normals = n;
+  }
+
+  object._type = X.displayable.types.TRIANGLES;
+
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
@@ -107,6 +146,17 @@ CTM.CompressionMethod = {
 
 CTM.Flags = {
   NORMALS: 0x00000001
+};
+
+function retrieve(url){
+  var request = new XMLHttpRequest();
+  request.open("GET", "Vertebrae.ctm", false);
+  request.overrideMimeType("text/plain; charset=x-user-defined");
+  request.send();
+  if ( (200 !== request.status) && (0 !== request.status) ){
+    throw new Error(request.status + " Retrieving " + url); 
+  }
+  return request;
 };
 
 CTM.File = function(stream){
