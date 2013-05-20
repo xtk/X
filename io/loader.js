@@ -43,6 +43,7 @@ goog.require('X.parserNII');
 goog.require('X.parserNRRD');
 goog.require('X.parserOBJ');
 goog.require('X.parserSTL');
+goog.require('X.parserCTM');
 goog.require('X.parserTRK');
 goog.require('X.parserVTK');
 goog.require('goog.structs.Map');
