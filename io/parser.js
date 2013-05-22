@@ -469,7 +469,9 @@ X.parser.prototype.reslice = function(object) {
   var _norm_cosine = object._normcosine;
   var _nb_pix_per_slice = _dim[0] * _dim[1];
   var _pix_value = 0;
-  _k = 0;
+  var _i = 0;
+  var _j = 0;
+  var _k = 0;
   var _data_pointer = 0;
   for (_k = 0; _k < _dim[2]; _k++) {
 
