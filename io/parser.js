@@ -455,30 +455,15 @@ X.parser.prototype.reslice = function(object) {
 
   }
 
-  // allocate volume
+  // allocate and fill volume
   // rows, cols and slices (ijk dimensions)
   var _dim = object._dimensions;
   var _spacing = object._spacing;
-
+  
   var datastream = object._data;
-  var image = new Array(_dim[0]);
+  var image = new Array(_dim[2]);
   // use real image to return real values
-  var realImage = new Array(_dim[0]);
-  var _i = 0, _j = 0, _k = 0;
-  for (_i = 0; _i < _dim[0]; _i++) {
-
-    image[_i] = new Array(_dim[1]);
-    realImage[_i] = new Array(_dim[1]);
-    _j = 0;
-    for (_j = 0; _j < _dim[1]; _j++) {
-
-      image[_i][_j] = new object._data.constructor(_dim[2]);
-      realImage[_i][_j] = new object._data.constructor(_dim[2]);
-
-    }
-
-  }
-
+  var realImage = new Array(_dim[2]);
   // XYS to IJK
   // (fill volume)
   var _norm_cosine = object._normcosine;
@@ -495,10 +480,14 @@ X.parser.prototype.reslice = function(object) {
     _i = 0;
     _j = 0;
     _data_pointer = 0; // just a counter
-
+    
+    image[_k] = new Array(_dim[1]);
+    realImage[_k] = new Array(_dim[1]);
     for (_j = 0; _j < _dim[1]; _j++) {
 
-      for (_i = 0; _i < _dim[0]; _i++) {
+    image[_k][_j] = new object._data.constructor(_dim[0]);
+    realImage[_k][_j] = new object._data.constructor(_dim[0]);
+    for (_i = 0; _i < _dim[0]; _i++) {
 
         // go through row (i) first :)
         // 1 2 3 4 5 6 ..
@@ -509,8 +498,8 @@ X.parser.prototype.reslice = function(object) {
         // 2 ...
         // map pixel values
         _pix_value = _current_k[_data_pointer];
-        image[_i][_j][_k] = 255 * (_pix_value / object._max);
-        realImage[_i][_j][_k] = _pix_value;
+        image[_k][_j][_i] = 255 * (_pix_value / object._max);
+        realImage[_k][_j][_i] = _pix_value;
         _data_pointer++;
 
       }
@@ -519,6 +508,7 @@ X.parser.prototype.reslice = function(object) {
 
   }
 
+  var _pix_val = 0;
   // IJK to XYS
   // reslice image (Axial, Sagittal, Coronal)
   var xyz = 0;
@@ -527,7 +517,7 @@ X.parser.prototype.reslice = function(object) {
     var _ti = xyz;
     var _tj = (_ti + 1) % 3;
     var _tk = (_ti + 2) % 3;
-    // if coronal, we invert axis tj and tk
+    
     var textureSize = 4 * _dim[_ti] * _dim[_tj];
     _k = 0;
     var imax = _dim[_ti];
@@ -570,13 +560,12 @@ X.parser.prototype.reslice = function(object) {
       // position
       var _position = (-halfDimension * _spacing[_tk]) + (_k * _spacing[_tk]);
       // center
-      var _center = [ object._center[0], object._center[1], object._center[2] ];
       // move center along normal
       // 0 should be hard coded
       // find normal direction and use it!
-      _center[0] += _norm_cosine[_tk][0] * _position;
-      _center[1] += _norm_cosine[_tk][1] * _position;
-      _center[2] += _norm_cosine[_tk][2] * _position;
+      var _center = [ object._center[0] + _norm_cosine[_tk][0] * _position,
+                      object._center[1] + _norm_cosine[_tk][1] * _position,
+                      object._center[2] + _norm_cosine[_tk][2] * _position];
       // create the slice
       // .. new slice
       var _slice = new X.slice();
@@ -590,27 +579,21 @@ X.parser.prototype.reslice = function(object) {
       _slice.setup(_center, _front, _up, _right, _width, _height, borders,
           _color);
       // map slice to volume
-      _slice._volume = /** @type {X.volume} */
-      (object);
-      // only show the middle slice, hide everything else
-      if (object._orientation[_tk] > 0) {
-        _slice['visible'] = (_k == Math.floor(_indexCenter));
-      } else {
-        _slice['visible'] = (_k == Math.ceil(_indexCenter));
-      }
-      var targetSlice = _slice;
+      _slice._volume = /** @type {X.volume} */(object);
+      _slice.visible = false;
+
       var textureForCurrentSlice = new Uint8Array(textureSize);
       for (_j = 0; _j < jmax; _j++) {
         _i = 0;
         for (_i = 0; _i < imax; _i++) {
-          var _pix_val = 0;
+          _pix_val = 0;
           // rotate indices depending on which orientation we are targetting
           if (xyz == 0) {
-            _pix_val = realImage[_i][_j][_k];
+            _pix_val = realImage[_k][_j][_i];
           } else if (xyz == 1) {
-            _pix_val = realImage[_k][_i][_j];
+            _pix_val = realImage[_j][_i][_k];
           } else {
-            _pix_val = realImage[_j][_k][_i];
+            _pix_val = realImage[_i][_k][_j];
           }
           var pixelValue_r = 0;
           var pixelValue_g = 0;
@@ -643,18 +626,18 @@ X.parser.prototype.reslice = function(object) {
       pixelTexture._rawData = textureForCurrentSlice;
       pixelTexture._rawDataWidth = imax;
       pixelTexture._rawDataHeight = jmax;
-      targetSlice._texture = pixelTexture;
+      _slice._texture = pixelTexture;
       // push slice
       if (object._orientation[_tk] > 0) {
-        object._children[xyz]._children.push(targetSlice);
+        object._children[xyz]._children.push(_slice);
       } else {
-        object._children[xyz]._children.unshift(targetSlice);
+        object._children[xyz]._children.unshift(_slice);
       }
       if (hasLabelMap) {
         // if this object has a labelmap,
         // we have it loaded at this point (for sure)
         // ..so we can attach it as the second texture to this slice
-        targetSlice._labelmap = object._labelmap._children[xyz]._children[_k]._texture;
+        _slice._labelmap = object._labelmap._children[xyz]._children[_k]._texture;
       }
     }
     // set slice index
@@ -669,6 +652,8 @@ X.parser.prototype.reslice = function(object) {
       object._indexZ = halfDimension;
       object._indexZold = halfDimension;
     }
+    
+    // full reslice?
     if (!object._reslicing) {
       break;
     }
