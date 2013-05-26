@@ -69,21 +69,25 @@ X.parserCTM.prototype.parse = function(container, object, data, flag) {
 
   X.TIMER(this._classname + '.parse');
   
+  // Parse the response
   var stream = new X.parserCTM.Stream(data);
   var file = new X.parserCTM.File(stream);
+  
   var numberOfTriangles = file.header.triangleCount;
   var numberOfVertices = file.header.vertexCount;
+
   var indexCounter = new Uint32Array(numberOfVertices);
   var _indices = file.body.indices;
   var _vertices = file.body.vertices;
-    // we count the appearance of indices to be able to average the normals
+  
+  // we count the appearance of indices to be able to average the normals
   var indexCounter = new Uint32Array(numberOfVertices);
   
   // buffer the normals since we need to calculate them in a second loop
   var normals = new Float32Array(numberOfTriangles * 9);
 
-  object._points = new X.triplets(numberOfTriangles*9);
-  object._normals = new X.triplets(numberOfTriangles*9);
+  object._points = new X.triplets(numberOfTriangles * 9);
+  object._normals = new X.triplets(numberOfTriangles * 9);
   object._triangleCount = numberOfTriangles;
 
   var p = object._points
@@ -91,21 +95,78 @@ X.parserCTM.prototype.parse = function(container, object, data, flag) {
   var ind = object._pointIndices;
 
   var has_normals = false;
+  var _normals;
+
   if (file.body.normals) {
     has_normals = true;
     object._normals = n;
+    _normals = file.body.normals;
   }
-  object._points = file.body.vertices;
+
   object._pointIndices = file.body.indices;
-  var i = 0;
+
+  var t;
   if (has_normals) {
-    for (i = 0; i < (numberOfTriangles*9-2); i+= 3) {
-      n.add(file.body.normals[i], file.body.normals[i+1], file.body.normals[i+2]);
-      p.add(file.body.vertices[i], file.body.vertices[i+1], file.body.vertices[i+2]);
+    for (t = 0; t < (numberOfTriangles); t++) {
+      // simplified loop in case the file contains vertex normals
+      
+      var i = t * 3;
+
+      // grab the three indices which define a triangle
+      var index1 = _indices[i];
+      var index2 = _indices[i + 1];
+      var index3 = _indices[i + 2];
+      
+      // store the ordered vertex indices
+      ind.push(index1);
+      ind.push(index2);
+      ind.push(index3);
+      
+      // count the use of the indices
+      indexCounter[index1] += 1;
+      indexCounter[index2] += 1;
+      indexCounter[index3] += 1;
+      
+      // grab the 3 corresponding vertices with each x,y,z coordinates
+      var _index1 = index1 * 3;
+      var _index2 = index2 * 3;
+      var _index3 = index3 * 3;
+      var v1x = _vertices[_index1];
+      var v1y = _vertices[_index1 + 1];
+      var v1z = _vertices[_index1 + 2];
+      var v2x = _vertices[_index2];
+      var v2y = _vertices[_index2 + 1];
+      var v2z = _vertices[_index2 + 2];
+      var v3x = _vertices[_index3];
+      var v3y = _vertices[_index3 + 1];
+      var v3z = _vertices[_index3 + 2];
+      
+      // add the points
+      p.add(v1x, v1y, v1z);
+      p.add(v2x, v2y, v2z);
+      p.add(v3x, v3y, v3z);
+
+      // grab the corresponding vertex normals
+      var n1x = _normals[_index1];
+      var n1y = _normals[_index1 + 1];
+      var n1z = _normals[_index1 + 2];
+      var n2x = _normals[_index2];
+      var n2y = _normals[_index2 + 1];
+      var n2z = _normals[_index2 + 2];
+      var n3x = _normals[_index3];
+      var n3y = _normals[_index3 + 1];
+      var n3z = _normals[_index3 + 2];
+      
+      // add the vertex normals
+      n.add(n1x, n1y, n1z);
+      n.add(n2x, n2y, n2z);
+      n.add(n3x, n3y, n3z);
     }
+
   } else {
+    // If the file doesn't contain normals, compute them
     // first loop through the indices
-    var t;
+    
     for (t = 0; t < numberOfTriangles; t++) {
       
       var i = t * 3;
@@ -169,10 +230,7 @@ X.parserCTM.prototype.parse = function(container, object, data, flag) {
     }
   }
 
-  object._points = p;
-  if (has_normals) {
-    object._normals = n;
-  } else {
+  if (!has_normals) {
     // second loop through the indices
     // this loop is required since we need to average the normals and only now
     // know how often an index was used
@@ -223,8 +281,6 @@ X.parserCTM.prototype.parse = function(container, object, data, flag) {
   // .. and set the objectType to triangles
   object._type = X.displayable.types.TRIANGLES;
 
-  object._pointIndices = ind;
-
   X.TIMERSTOP(this._classname + '.parse');
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
@@ -233,15 +289,6 @@ X.parserCTM.prototype.parse = function(container, object, data, flag) {
   this.dispatchEvent(modifiedEvent);
   
 };
-
-/**
- * Parses .CTM data and modifies the given X.triplets containers.
- * 
- * @param {!X.triplets} p The object's points as a X.triplets container.
- * @param {!X.triplets} n The object's normals as a X.triplets container.
- * @param {!number} triangleCount The number of triangles.
- */
-
 
 var CTM = CTM || {};
 

@@ -234,13 +234,12 @@ X.loader.prototype.load = function(container, object) {
   goog.events.listen(request, 'load', this.parse.bind(this, request, container,
       object));
   
-  if (_checkresult[1] === "CTM") {
   // configure the URL
-    request.open('GET', filepath, false);
+  request.open('GET', filepath, true);
+  if (_checkresult[1] === "CTM") {
     request.overrideMimeType("text/plain; charset=x-user-defined");
   } else {
     // configure the URL
-    request.open('GET', filepath, true);
     request.responseType = 'arraybuffer';
   }
 
