@@ -233,10 +233,16 @@ X.loader.prototype.load = function(container, object) {
   // listen to completed events which triggers parsing
   goog.events.listen(request, 'load', this.parse.bind(this, request, container,
       object));
-
+  
+  if (_checkresult[1] === "CTM") {
   // configure the URL
-  request.open('GET', filepath, true);
-  request.responseType = 'arraybuffer';
+    request.open('GET', filepath, false);
+    request.overrideMimeType("text/plain; charset=x-user-defined");
+  } else {
+    // configure the URL
+    request.open('GET', filepath, true);
+    request.responseType = 'arraybuffer';
+  }
 
   // .. and GO!
   request.send(null);
