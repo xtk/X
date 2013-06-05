@@ -109,7 +109,6 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
     'hdr_size': this.scan('uint')
   };
 
-  trk_header = header;
   //
   // parse the data
 
@@ -337,7 +336,7 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   X.TIMERSTOP(this._classname + '.parse');
 
   // move tracks to RAS space (note: we switch from row-major to column-major by transposing)
-  X.matrix.transpose(header.vox_to_ras, object.transform.matrix);
+  X.matrix.transpose(header.vox_to_ras, object._transform._matrix);
 
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();

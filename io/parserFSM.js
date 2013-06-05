@@ -266,9 +266,9 @@ X.parserFSM.prototype.parse = function(container, object, data, flag) {
 
   if (_cras) {
 
-    object.transform.translateX(parseFloat(_cras[0]));
-    object.transform.translateY(parseFloat(_cras[1]));
-    object.transform.translateZ(parseFloat(_cras[2]));
+    object._transform.translateX(parseFloat(_cras[0]));
+    object._transform.translateY(parseFloat(_cras[1]));
+    object._transform.translateZ(parseFloat(_cras[2]));
 
   }
 
