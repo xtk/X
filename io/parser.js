@@ -278,6 +278,14 @@ X.parser.prototype.scan = function(type, chunks) {
     _array_type = Float32Array;
     _chunkSize = 4;
     break;
+  case 'complex':
+    _array_type = Float64Array;
+    _chunkSize = 8;
+    break;
+  case 'double':
+    _array_type = Float64Array;
+    _chunkSize = 8;
+    break;
 
   }
 
