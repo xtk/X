@@ -307,6 +307,14 @@ X.parserNII.prototype.parseStream = function(data) {
     // float
     MRI.data = this.scan('float', volsize);
     break;
+  case 32:
+    // complex
+    MRI.data = this.scan('complex', volsize);
+    break;
+  case 64:
+    // double
+    MRI.data = this.scan('double', volsize);
+    break;
   case 256:
     // signed char
     MRI.data = this.scan('schar', volsize);
