@@ -78,7 +78,7 @@ class Builder( object ):
     st = os.stat( config.CLOSUREBUILDER_PATH )
     os.chmod( config.CLOSUREBUILDER_PATH, st.st_mode | stat.S_IEXEC )
     
-    command = [config.CLOSUREBUILDER_PATH]
+    command = ['python', config.CLOSUREBUILDER_PATH]
     command.extend( arguments )
 
     process = subprocess.Popen( command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.STDOUT )
