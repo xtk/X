@@ -453,7 +453,462 @@ X.parser.prototype.orientnormalize = function(rasorientation) {
 X.parser.prototype.reslice = function(object) {
 
   X.TIMER(this._classname + '.reslice');
+  
+ // parse file to IJK coordinates
+  // labelmap and color tables
+  var hasLabelMap = object._labelmap != null;
+  var _colorTable = null;
+  if (object._colortable) {
 
+    _colorTable = object._colortable._map;
+
+  }
+
+  // allocate and fill volume
+  // rows, cols and slices (ijk dimensions)
+  var _dim = object._dimensions;
+//  
+  var datastream = object._data;
+  var image = new Array(_dim[0]);
+  // use real image to return real values
+  var realImage = new Array(_dim[0]);
+  // (fill volume)
+  var _nb_pix_per_slice = _dim[1] * _dim[2];
+  var _pix_value = 0;
+  var _i = 0;
+  var _j = 0;
+  var _k = 0;
+  var _data_pointer = 0;
+  for (_k = 0; _k < _dim[0]; _k++) {
+
+    // get current slice
+    var _current_k = datastream.subarray(_k * (_nb_pix_per_slice), (_k + 1)
+        * _nb_pix_per_slice);
+    // now loop through all pixels of the current slice
+    _i = 0;
+    _j = 0;
+    _data_pointer = 0; // just a counter
+    
+    image[_k] = new Array(_dim[1]);
+    realImage[_k] = new Array(_dim[1]);
+    for (_j = 0; _j < _dim[1]; _j++) {
+
+    image[_k][_j] = new object._data.constructor(_dim[2]);
+    realImage[_k][_j] = new object._data.constructor(_dim[2]);
+    for (_i = 0; _i < _dim[2]; _i++) {
+
+        // go through row (i) first :)
+        // 1 2 3 4 5 6 ..
+        // .. .... .. . .
+        //
+        // not
+        // 1 .. ....
+        // 2 ...
+        // map pixel values
+        _pix_value = _current_k[_data_pointer];
+        image[_k][_j][_i] = 255 * (_pix_value / object._max);
+        realImage[_k][_j][_i] = _pix_value;
+        _data_pointer++;
+
+      }
+
+    }
+
+  }
+  
+  // Get middle slice RAS information
+  var _rasorigin = object._RASOrigin;
+  window.console.log('RAS Origin');
+  window.console.log(_rasorigin);
+  window.console.log('RAS Spacing');
+  var _rasspacing = object._RASSpacing;
+  window.console.log(_rasspacing);
+  window.console.log('RAS Dimensions');
+  var _rasdimensions = object._RASDimensions;
+  window.console.log(_rasdimensions);
+  
+  var _rascenter = [_rasorigin[0] + _rasdimensions[0]/2,
+                    _rasorigin[1] + _rasdimensions[1]/2,
+                    _rasorigin[2] + _rasdimensions[2]/2
+                    ];
+  
+//  var _rascenter = [_rasorigin[0] ,
+//                    _rasorigin[1] + _rasdimensions[1]/2,
+//                    _rasorigin[2] + _rasdimensions[2]/2
+//                    ];
+
+//  window.console.log(object._dimensions);
+    
+  window.console.log('RAS Center');
+  window.console.log(_rascenter);
+  
+  var _ras2ijk = object._RASToIJK;
+  
+  var tar3 = new goog.vec.Vec4.createFloat32FromValues(_rascenter[0], _rascenter[1], _rascenter[2], 1);
+  var res3 = new goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(_ras2ijk, tar3, res3);
+  
+  window.console.log('IJK Center');
+  window.console.log(res3);
+  
+  window.console.log('RAS Center');
+  window.console.log(_rascenter);
+  
+  // reslice 3 directions.
+  // zoom padding fov
+  // reslice direction
+  // viewer size
+  // from slicer
+  
+  // first slice creation!
+  // 1- XYToIJK -> ToRAS
+  // 2- Go through all XY Pixels ? Get full slice? Can turn on-off
+  
+  
+  ///////////////////////////
+  // Slice To RAS Transform:
+  ///////////////////////////
+  
+  var _SliceToRAS = new goog.vec.Mat4.createFloat32Identity();
+  // AXIAL MODE
+  goog.vec.Mat4.setColumnValues(_SliceToRAS, 0, -1.0, 0.0, 0.0, 0.0);
+  goog.vec.Mat4.setColumnValues(_SliceToRAS, 1, 0.0, 1.0, 0.0, 0.0);
+  goog.vec.Mat4.setColumnValues(_SliceToRAS, 2, 0.0, 0.0, 1.0, 0.0);
+  
+  // SAGITTAL MODE
+//  goog.vec.Mat4.setColumnValues(_SliceToRAS, 0, 0.0, -1.0, 0.0, 0.0);
+//  goog.vec.Mat4.setColumnValues(_SliceToRAS, 1, 0.0, 0.0, 1.0, 0.0);
+//  goog.vec.Mat4.setColumnValues(_SliceToRAS, 2, 1.0, 0.0, 0.0, 0.0);
+  
+  // CORONAL MODE
+//  goog.vec.Mat4.setColumnValues(_SliceToRAS, 0, -1.0, 0.0, 0.0, 0.0);
+//  goog.vec.Mat4.setColumnValues(_SliceToRAS, 1, 0.0, 0.0, 1.0, 0.0);
+//  goog.vec.Mat4.setColumnValues(_SliceToRAS, 2, 0.0, 1.0, 0.0, 0.0);
+
+  window.console.log("SliceToRAS");
+  window.console.log(_SliceToRAS);
+  
+  ///////////////////////////
+  // XY To Slice Transform:
+  ///////////////////////////
+  
+  var _XYToSlice = new goog.vec.Mat4.createFloat32Identity();
+  
+  var _fov = [250.0, 250.0, 1.0];
+  var _dimensions = [256, 256, 1];
+  var _xyzOorigin = [0, 0, 0];
+  
+  // fill matrix if some cropping needed!
+//  var _inc = 0;
+//  var _spacing = [];
+//  for (_inc = 0; _inc< 3; _inc++) {
+//    _spacing[_inc] = _fov[_inc]/_dimensions[_inc];
+//    goog.vec.Mat4.setElement(_XYToSlice, _inc, _inc, _spacing[_inc]);
+//    goog.vec.Mat4.setElement(_XYToSlice, _inc, 3, -_fov[_inc]/2.0 + _xyzOorigin[_inc]);
+//  }
+  
+  window.console.log("XYToSlice");
+  window.console.log(_XYToSlice);
+  
+  
+  ///////////////////////////
+  // XY To IJK Transform:
+  ///////////////////////////
+  // RASToIJK * SliceToRAS * XYToSlice
+  
+  // XYToRAS
+  var _XYToRAS = new goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.multMat(_XYToSlice, _SliceToRAS, _XYToRAS);
+  
+  // XYToIJK
+  var _XYToIJK = new goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.multMat(_XYToRAS, _ras2ijk, _XYToIJK);
+  
+  ///////////////////////////
+  // Create Slice in relevant orientation and fill it:
+  ///////////////////////////
+  
+  // Create Slice in Axial orientation
+  // Fill it!
+  // Loop through RS, A constant
+  // RS, using RAS spacing
+  // for each value, map to IJK (RASToIJK) and that's it, we have the value!
+  
+  // Create Slice in Coronal orientation
+  
+  // Create Slice in Sagittal orientation
+  
+  
+  // Then, on demand Reslicing - If slice empty, reslice it!
+  
+  // If VR, reslice all!
+  // 2D slices?
+  // XYToIJK? -> EZ :) We have XYToSlice, Slice->IJK Straight forward!
+  
+//  // Create Slice
+//  var _slice = new X.slice();
+// var _front = [
+//      goog.vec.Mat4.getElement(_SliceToRAS, 0, 0),
+//      goog.vec.Mat4.getElement(_SliceToRAS, 1, 0),
+//      goog.vec.Mat4.getElement(_SliceToRAS, 2, 0)];
+//  var _up = [
+//      goog.vec.Mat4.getElement(_SliceToRAS, 0, 1),
+//      goog.vec.Mat4.getElement(_SliceToRAS, 1, 1),
+//      goog.vec.Mat4.getElement(_SliceToRAS, 2, 1)];
+//  var _right = [
+//      goog.vec.Mat4.getElement(_SliceToRAS, 0, 2),
+//      goog.vec.Mat4.getElement(_SliceToRAS, 1, 2),
+//      goog.vec.Mat4.getElement(_SliceToRAS, 2, 2)];
+//      //_rasorigin
+//  _slice.setup(_rascenter, _front, _up, _right, _dimensions[0], _dimensions[1], true, [ 1, 0, 0 ]);
+//  // map slice to volume
+//  _slice._volume = /** @type {X.volume} */(object);
+//  _slice.visible = true;
+//  
+  // Fill Slice
+  // Loop through XY and get values
+//  var _xinc = 0, _yinc = 0;
+//  for(_xinc = 0; _xinc<= _dimensions[0]; _xinc++){
+//    for(_yinc = 0; _yinc<= _dimensions[1]; _yinc++){
+//      // print IJK coordinates!
+//      // X, Y, Z=1, 1
+//      var xyzVec = new goog.vec.Vec4.createFloat32FromValues(_xinc, _yinc, 1, 1);
+//      var resultVec = new goog.vec.Vec4.createFloat32();
+//      goog.vec.Mat4.multVec4(_XYToIJK, xyzVec, resultVec);
+//      // if in range of IJK image, print values and coordinates
+//      window.console.log(resultVec);
+//    }
+//  }
+  
+  // update slice size
+//  this->FieldOfView[0] = 250.0;
+//  this->FieldOfView[1] = 250.0;
+//  this->FieldOfView[2] = 1.0;
+//
+//  this->Dimensions[0] = 256;
+//  this->Dimensions[1] = 256;
+//  this->Dimensions[2] = 1;
+//  xyToSlice->Identity();
+//  if (this->Dimensions[0] > 0 &&
+//      this->Dimensions[1] > 0 &&
+//      this->Dimensions[2] > 0)
+//    {
+//    for (i = 0; i < 3; i++)
+//      {
+//      spacing[i] = this->FieldOfView[i] / this->Dimensions[i];
+//      xyToSlice->SetElement(i, i, spacing[i]);
+//      xyToSlice->SetElement(i, 3, -this->FieldOfView[i] / 2. + this->XYZOrigin[i]);
+//      }
+//    //vtkWarningMacro( << "FieldOfView[2] = " << this->FieldOfView[2] << ", Dimensions[2] = " << this->Dimensions[2] );
+//    //xyToSlice->SetElement(2, 2, 1.);
+//
+//    xyToSlice->SetElement(2, 3, 0.);
+//    }
+
+  
+  // 2nd slice
+  
+  // fill slice
+//  for(){
+//    for(){
+//      // conve
+//    }
+//  }
+  
+  // reslice through A
+  
+  // relisce
+  // Reslice middle plane only - reslice on demand later on!
+  // Convert to IJK, get pixel value and map it to texture!
+  
+  // labelmap and color tables
+  var hasLabelMap = object._labelmap != null;
+  var _colorTable = null;
+  if (object._colortable) {
+
+    _colorTable = object._colortable._map;
+
+  }
+
+  // allocate and fill volume
+  // rows, cols and slices (ijk dimensions)
+  var _dim = object._dimensions;
+  var _spacing = object._spacing;
+  
+  var datastream = object._data;
+  var image = new Array(_dim[2]);
+  // use real image to return real values
+  var realImage = new Array(_dim[2]);
+  // XYS to IJK
+  // (fill volume)
+  var _norm_cosine = object._normcosine;
+  var _nb_pix_per_slice = _dim[0] * _dim[1];
+  var _pix_value = 0;
+  var _i = 0;
+  var _j = 0;
+  var _k = 0;
+  var _data_pointer = 0;
+  
+  var _pix_val = 0;
+  // IJK to XYS
+  // reslice image (Axial, Sagittal, Coronal)
+  var xyz = 0;
+  for (xyz = 0; xyz < 3; xyz++) {
+
+    var _ti = xyz;
+    var _tj = (_ti + 1) % 3;
+    var _tk = (_ti + 2) % 3;
+    
+    var textureSize = 4 * _dim[_ti] * _dim[_tj];
+    _k = 0;
+    var imax = _dim[_ti];
+    var jmax = _dim[_tj];
+    var kmax = _dim[_tk];
+    // CREATE SLICE in normal direction
+    var halfDimension = (kmax - 1) / 2;
+    var _indexCenter = halfDimension;
+    // right = i direction
+    var _right = _norm_cosine[_ti];
+    // up = j direction
+    var _up = _norm_cosine[_tj];
+    // front = normal direction
+    var _front = _norm_cosine[_tk];
+
+    // color
+    var _color = [ 1, 1, 1 ];
+    if (_norm_cosine[_tk][2] != 0) {
+      _color = [ 1, 0, 0 ];
+    } else if (_norm_cosine[_tk][1] != 0) {
+      _color = [ 0, 1, 0 ];
+    } else {
+      _color = [ 1, 1, 0 ];
+    }
+
+    // size
+    var _width = imax * _spacing[_ti];
+    var _height = jmax * _spacing[_tj];
+    if (_norm_cosine[2][1] != 0) {
+      // if coronally acquired
+      var _tmp = _width;
+      _width = _height;
+      _height = _tmp;
+    }
+
+    for (_k = 0; _k < kmax; _k++) {
+      _j = 0;
+      var _p = 0;
+      // CREATE SLICE
+      // position
+      var _position = (-halfDimension * _spacing[_tk]) + (_k * _spacing[_tk]);
+      // center
+      // move center along normal
+      // 0 should be hard coded
+      // find normal direction and use it!
+      var _center = [ _rascenter[0] + _norm_cosine[_tk][0] * _position,
+                      _rascenter[1] + _norm_cosine[_tk][1] * _position,
+                      _rascenter[2] + _norm_cosine[_tk][2] * _position];
+      // create the slice
+      // .. new slice
+      var _slice = new X.slice();
+      var borders = true;
+      // for labelmaps, don't create the borders since this would create them 2x
+      // hasLabelMap == true means we are the volume
+      // hasLabelMap == false means we are the labelmap
+      if (goog.isDefAndNotNull(object._volume) && !hasLabelMap) {
+        borders = false;
+      }
+      _slice.setup(_center, _front, _up, _right, _width, _height, borders,
+          _color);
+      // map slice to volume
+      _slice._volume = /** @type {X.volume} */(object);
+      _slice.visible = false;
+
+      var textureForCurrentSlice = new Uint8Array(textureSize);
+      for (_j = 0; _j < jmax; _j++) {
+        _i = 0;
+        for (_i = 0; _i < imax; _i++) {
+//          _pix_val = 0;
+//          // rotate indices depending on which orientation we are targetting
+//          if (xyz == 0) {
+//            _pix_val = realImage[_k][_j][_i];
+//          } else if (xyz == 1) {
+//            _pix_val = realImage[_j][_i][_k];
+//          } else {
+//            _pix_val = realImage[_i][_k][_j];
+//          }
+//          var pixelValue_r = 0;
+//          var pixelValue_g = 0;
+//          var pixelValue_b = 0;
+//          var pixelValue_a = 0;
+//          if (_colorTable) {
+//            // color table!
+//            var lookupValue = _colorTable.get(Math.floor(_pix_val));
+//            // check for out of range and use the last label value in this case
+//            if (!lookupValue) {
+//              lookupValue = [ 0, 1, 0.1, 0.2, 1 ];
+//            }
+//            pixelValue_r = 255 * lookupValue[1];
+//            pixelValue_g = 255 * lookupValue[2];
+//            pixelValue_b = 255 * lookupValue[3];
+//            pixelValue_a = 255 * lookupValue[4];
+//          } else {
+//            pixelValue_r = pixelValue_g = pixelValue_b = 255 * (_pix_val / object._max);
+//            pixelValue_a = 255;
+//          }
+//          var textureStartIndex = _p * 4;
+//          textureForCurrentSlice[textureStartIndex] = pixelValue_r;
+//          textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
+//          textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
+//          textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
+//          _p++;
+        }
+      }
+      var pixelTexture = new X.texture();
+      pixelTexture._rawData = textureForCurrentSlice;
+      pixelTexture._rawDataWidth = imax;
+      pixelTexture._rawDataHeight = jmax;
+      _slice._texture = pixelTexture;
+      // push slice
+      if (object._orientation[_tk] > 0) {
+        object._children[xyz]._children.push(_slice);
+      } else {
+        object._children[xyz]._children.unshift(_slice);
+      }
+      if (hasLabelMap) {
+        // if this object has a labelmap,
+        // we have it loaded at this point (for sure)
+        // ..so we can attach it as the second texture to this slice
+        _slice._labelmap = object._labelmap._children[xyz]._children[_k]._texture;
+      }
+    }
+    // set slice index
+    // by default, all the 'middle' slices are shown
+    if (xyz == 0) {
+      object._indexX = halfDimension;
+      object._indexXold = halfDimension;
+    } else if (xyz == 1) {
+      object._indexY = halfDimension;
+      object._indexYold = halfDimension;
+    } else if (xyz == 2) {
+      object._indexZ = halfDimension;
+      object._indexZold = halfDimension;
+    }
+    
+    // full reslice?
+    if (!object._reslicing) {
+      break;
+    }
+  }
+
+  X.TIMERSTOP(this._classname + '.reslice');
+
+  return realImage;
+  
+  
+  
+  X.TIMERSTOP(this._classname + '.reslice');
+  
+  
   // labelmap and color tables
   var hasLabelMap = object._labelmap != null;
   var _colorTable = null;

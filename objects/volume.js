@@ -402,6 +402,11 @@ X.volume.prototype.create_ = function(_info) {
   this._children.push(this._slicesZ);
 
   // setup image specific information
+  this._RASOrigin = _info.RASOrigin;
+  this._RASSpacing = _info.RASSpacing;
+  this._RASDimensions = _info.RASDimensions;
+  this._IJKToRAS = _info.IJKToRAS;
+  this._RASToIJK = _info.RASToIJK;
   this._space = _info.space;
   this._spaceorientation = _info.spaceorientation;
   this._rasspaceorientation = _info.rasspaceorientation;
