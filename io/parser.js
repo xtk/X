@@ -625,6 +625,24 @@ X.parser.prototype.reslice = function(object) {
   goog.vec.Mat4.multMat(_XYToRAS, _ras2ijk, _XYToIJK);
   
   ///////////////////////////
+  // Create Slice in Arbitrary orientation
+  ///////////////////////////
+  
+  // Get output extent
+  // orientation of the slice:_SliceToRAS
+  var _boundingBox = [0, 0, 0,
+                      0, 0, 0,
+                      0, 0, 0,
+                      0, 0, 0,
+                      0, 0, 0,
+                      0, 0, 0,
+                      0, 0, 0,
+                      0, 0, 0];
+  // 4 coordinates [x0,y0,z0,x1,y1,z1, ... x3,y3,z3]
+  // spacing info along those slices
+  // Go reslicing!
+  // shader vs js match
+  
   // Create Slice in relevant orientation and fill it:
   ///////////////////////////
   
