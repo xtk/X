@@ -43,8 +43,8 @@ goog.addDependency('../../../../objects/object.js', ['X.object'], ['X.base', 'X.
 goog.addDependency('../../../../objects/slice.js', ['X.slice'], ['X.base', 'X.object', 'goog.math.Vec3']);
 goog.addDependency('../../../../objects/sphere.js', ['X.sphere'], ['CSG.sphere', 'X.base', 'X.constructable', 'X.object']);
 goog.addDependency('../../../../objects/volume.js', ['X.volume'], ['X.object', 'X.slice', 'X.thresholdable']);
-goog.addDependency('../../../../ui/caption.js', ['X.caption'], ['X.base', 'X.interactor', 'goog.dom', 'goog.positioning.ViewportPosition', 'goog.ui.Tooltip']);
-goog.addDependency('../../../../ui/progressbar.js', ['X.progressbar'], ['X.base', 'goog.dom', 'goog.ui.ProgressBar']);
+goog.addDependency('../../../../ui/caption.js', ['X.caption'], ['X.base', 'X.interactor', 'goog.dom', 'goog.positioning.ViewportPosition', 'goog.style', 'goog.ui.Tooltip']);
+goog.addDependency('../../../../ui/progressbar.js', ['X.progressbar'], ['X.base', 'goog.dom', 'goog.style', 'goog.ui.ProgressBar']);
 goog.addDependency('../../../../visualization/buffer.js', ['X.buffer'], ['X.base']);
 goog.addDependency('../../../../visualization/camera.js', ['X.camera'], ['X.base', 'X.event.PanEvent', 'X.event.RenderEvent', 'X.event.ZoomEvent', 'X.interactor', 'X.matrix', 'X.vector']);
 goog.addDependency('../../../../visualization/camera2D.js', ['X.camera2D'], ['X.camera', 'X.event.WindowLevelEvent']);

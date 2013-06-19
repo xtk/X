@@ -467,7 +467,7 @@ X.parser.prototype.reslice = function(object) {
   // rows, cols and slices (ijk dimensions)
   var _dim = object._dimensions;
   var _spacing = object._spacing;
-  
+
   var datastream = object._data;
   var image = new Array(_dim[2]);
   // use real image to return real values
@@ -490,7 +490,7 @@ X.parser.prototype.reslice = function(object) {
     _i = 0;
     _j = 0;
     _data_pointer = 0; // just a counter
-    
+
     image[_k] = new Array(_dim[1]);
     realImage[_k] = new Array(_dim[1]);
     for (_j = 0; _j < _dim[1]; _j++) {
@@ -527,7 +527,7 @@ X.parser.prototype.reslice = function(object) {
     var _ti = xyz;
     var _tj = (_ti + 1) % 3;
     var _tk = (_ti + 2) % 3;
-    
+
     var textureSize = 4 * _dim[_ti] * _dim[_tj];
     _k = 0;
     var imax = _dim[_ti];
@@ -662,7 +662,7 @@ X.parser.prototype.reslice = function(object) {
       object._indexZ = halfDimension;
       object._indexZold = halfDimension;
     }
-    
+
     // full reslice?
     if (!object._reslicing) {
       break;
