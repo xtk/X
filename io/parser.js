@@ -627,24 +627,170 @@ X.parser.prototype.reslice = function(object) {
   ///////////////////////////
   // Create Slice in Arbitrary orientation
   ///////////////////////////
+  var _sliceOrigin = new goog.vec.Vec3.createFloat32FromValues(
+      _rascenter[0],
+      _rascenter[1],
+      _rascenter[2]);
   
-  // Get output extent
-  // orientation of the slice:_SliceToRAS
-  var _boundingBox = [0, 0, 0,
-                      0, 0, 0,
-                      0, 0, 0,
-                      0, 0, 0,
-                      0, 0, 0,
-                      0, 0, 0,
-                      0, 0, 0,
-                      0, 0, 0];
-  // 4 coordinates [x0,y0,z0,x1,y1,z1, ... x3,y3,z3]
-  // spacing info along those slices
-  // Go reslicing!
-  // shader vs js match
+  var _sliceNormal = new goog.vec.Vec3.createFloat32FromValues(
+      0,
+      1,
+      1);
   
+  // get parametric representation
+  // ax + by + cz + d = 0
+  var _a = _sliceNormal[0];
+  var _b = _sliceNormal[1];
+  var _c = _sliceNormal[2];
+  var _d = -_a*_sliceOrigin[0] -_b*_sliceOrigin[1] -_c*_sliceOrigin[2];
+  
+  window.console.log('a: ' + _a);
+  window.console.log('b: ' + _b);
+  window.console.log('c: ' + _c);
+  window.console.log('d: ' + _d);
+  
+  // Get intersection of this plane with cube:
+  //_rasdimensions
+  //_rasorigin
+  var _boundingBox = [_rasorigin[0],
+                      _rasorigin[0] + _rasdimensions[0],
+                      _rasorigin[1],
+                      _rasorigin[1] + _rasdimensions[1],
+                      _rasorigin[2],
+                      _rasorigin[2] + _rasdimensions[2]
+                      ];
+  
+  window.console.log(_boundingBox);
+//  var _boundingBox = [-.5,
+//                      .5,
+//                      -.5,
+//                      .5,
+//                      -.5,
+//                      .5
+//                      ];
+  
+  var _solutions = new Array();
+  
+  for(var _i = 0; _i < 6; _i++){
+    for(var _j = 0; _j < 2; _j++){
+      //window.console.log(_i + ' - ' + (2 + _j + (2*Math.floor(_i/2)))%6 );
+      var _i2 = Math.floor(_i/2);
+      var _i3 = (_i2 + 1)%3;
+      var _i4 = (_i2 + 2)%3;
+      var _j2 = (2 + _j + (2*_i2))%6;
+      var _j3 = (4 + (2*_i2))%6;
+      
+//      window.console.log('Bounding Box:');
+//      window.console.log( _i + '-' + _j2);
+//      window.console.log( _boundingBox[_i] + '-' + _boundingBox[_j2]);
+//      window.console.log( 'Target Norms/Origins:');
+//      window.console.log( _i2 + '-' + _i3);
+      
+      var _solution = (-(
+          _sliceNormal[_i2]*(_boundingBox[_i] - _sliceOrigin[_i2])
+          +
+          _sliceNormal[_i3]*(_boundingBox[_j2] - _sliceOrigin[_i3])
+          )
+          /
+          _sliceNormal[_i4]
+          )
+          +
+          _sliceOrigin[_i4]
+          ;
+      
+      // is solution in range?
+//      window.console.log('Solution:');
+//      window.console.log(_solution);
+      
+      if((_solution >= _boundingBox[_j3] && _solution <= _boundingBox[_j3+1])
+          ||
+          (_solution <= _boundingBox[_j3] && _solution >= _boundingBox[_j3+1])){
+//        window.console.log('We got a match!!!!!');
+        
+        var _sol = new Array();
+        _sol[_i2] = _boundingBox[_i];
+        _sol[_i3] = _boundingBox[_j2];
+        _sol[_i4] = _solution;
+
+        _solutions.push(_sol);
+//        window.console.log(_sol);
+      }
+      else{
+//        window.console.log('No match...');
+//        window.console.log(_boundingBox[_j3] + ' to ' + _boundingBox[_j3+1]);
+      }
+    }
+  }
+  
+  object._solutions = _solutions;
+  window.console.log(_solutions);
   // Create Slice in relevant orientation and fill it:
   ///////////////////////////
+  //_SliceToRAS
+  
+  // get intersection with Sagittal Plane
+  // Sagittal origin location
+  var _sagittalOrigin = new goog.vec.Vec3.createFloat32FromValues(
+      1,
+      0,
+      0);
+  // R normal
+  var _sagittalNormal = new goog.vec.Vec3.createFloat32FromValues(
+      1,
+      -2,
+      3);
+  
+
+  
+  // get angle between planes
+  // angle = arccos(\n1.n2|/||n1||.||n2||)
+  var _angle =
+    Math.acos( goog.vec.Vec3.dot(_sliceNormal, _sagittalNormal) /
+        (goog.vec.Vec3.magnitude(_sliceNormal)*goog.vec.Vec3.magnitude(_sagittalNormal)
+            ));
+//  window.console.log('ANGLE');
+//  window.console.log(_angle);
+//  window.console.log(360*_angle/(2*Math.PI));
+  
+  if(!_angle){
+  // if parallel, we know the intersection
+//    window.console.log('Slice AND BoundingBox are //');
+  }
+  else{
+  // else let's find the intersction
+
+    
+  // get line vector
+    var _intersectionLine = new goog.vec.Vec3.createFloat32();
+  goog.vec.Vec3.cross(_sliceNormal, _sagittalNormal, _intersectionLine);
+  // get line point
+  // set z = 0
+  var _z = 0;
+  var _y =
+    _sliceNormal[0]/(_sliceNormal[1]*_sagittalNormal[0] - _sliceNormal[0]*_sagittalNormal[1])
+    *
+    (_sagittalNormal[0]*(_sliceOrigin[2]*_sliceNormal[2] + _sliceOrigin[1]*_sliceNormal[1] + _sliceOrigin[0]*_sliceNormal[0] - _sagittalOrigin[0]*_sagittalNormal[0])/_sliceNormal[0]
+    - _sagittalOrigin[1]*_sagittalNormal[1]
+    - _sagittalOrigin[2]*_sagittalNormal[2]
+    );
+  
+//  window.console.log('Y: '+ _y);
+  
+  var _x = ((_sliceNormal[2]*_sliceOrigin[2] - _sliceOrigin[1]*(_y - _sliceNormal[1]))
+    / _sliceNormal[0])
+    + _sliceOrigin[0];
+  
+//  window.console.log('X: '+ _x);
+    
+  }
+
+  // AXIAL MODE
+  goog.vec.Mat4.setColumnValues(_SliceToRAS, 0, -1.0, 0.0, 0.0, 0.0);
+  goog.vec.Mat4.setColumnValues(_SliceToRAS, 1, 0.0, 1.0, 0.0, 0.0);
+  goog.vec.Mat4.setColumnValues(_SliceToRAS, 2, 0.0, 0.0, 1.0, 0.0);
+  
+  // get intersection with L
+  //....
   
   // Create Slice in Axial orientation
   // Fill it!
