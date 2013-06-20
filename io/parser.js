@@ -633,9 +633,13 @@ X.parser.prototype.reslice = function(object) {
       _rascenter[2]);
   
   var _sliceNormal = new goog.vec.Vec3.createFloat32FromValues(
-      0,
+      1,
       1,
       1);
+  
+  object._sliceOrigin = _sliceOrigin;
+  object._sliceNormal = _sliceNormal;
+  
   
   // get parametric representation
   // ax + by + cz + d = 0
@@ -671,7 +675,11 @@ X.parser.prototype.reslice = function(object) {
   
   var _solutions = new Array();
   
+  X.TIMER(this._classname + '.bbox');
+  
+  // xmin, xmax, ymin, ymax, zmin, zmax
   for(var _i = 0; _i < 6; _i++){
+    // 
     for(var _j = 0; _j < 2; _j++){
       //window.console.log(_i + ' - ' + (2 + _j + (2*Math.floor(_i/2)))%6 );
       var _i2 = Math.floor(_i/2);
@@ -721,6 +729,12 @@ X.parser.prototype.reslice = function(object) {
       }
     }
   }
+  
+  // get slice dimensions (1x1)
+  
+  // loop through slice to map pixels
+  
+  X.TIMERSTOP(this._classname + '.bbox');
   
   object._solutions = _solutions;
   window.console.log(_solutions);
