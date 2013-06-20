@@ -72,6 +72,27 @@ X.parserCRV = function() {
 // inherit from X.parser
 goog.inherits(X.parserCRV, X.parser);
 
+/**
+ * This function overwrites a part of an existing array with new
+ * values. Note the parent's internal data is overwritten!
+ * 
+ * @param {!a_array} an array containing values to "overwrite" in parent.
+ * @param {!ai_startPos} the starting position in the parent for new values
+ * @protected
+ */
+Float32Array.prototype.subArray_set = function(a_array, ai_startPos)
+{
+    var i, j;
+    var insertLen   = a_array.length;
+    var thisLen     = this.length;
+    if(ai_startPos + insertLen > thisLen) return;
+
+    j = 0;
+    for(i=ai_startPos; i<ai_startPos+insertLen; i++) {
+        this[i] = a_array[j++];
+    }
+};
+
 X.parserCRV.prototype.terrainColorLabels_init = function(XScalarsObject) {
     //
     // This method initializes the label colors for terrain coloring.
@@ -241,6 +262,161 @@ X.parserCRV.prototype.terrainColorLabels_interpolate =
 };
 
 
+X.parserCRV.prototype.hotColorLabels_init = function(XScalarsObject) {
+    //
+    // This method initializes the label colors for 'hot' coloring.
+    // A single label is assigned to a range of mesh values. This label
+    // has a lower color bound, and an upper color bound. The color assigned
+    // to the mesh point within a label's bound is a smooth interpolation
+    // between the lower and upper label colors, based on the scalar value
+    // at a mesh point.
+    //
+    
+    //
+    // initialize label'ed color ranges
+    //
+    v_labelMinColors    = new Float32Array(40);
+    v_labelMaxColors    = new Float32Array(40);
+
+    // Values on the mesh can be associated with different
+    // label colors. Each label is defined by:
+    // 1.  A range of values from the minimum mesh value to 
+    //     the maximum mesh value that should be covered by
+    //     a given label.
+    // 2a. The "minimum" color that is assigned to the lowest
+    //     mesh value associated with that label.
+    // 2b. The "maximum" color that is assigned to the highest
+    //     mesh value associated with that label.
+    // 2c. Mesh values between the label min and max values are
+    //     smoothly interpolated between the min and max colors.
+    //     If min and max colors for a mesh label are identical,
+    //     no interpolation is performed.
+    
+    // Colors are defined as [R, G, B, alpha] with
+    // RGB values between 0.00 and 1.00.
+
+    // Reds
+    var v_deepRed       = [0.30, 0.00, 0.00, 1.00]; 
+    var v_darkRed       = [0.50, 0.00, 0.00, 1.00];
+    var v_red           = [0.90, 0.00, 0.00, 1.00];
+    var v_pink          = [0.90, 0.50, 0.50, 1.00];
+
+    // Oranges-to-Yellows
+    var v_darkOrange    = [0.90, 0.45, 0.00, 1.00];
+    var v_lightOrange   = [0.90, 0.67, 0.35, 1.00];
+    var v_darkYellow    = [0.50, 0.50, 0.00, 1.00];
+
+    // Yellows-to-White
+    var v_lightYellow   = [0.99, 0.99, 0.00, 1.00];
+    var v_white         = [1.00, 1.00, 1.00, 1.00];
+    
+    var colorSize = 4;
+    v_labelMinColors.subArray_set(v_deepRed,    0*colorSize);
+    v_labelMaxColors.subArray_set(v_darkRed,    0*colorSize);
+
+    v_labelMinColors.subArray_set(v_darkRed,    1*colorSize);
+    v_labelMaxColors.subArray_set(v_red,        1*colorSize);
+
+    v_labelMinColors.subArray_set(v_red,        2*colorSize);
+    v_labelMaxColors.subArray_set(v_pink,       2*colorSize);    
+    
+    v_labelMinColors.subArray_set(v_pink,       3*colorSize);
+    v_labelMaxColors.subArray_set(v_darkOrange, 3*colorSize);
+
+    v_labelMinColors.subArray_set(v_darkOrange, 4*colorSize);
+    v_labelMaxColors.subArray_set(v_lightOrange,4*colorSize);
+
+    v_labelMinColors.subArray_set(v_lightOrange,5*colorSize);
+    v_labelMaxColors.subArray_set(v_darkYellow, 5*colorSize);
+
+    v_labelMinColors.subArray_set(v_lightYellow,6*colorSize);
+    v_labelMaxColors.subArray_set(v_white,      6*colorSize);
+
+    XScalarsObject._labelsCount            = 7;
+    XScalarsObject._labelMinColor          = v_labelMinColors;
+    XScalarsObject._labelMaxColor          = v_labelMaxColors;
+    
+};
+
+
+X.parserCRV.prototype.hotColorLabels_interpolate = 
+    function(aXScalarsObject, af_minScalar, af_maxScalar) {
+    //
+    // Setup intensities for "terrain" interpolation. In RGB space
+    // terrain interpolation can be tricky since moving from one 
+    // color to another can be non-linear. Since the shaders use
+    // the v_intensity[] array for each label to find the interpolation,
+    // we can "tune" the dynamic range of the interpolation slope somewhat
+    // by setting v_intesity[1] to relatively large values. This biases
+    // the color interpolation to be "closer" to v_intensity[0] and picks
+    // up smaller detail if the scalar range is low.
+    //
+    // Intensity lookup are encoded as a vec3 tuple, with the
+    // first and second values defining the lower and upper 
+    // threshold values. The third value is currently unused.
+    //
+    // The entire color range is divided into 14 segments. The
+    // lower 7 for shades of blue sea, the upper 7 for the earth's
+    // green/brown/whites.
+    //
+    // More specifically:
+    //                                      lightGreen
+    //                                          |     khaki   white
+    //                                          |       |       |
+    //                                          V       V       V
+    // -7  -6  -5  -4  -3  -2  -1   0   1   2   3   4   5   6   7
+    //  |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+    //   ^              ^           ^                 ^     ^   
+    //   |              |           |                 |     |   
+    //   +---+      deepBlue     +--+--+              |   gray
+    //       |                   |     |              | 
+    //   darkRed              cyan  darkGreen     darkKhaki
+    //
+    var intensitySize = 3; 
+    var v_intensity     = new Float32Array(3);
+    var f_range         = af_maxScalar - af_minScalar;
+    var f_regionSize    = f_range / 14;
+
+    aXScalarsObject._labelIntensities.subArray_set(v_intensity, 0);
+    for(var region = 0; region < aXScalarsObject._labelsCount; region++) {
+        switch(region) {
+        case 0:
+            v_intensity[0]    = af_minScalar;
+            v_intensity[1]    = af_minScalar + f_regionSize * 4.0;
+            break;
+        case 1:
+            v_intensity[0]    = af_minScalar + f_regionSize * 4.0;
+            v_intensity[1]    = af_minScalar + f_regionSize * 10.0;
+            break;
+        case 2:
+            v_intensity[0]    = af_minScalar + f_regionSize * 5.0;
+            v_intensity[1]    = af_minScalar + f_regionSize * 10.0;
+            break;
+        case 3:
+            v_intensity[0]    = af_minScalar + f_regionSize * 7.0;
+            v_intensity[1]    = af_minScalar + f_regionSize * 10.0;
+            break;
+        case 4:
+            v_intensity[0]    = af_minScalar + f_regionSize * 9.0;
+            v_intensity[1]    = af_minScalar + f_regionSize * 11.0;
+            break;
+        case 5:
+            v_intensity[0]    = af_minScalar + f_regionSize * 11.0;
+            v_intensity[1]    = af_minScalar + f_regionSize * 12.0;
+            break;
+        case 6:
+            v_intensity[0]    = af_minScalar + f_regionSize * 12.0;
+            v_intensity[1]    = af_minScalar + f_regionSize * 14.0;
+            break;
+        }
+        
+        v_intensity[2]    = -1.0;
+        aXScalarsObject._labelIntensities.subArray_set(v_intensity, 
+                (region)*intensitySize);
+    }
+};
+
+
 /**
  * @inheritDoc
  */
@@ -366,9 +542,15 @@ X.parserCRV.prototype.parse = function(container, object, data, flag) {
   //
   // If required, define the interpolation label scheme intensities
   //
-  if(object._scalars._interpolation == 2) {
-      this.terrainColorLabels_init(object._scalars);
-      this.terrainColorLabels_interpolate(object.scalars, minCurv[1], maxCurv[1]);
+  switch(object.scalars.interpolation) {
+      case 2:
+          this.terrainColorLabels_init(object._scalars);
+          this.terrainColorLabels_interpolate(object.scalars, minCurv[1], maxCurv[1]);
+          break;
+      case 3:
+          this.hotColorLabels_init(object._scalars);
+          this.hotColorLabels_interpolate(object.scalars, minCurv[1], maxCurv[1]);
+          break;
   }
   
   //
