@@ -227,7 +227,7 @@ X.interactor = function(element) {
    * @enum {boolean}
    */
   this._config = {
-    'MOUSEWHEEL_ENABLED': false,
+    'MOUSEWHEEL_ENABLED': true,
     'MOUSECLICKS_ENABLED': true,
     'KEYBOARD_ENABLED': true,
     'HOVERING_ENABLED': true,
