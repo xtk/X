@@ -757,10 +757,20 @@ X.renderer3D.prototype.update_ = function(object) {
       this._context.bindTexture(this._context.TEXTURE_2D, glTexture);
       if (texture._rawData) {
 
+        var _texture_type = this._context.RGBA;
+        
+        if (texture._grayscale) {
+          
+          // one channel texture
+          _texture_type = this._context.LUMINANCE;
+          this._context.pixelStorei(this._context.UNPACK_ALIGNMENT, 1);
+          
+        }
+
         // use rawData rather than loading an imagefile
         this._context.texImage2D(this._context.TEXTURE_2D, 0,
-            this._context.RGBA, texture._rawDataWidth, texture._rawDataHeight,
-            0, this._context.RGBA, this._context.UNSIGNED_BYTE,
+            _texture_type, texture._rawDataWidth, texture._rawDataHeight,
+            0, _texture_type, this._context.UNSIGNED_BYTE,
             texture._rawData);
 
       } else {

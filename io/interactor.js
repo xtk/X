@@ -58,7 +58,7 @@ goog.require('goog.math.Vec3');
 X.interactor = function(element) {
 
   // check if we have a valid element
-  if (!goog.isDefAndNotNull(element) || !(element instanceof Element)) {
+  if (!goog.isDefAndNotNull(element)) {
 
     throw new Error('Could not add interactor to the given element.');
 
