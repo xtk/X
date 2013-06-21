@@ -97,6 +97,14 @@ X.texture = function() {
    */
   this._rawDataHeight = 0;
   
+  /**
+   * A flag for grayscale (1-channel) textures.
+   * 
+   * @type {boolean}
+   * @protected
+   */
+  this._grayscale = false;
+  
   // inject functionality
   inject(this, new X.loadable()); // this object is loadable from a file
   
@@ -146,5 +154,18 @@ X.texture.prototype.__defineSetter__('rawDataWidth', function(rawDataWidth) {
   
 });
 
+
+/**
+ * Set the grayscale flag for this raw data texture.
+ * 
+ * @param {boolean} grayscale The grayscale flag.
+ */
+X.texture.prototype.__defineSetter__('grayscale', function(grayscale) {
+
+  this._grayscale = grayscale;
+
+  this._dirty = true;
+  
+});
 
 goog.exportSymbol('X.texture', X.texture);
