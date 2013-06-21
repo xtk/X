@@ -104,4 +104,47 @@ X.texture = function() {
 // inherit from X.base
 goog.inherits(X.texture, X.base);
 
+
+/**
+ * Set the raw data of this texture.
+ * 
+ * @param {?Object} rawData The raw data array (Uint8Array).
+ */
+X.texture.prototype.__defineSetter__('rawData', function(rawData) {
+
+  this._rawData = rawData;
+
+  this._dirty = true;
+  
+});
+
+
+/**
+ * Set the height of the raw data texture.
+ * 
+ * @param {number} rawDataHeight The raw data height.
+ */
+X.texture.prototype.__defineSetter__('rawDataHeight', function(rawDataHeight) {
+
+  this._rawDataHeight = rawDataHeight;
+
+  this._dirty = true;
+  
+});
+
+
+/**
+ * Set the width of the raw data texture.
+ * 
+ * @param {number} rawDataWidth The raw data width.
+ */
+X.texture.prototype.__defineSetter__('rawDataWidth', function(rawDataWidth) {
+
+  this._rawDataWidth = rawDataWidth;
+
+  this._dirty = true;
+  
+});
+
+
 goog.exportSymbol('X.texture', X.texture);
