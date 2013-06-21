@@ -58,11 +58,11 @@ goog.require('goog.math.Vec3');
 X.interactor = function(element) {
 
   // check if we have a valid element
-  if (!goog.isDefAndNotNull(element) || !(element instanceof Element)) {
-
-    throw new Error('Could not add interactor to the given element.');
-
-  }
+//  if (!goog.isDefAndNotNull(element) || !(element instanceof Element)) {
+//
+//    throw new Error('Could not add interactor to the given element.');
+//
+//  }
 
   //
   // call the standard constructor of X.base
@@ -227,7 +227,7 @@ X.interactor = function(element) {
    * @enum {boolean}
    */
   this._config = {
-    'MOUSEWHEEL_ENABLED': true,
+    'MOUSEWHEEL_ENABLED': false,
     'MOUSECLICKS_ENABLED': true,
     'KEYBOARD_ENABLED': true,
     'HOVERING_ENABLED': true,
