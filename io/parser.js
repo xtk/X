@@ -606,6 +606,7 @@ X.parser.prototype.reslice = function(object) {
 //    goog.vec.Mat4.setElement(_XYToSlice, _inc, _inc, _spacing[_inc]);
 //    goog.vec.Mat4.setElement(_XYToSlice, _inc, 3, -_fov[_inc]/2.0 + _xyzOorigin[_inc]);
 //  }
+  //xyToSlice->SetElement(2, 3, 0.);
   
   window.console.log("XYToSlice");
   window.console.log(_XYToSlice);
@@ -633,7 +634,7 @@ X.parser.prototype.reslice = function(object) {
       _rascenter[2]);
   
   var _sliceNormal = new goog.vec.Vec3.createFloat32FromValues(
-      1,
+      .2,
       1,
       1);
   
@@ -674,19 +675,21 @@ X.parser.prototype.reslice = function(object) {
 //                      ];
   
   var _solutions = new Array();
+  var _solutionsOut = new Array();
   
   X.TIMER(this._classname + '.bbox');
   
   // xmin, xmax, ymin, ymax, zmin, zmax
   for(var _i = 0; _i < 6; _i++){
     // 
+    var _i2 = Math.floor(_i/2);
+    var _i3 = (_i2 + 1)%3;
+    var _i4 = (_i2 + 2)%3;
+    var _j3 = (4 + (2*_i2))%6;
     for(var _j = 0; _j < 2; _j++){
       //window.console.log(_i + ' - ' + (2 + _j + (2*Math.floor(_i/2)))%6 );
-      var _i2 = Math.floor(_i/2);
-      var _i3 = (_i2 + 1)%3;
-      var _i4 = (_i2 + 2)%3;
+
       var _j2 = (2 + _j + (2*_i2))%6;
-      var _j3 = (4 + (2*_i2))%6;
       
 //      window.console.log('Bounding Box:');
 //      window.console.log( _i + '-' + _j2);
@@ -721,23 +724,429 @@ X.parser.prototype.reslice = function(object) {
         _sol[_i4] = _solution;
 
         _solutions.push(_sol);
-//        window.console.log(_sol);
       }
       else{
-//        window.console.log('No match...');
-//        window.console.log(_boundingBox[_j3] + ' to ' + _boundingBox[_j3+1]);
+        var _sol = new Array();
+        _sol[_i2] = _boundingBox[_i];
+        _sol[_i3] = _boundingBox[_j2];
+        _sol[_i4] = _solution;
+        
+        //_solutionsOut.push(_sol);
       }
     }
   }
   
+  
+  object._solutions = _solutions;
+  object._solutionsOut = _solutionsOut;
+  
+  // rotate solutions around center of volume, towards 2d plane (z constant)
+  // SlicetoXY
+//  var _XYOrigin = new goog.vec.Vec3.createFloat32FromValues(
+//      _rascenter[0],
+//      _rascenter[1],
+//      _rascenter[2]);
+//  
+//  var _XYNormal = new goog.vec.Vec3.createFloat32FromValues(
+//      0,
+//      0,
+//      1);
+//  // compute X and Y angles
+//  var _angle =
+//    Math.acos( goog.vec.Vec3.dot(_sliceNormal, _XYNormal) /
+//        (goog.vec.Vec3.magnitude(_sliceNormal)*goog.vec.Vec3.magnitude(_XYNormal)
+//            ));
+  
+  
+  // rotation matrix
+  
+//  var _sliceOrigin = new goog.vec.Vec3.createFloat32FromValues(
+//      _rascenter[0],
+//      _rascenter[1],
+//      _rascenter[2]);
+  
+  var _v = _sliceNormal;
+  var _vp = new goog.vec.Vec3.createFloat32FromValues(
+      _v[0]/goog.vec.Vec3.magnitude(_v),
+      _v[1]/goog.vec.Vec3.magnitude(_v),
+      _v[2]/goog.vec.Vec3.magnitude(_v));
+  
+  var _z = new goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
+  
+  var _ap = _vp[0];
+  var _bp = _vp[1];
+  var _cp = _vp[2];
+  
+  var _teta = Math.acos(_cp);
+  
+  var _r = new goog.vec.Vec3.createFloat32();
+  goog.vec.Vec3.cross(_vp, _z, _r);
+  
+  var _rp = new goog.vec.Vec3.createFloat32FromValues(
+      _r[0]/goog.vec.Vec3.magnitude(_r),
+      _r[1]/goog.vec.Vec3.magnitude(_r),
+      _r[2]/goog.vec.Vec3.magnitude(_r));
+  
+  var _ct = Math.cos(_teta);
+  var _st = Math.sin(_teta);
+  
+  window.console.log("RP");
+  window.console.log(_rp);
+  
+  var a = Math.cos(_teta/2);
+  var b = Math.sin(_teta/2)*_rp[0];
+  var c = Math.sin(_teta/2)*_rp[1];
+  var d = Math.sin(_teta/2)*_rp[2];
+  
+//  window.console.log(_q0*_q0 + _q1*_q1 + _q2*_q2 + _q3*_q3);
+//  
+//  var _00 = 1 - 2*_q1*_q1 - 2*_q2*_q2;
+//  var _01 = 2*_q0*_q1 - 2*_q2*_q3;
+//  var _02 = 2*_q0*_q3 + 2*_q1*_q2;
+//  
+//  var _10 = 2*_q0*_q1 + 2*_q2*_q3;
+//  var _11 = 1 - 2*_q0*_q0 - 2*_q2*_q2;
+//  var _12 = 2*_q1*_q2 - 2*_q0*_q3;
+//  
+//  var _20 = 2*_q0*_q2 - 2*_q1*_q3;
+//  var _21 = 2*_q1*_q2 + 2*_q0*_q3;
+//  var _22 = 1 - 2*_q0*_q0 - 2*_q1*_q1;
+  
+//  var _00 = _ct + _rp[0]*_rp[0]*(1 - _ct);
+//  var _01 = _rp[0]*_rp[1]*(1 - _ct) - _rp[2]*_st;
+//  var _02 = _rp[0]*_rp[2]*(1 - _ct) - _rp[1]*_st;
+//  
+//  var _10 = _rp[1]*_rp[0]*(1-_ct) + _rp[2]*_st;
+//  var _11 = _ct + _rp[1]*_rp[1]*(1-_ct);
+//  var _12 = _rp[1]*_rp[2]*(1 - _ct) - _rp[0]*_st;
+//  
+//  var _20 = _rp[2]*_rp[0]*(1-_ct) + _rp[1]*_st;
+//  var _21 = _rp[2]*_rp[1]*(1 - _ct) - _rp[0]*_st;
+//  var _22 = _ct + _rp[2]*_rp[2]*(1 - _ct);
+  
+  _q1 = new goog.vec.Mat4.createFloat32Identity();
+  goog.vec.Mat4.setRowValues(_q1,
+      0,
+      (a*a+b*b-c*c-d*d),
+      2*(b*c-a*d),
+      2*(b*d+a*c),
+      -_rascenter[0]
+      );
+  goog.vec.Mat4.setRowValues(_q1,
+      1,
+      2*(b*c+a*d),
+      (a*a+c*c-b*b-d*d),
+      2*(c*d-a*b),
+      -_rascenter[1]
+      );
+  goog.vec.Mat4.setRowValues(_q1,
+      2,
+      2*(b*d-a*c ),
+      2*(c*d+a*b),
+      (a*a+d*d-c*c-b*b),
+      -_rascenter[2]
+      );
+//  goog.vec.Mat4.setRowValues(_q1, 0, _00, _01, _02, -_rascenter[0]);
+//  goog.vec.Mat4.setRowValues(_q1, 1, _10, _11, _12, -_rascenter[1]);
+//  goog.vec.Mat4.setRowValues(_q1, 2, _20, _21, _22, -_rascenter[2]);
+  
+  
+//  var _XYPojection = new goog.vec.Vec3.createFloat32FromValues(
+//      1,
+//      1,
+//      0);
+//  
+//  window.console.log(goog.vec.Vec3.dot(_XYPojection, _sliceNormal));
+//
+//// compute X and Y angles
+//  var _XNormal = new goog.vec.Vec3.createFloat32FromValues(
+//      1,
+//      0,
+//      0);
+//var _angleX = Math.PI/2 - Math.acos(goog.vec.Vec3.dot(_sliceNormal, _XNormal) /
+//  (goog.vec.Vec3.magnitude(_sliceNormal)*goog.vec.Vec3.magnitude(_XNormal)
+//      ));
+//  
+//  window.console.log('ANGLE X');
+//  window.console.log(360*_angleX/(2*Math.PI));
+//  // Y rotation
+//  var _YNormal = new goog.vec.Vec3.createFloat32FromValues(
+//      0,
+//      1,
+//      0);
+//  var _angleY = Math.PI/2 - Math.acos(goog.vec.Vec3.dot(_sliceNormal, _YNormal) /
+//  (goog.vec.Vec3.magnitude(_sliceNormal)*goog.vec.Vec3.magnitude(_YNormal)
+//      ));
+//      
+//      window.console.log('ANGLE Y');
+//      window.console.log(_angleY);
+//      window.console.log(360*_angleY/(2*Math.PI));
+//      
+//      // Z rotation
+//      var _ZNormal = new goog.vec.Vec3.createFloat32FromValues(
+//          0,
+//          0,
+//          1);
+//    var _angleZ = Math.PI/2 - Math.acos(goog.vec.Vec3.dot(_sliceNormal, _ZNormal) /
+//      (goog.vec.Vec3.magnitude(_sliceNormal)*goog.vec.Vec3.magnitude(_ZNormal)
+//          ));
+//          
+//          window.console.log('ANGLE Z');
+//          window.console.log(_angleZ);
+//          window.console.log(360*_angleZ/(2*Math.PI));
+//      
+//  window.console.log(_rascenter);
+//  
+//  // step 1 translation?
+//  _t1 = new goog.vec.Mat4.createFloat32Identity();
+//  goog.vec.Mat4.setRowValues(_t1, 0, 1, 0, 0, -_rascenter[0]);
+//  goog.vec.Mat4.setRowValues(_t1, 1, 0, 1, 0, -_rascenter[1]);
+//  goog.vec.Mat4.setRowValues(_t1, 2, 0, 0, 1, -_rascenter[2]);
+//      
+//  _r1 = new goog.vec.Mat4.createFloat32Identity();
+//  goog.vec.Mat4.setRowValues(_r1, 0, 1, 0, 0, 0);
+//  goog.vec.Mat4.setRowValues(_r1, 1, 0, Math.cos(_angleY), -Math.sin(_angleY), 0);
+//  goog.vec.Mat4.setRowValues(_r1, 2, 0, Math.sin(_angleY), Math.cos(_angleY), 0);
+//  
+//  _r2 = new goog.vec.Mat4.createFloat32Identity();
+//  goog.vec.Mat4.setRowValues(_r2, 0, Math.cos(_angleX), 0, -Math.sin(_angleX), 0);
+//  goog.vec.Mat4.setRowValues(_r2, 1, 0, 1, 0, 0);
+//  goog.vec.Mat4.setRowValues(_r2, 2, Math.sin(_angleX), 0, Math.cos(_angleX), 0);
+//  
+//  _r3 = new goog.vec.Mat4.createFloat32Identity();
+//  goog.vec.Mat4.setRowValues(_r3, 0, Math.cos(_angleZ), -Math.sin(_angleZ), 0, 0);
+//  goog.vec.Mat4.setRowValues(_r3, 1, Math.sin(_angleZ), Math.cos(_angleZ), 0,  0);
+//  goog.vec.Mat4.setRowValues(_r3, 2, 0, 0, 1, 0);
+//
+//  _translation = new goog.vec.Mat4.createFloat32();
+//  goog.vec.Mat4.multMat(_r1, _r2, _translation);
+//  
+//  _rotation = new goog.vec.Mat4.createFloat32();
+//  goog.vec.Mat4.multMat(_translation, _t1, _rotation);
+//  
+//  window.console.log(_r1);
+//  window.console.log(_r2);
+//  
+//
+//  
+//  window.console.log(_rotation);
+//  goog.vec.Mat4.setRowValues(_s1, 0, Math.cos(_angleX), 0, Math.sin(_angleX), 0);
+//  goog.vec.Mat4.setRowValues(_s1, 1, Math.sin(_angleY)*Math.sin(_angleX), Math.cos(_angleY), -Math.cos(_angleX)*Math.sin(_angleY), 0);
+//  goog.vec.Mat4.setRowValues(_s1, 2, -Math.cos(_angleY)*Math.sin(_angleX), Math.sin(_angleY), Math.cos(_angleY)*Math.cos(_angleX), 0);
+//  
+  
+  // Invert IJK to RAS
+  //MRI.RASToIJK = new goog.vec.Mat4.createFloat32();
+//  goog.vec.Mat4.invert(_s1, _s1);
+  
+//  goog.vec.Mat4.setRowValues(_s1, 0, Math.cos(_angleY), Math.sin(_angleX)*Math.sin(_angleY), Math.cos(_angleX)*Math.sin(_angleY), 0);
+//  goog.vec.Mat4.setRowValues(_s1, 1, 0, Math.cos(_angleX), -Math.sin(_angleX), 0);
+//  goog.vec.Mat4.setRowValues(_s1, 2, 0, Math.sin(_angleX), Math.cos(_angleX)*Math.cos(_angleY), 0);
+//  
+//  
+
+//  
+//  // Apply transform to each point!
+  var _solutionsYX = new Array();
+  for (var i = 0; i < _solutions.length; ++i) {
+    var tar2 = new goog.vec.Vec4.createFloat32FromValues(_solutions[i][0], _solutions[i][1], _solutions[i][2], 1);
+    var res2 = new goog.vec.Vec4.createFloat32();
+    goog.vec.Mat4.multVec4(_q1, tar2, res2);
+
+
+    window.console.log(res2);
+    var _sol = new Array();
+    _sol[0] = res2[0];
+    _sol[1] = res2[1];
+    _sol[2] = res2[2];
+    
+    _solutionsYX.push(_sol);
+  }
+  
+  
+  object._solutionsXY = _solutionsYX;
+  // step 2 rotation around X
+//  var _angleX = Math.acos( _sliceNormal[0] /
+//          Math.sqrt(_sliceNormal[0]*_sliceNormal[0] + 1));
+//  
+//  window.console.log('ANGLE X');
+//  window.console.log(_angleX);
+//  window.console.log(360*_angleX/(2*Math.PI));
+//  
+//  // step 3 rotation around Y
+//  var _angleY = Math.acos( _sliceNormal[1] /
+//      Math.sqrt(_sliceNormal[1]*_sliceNormal[1] + 1));
+//  
+//  window.console.log('ANGLE Y');
+//  window.console.log(_angleY);
+//  window.console.log(360*_angleY/(2*Math.PI));
+//  _s2 = new goog.vec.Mat4.createFloat32Identity();
+//  goog.vec.Mat4.setRowValues(_s1, 0, 1, 0, 0, -_sliceOrigin[0]);
+//  goog.vec.Mat4.setRowValues(_s1, 0, 0, 1, 0, -_sliceOrigin[1]);
+//  goog.vec.Mat4.setRowValues(_s1, 0, 0, 0, 1, -_sliceOrigin[2]);
+//  
+
+  
   // get slice dimensions (1x1)
+  // loop through solutions and get xmin, xmax, ymin, ymax, zmin, zmax
+  var _newSliceBB = [Number.MAX_VALUE, Number.MIN_VALUE,
+                   Number.MAX_VALUE, Number.MIN_VALUE,
+                   Number.MAX_VALUE, Number.MIN_VALUE];
+  
+  for (var i = 0; i < _solutions.length; ++i) {
+    if(_solutions[i][0] < _newSliceBB[0]){
+      _newSliceBB[0] = _solutions[i][0];
+    }
+    
+    if(_solutions[i][0] > _newSliceBB[1]){
+      _newSliceBB[1] = _solutions[i][0];
+    }
+    
+    if(_solutions[i][1] < _newSliceBB[2]){
+      _newSliceBB[2] = _solutions[i][1];
+    }
+    
+    if(_solutions[i][1] > _newSliceBB[3]){
+      _newSliceBB[3] = _solutions[i][1];
+    }
+    
+    if(_solutions[i][2] < _newSliceBB[4]){
+      _newSliceBB[4] = _solutions[i][2];
+    }
+    
+    if(_solutions[i][2] > _newSliceBB[5]){
+      _newSliceBB[5] = _solutions[i][2];
+    }
+  }
+  
+  object._newSliceBB = _newSliceBB;
+  
+  // compute intersection solutions bb with plane
+  
+  var _solutions2 = new Array();
+  var _solutionsOut2 = new Array();
+  
+  X.TIMER(this._classname + '.bbox');
+  
+  // xmin, xmax, ymin, ymax, zmin, zmax
+//  for(var _i = 0; _i < _solutions.length; _i++){
+//    // 
+////    var _i2 = Math.floor(_i/2);
+////    var _i3 = (_i2 + 1)%3;
+////    var _i4 = (_i2 + 2)%3;
+////    var _j3 = (4 + (2*_i2))%6;
+//    for(var _j = 0; _j < _solutions.length; _j++){
+//      
+//      // Are 2 points on same plane?
+//      
+//      var _plane = -1;
+//      if(_solutions[_i][0] == _solutions[_j][0]){
+//        _plane = 0;
+//      }
+//      else if(_solutions[_i][1] == _solutions[_j][1]){
+//        _plane = 1;
+//      }
+//      else if(_solutions[_i][2] == _solutions[_j][2]){
+//        _plane = 2;
+//      }
+//      
+//      if(_plane >= 0){
+//        var _m = 0;
+//        if(_solutions[_i][1] == _boundingBox[2] ||
+//           _solutions[_i][1] == _boundingBox[3]){
+//          _m = 1;
+//        }
+//        else if(_solutions[_i][2] == _boundingBox[4] ||
+//            _solutions[_i][2] == _boundingBox[5]){
+//          _m = 2;
+//        }
+//        var _m2 = 0;
+//        if(_solutions[_j][1] == _boundingBox[2] ||
+//            _solutions[_j][1] == _boundingBox[3]){
+//           _m2 = 1;
+//         }
+//         else if(_solutions[_j][2] == _boundingBox[4] ||
+//             _solutions[_j][2] == _boundingBox[5]){
+//           _m2 = 2;
+//         }
+//        window.console.log('GET SOLUTIONS');
+//        window.console.log(_solutions[_i]);
+//        window.console.log(_solutions[_j]);
+//        window.console.log('GET MAXIMUMS');
+//        window.console.log(_m);
+//        window.console.log(_m2);
+//        
+//        
+//        if(_m != _m2){
+//          // get location of last point and store point!
+//          var _solution = (-(
+//              _sliceNormal[_m]*(_solutions[_i][_m] - _sliceOrigin[_m])
+//              +
+//              _sliceNormal[_m2]*(_solutions[_j][_m2] - _sliceOrigin[_m2])
+//              )
+//              /
+//              _sliceNormal[(_m2 + _m)%3]
+//              )
+//              +
+//              _sliceOrigin[(_m2 + _m)%3]
+//              ;
+//          
+//          var _sol = new Array();
+//          _sol[_m] = _solutions[_i][_m];
+//          _sol[_m2] = _solutions[_j][_m];
+//          _sol[(_m2 + _m)%3] = _solution;
+//          
+//          //_solutions2.push(_sol);
+//      }
+//      
+//        
+//      }
+//      
+//      
+//      //window.console.log(_i + ' - ' + (2 + _j + (2*Math.floor(_i/2)))%6 );
+//
+////      var _j2 = (2 + _j + (2*_i2))%6;
+//      
+////      window.console.log('Bounding Box:');
+////      window.console.log( _i + '-' + _j2);
+////      window.console.log( _boundingBox[_i] + '-' + _boundingBox[_j2]);
+////      window.console.log( 'Target Norms/Origins:');
+////      window.console.log( _i2 + '-' + _i3);
+//      
+////      var _solution = (-(
+////          _sliceNormal[_i2]*(_newSliceBB[_i] - _sliceOrigin[_i2])
+////          +
+////          _sliceNormal[_i3]*(_newSliceBB[_j2] - _sliceOrigin[_i3])
+////          )
+////          /
+////          _sliceNormal[_i4]
+////          )
+////          +
+////          _sliceOrigin[_i4]
+////          ;
+////      
+////      // is solution in range?
+////      window.console.log('Solution:');
+////      window.console.log(_solution);
+////        
+////        var _sol = new Array();
+////        _sol[_i2] = _newSliceBB[_i];
+////        _sol[_i3] = _newSliceBB[_j2];
+////        _sol[_i4] = _solution;
+////        _solutions2.push(_sol);
+//    }
+//  }
+//  
+//  object._solutionsOut = _solutions2;
+  
   
   // loop through slice to map pixels
   
   X.TIMERSTOP(this._classname + '.bbox');
-  
-  object._solutions = _solutions;
+
   window.console.log(_solutions);
+  
+  window.console.log(_newSliceBB);
   // Create Slice in relevant orientation and fill it:
   ///////////////////////////
   //_SliceToRAS

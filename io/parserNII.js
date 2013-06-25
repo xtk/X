@@ -228,8 +228,8 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
     var sx = MRI.srow_x, sy = MRI.srow_y, sz = MRI.srow_z;
     // fill IJKToRAS
     goog.vec.Mat4.setRowValues(IJKToRAS, 0, sx[0], sx[1], sx[2], sx[3]);
-    goog.vec.Mat4.setRowValues(IJKToRAS, 0, sy[0], sy[1], sy[2], sy[3]);
-    goog.vec.Mat4.setRowValues(IJKToRAS, 0, sz[0], sz[1], sz[2], sz[3]);
+    goog.vec.Mat4.setRowValues(IJKToRAS, 1, sy[0], sy[1], sy[2], sy[3]);
+    goog.vec.Mat4.setRowValues(IJKToRAS, 2, sz[0], sz[1], sz[2], sz[3]);
   }
   else{
     window.console.log('UNKNOWN METHOD');
