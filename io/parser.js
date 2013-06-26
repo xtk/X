@@ -629,13 +629,13 @@ X.parser.prototype.reslice = function(object) {
   // Create Slice in Arbitrary orientation
   ///////////////////////////
   var _sliceOrigin = new goog.vec.Vec3.createFloat32FromValues(
-      _rascenter[0],
+      _rascenter[0]-100,
       _rascenter[1],
-      _rascenter[2]);
+      _rascenter[2]-100);
   
   var _sliceNormal = new goog.vec.Vec3.createFloat32FromValues(
-      .2,
       1,
+      .1,
       1);
   
   object._sliceOrigin = _sliceOrigin;
@@ -830,21 +830,21 @@ X.parser.prototype.reslice = function(object) {
       (a*a+b*b-c*c-d*d),
       2*(b*c-a*d),
       2*(b*d+a*c),
-      -_rascenter[0]
+      0
       );
   goog.vec.Mat4.setRowValues(_q1,
       1,
       2*(b*c+a*d),
       (a*a+c*c-b*b-d*d),
       2*(c*d-a*b),
-      -_rascenter[1]
+      0
       );
   goog.vec.Mat4.setRowValues(_q1,
       2,
       2*(b*d-a*c ),
       2*(c*d+a*b),
       (a*a+d*d-c*c-b*b),
-      -_rascenter[2]
+      0
       );
 //  goog.vec.Mat4.setRowValues(_q1, 0, _00, _01, _02, -_rascenter[0]);
 //  goog.vec.Mat4.setRowValues(_q1, 1, _10, _11, _12, -_rascenter[1]);
@@ -965,188 +965,31 @@ X.parser.prototype.reslice = function(object) {
   
   
   object._solutionsXY = _solutionsYX;
-  // step 2 rotation around X
-//  var _angleX = Math.acos( _sliceNormal[0] /
-//          Math.sqrt(_sliceNormal[0]*_sliceNormal[0] + 1));
-//  
-//  window.console.log('ANGLE X');
-//  window.console.log(_angleX);
-//  window.console.log(360*_angleX/(2*Math.PI));
-//  
-//  // step 3 rotation around Y
-//  var _angleY = Math.acos( _sliceNormal[1] /
-//      Math.sqrt(_sliceNormal[1]*_sliceNormal[1] + 1));
-//  
-//  window.console.log('ANGLE Y');
-//  window.console.log(_angleY);
-//  window.console.log(360*_angleY/(2*Math.PI));
-//  _s2 = new goog.vec.Mat4.createFloat32Identity();
-//  goog.vec.Mat4.setRowValues(_s1, 0, 1, 0, 0, -_sliceOrigin[0]);
-//  goog.vec.Mat4.setRowValues(_s1, 0, 0, 1, 0, -_sliceOrigin[1]);
-//  goog.vec.Mat4.setRowValues(_s1, 0, 0, 0, 1, -_sliceOrigin[2]);
-//  
-
   
-  // get slice dimensions (1x1)
-  // loop through solutions and get xmin, xmax, ymin, ymax, zmin, zmax
-  var _newSliceBB = [Number.MAX_VALUE, Number.MIN_VALUE,
-                   Number.MAX_VALUE, Number.MIN_VALUE,
-                   Number.MAX_VALUE, Number.MIN_VALUE];
-  
-  for (var i = 0; i < _solutions.length; ++i) {
-    if(_solutions[i][0] < _newSliceBB[0]){
-      _newSliceBB[0] = _solutions[i][0];
+  // get XY bounding box!
+  var _xyBB = [Number.MAX_VALUE, Number.MIN_VALUE,
+                     Number.MAX_VALUE, Number.MIN_VALUE,
+                     _solutionsYX[0][2],_solutionsYX[0][2]];
+  for (var i = 0; i < _solutionsYX.length; ++i) {
+    if(_solutionsYX[i][0] < _xyBB[0]){
+      _xyBB[0] = _solutionsYX[i][0];
     }
     
-    if(_solutions[i][0] > _newSliceBB[1]){
-      _newSliceBB[1] = _solutions[i][0];
+    if(_solutionsYX[i][0] > _xyBB[1]){
+      _xyBB[1] = _solutionsYX[i][0];
     }
     
-    if(_solutions[i][1] < _newSliceBB[2]){
-      _newSliceBB[2] = _solutions[i][1];
+    if(_solutionsYX[i][1] < _xyBB[2]){
+      _xyBB[2] = _solutionsYX[i][1];
     }
     
-    if(_solutions[i][1] > _newSliceBB[3]){
-      _newSliceBB[3] = _solutions[i][1];
-    }
-    
-    if(_solutions[i][2] < _newSliceBB[4]){
-      _newSliceBB[4] = _solutions[i][2];
-    }
-    
-    if(_solutions[i][2] > _newSliceBB[5]){
-      _newSliceBB[5] = _solutions[i][2];
+    if(_solutionsYX[i][1] > _xyBB[3]){
+      _xyBB[3] = _solutionsYX[i][1];
     }
   }
-  
-  object._newSliceBB = _newSliceBB;
-  
-  // compute intersection solutions bb with plane
-  
-  var _solutions2 = new Array();
-  var _solutionsOut2 = new Array();
-  
-  X.TIMER(this._classname + '.bbox');
-  
-  // xmin, xmax, ymin, ymax, zmin, zmax
-//  for(var _i = 0; _i < _solutions.length; _i++){
-//    // 
-////    var _i2 = Math.floor(_i/2);
-////    var _i3 = (_i2 + 1)%3;
-////    var _i4 = (_i2 + 2)%3;
-////    var _j3 = (4 + (2*_i2))%6;
-//    for(var _j = 0; _j < _solutions.length; _j++){
-//      
-//      // Are 2 points on same plane?
-//      
-//      var _plane = -1;
-//      if(_solutions[_i][0] == _solutions[_j][0]){
-//        _plane = 0;
-//      }
-//      else if(_solutions[_i][1] == _solutions[_j][1]){
-//        _plane = 1;
-//      }
-//      else if(_solutions[_i][2] == _solutions[_j][2]){
-//        _plane = 2;
-//      }
-//      
-//      if(_plane >= 0){
-//        var _m = 0;
-//        if(_solutions[_i][1] == _boundingBox[2] ||
-//           _solutions[_i][1] == _boundingBox[3]){
-//          _m = 1;
-//        }
-//        else if(_solutions[_i][2] == _boundingBox[4] ||
-//            _solutions[_i][2] == _boundingBox[5]){
-//          _m = 2;
-//        }
-//        var _m2 = 0;
-//        if(_solutions[_j][1] == _boundingBox[2] ||
-//            _solutions[_j][1] == _boundingBox[3]){
-//           _m2 = 1;
-//         }
-//         else if(_solutions[_j][2] == _boundingBox[4] ||
-//             _solutions[_j][2] == _boundingBox[5]){
-//           _m2 = 2;
-//         }
-//        window.console.log('GET SOLUTIONS');
-//        window.console.log(_solutions[_i]);
-//        window.console.log(_solutions[_j]);
-//        window.console.log('GET MAXIMUMS');
-//        window.console.log(_m);
-//        window.console.log(_m2);
-//        
-//        
-//        if(_m != _m2){
-//          // get location of last point and store point!
-//          var _solution = (-(
-//              _sliceNormal[_m]*(_solutions[_i][_m] - _sliceOrigin[_m])
-//              +
-//              _sliceNormal[_m2]*(_solutions[_j][_m2] - _sliceOrigin[_m2])
-//              )
-//              /
-//              _sliceNormal[(_m2 + _m)%3]
-//              )
-//              +
-//              _sliceOrigin[(_m2 + _m)%3]
-//              ;
-//          
-//          var _sol = new Array();
-//          _sol[_m] = _solutions[_i][_m];
-//          _sol[_m2] = _solutions[_j][_m];
-//          _sol[(_m2 + _m)%3] = _solution;
-//          
-//          //_solutions2.push(_sol);
-//      }
-//      
-//        
-//      }
-//      
-//      
-//      //window.console.log(_i + ' - ' + (2 + _j + (2*Math.floor(_i/2)))%6 );
-//
-////      var _j2 = (2 + _j + (2*_i2))%6;
-//      
-////      window.console.log('Bounding Box:');
-////      window.console.log( _i + '-' + _j2);
-////      window.console.log( _boundingBox[_i] + '-' + _boundingBox[_j2]);
-////      window.console.log( 'Target Norms/Origins:');
-////      window.console.log( _i2 + '-' + _i3);
-//      
-////      var _solution = (-(
-////          _sliceNormal[_i2]*(_newSliceBB[_i] - _sliceOrigin[_i2])
-////          +
-////          _sliceNormal[_i3]*(_newSliceBB[_j2] - _sliceOrigin[_i3])
-////          )
-////          /
-////          _sliceNormal[_i4]
-////          )
-////          +
-////          _sliceOrigin[_i4]
-////          ;
-////      
-////      // is solution in range?
-////      window.console.log('Solution:');
-////      window.console.log(_solution);
-////        
-////        var _sol = new Array();
-////        _sol[_i2] = _newSliceBB[_i];
-////        _sol[_i3] = _newSliceBB[_j2];
-////        _sol[_i4] = _solution;
-////        _solutions2.push(_sol);
-//    }
-//  }
-//  
-//  object._solutionsOut = _solutions2;
-  
-  
-  // loop through slice to map pixels
-  
-  X.TIMERSTOP(this._classname + '.bbox');
 
-  window.console.log(_solutions);
+  object._xyBB = _xyBB;
   
-  window.console.log(_newSliceBB);
   // Create Slice in relevant orientation and fill it:
   ///////////////////////////
   //_SliceToRAS
