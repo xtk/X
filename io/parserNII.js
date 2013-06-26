@@ -365,8 +365,8 @@ X.parserNII.prototype.create_IJK2RAS = function(header) {
 
     // fill IJKToRAS
     goog.vec.Mat4.setRowValues(IJKToRAS, 0, header.pixdim[1], 0, 0, 0);
-    goog.vec.Mat4.setRowValues(IJKToRAS, 0, 0, header.pixdim[2], 0, 0);
-    goog.vec.Mat4.setRowValues(IJKToRAS, 0, 0, 0, header.pixdim[3], 0);
+    goog.vec.Mat4.setRowValues(IJKToRAS, 1, 0, header.pixdim[2], 0, 0);
+    goog.vec.Mat4.setRowValues(IJKToRAS, 2, 0, 0, header.pixdim[3], 0);
 
     _spaceorientation.push(header.pixdim[1]);
     _spaceorientation.push(0);
@@ -442,8 +442,8 @@ X.parserNII.prototype.create_IJK2RAS = function(header) {
     var sx = header.srow_x, sy = header.srow_y, sz = header.srow_z;
     // fill IJKToRAS
     goog.vec.Mat4.setRowValues(IJKToRAS, 0, sx[0], sx[1], sx[2], sx[3]);
-    goog.vec.Mat4.setRowValues(IJKToRAS, 0, sy[0], sy[1], sy[2], sy[3]);
-    goog.vec.Mat4.setRowValues(IJKToRAS, 0, sz[0], sz[1], sz[2], sz[3]);
+    goog.vec.Mat4.setRowValues(IJKToRAS, 1, sy[0], sy[1], sy[2], sy[3]);
+    goog.vec.Mat4.setRowValues(IJKToRAS, 2, sz[0], sz[1], sz[2], sz[3]);
 
   }
 
