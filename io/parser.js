@@ -629,13 +629,13 @@ X.parser.prototype.reslice = function(object) {
   // Create Slice in Arbitrary orientation
   ///////////////////////////
   var _sliceOrigin = new goog.vec.Vec3.createFloat32FromValues(
-      _rascenter[0]-100,
+      _rascenter[0],
       _rascenter[1],
-      _rascenter[2]-100);
+      _rascenter[2]);
   
   var _sliceNormal = new goog.vec.Vec3.createFloat32FromValues(
       1,
-      .1,
+      1,
       1);
   
   object._sliceOrigin = _sliceOrigin;
@@ -966,6 +966,42 @@ X.parser.prototype.reslice = function(object) {
   
   object._solutionsXY = _solutionsYX;
   
+  // get new spacing
+//  var _spacingXY = new Array();
+//  var tar = new goog.vec.Vec4.createFloat32FromValues(_rasorigin[0], _rasorigin[1], _rasorigin[2], 1);
+//  var res = new goog.vec.Vec4.createFloat32();
+//  goog.vec.Mat4.multVec4(_q1, tar, res);
+//  
+//  var tar2 = new goog.vec.Vec4.createFloat32FromValues(_rasorigin[0] + _rasspacing[0], _rasorigin[1] + _rasspacing[1], _rasorigin[2] + _rasspacing[2], 1);
+//  var res2 = new goog.vec.Vec4.createFloat32();
+//  goog.vec.Mat4.multVec4(_q1, tar2, res2);
+//  
+//  window.console.log(' XY SPACING ');
+//  window.console.log(res2[0] - res[0]);
+//  window.console.log(res2[1] - res[1]);
+//  window.console.log(res2[2] - res[2]);
+//  _xyspacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
+//  
+//  var tar2 = new goog.vec.Vec4.createFloat32FromValues(MRI.pixdim[1], MRI.pixdim[2], MRI.pixdim[3], 1);
+//  var res2 = new goog.vec.Vec4.createFloat32();
+//  goog.vec.Mat4.multVec4(IJKToRAS, tar2, res2);
+//  
+//  
+//  for (var i = 0; i < _solutions.length; ++i) {
+//    var tar2 = new goog.vec.Vec4.createFloat32FromValues(_solutions[i][0], _solutions[i][1], _solutions[i][2], 1);
+//    var res2 = new goog.vec.Vec4.createFloat32();
+//    goog.vec.Mat4.multVec4(_q1, tar2, res2);
+//
+//
+//    window.console.log(res2);
+//    var _sol = new Array();
+//    _sol[0] = res2[0];
+//    _sol[1] = res2[1];
+//    _sol[2] = res2[2];
+//    
+//    _solutionsYX.push(_sol);
+//  }
+  
   // get XY bounding box!
   var _xyBB = [Number.MAX_VALUE, Number.MIN_VALUE,
                      Number.MAX_VALUE, Number.MIN_VALUE,
@@ -989,6 +1025,77 @@ X.parser.prototype.reslice = function(object) {
   }
 
   object._xyBB = _xyBB;
+  
+  window.console.log(_xyBB);
+  var _q2 = new goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.invert(_q1, _q2);
+  
+  var res = new goog.vec.Vec4.createFloat32();
+  var res2 = new goog.vec.Vec4.createFloat32();
+  var textureSize = 4 * (Math.floor(_xyBB[1]) - Math.floor(_xyBB[0])) * (Math.floor(_xyBB[3]) - Math.floor(_xyBB[2]));
+  var textureForCurrentSlice = new Uint8Array(textureSize);
+  var pixelTexture = new X.texture();
+  var _p = 0;
+  
+  // return ijk indices
+  X.TIMER(this._classname + '.RRESLICE');
+  for (var i = Math.floor(_xyBB[0]); i < Math.floor(_xyBB[1]); i++) {
+    for (var j = Math.floor(_xyBB[2]); j < Math.floor(_xyBB[3]); j++) {
+      //
+      // convert to RAS
+    var tar = new goog.vec.Vec4.createFloat32FromValues(i, j, _xyBB[4], 1);
+    goog.vec.Mat4.multVec4(_q2, tar, res);
+    
+      // convert to IJK
+    goog.vec.Mat4.multVec4(_ras2ijk, res, res2);
+    
+      // get value if there is a match, trnasparent if no match!
+    var textureStartIndex = _p * 4;
+    
+    if( (0 < Math.round(res2[0])) && (Math.round(res2[0]) < _dim[0] ) &&
+        (0 < Math.round(res2[1])) && (Math.round(res2[1]) < _dim[1] ) &&
+        (0 < Math.round(res2[1])) && (Math.round(res2[2]) < _dim[2] )){
+      
+      var pixval = 255 * (image[Math.floor(res2[0])][Math.floor(res2[1])][Math.floor(res2[2])] / object._max)
+      textureForCurrentSlice[textureStartIndex] = pixval;
+      textureForCurrentSlice[++textureStartIndex] = pixval;
+      textureForCurrentSlice[++textureStartIndex] = pixval;
+      textureForCurrentSlice[++textureStartIndex] = 255;
+      
+    }
+    else{
+      
+      textureForCurrentSlice[textureStartIndex] = 0;
+      textureForCurrentSlice[++textureStartIndex] = 0;
+      textureForCurrentSlice[++textureStartIndex] = 0;
+      textureForCurrentSlice[++textureStartIndex] = 0;
+      
+    }
+
+    _p++;
+
+    //var _dim = object._dimensions;
+    //realImage
+    //image
+    } 
+  }
+  
+  pixelTexture._rawData = textureForCurrentSlice;
+  pixelTexture._rawDataWidth = Math.floor(_xyBB[1]) - Math.floor(_xyBB[0]);
+  
+  window.console.log(  pixelTexture._rawDataWidth);
+
+  
+  pixelTexture._rawDataHeight = Math.floor(_xyBB[3]) - Math.floor(_xyBB[2]);
+  
+  window.console.log(  pixelTexture._rawDataHeight);
+  
+  object._texture = pixelTexture;
+  
+  X.TIMERSTOP(this._classname + '.RRESLICE');
+  
+  
+  // get texture with spacing 1!
   
   // Create Slice in relevant orientation and fill it:
   ///////////////////////////
