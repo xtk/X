@@ -244,7 +244,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _pixel_spacing += String.fromCharCode(_b1);
           }
           _pixel_spacing = _pixel_spacing.split("\\");
-          MRI.pixdim = [ +_pixel_spacing[0], +_pixel_spacing[1], Infinity ];
+          MRI.pixdim = [ parseFloat(_pixel_spacing[0]), parseFloat(_pixel_spacing[1]), Infinity ];
           _tagCount--;
           break;
         case 0x1052: // rescale intercept
@@ -290,8 +290,8 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _image_position += String.fromCharCode(_b1);
           }
           _image_position = _image_position.split("\\");
-          MRI.origin = [ +_image_position[0], +_image_position[1],
-              +_image_position[2] ];
+          MRI.origin = [ parseFloat(_image_position[0]), parseFloat(_image_position[1]),
+              parseFloat(_image_position[2]) ];
           _tagCount--;
           break;
         case 0x0037:
@@ -308,10 +308,10 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _image_orientation += String.fromCharCode(_b1);
           }
           _image_orientation = _image_orientation.split("\\");
-          MRI.spaceorientation = [ +_image_orientation[0],
-              +_image_orientation[1], +_image_orientation[2],
-              +_image_orientation[3], +_image_orientation[4],
-              +_image_orientation[5] ];
+          MRI.spaceorientation = [ parseFloat(_image_orientation[0]),
+              parseFloat(_image_orientation[1]), parseFloat(_image_orientation[2]),
+              parseFloat(_image_orientation[3]), parseFloat(_image_orientation[4]),
+              parseFloat(_image_orientation[5]) ];
           _tagCount--;
           break;
         }
