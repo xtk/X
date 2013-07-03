@@ -469,17 +469,17 @@ X.parser.prototype.reslice = function(object) {
   var _dim = object._dimensions;
 //  
   var datastream = object._data;
-  var image = new Array(_dim[0]);
+  var image = new Array(_dim[2]);
   // use real image to return real values
-  var realImage = new Array(_dim[0]);
+  var realImage = new Array(_dim[2]);
   // (fill volume)
-  var _nb_pix_per_slice = _dim[1] * _dim[2];
+  var _nb_pix_per_slice = _dim[1] * _dim[0];
   var _pix_value = 0;
   var _i = 0;
   var _j = 0;
   var _k = 0;
   var _data_pointer = 0;
-  for (_k = 0; _k < _dim[0]; _k++) {
+  for (_k = 0; _k < _dim[2]; _k++) {
 
     // get current slice
     var _current_k = datastream.subarray(_k * (_nb_pix_per_slice), (_k + 1)
@@ -492,10 +492,9 @@ X.parser.prototype.reslice = function(object) {
     image[_k] = new Array(_dim[1]);
     realImage[_k] = new Array(_dim[1]);
     for (_j = 0; _j < _dim[1]; _j++) {
-
-    image[_k][_j] = new object._data.constructor(_dim[2]);
-    realImage[_k][_j] = new object._data.constructor(_dim[2]);
-    for (_i = 0; _i < _dim[2]; _i++) {
+    image[_k][_j] = new object._data.constructor(_dim[0]);
+    realImage[_k][_j] = new object._data.constructor(_dim[0]);
+    for (_i = 0; _i < _dim[0]; _i++) {
 
         // go through row (i) first :)
         // 1 2 3 4 5 6 ..
@@ -709,6 +708,7 @@ X.parser.prototype.reslice = function(object) {
           _sliceOrigin[_i4]
           ;
       
+      //window.console.log(_sliceNormal[_i4]);
       // is solution in range?
 //      window.console.log('Solution:');
 //      window.console.log(_solution);
@@ -766,12 +766,21 @@ X.parser.prototype.reslice = function(object) {
 //      _rascenter[2]);
   
   var _v = _sliceNormal;
-  var _vp = new goog.vec.Vec3.createFloat32FromValues(
+  var _z = new goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
+
+  _q1 = new goog.vec.Mat4.createFloat32Identity();
+  
+  // no rotation needed if we are in the z plane already
+
+  if(!goog.vec.Vec3.equals(_v,_z))
+  {
+    window.console.log('INSIDE');
+    
+    var _vp = new goog.vec.Vec3.createFloat32FromValues(
       _v[0]/goog.vec.Vec3.magnitude(_v),
       _v[1]/goog.vec.Vec3.magnitude(_v),
       _v[2]/goog.vec.Vec3.magnitude(_v));
-  
-  var _z = new goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
+
   
   var _ap = _vp[0];
   var _bp = _vp[1];
@@ -789,42 +798,12 @@ X.parser.prototype.reslice = function(object) {
   
   var _ct = Math.cos(_teta);
   var _st = Math.sin(_teta);
-  
-  window.console.log("RP");
-  window.console.log(_rp);
-  
+    
   var a = Math.cos(_teta/2);
   var b = Math.sin(_teta/2)*_rp[0];
   var c = Math.sin(_teta/2)*_rp[1];
   var d = Math.sin(_teta/2)*_rp[2];
   
-//  window.console.log(_q0*_q0 + _q1*_q1 + _q2*_q2 + _q3*_q3);
-//  
-//  var _00 = 1 - 2*_q1*_q1 - 2*_q2*_q2;
-//  var _01 = 2*_q0*_q1 - 2*_q2*_q3;
-//  var _02 = 2*_q0*_q3 + 2*_q1*_q2;
-//  
-//  var _10 = 2*_q0*_q1 + 2*_q2*_q3;
-//  var _11 = 1 - 2*_q0*_q0 - 2*_q2*_q2;
-//  var _12 = 2*_q1*_q2 - 2*_q0*_q3;
-//  
-//  var _20 = 2*_q0*_q2 - 2*_q1*_q3;
-//  var _21 = 2*_q1*_q2 + 2*_q0*_q3;
-//  var _22 = 1 - 2*_q0*_q0 - 2*_q1*_q1;
-  
-//  var _00 = _ct + _rp[0]*_rp[0]*(1 - _ct);
-//  var _01 = _rp[0]*_rp[1]*(1 - _ct) - _rp[2]*_st;
-//  var _02 = _rp[0]*_rp[2]*(1 - _ct) - _rp[1]*_st;
-//  
-//  var _10 = _rp[1]*_rp[0]*(1-_ct) + _rp[2]*_st;
-//  var _11 = _ct + _rp[1]*_rp[1]*(1-_ct);
-//  var _12 = _rp[1]*_rp[2]*(1 - _ct) - _rp[0]*_st;
-//  
-//  var _20 = _rp[2]*_rp[0]*(1-_ct) + _rp[1]*_st;
-//  var _21 = _rp[2]*_rp[1]*(1 - _ct) - _rp[0]*_st;
-//  var _22 = _ct + _rp[2]*_rp[2]*(1 - _ct);
-  
-  _q1 = new goog.vec.Mat4.createFloat32Identity();
   goog.vec.Mat4.setRowValues(_q1,
       0,
       (a*a+b*b-c*c-d*d),
@@ -846,106 +825,7 @@ X.parser.prototype.reslice = function(object) {
       (a*a+d*d-c*c-b*b),
       0
       );
-//  goog.vec.Mat4.setRowValues(_q1, 0, _00, _01, _02, -_rascenter[0]);
-//  goog.vec.Mat4.setRowValues(_q1, 1, _10, _11, _12, -_rascenter[1]);
-//  goog.vec.Mat4.setRowValues(_q1, 2, _20, _21, _22, -_rascenter[2]);
-  
-  
-//  var _XYPojection = new goog.vec.Vec3.createFloat32FromValues(
-//      1,
-//      1,
-//      0);
-//  
-//  window.console.log(goog.vec.Vec3.dot(_XYPojection, _sliceNormal));
-//
-//// compute X and Y angles
-//  var _XNormal = new goog.vec.Vec3.createFloat32FromValues(
-//      1,
-//      0,
-//      0);
-//var _angleX = Math.PI/2 - Math.acos(goog.vec.Vec3.dot(_sliceNormal, _XNormal) /
-//  (goog.vec.Vec3.magnitude(_sliceNormal)*goog.vec.Vec3.magnitude(_XNormal)
-//      ));
-//  
-//  window.console.log('ANGLE X');
-//  window.console.log(360*_angleX/(2*Math.PI));
-//  // Y rotation
-//  var _YNormal = new goog.vec.Vec3.createFloat32FromValues(
-//      0,
-//      1,
-//      0);
-//  var _angleY = Math.PI/2 - Math.acos(goog.vec.Vec3.dot(_sliceNormal, _YNormal) /
-//  (goog.vec.Vec3.magnitude(_sliceNormal)*goog.vec.Vec3.magnitude(_YNormal)
-//      ));
-//      
-//      window.console.log('ANGLE Y');
-//      window.console.log(_angleY);
-//      window.console.log(360*_angleY/(2*Math.PI));
-//      
-//      // Z rotation
-//      var _ZNormal = new goog.vec.Vec3.createFloat32FromValues(
-//          0,
-//          0,
-//          1);
-//    var _angleZ = Math.PI/2 - Math.acos(goog.vec.Vec3.dot(_sliceNormal, _ZNormal) /
-//      (goog.vec.Vec3.magnitude(_sliceNormal)*goog.vec.Vec3.magnitude(_ZNormal)
-//          ));
-//          
-//          window.console.log('ANGLE Z');
-//          window.console.log(_angleZ);
-//          window.console.log(360*_angleZ/(2*Math.PI));
-//      
-//  window.console.log(_rascenter);
-//  
-//  // step 1 translation?
-//  _t1 = new goog.vec.Mat4.createFloat32Identity();
-//  goog.vec.Mat4.setRowValues(_t1, 0, 1, 0, 0, -_rascenter[0]);
-//  goog.vec.Mat4.setRowValues(_t1, 1, 0, 1, 0, -_rascenter[1]);
-//  goog.vec.Mat4.setRowValues(_t1, 2, 0, 0, 1, -_rascenter[2]);
-//      
-//  _r1 = new goog.vec.Mat4.createFloat32Identity();
-//  goog.vec.Mat4.setRowValues(_r1, 0, 1, 0, 0, 0);
-//  goog.vec.Mat4.setRowValues(_r1, 1, 0, Math.cos(_angleY), -Math.sin(_angleY), 0);
-//  goog.vec.Mat4.setRowValues(_r1, 2, 0, Math.sin(_angleY), Math.cos(_angleY), 0);
-//  
-//  _r2 = new goog.vec.Mat4.createFloat32Identity();
-//  goog.vec.Mat4.setRowValues(_r2, 0, Math.cos(_angleX), 0, -Math.sin(_angleX), 0);
-//  goog.vec.Mat4.setRowValues(_r2, 1, 0, 1, 0, 0);
-//  goog.vec.Mat4.setRowValues(_r2, 2, Math.sin(_angleX), 0, Math.cos(_angleX), 0);
-//  
-//  _r3 = new goog.vec.Mat4.createFloat32Identity();
-//  goog.vec.Mat4.setRowValues(_r3, 0, Math.cos(_angleZ), -Math.sin(_angleZ), 0, 0);
-//  goog.vec.Mat4.setRowValues(_r3, 1, Math.sin(_angleZ), Math.cos(_angleZ), 0,  0);
-//  goog.vec.Mat4.setRowValues(_r3, 2, 0, 0, 1, 0);
-//
-//  _translation = new goog.vec.Mat4.createFloat32();
-//  goog.vec.Mat4.multMat(_r1, _r2, _translation);
-//  
-//  _rotation = new goog.vec.Mat4.createFloat32();
-//  goog.vec.Mat4.multMat(_translation, _t1, _rotation);
-//  
-//  window.console.log(_r1);
-//  window.console.log(_r2);
-//  
-//
-//  
-//  window.console.log(_rotation);
-//  goog.vec.Mat4.setRowValues(_s1, 0, Math.cos(_angleX), 0, Math.sin(_angleX), 0);
-//  goog.vec.Mat4.setRowValues(_s1, 1, Math.sin(_angleY)*Math.sin(_angleX), Math.cos(_angleY), -Math.cos(_angleX)*Math.sin(_angleY), 0);
-//  goog.vec.Mat4.setRowValues(_s1, 2, -Math.cos(_angleY)*Math.sin(_angleX), Math.sin(_angleY), Math.cos(_angleY)*Math.cos(_angleX), 0);
-//  
-  
-  // Invert IJK to RAS
-  //MRI.RASToIJK = new goog.vec.Mat4.createFloat32();
-//  goog.vec.Mat4.invert(_s1, _s1);
-  
-//  goog.vec.Mat4.setRowValues(_s1, 0, Math.cos(_angleY), Math.sin(_angleX)*Math.sin(_angleY), Math.cos(_angleX)*Math.sin(_angleY), 0);
-//  goog.vec.Mat4.setRowValues(_s1, 1, 0, Math.cos(_angleX), -Math.sin(_angleX), 0);
-//  goog.vec.Mat4.setRowValues(_s1, 2, 0, Math.sin(_angleX), Math.cos(_angleX)*Math.cos(_angleY), 0);
-//  
-//  
-
-//  
+}
 //  // Apply transform to each point!
   var _solutionsYX = new Array();
   for (var i = 0; i < _solutions.length; ++i) {
@@ -953,8 +833,6 @@ X.parser.prototype.reslice = function(object) {
     var res2 = new goog.vec.Vec4.createFloat32();
     goog.vec.Mat4.multVec4(_q1, tar2, res2);
 
-
-    window.console.log(res2);
     var _sol = new Array();
     _sol[0] = res2[0];
     _sol[1] = res2[1];
@@ -971,7 +849,7 @@ X.parser.prototype.reslice = function(object) {
 //  var tar = new goog.vec.Vec4.createFloat32FromValues(_rasorigin[0], _rasorigin[1], _rasorigin[2], 1);
 //  var res = new goog.vec.Vec4.createFloat32();
 //  goog.vec.Mat4.multVec4(_q1, tar, res);
-//  
+// 
 //  var tar2 = new goog.vec.Vec4.createFloat32FromValues(_rasorigin[0] + _rasspacing[0], _rasorigin[1] + _rasspacing[1], _rasorigin[2] + _rasspacing[2], 1);
 //  var res2 = new goog.vec.Vec4.createFloat32();
 //  goog.vec.Mat4.multVec4(_q1, tar2, res2);
@@ -980,6 +858,11 @@ X.parser.prototype.reslice = function(object) {
 //  window.console.log(res2[0] - res[0]);
 //  window.console.log(res2[1] - res[1]);
 //  window.console.log(res2[2] - res[2]);
+//  
+//  window.console.log(' RAS SPACING ');
+//  window.console.log(_rasspacing[0]);
+//  window.console.log(_rasspacing[1]);
+//  window.console.log(_rasspacing[2]);
 //  _xyspacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
 //  
 //  var tar2 = new goog.vec.Vec4.createFloat32FromValues(MRI.pixdim[1], MRI.pixdim[2], MRI.pixdim[3], 1);
@@ -1032,67 +915,120 @@ X.parser.prototype.reslice = function(object) {
   
   var res = new goog.vec.Vec4.createFloat32();
   var res2 = new goog.vec.Vec4.createFloat32();
-  var textureSize = 4 * (Math.floor(_xyBB[1]) - Math.floor(_xyBB[0])) * (Math.floor(_xyBB[3]) - Math.floor(_xyBB[2]));
+  var _wmin =  Math.floor(_xyBB[0]);
+  var _wmax =  Math.floor(_xyBB[1]);
+  var _swidth = _wmax - _wmin;
+  var _hmin = Math.floor(_xyBB[2]);
+  var _hmax = Math.ceil(_xyBB[3]);
+  var _sheight = _hmax - _hmin;
+  
+  var _csize = _swidth * _sheight;
+  var textureSize = 4 * _csize;
   var textureForCurrentSlice = new Uint8Array(textureSize);
   var pixelTexture = new X.texture();
   var _p = 0;
   
   // return ijk indices
   X.TIMER(this._classname + '.RRESLICE');
-  for (var i = Math.floor(_xyBB[0]); i < Math.floor(_xyBB[1]); i++) {
-    for (var j = Math.floor(_xyBB[2]); j < Math.floor(_xyBB[3]); j++) {
-      //
-      // convert to RAS
+
+  
+  var _mappedPoints = new Array();
+  var _mappedPointsIJK = new Array();
+  
+  var _count = 0;
+  
+  for (var j = _hmin; j < _hmax; j+=1) {
+    var _ci = 0;
+for (var i = _wmin; i < _wmax; i+=1) {
+    //
+    // convert to RAS
     var tar = new goog.vec.Vec4.createFloat32FromValues(i, j, _xyBB[4], 1);
     goog.vec.Mat4.multVec4(_q2, tar, res);
     
-      // convert to IJK
+    // convert to IJK
     goog.vec.Mat4.multVec4(_ras2ijk, res, res2);
+
     
-      // get value if there is a match, trnasparent if no match!
+    // get value if there is a match, trnasparent if no match!
     var textureStartIndex = _p * 4;
     
-    if( (0 < Math.round(res2[0])) && (Math.round(res2[0]) < _dim[0] ) &&
-        (0 < Math.round(res2[1])) && (Math.round(res2[1]) < _dim[1] ) &&
-        (0 < Math.round(res2[1])) && (Math.round(res2[2]) < _dim[2] )){
+    if( (0 <= res2[0]) && (res2[0] < _dim[0] ) &&
+        (0 <= res2[1]) && (res2[1] < _dim[1] ) &&
+        (0 <= res2[2]) && (res2[2] < _dim[2] )){
+      // map to 0 if necessary
       
-      var pixval = 255 * (image[Math.floor(res2[0])][Math.floor(res2[1])][Math.floor(res2[2])] / object._max)
-      textureForCurrentSlice[textureStartIndex] = pixval;
+      var _k = Math.floor(res2[2]);
+      var _j = Math.floor(res2[1]);
+      var _i = Math.floor(res2[0]);
+      
+//      window.console.log(image);
+      
+      var pixval = image[_k][_j][_i];
+//      textureForCurrentSlice[textureStartIndex] = pixval;
+//      textureForCurrentSlice[textureStartIndex] = 0;
+      //textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
+//      textureForCurrentSlice[textureStartIndex] = pixval;
+      textureForCurrentSlice[textureStartIndex] = 255*_ci/(_wmax - _wmin);
       textureForCurrentSlice[++textureStartIndex] = pixval;
+      //textureForCurrentSlice[++textureStartIndex] = pixval;
       textureForCurrentSlice[++textureStartIndex] = pixval;
       textureForCurrentSlice[++textureStartIndex] = 255;
       
+      var _sol = new Array();
+      _sol[0] = res[0];
+      _sol[1] = res[1];
+      _sol[2] = res[2];
+
+      _mappedPoints.push(_sol);
+      
+      var _sol2 = new Array();
+      _sol2[0] = _k;
+      _sol2[1] = _j;
+      _sol2[2] = _i;
+
+      _mappedPointsIJK.push(_sol2);
     }
     else{
-      
-      textureForCurrentSlice[textureStartIndex] = 0;
+      textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
+      textureForCurrentSlice[++textureStartIndex] = 255;
       textureForCurrentSlice[++textureStartIndex] = 0;
       textureForCurrentSlice[++textureStartIndex] = 0;
-      textureForCurrentSlice[++textureStartIndex] = 0;
-      
     }
 
+    _ci++;
     _p++;
 
     //var _dim = object._dimensions;
     //realImage
     //image
+//    window.console.log(res2);
+    
+    _count++;
+    
     } 
+
   }
   
+  object._mappedPoints = _mappedPoints;
+  object._mappedPointsIJK = _mappedPointsIJK;
+    
   pixelTexture._rawData = textureForCurrentSlice;
-  pixelTexture._rawDataWidth = Math.floor(_xyBB[1]) - Math.floor(_xyBB[0]);
+  pixelTexture._rawDataWidth = _swidth;
   
   window.console.log(  pixelTexture._rawDataWidth);
 
   
-  pixelTexture._rawDataHeight = Math.floor(_xyBB[3]) - Math.floor(_xyBB[2]);
+  pixelTexture._rawDataHeight = _sheight;
   
   window.console.log(  pixelTexture._rawDataHeight);
   
   object._texture = pixelTexture;
   
   X.TIMERSTOP(this._classname + '.RRESLICE');
+  
+  
+  var tmpreal = realImage;
+  window.console.log(realImage)
   
   
   // get texture with spacing 1!
@@ -1438,8 +1374,8 @@ X.parser.prototype.reslice = function(object) {
   }
 
   X.TIMERSTOP(this._classname + '.reslice');
-
-  return realImage;
+  
+  return tmpreal;
   
   
   

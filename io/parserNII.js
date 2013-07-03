@@ -303,6 +303,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   
   // re-slice the data according each direction
   object._image = this.reslice(object);
+    
   object.map_();
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
