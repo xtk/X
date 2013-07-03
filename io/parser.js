@@ -515,6 +515,8 @@ X.parser.prototype.reslice = function(object) {
 
   }
   
+  
+  X.TIMER(this._classname + '.RRESLICE');
   // Get middle slice RAS information
   var _rasorigin = object._RASOrigin;
   window.console.log('RAS Origin');
@@ -928,7 +930,7 @@ X.parser.prototype.reslice = function(object) {
   var _p = 0;
   
   // return ijk indices
-  X.TIMER(this._classname + '.RRESLICE');
+
 
   
   var _mappedPoints = new Array();
@@ -938,16 +940,21 @@ X.parser.prototype.reslice = function(object) {
   
   window.console.log(_dim);
   
-  for (var j = _hmin; j < _hmax; j+=1) {
+  var tar = new goog.vec.Vec4.createFloat32FromValues(i, j, _xyBB[4], 1);
+  var tttt = goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.multMat(_ras2ijk,_q2, tttt);
+  
+  var _res = 1;
+  
+  for (var j = _hmin; j < _hmax; j+=_res) {
     var _ci = 0;
-for (var i = _wmin; i < _wmax; i+=1) {
+for (var i = _wmin; i < _wmax; i+=_res) {
     //
-    // convert to RAS
-    var tar = new goog.vec.Vec4.createFloat32FromValues(i, j, _xyBB[4], 1);
-    goog.vec.Mat4.multVec4(_q2, tar, res);
-    
+    tar[0] = i;
+    tar[1] = j;
+  // convert to RAS
     // convert to IJK
-    goog.vec.Mat4.multVec4(_ras2ijk, res, res2);
+    goog.vec.Mat4.multVec4(tttt, tar, res2);
 
     
     // get value if there is a match, trnasparent if no match!
@@ -975,19 +982,19 @@ for (var i = _wmin; i < _wmax; i+=1) {
       textureForCurrentSlice[++textureStartIndex] = pixval;
       textureForCurrentSlice[++textureStartIndex] = 255;
       
-      var _sol = new Array();
-      _sol[0] = res[0];
-      _sol[1] = res[1];
-      _sol[2] = res[2];
-
-      _mappedPoints.push(_sol);
-      
-      var _sol2 = new Array();
-      _sol2[0] = _k;
-      _sol2[1] = _j;
-      _sol2[2] = _i;
-
-      _mappedPointsIJK.push(_sol2);
+//      var _sol = new Array();
+//      _sol[0] = res[0];
+//      _sol[1] = res[1];
+//      _sol[2] = res[2];
+//
+//      _mappedPoints.push(_sol);
+//      
+//      var _sol2 = new Array();
+//      _sol2[0] = _k;
+//      _sol2[1] = _j;
+//      _sol2[2] = _i;
+//
+//      _mappedPointsIJK.push(_sol2);
     }
     else{
       textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
@@ -995,16 +1002,18 @@ for (var i = _wmin; i < _wmax; i+=1) {
       textureForCurrentSlice[++textureStartIndex] = 0;
       textureForCurrentSlice[++textureStartIndex] = 0;
     }
+    
+    
 
-    _ci++;
-    _p++;
+    _ci+=_res;
+    _p+=_res;
 
     //var _dim = object._dimensions;
     //realImage
     //image
 //    window.console.log(res2);
     
-    _count++;
+    _count+=_res;
     
     } 
 
