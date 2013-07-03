@@ -530,11 +530,6 @@ X.parser.prototype.reslice = function(object) {
                     _rasorigin[1] + _rasdimensions[1]/2,
                     _rasorigin[2] + _rasdimensions[2]/2
                     ];
-  
-//  var _rascenter = [_rasorigin[0] ,
-//                    _rasorigin[1] + _rasdimensions[1]/2,
-//                    _rasorigin[2] + _rasdimensions[2]/2
-//                    ];
 
 //  window.console.log(object._dimensions);
     
@@ -656,15 +651,19 @@ X.parser.prototype.reslice = function(object) {
   // Get intersection of this plane with cube:
   //_rasdimensions
   //_rasorigin
-  var _boundingBox = [_rasorigin[0],
-                      _rasorigin[0] + _rasdimensions[0],
-                      _rasorigin[1],
-                      _rasorigin[1] + _rasdimensions[1],
-                      _rasorigin[2],
-                      _rasorigin[2] + _rasdimensions[2]
+  var _boundingBox = [Math.min(_rasorigin[0],_rasorigin[0] + _rasdimensions[0]),
+                      Math.max(_rasorigin[0],_rasorigin[0] + _rasdimensions[0]),
+                      Math.min(_rasorigin[1],_rasorigin[1] + _rasdimensions[1]),
+                      Math.max(_rasorigin[1],_rasorigin[1] + _rasdimensions[1]),
+                      Math.min(_rasorigin[2],_rasorigin[2] + _rasdimensions[2]),
+                      Math.max(_rasorigin[2],_rasorigin[2] + _rasdimensions[2])
                       ];
   
+  object._boundingBox = _boundingBox;
   window.console.log(_boundingBox);
+  window.console.log(_boundingBox[1] - _boundingBox[0] );
+  window.console.log(_boundingBox[3] - _boundingBox[2] );
+  window.console.log(_boundingBox[5] - _boundingBox[4] );
 //  var _boundingBox = [-.5,
 //                      .5,
 //                      -.5,
@@ -937,6 +936,8 @@ X.parser.prototype.reslice = function(object) {
   
   var _count = 0;
   
+  window.console.log(_dim);
+  
   for (var j = _hmin; j < _hmax; j+=1) {
     var _ci = 0;
 for (var i = _wmin; i < _wmax; i+=1) {
@@ -967,8 +968,8 @@ for (var i = _wmin; i < _wmax; i+=1) {
 //      textureForCurrentSlice[textureStartIndex] = pixval;
 //      textureForCurrentSlice[textureStartIndex] = 0;
       //textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
-//      textureForCurrentSlice[textureStartIndex] = pixval;
-      textureForCurrentSlice[textureStartIndex] = 255*_ci/(_wmax - _wmin);
+      textureForCurrentSlice[textureStartIndex] = pixval;
+//      textureForCurrentSlice[textureStartIndex] = 255*_ci/(_wmax - _wmin);
       textureForCurrentSlice[++textureStartIndex] = pixval;
       //textureForCurrentSlice[++textureStartIndex] = pixval;
       textureForCurrentSlice[++textureStartIndex] = pixval;

@@ -255,11 +255,107 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   var res = new goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multVec4(IJKToRAS, tar, res);
   
-  MRI.RASOrigin = [res[0], res[1], res[2]];
-  
   var tar2 = new goog.vec.Vec4.createFloat32FromValues(MRI.pixdim[1], MRI.pixdim[2], MRI.pixdim[3], 1);
   var res2 = new goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multVec4(IJKToRAS, tar2, res2);
+  
+  // get location of 8 corners and update BBox
+  var _xyBB = [Number.MAX_VALUE, Number.MIN_VALUE,
+               Number.MAX_VALUE, Number.MIN_VALUE,
+               Number.MAX_VALUE, Number.MIN_VALUE];
+  
+  //
+  var tar6 = new goog.vec.Vec4.createFloat32FromValues(0, 0, 0, 1);
+  var res6 = new goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
+  
+  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
+  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
+  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
+  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
+  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
+  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
+  
+  var tar6 = new goog.vec.Vec4.createFloat32FromValues(0, 0, MRI.dim[3], 1);
+  var res6 = new goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
+  
+  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
+  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
+  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
+  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
+  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
+  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
+  
+  var tar6 = new goog.vec.Vec4.createFloat32FromValues(0, MRI.dim[2], 0, 1);
+  var res6 = new goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
+  
+  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
+  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
+  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
+  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
+  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
+  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
+  
+  var tar6 = new goog.vec.Vec4.createFloat32FromValues(MRI.dim[1], 0, 0, 1);
+  var res6 = new goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
+  
+  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
+  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
+  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
+  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
+  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
+  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
+  
+  var tar6 = new goog.vec.Vec4.createFloat32FromValues(MRI.dim[1], MRI.dim[2], 0, 1);
+  var res6 = new goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
+  
+  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
+  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
+  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
+  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
+  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
+  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
+  
+  var tar6 = new goog.vec.Vec4.createFloat32FromValues(MRI.dim[1], 0, MRI.dim[3], 1);
+  var res6 = new goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
+  
+  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
+  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
+  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
+  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
+  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
+  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
+  
+  var tar6 = new goog.vec.Vec4.createFloat32FromValues(0, MRI.dim[2], MRI.dim[3], 1);
+  var res6 = new goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
+  
+  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
+  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
+  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
+  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
+  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
+  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
+  
+  var tar6 = new goog.vec.Vec4.createFloat32FromValues(MRI.dim[1], MRI.dim[2], MRI.dim[3], 1);
+  var res6 = new goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
+  
+  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
+  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
+  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
+  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
+  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
+  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
+
+  window.console.log('NEW BB');
+  window.console.log(_xyBB);
+  
 
   window.console.log(' RAS SPACING ');
   window.console.log(res2[0] - res[0]);
@@ -268,12 +364,16 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   
   MRI.RASSpacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
   
-  MRI.RASDimensions = [res3[0] - res[0], res3[1] - res[1], res3[2] - res[2]];
+  MRI.RASDimensions = [_xyBB[1] - _xyBB[0], _xyBB[3] - _xyBB[2], _xyBB[5] - _xyBB[4]];
+//  MRI.RASDimensions = [res3[0] - res[0], res3[1] - res[1], res3[2] - res[2]];
+  
+  MRI.RASOrigin = [_xyBB[0], _xyBB[2], _xyBB[4]];
+  //MRI.RASOrigin = [res[0], res[1], res[2]];
   
   // grab the dimensions
-  var _PASdimensionsSp1 = [Math.round(MRI.RASDimensions[0]/MRI.RASSpacing[0]),
-      Math.round(MRI.RASDimensions[1]/MRI.RASSpacing[1]),
-          Math.round(MRI.RASDimensions[2]/MRI.RASSpacing[2])];
+  var _PASdimensionsSp1 = [MRI.dim[1],
+                           MRI.dim[2],
+                           MRI.dim[3]];
   object._dimensions = _PASdimensionsSp1;
   
   window.console.log('PAS DIMS');
