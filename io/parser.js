@@ -632,9 +632,9 @@ X.parser.prototype.reslice = function(object) {
   object._center = _sliceOrigin;
   
   var _sliceNormal = new goog.vec.Vec3.createFloat32FromValues(
-      1,
-      1,
-      0);
+      -.475,
+      .722,
+      .502);
   
   object._front = _sliceNormal;
   
@@ -892,8 +892,8 @@ X.parser.prototype.reslice = function(object) {
   
   // get XY bounding box!
   var _xyBB = [Number.MAX_VALUE, Number.MIN_VALUE,
-                     Number.MAX_VALUE, Number.MIN_VALUE,
-                     _solutionsYX[0][2],_solutionsYX[0][2]];
+               Number.MAX_VALUE, Number.MIN_VALUE,
+               Number.MAX_VALUE, Number.MIN_VALUE];
   for (var i = 0; i < _solutionsYX.length; ++i) {
     if(_solutionsYX[i][0] < _xyBB[0]){
       _xyBB[0] = _solutionsYX[i][0];
@@ -910,13 +910,80 @@ X.parser.prototype.reslice = function(object) {
     if(_solutionsYX[i][1] > _xyBB[3]){
       _xyBB[3] = _solutionsYX[i][1];
     }
+    
+    if(_solutionsYX[i][2] < _xyBB[4]){
+      _xyBB[4] = _solutionsYX[i][2];
+    }
+    
+    if(_solutionsYX[i][2] > _xyBB[5]){
+      _xyBB[5] = _solutionsYX[i][2];
+    }
   }
 
   object._xyBB = _xyBB;
-  
-  window.console.log(_xyBB);
+  window.console.log("XY BB " + _xyBB);
+
   var _q2 = new goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.invert(_q1, _q2);
+  
+  var _xyCenter = new goog.vec.Vec4.createFloat32FromValues(_xyBB[0] + (_xyBB[1] - _xyBB[0])/2,_xyBB[2] + (_xyBB[3] - _xyBB[2])/2, _xyBB[4] + (_xyBB[5] - _xyBB[4])/2,0);
+  var _RASCenter = new goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multMat(_q2,_xyCenter, _RASCenter);
+  object._sliceCenter = [_RASCenter[0],
+      _RASCenter[1], _RASCenter[2]];
+  
+  window.console.log("XY RAS CENTER ");
+  window.console.log(  object._sliceCenter);
+  
+  window.console.log("RAS CENTER ");
+  window.console.log(  _rascenter);
+  
+  var _xyRASBB = [Number.MAX_VALUE, Number.MIN_VALUE,
+                  Number.MAX_VALUE, Number.MIN_VALUE,
+                  Number.MAX_VALUE, Number.MIN_VALUE];
+  for (var i = 0; i < 2; ++i) {
+    for (var j = 0; j < 2; ++j){
+      // get point to convert to RAS
+      //
+      var _XYPoint = new goog.vec.Vec4.createFloat32FromValues(_xyBB[i], _xyBB[j+2], _xyBB[4], 0);
+      // To RAS!
+      var _RASPoint = new goog.vec.Vec4.createFloat32();
+      goog.vec.Mat4.multVec4(_q1, tar, res);
+      goog.vec.Mat4.multMat(_q2,_XYPoint, _RASPoint);
+    // i
+    // 2 + j
+    if(_RASPoint[0] < _xyRASBB[0]){
+      _xyRASBB[0] = _RASPoint[0];
+    }
+    
+    if(_RASPoint[0] > _xyRASBB[1]){
+      _xyRASBB[1] = _RASPoint[0];
+    }
+    
+    if(_RASPoint[1] < _xyRASBB[2]){
+      _xyRASBB[2] = _RASPoint[1];
+    }
+    
+    if(_RASPoint[1] > _xyRASBB[3]){
+      _xyRASBB[3] = _RASPoint[1];
+    }
+    
+    if(_RASPoint[2] < _xyRASBB[4]){
+      _xyRASBB[4] = _RASPoint[2];
+    }
+    
+    if(_RASPoint[2] > _xyRASBB[5]){
+      _xyRASBB[5] = _RASPoint[2];
+    }
+    }
+  }
+  object._xyRASBB = _xyRASBB;
+  window.console.log("RAS BB " + _xyRASBB);
+  
+  window.console.log("RAS CENTER ");
+  window.console.log( (_rasorigin[0] + (_xyRASBB[1] - _xyRASBB[0])/2) + ' - ' + (_rasorigin[1] + (_xyRASBB[3] - _xyRASBB[2])/2)+ ' - ' +  (_rasorigin[2] + (_xyRASBB[5] - _xyRASBB[4])/2));
+  //object._test = [(_rasorigin[0] + (_xyRASBB[1] - _xyRASBB[0])/2) ,(_rasorigin[1] + (_xyRASBB[3] - _xyRASBB[2])/2),(_rasorigin[2] + (_xyRASBB[5] - _xyRASBB[4])/2)];
+  
   
   var res = new goog.vec.Vec4.createFloat32();
   var res2 = new goog.vec.Vec4.createFloat32();
@@ -968,6 +1035,22 @@ X.parser.prototype.reslice = function(object) {
   
   window.console.log(  'TW: ' + pixelTexture._rawDataWidth);
   window.console.log(  'TH: ' + pixelTexture._rawDataHeight);
+  
+  // rigth
+  var _right = new goog.vec.Vec3.createFloat32FromValues(1, 0, 0);
+  var _rright = new goog.vec.Vec3.createFloat32();
+  goog.vec.Mat4.multVec3(_q2, _right, _rright);
+  object._right = _rright;
+  
+  window.console.log( _rright);
+  
+  // up
+  var _up = new goog.vec.Vec3.createFloat32FromValues(0, 1, 0);
+  var _rup = new goog.vec.Vec3.createFloat32();
+  goog.vec.Mat4.multVec3(_q2, _up, _rup);
+  object._up= _rup;
+  
+  window.console.log(_rup);
 
   
   // return ijk indices
