@@ -629,18 +629,24 @@ X.parser.prototype.reslice = function(object) {
       _rascenter[1],
       _rascenter[2]);
   
+  window.console.log("SLICE ORIGIN1");
+  window.console.log(_sliceOrigin);
+  
   object._center = _sliceOrigin;
   
   var _sliceNormal = new goog.vec.Vec3.createFloat32FromValues(
-      -.475,
-      .722,
-      .502);
+      55,
+      5,
+      10);
+  
+  goog.vec.Vec3.normalize(_sliceNormal, _sliceNormal);
+  
+  window.console.log("NORMALIZED");
+  window.console.log(_sliceNormal);
   
   object._front = _sliceNormal;
-  
   object._sliceOrigin = _sliceOrigin;
   object._sliceNormal = _sliceNormal;
-  
   
   // get parametric representation
   // ax + by + cz + d = 0
@@ -860,6 +866,7 @@ X.parser.prototype.reslice = function(object) {
   goog.vec.Mat4.multVec4(_q1, tar2, res2);
   
   window.console.log(' XY SPACING ');
+  var _xySpacing = [res2[0] - res[0],res2[1] - res[1]];
   window.console.log(res2[0] - res[0]);
   window.console.log(res2[1] - res[1]);
   window.console.log(res2[2] - res[2]);
@@ -891,9 +898,9 @@ X.parser.prototype.reslice = function(object) {
 //  }
   
   // get XY bounding box!
-  var _xyBB = [Number.MAX_VALUE, Number.MIN_VALUE,
-               Number.MAX_VALUE, Number.MIN_VALUE,
-               Number.MAX_VALUE, Number.MIN_VALUE];
+  var _xyBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
+               Number.MAX_VALUE, -Number.MAX_VALUE,
+               Number.MAX_VALUE, -Number.MAX_VALUE];
   for (var i = 0; i < _solutionsYX.length; ++i) {
     if(_solutionsYX[i][0] < _xyBB[0]){
       _xyBB[0] = _solutionsYX[i][0];
@@ -932,15 +939,18 @@ X.parser.prototype.reslice = function(object) {
   object._sliceCenter = [_RASCenter[0],
       _RASCenter[1], _RASCenter[2]];
   
+  window.console.log("SLICE ORIGIN2");
+  window.console.log(_sliceOrigin);
+  
   window.console.log("XY RAS CENTER ");
   window.console.log(  object._sliceCenter);
   
   window.console.log("RAS CENTER ");
   window.console.log(  _rascenter);
   
-  var _xyRASBB = [Number.MAX_VALUE, Number.MIN_VALUE,
-                  Number.MAX_VALUE, Number.MIN_VALUE,
-                  Number.MAX_VALUE, Number.MIN_VALUE];
+  var _xyRASBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
+                  Number.MAX_VALUE, -Number.MAX_VALUE,
+                  Number.MAX_VALUE, -Number.MAX_VALUE];
   for (var i = 0; i < 2; ++i) {
     for (var j = 0; j < 2; ++j){
       // get point to convert to RAS
@@ -948,8 +958,11 @@ X.parser.prototype.reslice = function(object) {
       var _XYPoint = new goog.vec.Vec4.createFloat32FromValues(_xyBB[i], _xyBB[j+2], _xyBB[4], 0);
       // To RAS!
       var _RASPoint = new goog.vec.Vec4.createFloat32();
-      goog.vec.Mat4.multVec4(_q1, tar, res);
       goog.vec.Mat4.multMat(_q2,_XYPoint, _RASPoint);
+      
+      window.console.log(_RASPoint);
+      window.console.log(_xyRASBB);
+      
     // i
     // 2 + j
     if(_RASPoint[0] < _xyRASBB[0]){
@@ -974,17 +987,21 @@ X.parser.prototype.reslice = function(object) {
     
     if(_RASPoint[2] > _xyRASBB[5]){
       _xyRASBB[5] = _RASPoint[2];
+      window.console.log('HEYYYYYYYYYYYYYYYYYYYYYYYYYYY!!!!');
     }
     }
   }
   object._xyRASBB = _xyRASBB;
-  window.console.log("RAS BB " + _xyRASBB);
+  window.console.log("RAS BB ");
+  window.console.log(_xyRASBB);
   
-  window.console.log("RAS CENTER ");
-  window.console.log( (_rasorigin[0] + (_xyRASBB[1] - _xyRASBB[0])/2) + ' - ' + (_rasorigin[1] + (_xyRASBB[3] - _xyRASBB[2])/2)+ ' - ' +  (_rasorigin[2] + (_xyRASBB[5] - _xyRASBB[4])/2));
-  //object._test = [(_rasorigin[0] + (_xyRASBB[1] - _xyRASBB[0])/2) ,(_rasorigin[1] + (_xyRASBB[3] - _xyRASBB[2])/2),(_rasorigin[2] + (_xyRASBB[5] - _xyRASBB[4])/2)];
+  var _xyCenter = new goog.vec.Vec4.createFloat32FromValues(_xyRASBB[0] + (_xyRASBB[1] - _xyRASBB[0])/2,_xyRASBB[2] + (_xyRASBB[3] - _xyRASBB[2])/2, _xyRASBB[4] + (_xyRASBB[5] - _xyRASBB[4])/2,0);  object._sliceCenter = [_xyCenter[0],
+                         _xyCenter[1], _xyCenter[2]];
   
+  window.console.log("RAS BB CENTER");
+  window.console.log(_xyCenter);
   
+
   var res = new goog.vec.Vec4.createFloat32();
   var res2 = new goog.vec.Vec4.createFloat32();
   
@@ -1001,26 +1018,26 @@ X.parser.prototype.reslice = function(object) {
   object._SW = _swidth;
   object._SH = _sheight;
   
-  window.console.log('woffset: ' + _woffset);
-  window.console.log('hoffset: ' + _hoffset);
-  
-  window.console.log(  'WM: ' + _wmin);
-  window.console.log(  'WM: ' + _wmax);
-  
-  
-  window.console.log(  'HM: ' + _hmin);
-  window.console.log(  'HM: ' + _hmax);
-  
-  window.console.log(  'SW: ' + _swidth);
-  window.console.log(  'SH: ' + _sheight);
+//  window.console.log('woffset: ' + _woffset);
+//  window.console.log('hoffset: ' + _hoffset);
+//  
+//  window.console.log(  'WM: ' + _wmin);
+//  window.console.log(  'WM: ' + _wmax);
+//  
+//  
+//  window.console.log(  'HM: ' + _hmin);
+//  window.console.log(  'HM: ' + _hmax);
+//  
+//  window.console.log(  'SW: ' + _swidth);
+//  window.console.log(  'SH: ' + _sheight);
   
   var _resX = 1;
   var _resY = 1;
   var _epsilon = 0.0000001;
   
   // new width, given spacing
-  window.console.log(  'STW: ' + _swidth/_resX);
-  window.console.log(  'STH: ' + _sheight/_resY);
+//  window.console.log(  'STW: ' + _swidth/_resX);
+//  window.console.log(  'STH: ' + _sheight/_resY);
   
   // How many pixels are we expecting the raw data
   var _cswidth = Math.ceil(_swidth/_resX);
@@ -1033,8 +1050,8 @@ X.parser.prototype.reslice = function(object) {
   pixelTexture._rawDataWidth = _cswidth;
   pixelTexture._rawDataHeight = _csheight;
   
-  window.console.log(  'TW: ' + pixelTexture._rawDataWidth);
-  window.console.log(  'TH: ' + pixelTexture._rawDataHeight);
+//  window.console.log(  'TW: ' + pixelTexture._rawDataWidth);
+//  window.console.log(  'TH: ' + pixelTexture._rawDataHeight);
   
   // rigth
   var _right = new goog.vec.Vec3.createFloat32FromValues(1, 0, 0);
@@ -1042,7 +1059,7 @@ X.parser.prototype.reslice = function(object) {
   goog.vec.Mat4.multVec3(_q2, _right, _rright);
   object._right = _rright;
   
-  window.console.log( _rright);
+//  window.console.log( _rright);
   
   // up
   var _up = new goog.vec.Vec3.createFloat32FromValues(0, 1, 0);
@@ -1050,7 +1067,7 @@ X.parser.prototype.reslice = function(object) {
   goog.vec.Mat4.multVec3(_q2, _up, _rup);
   object._up= _rup;
   
-  window.console.log(_rup);
+//  window.console.log(_rup);
 
   
   // return ijk indices
@@ -1059,8 +1076,8 @@ X.parser.prototype.reslice = function(object) {
   
   var _count = 0;
   var _p = 0;
-  
-  window.console.log(_dim);
+//  
+//  window.console.log(_dim);
   
   var tar = new goog.vec.Vec4.createFloat32FromValues(i, j, _xyBB[4], 1);
   var tttt = goog.vec.Mat4.createFloat32();
@@ -1140,8 +1157,8 @@ for (var i = _wmin; i <= _wmax - _epsilon; i+=_resX) {
 
   }
   
-  window.console.log('i: ' + i);
-  window.console.log('j: ' + j);
+//  window.console.log('i: ' + i);
+//  window.console.log('j: ' + j);
   
   object._mappedPoints = _mappedPoints;
   object._mappedPointsIJK = _mappedPointsIJK;
@@ -1154,7 +1171,7 @@ for (var i = _wmin; i <= _wmax - _epsilon; i+=_resX) {
   
   
   var tmpreal = realImage;
-  window.console.log(realImage)
+//  window.console.log(realImage)
   
   
   // get texture with spacing 1!
