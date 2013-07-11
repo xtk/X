@@ -260,9 +260,9 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   goog.vec.Mat4.multVec4(IJKToRAS, tar2, res2);
   
   // get location of 8 corners and update BBox
-  var _xyBB = [Number.MAX_VALUE, Number.MIN_VALUE,
-               Number.MAX_VALUE, Number.MIN_VALUE,
-               Number.MAX_VALUE, Number.MIN_VALUE];
+  var _xyBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
+               Number.MAX_VALUE, -Number.MAX_VALUE,
+               Number.MAX_VALUE, -Number.MAX_VALUE];
   
   //
   var tar6 = new goog.vec.Vec4.createFloat32FromValues(0, 0, 0, 1);
