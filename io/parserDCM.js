@@ -90,8 +90,14 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     // grab the spacing
     if (MRI.pixdim[2] == Infinity) {
       // if the z-spacing can't be detected,
-      // we assume 1
-      MRI.pixdim[2] = 1;
+      // we check for the slice's thickness
+      if (MRI.slice_thickness > 0 && MRI.slice_thickness != Infinity) {
+        // use slice thickness
+        MRI.pixdim[2] = MRI.slice_thickness;
+      } else {
+        // else, we assume 1
+        MRI.pixdim[2] = 1;
+      }
     }
     var _spacing = [ MRI.pixdim[0], MRI.pixdim[1], MRI.pixdim[2] ];
     object._spacing = _spacing;
@@ -181,7 +187,8 @@ X.parserDCM.prototype.parseStream = function(data, object) {
       spaceorientation : null,
       rasspaceorientation : null,
       orientation : null,
-      normcosine : null
+      normcosine : null,
+      slicethickness : 1.0
     };
     // check how many slices we have
     MRI.number_of_slices = object._file.length;
@@ -195,12 +202,36 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     var _tagSpecific = null;
     var _VR = null;
     var _VL = null;
-    // we only need 9 tags of the DICOM header
-    var _tagCount = 9;
+    // we only need 10 tags of the DICOM header
+    var _tagCount = 10;
     while (_tagCount > 0) {
       // read short
       _tagGroup = _bytes[_bytePointer++];// this.scan('ushort');
-      if (_tagGroup == 0x0028) {
+      if (_tagGroup == 0x0018) {
+        // Group of ACQUISITION INFORMATION
+        _tagSpecific = _bytes[_bytePointer++];
+        _VR = _bytes[_bytePointer++];
+        _VL = _bytes[_bytePointer++];
+        switch (_tagSpecific) {
+        case 0x0050:
+          // Slice Thickness
+          var _slice_thickness = '';
+          // slice thickness is a string (ASCII)
+          var i = 0;
+          for (i = 0; i < _VL / 2; i++) {
+            var _short = _bytes[_bytePointer++];
+            var _b0 = _short & 0x00FF;
+            var _b1 = (_short & 0xFF00) >> 8;
+            _slice_thickness += String.fromCharCode(_b0);
+            _slice_thickness += String.fromCharCode(_b1);
+          }
+          MRI.slice_thickness = parseFloat(_slice_thickness);
+          _tagCount--;
+          break;
+          default:
+        }
+      }
+      else if (_tagGroup == 0x0028) {
         // Group of GENERAL IMAGE SPECS
         _tagSpecific = _bytes[_bytePointer++];
         _VR = _bytes[_bytePointer++];
