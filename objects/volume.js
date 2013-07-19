@@ -1167,30 +1167,9 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   // direction 0: sagittal container
   // direction 1: coronal container
   // direction 3: axial container
-  var _dir = (direction + 2) % 3;
-  if (this._normcosine[0][_dir] != 0) {
-
-    _dir = 2;
-
-  } else if (this._normcosine[1][_dir] != 0) {
-
-    _dir = 0;
-
-  } else {
-
-    _dir = 1;
-
-  }
-
-  if (this._normcosine[2][1] != 0) {
-
-    // if coronally acquired
-    _dir = (_dir + 1) % 3;
-
-  }
 
   if ((!this._volumeRendering)
-      || (!this._dirty && _dir == this._volumeRenderingDirection)) {
+      || (!this._dirty && direction == this._volumeRenderingDirection)) {
 
     // we do not have to do anything
     return;
@@ -1202,7 +1181,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   _child['visible'] = false;
 
   // show new volume rendering slices, but don't show the borders
-  _child = this._children[_dir];
+  _child = this._children[direction];
   var _numberOfSlices = _child._children.length;
 
   var i;
@@ -1214,7 +1193,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
   // _child['visible'] = true;
   // store the direction
-  this._volumeRenderingDirection = _dir;
+  this._volumeRenderingDirection = direction;
 
   this._dirty = false;
 
