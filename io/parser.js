@@ -45,7 +45,7 @@ goog.require('X.triplets');
 
 /**
  * Create a parser for binary or ascii data.
- *
+ * 
  * @constructor
  * @extends X.base
  */
@@ -66,7 +66,7 @@ X.parser = function() {
 
   /**
    * The data.
-   *
+   * 
    * @type {?ArrayBuffer}
    * @protected
    */
@@ -74,7 +74,7 @@ X.parser = function() {
 
   /**
    * The pointer to the current byte.
-   *
+   * 
    * @type {!number}
    * @protected
    */
@@ -83,7 +83,7 @@ X.parser = function() {
   /**
    * The native endianness flag. Based on
    * https://github.com/kig/DataStream.js/blob/master/DataStream.js
-   *
+   * 
    * @type {!boolean}
    * @protected
    */
@@ -91,7 +91,7 @@ X.parser = function() {
 
   /**
    * The data-specific endianness flag.
-   *
+   * 
    * @type {!boolean}
    * @protected
    */
@@ -99,7 +99,7 @@ X.parser = function() {
 
   /**
    * The min value of the last parsing attempt.
-   *
+   * 
    * @type {!number}
    * @protected
    */
@@ -107,7 +107,7 @@ X.parser = function() {
 
   /**
    * The max value of the last parsing attempt.
-   *
+   * 
    * @type {!number}
    * @protected
    */
@@ -121,7 +121,7 @@ goog.inherits(X.parser, X.base);
 /**
  * Parse data and configure the given object. When complete, a
  * X.parser.ModifiedEvent is fired.
- *
+ * 
  * @param {!X.base}
  *          container A container which holds the loaded data. This can be an
  *          X.object as well.
@@ -147,7 +147,7 @@ X.parser.prototype.parse = function(container, object, data, flag) {
 //
 /**
  * Get the min and max values of an array.
- *
+ * 
  * @param {!Array}
  *          data The data array to analyze.
  * @return {!Array} An array with length 2 containing the [min, max] values.
@@ -178,7 +178,7 @@ X.parser.prototype.arrayMinMax = function(data) {
  * Create a string from a bunch of UChars. This replaces a
  * String.fromCharCode.apply call and therefor supports more platforms (like the
  * Android stock browser).
- *
+ * 
  * @param {!Array|Uint8Array}
  *          array The Uint8Array.
  * @param {?number=}
@@ -217,7 +217,7 @@ X.parser.prototype.parseChars = function(array, start, end) {
 
 /**
  * Jump to a position in the byte stream.
- *
+ * 
  * @param {!number}
  *          position The new offset.
  */
@@ -230,7 +230,7 @@ X.parser.prototype.jumpTo = function(position) {
 
 /**
  * Scan binary data relative to the internal position in the byte stream.
- *
+ * 
  * @param {!string}
  *          type The data type to scan, f.e.
  *          'uchar','schar','ushort','sshort','uint','sint','float'
@@ -317,7 +317,7 @@ X.parser.prototype.scan = function(type, chunks) {
 /**
  * Flips typed array endianness in-place. Based on
  * https://github.com/kig/DataStream.js/blob/master/DataStream.js.
- *
+ * 
  * @param {!Object}
  *          array Typed array to flip.
  * @param {!number}
@@ -346,7 +346,7 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
 
 /**
  * Convert orientation to RAS
- *
+ * 
  * @param {!Array}
  *          space The space we are in (RAS, LPS, etc.).
  * @param {!Array}
@@ -386,7 +386,7 @@ X.parser.prototype.toRAS = function(space, orientation) {
 
 /**
  * Get orientation on normalized cosines
- *
+ * 
  * @param {!Array}
  *          rasorientation The orientation in RAS space.
  * @return {!Array} The orientation and the normalized cosines.
@@ -486,6 +486,70 @@ X.parser.prototype.createIJKVolume = function(_data, _dims, _max){
   X.TIMERSTOP(this._classname + '.createIJKVolumes');
   
   return [_image, _imageN];
+};
+
+X.parser.prototype.intersectionBBoxLine = function(_bbox, _sliceOrigin, _sliceNormal){
+  X.TIMER(this._classname + '.intersectionBBoxLine');
+  
+  var _solutionsIn = new Array();
+  var _solutionsOut = new Array();
+  
+  // xmin, xmax, ymin, ymax, zmin, zmax
+  for(var _i = 0; _i < 6; _i++){
+    // 
+    var _i2 = Math.floor(_i/2);
+    var _i3 = (_i2 + 1)%3;
+    var _i4 = (_i2 + 2)%3;
+    var _j1 = (2 + (2*_i2))%6;
+    var _j2 = (4 + (2*_i2))%6;
+    
+    // i
+    // i4=?
+    var _dir = _i2;
+    
+    
+    var _sol0 = _bbox[_i];
+    var _invN1 = 1/_sliceNormal[_i2];
+    
+    var _t = (_sol0 - _sliceOrigin[_i2])*_invN1;
+    
+    // if _t infinity, we are //
+    if(_t != Infinity && _t != -Infinity)
+      {
+    var _sol1 = _sliceOrigin[_i3] + _sliceNormal[_i3]*_t;
+    var _sol2 = _sliceOrigin[_i4] + _sliceNormal[_i4]*_t;
+    
+    window.console.log("INTERSECTIONS");
+    window.console.log(_t);
+    window.console.log(_sliceNormal);
+    window.console.log(_sol0 + ' - ' + _sol1 + ' - ' + _sol2);
+    
+    // in range?
+      if( (_sol1 >= _bbox[_j1] && _sol1 <= _bbox[_j1+1]) &&
+          (_sol2 >= _bbox[_j2] && _sol2 <= _bbox[_j2+1])){
+        
+        var _sol = new Array();
+        _sol[_i2] = _bbox[_i];
+        _sol[_i3] = _sol1;
+        _sol[_i4] = _sol2;
+
+        _solutionsIn.push(_sol);
+      }
+      else{
+        var _sol = new Array();
+        _sol[_i2] = _bbox[_i];
+        _sol[_i3] = _sol1;
+        _sol[_i4] = _sol2;
+        
+        _solutionsOut.push(_sol);
+      }
+    }
+  }
+  
+  
+  X.TIMERSTOP(this._classname + '.intersectionBBoxLine');
+  
+  return [_solutionsIn, _solutionsOut];
 };
 
 X.parser.prototype.intersectionBBoxPlane = function(_bbox, _sliceOrigin, _sliceNormal){
@@ -652,9 +716,21 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   object._sliceNormal = _sliceNormal;
   object._boundingBox = _bbox;
   
-  //------------------------------------------
-  // 1. GET INTERSECTION BOUNDING BOX/PLANE
-  //------------------------------------------
+  // ------------------------------------------
+  // GET INTERSECTION BOUNDING BOX/LINE
+  // ------------------------------------------
+
+  var _solutionsLine = this.intersectionBBoxLine(_bbox,_sliceOrigin, _sliceNormal);
+  var _solutionsInLine = _solutionsLine[0];
+  var _solutionsOutLine = _solutionsLine[1];
+
+  object._solutionsL = _solutionsInLine;
+  object._solutionsOutL = _solutionsOutLine;
+  
+  
+  // ------------------------------------------
+  // GET INTERSECTION BOUNDING BOX/PLANE
+  // ------------------------------------------
 
   var _solutions = this.intersectionBBoxPlane(_bbox,_sliceOrigin, _sliceNormal);
   var _solutionsIn = _solutions[0];
@@ -663,18 +739,27 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   object._solutions = _solutionsIn;
   object._solutionsOut = _solutionsOut;
   
-  //------------------------------------------
+  // ------------------------------------------
   // MOVE TO 2D SPACE
-  //------------------------------------------
+  // ------------------------------------------
 
   var _sliceNormal = _sliceNormal;
   var _XYNormal = new goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
+  
+// if(!goog.vec.Vec3.equals(_sliceNormal,new
+// goog.vec.Vec3.createFloat32FromValues(1, 0, 0) &&
+// !goog.vec.Vec3.equals(_sliceNormal,new
+// goog.vec.Vec3.createFloat32FromValues(0, 1, 0) &&
+// !goog.vec.Vec3.equals(_sliceNormal,new
+// goog.vec.Vec3.createFloat32FromValues(0, 0, 1)){
+// _XYNormal = new goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
+// }
   
   var _XYRASTransform = this.xyrasTransform(_sliceNormal, _XYNormal);
   var _RASToXY = _XYRASTransform[0];
   var _XYToRAS = _XYRASTransform[1];
   
-//  // Apply transform to each point!
+// // Apply transform to each point!
   var _solutionsXY = new Array();
   for (var i = 0; i < _solutionsIn.length; ++i) {
     var tar2 = new goog.vec.Vec4.createFloat32FromValues(_solutionsIn[i][0], _solutionsIn[i][1], _solutionsIn[i][2], 1);
@@ -753,7 +838,7 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
 
   var _resX = Math.abs(_xySpacing[0]);
   var _resY = Math.abs(_xySpacing[1]);
-//  var _epsilon =   Number.MIN_VALUE;
+// var _epsilon = Number.MIN_VALUE;
   var _epsilon = 0.0000001;
 
   // How many pixels are we expecting the raw data
@@ -780,9 +865,18 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   
   var _he = _hmax - _epsilon;
   var _we = _wmax - _epsilon;
+  
+  var _iWidth = 0;
+  var _iHeight = 0;
+  
+  
   for (var j = _hmin; j <= _he; j+=_resY) {
+    _iHeight++;
+    _iWidth = 0;
+    
     var _ci = 0;
 for (var i = _wmin; i <= _we; i+=_resX) {
+  _iWidth++;
     //
     tar[0] = i;
     tar[1] = j;
@@ -803,33 +897,35 @@ for (var i = _wmin; i <= _we; i+=_resX) {
       var _i = Math.floor(res2[0]);
       
       var pixval = _IJKVolumeN[_k][_j][_i];
-//      textureForCurrentSlice[textureStartIndex] = pixval;
-//      textureForCurrentSlice[textureStartIndex] = 0;
-      //textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
+// textureForCurrentSlice[textureStartIndex] = pixval;
+// textureForCurrentSlice[textureStartIndex] = 0;
+      // textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
       textureForCurrentSlice[textureStartIndex] = pixval;
-//      textureForCurrentSlice[textureStartIndex] = 255*_ci/(_wmax - _wmin);
+// textureForCurrentSlice[textureStartIndex] = 255*_ci/(_wmax - _wmin);
       textureForCurrentSlice[++textureStartIndex] = pixval;
-      //textureForCurrentSlice[++textureStartIndex] = pixval;
+      // textureForCurrentSlice[++textureStartIndex] = pixval;
       textureForCurrentSlice[++textureStartIndex] = pixval;
       textureForCurrentSlice[++textureStartIndex] = 255;
       
-//      var _sol = new Array();
-//      _sol[0] = res[0];
-//      _sol[1] = res[1];
-//      _sol[2] = res[2];
+// var _sol = new Array();
+// _sol[0] = res[0];
+// _sol[1] = res[1];
+// _sol[2] = res[2];
 //
-//      _mappedPoints.push(_sol);
+// _mappedPoints.push(_sol);
 //      
-//      var _sol2 = new Array();
-//      _sol2[0] = _k;
-//      _sol2[1] = _j;
-//      _sol2[2] = _i;
+// var _sol2 = new Array();
+// _sol2[0] = _k;
+// _sol2[1] = _j;
+// _sol2[2] = _i;
 //
-//      _mappedPointsIJK.push(_sol2);
+// _mappedPointsIJK.push(_sol2);
     }
     else{
       textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
       textureForCurrentSlice[++textureStartIndex] = 255;
+// textureForCurrentSlice[textureStartIndex] = 0;
+// textureForCurrentSlice[++textureStartIndex] = 0;
       textureForCurrentSlice[++textureStartIndex] = 0;
       textureForCurrentSlice[++textureStartIndex] = 0;
     }
@@ -848,8 +944,13 @@ for (var i = _wmin; i <= _we; i+=_resX) {
   pixelTexture._rawData = textureForCurrentSlice; 
   object._texture = pixelTexture;
   
+  sliceXY._iWidth = _iWidth;
+  sliceXY._iHeight = _iHeight;
+  
+  sliceXY._widthSpacing = _resX;
   sliceXY._width = volume._SW;
   sliceXY.texture._rawDataWidth = volume._texture._rawDataWidth;
+  sliceXY._heightSpacing = _resY;
   sliceXY._height = volume._SH;
   sliceXY.texture._rawDataHeight = volume._texture._rawDataHeight;
   sliceXY.texture._rawData = volume._texture._rawData;
@@ -857,7 +958,17 @@ for (var i = _wmin; i <= _we; i+=_resX) {
   sliceXY._front = volume._front;
   sliceXY._right= volume._right;
   sliceXY._up = volume._up;
-  sliceXY._color = _color;
+  sliceXY._visible = false;
+  sliceXY._volume = /** @type {X.volume} */(object);
+  // Borders should be true for middle slice
+  sliceXY._borders = false;
+  sliceXY._borderColor = _color;
+  
+// _slice.setup(_center, _front, _up, _right, _width, _height, borders,
+// _color);
+// // map slice to volume
+// _slice._volume = /** @type {X.volume} */(object);
+// _slice.visible = false;
   sliceXY.create_();
   
   X.TIMERSTOP(this._classname + '.reslice2');
@@ -868,16 +979,16 @@ for (var i = _wmin; i <= _we; i+=_resX) {
  * directions. The given volume (object) has to be created at this point
  * according to the proper dimensions. This also takes care of a possible
  * associated label map which has to be loaded before.
- *
+ * 
  * @param {!X.object}
  *          object The X.volume to fill.
  * @return {!Array} The volume data as a 3D Array.
  */
 X.parser.prototype.reslice = function(object) {
   
-  //------------------------------------------
+  // ------------------------------------------
   // CREATE IJK VOLUMES
-  //------------------------------------------
+  // ------------------------------------------
   
   // Step 1: create 2 IJK volumes
   // 1 full res, 1 normalized [0-255]
@@ -889,9 +1000,9 @@ X.parser.prototype.reslice = function(object) {
   X.TIMER(this._classname + '.reslice');
   
   
-  //------------------------------------------
+  // ------------------------------------------
   // SET GLOBAL TRANSFORMS
-  //------------------------------------------
+  // ------------------------------------------
 
   // general tranformation matrices and origins, etc.
   var _rasorigin = object._RASOrigin;
@@ -911,16 +1022,16 @@ X.parser.prototype.reslice = function(object) {
                       Math.max(_rasorigin[2],_rasorigin[2] + _rasdimensions[2])
                       ];
 
-  //------------------------------------------
+  // ------------------------------------------
   // GO RESLICE!
-  //------------------------------------------
+  // ------------------------------------------
   // For each slice
   
-  //------------------------------------------
+  // ------------------------------------------
   // GO SAGITTAL
-  //------------------------------------------
+  // ------------------------------------------
   var _count = 0;
-  for(var _iloop=_bbox[0]; _iloop<_bbox[1]; _iloop+=Math.abs(_rasspacing[0])){
+  for(var _iloop=_bbox[0]; _iloop<=_bbox[1]; _iloop+=Math.abs(_rasspacing[0])){
     
     X.TIMER(this._classname + '.SLICE_SPECIFIC');
     
@@ -941,11 +1052,11 @@ X.parser.prototype.reslice = function(object) {
     
     var _slice = this.reslice2(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolumeN, object);
     
-//    if (object._orientation[_tk] > 0) {
+// if (object._orientation[_tk] > 0) {
       object._children[0]._children.push(_slice);
-//    } else {
-//      object._children[xyz]._children.unshift(_slice);
-//    }
+// } else {
+// object._children[xyz]._children.unshift(_slice);
+// }
       
       ++_count;
   }
@@ -953,12 +1064,12 @@ X.parser.prototype.reslice = function(object) {
   object._indexXold = Math.round(_count/2);
   
   
-  //------------------------------------------
+  // ------------------------------------------
   // GO CORONAL
-  //------------------------------------------
+  // ------------------------------------------
   
   var _count = 0;
-  for(var _iloop=_bbox[2]; _iloop<_bbox[3]; _iloop+=Math.abs(_rasspacing[1])){
+  for(var _iloop=_bbox[2]; _iloop<=_bbox[3]; _iloop+=Math.abs(_rasspacing[1])){
     
     X.TIMER(this._classname + '.SLICE_SPECIFIC');
     
@@ -979,11 +1090,11 @@ X.parser.prototype.reslice = function(object) {
     
     var _slice = this.reslice2(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolumeN, object);
     
-//    if (object._orientation[_tk] > 0) {
+// if (object._orientation[_tk] > 0) {
       object._children[1]._children.push(_slice);
-//    } else {
-//      object._children[xyz]._children.unshift(_slice);
-//    }
+// } else {
+// object._children[xyz]._children.unshift(_slice);
+// }
       
       ++_count;
   }
@@ -991,12 +1102,12 @@ X.parser.prototype.reslice = function(object) {
   object._indexYold = Math.round(_count/2);
   
   
-  //------------------------------------------
+  // ------------------------------------------
   // GO AXIAL
-  //------------------------------------------
+  // ------------------------------------------
   
   var _count = 0;
-  for(var _iloop=_bbox[4]; _iloop<_bbox[5]; _iloop+=Math.abs(_rasspacing[2])){
+  for(var _iloop=_bbox[4]; _iloop<=_bbox[5]; _iloop+=Math.abs(_rasspacing[2])){
     
     X.TIMER(this._classname + '.SLICE_SPECIFIC');
     
@@ -1017,11 +1128,11 @@ X.parser.prototype.reslice = function(object) {
     
     var _slice = this.reslice2(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolumeN, object);
     
-//    if (object._orientation[_tk] > 0) {
+// if (object._orientation[_tk] > 0) {
       object._children[2]._children.push(_slice);
-//    } else {
-//      object._children[xyz]._children.unshift(_slice);
-//    }
+// } else {
+// object._children[xyz]._children.unshift(_slice);
+// }
       
       ++_count;
   }
