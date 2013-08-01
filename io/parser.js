@@ -872,8 +872,10 @@ for (var i = _wmin; i <= _we; i+=_resX) {
       textureForCurrentSlice[++textureStartIndex] = 255;
     }
     else{
-      textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
-      textureForCurrentSlice[++textureStartIndex] = 255;
+//      textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
+//      textureForCurrentSlice[++textureStartIndex] = 255;
+      textureForCurrentSlice[textureStartIndex] = 0;
+      textureForCurrentSlice[++textureStartIndex] = 0;
       textureForCurrentSlice[++textureStartIndex] = 0;
       textureForCurrentSlice[++textureStartIndex] = 0;
     }
@@ -914,6 +916,8 @@ for (var i = _wmin; i <= _we; i+=_resX) {
   sliceXY._borderColor = _color;
   
   sliceXY.create_();
+  
+  sliceXY['visible'] = false;
   
   X.TIMERSTOP(this._classname + '.reslice2');
   return sliceXY;
@@ -1108,6 +1112,7 @@ X.parser.prototype.reslice = function(object) {
       
       ++_count;
   }
+  
   object._indexY = Math.round(_count/2);
   object._indexYold = Math.round(_count/2);
   
