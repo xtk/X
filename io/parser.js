@@ -700,7 +700,7 @@ X.parser.prototype.xyBBox = function(_solutionsXY){
   return _xyBBox;
 };
 
-X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolumeN, object){
+X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolumeN, object, hasLabelMap, colorTable){
   X.TIMER(this._classname + '.reslice2');
   
   //
@@ -727,10 +727,6 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   object._solutions = _solutionsIn;
   object._solutionsOut = _solutionsOut;
   
-  window.console.log(_bbox);
-  window.console.log(_sliceOrigin);
-  window.console.log(_sliceNormal);
-
   // ------------------------------------------
   // MOVE TO 2D SPACE
   // ------------------------------------------
@@ -757,9 +753,7 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
     _solutionsXY.push(_sol);
   }
   
-  
   object._solutionsXY = _solutionsXY;
-  
   
   // rigth
   var _right = new goog.vec.Vec3.createFloat32FromValues(1, 0, 0);
@@ -866,10 +860,31 @@ for (var i = _wmin; i <= _we; i+=_resX) {
       var _i = Math.floor(res2[0]);
       
       var pixval = _IJKVolumeN[_k][_j][_i];
-      textureForCurrentSlice[textureStartIndex] = pixval;
-      textureForCurrentSlice[++textureStartIndex] = pixval;
-      textureForCurrentSlice[++textureStartIndex] = pixval;
-      textureForCurrentSlice[++textureStartIndex] = 255;
+      var pixelValue_r = 0;
+      var pixelValue_g = 0;
+      var pixelValue_b = 0;
+      var pixelValue_a = 0;
+      
+      if (colorTable) {
+        // color table!
+        var lookupValue = colorTable.get(Math.floor(pixval));
+        // check for out of range and use the last label value in this case
+        if (!lookupValue) {
+          lookupValue = [ 0, 1, 0.1, 0.2, 1 ];
+        }
+        pixelValue_r = 255 * lookupValue[1];
+        pixelValue_g = 255 * lookupValue[2];
+        pixelValue_b = 255 * lookupValue[3];
+        pixelValue_a = 255 * lookupValue[4];
+      } else {
+        pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixval / object._max);
+        pixelValue_a = 255;
+      }
+      
+      textureForCurrentSlice[textureStartIndex] = pixelValue_r;
+      textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
+      textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
+      textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
     }
     else{
 //      textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
@@ -900,19 +915,31 @@ for (var i = _wmin; i <= _we; i+=_resX) {
   sliceXY._iHeight = _iHeight;
   
   sliceXY._widthSpacing = _resX;
-  sliceXY._width = volume._SW;
-  sliceXY.texture._rawDataWidth = volume._texture._rawDataWidth;
+  sliceXY._width = object._SW;
+
+  sliceXY.texture._rawDataWidth = object._texture._rawDataWidth;
+  sliceXY.texture._rawDataHeight = object._texture._rawDataHeight;
+  sliceXY.texture._rawData = object._texture._rawData;
+  
   sliceXY._heightSpacing = _resY;
-  sliceXY._height = volume._SH;
-  sliceXY.texture._rawDataHeight = volume._texture._rawDataHeight;
-  sliceXY.texture._rawData = volume._texture._rawData;
-  sliceXY._center = volume._sliceCenter;
-  sliceXY._front = volume._front;
-  sliceXY._right= volume._right;
-  sliceXY._up = volume._up;
+  sliceXY._height = object._SH;
+  sliceXY._center = object._sliceCenter;
+  sliceXY._front = object._front;
+  sliceXY._right= object._right;
+  sliceXY._up = object._up;
   sliceXY._visible = false;
   sliceXY._volume = /** @type {X.volume} */(object);
-  sliceXY._borders = true;
+  
+  // for labelmaps, don't create the borders since this would create them 2x
+  // hasLabelMap == true means we are the volume
+  // hasLabelMap == false means we are the labelmap
+  if (goog.isDefAndNotNull(object._volume) && !hasLabelMap) {
+    sliceXY._borders = false;
+  }
+  else{
+    sliceXY._borders = true;
+  }
+  
   sliceXY._borderColor = _color;
   
   sliceXY.create_();
@@ -946,6 +973,15 @@ X.parser.prototype.reslice = function(object) {
   // normalized volume
   var _IJKVolumeN = _IJKVolumes[1];
   X.TIMER(this._classname + '.reslice');
+  
+  // ------------------------------------------
+  // SETUP LABEL MAPS AND COLOR TABLES
+  // ------------------------------------------
+  var hasLabelMap = object._labelmap != null;
+  var _colorTable = null;
+  if (object._colortable) {
+    _colorTable = object._colortable._map;
+  }
   
   
   // ------------------------------------------
@@ -1055,9 +1091,9 @@ X.parser.prototype.reslice = function(object) {
     
     X.TIMER(this._classname + '.SLICE_SPECIFIC');
     
-    _sliceOrigin[0] = _solutionsInLine[1][0] + _sliceDirection[0]*_iloop;
-    _sliceOrigin[1] = _solutionsInLine[1][1] + _sliceDirection[1]*_iloop;
-    _sliceOrigin[2] = _solutionsInLine[1][2] + _sliceDirection[2]*_iloop;
+    _sliceOrigin[0] = _solutionsInLine[0][0] + _sliceDirection[0]*_iloop;
+    _sliceOrigin[1] = _solutionsInLine[0][1] + _sliceDirection[1]*_iloop;
+    _sliceOrigin[2] = _solutionsInLine[0][2] + _sliceDirection[2]*_iloop;
     
     window.console.log(_iloop + ' / ' + _nb);
     window.console.log(_sliceOrigin);
@@ -1066,7 +1102,14 @@ X.parser.prototype.reslice = function(object) {
     window.console.log(_solutionsInLine[1]);
     window.console.log("===================");
     
-    var _slice = this.reslice2(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolumeN, object);
+    var _slice = this.reslice2(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolume, object, hasLabelMap, _colorTable);
+    
+    if (hasLabelMap) {
+      // if this object has a labelmap,
+      // we have it loaded at this point (for sure)
+      // ..so we can attach it as the second texture to this slice
+      _slice._labelmap = object._labelmap._children[0]._children[_iloop]._texture;
+    }
     
     object._children[0]._children.push(_slice);
       
@@ -1102,13 +1145,16 @@ X.parser.prototype.reslice = function(object) {
     // COLOR
     var _color = [ 1, 0, 0 ];
     
-    var _slice = this.reslice2(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolumeN, object);
+    var _slice = this.reslice2(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolume, object, hasLabelMap, _colorTable);
     
-// if (object._orientation[_tk] > 0) {
+    if (hasLabelMap) {
+      // if this object has a labelmap,
+      // we have it loaded at this point (for sure)
+      // ..so we can attach it as the second texture to this slice
+      _slice._labelmap = object._labelmap._children[1]._children[_count]._texture;
+    }
+    
       object._children[1]._children.push(_slice);
-// } else {
-// object._children[xyz]._children.unshift(_slice);
-// }
       
       ++_count;
   }
@@ -1141,8 +1187,14 @@ X.parser.prototype.reslice = function(object) {
     // COLOR
     var _color = [ 0, 1, 0 ];
     
-    var _slice = this.reslice2(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolumeN, object);
+    var _slice = this.reslice2(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolume, object, hasLabelMap, _colorTable);
     
+    if (hasLabelMap) {
+      // if this object has a labelmap,
+      // we have it loaded at this point (for sure)
+      // ..so we can attach it as the second texture to this slice
+      _slice._labelmap = object._labelmap._children[2]._children[_count]._texture;
+    }
 // if (object._orientation[_tk] > 0) {
       object._children[2]._children.push(_slice);
 // } else {
