@@ -135,6 +135,14 @@ X.renderer3D = function() {
    * @protected
    */
   this._center = [0, 0, 0];
+  
+  /**
+   * The background color.
+   *
+   * @type {!Array}
+   * @protected
+   */
+  this._bgColor = [1, 1, 1];
 
   /**
    * The frame buffer which is used for picking.
@@ -304,8 +312,8 @@ X.renderer3D.prototype.init = function() {
 
     // configure opacity to 0.0 to overwrite the viewport background-color by
     // the container color
-    this._context.clearColor(0.0, 0.0, 0.0, 0.0);
-
+    this._context.clearColor(this._bgColor[0], this._bgColor[1], this._bgColor[2], 0.0);
+    
     // enable transparency
     this._context.enable(this._context.BLEND);
     this._context.blendEquation(this._context.FUNC_ADD);
@@ -2101,6 +2109,30 @@ X.renderer3D.prototype.destroy = function() {
 
 };
 
+/**
+ * Get the background color.
+ *
+ * @return {!Array} The background color normalized.
+ * @public
+ */
+X.renderer3D.prototype.__defineGetter__('bgColor', function() {
+  
+  return this._bgColor;
+
+});
+
+/**
+ * Set the background color.
+ *
+ * @param {!Array}
+ *          bgColor The background color normalized.
+ * @public
+ */
+X.renderer3D.prototype.__defineSetter__('bgColor', function(bgColor) {
+
+  this._bgColor = bgColor;
+
+});
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer3D', X.renderer3D);
