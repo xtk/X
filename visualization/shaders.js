@@ -245,7 +245,8 @@ X.shaders = function() {
   t2 += '     float _volumeLowerThreshold = (volumeLowerThreshold / volumeScalarMax);\n';
   t2 += '     float _volumeUpperThreshold = (volumeUpperThreshold / volumeScalarMax);\n';
   t2 += '     if (texture1.r < _volumeLowerThreshold ||\n';
-  t2 += '         texture1.r > _volumeUpperThreshold) {\n';
+  t2 += '         texture1.r > _volumeUpperThreshold ||\n';
+  t2 += '         texture1.a == 0.0 ) {\n';
   t2 += '       discard;\n';
   t2 += '     };\n';
   t2 += '   };\n';
