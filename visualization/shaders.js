@@ -250,7 +250,7 @@ X.shaders = function() {
   t2 += '     };\n';
   t2 += '   };\n';
   t2 += '   gl_FragColor = textureSum;\n';
-  t2 += '   gl_FragColor.a = texture1.a;\n';
+  t2 += '   gl_FragColor.a = texture1.a*objectOpacity;\n';
   t2 += ' } else {\n';
   // configure advanced lighting
   t2 += '   vec3 nNormal = normalize(fTransformedVertexNormal);\n';
