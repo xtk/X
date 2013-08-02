@@ -525,6 +525,9 @@ X.renderer3D.prototype.update_ = function(object) {
   // check if object already existed..
   var existed = false;
 
+  if(!goog.isDefAndNotNull(object)){
+    return;
+  }
   if (this.get(object._id)) {
     // this means, we are updating
     existed = true;

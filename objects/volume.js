@@ -33,6 +33,7 @@ goog.provide('X.volume');
 // requires
 goog.require('X.object');
 goog.require('X.slice');
+goog.require('X.parser');
 goog.require('X.thresholdable');
 
 
@@ -417,53 +418,6 @@ X.volume.prototype.create_ = function(_info) {
   this._dirty = true;
 };
 
-
-/**
- * Map variables to user friendly named variables
- *
- * @private
- */
-X.volume.prototype.map_ = function() {
-
-  var _normcosine = this._normcosine[2];
-  var _dimensions =  this._dimensions;
-
-  // here indexX is the scan direction
-
-  if (_normcosine[0] != 0) {
-
-    // this is a sagittal scan
-
-    this._indexLR = this._indexX;
-    this._indexPA = this._indexY;
-    this._indexIS = this._indexZ;
-    this._dimensionsRAS = [_dimensions[2], _dimensions[0], _dimensions[1]];
-
-  } else if (_normcosine[1] != 0) {
-
-    // this is a coronal scan
-
-    this._indexLR = this._indexY;
-    this._indexPA = this._indexX;
-    this._indexIS = this._indexZ;
-    this._dimensionsRAS = [_dimensions[0], _dimensions[2], _dimensions[1]];
-
-  } else {
-
-    // this is an axial scan
-
-    this._indexLR = this._indexY;
-    this._indexPA = this._indexZ;
-    this._indexIS = this._indexX;
-    this._dimensionsRAS = _dimensions;
-
-  }
-  
-  
-
-};
-
-
 /**
  * Re-show the slices or re-activate the volume rendering for this volume.
  *
@@ -552,6 +506,22 @@ X.volume.prototype.slicing_ = function() {
       currentIndex = this._indexX;
       oldIndex = this._indexXold;
       this._indexXold = this._indexX;
+
+      // this == object
+      
+      // create slice in this direction for this index if necessary!
+      window.console.log('READY TO RESLICE!');
+      //X.parser.prototype.reslice2();
+      //var _slice = X.parser.reslice2(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolume, object, hasLabelMap, _colorTable);
+      
+      //if (hasLabelMap) {
+        // if this object has a labelmap,
+        // we have it loaded at this point (for sure)
+        // ..so we can attach it as the second texture to this slice
+        //_slice._labelmap = object._labelmap._children[0]._children[Math.round(_nb/2)]._texture;
+      //}
+      
+      //object._children[0]._children[Math.round(_nb/2)] = _slice;
 
     } else if (xyz == 1) {
 

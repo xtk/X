@@ -35,7 +35,6 @@ goog.require('X.event');
 goog.require('X.object');
 goog.require('X.parser');
 goog.require('X.triplets');
-goog.require('goog.math.Vec3');
 goog.require('goog.vec.Mat3');
 goog.require('goog.vec.Mat4');
 goog.require('Zlib.Gunzip');
@@ -363,9 +362,12 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   window.console.log(res2[2] - res[2]);
   
   MRI.RASSpacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
+  window.console.log('RASSpacing');
+  window.console.log(MRI.RASSpacing);
   
   MRI.RASDimensions = [_xyBB[1] - _xyBB[0], _xyBB[3] - _xyBB[2], _xyBB[5] - _xyBB[4]];
-//  MRI.RASDimensions = [res3[0] - res[0], res3[1] - res[1], res3[2] - res[2]];
+  window.console.log('RASDimensions');
+  window.console.log(MRI.RASDimensions);
   
   MRI.RASOrigin = [_xyBB[0], _xyBB[2], _xyBB[4]];
   //MRI.RASOrigin = [res[0], res[1], res[2]];
@@ -386,16 +388,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   // deduce slices size
   
   // fill 'em
-  
-  MRI.space = [ 'right', 'anterior', 'superior' ];
-    
-  // cosines direction in RAS space
-  MRI.rasspaceorientation = this.toRAS(MRI.space, MRI.spaceorientation);
-  // get orientation and normalized cosines
-  var orient_norm = this.orientnormalize(MRI.rasspaceorientation);
-  MRI.orientation = orient_norm[0];
-  MRI.normcosine = orient_norm[1];
-  
+     
   // create the object
   object.create_(MRI);
   
@@ -404,7 +397,6 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   // re-slice the data according each direction
   object._image = this.reslice(object);
     
-  object.map_();
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;

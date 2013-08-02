@@ -747,13 +747,12 @@ X.renderer.prototype.update_ = function(object) {
   }
 
   if (!goog.isDefAndNotNull(object)) {
-    window.console.log(object);
-    throw new Error('Illegal object.');
+    //window.console.log(object);
+    //window.console.log('Illegal object');
+    //throw new Error('Illegal object.');
 
   }
-
-  // listen to modified events of this object, if we didn't do that before
-  if (!goog.events.hasListener(object, X.event.events.MODIFIED)) {
+  else if(!goog.events.hasListener(object, X.event.events.MODIFIED)) {
 
     goog.events.listen(object, X.event.events.MODIFIED, this.onModified
         .bind(this));
