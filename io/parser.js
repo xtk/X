@@ -1091,9 +1091,9 @@ X.parser.prototype.reslice = function(object) {
     
     X.TIMER(this._classname + '.SLICE_SPECIFIC');
     
-    _sliceOrigin[0] = _solutionsInLine[0][0] + _sliceDirection[0]*_iloop;
-    _sliceOrigin[1] = _solutionsInLine[0][1] + _sliceDirection[1]*_iloop;
-    _sliceOrigin[2] = _solutionsInLine[0][2] + _sliceDirection[2]*_iloop;
+    _sliceOrigin[0] = _solutionsInLine[0][0] + Math.abs(_sliceDirection[0])*_iloop;
+    _sliceOrigin[1] = _solutionsInLine[0][1] + Math.abs(_sliceDirection[1])*_iloop;
+    _sliceOrigin[2] = _solutionsInLine[0][2] + Math.abs(_sliceDirection[2])*_iloop;
     
     window.console.log(_iloop + ' / ' + _nb);
     window.console.log(_sliceOrigin);
