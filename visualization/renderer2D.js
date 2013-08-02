@@ -655,11 +655,27 @@ X.renderer2D.prototype.update_ = function(object) {
 
   // size
   this._slices = object._children[this._orientationIndex]._children;
-  var _width = object._children[this._orientationIndex]._children[0]._iWidth;
-  var _height = object._children[this._orientationIndex]._children[0]._iHeight;
+  
+  var _currentSlice = null;
+  if (this._orientationIndex == 0) {
+
+    _currentSlice = object['indexX'];
+
+  } else if (this._orientationIndex == 1) {
+
+    _currentSlice = object['indexY'];
+
+  } else {
+
+    _currentSlice = object['indexZ'];
+
+  }
+  
+  var _width = object._children[this._orientationIndex]._children[_currentSlice]._iWidth;
+  var _height = object._children[this._orientationIndex]._children[_currentSlice]._iHeight;
   // spacing
-  this._sliceWidthSpacing = object._children[this._orientationIndex]._children[0]._widthSpacing;
-  this._sliceHeightSpacing = object._children[this._orientationIndex]._children[0]._heightSpacing;
+  this._sliceWidthSpacing = object._children[this._orientationIndex]._children[_currentSlice]._widthSpacing;
+  this._sliceHeightSpacing = object._children[this._orientationIndex]._children[_currentSlice]._heightSpacing;
   
   // if orientation is SAGITTAL
 //  if(this._orientation == "X"){
@@ -1094,9 +1110,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       _index = _tmp_indx + 4; // increase by 4 units for r,g,b,a
 
     } while (_index < _pixelsLength);
-
-    window.console.log("ORIENTATION");
-    window.console.log(this._orientationIndex);
     
     // store the generated image data to the frame buffer context
     _imageFBContext.putImageData(_imageData, 0, 0);
