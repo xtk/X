@@ -929,44 +929,34 @@ X.parser.prototype.reslice = function(object) {
   // 1 full res, 1 normalized [0-255]
   var _IJKVolumes = this.createIJKVolume(object._data, object._dimensions, object._max);
   // real volume
-  var _IJKVolume = _IJKVolumes[0];
+  object._IJKVolume = _IJKVolumes[0];
   // normalized volume
-  var _IJKVolumeN = _IJKVolumes[1];
+  object._IJKVolumeN = _IJKVolumes[1];
   X.TIMER(this._classname + '.reslice');
   
   // ------------------------------------------
   // SETUP LABEL MAPS AND COLOR TABLES
   // ------------------------------------------
-  var hasLabelMap = object._labelmap != null;
-  var _colorTable = null;
+  object.hasLabelMap = object._labelmap != null;
   if (object._colortable) {
-    _colorTable = object._colortable._map;
+    object._colorTable = object._colortable._map;
   }
-  
   
   // ------------------------------------------
   // SET GLOBAL VALUES/TRANSFORMS
   // ------------------------------------------
-  object.hasLabelMap = hasLabelMap;
   object.range = [object._dimensions[0],object._dimensions[1],object._dimensions[2]];
-  // general tranformation matrices and origins, etc.
-  var _rasorigin = object._RASOrigin;
-  var _rasspacing = object._RASSpacing;
-  var _rasdimensions = object._RASDimensions;
-  var _rascenter = [_rasorigin[0] + _rasdimensions[0]/2,
-                    _rasorigin[1] + _rasdimensions[1]/2,
-                    _rasorigin[2] + _rasdimensions[2]/2
+  object._RASCenter = [object._RASOrigin[0] + object._RASDimensions[0]/2,
+                    object._RASOrigin[1] + object._RASDimensions[1]/2,
+                    object._RASOrigin[2] + object._RASDimensions[2]/2
                     ];
-  var _ras2ijk = object._RASToIJK;
-  object._RASCenter = _rascenter;
-  var _bbox = [Math.min(_rasorigin[0],_rasorigin[0] + _rasdimensions[0]),
-                      Math.max(_rasorigin[0],_rasorigin[0] + _rasdimensions[0]),
-                      Math.min(_rasorigin[1],_rasorigin[1] + _rasdimensions[1]),
-                      Math.max(_rasorigin[1],_rasorigin[1] + _rasdimensions[1]),
-                      Math.min(_rasorigin[2],_rasorigin[2] + _rasdimensions[2]),
-                      Math.max(_rasorigin[2],_rasorigin[2] + _rasdimensions[2])
+  object._BBox = [Math.min(object._RASOrigin[0],object._RASOrigin[0] + object._RASDimensions[0]),
+                      Math.max(object._RASOrigin[0],object._RASOrigin[0] + object._RASDimensions[0]),
+                      Math.min(object._RASOrigin[1],object._RASOrigin[1] + object._RASDimensions[1]),
+                      Math.max(object._RASOrigin[1],object._RASOrigin[1] + object._RASDimensions[1]),
+                      Math.min(object._RASOrigin[2],object._RASOrigin[2] + object._RASDimensions[2]),
+                      Math.max(object._RASOrigin[2],object._RASOrigin[2] + object._RASDimensions[2])
                       ];
-  object._BBox = _bbox;
   object._childrenInfo = [{}, {}, {}];
 
   // ------------------------------------------
@@ -979,9 +969,9 @@ X.parser.prototype.reslice = function(object) {
 
   // CENTER
   var _sliceOrigin = new goog.vec.Vec3.createFloat32FromValues(
-      _rascenter[0],
-      _rascenter[1],
-      _rascenter[2]);
+      object._RASCenter[0],
+      object._RASCenter[1],
+      object._RASCenter[2]);
   object._childrenInfo[0]._sliceOrigin = _sliceOrigin;
 
   // NORMAL
@@ -997,19 +987,17 @@ X.parser.prototype.reslice = function(object) {
   object._childrenInfo[0]._color = _color;
 
   // UPDATE SLICE INFO
-  this.updateSliceInfo(0, _sliceOrigin, _sliceNormal, _bbox, object);
+  this.updateSliceInfo(0, _sliceOrigin, _sliceNormal, object._BBox, object);
   // Create empty array for all slices in this direction
   object._children[0]._children = new Array(object._childrenInfo[0]._nb);
-  
-  // X.TIMER(this._classname + '.SLICE_SPECIFIC');
     
   _sliceOrigin[0] = object._childrenInfo[0]._solutionsLine[0][0][0] + Math.abs(object._childrenInfo[0]._sliceDirection[0])*Math.round(object._childrenInfo[0]._nb/2);
   _sliceOrigin[1] = object._childrenInfo[0]._solutionsLine[0][0][1] + Math.abs(object._childrenInfo[0]._sliceDirection[1])*Math.round(object._childrenInfo[0]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[0]._solutionsLine[0][0][2] + Math.abs(object._childrenInfo[0]._sliceDirection[2])*Math.round(object._childrenInfo[0]._nb/2);
+
+  var _slice = this.reslice2(_sliceOrigin, object._childrenInfo[0]._sliceNormal, object._childrenInfo[0]._color, object._BBox, object._RASSpacing, object._RASToIJK, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
-  var _slice = this.reslice2(object._childrenInfo[0]._sliceOrigin, object._childrenInfo[0]._sliceNormal, object._childrenInfo[0]._color, object._BBox, object._RASSpacing, object._RASToIJK, _IJKVolume, object, hasLabelMap, _colorTable);
-    
-  if (hasLabelMap) {
+  if (object.hasLabelMap) {
     // if this object has a labelmap,
     // we have it loaded at this point (for sure)
     // ..so we can attach it as the second texture to this slice
@@ -1017,10 +1005,7 @@ X.parser.prototype.reslice = function(object) {
   }
     
   object._children[0]._children[Math.round(object._childrenInfo[0]._nb/2)] = _slice;
-    
-  // X.TIMERSTOP(this._classname + '.SLICE_SPECIFIC');
 
-  
   object._indexX = Math.round(object._childrenInfo[0]._nb/2);
   object._indexXold = Math.round(object._childrenInfo[0]._nb/2);
   
@@ -1031,9 +1016,9 @@ X.parser.prototype.reslice = function(object) {
   // CENTER
 
   var _sliceOrigin = new goog.vec.Vec3.createFloat32FromValues(
-      _rascenter[0],
-      _rascenter[1],
-      _rascenter[2]);
+      object._RASCenter[0],
+      object._RASCenter[1],
+      object._RASCenter[2]);
   object._childrenInfo[1]._sliceOrigin = _sliceOrigin;
 
   // NORMAL
@@ -1049,20 +1034,17 @@ X.parser.prototype.reslice = function(object) {
   object._childrenInfo[1]._color = _color;
   
   // UPDATE SLICE INFO
-  this.updateSliceInfo(1, _sliceOrigin, _sliceNormal, _bbox, object);
+  this.updateSliceInfo(1, _sliceOrigin, _sliceNormal, object._BBox, object);
   // Create empty array for all slices in this direction
   object._children[1]._children = new Array(object._childrenInfo[1]._nb);
-  
-
-  // X.TIMER(this._classname + '.SLICE_SPECIFIC');
     
   _sliceOrigin[0] = object._childrenInfo[1]._solutionsLine[0][0][0] + Math.abs(object._childrenInfo[1]._sliceDirection[0])*Math.round(object._childrenInfo[1]._nb/2);
   _sliceOrigin[1] = object._childrenInfo[1]._solutionsLine[0][0][1] + Math.abs(object._childrenInfo[1]._sliceDirection[1])*Math.round(object._childrenInfo[1]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[1]._solutionsLine[0][0][2] + Math.abs(object._childrenInfo[1]._sliceDirection[2])*Math.round(object._childrenInfo[1]._nb/2);
     
-  var _slice = this.reslice2(object._childrenInfo[1]._sliceOrigin, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, _bbox, _rasspacing, _ras2ijk, _IJKVolume, object, hasLabelMap, _colorTable);
+  var _slice = this.reslice2(_sliceOrigin, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, object._BBox, object._RASSpacing, object._RASToIJK, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
-  if (hasLabelMap) {
+  if (object.hasLabelMap) {
     // if this object has a labelmap,
     // we have it loaded at this point (for sure)
     // ..so we can attach it as the second texture to this slice
@@ -1070,9 +1052,6 @@ X.parser.prototype.reslice = function(object) {
   }
     
   object._children[1]._children[Math.round(object._childrenInfo[1]._nb/2)] = _slice;
-      
-  // X.TIMERSTOP(this._classname + '.SLICE_SPECIFIC');
-
   
   object._indexY = Math.round(object._childrenInfo[1]._nb/2);
   object._indexYold = Math.round(object._childrenInfo[1]._nb/2);
@@ -1083,9 +1062,9 @@ X.parser.prototype.reslice = function(object) {
 
   // CENTER
   var _sliceOrigin = new goog.vec.Vec3.createFloat32FromValues(
-      _rascenter[0],
-      _rascenter[1],
-      _rascenter[2]);
+      object._RASCenter[0],
+      object._RASCenter[1],
+      object._RASCenter[2]);
   object._childrenInfo[2]._sliceOrigin = _sliceOrigin;
 
   // NORMAL
@@ -1101,20 +1080,17 @@ X.parser.prototype.reslice = function(object) {
   object._childrenInfo[2]._color = _color;
   
   // UPDATE SLICE INFO
-  this.updateSliceInfo(2, _sliceOrigin, _sliceNormal, _bbox, object);
+  this.updateSliceInfo(2, _sliceOrigin, _sliceNormal, object._BBox, object);
   // Create empty array for all slices in this direction
   object._children[2]._children = new Array(object._childrenInfo[2]._nb);
-  
-
-  // X.TIMER(this._classname + '.SLICE_SPECIFIC');
     
   _sliceOrigin[0] = object._childrenInfo[2]._solutionsLine[0][0][0] + Math.abs(object._childrenInfo[2]._sliceDirection[0])*Math.round(object._childrenInfo[2]._nb/2);
   _sliceOrigin[1] = object._childrenInfo[2]._solutionsLine[0][0][1] + Math.abs(object._childrenInfo[2]._sliceDirection[1])*Math.round(object._childrenInfo[2]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[2]._solutionsLine[0][0][2] + Math.abs(object._childrenInfo[2]._sliceDirection[2])*Math.round(object._childrenInfo[2]._nb/2);
     
-  var _slice = this.reslice2(object._childrenInfo[2]._sliceOrigin, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, _bbox, _rasspacing, _ras2ijk, _IJKVolume, object, hasLabelMap, _colorTable);
+  var _slice = this.reslice2(_sliceOrigin, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, object._BBox, object._RASSpacing, object._RASToIJK, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
-  if (hasLabelMap) {
+  if (object.hasLabelMap) {
     // if this object has a labelmap,
     // we have it loaded at this point (for sure)
     // ..so we can attach it as the second texture to this slice
@@ -1122,20 +1098,12 @@ X.parser.prototype.reslice = function(object) {
   }
     
   object._children[2]._children[Math.round(object._childrenInfo[2]._nb/2)] = _slice;
-      
-  // X.TIMERSTOP(this._classname + '.SLICE_SPECIFIC');
-
   
   object._indexZ = Math.round(object._childrenInfo[2]._nb/2);
   object._indexZold = Math.round(object._childrenInfo[2]._nb/2);
-  
-  
-  // X.TIMERSTOP(this._classname + '.SLICE_SPECIFIC');
-
-  var tmpreal = _IJKVolume;
 
   X.TIMERSTOP(this._classname + '.reslice');
   
-  return tmpreal;
+  return object._IJKVolume;
 };
 

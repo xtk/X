@@ -500,28 +500,13 @@ X.volume.prototype.slicing_ = function() {
     var _child = this._children[xyz];
     var currentIndex = 0;
     var oldIndex = 0;
+
     // buffer the old indices
     if (xyz == 0) {
 
       currentIndex = this._indexX;
       oldIndex = this._indexXold;
       this._indexXold = this._indexX;
-
-      // this == object
-      
-      // create slice in this direction for this index if necessary!
-      window.console.log('READY TO RESLICE!');
-      //X.parser.prototype.reslice2();
-      //var _slice = X.parser.reslice2(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolume, object, hasLabelMap, _colorTable);
-      
-      //if (hasLabelMap) {
-        // if this object has a labelmap,
-        // we have it loaded at this point (for sure)
-        // ..so we can attach it as the second texture to this slice
-        //_slice._labelmap = object._labelmap._children[0]._children[Math.round(_nb/2)]._texture;
-      //}
-      
-      //object._children[0]._children[Math.round(_nb/2)] = _slice;
 
     } else if (xyz == 1) {
 
@@ -536,6 +521,35 @@ X.volume.prototype.slicing_ = function() {
       this._indexZold = this._indexZ;
 
     }
+
+    // RESLICE VOLUME IF NECESSARY!
+    if(!goog.isDefAndNotNull(this._children[xyz]._children[parseInt(currentIndex, 10)])){
+
+      var _sliceOrigin = new goog.vec.Vec3.createFloat32();
+
+      _sliceOrigin[0] = this._childrenInfo[xyz]._solutionsLine[0][0][0] + Math.abs(this._childrenInfo[xyz]._sliceDirection[0])*parseInt(currentIndex, 10);
+      _sliceOrigin[1] = this._childrenInfo[xyz]._solutionsLine[0][0][1] + Math.abs(this._childrenInfo[xyz]._sliceDirection[1])*parseInt(currentIndex, 10);
+      _sliceOrigin[2] = this._childrenInfo[xyz]._solutionsLine[0][0][2] + Math.abs(this._childrenInfo[xyz]._sliceDirection[2])*parseInt(currentIndex, 10);
+
+    // attach labelmap
+    if(this.hasLabelMap){
+      var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._IJKVolume, this, false, this._labelmap._colortable._map);
+      this._container.add(_child._children[parseInt(currentIndex, 10)]);
+      this._labelmap._children[0]._children[parseInt(currentIndex, 10)] = _sliceLabel;
+    }
+
+    var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._IJKVolume, this, true, null);
+
+     if(this.hasLabelMap){
+       _slice._labelmap = this._labelmap._children[0]._children[parseInt(currentIndex, 10)]._texture;
+     }
+
+    _child._children[parseInt(currentIndex, 10)] = _slice;
+
+    // add it to renderer!
+    this._container.add(_child._children[parseInt(currentIndex, 10)]);
+    }
+    // DONE RESLICING!
 
     // hide the old slice
     var _oldSlice = _child._children[parseInt(oldIndex, 10)];
@@ -726,183 +740,6 @@ X.volume.prototype.__defineGetter__('labelmap', function() {
   return this._labelmap;
 
 });
-
-
-/**
- * Get the slice index in Inferior-Superior direction.
- *
- * @return {!number} The slice index in Inferior-Superior direction.
- * @public
- */
-X.volume.prototype.__defineGetter__('indexIS', function() {
-
-  // map variables based on orientation
-  if (this._normcosine[2][2] != 0) {
-
-    this._indexIS = this._indexX;
-
-  } else {
-
-    this._indexIS = this._indexZ;
-
-  }
-
-  return this._indexIS;
-
-});
-
-
-/**
- * Set the slice index in Inferior-Superior direction.
- *
- * @param {!number}
- *          indexIS The slice index in Inferior-Superior direction.
- * @public
- */
-X.volume.prototype.__defineSetter__('indexIS', function(indexIS) {
-
-  if (goog.isNumber(indexIS)) {
-
-    // map variables based on orientation
-    if (this._normcosine[2][2] != 0) {
-
-      this._indexX = indexIS;
-
-    } else {
-
-      this._indexZ = indexIS;
-
-    }
-
-    this._indexIS = indexIS;
-
-    // fire a modified event without propagation for fast slicing
-    this.modified(false);
-
-  }
-
-});
-
-
-/**
- * Get the slice index in Left-Right direction.
- *
- * @return {!number} The slice index in Left-Right direction.
- * @public
- */
-X.volume.prototype.__defineGetter__('indexLR', function() {
-
-  // map variables based on orientation
-  if (this._normcosine[2][0] != 0) {
-
-    this._indexLR = this._indexX;
-
-  } else {
-
-    this._indexLR = this._indexY;
-
-  }
-
-  return this._indexLR;
-
-});
-
-
-/**
- * Set the slice index in Left-Right direction.
- *
- * @param {!number}
- *          indexLR The slice index in Left-Right direction.
- * @public
- */
-X.volume.prototype.__defineSetter__('indexLR', function(indexLR) {
-
-  if (goog.isNumber(indexLR)) {
-
-    // map variables based on orientation
-    if (this._normcosine[2][0] != 0) {
-
-      this._indexX = indexLR;
-
-    } else {
-
-      this._indexY = indexLR;
-
-    }
-
-    this._indexLR = indexLR;
-
-    // fire a modified event without propagation for fast slicing
-    this.modified(false);
-
-  }
-
-});
-
-
-/**
- * Get the slice index in Posterior-Anterior direction.
- *
- * @return {!number} The slice index in Posterior-Anterior direction.
- * @public
- */
-X.volume.prototype.__defineGetter__('indexPA', function() {
-
-  // map variables based on orientation
-  if (this._normcosine[2][0] != 0) {
-
-    this._indexPA = this._indexY;
-
-  } else if (this._normcosine[2][1] != 0) {
-
-    this._indexPA = this._indexX;
-
-  } else {
-
-    this._indexPA = this._indexZ;
-
-  }
-
-  return this._indexPA;
-
-});
-
-
-/**
- * Set the slice index in Posterior-Anterior direction.
- *
- * @param {!number}
- *          indexPA The slice index in Posterior-Anterior direction.
- * @public
- */
-X.volume.prototype.__defineSetter__('indexPA', function(indexPA) {
-
-  if (goog.isNumber(indexPA)) {
-
-    // map variables based on orientation
-    if (this._normcosine[2][0] != 0) {
-
-      this._indexY = indexPA;
-
-    } else if (this._normcosine[2][1] != 0) {
-
-      this._indexX = indexPA;
-
-    } else {
-
-      this._indexZ = indexPA;
-
-    }
-
-    this._indexPA = indexPA;
-
-    // fire a modified event without propagation for fast slicing
-    this.modified(false);
-
-  }
-
-});
-
 
 /**
  * Get the slice index in X-direction.
@@ -1146,10 +983,6 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
   }
 
-  // hide old volume rendering slices
-  var _child = this._children[this._volumeRenderingDirection];
-  _child['visible'] = false;
-
   // show new volume rendering slices, but don't show the borders
   _child = this._children[direction];
   var _numberOfSlices = _child._children.length;
@@ -1157,9 +990,36 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   var i;
   for (i = 0; i < _numberOfSlices; i++) {
 
+        // RESLICE VOLUME IF NECESSARY!
+     //loop through slice
+       if(!goog.isDefAndNotNull(_child._children[i])){
+
+       var _sliceOrigin = new goog.vec.Vec3.createFloat32();
+
+       _sliceOrigin[0] = this._childrenInfo[direction]._solutionsLine[0][0][0] + Math.abs(this._childrenInfo[direction]._sliceDirection[0])*i;
+       _sliceOrigin[1] = this._childrenInfo[direction]._solutionsLine[0][0][1] + Math.abs(this._childrenInfo[direction]._sliceDirection[1])*i;
+       _sliceOrigin[2] = this._childrenInfo[direction]._solutionsLine[0][0][2] + Math.abs(this._childrenInfo[direction]._sliceDirection[2])*i;
+
+       var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._IJKVolume, this, this.hasLabelMap, this._colorTable);
+    
+       if (this.hasLabelMap) {
+         // if this object has a labelmap,
+         // we have it loaded at this point (for sure)
+         // ..so we can attach it as the second texture to this slice
+         this._labelmap = this._labelmap._children[this._volumeRenderingDirection]._children[i]._texture;
+       }
+       _child._children[i] = _slice;
+       // add it to renderer!
+       this._container.add(_slice);
+       }
+
     _child._children[i]._visible = true;
 
   }
+
+    // hide old volume rendering slices
+  var _child = this._children[this._volumeRenderingDirection];
+  _child['visible'] = false;
 
   // _child['visible'] = true;
   // store the direction

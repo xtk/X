@@ -412,7 +412,11 @@ X.displayable.prototype.__defineSetter__('opacity', function(opacity) {
 
   for (c = 0; c < numberOfChildren; c++) {
 
-    children[c]['opacity'] = opacity;
+    if(goog.isDefAndNotNull(children[c])) {
+
+      children[c]['opacity'] = opacity;
+
+    }
 
   }
 

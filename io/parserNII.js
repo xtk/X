@@ -125,36 +125,18 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
       0,
       0,
       1);
-/*  Float32Array
-  goog.vec.Mat4.setRowValues(mat, 0, sideVec.x, sideVec.y, sideVec.z, 0);
-  goog.vec.Mat4.setRowValues(mat, 1, upVec.x, upVec.y, upVec.z, 0);
-  goog.vec.Mat4.setRowValues(mat, 2, fwdVec.x, fwdVec.y, fwdVec.z, 0);*/
-  
-  MRI.spaceorientation = [];
 
   // 3 known cases
   if(MRI.qform_code == 0){
-    window.console.log('METHOD 1 NOT SUPPORTED YET');
     
     // fill IJKToRAS
     goog.vec.Mat4.setRowValues(IJKToRAS, 0, MRI.pixdim[1], 0, 0, 0);
     goog.vec.Mat4.setRowValues(IJKToRAS, 0, 0, MRI.pixdim[2], 0, 0);
     goog.vec.Mat4.setRowValues(IJKToRAS, 0, 0, 0, MRI.pixdim[3], 0);
-    
-    MRI.spaceorientation.push( MRI.pixdim[1]);
-    MRI.spaceorientation.push( 0);
-    MRI.spaceorientation.push( 0);
-    MRI.spaceorientation.push( 0);
-    MRI.spaceorientation.push( MRI.pixdim[2]);
-    MRI.spaceorientation.push( 0);
-    MRI.spaceorientation.push( 0);
-    MRI.spaceorientation.push( 0);
-    MRI.spaceorientation.push( MRI.pixdim[3]);
+
   }
   else if(MRI.qform_code > 0){
     //https://github.com/Kitware/ITK/blob/master/Modules/IO/NIFTI/src/itkNiftiImageIO.cxx
-    window.console.log('from ITK/Modules/ThirdParty/NIFTI/src/nifti/niftilib/nifti1_io.c');
-    window.console.log('METHOD 2 NOT SUPPORTED YET');
     
     var a = 0.0, b = MRI.quatern_b, c = MRI.quatern_c, d = MRI.quatern_d;
     var xd = 1.0, yd = 1.0, zd = 1.0;
@@ -211,19 +193,9 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
         (a*a+d*d-c*c-b*b)*zd,
         qz
         );
-    
-    MRI.spaceorientation.push( (a*a+b*b-c*c-d*d)*xd);
-    MRI.spaceorientation.push( 2*(b*c+a*d)*xd);
-    MRI.spaceorientation.push( 2*(b*d+a*c)*zd);
-    MRI.spaceorientation.push( 2*(b*c-a*d)*yd);
-    MRI.spaceorientation.push( (a*a+c*c-b*b-d*d)*yd);
-    MRI.spaceorientation.push( 2*(c*d-a*b)*zd);
-    MRI.spaceorientation.push( 2*(b*d+a*c)*zd);
-    MRI.spaceorientation.push( 2*(c*d+a*b)*yd);
-    MRI.spaceorientation.push( (a*a+d*d-c*c-b*b)*zd);
+
   }
   else if(MRI.sform_code > 0){
-    window.console.log('METHOD 3 NOT SUPPORTED YET');
     var sx = MRI.srow_x, sy = MRI.srow_y, sz = MRI.srow_z;
     // fill IJKToRAS
     goog.vec.Mat4.setRowValues(IJKToRAS, 0, sx[0], sx[1], sx[2], sx[3]);
@@ -239,11 +211,6 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   // Invert IJK to RAS
   MRI.RASToIJK = new goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.invert(MRI.IJKToRAS, MRI.RASToIJK);
-  
-  window.console.log("IJKToRAS");
-  window.console.log(MRI.IJKToRAS);
-  window.console.log("RASToIJK");
-  window.console.log(MRI.RASToIJK);
   
   // get bounding box
   var tar3 = new goog.vec.Vec4.createFloat32FromValues(MRI.dim[1], MRI.dim[2], MRI.dim[3], 1);
@@ -262,8 +229,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   var _xyBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
                Number.MAX_VALUE, -Number.MAX_VALUE,
                Number.MAX_VALUE, -Number.MAX_VALUE];
-  
-  //
+
   var tar6 = new goog.vec.Vec4.createFloat32FromValues(0, 0, 0, 1);
   var res6 = new goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
@@ -352,22 +318,9 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
   _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
 
-  window.console.log('NEW BB');
-  window.console.log(_xyBB);
-  
-
-  window.console.log(' RAS SPACING ');
-  window.console.log(res2[0] - res[0]);
-  window.console.log(res2[1] - res[1]);
-  window.console.log(res2[2] - res[2]);
-  
   MRI.RASSpacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
-  window.console.log('RASSpacing');
-  window.console.log(MRI.RASSpacing);
   
   MRI.RASDimensions = [_xyBB[1] - _xyBB[0], _xyBB[3] - _xyBB[2], _xyBB[5] - _xyBB[4]];
-  window.console.log('RASDimensions');
-  window.console.log(MRI.RASDimensions);
   
   MRI.RASOrigin = [_xyBB[0], _xyBB[2], _xyBB[4]];
   //MRI.RASOrigin = [res[0], res[1], res[2]];
@@ -378,17 +331,10 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
                            MRI.dim[3]];
   object._dimensions = _PASdimensionsSp1;
   
-  window.console.log('PAS DIMS');
-  window.console.log(_PASdimensionsSp1);
-  
   // grab the spacing
   var _spacing = [MRI.pixdim[1], MRI.pixdim[2], MRI.pixdim[3]];
   object._spacing = MRI.RASSpacing;
-  
-  // deduce slices size
-  
-  // fill 'em
-     
+
   // create the object
   object.create_(MRI);
   

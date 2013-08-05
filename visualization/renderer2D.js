@@ -852,6 +852,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _volume = this._topLevelObjects[0];
   var _labelmap = _volume._labelmap;
   var _labelmapShowOnlyColor = null;
+
   if (_labelmap) {
 
     // since there is a labelmap, get the showOnlyColor property
@@ -860,6 +861,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   }
 
   var xyz = this._orientationIndex;
+
   var _currentSlice = null;
   if (xyz == 0) {
 
@@ -1022,16 +1024,11 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 //          // invert nothing
           
           if(this._orientation == "X"){
-            // rotate
-            //var _switchedIndex = 4*_sliceWidth + Math.floor(_index/(4*_sliceHeight))*4*_sliceWidth - _index%(4*_sliceHeight);
-            // col: inex % height + row: width
-            //var _switchedIndex = Math.floor(_index/(_sliceHeight*4))*4*_sliceWidth + (_index%(4*_sliceWidth))*4;
-//            window.console.log(_switchedIndex);
             var _switchedIndex = _index;
-          _pixels[_switchedIndex] = 255; // r
-          _pixels[_switchedIndex + 1] = 255*_index/_pixelsLength; // g
-          _pixels[_switchedIndex + 2] = 255*_index/_pixelsLength; // b
-          _pixels[_switchedIndex + 3] = 255; // a
+            _pixels[_switchedIndex] = 255; // r
+            _pixels[_switchedIndex + 1] = 255*_index/_pixelsLength; // g
+            _pixels[_switchedIndex + 2] = 255*_index/_pixelsLength; // b
+            _pixels[_switchedIndex + 3] = 255; // a
             _pixels[_switchedIndex] = _color[0]; // r
             _pixels[_switchedIndex + 1] = _color[1]; // g
             _pixels[_switchedIndex + 2] = _color[2]; // b
@@ -1067,44 +1064,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
           _labelPixels[_invertedIndex - 1] = _label[2]; // b
           _labelPixels[_invertedIndex] = _label[3]; // a
           }
-//
-//        }
-//
-//      } else {
-//
-//        if (_oj == 1) {
-//
-//          // -1, 1
-//          // invert all
-//          var _invertedIndex = _pixelsLength - 1 - _index;
-//          _pixels[_invertedIndex - 3] = _color[0]; // r
-//          _pixels[_invertedIndex - 2] = _color[1]; // g
-//          _pixels[_invertedIndex - 1] = _color[2]; // b
-//          _pixels[_invertedIndex] = _color[3]; // a
-//          _labelPixels[_invertedIndex - 3] = _label[0]; // r
-//          _labelPixels[_invertedIndex - 2] = _label[1]; // g
-//          _labelPixels[_invertedIndex - 1] = _label[2]; // b
-//          _labelPixels[_invertedIndex] = _label[3]; // a
-//
-//        } else {
-//
-//          // -1, -1
-//          // invert cols
-//          var _invertedIndex = (4 * _sliceWidth) *
-//              (Math.floor(_index / (4 * _sliceWidth))) - _index %
-//              (4 * _sliceWidth);
-//          _pixels[_invertedIndex] = _color[0]; // r
-//          _pixels[_invertedIndex + 1] = _color[1]; // g
-//          _pixels[_invertedIndex + 2] = _color[2]; // b
-//          _pixels[_invertedIndex + 3] = _color[3]; // a
-//          _labelPixels[_invertedIndex] = _label[0]; // r
-//          _labelPixels[_invertedIndex + 1] = _label[1]; // g
-//          _labelPixels[_invertedIndex + 2] = _label[2]; // b
-//          _labelPixels[_invertedIndex + 3] = _label[3]; // a
-//
-//        }
-//
-//      }
 
 //       var _tmp_indx = _index;
       _index = _tmp_indx + 4; // increase by 4 units for r,g,b,a
@@ -1143,6 +1102,17 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // move to the middle
   this._context.translate(_width / 2 / _normalizedScale, _height / 2 /
       _normalizedScale);
+
+  // Rotate the Sagittal viewer
+  if(this._orientation == "X") {
+
+    this._context.rotate(Math.PI * 0.5);
+
+    var _buf = _x;
+    _x = _y;
+    _y = -_buf;
+
+  }
 
   var _offset_x = -_sliceWidth * this._sliceWidthSpacing / 2 + _x;
   var _offset_y = -_sliceHeight * this._sliceHeightSpacing / 2 + _y;

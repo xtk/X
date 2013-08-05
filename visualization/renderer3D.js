@@ -1310,6 +1310,8 @@ X.renderer3D.prototype.order_ = function() {
   do {
 
     var object = topLevelObjects[t];
+        // keep link to container
+    object._container = this;
 
     // special case for X.volumes in volumeRendering mode
     // a) we know the volumeRendering direction and the center of the volume
@@ -1318,15 +1320,7 @@ X.renderer3D.prototype.order_ = function() {
     // c) .. and get the distance for the other slices by simple multiplication
     if (object instanceof X.volume && object._volumeRendering) {
 
-      var _volumeRenderingDirection = object._volumeRenderingDirection;
-
-      var _slices = object._slicesX._children;
-      if (_volumeRenderingDirection == 1) {
-        _slices = object._slicesY._children;
-      } else if (_volumeRenderingDirection == 2) {
-        _slices = object._slicesZ._children;
-      }
-
+      var _slices = object._children[object._volumeRenderingDirection]._children;
       var numberOfSlices = _slices.length;
 
       // grab the first slice, attach the distance and opacity
