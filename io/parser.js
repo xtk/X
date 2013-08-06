@@ -835,7 +835,7 @@ for (var i = _wmin; i <= _we; i+=_resX) {
   // for labelmaps, don't create the borders since this would create them 2x
   // hasLabelMap == true means we are the volume
   // hasLabelMap == false means we are the labelmap
-  if (!hasLabelMap) {
+  if (goog.isDefAndNotNull(object._volume) && !hasLabelMap) {
     sliceXY._borders = false;
   }
   else{

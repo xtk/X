@@ -533,7 +533,7 @@ X.volume.prototype.slicing_ = function() {
 
       //attach labelmap
       if(this.hasLabelMap){
-        var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._labelmap._IJKVolume, this, false, this._labelmap._colortable._map);
+        var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
         this._labelmap._children[0]._children[parseInt(currentIndex, 10)] = _sliceLabel;
         // add it to create the texture
         this._container.add(_sliceLabel);
