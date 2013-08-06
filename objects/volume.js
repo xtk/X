@@ -531,23 +531,25 @@ X.volume.prototype.slicing_ = function() {
       _sliceOrigin[1] = this._childrenInfo[xyz]._solutionsLine[0][0][1] + Math.abs(this._childrenInfo[xyz]._sliceDirection[1])*parseInt(currentIndex, 10);
       _sliceOrigin[2] = this._childrenInfo[xyz]._solutionsLine[0][0][2] + Math.abs(this._childrenInfo[xyz]._sliceDirection[2])*parseInt(currentIndex, 10);
 
-    // attach labelmap
-    if(this.hasLabelMap){
-      var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._IJKVolume, this, false, this._labelmap._colortable._map);
-      this._container.add(_child._children[parseInt(currentIndex, 10)]);
-      this._labelmap._children[0]._children[parseInt(currentIndex, 10)] = _sliceLabel;
-    }
+      //attach labelmap
+      if(this.hasLabelMap){
+        var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._labelmap._IJKVolume, this, false, this._labelmap._colortable._map);
+        this._labelmap._children[0]._children[parseInt(currentIndex, 10)] = _sliceLabel;
+        // add it to create the texture
+        this._container.add(_sliceLabel);
+      }
 
-    var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._IJKVolume, this, true, null);
+      var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._IJKVolume, this, true, null);
 
-     if(this.hasLabelMap){
-       _slice._labelmap = this._labelmap._children[0]._children[parseInt(currentIndex, 10)]._texture;
-     }
+      if(this.hasLabelMap){
+        _slice._labelmap = _slice._texture;
+        _slice._labelmap = this._labelmap._children[0]._children[parseInt(currentIndex, 10)]._texture;
+      }
 
-    _child._children[parseInt(currentIndex, 10)] = _slice;
+      _child._children[parseInt(currentIndex, 10)] = _slice;
 
-    // add it to renderer!
-    this._container.add(_child._children[parseInt(currentIndex, 10)]);
+      // add it to renderer!
+      this._container.add(_slice);
     }
     // DONE RESLICING!
 

@@ -1850,7 +1850,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 
         } else if (labelmap && labelmap._visible) {
           // only if we have an associated labelmap..
-
+          
           // grab the id of the labelmap
           var labelmapTextureID = object._labelmap._id;
 

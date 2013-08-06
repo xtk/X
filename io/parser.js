@@ -600,7 +600,7 @@ X.parser.prototype.xyBBox = function(_solutionsXY){
   return _xyBBox;
 };
 
-X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolumeN, object, hasLabelMap, colorTable){
+X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolume, object, hasLabelMap, colorTable){
   // X.TIMER(this._classname + '.reslice2');
   
   //
@@ -759,15 +759,17 @@ for (var i = _wmin; i <= _we; i+=_resX) {
       var _j = Math.floor(res2[1]);
       var _i = Math.floor(res2[0]);
       
-      var pixval = _IJKVolumeN[_k][_j][_i];
+      var pixval = _IJKVolume[_k][_j][_i];
       var pixelValue_r = 0;
       var pixelValue_g = 0;
       var pixelValue_b = 0;
       var pixelValue_a = 0;
       
+
+
       if (colorTable) {
         // color table!
-        var lookupValue = colorTable.get(Math.floor(pixval));
+        var lookupValue = colorTable.get(pixval);
         // check for out of range and use the last label value in this case
         if (!lookupValue) {
           lookupValue = [ 0, .61, 0, 0, 1 ];
@@ -833,7 +835,7 @@ for (var i = _wmin; i <= _we; i+=_resX) {
   // for labelmaps, don't create the borders since this would create them 2x
   // hasLabelMap == true means we are the volume
   // hasLabelMap == false means we are the labelmap
-  if (goog.isDefAndNotNull(object._volume) && !hasLabelMap) {
+  if (!hasLabelMap) {
     sliceXY._borders = false;
   }
   else{
@@ -941,7 +943,7 @@ X.parser.prototype.reslice = function(object) {
   if (object._colortable) {
     object._colorTable = object._colortable._map;
   }
-  
+
   // ------------------------------------------
   // SET GLOBAL VALUES/TRANSFORMS
   // ------------------------------------------
