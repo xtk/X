@@ -534,7 +534,7 @@ X.volume.prototype.slicing_ = function() {
       //attach labelmap
       if(this.hasLabelMap){
         var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
-        this._labelmap._children[0]._children[parseInt(currentIndex, 10)] = _sliceLabel;
+        this._labelmap._children[xyz]._children[parseInt(currentIndex, 10)] = _sliceLabel;
         // add it to create the texture
         this._container.add(_sliceLabel);
       }
@@ -543,7 +543,7 @@ X.volume.prototype.slicing_ = function() {
 
       if(this.hasLabelMap){
         _slice._labelmap = _slice._texture;
-        _slice._labelmap = this._labelmap._children[0]._children[parseInt(currentIndex, 10)]._texture;
+        _slice._labelmap = this._labelmap._children[xyz]._children[parseInt(currentIndex, 10)]._texture;
       }
 
       _child._children[parseInt(currentIndex, 10)] = _slice;
@@ -985,6 +985,10 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
   }
 
+    // hide old volume rendering slices
+  var _child = this._children[this._volumeRenderingDirection];
+  _child['visible'] = false;
+
   // show new volume rendering slices, but don't show the borders
   _child = this._children[direction];
   var _numberOfSlices = _child._children.length;
@@ -996,34 +1000,36 @@ X.volume.prototype.volumeRendering_ = function(direction) {
      //loop through slice
        if(!goog.isDefAndNotNull(_child._children[i])){
 
-       var _sliceOrigin = new goog.vec.Vec3.createFloat32();
+      var _sliceOrigin = new goog.vec.Vec3.createFloat32();
 
-       _sliceOrigin[0] = this._childrenInfo[direction]._solutionsLine[0][0][0] + Math.abs(this._childrenInfo[direction]._sliceDirection[0])*i;
-       _sliceOrigin[1] = this._childrenInfo[direction]._solutionsLine[0][0][1] + Math.abs(this._childrenInfo[direction]._sliceDirection[1])*i;
-       _sliceOrigin[2] = this._childrenInfo[direction]._solutionsLine[0][0][2] + Math.abs(this._childrenInfo[direction]._sliceDirection[2])*i;
+      _sliceOrigin[0] = this._childrenInfo[direction]._solutionsLine[0][0][0] + Math.abs(this._childrenInfo[direction]._sliceDirection[0])*i;
+      _sliceOrigin[1] = this._childrenInfo[direction]._solutionsLine[0][0][1] + Math.abs(this._childrenInfo[direction]._sliceDirection[1])*i;
+      _sliceOrigin[2] = this._childrenInfo[direction]._solutionsLine[0][0][2] + Math.abs(this._childrenInfo[direction]._sliceDirection[2])*i;
 
-       var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._IJKVolume, this, this.hasLabelMap, this._colorTable);
+      //attach labelmap
+      if(this.hasLabelMap){
+        var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
+        this._labelmap._children[direction]._children[i] = _sliceLabel;
+        // add it to create the texture
+        this._container.add(_sliceLabel);
+      }
+
+      var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._IJKVolume, this, true, null);
+
+      if(this.hasLabelMap){
+        _slice._labelmap = _slice._texture;
+        _slice._labelmap = this._labelmap._children[direction]._children[i]._texture;
+      }
+
+      _child._children[i] = _slice;
+
+      // add it to renderer!
+      this._container.add(_slice);
+    }
     
-       if (this.hasLabelMap) {
-         // if this object has a labelmap,
-         // we have it loaded at this point (for sure)
-         // ..so we can attach it as the second texture to this slice
-         this._labelmap = this._labelmap._children[this._volumeRenderingDirection]._children[i]._texture;
-       }
-       _child._children[i] = _slice;
-       // add it to renderer!
-       this._container.add(_slice);
-       }
-
     _child._children[i]._visible = true;
-
   }
 
-    // hide old volume rendering slices
-  var _child = this._children[this._volumeRenderingDirection];
-  _child['visible'] = false;
-
-  // _child['visible'] = true;
   // store the direction
   this._volumeRenderingDirection = direction;
 
