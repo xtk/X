@@ -1235,39 +1235,25 @@ X.renderer3D.prototype.showCaption_ = function(x, y) {
 X.renderer3D.prototype.orientVolume_ = function(volume) {
 
   // TODO once we have arbitary sliced volumes, we need to modify the vectors
-  // here
   var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 1, 0, 0);
-  var distanceFromEyeX = X.vector.distance(this._camera._position,
-      realCentroidVector);
-  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, -1, 0, 0);
-  var distanceFromEyeX2 = X.vector.distance(this._camera._position,
-      realCentroidVector);
+  var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, -1, 0, 0);
+  var dX = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
-  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 0, 1, 0);
-  var distanceFromEyeY = X.vector.distance(this._camera._position,
-      realCentroidVector);
-  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 0, -1, 0);
-  var distanceFromEyeY2 = X.vector.distance(this._camera._position,
-      realCentroidVector);
+  var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 0, 1, 0);
+  var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, 0, -1, 0);
+  var dY = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
-  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 0, 0, 1);
-  var distanceFromEyeZ = X.vector.distance(this._camera._position,
-      realCentroidVector);
-  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 0, 0, -1);
-  var distanceFromEyeZ2 = X.vector.distance(this._camera._position,
-      realCentroidVector);
+  var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 0, 0, 1);
+  var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, 0, 0, -1);
+  var dZ = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
-  var maxDistance = Math
-      .max(distanceFromEyeX, distanceFromEyeY, distanceFromEyeZ,
-          distanceFromEyeX2, distanceFromEyeY2, distanceFromEyeZ2);
+  var maxDistance = Math.max(dX, dY, dZ);
 
-  if (maxDistance == distanceFromEyeX || maxDistance == distanceFromEyeX2) {
+  if (maxDistance == dX) {
     volume.volumeRendering_(0);
-  } else if (maxDistance == distanceFromEyeY ||
-      maxDistance == distanceFromEyeY2) {
+  } else if (maxDistance == dY) {
     volume.volumeRendering_(1);
-  } else if (maxDistance == distanceFromEyeZ ||
-      maxDistance == distanceFromEyeZ2) {
+  } else {
     volume.volumeRendering_(2);
   }
 
