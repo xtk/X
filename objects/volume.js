@@ -1015,7 +1015,8 @@ X.volume.prototype.volumeRendering_ = function(direction) {
       }
 
       var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._IJKVolume, this, true, null);
-
+      _slice._children[0]._visible = false;
+      
       if(this.hasLabelMap){
         _slice._labelmap = _slice._texture;
         _slice._labelmap = this._labelmap._children[direction]._children[i]._texture;
