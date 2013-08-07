@@ -1235,16 +1235,16 @@ X.renderer3D.prototype.showCaption_ = function(x, y) {
 X.renderer3D.prototype.orientVolume_ = function(volume) {
 
   // TODO once we have arbitary sliced volumes, we need to modify the vectors
-  var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 1, 0, 0);
-  var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, -1, 0, 0);
+  var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._childrenInfo[0]._sliceNormal[0], volume._childrenInfo[0]._sliceNormal[1], volume._childrenInfo[0]._sliceNormal[2]);
+  var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, -volume._childrenInfo[0]._sliceNormal[0], -volume._childrenInfo[0]._sliceNormal[1], -volume._childrenInfo[0]._sliceNormal[2]);
   var dX = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
-  var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 0, 1, 0);
-  var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, 0, -1, 0);
+  var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._childrenInfo[1]._sliceNormal[0], volume._childrenInfo[1]._sliceNormal[1], volume._childrenInfo[1]._sliceNormal[2]);
+  var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, -volume._childrenInfo[1]._sliceNormal[0], -volume._childrenInfo[1]._sliceNormal[1], -volume._childrenInfo[1]._sliceNormal[2]);
   var dY = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
-  var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 0, 0, 1);
-  var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, 0, 0, -1);
+  var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._childrenInfo[2]._sliceNormal[0], volume._childrenInfo[2]._sliceNormal[1], volume._childrenInfo[2]._sliceNormal[2]);
+  var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, -volume._childrenInfo[1]._sliceNormal[0], -volume._childrenInfo[1]._sliceNormal[1], -volume._childrenInfo[1]._sliceNormal[2]);
   var dZ = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
   var maxDistance = Math.max(dX, dY, dZ);
@@ -1258,7 +1258,7 @@ X.renderer3D.prototype.orientVolume_ = function(volume) {
     volume.volumeRendering_(1);
 
   } else {
-    
+
     volume.volumeRendering_(2);
   }
 
