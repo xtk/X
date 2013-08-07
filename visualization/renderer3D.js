@@ -1250,10 +1250,15 @@ X.renderer3D.prototype.orientVolume_ = function(volume) {
   var maxDistance = Math.max(dX, dY, dZ);
 
   if (maxDistance == dX) {
+
     volume.volumeRendering_(0);
+
   } else if (maxDistance == dY) {
+
     volume.volumeRendering_(1);
+
   } else {
+    
     volume.volumeRendering_(2);
   }
 
