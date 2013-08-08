@@ -45,7 +45,7 @@ goog.require('X.triplets');
 
 /**
  * Create a parser for binary or ascii data.
- * 
+ *
  * @constructor
  * @extends X.base
  */
@@ -66,7 +66,7 @@ X.parser = function() {
 
   /**
    * The data.
-   * 
+   *
    * @type {?ArrayBuffer}
    * @protected
    */
@@ -74,7 +74,7 @@ X.parser = function() {
 
   /**
    * The pointer to the current byte.
-   * 
+   *
    * @type {!number}
    * @protected
    */
@@ -83,7 +83,7 @@ X.parser = function() {
   /**
    * The native endianness flag. Based on
    * https://github.com/kig/DataStream.js/blob/master/DataStream.js
-   * 
+   *
    * @type {!boolean}
    * @protected
    */
@@ -91,7 +91,7 @@ X.parser = function() {
 
   /**
    * The data-specific endianness flag.
-   * 
+   *
    * @type {!boolean}
    * @protected
    */
@@ -99,7 +99,7 @@ X.parser = function() {
 
   /**
    * The min value of the last parsing attempt.
-   * 
+   *
    * @type {!number}
    * @protected
    */
@@ -107,7 +107,7 @@ X.parser = function() {
 
   /**
    * The max value of the last parsing attempt.
-   * 
+   *
    * @type {!number}
    * @protected
    */
@@ -121,7 +121,7 @@ goog.inherits(X.parser, X.base);
 /**
  * Parse data and configure the given object. When complete, a
  * X.parser.ModifiedEvent is fired.
- * 
+ *
  * @param {!X.base}
  *          container A container which holds the loaded data. This can be an
  *          X.object as well.
@@ -147,7 +147,7 @@ X.parser.prototype.parse = function(container, object, data, flag) {
 //
 /**
  * Get the min and max values of an array.
- * 
+ *
  * @param {!Array}
  *          data The data array to analyze.
  * @return {!Array} An array with length 2 containing the [min, max] values.
@@ -178,7 +178,7 @@ X.parser.prototype.arrayMinMax = function(data) {
  * Create a string from a bunch of UChars. This replaces a
  * String.fromCharCode.apply call and therefor supports more platforms (like the
  * Android stock browser).
- * 
+ *
  * @param {!Array|Uint8Array}
  *          array The Uint8Array.
  * @param {?number=}
@@ -217,7 +217,7 @@ X.parser.prototype.parseChars = function(array, start, end) {
 
 /**
  * Jump to a position in the byte stream.
- * 
+ *
  * @param {!number}
  *          position The new offset.
  */
@@ -230,7 +230,7 @@ X.parser.prototype.jumpTo = function(position) {
 
 /**
  * Scan binary data relative to the internal position in the byte stream.
- * 
+ *
  * @param {!string}
  *          type The data type to scan, f.e.
  *          'uchar','schar','ushort','sshort','uint','sint','float'
@@ -317,7 +317,7 @@ X.parser.prototype.scan = function(type, chunks) {
 /**
  * Flips typed array endianness in-place. Based on
  * https://github.com/kig/DataStream.js/blob/master/DataStream.js.
- * 
+ *
  * @param {!Object}
  *          array Typed array to flip.
  * @param {!number}
@@ -916,7 +916,7 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
  * directions. The given volume (object) has to be created at this point
  * according to the proper dimensions. This also takes care of a possible
  * associated label map which has to be loaded before.
- * 
+ *
  * @param {!X.object}
  *          object The X.volume to fill.
  * @return {!Array} The volume data as a 3D Array.
@@ -1052,6 +1052,16 @@ X.parser.prototype.reslice = function(object) {
     // ..so we can attach it as the second texture to this slice
     _slice._labelmap = object._labelmap._children[1]._children[Math.round(object._childrenInfo[1]._nb/2)]._texture;
   }
+
+  var _pix_val = 0;
+  // IJK to XYS
+  // reslice image (Axial, Sagittal, Coronal)
+  var xyz = 0;
+  for (xyz = 0; xyz < 3; xyz++) {
+
+    var _ti = xyz;
+    var _tj = (_ti + 1) % 3;
+    var _tk = (_ti + 2) % 3;
     
   object._children[1]._children[Math.round(object._childrenInfo[1]._nb/2)] = _slice;
   

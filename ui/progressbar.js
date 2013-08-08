@@ -251,6 +251,7 @@ X.progressbar.prototype.kill = function() {
   this._doneProgressBar = null;
   
   // reset the original parent position style
-  this._parent.style.position = this._parent_position_original;
+  if (this._parent_position_original)
+    this._parent.style.position = this._parent_position_original;
   
 };

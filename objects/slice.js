@@ -179,6 +179,30 @@ X.slice.prototype.copy_ = function(slice) {
 
 
 /**
+ * Set the height of this slice.
+ * 
+ * @param {number} height The height.
+ */
+X.slice.prototype.__defineSetter__('height', function(height) {
+
+  this._height = height;
+
+});
+
+
+/**
+ * Set the width of this slice.
+ * 
+ * @param {number} width The width.
+ */
+X.slice.prototype.__defineSetter__('width', function(width) {
+
+  this._width = width;
+
+});
+
+
+/**
  * Setup this X.slice and create it.
  *
  * @param {!Array} center The center position in 3D space as a 1-D Array with
@@ -261,6 +285,16 @@ X.slice.prototype.setup = function(center, front, up, right, width, height, bord
   // create the slice
   this.create_();
 
+};
+
+
+/**
+ * Create a default X.slice.
+ */
+X.slice.prototype.create = function() {
+  
+  this.create_();
+  
 };
 
 
@@ -367,3 +401,4 @@ X.slice.prototype.create_ = function() {
 // export symbols (required for advanced compilation and in particular the copy
 // constructors with duck typing)
 goog.exportSymbol('X.slice', X.slice);
+goog.exportSymbol('X.slice.prototype.create', X.slice.prototype.create);

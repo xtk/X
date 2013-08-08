@@ -7,6 +7,7 @@
 import base64
 import hashlib
 import os
+import platform
 import sys
 from socket import getfqdn
 from xml.dom import minidom
@@ -398,8 +399,8 @@ class CDash( object ):
     #
 
     # grab the system information
-    os_platform = os.uname()[0]
-    os_version = os.uname()[2]
+    os_platform = platform.uname()[0]
+    os_version = platform.uname()[2]
     hostname = getfqdn()
 
     # grab the current buildtime
