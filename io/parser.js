@@ -1052,16 +1052,6 @@ X.parser.prototype.reslice = function(object) {
     // ..so we can attach it as the second texture to this slice
     _slice._labelmap = object._labelmap._children[1]._children[Math.round(object._childrenInfo[1]._nb/2)]._texture;
   }
-
-  var _pix_val = 0;
-  // IJK to XYS
-  // reslice image (Axial, Sagittal, Coronal)
-  var xyz = 0;
-  for (xyz = 0; xyz < 3; xyz++) {
-
-    var _ti = xyz;
-    var _tj = (_ti + 1) % 3;
-    var _tk = (_ti + 2) % 3;
     
   object._children[1]._children[Math.round(object._childrenInfo[1]._nb/2)] = _slice;
   
