@@ -749,23 +749,29 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
 
   var _sliceWidth = this._sliceWidth;
   var _sliceHeight = this._sliceHeight;
-  var _sliceWSpacing = this._sliceWidthSpacing;
-  var _sliceHSpacing = this._sliceWidthSpacing;
+  var _sliceWSpacing = null;
+  var _sliceHSpacing = null;
   
   // get current slice
   // which color?
   if (this._orientation == "Y") {
     _currentSlice = this._slices[parseInt(_volume['indexY'], 10)];
+    _sliceWSpacing = _currentSlice._resX;
+    _sliceHSpacing = _currentSlice._resY;
     this._orientationColors[0] = 'yellow';
     this._orientationColors[1] = 'green';
 
   } else if (this._orientation == "Z") {
     _currentSlice = this._slices[parseInt(_volume['indexZ'], 10)];
+    _sliceWSpacing = _currentSlice._resX;
+    _sliceHSpacing = _currentSlice._resY;
     this._orientationColors[0] = 'yellow';
     this._orientationColors[1] = 'red';
 
   } else {
     _currentSlice = this._slices[parseInt(_volume['indexX'], 10)];
+    _sliceWSpacing = _currentSlice._resY;
+    _sliceHSpacing = _currentSlice._resX;
     this._orientationColors[0] = 'green';
     this._orientationColors[1] = 'red';
 
@@ -803,19 +809,42 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   var _xNorm = (x - _image_left2xy)/ _sliceWidthScaled;
   var _yNorm = (y - _image_top2xy)/ _sliceHeightScaled;
   
-  var _x = Math.round(_xNorm*_sliceWidth);
-  var _y = Math.round(_yNorm*_sliceHeight);
-  var _z = Math.round(_currentSlice._xyBBox[4]);
-  
-  var _xyz = new goog.vec.Vec4.createFloat32FromValues(_x, _y, _z, 1);
-  var _ras = goog.vec.Mat4.createFloat32();
-  goog.vec.Mat4.multVec4(_currentSlice._XYToRAS, _xyz, _ras);
-  
-  window.console.log("RAS");
-  window.console.log(_ras);
+  var _x = _xNorm*_sliceWidth;
+  var _y = _yNorm*_sliceHeight;
+  var _z = _currentSlice._xyBBox[4];
 
-  return [_x, _y, _z];
-  //return [_ras[0], _ras[1], _ras[2]];
+  if (this._orientation == "X") {
+    // invert cols
+    // then invert x and y to compensate camera +90d rotation
+    _x = Math.abs(_sliceWidth - _x);
+
+    var _buf = _x;
+    _x = _y;
+    _y = _buf;
+
+  }
+  else if (this._orientation == "Y") {
+        // invert cols
+    _x = Math.abs(_sliceWidth - _x);
+
+  }
+  else if (this._orientation == "Z") {
+    // invert all
+    _x = Math.abs(_sliceWidth - _x);
+    _y = Math.abs(_sliceHeight - _y);
+
+  }
+
+  // map indices to xy coordinates
+  _x = _currentSlice._wmin + _x*_currentSlice._resX;
+  _y = _currentSlice._hmin + _y*_currentSlice._resY;
+
+  var _xyz = new goog.vec.Vec4.createFloat32FromValues(_x, _y, _z, 1);
+  // cannot directly use xyz => hmin hmax epsilon
+  var _ijk = goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.multVec4(_currentSlice._XYToIJK, _xyz, _ijk);
+
+  return [Math.round(_ijk[0]), Math.round(_ijk[1]), Math.round(_ijk[2])];
 };
 
 

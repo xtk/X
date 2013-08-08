@@ -418,12 +418,7 @@ X.parser.prototype.intersectionBBoxLine = function(_bbox, _sliceOrigin, _sliceNo
       {
     var _sol1 = _sliceOrigin[_i3] + _sliceNormal[_i3]*_t;
     var _sol2 = _sliceOrigin[_i4] + _sliceNormal[_i4]*_t;
-    
-    // window.console.log("INTERSECTIONS");
-    // window.console.log(_t);
-    // window.console.log(_sliceNormal);
-    // window.console.log(_sol0 + ' - ' + _sol1 + ' - ' + _sol2);
-    
+        
     // in range?
       if( (_sol1 >= _bbox[_j1] && _sol1 <= _bbox[_j1+1]) &&
           (_sol2 >= _bbox[_j2] && _sol2 <= _bbox[_j2+1])){
@@ -726,7 +721,7 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   var tar = new goog.vec.Vec4.createFloat32FromValues(i, j, _xyBBox[4], 1);
   var tttt = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.multMat(_ras2ijk,_XYToRAS, tttt);
-  
+
   var _he = _hmax - _epsilon;
   var _we = _wmax - _epsilon;
   
@@ -739,11 +734,13 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
     _iWidth = 0;
     
     var _ci = 0;
+        tar[1] = j;
+
 for (var i = _wmin; i <= _we; i+=_resX) {
   _iWidth++;
     //
     tar[0] = i;
-    tar[1] = j;
+
   // convert to RAS
     // convert to IJK
     goog.vec.Mat4.multVec4(tttt, tar, res2);
@@ -789,12 +786,12 @@ for (var i = _wmin; i <= _we; i+=_resX) {
       textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
     }
     else{
-//      textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
-//      textureForCurrentSlice[++textureStartIndex] = 255;
-      textureForCurrentSlice[textureStartIndex] = 0;
+      textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
+      textureForCurrentSlice[++textureStartIndex] = 255;
+//      textureForCurrentSlice[textureStartIndex] = 0;
+//      textureForCurrentSlice[++textureStartIndex] = 0;
       textureForCurrentSlice[++textureStartIndex] = 0;
-      textureForCurrentSlice[++textureStartIndex] = 0;
-      textureForCurrentSlice[++textureStartIndex] = 0;
+      textureForCurrentSlice[++textureStartIndex] = 255;
     }
 
     _ci++;
@@ -812,6 +809,15 @@ for (var i = _wmin; i <= _we; i+=_resX) {
   
   sliceXY._xyBBox = _xyBBox;
   sliceXY._XYToRAS = _XYToRAS;
+  sliceXY._XYToIJK = tttt;
+
+  sliceXY._hmin = _hmin;
+  sliceXY._hmax = _hmax;
+  sliceXY._wmin = _wmin;
+  sliceXY._wmax = _wmax;
+  sliceXY._epsilon = _epsilon;
+  sliceXY._resX = _resX;
+  sliceXY._resY = _resY;
   
   sliceXY._iWidth = _iWidth;
   sliceXY._iHeight = _iHeight;
