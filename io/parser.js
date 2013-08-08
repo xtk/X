@@ -882,6 +882,12 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   var _dist = goog.math.Vec3.distance(_first, _last);
   
   object._childrenInfo[_index]._dist = _dist;
+
+  // ------------------------------------------
+  // GET CENTER OF 2 POINTS
+  // ------------------------------------------
+  object._childrenInfo[_index]._centerL = new goog.math.Vec3((_solutionsInLine[0][0] + _solutionsInLine[1][0])/2,
+    (_solutionsInLine[0][1] + _solutionsInLine[1][1])/2, (_solutionsInLine[1][2] + _solutionsInLine[0][2])/2);
   
   // ------------------------------------------
   // GET SPACING IN SLICE SPACE

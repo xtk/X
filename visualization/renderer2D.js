@@ -840,9 +840,39 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   _y = _currentSlice._hmin + _y*_currentSlice._resY;
 
   var _xyz = new goog.vec.Vec4.createFloat32FromValues(_x, _y, _z, 1);
-  // cannot directly use xyz => hmin hmax epsilon
-  var _ijk = goog.vec.Mat4.createFloat32();
+   var _ijk = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.multVec4(_currentSlice._XYToIJK, _xyz, _ijk);
+  var _ras = goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.multVec4(_currentSlice._XYToRAS, _xyz, _ras);
+
+  // map ijk to index in slice direction!
+  var _dx = volume._childrenInfo[0]._sliceNormal[0]*_ras[0]
+  + volume._childrenInfo[0]._sliceNormal[1]*_ras[1]
+  + volume._childrenInfo[0]._sliceNormal[2]*_ras[2];
+  var _pointx = volume._childrenInfo[0]._sliceNormal;
+  //var _center
+
+  var _first = new goog.math.Vec3(volume._childrenInfo[0]._solutionsLine[0][0][0], volume._childrenInfo[0]._solutionsLine[0][0][1], volume._childrenInfo[0]._solutionsLine[0][0][2]);
+  var _last = new goog.math.Vec3(_pointx[0]*_dx + volume._RASCenter[0], _pointx[1]*_dx + volume._RASCenter[1], _pointx[2]*_dx + volume._RASCenter[2]);
+  var _dist = goog.math.Vec3.distance(_first, _last);
+
+  // window.console.log("DISTANCE");
+  //   window.console.log(_first);
+  //     window.console.log(_last);
+  // window.console.log(_dist);
+
+  var _dy = volume._childrenInfo[1]._sliceNormal[0]*_ras[0]
+  + volume._childrenInfo[1]._sliceNormal[1]*_ras[1]
+  + volume._childrenInfo[1]._sliceNormal[2]*_ras[2];
+  var _pointy = volume._childrenInfo[1]._sliceNormal*_dy;
+
+  var _dz = volume._childrenInfo[2]._sliceNormal[0]*_ras[0]
+  + volume._childrenInfo[2]._sliceNormal[1]*_ras[1]
+  + volume._childrenInfo[2]._sliceNormal[2]*_ras[2];
+  var _pointz = volume._childrenInfo[2]._sliceNormal*_dz;
+
+  // window.console.log("DX - DY - DZ");
+  // window.console.log(_dx +' - '+_dy + ' - '+_dz);
 
   return [Math.round(_ijk[0]), Math.round(_ijk[1]), Math.round(_ijk[2])];
 };
