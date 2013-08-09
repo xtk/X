@@ -677,17 +677,6 @@ X.renderer2D.prototype.update_ = function(object) {
   this._sliceWidthSpacing = object._children[this._orientationIndex]._children[_currentSlice]._widthSpacing;
   this._sliceHeightSpacing = object._children[this._orientationIndex]._children[_currentSlice]._heightSpacing;
   
-  // if orientation is SAGITTAL
-//  if(this._orientation == "X"){
-//    var _tmp = _width;
-//    _width = _height;
-//    _height = _tmp;
-//    
-//    _tmp = this._sliceWidthSpacing;
-//    this._sliceWidthSpacing = this._sliceHeightSpacing;
-//    this._sliceHeightSpacing = _tmp;
-//  }
-  
   // .. and store the dimensions
   this._sliceWidth = _width;
   this._sliceHeight = _height;
@@ -921,6 +910,34 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   }
 
+  var _volume = this._topLevelObjects[0];
+  var xyz = this._orientationIndex;
+    var _currentSlice = null;
+  if (xyz == 0) {
+
+    _currentSlice = _volume['indexX'];
+
+  } else if (xyz == 1) {
+
+    _currentSlice = _volume['indexY'];
+
+  } else {
+
+    _currentSlice = _volume['indexZ'];
+
+  }
+
+  // update
+  var _width = this._slices[parseInt(_currentSlice, 10)]._iWidth;
+  var _height = this._slices[parseInt(_currentSlice, 10)]._iHeight;
+  // spacing
+  this._sliceWidthSpacing = this._slices[parseInt(_currentSlice, 10)]._widthSpacing;
+  this._sliceHeightSpacing = this._slices[parseInt(_currentSlice, 10)]._heightSpacing;
+  
+  // .. and store the dimensions
+  this._sliceWidth = _width;
+  this._sliceHeight = _height;
+
   //
   // grab the camera settings
 
@@ -948,7 +965,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   //
   // grab the volume and current slice
   //
-  var _volume = this._topLevelObjects[0];
+
   var _labelmap = _volume._labelmap;
   var _labelmapShowOnlyColor = null;
 
@@ -960,21 +977,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   }
 
   var xyz = this._orientationIndex;
-
-  var _currentSlice = null;
-  if (xyz == 0) {
-
-    _currentSlice = _volume['indexX'];
-
-  } else if (xyz == 1) {
-
-    _currentSlice = _volume['indexY'];
-
-  } else {
-
-    _currentSlice = _volume['indexZ'];
-
-  }
 
   // .. here is the current slice
   var _slice = this._slices[parseInt(_currentSlice, 10)];
@@ -1219,7 +1221,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         _volume._indexZ = ijk[2];
         _volume.modified(false);
 
-        // draw the navigators (we add 0.5 to the coords to get crisp 1px lines)
+        // draw the navigators
         // see http://diveintohtml5.info/canvas.html#paths
 
         // in x-direction
