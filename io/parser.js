@@ -786,10 +786,10 @@ for (var i = _wmin; i <= _we; i+=_resX) {
       textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
     }
     else{
-      textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
-      textureForCurrentSlice[++textureStartIndex] = 255;
-      //textureForCurrentSlice[textureStartIndex] = 0;
-      //textureForCurrentSlice[++textureStartIndex] = 0;
+      //textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
+      //textureForCurrentSlice[++textureStartIndex] = 255;
+      textureForCurrentSlice[textureStartIndex] = 0;
+      textureForCurrentSlice[++textureStartIndex] = 0;
       textureForCurrentSlice[++textureStartIndex] = 0;
       textureForCurrentSlice[++textureStartIndex] = 0;
     }

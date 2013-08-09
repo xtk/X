@@ -1214,7 +1214,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
         // // we are over the slice
         // update the volume
-        window.console.log(ijk);
         _volume._indexX = ijk[0];
         _volume._indexY = ijk[1];
         _volume._indexZ = ijk[2];
