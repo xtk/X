@@ -772,8 +772,8 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
     _currentSlice = this._slices[parseInt(_volume['indexX'], 10)];
     _sliceWSpacing = _currentSlice._resY;
     _sliceHSpacing = _currentSlice._resX;
-    this._orientationColors[0] = 'green';
-    this._orientationColors[1] = 'red';
+    this._orientationColors[0] = 'red';
+    this._orientationColors[1] = 'green';
 
     var _buf = _sliceWidth;
     _sliceWidth = _sliceHeight;
@@ -816,7 +816,7 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   if (this._orientation == "X") {
     // invert cols
     // then invert x and y to compensate camera +90d rotation
-    _x = Math.abs(_sliceWidth - _x);
+    _x = _sliceWidth - _x;
 
     var _buf = _x;
     _x = _y;
@@ -825,13 +825,13 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   }
   else if (this._orientation == "Y") {
         // invert cols
-    _x = Math.abs(_sliceWidth - _x);
+    _x = _sliceWidth - _x;
 
   }
   else if (this._orientation == "Z") {
     // invert all
-    _x = Math.abs(_sliceWidth - _x);
-    _y = Math.abs(_sliceHeight - _y);
+    _x = _sliceWidth - _x;
+    _y = _sliceHeight - _y;
 
   }
 
@@ -840,41 +840,64 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   _y = _currentSlice._hmin + _y*_currentSlice._resY;
 
   var _xyz = new goog.vec.Vec4.createFloat32FromValues(_x, _y, _z, 1);
-   var _ijk = goog.vec.Mat4.createFloat32();
+  var _ijk = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.multVec4(_currentSlice._XYToIJK, _xyz, _ijk);
   var _ras = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.multVec4(_currentSlice._XYToRAS, _xyz, _ras);
 
-  // map ijk to index in slice direction!
+  // window.console.log("RAS - OK");
+  // window.console.log(_ras);
+  // window.console.log("IJK - OK");
+  // window.console.log(_ijk);
+
   var _dx = volume._childrenInfo[0]._sliceNormal[0]*_ras[0]
-  + volume._childrenInfo[0]._sliceNormal[1]*_ras[1]
-  + volume._childrenInfo[0]._sliceNormal[2]*_ras[2];
-  var _pointx = volume._childrenInfo[0]._sliceNormal;
-  //var _center
+    + volume._childrenInfo[0]._sliceNormal[1]*_ras[1]
+    + volume._childrenInfo[0]._sliceNormal[2]*_ras[2]
+    + volume._childrenInfo[0]._originD;
 
-  var _first = new goog.math.Vec3(volume._childrenInfo[0]._solutionsLine[0][0][0], volume._childrenInfo[0]._solutionsLine[0][0][1], volume._childrenInfo[0]._solutionsLine[0][0][2]);
-  var _last = new goog.math.Vec3(_pointx[0]*_dx + volume._RASCenter[0], _pointx[1]*_dx + volume._RASCenter[1], _pointx[2]*_dx + volume._RASCenter[2]);
-  var _dist = goog.math.Vec3.distance(_first, _last);
+  var _ix = Math.round(_dx/Math.abs(volume._childrenInfo[0]._sliceSpacing));
 
-  // window.console.log("DISTANCE");
-  //   window.console.log(_first);
-  //     window.console.log(_last);
-  // window.console.log(_dist);
+   if(_ix >= volume._childrenInfo[0]._nb){
+     _ix = volume._childrenInfo[0]._nb - 1;
+   }
+   else if(_ix < 0){
+     _ix = 0;
+    }
 
   var _dy = volume._childrenInfo[1]._sliceNormal[0]*_ras[0]
-  + volume._childrenInfo[1]._sliceNormal[1]*_ras[1]
-  + volume._childrenInfo[1]._sliceNormal[2]*_ras[2];
-  var _pointy = volume._childrenInfo[1]._sliceNormal*_dy;
+    + volume._childrenInfo[1]._sliceNormal[1]*_ras[1]
+    + volume._childrenInfo[1]._sliceNormal[2]*_ras[2]
+    - (
+      volume._childrenInfo[1]._sliceNormal[0]*volume._childrenInfo[1]._solutionsLine[0][0][0]
+    + volume._childrenInfo[1]._sliceNormal[1]*volume._childrenInfo[1]._solutionsLine[0][0][1]
+    + volume._childrenInfo[1]._sliceNormal[2]*volume._childrenInfo[1]._solutionsLine[0][0][2]
+      );
 
+  var _iy = Math.round(_dy/Math.abs(volume._childrenInfo[1]._sliceSpacing));
+
+  if(_iy >= volume._childrenInfo[1]._nb){
+     _iy = volume._childrenInfo[1]._nb - 1;
+  }
+  else if(_iy < 0) {
+    _iy = 0;
+  }
+
+  // get plane distance from the origin
   var _dz = volume._childrenInfo[2]._sliceNormal[0]*_ras[0]
-  + volume._childrenInfo[2]._sliceNormal[1]*_ras[1]
-  + volume._childrenInfo[2]._sliceNormal[2]*_ras[2];
-  var _pointz = volume._childrenInfo[2]._sliceNormal*_dz;
+    + volume._childrenInfo[2]._sliceNormal[1]*_ras[1]
+    + volume._childrenInfo[2]._sliceNormal[2]*_ras[2]
+    + volume._childrenInfo[2]._originD;
+  var _iz = Math.round(_dz/Math.abs(volume._childrenInfo[2]._sliceSpacing));
 
-  // window.console.log("DX - DY - DZ");
-  // window.console.log(_dx +' - '+_dy + ' - '+_dz);
+  if(_iz >= volume._childrenInfo[2]._nb){
+    _iz = volume._childrenInfo[2]._nb - 1;
+  }
+  else if(_iz < 0){
+    // translate origin by distance
+    _iz = 0;
+  }
 
-  return [Math.round(_ijk[0]), Math.round(_ijk[1]), Math.round(_ijk[2])];
+  return [_ix, _iy, _iz];
 };
 
 
@@ -1192,10 +1215,10 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         // // we are over the slice
         // update the volume
         window.console.log(ijk);
-//        _volume._indexX = ijk[0];
-//        _volume._indexY = ijk[1];
-//        _volume._indexZ = ijk[2];
-//        _volume.modified(false);
+        _volume._indexX = ijk[0];
+        _volume._indexY = ijk[1];
+        _volume._indexZ = ijk[2];
+        _volume.modified(false);
 
         // draw the navigators (we add 0.5 to the coords to get crisp 1px lines)
         // see http://diveintohtml5.info/canvas.html#paths

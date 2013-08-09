@@ -788,10 +788,10 @@ for (var i = _wmin; i <= _we; i+=_resX) {
     else{
       textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
       textureForCurrentSlice[++textureStartIndex] = 255;
-//      textureForCurrentSlice[textureStartIndex] = 0;
-//      textureForCurrentSlice[++textureStartIndex] = 0;
+      //textureForCurrentSlice[textureStartIndex] = 0;
+      //textureForCurrentSlice[++textureStartIndex] = 0;
       textureForCurrentSlice[++textureStartIndex] = 0;
-      textureForCurrentSlice[++textureStartIndex] = 255;
+      textureForCurrentSlice[++textureStartIndex] = 0;
     }
 
     _ci++;
@@ -873,6 +873,7 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   object._solutionsOutL = _solutionsOutLine;
 
   object._childrenInfo[_index]._solutionsLine = _solutionsLine;
+  object._childrenInfo[_index]._originD = -(_sliceNormal[0]*_solutionsInLine[0][0] + _sliceNormal[1]*_solutionsInLine[0][1] + _sliceNormal[2]*_solutionsInLine[0][2]);
   
   // ------------------------------------------
   // GET DISTANCE BETWEEN 2 POINTS
@@ -886,8 +887,6 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   // ------------------------------------------
   // GET CENTER OF 2 POINTS
   // ------------------------------------------
-  object._childrenInfo[_index]._centerL = new goog.math.Vec3((_solutionsInLine[0][0] + _solutionsInLine[1][0])/2,
-    (_solutionsInLine[0][1] + _solutionsInLine[1][1])/2, (_solutionsInLine[1][2] + _solutionsInLine[0][2])/2);
   
   // ------------------------------------------
   // GET SPACING IN SLICE SPACE
@@ -907,6 +906,7 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   goog.vec.Mat4.getColumn(_XYToRAS,2,_sliceDirection);
   goog.vec.Vec4.scale(_sliceDirection,_xySpacing[2],_sliceDirection);
 
+  object._childrenInfo[_index]._sliceSpacing = _xySpacing[2];
   object._childrenInfo[_index]._sliceDirection = _sliceDirection;
 
   // ------------------------------------------
