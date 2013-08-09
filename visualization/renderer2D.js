@@ -927,12 +927,21 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   }
 
-  // update
+  //if slice do not exist yet
+  //window.console.log(this._slices[parseInt(_currentSlice, 10)]._iWidth);
   var _width = this._slices[parseInt(_currentSlice, 10)]._iWidth;
   var _height = this._slices[parseInt(_currentSlice, 10)]._iHeight;
   // spacing
   this._sliceWidthSpacing = this._slices[parseInt(_currentSlice, 10)]._widthSpacing;
   this._sliceHeightSpacing = this._slices[parseInt(_currentSlice, 10)]._heightSpacing;
+
+  //   var _frameBuffer = this._frameBuffer;
+  // _frameBuffer.width = _width;
+  // _frameBuffer.height = _height;
+
+  // var _frameBuffer2 = this._labelFrameBuffer;
+  // _frameBuffer2.width = _width;
+  // _frameBuffer2.height = _height;
   
   // .. and store the dimensions
   this._sliceWidth = _width;
