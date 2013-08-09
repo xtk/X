@@ -1226,8 +1226,12 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         this._context.setTransform(1, 0, 0, 1, 0, 0);
         this._context.lineWidth = 1;
         this._context.beginPath();
-        this._context.moveTo(this._interactor._mousePosition[0] + 0.5, 0);
-        this._context.lineTo(this._interactor._mousePosition[0] + 0.5,
+        this._context.moveTo(this._interactor._mousePosition[0], 0);
+        this._context.lineTo(this._interactor._mousePosition[0],
+            this._interactor._mousePosition[1] - 10);
+        this._context.moveTo(this._interactor._mousePosition[0],
+            this._interactor._mousePosition[1] + 10);
+        this._context.lineTo(this._interactor._mousePosition[0],
             this._height);
         this._context.strokeStyle = this._orientationColors[0];
         this._context.stroke();
@@ -1235,9 +1239,12 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
         // in y-direction
         this._context.beginPath();
-        this._context.moveTo(0, this._interactor._mousePosition[1] + 0.5);
+        this._context.moveTo(0, this._interactor._mousePosition[1]);
+        this._context.lineTo(this._interactor._mousePosition[0] - 10,
+            this._interactor._mousePosition[1]);
+        this._context.moveTo(this._interactor._mousePosition[0] + 10, this._interactor._mousePosition[1] + 0.5);
         this._context.lineTo(this._width,
-            this._interactor._mousePosition[1] + 0.5);
+            this._interactor._mousePosition[1]);
         this._context.strokeStyle = this._orientationColors[1];
         this._context.stroke();
         this._context.closePath();
