@@ -118,8 +118,6 @@ X.camera2D.prototype.zoomIn = function(fast) {
 
   this._view[14] += zoomStep;
 
-  window.console.log(this._view[14]);
-
 };
 
 
@@ -137,6 +135,4 @@ X.camera2D.prototype.zoomOut = function(fast) {
   }
 
   this._view[14] -= zoomStep;
-
-  window.console.log(this._view);
 };
