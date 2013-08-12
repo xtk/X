@@ -247,14 +247,13 @@ X.renderer2D.prototype.onScroll_ = function(event) {
   }
 
   // switch between different orientations
-  var xyz = this._orientationIndex;
   var _orientation = "";
 
-  if (xyz == 0) {
+  if (this._orientationIndex == 0) {
 
     _orientation = "indexX";
 
-  } else if (xyz == 1) {
+  } else if (this._orientationIndex == 1) {
 
     _orientation = "indexY";
 
@@ -911,13 +910,12 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   }
 
   var _volume = this._topLevelObjects[0];
-  var xyz = this._orientationIndex;
-    var _currentSlice = null;
-  if (xyz == 0) {
+  var _currentSlice = null;
+  if (this._orientationIndex == 0) {
 
     _currentSlice = _volume['indexX'];
 
-  } else if (xyz == 1) {
+  } else if (this._orientationIndex == 1) {
 
     _currentSlice = _volume['indexY'];
 
@@ -927,25 +925,15 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   }
 
-  //if slice do not exist yet
-  //window.console.log(this._slices[parseInt(_currentSlice, 10)]._iWidth);
-  var _width = this._slices[parseInt(_currentSlice, 10)]._iWidth;
-  var _height = this._slices[parseInt(_currentSlice, 10)]._iHeight;
+  //if slice do not exist yet, we have to set slice dimensions
+  var _width2 = this._slices[parseInt(_currentSlice, 10)]._iWidth;
+  var _height2 = this._slices[parseInt(_currentSlice, 10)]._iHeight;
   // spacing
   this._sliceWidthSpacing = this._slices[parseInt(_currentSlice, 10)]._widthSpacing;
   this._sliceHeightSpacing = this._slices[parseInt(_currentSlice, 10)]._heightSpacing;
-
-  //   var _frameBuffer = this._frameBuffer;
-  // _frameBuffer.width = _width;
-  // _frameBuffer.height = _height;
-
-  // var _frameBuffer2 = this._labelFrameBuffer;
-  // _frameBuffer2.width = _width;
-  // _frameBuffer2.height = _height;
-  
   // .. and store the dimensions
-  this._sliceWidth = _width;
-  this._sliceHeight = _height;
+  this._sliceWidth = _width2;
+  this._sliceHeight = _height2;
 
   //
   // grab the camera settings
@@ -985,8 +973,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   }
 
-  var xyz = this._orientationIndex;
-
   // .. here is the current slice
   var _slice = this._slices[parseInt(_currentSlice, 10)];
   var _sliceData = _slice._texture._rawData;
@@ -1016,8 +1002,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _labelPixels = _labelmapData.data;
   var _pixelsLength = _pixels.length;
 
-  var _orientation = _volume._orientation;
-
   // threshold values
   var _maxScalarRange = _volume._max;
   var _lowerThreshold = _volume._lowerThreshold;
@@ -1038,6 +1022,15 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       .compare(_labelmapShowOnlyColor, this._labelmapShowOnlyColor, 0, 0, 4)));
 
   if (_redraw_required) {
+    // update FBs with new size
+    // has to be there, not sure why, too slow to be in main loop?
+     var _frameBuffer = this._frameBuffer;
+    _frameBuffer.width = _width2;
+    _frameBuffer.height = _height2;
+
+    var _frameBuffer2 = this._labelFrameBuffer;
+    _frameBuffer2.width = _width2;
+    _frameBuffer2.height = _height2;
 
     // loop through the pixels and draw them to the invisible canvas
     // from bottom right up
