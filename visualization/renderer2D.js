@@ -1251,16 +1251,16 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
         // write ijk coordinates
         this._context.font = '10pt Arial';
-      // textAlign aligns text horizontally relative to placement
-      this._context.textAlign = 'left';
-      // textBaseline aligns text vertically relative to font style
-      this._context.textBaseline = 'top';
+        // textAlign aligns text horizontally relative to placement
+        this._context.textAlign = 'left';
+        // textBaseline aligns text vertically relative to font style
+        this._context.textBaseline = 'top';
         this._context.fillStyle = 'white';
         this._context.fillText('RAS: ' + ijk[2][0].toFixed(2) + ', ' + ijk[2][1].toFixed(2) + ', ' + ijk[2][2].toFixed(2), 0, 0);
 
         var _value = 'undefined';
         var _valueLM = 'undefined';
-        var _valueCT = 'ubdefined';
+        var _valueCT = 'undefined';
         if(typeof _volume._IJKVolume[ijk[1][2].toFixed(0)] != 'undefined' && typeof _volume._IJKVolume[ijk[1][2].toFixed(0)][ijk[1][1].toFixed(0)] != 'undefined'){
           _value = _volume._IJKVolume[ijk[1][2].toFixed(0)][ijk[1][1].toFixed(0)][ijk[1][0].toFixed(0)];
           if(_volume.hasLabelMap){
