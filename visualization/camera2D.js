@@ -102,3 +102,41 @@ X.camera2D.prototype.rotate = function(distance) {
   this.dispatchEvent(_e);
   
 };
+
+/**
+ * @inheritDoc
+ */
+X.camera2D.prototype.zoomIn = function(fast) {
+
+  var zoomStep = 20;
+
+  if (goog.isDefAndNotNull(fast) && !fast) {
+
+  zoomStep = .02;
+
+  }
+
+  this._view[14] += zoomStep;
+
+  window.console.log(this._view[14]);
+
+};
+
+
+/**
+ * @inheritDoc
+ */
+X.camera2D.prototype.zoomOut = function(fast) {
+
+  var zoomStep = 20;
+
+  if (goog.isDefAndNotNull(fast) && !fast) {
+
+    zoomStep = .02;
+
+  }
+
+  this._view[14] -= zoomStep;
+
+  window.console.log(this._view);
+};

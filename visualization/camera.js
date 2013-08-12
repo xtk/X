@@ -410,6 +410,7 @@ X.camera.prototype.pan = function(distance) {
 
   }
 
+  // take spacing into account?
   this._view[12] -= distance.x;
   this._view[13] += distance.y;
 
@@ -429,7 +430,7 @@ X.camera.prototype.zoomIn = function(fast) {
 
   if (goog.isDefAndNotNull(fast) && !fast) {
 
-    zoomStep = 1;
+  zoomStep = 1;
 
   }
 
@@ -447,7 +448,7 @@ X.camera.prototype.zoomIn = function(fast) {
  */
 X.camera.prototype.zoomOut = function(fast) {
 
-  var zoomStep = 30;
+  var zoomStep = 20;
 
   if (goog.isDefAndNotNull(fast) && !fast) {
 

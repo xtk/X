@@ -948,11 +948,13 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   this._context.restore();
 
   // transform the canvas according to the view matrix
-  var _x = 1 * _view[12];
-  var _y = -1 * _view[13]; // we need to flip y here
-
   // .. this includes zoom
-  var _normalizedScale = Math.max(_view[14], 0.6);
+  var _normalizedScale = Math.max(_view[14], 0.1);
+
+  var _x = 1 * _view[12]/_normalizedScale;
+  var _y = -1 * _view[13]/_normalizedScale; // we need to flip y here
+
+
   this._context.setTransform(_normalizedScale, 0, 0, _normalizedScale, 0, 0);
 
   //
@@ -1274,11 +1276,12 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
           }
         }
         // get pixel value
-        this._context.fillText('BG:  ' + _value + ' ('+ ijk[1][0].toFixed(0) + ', ' + ijk[1][1].toFixed(0) + ', ' + ijk[1][2].toFixed(0) + ')', 0, 15);
+        this._context.fillText('Background:  ' + _value + ' ('+ ijk[1][0].toFixed(0) + ', ' + ijk[1][1].toFixed(0) + ', ' + ijk[1][2].toFixed(0) + ')', 0, 15);
         // if any label map
         if(_volume.hasLabelMap){
-          this._context.fillText('LM:  ' + _valueCT + ' ('+ _valueLM + ')', 0, 30);
+          this._context.fillText('Labelmap:  ' + _valueCT + ' ('+ _valueLM + ')', 0, 30);
         }
+
       }
 
     }
