@@ -833,11 +833,6 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   var _ras = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.multVec4(_currentSlice._XYToRAS, _xyz, _ras);
 
-  // window.console.log("RAS - OK");
-  // window.console.log(_ras);
-  // window.console.log("IJK - OK");
-  // window.console.log(_ijk);
-
   var _dx = volume._childrenInfo[0]._sliceNormal[0]*_ras[0]
     + volume._childrenInfo[0]._sliceNormal[1]*_ras[1]
     + volume._childrenInfo[0]._sliceNormal[2]*_ras[2]
@@ -885,7 +880,8 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
     _iz = 0;
   }
 
-  return [_ix, _iy, _iz];
+  // index, ijk and ras
+  return [[_ix, _iy, _iz], [_ijk[0], _ijk[1], _ijk[2]], [_ras[0], _ras[1], _ras[2]]];
 };
 
 
@@ -1218,9 +1214,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
         // // we are over the slice
         // update the volume
-        _volume._indexX = ijk[0];
-        _volume._indexY = ijk[1];
-        _volume._indexZ = ijk[2];
+        _volume._indexX = ijk[0][0];
+        _volume._indexY = ijk[0][1];
+        _volume._indexZ = ijk[0][2];
         _volume.modified(false);
 
         // draw the navigators
@@ -1253,6 +1249,36 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         this._context.stroke();
         this._context.closePath();
 
+        // write ijk coordinates
+        this._context.font = '10pt Arial';
+      // textAlign aligns text horizontally relative to placement
+      this._context.textAlign = 'left';
+      // textBaseline aligns text vertically relative to font style
+      this._context.textBaseline = 'top';
+        this._context.fillStyle = 'white';
+        this._context.fillText('RAS: ' + ijk[2][0].toFixed(2) + ', ' + ijk[2][1].toFixed(2) + ', ' + ijk[2][2].toFixed(2), 0, 0);
+
+        var _value = 'undefined';
+        var _valueLM = 'undefined';
+        var _valueCT = 'ubdefined';
+        if(typeof _volume._IJKVolume[ijk[1][2].toFixed(0)] != 'undefined' && typeof _volume._IJKVolume[ijk[1][2].toFixed(0)][ijk[1][1].toFixed(0)] != 'undefined'){
+          _value = _volume._IJKVolume[ijk[1][2].toFixed(0)][ijk[1][1].toFixed(0)][ijk[1][0].toFixed(0)];
+          if(_volume.hasLabelMap){
+            _valueLM = _volume._labelmap._IJKVolume[ijk[1][2].toFixed(0)][ijk[1][1].toFixed(0)][ijk[1][0].toFixed(0)];
+            if(_volume._labelmap._colorTable){
+              _valueCT = _volume._labelmap._colorTable.get(_valueLM);
+              if(typeof _valueCT != 'undefined'){
+              _valueCT = _valueCT[0];
+              }
+            }
+          }
+        }
+        // get pixel value
+        this._context.fillText('BG:  ' + _value + ' ('+ ijk[1][0].toFixed(0) + ', ' + ijk[1][1].toFixed(0) + ', ' + ijk[1][2].toFixed(0) + ')', 0, 15);
+        // if any label map
+        if(_volume.hasLabelMap){
+          this._context.fillText('LM:  ' + _valueCT + ' ('+ _valueLM + ')', 0, 30);
+        }
       }
 
     }
