@@ -32,6 +32,7 @@ goog.provide('X.renderer2D');
 // requires
 goog.require('X.renderer');
 goog.require('goog.math.Vec3');
+goog.require('goog.vec.Vec4');
 
 
 /**
@@ -191,7 +192,7 @@ X.renderer2D = function() {
    * @protected
    */
   this._labelmapShowOnlyColor = new Float32Array([-255, -255, -255, -255]);
-  
+
   /**
    * The convention we follow to draw the 2D slices. TRUE for RADIOLOGY, FALSE for NEUROLOGY.
    *
@@ -797,8 +798,8 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   var _xNorm = (x - _image_left2xy)/ _sliceWidthScaled;
   var _yNorm = (y - _image_top2xy)/ _sliceHeightScaled;
   
-  var _x = _xNorm*_sliceWidth;
-  var _y = _yNorm*_sliceHeight;
+  _x = _xNorm*_sliceWidth;
+  _y = _yNorm*_sliceHeight;
   var _z = _currentSlice._xyBBox[4];
 
   if (this._orientation == "X") {
@@ -827,53 +828,49 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   _x = _currentSlice._wmin + _x*_currentSlice._resX;
   _y = _currentSlice._hmin + _y*_currentSlice._resY;
 
-  var _xyz = new goog.vec.Vec4.createFloat32FromValues(_x, _y, _z, 1);
+  var _xyz = goog.vec.Vec4.createFloat32FromValues(_x, _y, _z, 1);
   var _ijk = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.multVec4(_currentSlice._XYToIJK, _xyz, _ijk);
   var _ras = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.multVec4(_currentSlice._XYToRAS, _xyz, _ras);
 
-  var _dx = volume._childrenInfo[0]._sliceNormal[0]*_ras[0]
-    + volume._childrenInfo[0]._sliceNormal[1]*_ras[1]
-    + volume._childrenInfo[0]._sliceNormal[2]*_ras[2]
-    + volume._childrenInfo[0]._originD;
+  var _dx = _volume._childrenInfo[0]._sliceNormal[0]*_ras[0]
+    + _volume._childrenInfo[0]._sliceNormal[1]*_ras[1]
+    + _volume._childrenInfo[0]._sliceNormal[2]*_ras[2]
+    + _volume._childrenInfo[0]._originD;
 
-  var _ix = Math.round(_dx/Math.abs(volume._childrenInfo[0]._sliceSpacing));
+  var _ix = Math.round(_dx/Math.abs(_volume._childrenInfo[0]._sliceSpacing));
 
-   if(_ix >= volume._childrenInfo[0]._nb){
-     _ix = volume._childrenInfo[0]._nb - 1;
+   if(_ix >= _volume._childrenInfo[0]._nb){
+     _ix = _volume._childrenInfo[0]._nb - 1;
    }
    else if(_ix < 0){
      _ix = 0;
     }
 
-  var _dy = volume._childrenInfo[1]._sliceNormal[0]*_ras[0]
-    + volume._childrenInfo[1]._sliceNormal[1]*_ras[1]
-    + volume._childrenInfo[1]._sliceNormal[2]*_ras[2]
-    - (
-      volume._childrenInfo[1]._sliceNormal[0]*volume._childrenInfo[1]._solutionsLine[0][0][0]
-    + volume._childrenInfo[1]._sliceNormal[1]*volume._childrenInfo[1]._solutionsLine[0][0][1]
-    + volume._childrenInfo[1]._sliceNormal[2]*volume._childrenInfo[1]._solutionsLine[0][0][2]
-      );
+  var _dy = _volume._childrenInfo[1]._sliceNormal[0]*_ras[0]
+    + _volume._childrenInfo[1]._sliceNormal[1]*_ras[1]
+    + _volume._childrenInfo[1]._sliceNormal[2]*_ras[2]
+    + _volume._childrenInfo[1]._originD;;
 
-  var _iy = Math.round(_dy/Math.abs(volume._childrenInfo[1]._sliceSpacing));
+  var _iy = Math.round(_dy/Math.abs(_volume._childrenInfo[1]._sliceSpacing));
 
-  if(_iy >= volume._childrenInfo[1]._nb){
-     _iy = volume._childrenInfo[1]._nb - 1;
+  if(_iy >= _volume._childrenInfo[1]._nb){
+     _iy = _volume._childrenInfo[1]._nb - 1;
   }
   else if(_iy < 0) {
     _iy = 0;
   }
 
   // get plane distance from the origin
-  var _dz = volume._childrenInfo[2]._sliceNormal[0]*_ras[0]
-    + volume._childrenInfo[2]._sliceNormal[1]*_ras[1]
-    + volume._childrenInfo[2]._sliceNormal[2]*_ras[2]
-    + volume._childrenInfo[2]._originD;
-  var _iz = Math.round(_dz/Math.abs(volume._childrenInfo[2]._sliceSpacing));
+  var _dz = _volume._childrenInfo[2]._sliceNormal[0]*_ras[0]
+    + _volume._childrenInfo[2]._sliceNormal[1]*_ras[1]
+    + _volume._childrenInfo[2]._sliceNormal[2]*_ras[2]
+    + _volume._childrenInfo[2]._originD;
+  var _iz = Math.round(_dz/Math.abs(_volume._childrenInfo[2]._sliceSpacing));
 
-  if(_iz >= volume._childrenInfo[2]._nb){
-    _iz = volume._childrenInfo[2]._nb - 1;
+  if(_iz >= _volume._childrenInfo[2]._nb){
+    _iz = _volume._childrenInfo[2]._nb - 1;
   }
   else if(_iz < 0){
     // translate origin by distance

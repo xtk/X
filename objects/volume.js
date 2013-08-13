@@ -80,6 +80,14 @@ X.volume = function(volume) {
   this._dimensions = [ 10, 10, 10 ];
 
   /**
+   * The range of the x, y and z slices.
+   *
+   * @type {!Array}
+   * @protected
+   */
+  this._range = [ 10, 10, 10 ];
+
+  /**
    * The spacing of this volume.
    *
    * @type {!Array}
@@ -525,7 +533,7 @@ X.volume.prototype.slicing_ = function() {
     // RESLICE VOLUME IF NECESSARY!
     if(!goog.isDefAndNotNull(this._children[xyz]._children[parseInt(currentIndex, 10)])){
 
-      var _sliceOrigin = new goog.vec.Vec3.createFloat32();
+      var _sliceOrigin = goog.vec.Vec3.createFloat32();
 
       _sliceOrigin[0] = this._childrenInfo[xyz]._solutionsLine[0][0][0] + Math.abs(this._childrenInfo[xyz]._sliceDirection[0])*parseInt(currentIndex, 10);
       _sliceOrigin[1] = this._childrenInfo[xyz]._solutionsLine[0][0][1] + Math.abs(this._childrenInfo[xyz]._sliceDirection[1])*parseInt(currentIndex, 10);
@@ -577,6 +585,18 @@ X.volume.prototype.slicing_ = function() {
 X.volume.prototype.__defineGetter__('dimensions', function() {
 
   return this._dimensions;
+
+});
+
+/**
+ * Get the range of this volume.
+ *
+ * @return {!Array} The dimensions of this volume.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('range', function() {
+
+  return this._range;
 
 });
 
@@ -1000,7 +1020,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
      //loop through slice
        if(!goog.isDefAndNotNull(_child._children[i])){
 
-      var _sliceOrigin = new goog.vec.Vec3.createFloat32();
+      var _sliceOrigin = goog.vec.Vec3.createFloat32();
 
       _sliceOrigin[0] = this._childrenInfo[direction]._solutionsLine[0][0][0] + Math.abs(this._childrenInfo[direction]._sliceDirection[0])*i;
       _sliceOrigin[1] = this._childrenInfo[direction]._solutionsLine[0][0][1] + Math.abs(this._childrenInfo[direction]._sliceDirection[1])*i;

@@ -41,7 +41,9 @@ goog.require('X.base');
 goog.require('X.event');
 goog.require('X.texture');
 goog.require('X.triplets');
-
+goog.require('goog.vec.Vec4');
+goog.require('goog.vec.Vec3');
+goog.require('goog.vec.Mat4');
 
 /**
  * Create a parser for binary or ascii data.
@@ -506,7 +508,7 @@ X.parser.prototype.intersectionBBoxPlane = function(_bbox, _sliceOrigin, _sliceN
 X.parser.prototype.xyrasTransform = function(_sliceNormal, _XYNormal){
   // X.TIMER(this._classname + '.xyrasTransform');
 
-  var _RASToXY = new goog.vec.Mat4.createFloat32Identity();
+  var _RASToXY = goog.vec.Mat4.createFloat32Identity();
   
   // no rotation needed if we are in the z plane already
   if(!goog.vec.Vec3.equals(_sliceNormal,_XYNormal))
@@ -515,7 +517,7 @@ X.parser.prototype.xyrasTransform = function(_sliceNormal, _XYNormal){
     
     var _teta = Math.acos(_cp);
   
-    var _r = new goog.vec.Vec3.createFloat32();
+    var _r = goog.vec.Vec3.createFloat32();
     goog.vec.Vec3.cross(_sliceNormal, _XYNormal, _r);
     goog.vec.Vec3.normalize(_r, _r);
     
@@ -548,7 +550,7 @@ X.parser.prototype.xyrasTransform = function(_sliceNormal, _XYNormal){
     }
   
 
-  var _XYToRAS = new goog.vec.Mat4.createFloat32();
+  var _XYToRAS = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.invert(_RASToXY, _XYToRAS);
   
 
@@ -618,7 +620,6 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   var _solutions = this.intersectionBBoxPlane(_bbox,_sliceOrigin, _sliceNormal);
   var _solutionsIn = _solutions[0];
   var _solutionsOut = _solutions[1];
-
   object._solutions = _solutionsIn;
   object._solutionsOut = _solutionsOut;
   
@@ -626,8 +627,7 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   // MOVE TO 2D SPACE
   // ------------------------------------------
 
-  var _sliceNormal = _sliceNormal;
-  var _XYNormal = new goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
+  var _XYNormal = goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
   
   var _XYRASTransform = this.xyrasTransform(_sliceNormal, _XYNormal);
   var _RASToXY = _XYRASTransform[0];
@@ -636,8 +636,8 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
 // // Apply transform to each point!
   var _solutionsXY = new Array();
   for (var i = 0; i < _solutionsIn.length; ++i) {
-    var tar2 = new goog.vec.Vec4.createFloat32FromValues(_solutionsIn[i][0], _solutionsIn[i][1], _solutionsIn[i][2], 1);
-    var res2 = new goog.vec.Vec4.createFloat32();
+    var tar2 = goog.vec.Vec4.createFloat32FromValues(_solutionsIn[i][0], _solutionsIn[i][1], _solutionsIn[i][2], 1);
+    var res2 = goog.vec.Vec4.createFloat32();
     goog.vec.Mat4.multVec4(_RASToXY, tar2, res2);
 
     var _sol = new Array();
@@ -651,33 +651,33 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   object._solutionsXY = _solutionsXY;
   
   // rigth
-  var _right = new goog.vec.Vec3.createFloat32FromValues(1, 0, 0);
-  var _rright = new goog.vec.Vec3.createFloat32();
+  var _right = goog.vec.Vec3.createFloat32FromValues(1, 0, 0);
+  var _rright = goog.vec.Vec3.createFloat32();
   goog.vec.Mat4.multVec3(_XYToRAS, _right, _rright);
   object._right = _rright;
   
   // up
-  var _up = new goog.vec.Vec3.createFloat32FromValues(0, 1, 0);
-  var _rup = new goog.vec.Vec3.createFloat32();
+  var _up = goog.vec.Vec3.createFloat32FromValues(0, 1, 0);
+  var _rup = goog.vec.Vec3.createFloat32();
   goog.vec.Mat4.multVec3(_XYToRAS, _up, _rup);
-  object._up= _rup;
+  object._up= [_rup[0], _rup[1], _rup[2]];
   
-  var qqq = new goog.vec.Vec4.createFloat32FromValues(_rasspacing[0], _rasspacing[1], _rasspacing[2], 0);
-  var _xySpacing = new goog.vec.Vec4.createFloat32();
+  var qqq = goog.vec.Vec4.createFloat32FromValues(_rasspacing[0], _rasspacing[1], _rasspacing[2], 0);
+  var _xySpacing = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multVec4(_RASToXY, qqq, _xySpacing);
   
   // get XY bounding box!
   var _xyBBox = this.xyBBox(_solutionsXY);
   object._xyBBox = _xyBBox;
   
-  var _xyCenter = new goog.vec.Vec4.createFloat32FromValues(_xyBBox[0] + (_xyBBox[1] - _xyBBox[0])/2,_xyBBox[2] + (_xyBBox[3] - _xyBBox[2])/2, _xyBBox[4] + (_xyBBox[5] - _xyBBox[4])/2,0);
-  var _RASCenter = new goog.vec.Vec4.createFloat32();
+  var _xyCenter = goog.vec.Vec4.createFloat32FromValues(_xyBBox[0] + (_xyBBox[1] - _xyBBox[0])/2,_xyBBox[2] + (_xyBBox[3] - _xyBBox[2])/2, _xyBBox[4] + (_xyBBox[5] - _xyBBox[4])/2,0);
+  var _RASCenter = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multMat(_XYToRAS,_xyCenter, _RASCenter);
   object._sliceCenter = [_RASCenter[0],
       _RASCenter[1], _RASCenter[2]];
 
-  var res = new goog.vec.Vec4.createFloat32();
-  var res2 = new goog.vec.Vec4.createFloat32();
+  var res = goog.vec.Vec4.createFloat32();
+  var res2 = goog.vec.Vec4.createFloat32();
   
   var _wmin =  Math.floor(_xyBBox[0]);
   var _wmax =  Math.ceil(_xyBBox[1]);
@@ -718,7 +718,7 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   var _count = 0;
   var _p = 0;
   
-  var tar = new goog.vec.Vec4.createFloat32FromValues(i, j, _xyBBox[4], 1);
+  var tar = goog.vec.Vec4.createFloat32FromValues(0, 0, _xyBBox[4], 1);
   var tttt = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.multMat(_ras2ijk,_XYToRAS, tttt);
 
@@ -825,9 +825,10 @@ for (var i = _wmin; i <= _we; i+=_resX) {
   sliceXY._widthSpacing = _resX;
   sliceXY._width = object._SW;
 
-  sliceXY.texture._rawDataWidth = object._texture._rawDataWidth;
-  sliceXY.texture._rawDataHeight = object._texture._rawDataHeight;
-  sliceXY.texture._rawData = object._texture._rawData;
+  sliceXY._texture = object._texture;
+  sliceXY._texture._rawDataWidth = object._texture._rawDataWidth;
+  sliceXY._texture._rawDataHeight = object._texture._rawDataHeight;
+  sliceXY._texture._rawData = object._texture._rawData;
   
   sliceXY._heightSpacing = _resY;
   sliceXY._height = object._SH;
@@ -892,17 +893,17 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   // GET SPACING IN SLICE SPACE
   // ------------------------------------------
 
-  var _XYNormal = new goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
+  var _XYNormal = goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
   
   var _XYRASTransform = this.xyrasTransform(_sliceNormal, _XYNormal);
   var _RASToXY = _XYRASTransform[0];
   var _XYToRAS = _XYRASTransform[1];
   
-  var qqq = new goog.vec.Vec4.createFloat32FromValues(object._RASSpacing[0], object._RASSpacing[1], object._RASSpacing[2], 0);
-  var _xySpacing = new goog.vec.Vec4.createFloat32();
+  var qqq = goog.vec.Vec4.createFloat32FromValues(object._RASSpacing[0], object._RASSpacing[1], object._RASSpacing[2], 0);
+  var _xySpacing = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multVec4(_RASToXY, qqq, _xySpacing);
   
-  var _sliceDirection = new goog.vec.Vec4.createFloat32();
+  var _sliceDirection = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.getColumn(_XYToRAS,2,_sliceDirection);
   goog.vec.Vec4.scale(_sliceDirection,_xySpacing[2],_sliceDirection);
 
@@ -915,7 +916,7 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   
   // floor cause if plane do not intersect box : crash
   var _nb = Math.abs(Math.floor(_dist/_xySpacing[2]));
-  object.range[_index] = _nb;
+  object._range[_index] = _nb;
   object._childrenInfo[_index]._nb = _nb;
 
   // X.TIMERSTOP(this._classname + '.updateSliceInfo');
@@ -982,14 +983,14 @@ X.parser.prototype.reslice = function(object) {
   // ------------------------------------------
 
   // CENTER
-  var _sliceOrigin = new goog.vec.Vec3.createFloat32FromValues(
+  var _sliceOrigin = goog.vec.Vec3.createFloat32FromValues(
       object._RASCenter[0],
       object._RASCenter[1],
       object._RASCenter[2]);
   object._childrenInfo[0]._sliceOrigin = _sliceOrigin;
 
   // NORMAL
-  var _sliceNormal = new goog.vec.Vec3.createFloat32FromValues(
+  var _sliceNormal = goog.vec.Vec3.createFloat32FromValues(
      1,
      0,
      0);
@@ -1029,14 +1030,14 @@ X.parser.prototype.reslice = function(object) {
   
   // CENTER
 
-  var _sliceOrigin = new goog.vec.Vec3.createFloat32FromValues(
+  _sliceOrigin = goog.vec.Vec3.createFloat32FromValues(
       object._RASCenter[0],
       object._RASCenter[1],
       object._RASCenter[2]);
   object._childrenInfo[1]._sliceOrigin = _sliceOrigin;
 
   // NORMAL
-  var _sliceNormal = new goog.vec.Vec3.createFloat32FromValues(
+  _sliceNormal = goog.vec.Vec3.createFloat32FromValues(
      0,
      1,
      0);
@@ -1044,7 +1045,7 @@ X.parser.prototype.reslice = function(object) {
   object._childrenInfo[1]._sliceNormal = _sliceNormal;
   
   // COLOR
-  var _color = [ 1, 0, 0 ];
+  _color = [ 1, 0, 0 ];
   object._childrenInfo[1]._color = _color;
   
   // UPDATE SLICE INFO
@@ -1056,7 +1057,7 @@ X.parser.prototype.reslice = function(object) {
   _sliceOrigin[1] = object._childrenInfo[1]._solutionsLine[0][0][1] + Math.abs(object._childrenInfo[1]._sliceDirection[1])*Math.round(object._childrenInfo[1]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[1]._solutionsLine[0][0][2] + Math.abs(object._childrenInfo[1]._sliceDirection[2])*Math.round(object._childrenInfo[1]._nb/2);
     
-  var _slice = this.reslice2(_sliceOrigin, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, object._BBox, object._RASSpacing, object._RASToIJK, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+  _slice = this.reslice2(_sliceOrigin, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, object._BBox, object._RASSpacing, object._RASToIJK, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
   if (object.hasLabelMap) {
     // if this object has a labelmap,
@@ -1075,14 +1076,14 @@ X.parser.prototype.reslice = function(object) {
   // ------------------------------------------
 
   // CENTER
-  var _sliceOrigin = new goog.vec.Vec3.createFloat32FromValues(
+  _sliceOrigin = goog.vec.Vec3.createFloat32FromValues(
       object._RASCenter[0],
       object._RASCenter[1],
       object._RASCenter[2]);
   object._childrenInfo[2]._sliceOrigin = _sliceOrigin;
 
   // NORMAL
-  var _sliceNormal = new goog.vec.Vec3.createFloat32FromValues(
+  _sliceNormal = goog.vec.Vec3.createFloat32FromValues(
      0,
      0,
      1);
@@ -1090,7 +1091,7 @@ X.parser.prototype.reslice = function(object) {
   object._childrenInfo[2]._sliceNormal = _sliceNormal;
   
   // COLOR
-  var _color = [ 0, 1, 0 ];
+  _color = [ 0, 1, 0 ];
   object._childrenInfo[2]._color = _color;
   
   // UPDATE SLICE INFO
@@ -1102,7 +1103,7 @@ X.parser.prototype.reslice = function(object) {
   _sliceOrigin[1] = object._childrenInfo[2]._solutionsLine[0][0][1] + Math.abs(object._childrenInfo[2]._sliceDirection[1])*Math.round(object._childrenInfo[2]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[2]._solutionsLine[0][0][2] + Math.abs(object._childrenInfo[2]._sliceDirection[2])*Math.round(object._childrenInfo[2]._nb/2);
     
-  var _slice = this.reslice2(_sliceOrigin, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, object._BBox, object._RASSpacing, object._RASToIJK, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+  _slice = this.reslice2(_sliceOrigin, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, object._BBox, object._RASSpacing, object._RASToIJK, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
   if (object.hasLabelMap) {
     // if this object has a labelmap,
