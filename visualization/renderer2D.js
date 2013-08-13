@@ -191,7 +191,7 @@ X.renderer2D = function() {
    * @protected
    */
   this._labelmapShowOnlyColor = new Float32Array([-255, -255, -255, -255]);
-
+  
   /**
    * The convention we follow to draw the 2D slices. TRUE for RADIOLOGY, FALSE for NEUROLOGY.
    *
@@ -951,12 +951,12 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // .. this includes zoom
   var _normalizedScale = Math.max(_view[14], 0.1);
 
-  var _x = 1 * _view[12]/_normalizedScale;
-  var _y = -1 * _view[13]/_normalizedScale; // we need to flip y here
-
-
   this._context.setTransform(_normalizedScale, 0, 0, _normalizedScale, 0, 0);
 
+  // .. and pan
+  // we need to flip y here
+  var _x = 1 * _view[12];
+  var _y = -1 * _view[13];
   //
   // grab the volume and current slice
   //

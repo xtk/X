@@ -135,4 +135,26 @@ X.camera2D.prototype.zoomOut = function(fast) {
   }
 
   this._view[14] -= zoomStep;
+
+};
+
+/**
+ * @inheritDoc
+ */
+X.camera2D.prototype.pan = function(distance) {
+
+  if (goog.isArray(distance) && (distance.length == 2)) {
+
+    distance = new X.vector(distance[0], distance[1], 0);
+
+  } else if (!(distance instanceof X.vector)) {
+
+    throw new Error('Invalid distance vector for pan operation.');
+
+  }
+
+  // take spacing into account?
+  this._view[12] -= distance.x/this._view[14];
+  this._view[13] += distance.y/this._view[14];
+
 };
