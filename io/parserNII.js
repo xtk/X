@@ -75,7 +75,6 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   
   var _data = data;
   
-
   // check if this data is compressed, then this int != 348
   var _compressionCheck = -1;
   if (typeof DataView == 'undefined') {
@@ -127,7 +126,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
       1);
 
   // 3 known cases
-  if(MRI.qform_code == 0){
+  if(MRI.qform_code == 0) {
     
     // fill IJKToRAS
     goog.vec.Mat4.setRowValues(IJKToRAS, 0, MRI.pixdim[1], 0, 0, 0);
@@ -135,7 +134,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
     goog.vec.Mat4.setRowValues(IJKToRAS, 0, 0, 0, MRI.pixdim[3], 0);
 
   }
-  else if(MRI.qform_code > 0){
+  else if(MRI.qform_code > 0) {
     //https://github.com/Kitware/ITK/blob/master/Modules/IO/NIFTI/src/itkNiftiImageIO.cxx
     
     var a = 0.0, b = MRI.quatern_b, c = MRI.quatern_c, d = MRI.quatern_d;
@@ -145,29 +144,41 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
     // compute a
     a = 1.0 - (b*b + c*c + d*d) ;
     if( a < 0.0000001 ){                   /* special case */
+
       a = 1.0 / Math.sqrt(b*b+c*c+d*d) ;
       b *= a ; c *= a ; d *= a ;        /* normalize (b,c,d) vector */
-      a = 0.0;                        /* a = 0 ==> 180 degree rotation */
-    } else{
+      a = 0.0;                       /* a = 0 ==> 180 degree rotation */
+
+    } else {
+
       a = Math.sqrt(a) ;                     /* angle = 2*arccos(a) */
+
     }
     
     // scaling factors
-    if(MRI.pixdim[1] > 0.0){
+    if(MRI.pixdim[1] > 0.0) {
+
       xd = MRI.pixdim[1];
+
     }
     
-    if(MRI.pixdim[2] > 0.0){
+    if(MRI.pixdim[2] > 0.0) {
+
       yd = MRI.pixdim[2];
+
     }
     
-    if(MRI.pixdim[2] > 0.0){
+    if(MRI.pixdim[2] > 0.0) {
+
       zd = MRI.pixdim[3];
+
     }
     
     // qfac left handed
-    if(MRI.pixdim[0] < 0.0){
+    if(MRI.pixdim[0] < 0.0) {
+
       zd = -zd;
+
     }
     
     // fill IJKToRAS
@@ -195,146 +206,52 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
         );
 
   }
-  else if(MRI.sform_code > 0){
+  else if(MRI.sform_code > 0) {
+
     var sx = MRI.srow_x, sy = MRI.srow_y, sz = MRI.srow_z;
     // fill IJKToRAS
     goog.vec.Mat4.setRowValues(IJKToRAS, 0, sx[0], sx[1], sx[2], sx[3]);
     goog.vec.Mat4.setRowValues(IJKToRAS, 1, sy[0], sy[1], sy[2], sy[3]);
     goog.vec.Mat4.setRowValues(IJKToRAS, 2, sz[0], sz[1], sz[2], sz[3]);
+
   }
-  else{
-    window.console.log('UNKNOWN METHOD');
+  else {
+
+    window.console.log('UNKNOWN METHOD IN PARSER NII');
+
   }
   
+  // IJK to RAS and invert
   MRI.IJKToRAS = IJKToRAS;
-  
-  // Invert IJK to RAS
   MRI.RASToIJK = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.invert(MRI.IJKToRAS, MRI.RASToIJK);
   
   // get bounding box
-  var tar3 = goog.vec.Vec4.createFloat32FromValues(MRI.dim[1], MRI.dim[2], MRI.dim[3], 1);
-  var res3 = goog.vec.Vec4.createFloat32();
-  goog.vec.Mat4.multVec4(IJKToRAS, tar3, res3);
-  
+  // Transform ijk (0, 0, 0) to RAS
   var tar = goog.vec.Vec4.createFloat32FromValues(0, 0, 0, 1);
   var res = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multVec4(IJKToRAS, tar, res);
-  
+  // Transform ijk (spacingX, spacinY, spacingZ) to RAS
   var tar2 = goog.vec.Vec4.createFloat32FromValues(MRI.pixdim[1], MRI.pixdim[2], MRI.pixdim[3], 1);
   var res2 = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multVec4(IJKToRAS, tar2, res2);
   
   // get location of 8 corners and update BBox
-  var _xyBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
-               Number.MAX_VALUE, -Number.MAX_VALUE,
-               Number.MAX_VALUE, -Number.MAX_VALUE];
+  //
+  var _rasBB = this.computeRASBBox(IJKToRAS, MRI.dim);
 
-  var tar6 = goog.vec.Vec4.createFloat32FromValues(0, 0, 0, 1);
-  var res6 = goog.vec.Vec4.createFloat32();
-  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
-  
-  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
-  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
-  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
-  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
-  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
-  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
-  
-  tar6 = goog.vec.Vec4.createFloat32FromValues(0, 0, MRI.dim[3], 1);
-  res6 = goog.vec.Vec4.createFloat32();
-  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
-  
-  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
-  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
-  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
-  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
-  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
-  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
-  
-  tar6 = goog.vec.Vec4.createFloat32FromValues(0, MRI.dim[2], 0, 1);
-  res6 = goog.vec.Vec4.createFloat32();
-  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
-  
-  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
-  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
-  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
-  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
-  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
-  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
-  
-  tar6 = goog.vec.Vec4.createFloat32FromValues(MRI.dim[1], 0, 0, 1);
-  res6 = goog.vec.Vec4.createFloat32();
-  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
-  
-  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
-  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
-  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
-  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
-  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
-  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
-  
-  tar6 = goog.vec.Vec4.createFloat32FromValues(MRI.dim[1], MRI.dim[2], 0, 1);
-  res6 = goog.vec.Vec4.createFloat32();
-  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
-  
-  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
-  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
-  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
-  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
-  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
-  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
-  
-  tar6 = goog.vec.Vec4.createFloat32FromValues(MRI.dim[1], 0, MRI.dim[3], 1);
-  res6 = goog.vec.Vec4.createFloat32();
-  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
-  
-  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
-  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
-  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
-  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
-  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
-  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
-  
-  tar6 = goog.vec.Vec4.createFloat32FromValues(0, MRI.dim[2], MRI.dim[3], 1);
-  res6 = goog.vec.Vec4.createFloat32();
-  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
-  
-  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
-  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
-  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
-  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
-  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
-  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
-  
-  tar6 = goog.vec.Vec4.createFloat32FromValues(MRI.dim[1], MRI.dim[2], MRI.dim[3], 1);
-  res6 = goog.vec.Vec4.createFloat32();
-  goog.vec.Mat4.multVec4(IJKToRAS, tar6, res6);
-  
-  _xyBB[0] = res6[0] < _xyBB[0] ? res6[0] : _xyBB[0];
-  _xyBB[1] = res6[0] > _xyBB[1] ? res6[0] : _xyBB[1];
-  _xyBB[2] = res6[1] < _xyBB[2] ? res6[1] : _xyBB[2];
-  _xyBB[3] = res6[1] > _xyBB[3] ? res6[1] : _xyBB[3];
-  _xyBB[4] = res6[2] < _xyBB[4] ? res6[2] : _xyBB[4];
-  _xyBB[5] = res6[2] > _xyBB[5] ? res6[2] : _xyBB[5];
-
+  // grab the RAS Dimensions
   MRI.RASSpacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
   
-  MRI.RASDimensions = [_xyBB[1] - _xyBB[0], _xyBB[3] - _xyBB[2], _xyBB[5] - _xyBB[4]];
+  // grab the RAS Dimensions
+  MRI.RASDimensions = [_rasBB[1] - _rasBB[0], _rasBB[3] - _rasBB[2], _rasBB[5] - _rasBB[4]];
   
-  MRI.RASOrigin = [_xyBB[0], _xyBB[2], _xyBB[4]];
-  //MRI.RASOrigin = [res[0], res[1], res[2]];
+  // grab the RAS Origin
+  MRI.RASOrigin = [_rasBB[0], _rasBB[2], _rasBB[4]];
   
-  // grab the dimensions
-  var _PASdimensionsSp1 = [MRI.dim[1],
-                           MRI.dim[2],
-                           MRI.dim[3]];
-  object._dimensions = _PASdimensionsSp1;
+  // grab the  IJK dimensions
+  object._dimensions = [MRI.dim[1], MRI.dim[2], MRI.dim[3]];
   
-  // grab the spacing
-  var _spacing = [MRI.pixdim[1], MRI.pixdim[2], MRI.pixdim[3]];
-  object._spacing = MRI.RASSpacing;
-
   // create the object
   object.create_(MRI);
   

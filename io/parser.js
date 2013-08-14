@@ -346,6 +346,104 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
 };
 
 /**
+ * Compute RAS bonding box fron IJK dimensions.
+ *
+ * @param {!Float32Array} IJKToRAS The IJK to RAS transformation.
+ * @param {!Array} MRIdim The IJK dimensions.
+ * 
+ * @return The RAS bounding box.
+ */
+X.parser.prototype.computeRASBBox = function(IJKToRAS, MRIdim){
+
+var _rasBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
+               Number.MAX_VALUE, -Number.MAX_VALUE,
+               Number.MAX_VALUE, -Number.MAX_VALUE];
+
+  var ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, 0, 0, 1);
+  var rasResult = goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+  
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, 0, MRIdim[3], 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+  
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, MRIdim[2], 0, 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+  
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1], 0, 0, 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+  
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1], MRIdim[2], 0, 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+  
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1], 0, MRIdim[3], 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+  
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, MRIdim[2], MRIdim[3], 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+  
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1], MRIdim[2], MRIdim[3], 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+
+return _rasBB;
+}
+
+/**
  * Create the IJK volume.
  *
  * @param {!Float32Array} _data The target Bounding Box.
