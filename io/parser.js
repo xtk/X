@@ -662,10 +662,6 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   goog.vec.Mat4.multVec3(_XYToRAS, _up, _rup);
   object._up= [_rup[0], _rup[1], _rup[2]];
   
-  var qqq = goog.vec.Vec4.createFloat32FromValues(_rasspacing[0], _rasspacing[1], _rasspacing[2], 0);
-  var _xySpacing = goog.vec.Vec4.createFloat32();
-  goog.vec.Mat4.multVec4(_RASToXY, qqq, _xySpacing);
-  
   // get XY bounding box!
   var _xyBBox = this.xyBBox(_solutionsXY);
   object._xyBBox = _xyBBox;
@@ -675,10 +671,7 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   goog.vec.Mat4.multMat(_XYToRAS,_xyCenter, _RASCenter);
   object._sliceCenter = [_RASCenter[0],
       _RASCenter[1], _RASCenter[2]];
-
-  var res = goog.vec.Vec4.createFloat32();
-  var res2 = goog.vec.Vec4.createFloat32();
-  
+ 
   var _wmin =  Math.floor(_xyBBox[0]);
   var _wmax =  Math.ceil(_xyBBox[1]);
   var _woffset = _xyBBox[0] - _wmin + _wmax - _xyBBox[1];
@@ -692,8 +685,6 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   object._SW = _swidth;
   object._SH = _sheight;
 
-//  var _resX = Math.abs(_xySpacing[0]);
-//  var _resY = Math.abs(_xySpacing[1]);
   var _resX = 1;
   var _resY = 1;
   
@@ -715,12 +706,12 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   var _mappedPoints = new Array();
   var _mappedPointsIJK = new Array();
   
-  var _count = 0;
   var _p = 0;
   
-  var tar = goog.vec.Vec4.createFloat32FromValues(0, 0, _xyBBox[4], 1);
-  var tttt = goog.vec.Mat4.createFloat32();
-  goog.vec.Mat4.multMat(_ras2ijk,_XYToRAS, tttt);
+  var _indexIJK = goog.vec.Vec4.createFloat32();
+  var _indexXY = goog.vec.Vec4.createFloat32FromValues(0, 0, _xyBBox[4], 1);
+  var _XYToIJK = goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.multMat(_ras2ijk,_XYToRAS, _XYToIJK);
 
   var _he = _hmax - _epsilon;
   var _we = _wmax - _epsilon;
@@ -730,73 +721,81 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   
   
   for (var j = _hmin; j <= _he; j+=_resY) {
+
     _iHeight++;
     _iWidth = 0;
     
-    var _ci = 0;
-        tar[1] = j;
+    _indexXY[1] = j;
 
-for (var i = _wmin; i <= _we; i+=_resX) {
-  _iWidth++;
-    //
-    tar[0] = i;
+    for (var i = _wmin; i <= _we; i+=_resX) {
+      _iWidth++;
+      //
+      _indexXY[0] = i;
 
-  // convert to RAS
-    // convert to IJK
-    goog.vec.Mat4.multVec4(tttt, tar, res2);
+      // convert to RAS
+      // convert to IJK
+      goog.vec.Mat4.multVec4(_XYToIJK, _indexXY, _indexIJK);
     
-    // get value if there is a match, trnasparent if no match!
-    var textureStartIndex = _p * 4;
+      // get value if there is a match, trnasparent if no match!
+      var textureStartIndex = _p * 4;
     
-    if( (0 <= res2[0]) && (res2[0] < object._dimensions[0] ) &&
-        (0 <= res2[1]) && (res2[1] < object._dimensions[1] ) &&
-        (0 <= res2[2]) && (res2[2] < object._dimensions[2] )){
-      // map to 0 if necessary
-      var _k = Math.floor(res2[2]);
-      var _j = Math.floor(res2[1]);
-      var _i = Math.floor(res2[0]);
+      if( (0 <= _indexIJK[0]) && (_indexIJK[0] < object._dimensions[0] ) &&
+        (0 <= _indexIJK[1]) && (_indexIJK[1] < object._dimensions[1] ) &&
+        (0 <= _indexIJK[2]) && (_indexIJK[2] < object._dimensions[2] )) {
+          
+        // map to 0 if necessary
+        var _k = Math.floor(_indexIJK[2]);
+        var _j = Math.floor(_indexIJK[1]);
+        var _i = Math.floor(_indexIJK[0]);
       
-      var pixval = _IJKVolume[_k][_j][_i];
-      var pixelValue_r = 0;
-      var pixelValue_g = 0;
-      var pixelValue_b = 0;
-      var pixelValue_a = 0;
+        var pixval = _IJKVolume[_k][_j][_i];
+        var pixelValue_r = 0;
+        var pixelValue_g = 0;
+        var pixelValue_b = 0;
+        var pixelValue_a = 0;
       
 
 
-      if (colorTable) {
-        // color table!
-        var lookupValue = colorTable.get(pixval);
-        // check for out of range and use the last label value in this case
-        if (!lookupValue) {
+        if (colorTable) {
+          
+          // color table!
+          var lookupValue = colorTable.get(pixval);
+          // check for out of range and use the last label value in this case
+          if (!lookupValue) {
+          
           lookupValue = [ 0, .61, 0, 0, 1 ];
-        }
-        pixelValue_r = 255 * lookupValue[1];
-        pixelValue_g = 255 * lookupValue[2];
-        pixelValue_b = 255 * lookupValue[3];
-        pixelValue_a = 255 * lookupValue[4];
-      } else {
-        pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixval / object._max);
-        pixelValue_a = 255;
-      }
+          
+          }
+
+          pixelValue_r = 255 * lookupValue[1];
+          pixelValue_g = 255 * lookupValue[2];
+          pixelValue_b = 255 * lookupValue[3];
+          pixelValue_a = 255 * lookupValue[4];
       
-      textureForCurrentSlice[textureStartIndex] = pixelValue_r;
-      textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
-      textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
-      textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
-    }
-    else{
-      //textureForCurrentSlice[textureStartIndex] = 255*_count/_csize;
-      //textureForCurrentSlice[++textureStartIndex] = 255;
+        }
+        else {
+      
+          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixval / object._max);
+          pixelValue_a = 255;
+        }
+      
+        textureForCurrentSlice[textureStartIndex] = pixelValue_r;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
+    
+      }
+      else{
+    
       textureForCurrentSlice[textureStartIndex] = 0;
       textureForCurrentSlice[++textureStartIndex] = 0;
       textureForCurrentSlice[++textureStartIndex] = 0;
       textureForCurrentSlice[++textureStartIndex] = 0;
-    }
+    
+      }
 
-    _ci++;
     _p++;
-    _count++;
+
     } 
 
   }
@@ -809,13 +808,12 @@ for (var i = _wmin; i <= _we; i+=_resX) {
   
   sliceXY._xyBBox = _xyBBox;
   sliceXY._XYToRAS = _XYToRAS;
-  sliceXY._XYToIJK = tttt;
+  sliceXY._XYToIJK = _XYToIJK;
 
   sliceXY._hmin = _hmin;
   sliceXY._hmax = _hmax;
   sliceXY._wmin = _wmin;
   sliceXY._wmax = _wmax;
-  sliceXY._epsilon = _epsilon;
   sliceXY._resX = _resX;
   sliceXY._resY = _resY;
   
@@ -899,9 +897,9 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   var _RASToXY = _XYRASTransform[0];
   var _XYToRAS = _XYRASTransform[1];
   
-  var qqq = goog.vec.Vec4.createFloat32FromValues(object._RASSpacing[0], object._RASSpacing[1], object._RASSpacing[2], 0);
+  var _rasSpacing = goog.vec.Vec4.createFloat32FromValues(object._RASSpacing[0], object._RASSpacing[1], object._RASSpacing[2], 0);
   var _xySpacing = goog.vec.Vec4.createFloat32();
-  goog.vec.Mat4.multVec4(_RASToXY, qqq, _xySpacing);
+  goog.vec.Mat4.multVec4(_RASToXY, _rasSpacing, _xySpacing);
   
   var _sliceDirection = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.getColumn(_XYToRAS,2,_sliceDirection);
@@ -914,7 +912,7 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   // GET NUMBER OF SLICES
   // ------------------------------------------
   
-  // floor cause if plane do not intersect box : crash
+  // floor cause if plane do not intersect box : crash (to be addressed)
   var _nb = Math.abs(Math.floor(_dist/_xySpacing[2]));
   object._range[_index] = _nb;
   object._childrenInfo[_index]._nb = _nb;
