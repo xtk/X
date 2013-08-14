@@ -745,22 +745,22 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   // which color?
   if (this._orientation == "Y") {
     _currentSlice = this._slices[parseInt(_volume['indexY'], 10)];
-    _sliceWSpacing = _currentSlice._resX;
-    _sliceHSpacing = _currentSlice._resY;
+    _sliceWSpacing = _currentSlice._widthSpacing;
+    _sliceHSpacing = _currentSlice._heightSpacing;
     this._orientationColors[0] = 'yellow';
     this._orientationColors[1] = 'green';
 
   } else if (this._orientation == "Z") {
     _currentSlice = this._slices[parseInt(_volume['indexZ'], 10)];
-    _sliceWSpacing = _currentSlice._resX;
-    _sliceHSpacing = _currentSlice._resY;
+    _sliceWSpacing = _currentSlice._widthSpacing;
+    _sliceHSpacing = _currentSlice._heightSpacing;
     this._orientationColors[0] = 'yellow';
     this._orientationColors[1] = 'red';
 
   } else {
     _currentSlice = this._slices[parseInt(_volume['indexX'], 10)];
-    _sliceWSpacing = _currentSlice._resY;
-    _sliceHSpacing = _currentSlice._resX;
+    _sliceWSpacing = _currentSlice._heightSpacing;
+    _sliceHSpacing = _currentSlice._widthSpacing;
     this._orientationColors[0] = 'red';
     this._orientationColors[1] = 'green';
 
@@ -825,8 +825,8 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   }
 
   // map indices to xy coordinates
-  _x = _currentSlice._wmin + _x*_currentSlice._resX;
-  _y = _currentSlice._hmin + _y*_currentSlice._resY;
+  _x = _currentSlice._wmin + _x*_currentSlice._widthSpacing;
+  _y = _currentSlice._hmin + _y*_currentSlice._heightSpacing;
 
   var _xyz = goog.vec.Vec4.createFloat32FromValues(_x, _y, _z, 1);
   var _ijk = goog.vec.Mat4.createFloat32();

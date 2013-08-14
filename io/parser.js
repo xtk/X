@@ -598,14 +598,9 @@ X.parser.prototype.xyBBox = function(_solutionsXY){
 };
 
 X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolume, object, hasLabelMap, colorTable){
-  // X.TIMER(this._classname + '.reslice2');
-  
-  //
-  //
-  //
+
   var sliceXY = new X.slice();
-  
-  
+    
   goog.vec.Vec3.normalize(_sliceNormal, _sliceNormal);
   
   object._front = _sliceNormal;
@@ -688,7 +683,6 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   var _resX = 1;
   var _resY = 1;
   
-// var _epsilon = Number.MIN_VALUE;
   var _epsilon = 0.0000001;
 
   // How many pixels are we expecting the raw data
@@ -799,41 +793,29 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
     } 
 
   }
-  
-  object._mappedPoints = _mappedPoints;
-  object._mappedPointsIJK = _mappedPointsIJK;
 
-  pixelTexture._rawData = textureForCurrentSlice; 
-  object._texture = pixelTexture;
-  
+  // setup slice texture
+  pixelTexture._rawData = textureForCurrentSlice;
+  sliceXY._texture = pixelTexture;
+  // setup slice spacial information
   sliceXY._xyBBox = _xyBBox;
   sliceXY._XYToRAS = _XYToRAS;
   sliceXY._XYToIJK = _XYToIJK;
-
   sliceXY._hmin = _hmin;
   sliceXY._hmax = _hmax;
   sliceXY._wmin = _wmin;
   sliceXY._wmax = _wmax;
-  sliceXY._resX = _resX;
-  sliceXY._resY = _resY;
-  
   sliceXY._iWidth = _iWidth;
   sliceXY._iHeight = _iHeight;
-  
   sliceXY._widthSpacing = _resX;
   sliceXY._width = object._SW;
-
-  sliceXY._texture = object._texture;
-  sliceXY._texture._rawDataWidth = object._texture._rawDataWidth;
-  sliceXY._texture._rawDataHeight = object._texture._rawDataHeight;
-  sliceXY._texture._rawData = object._texture._rawData;
-  
   sliceXY._heightSpacing = _resY;
   sliceXY._height = object._SH;
   sliceXY._center = object._sliceCenter;
   sliceXY._front = object._front;
   sliceXY._right= object._right;
   sliceXY._up = object._up;
+  // more styling
   sliceXY._visible = false;
   sliceXY._volume = /** @type {X.volume} */(object);
   
@@ -846,14 +828,14 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   else{
     sliceXY._borders = true;
   }
-  
   sliceXY._borderColor = _color;
   
+  // create slice
   sliceXY.create_();
   
+  // update visibility (has to be done after slice creation)
   sliceXY._visible = false;
   
-  // X.TIMERSTOP(this._classname + '.reslice2');
   return sliceXY;
 };
 
