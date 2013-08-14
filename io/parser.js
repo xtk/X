@@ -346,7 +346,6 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
 };
 
 X.parser.prototype.createIJKVolume = function(_data, _dims, _max){
-  // X.TIMER(this._classname + '.createIJKVolumes');
   
   // initiate variables
   // allocate images
@@ -360,6 +359,7 @@ X.parser.prototype.createIJKVolume = function(_data, _dims, _max){
   var _data_pointer = 0;
   
   for (_k = 0; _k < _dims[2]; _k++) {
+
     // get current slice
     var _current_k = _data.subarray(_k * (_nb_pix_per_slice), (_k + 1)
         * _nb_pix_per_slice);
@@ -369,12 +369,13 @@ X.parser.prototype.createIJKVolume = function(_data, _dims, _max){
     // allocate images
     _imageN[_k] = new Array(_dims[1]);
     _image[_k] = new Array(_dims[1]);
+
     for (_j = 0; _j < _dims[1]; _j++) {
       
       // allocate images
       _imageN[_k][_j] = new _data.constructor(_dims[0]);
       _image[_k][_j] = new _data.constructor(_dims[0]);
-    for (_i = 0; _i < _dims[0]; _i++) {
+      for (_i = 0; _i < _dims[0]; _i++) {
       
         _pix_value = _current_k[_data_pointer];
         _imageN[_k][_j][_i] = 255 * (_pix_value / _max);
@@ -384,29 +385,23 @@ X.parser.prototype.createIJKVolume = function(_data, _dims, _max){
       }
     }
   }
-  
-  //X.TIMERSTOP(this._classname + '.createIJKVolumes');
-  
+    
   return [_image, _imageN];
 };
 
 X.parser.prototype.intersectionBBoxLine = function(_bbox, _sliceOrigin, _sliceNormal){
-  // X.TIMER(this._classname + '.intersectionBBoxLine');
   
   var _solutionsIn = new Array();
   var _solutionsOut = new Array();
   
   // xmin, xmax, ymin, ymax, zmin, zmax
-  for(var _i = 0; _i < 6; _i++){
-    // 
+  for(var _i = 0; _i < 6; _i++) {
+
     var _i2 = Math.floor(_i/2);
     var _i3 = (_i2 + 1)%3;
     var _i4 = (_i2 + 2)%3;
     var _j1 = (2 + (2*_i2))%6;
     var _j2 = (4 + (2*_i2))%6;
-    
-    // i
-    // i4=?
     var _dir = _i2;
     
     
@@ -416,14 +411,14 @@ X.parser.prototype.intersectionBBoxLine = function(_bbox, _sliceOrigin, _sliceNo
     var _t = (_sol0 - _sliceOrigin[_i2])*_invN1;
     
     // if _t infinity, we are //
-    if(_t != Infinity && _t != -Infinity)
-      {
-    var _sol1 = _sliceOrigin[_i3] + _sliceNormal[_i3]*_t;
-    var _sol2 = _sliceOrigin[_i4] + _sliceNormal[_i4]*_t;
+    if(_t != Infinity && _t != -Infinity) {
+
+      var _sol1 = _sliceOrigin[_i3] + _sliceNormal[_i3]*_t;
+      var _sol2 = _sliceOrigin[_i4] + _sliceNormal[_i4]*_t;
         
-    // in range?
+      // in range?
       if( (_sol1 >= _bbox[_j1] && _sol1 <= _bbox[_j1+1]) &&
-          (_sol2 >= _bbox[_j2] && _sol2 <= _bbox[_j2+1])){
+          (_sol2 >= _bbox[_j2] && _sol2 <= _bbox[_j2+1])) {
         
         var _sol = new Array();
         _sol[_i2] = _bbox[_i];
@@ -431,38 +426,38 @@ X.parser.prototype.intersectionBBoxLine = function(_bbox, _sliceOrigin, _sliceNo
         _sol[_i4] = _sol2;
 
         _solutionsIn.push(_sol);
+
       }
-      else{
+      else {
+
         var _sol = new Array();
         _sol[_i2] = _bbox[_i];
         _sol[_i3] = _sol1;
         _sol[_i4] = _sol2;
         
         _solutionsOut.push(_sol);
+
       }
     }
   }
-  
-  
-  // X.TIMERSTOP(this._classname + '.intersectionBBoxLine');
   
   return [_solutionsIn, _solutionsOut];
 };
 
 X.parser.prototype.intersectionBBoxPlane = function(_bbox, _sliceOrigin, _sliceNormal){
-  // X.TIMER(this._classname + '.intersectionBBoxPlane');
 
   var _solutionsIn = new Array();
   var _solutionsOut = new Array();
   
   // xmin, xmax, ymin, ymax, zmin, zmax
-  for(var _i = 0; _i < 6; _i++){
+  for(var _i = 0; _i < 6; _i++) {
     // 
     var _i2 = Math.floor(_i/2);
     var _i3 = (_i2 + 1)%3;
     var _i4 = (_i2 + 2)%3;
     var _j3 = (4 + (2*_i2))%6;
-    for(var _j = 0; _j < 2; _j++){
+
+    for(var _j = 0; _j < 2; _j++) {
 
       var _j2 = (2 + _j + (2*_i2))%6;
 
@@ -480,7 +475,7 @@ X.parser.prototype.intersectionBBoxPlane = function(_bbox, _sliceOrigin, _sliceN
 
       if((_solution >= _bbox[_j3] && _solution <= _bbox[_j3+1])
           ||
-          (_solution <= _bbox[_j3] && _solution >= _bbox[_j3+1])){
+          (_solution <= _bbox[_j3] && _solution >= _bbox[_j3+1])) {
         
         var _sol = new Array();
         _sol[_i2] = _bbox[_i];
@@ -488,26 +483,25 @@ X.parser.prototype.intersectionBBoxPlane = function(_bbox, _sliceOrigin, _sliceN
         _sol[_i4] = _solution;
 
         _solutionsIn.push(_sol);
+
       }
       else{
+
         var _sol = new Array();
         _sol[_i2] = _bbox[_i];
         _sol[_i3] = _bbox[_j2];
         _sol[_i4] = _solution;
         
         _solutionsOut.push(_sol);
+
       }
     }
   }
-
-  // X.TIMERSTOP(this._classname + '.intersectionBBoxPlane');
   
   return [_solutionsIn, _solutionsOut];
 };
 
 X.parser.prototype.xyrasTransform = function(_sliceNormal, _XYNormal){
-  // X.TIMER(this._classname + '.xyrasTransform');
-
   var _RASToXY = goog.vec.Mat4.createFloat32Identity();
   
   // no rotation needed if we are in the z plane already
@@ -552,61 +546,64 @@ X.parser.prototype.xyrasTransform = function(_sliceNormal, _XYNormal){
 
   var _XYToRAS = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.invert(_RASToXY, _XYToRAS);
-  
-
-  // X.TIMERSTOP(this._classname + '.xyrasTransform');
-  
+    
   return [_RASToXY, _XYToRAS];
 };
 
 X.parser.prototype.xyBBox = function(_solutionsXY){
-  // X.TIMER(this._classname + '.xyBBox');
 
   var _xyBBox = [Number.MAX_VALUE, -Number.MAX_VALUE,
    Number.MAX_VALUE, -Number.MAX_VALUE,
    Number.MAX_VALUE, -Number.MAX_VALUE];
+  var i = 0;
+  for (i = 0; i < _solutionsXY.length; ++i) {
 
-  for (var i = 0; i < _solutionsXY.length; ++i) {
-    if(_solutionsXY[i][0] < _xyBBox[0]){
+    if(_solutionsXY[i][0] < _xyBBox[0]) {
+
       _xyBBox[0] = _solutionsXY[i][0];
+
     }
 
-    if(_solutionsXY[i][0] > _xyBBox[1]){
+    if(_solutionsXY[i][0] > _xyBBox[1]) {
+
       _xyBBox[1] = _solutionsXY[i][0];
+
     }
 
-    if(_solutionsXY[i][1] < _xyBBox[2]){
+    if(_solutionsXY[i][1] < _xyBBox[2]) {
+
       _xyBBox[2] = _solutionsXY[i][1];
+
     }
 
-    if(_solutionsXY[i][1] > _xyBBox[3]){
+    if(_solutionsXY[i][1] > _xyBBox[3]) {
+
       _xyBBox[3] = _solutionsXY[i][1];
+
     }
 
-    if(_solutionsXY[i][2] < _xyBBox[4]){
+    if(_solutionsXY[i][2] < _xyBBox[4]) {
+
       _xyBBox[4] = _solutionsXY[i][2];
+
     }
 
-    if(_solutionsXY[i][2] > _xyBBox[5]){
+    if(_solutionsXY[i][2] > _xyBBox[5]) {
+
       _xyBBox[5] = _solutionsXY[i][2];
+
     }
   }
-
-  // X.TIMERSTOP(this._classname + '.xyBBox');
   
   return _xyBBox;
 };
 
-X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox, _rasspacing, _ras2ijk, _IJKVolume, object, hasLabelMap, colorTable){
+X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox, _IJKVolume, object, hasLabelMap, colorTable){
 
   var sliceXY = new X.slice();
     
+  // normalize slice normal (just in case)
   goog.vec.Vec3.normalize(_sliceNormal, _sliceNormal);
-  
-  object._front = _sliceNormal;
-  object._sliceOrigin = _sliceOrigin;
-  object._sliceNormal = _sliceNormal;
-  object._boundingBox = _bbox;
   
   // ------------------------------------------
   // GET INTERSECTION BOUNDING BOX/PLANE
@@ -614,16 +611,12 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
 
   var _solutions = this.intersectionBBoxPlane(_bbox,_sliceOrigin, _sliceNormal);
   var _solutionsIn = _solutions[0];
-  var _solutionsOut = _solutions[1];
-  object._solutions = _solutionsIn;
-  object._solutionsOut = _solutionsOut;
   
   // ------------------------------------------
   // MOVE TO 2D SPACE
   // ------------------------------------------
 
   var _XYNormal = goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
-  
   var _XYRASTransform = this.xyrasTransform(_sliceNormal, _XYNormal);
   var _RASToXY = _XYRASTransform[0];
   var _XYToRAS = _XYRASTransform[1];
@@ -631,54 +624,36 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
 // // Apply transform to each point!
   var _solutionsXY = new Array();
   for (var i = 0; i < _solutionsIn.length; ++i) {
-    var tar2 = goog.vec.Vec4.createFloat32FromValues(_solutionsIn[i][0], _solutionsIn[i][1], _solutionsIn[i][2], 1);
-    var res2 = goog.vec.Vec4.createFloat32();
-    goog.vec.Mat4.multVec4(_RASToXY, tar2, res2);
-
-    var _sol = new Array();
-    _sol[0] = res2[0];
-    _sol[1] = res2[1];
-    _sol[2] = res2[2];
-    
-    _solutionsXY.push(_sol);
+    var _rasIntersection = goog.vec.Vec4.createFloat32FromValues(_solutionsIn[i][0], _solutionsIn[i][1], _solutionsIn[i][2], 1);
+    var _xyIntersection = goog.vec.Vec4.createFloat32();
+    goog.vec.Mat4.multVec4(_RASToXY, _rasIntersection, _xyIntersection);
+    _solutionsXY.push([_xyIntersection[0], _xyIntersection[1], _xyIntersection[2]]);
   }
-  
-  object._solutionsXY = _solutionsXY;
-  
+    
   // rigth
   var _right = goog.vec.Vec3.createFloat32FromValues(1, 0, 0);
   var _rright = goog.vec.Vec3.createFloat32();
   goog.vec.Mat4.multVec3(_XYToRAS, _right, _rright);
-  object._right = _rright;
-  
+
   // up
   var _up = goog.vec.Vec3.createFloat32FromValues(0, 1, 0);
   var _rup = goog.vec.Vec3.createFloat32();
   goog.vec.Mat4.multVec3(_XYToRAS, _up, _rup);
-  object._up= [_rup[0], _rup[1], _rup[2]];
   
   // get XY bounding box!
   var _xyBBox = this.xyBBox(_solutionsXY);
-  object._xyBBox = _xyBBox;
   
   var _xyCenter = goog.vec.Vec4.createFloat32FromValues(_xyBBox[0] + (_xyBBox[1] - _xyBBox[0])/2,_xyBBox[2] + (_xyBBox[3] - _xyBBox[2])/2, _xyBBox[4] + (_xyBBox[5] - _xyBBox[4])/2,0);
   var _RASCenter = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multMat(_XYToRAS,_xyCenter, _RASCenter);
-  object._sliceCenter = [_RASCenter[0],
-      _RASCenter[1], _RASCenter[2]];
  
   var _wmin =  Math.floor(_xyBBox[0]);
   var _wmax =  Math.ceil(_xyBBox[1]);
-  var _woffset = _xyBBox[0] - _wmin + _wmax - _xyBBox[1];
   var _swidth = _wmax - _wmin;
   
   var _hmin = Math.floor(_xyBBox[2]);
   var _hmax = Math.ceil(_xyBBox[3]);
-  var _hoffset = _xyBBox[2] - _hmin + _hmax - _xyBBox[3];
   var _sheight = _hmax - _hmin;
-  
-  object._SW = _swidth;
-  object._SH = _sheight;
 
   var _resX = 1;
   var _resY = 1;
@@ -696,32 +671,29 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   pixelTexture._rawDataWidth = _cswidth;
   pixelTexture._rawDataHeight = _csheight;
 
-  // return ijk indices
-  var _mappedPoints = new Array();
-  var _mappedPointsIJK = new Array();
-  
-  var _p = 0;
-  
+
   var _indexIJK = goog.vec.Vec4.createFloat32();
   var _indexXY = goog.vec.Vec4.createFloat32FromValues(0, 0, _xyBBox[4], 1);
   var _XYToIJK = goog.vec.Mat4.createFloat32();
-  goog.vec.Mat4.multMat(_ras2ijk,_XYToRAS, _XYToIJK);
+  goog.vec.Mat4.multMat(object._RASToIJK,_XYToRAS, _XYToIJK);
 
   var _he = _hmax - _epsilon;
   var _we = _wmax - _epsilon;
   
+  var _p = 0;
   var _iWidth = 0;
   var _iHeight = 0;
+  var j = _hmin;
+  var i = _wmin;
   
-  
-  for (var j = _hmin; j <= _he; j+=_resY) {
+  for (j = _hmin; j <= _he; j+=_resY) {
 
     _iHeight++;
     _iWidth = 0;
-    
     _indexXY[1] = j;
+    i = _wmin;
 
-    for (var i = _wmin; i <= _we; i+=_resX) {
+    for (i = _wmin; i <= _we; i+=_resX) {
       _iWidth++;
       //
       _indexXY[0] = i;
@@ -748,8 +720,6 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
         var pixelValue_b = 0;
         var pixelValue_a = 0;
       
-
-
         if (colorTable) {
           
           // color table!
@@ -779,7 +749,7 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
         textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
     
       }
-      else{
+      else {
     
       textureForCurrentSlice[textureStartIndex] = 0;
       textureForCurrentSlice[++textureStartIndex] = 0;
@@ -808,13 +778,13 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   sliceXY._iWidth = _iWidth;
   sliceXY._iHeight = _iHeight;
   sliceXY._widthSpacing = _resX;
-  sliceXY._width = object._SW;
+  sliceXY._width = _swidth;
   sliceXY._heightSpacing = _resY;
-  sliceXY._height = object._SH;
-  sliceXY._center = object._sliceCenter;
-  sliceXY._front = object._front;
-  sliceXY._right= object._right;
-  sliceXY._up = object._up;
+  sliceXY._height = _sheight;
+  sliceXY._center = [_RASCenter[0], _RASCenter[1], _RASCenter[2]];
+  sliceXY._front = _sliceNormal;
+  sliceXY._right= [_rright[0], _rright[1], _rright[2]];
+  sliceXY._up = [_rup[0], _rup[1], _rup[2]];
   // more styling
   sliceXY._visible = false;
   sliceXY._volume = /** @type {X.volume} */(object);
@@ -840,7 +810,6 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
 };
 
 X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal, _bbox, object){
-  // X.TIMER(this._classname + '.updateSliceInfo');
 
   // ------------------------------------------
   // GET INTERSECTION BOUNDING BOX/LINE
@@ -849,9 +818,6 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   var _solutionsLine = this.intersectionBBoxLine(_bbox,_sliceOrigin, _sliceNormal);
   var _solutionsInLine = _solutionsLine[0];
   var _solutionsOutLine = _solutionsLine[1];
-
-  object._solutionsL = _solutionsInLine;
-  object._solutionsOutL = _solutionsOutLine;
 
   object._childrenInfo[_index]._solutionsLine = _solutionsLine;
   object._childrenInfo[_index]._originD = -(_sliceNormal[0]*_solutionsInLine[0][0] + _sliceNormal[1]*_solutionsInLine[0][1] + _sliceNormal[2]*_solutionsInLine[0][2]);
@@ -898,8 +864,6 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   var _nb = Math.abs(Math.floor(_dist/_xySpacing[2]));
   object._range[_index] = _nb;
   object._childrenInfo[_index]._nb = _nb;
-
-  // X.TIMERSTOP(this._classname + '.updateSliceInfo');
   
   return;
 };
@@ -990,7 +954,7 @@ X.parser.prototype.reslice = function(object) {
   _sliceOrigin[1] = object._childrenInfo[0]._solutionsLine[0][0][1] + Math.abs(object._childrenInfo[0]._sliceDirection[1])*Math.round(object._childrenInfo[0]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[0]._solutionsLine[0][0][2] + Math.abs(object._childrenInfo[0]._sliceDirection[2])*Math.round(object._childrenInfo[0]._nb/2);
 
-  var _slice = this.reslice2(_sliceOrigin, object._childrenInfo[0]._sliceNormal, object._childrenInfo[0]._color, object._BBox, object._RASSpacing, object._RASToIJK, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+  var _slice = this.reslice2(_sliceOrigin, object._childrenInfo[0]._sliceNormal, object._childrenInfo[0]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
   if (object.hasLabelMap) {
     // if this object has a labelmap,
@@ -1037,7 +1001,7 @@ X.parser.prototype.reslice = function(object) {
   _sliceOrigin[1] = object._childrenInfo[1]._solutionsLine[0][0][1] + Math.abs(object._childrenInfo[1]._sliceDirection[1])*Math.round(object._childrenInfo[1]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[1]._solutionsLine[0][0][2] + Math.abs(object._childrenInfo[1]._sliceDirection[2])*Math.round(object._childrenInfo[1]._nb/2);
     
-  _slice = this.reslice2(_sliceOrigin, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, object._BBox, object._RASSpacing, object._RASToIJK, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+  _slice = this.reslice2(_sliceOrigin, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
   if (object.hasLabelMap) {
     // if this object has a labelmap,
@@ -1083,7 +1047,7 @@ X.parser.prototype.reslice = function(object) {
   _sliceOrigin[1] = object._childrenInfo[2]._solutionsLine[0][0][1] + Math.abs(object._childrenInfo[2]._sliceDirection[1])*Math.round(object._childrenInfo[2]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[2]._solutionsLine[0][0][2] + Math.abs(object._childrenInfo[2]._sliceDirection[2])*Math.round(object._childrenInfo[2]._nb/2);
     
-  _slice = this.reslice2(_sliceOrigin, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, object._BBox, object._RASSpacing, object._RASToIJK, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+  _slice = this.reslice2(_sliceOrigin, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
   if (object.hasLabelMap) {
     // if this object has a labelmap,

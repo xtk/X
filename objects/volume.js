@@ -541,13 +541,13 @@ X.volume.prototype.slicing_ = function() {
 
       //attach labelmap
       if(this.hasLabelMap){
-        var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
+        var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
         this._labelmap._children[xyz]._children[parseInt(currentIndex, 10)] = _sliceLabel;
         // add it to create the texture
         this._container.add(_sliceLabel);
       }
 
-      var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._IJKVolume, this, true, null);
+      var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._IJKVolume, this, true, null);
 
       if(this.hasLabelMap){
         _slice._labelmap = _slice._texture;
@@ -1028,13 +1028,13 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
       //attach labelmap
       if(this.hasLabelMap){
-        var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
+        var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
         this._labelmap._children[direction]._children[i] = _sliceLabel;
         // add it to create the texture
         this._container.add(_sliceLabel);
       }
 
-      var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._RASSpacing, this._RASToIJK, this._IJKVolume, this, true, null);
+      var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null);
       _slice._children[0]._visible = false;
 
       if(this.hasLabelMap){
