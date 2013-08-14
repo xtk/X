@@ -118,6 +118,12 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
         MRI.spaceorientation[4], MRI.spaceorientation[5]);
     var _z_cosine = goog.math.Vec3.cross(_x_cosine, _y_cosine);
 
+    if(object._spacing[2] < 2) {
+
+      _z_cosine.invert();
+      
+    }
+
     var IJKToRAS = goog.vec.Mat4.createFloat32();
     // NOTE THE '-' for the LPS to RAS conversion
     goog.vec.Mat4.setRowValues(IJKToRAS,
@@ -450,8 +456,8 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _slicelocation += String.fromCharCode(_b1);
           }
           // we compare the last_slicelocation to the current one
-          var _location_difference = Math.abs(MRI.last_slicelocation
-              - _slicelocation);
+          var _location_difference = MRI.last_slicelocation
+              - _slicelocation;
           // .. and store it if it is smaller than before
           MRI.pixdim = [ MRI.pixdim[0], MRI.pixdim[1],
               Math.min(_location_difference, MRI.pixdim[2]) ];
