@@ -96,6 +96,22 @@ X.camera = function(width, height) {
   this._up = new X.vector(0, 0, 1);
 
   /**
+   * The viewport width.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._width = width;
+
+  /**
+   * The viewport height.
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._height = height;
+
+  /**
    * The view matrix.
    *
    * @type {!Float32Array}

@@ -204,6 +204,10 @@ X.matrix.makeOrtho = goog.vec.Mat4.makeOrtho;
  */
 X.matrix.multiply = goog.vec.Mat4.multMat;
 
+/**
+ * @see goog.vec.Mat4.multVec4
+ */
+X.matrix.multiplyByVec4 = goog.vec.Mat4.multVec4;
 
 /**
  * @see goog.vec.Mat4.translate
@@ -248,6 +252,7 @@ goog.exportSymbol('X.matrix.determinant', X.matrix.determinant);
 goog.exportSymbol('X.matrix.invert', X.matrix.invert);
 goog.exportSymbol('X.matrix.multiply', X.matrix.multiply);
 goog.exportSymbol('X.matrix.multiplyByVector', X.matrix.multiplyByVector);
+goog.exportSymbol('X.matrix.multiplyByVec4', X.matrix.multiplyByVec4);
 goog.exportSymbol('X.matrix.makePerspective', X.matrix.makePerspective);
 goog.exportSymbol('X.matrix.makeFrustum', X.matrix.makeFrustum);
 goog.exportSymbol('X.matrix.makeOrtho', X.matrix.makeOrtho);
