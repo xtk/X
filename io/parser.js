@@ -399,7 +399,7 @@ var _rasBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
   _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
   _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
   _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
-  
+
   ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1], MRIdim[2], 0, 1);
   goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
   
@@ -409,7 +409,7 @@ var _rasBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
   _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
   _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
   _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
-  
+
   ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1], 0, MRIdim[3], 1);
   goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
   

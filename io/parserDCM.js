@@ -110,29 +110,75 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     if (object._upperThreshold == Infinity) {
       object._upperThreshold = max;
     }
-    // X.TIMER('create');
-    MRI.space = [ 'left', 'posterior', 'superior' ];
-    // cosines direction in RAS space
+
+    // Create IJKtoXYZ matrix
     var _x_cosine = new goog.math.Vec3(MRI.spaceorientation[0],
-        MRI.spaceorientation[1], MRI.spaceorientation[2]);// MRI.image_orientation.slice(0,
-                                                          // 3);
+          MRI.spaceorientation[1], MRI.spaceorientation[2]);
     var _y_cosine = new goog.math.Vec3(MRI.spaceorientation[3],
         MRI.spaceorientation[4], MRI.spaceorientation[5]);
     var _z_cosine = goog.math.Vec3.cross(_x_cosine, _y_cosine);
-    MRI.spaceorientation.push(_z_cosine.x, _z_cosine.y, _z_cosine.z);
-    MRI.rasspaceorientation = this.toRAS(MRI.space, MRI.spaceorientation);
-    // get orientation and normalized cosines
-    var orient_norm = this.orientnormalize(MRI.rasspaceorientation);
-    MRI.orientation = orient_norm[0];
-    MRI.normcosine = orient_norm[1];
-    // X.TIMER('create');
+
+    var IJKToRAS = goog.vec.Mat4.createFloat32();
+    // NOTE THE '-' for the LPS to RAS conversion
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      0,
+      -MRI.spaceorientation[0],
+      -MRI.spaceorientation[3],
+      -_z_cosine.x,
+      1);
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      1,
+      -MRI.spaceorientation[1],
+      -MRI.spaceorientation[4],
+      -_z_cosine.y,
+      1);
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      2,
+      MRI.spaceorientation[2],
+      MRI.spaceorientation[5],
+      _z_cosine.z,
+      1);
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      3,
+      0,
+      0,
+      0,
+      1);
+  
+    MRI.IJKToRAS = IJKToRAS;
+    MRI.RASToIJK = goog.vec.Mat4.createFloat32();
+    goog.vec.Mat4.invert(MRI.IJKToRAS, MRI.RASToIJK);
+  
+    // get bounding box
+    // Transform ijk (0, 0, 0) to RAS
+    var tar = goog.vec.Vec4.createFloat32FromValues(0, 0, 0, 1);
+    var res = goog.vec.Vec4.createFloat32();
+    goog.vec.Mat4.multVec4(IJKToRAS, tar, res);
+    // Transform ijk (spacingX, spacinY, spacingZ) to RAS
+    var tar2 = goog.vec.Vec4.createFloat32FromValues(_spacing[0], _spacing[1], _spacing[2], 1);
+    var res2 = goog.vec.Vec4.createFloat32();
+    goog.vec.Mat4.multVec4(IJKToRAS, tar2, res2);
+  
+    // get location of 8 corners and update BBox
+    //
+    var _shifDimensions = [0, object._dimensions[0], object._dimensions[1], object._dimensions[2]];
+    
+    var _rasBB = this.computeRASBBox(IJKToRAS, _shifDimensions);
+
+    // grab the RAS Dimensions
+    MRI.RASSpacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
+  
+    // grab the RAS Dimensions
+    MRI.RASDimensions = [_rasBB[1] - _rasBB[0], _rasBB[3] - _rasBB[2], _rasBB[5] - _rasBB[4]];
+  
+    // grab the RAS Origin
+    MRI.RASOrigin = [_rasBB[0], _rasBB[2], _rasBB[4]];
+
     // create the object
     object.create_(MRI);
-    // X.TIMERSTOP('create');
-    // re-slice the data according each direction
-    // anatomical_orientation
+
+  // re-slice the data according each direction
     object._image = this.reslice(object);
-    object.map_();
   }
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
@@ -175,13 +221,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
       sorting_table : [],
       data : null,
       min : Infinity,
-      max : -Infinity,
-      origin : null,
-      space : null,
-      spaceorientation : null,
-      rasspaceorientation : null,
-      orientation : null,
-      normcosine : null
+      max : -Infinity
     };
     // check how many slices we have
     MRI.number_of_slices = object._file.length;

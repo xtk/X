@@ -70,8 +70,6 @@ goog.inherits(X.parserNII, X.parser);
  * @inheritDoc
  */
 X.parserNII.prototype.parse = function(container, object, data, flag) {
-
-  X.TIMER(this._classname + '.parse');
   
   var _data = data;
   
@@ -254,8 +252,6 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   
   // create the object
   object.create_(MRI);
-  
-  X.TIMERSTOP(this._classname + '.parse');
   
   // re-slice the data according each direction
   object._image = this.reslice(object);
