@@ -329,13 +329,7 @@ X.parserNII.prototype.parseStream = function(data) {
     magic: null, // *!< MUST be "ni1\0" or "n+1\0". */
     data: null,
     min: Infinity,
-    max: -Infinity,
-    space : null,
-    spaceorientation : null,
-    rasspaceorientation : null,
-    orientation : null,
-    normcosine : null,
-    IJKToRAS : null
+    max: -Infinity
   };
   
   // header_key substruct

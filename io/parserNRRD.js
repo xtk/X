@@ -167,8 +167,6 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   // grab the RAS Origin
   MRI.RASOrigin = [_rasBB[0], _rasBB[2], _rasBB[4]];
 
-  window.console.log(_rasBB);
-  window.console.log(IJKToRAS);
   // create the object
   object.create_(MRI);
 
