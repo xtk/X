@@ -142,7 +142,7 @@ X.renderer3D = function() {
    * @type {!Array}
    * @protected
    */
-  this._bgColor = [1, 1, 1];
+  this._bgColor = [0, 0, 0];
 
   /**
    * The frame buffer which is used for picking.
@@ -1310,8 +1310,6 @@ X.renderer3D.prototype.order_ = function() {
   do {
 
     var object = topLevelObjects[t];
-        // keep link to container
-    object._container = this;
 
     // special case for X.volumes in volumeRendering mode
     // a) we know the volumeRendering direction and the center of the volume

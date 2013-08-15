@@ -172,18 +172,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       0,
       1);
 
-    var fcx = _dimensions[0] / 2.0;
-    var fcy = _dimensions[1] / 2.0;
-    var fcz = _dimensions[2] / 2.0;
-    var _origin = [0, 0, 0];
-
-    for( var ui = 0; ui < 3; ++ui ) {
-
-      _origin[ui] = ( goog.vec.Mat4.getElement(IJKToRAS, ui, 0) * _spacing[0] * fcx
-          + goog.vec.Mat4.getElement(IJKToRAS, ui, 1) * _spacing[1] * fcy
-          + goog.vec.Mat4.getElement(IJKToRAS, ui, 2) * _spacing[2] * fcz );
-    }
-
     MRI.IJKToRAS = IJKToRAS;
     MRI.RASToIJK = goog.vec.Mat4.createFloat32();
     goog.vec.Mat4.invert(MRI.IJKToRAS, MRI.RASToIJK);
