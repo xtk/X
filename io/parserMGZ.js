@@ -99,6 +99,20 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
     object._upperThreshold = max;
   }
 
+  // compute origin
+  var fcx = _dimensions[0] / 2.0;
+  var fcy = _dimensions[1] / 2.0;
+  var fcz = _dimensions[2] / 2.0;
+  var _origin = [0, 0, 0];
+
+  for( var ui = 0; ui < 3; ++ui )
+    {
+    _origin[ui] = MRI.M_ras[3][ui]
+      - ( goog.vec.Mat4.getElement(IJKToRAS, ui, 0) * _spacing[0] * fcx
+          + goog.vec.Mat4.getElement(IJKToRAS, ui, 1) * _spacing[1] * fcy
+          + goog.vec.Mat4.getElement(IJKToRAS, ui, 2) * _spacing[2] * fcz );
+    }
+
 // Create IJKtoXYZ matrix
   var IJKToRAS = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.setRowValues(IJKToRAS,
@@ -106,19 +120,19 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
     MRI.M_ras[0][0],
     MRI.M_ras[1][0],
     MRI.M_ras[2][0],
-    1);
+    _origin[0]);
   goog.vec.Mat4.setRowValues(IJKToRAS,
     1,
     MRI.M_ras[0][1],
     MRI.M_ras[1][1],
     MRI.M_ras[2][1],
-    1);
+    _origin[1]);
   goog.vec.Mat4.setRowValues(IJKToRAS,
     2,
     MRI.M_ras[0][2],
     MRI.M_ras[1][2],
     MRI.M_ras[2][2],
-    1);
+    _origin[2]);
   goog.vec.Mat4.setRowValues(IJKToRAS,
     3,
     0,
@@ -126,6 +140,7 @@ X.parserMGZ.prototype.parse = function(container, object, data, flag) {
     0,
     1);
   
+  window.console.log();
   MRI.IJKToRAS = IJKToRAS;
   MRI.RASToIJK = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.invert(MRI.IJKToRAS, MRI.RASToIJK);
