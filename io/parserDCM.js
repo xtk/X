@@ -120,6 +120,18 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       object._upperThreshold = max;
     }
 
+    // get origin == highest slice position?
+    // or depends on Z orientation?
+    var i = 0, m = MRI.positionAll[0], mI = 0;
+
+    while(++i < MRI.positionAll.length) {
+      if(MRI.positionAll[i] > m) {
+          mI = i;
+          m = MRI.positionAll[i];
+      }
+    }
+    var _origin = MRI.originAll[mI].split("\\");
+
     // Create IJKtoXYZ matrix
     var _x_cosine = new goog.math.Vec3(MRI.spaceorientation[0],
           MRI.spaceorientation[1], MRI.spaceorientation[2]);
@@ -140,19 +152,19 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       -MRI.spaceorientation[0],
       -MRI.spaceorientation[3],
       -_z_cosine.x,
-      0);
+      -_origin[0]);
     goog.vec.Mat4.setRowValues(IJKToRAS,
       1,
       -MRI.spaceorientation[1],
       -MRI.spaceorientation[4],
       -_z_cosine.y,
-      0);
+      -_origin[1]);
     goog.vec.Mat4.setRowValues(IJKToRAS,
       2,
       MRI.spaceorientation[2],
       MRI.spaceorientation[5],
       _z_cosine.z,
-      0);
+      _origin[2]);
     goog.vec.Mat4.setRowValues(IJKToRAS,
       3,
       0,
@@ -250,7 +262,8 @@ X.parserDCM.prototype.parseStream = function(data, object) {
       min : Infinity,
       max : -Infinity,
       location : [],
-      originAll: []
+      originAll: [],
+      positionAll: []
     };
     // check how many slices we have
     MRI.number_of_slices = object._file.length;
@@ -435,7 +448,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     var _bytes = this.scan('ushort', this._data.byteLength - MRI.vol_size * 2);
     var _bytePointer = 0;
     // now find the instance number flag
-    var _tagCount = 2;
+    var _tagCount = 3;
     while (_tagCount > 0) {
       // read short
       _tagGroup = _bytes[_bytePointer++];
@@ -454,8 +467,26 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _position += String.fromCharCode(_b1);
             _position = parseInt(_position, 10);
           }
+          MRI.positionAll.push(_position);
           _tagCount--;
-        } else if (_tagSpecific == 0x1041) {
+        }          else if (_tagSpecific == 0x0032) {
+                    _VR = _bytes[_bytePointer++];
+          _VL = _bytes[_bytePointer++];
+          // image position
+          var _image_position = '';
+          var i = 0;
+          for (i = 0; i < _VL / 2; i++) {
+            var _short = _bytes[_bytePointer++];
+            var _b0 = _short & 0x00FF;
+            var _b1 = (_short & 0xFF00) >> 8;
+            _image_position += String.fromCharCode(_b0);
+            _image_position += String.fromCharCode(_b1);
+          }
+          MRI.originAll.push(_image_position);
+          //window.console.log(_image_position);
+          _tagCount--;
+        }
+        else if (_tagSpecific == 0x1041) {
           // this is the slicelocation so we can grab the
           // z-spacing
           _VR = _bytes[_bytePointer++];
@@ -473,6 +504,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
           MRI.location.push(_slicelocation);
           _tagCount--;
         }
+
       }
     }
     // increase the Z dimensions since we have a new slice
