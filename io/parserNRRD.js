@@ -132,13 +132,43 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   }
 
   // Create IJKtoXYZ matrix
+  var _spaceX = 1;
+  var _spaceY = 1;
+  var _spaceZ = 1;
+
+  if (this.space == "left-posterior-superior") {
+  
+    _spaceX = -1;
+    _spaceY = -1;
+  
+  }
+  
   var IJKToRAS = goog.vec.Mat4.createFloat32Identity();
-  // goog.vec.Mat4.setRowValues(IJKToRAS,
-  //     3,
-  //     0,
-  //     0,
-  //     0,
-  //     1);
+  goog.vec.Mat4.setRowValues(IJKToRAS,
+    0,
+    _spaceX*spacingX*this.vectors[0][0],
+    _spaceX*spacingX*this.vectors[1][0],
+    _spaceX*spacingX*this.vectors[2][0],
+    _spaceX*this.space_origin[0]);
+  goog.vec.Mat4.setRowValues(IJKToRAS,
+    1,
+    _spaceY*spacingY*this.vectors[0][1],
+    _spaceY*spacingY*this.vectors[1][1],
+    _spaceY*spacingY*this.vectors[2][1],
+    _spaceY*this.space_origin[1]);
+  goog.vec.Mat4.setRowValues(IJKToRAS,
+    2,
+    _spaceZ*spacingZ*this.vectors[0][2],
+    _spaceZ*spacingZ*this.vectors[1][2],
+    _spaceZ*spacingZ*this.vectors[2][2],
+    _spaceZ*this.space_origin[2]);
+  goog.vec.Mat4.setRowValues(IJKToRAS,
+    3,
+    0,
+    0,
+    0,
+    1);
+
   MRI.IJKToRAS = IJKToRAS;
   MRI.RASToIJK = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.invert(MRI.IJKToRAS, MRI.RASToIJK);
@@ -308,7 +338,10 @@ X.parserNRRD.prototype.fieldFunctions = {
     })();
   },
   'space' : function(data) {
-    return this.space = data.split("-");
+    return this.space = data;
+  },
+  'space origin' : function(data) {
+    return this.space_origin = data.split("(")[1].split(")")[0].split(",");
   },
   'space directions' : function(data) {
     var f, parts, v;
