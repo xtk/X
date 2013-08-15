@@ -89,10 +89,19 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     object._dimensions = _dimensions;
     // grab the spacing
     if (MRI.pixdim[2] == Infinity) {
-      // if the z-spacing can't be detected,
-      // we assume 1
-      MRI.pixdim[2] = 1;
+
+      if( MRI.location.length > 1) {
+
+        MRI.location.sort();
+        MRI.pixdim[2] = Math.abs(MRI.location[0] - MRI.location[1]);
+      }
+      else {
+
+      MRI.pixdim[2] = 1.0;
+
+      }
     }
+
     var _spacing = [ MRI.pixdim[0], MRI.pixdim[1], MRI.pixdim[2] ];
     object._spacing = _spacing;
     // get the min and max intensities
@@ -131,26 +140,38 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       -MRI.spaceorientation[0],
       -MRI.spaceorientation[3],
       -_z_cosine.x,
-      1);
+      0);
     goog.vec.Mat4.setRowValues(IJKToRAS,
       1,
       -MRI.spaceorientation[1],
       -MRI.spaceorientation[4],
       -_z_cosine.y,
-      1);
+      0);
     goog.vec.Mat4.setRowValues(IJKToRAS,
       2,
       MRI.spaceorientation[2],
       MRI.spaceorientation[5],
       _z_cosine.z,
-      1);
+      0);
     goog.vec.Mat4.setRowValues(IJKToRAS,
       3,
       0,
       0,
       0,
       1);
-  
+
+    var fcx = _dimensions[0] / 2.0;
+    var fcy = _dimensions[1] / 2.0;
+    var fcz = _dimensions[2] / 2.0;
+    var _origin = [0, 0, 0];
+
+    for( var ui = 0; ui < 3; ++ui ) {
+
+      _origin[ui] = ( goog.vec.Mat4.getElement(IJKToRAS, ui, 0) * _spacing[0] * fcx
+          + goog.vec.Mat4.getElement(IJKToRAS, ui, 1) * _spacing[1] * fcy
+          + goog.vec.Mat4.getElement(IJKToRAS, ui, 2) * _spacing[2] * fcz );
+    }
+
     MRI.IJKToRAS = IJKToRAS;
     MRI.RASToIJK = goog.vec.Mat4.createFloat32();
     goog.vec.Mat4.invert(MRI.IJKToRAS, MRI.RASToIJK);
@@ -227,7 +248,9 @@ X.parserDCM.prototype.parseStream = function(data, object) {
       sorting_table : [],
       data : null,
       min : Infinity,
-      max : -Infinity
+      max : -Infinity,
+      location : [],
+      originAll: []
     };
     // check how many slices we have
     MRI.number_of_slices = object._file.length;
@@ -323,10 +346,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
           break;
         case 0x0032:
           // image position
-          // console.log("image position");
-          // pixel spacing
           var _image_position = '';
-          // pixel spacing is a delimited string (ASCII)
           var i = 0;
           for (i = 0; i < _VL / 2; i++) {
             var _short = _bytes[_bytePointer++];
@@ -381,13 +401,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _anatomical_orientation += String.fromCharCode(_b0);
             _anatomical_orientation += String.fromCharCode(_b1);
           }
-          // MRI.spaceorientation = _anatomical_orientation.split("\\");
-          // console.log(_anatomical_orientation);
-          // MRI.image_orientation = [ +_image_orientation[0],
-          // +_image_orientation[1], +_image_orientation[2],
-          // +_image_orientation[3], +_image_orientation[4],
-          // +_image_orientation[5] ];
-          // console.log(MRI.image_orientation);
+
           break;
         }
       }
@@ -455,15 +469,8 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _slicelocation += String.fromCharCode(_b0);
             _slicelocation += String.fromCharCode(_b1);
           }
-          // we compare the last_slicelocation to the current one
-          var _location_difference = MRI.last_slicelocation
-              - _slicelocation;
-          // .. and store it if it is smaller than before
-          MRI.pixdim = [ MRI.pixdim[0], MRI.pixdim[1],
-              Math.min(_location_difference, MRI.pixdim[2]) ];
-          // we now store the current slice location as
-          // the last one
-          MRI.last_slicelocation = _slicelocation;
+          // store all locations
+          MRI.location.push(_slicelocation);
           _tagCount--;
         }
       }
