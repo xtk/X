@@ -33,6 +33,7 @@ goog.provide('X.volume');
 // requires
 goog.require('X.object');
 goog.require('X.slice');
+goog.require('X.parser');
 goog.require('X.thresholdable');
 
 
@@ -77,6 +78,14 @@ X.volume = function(volume) {
    * @protected
    */
   this._dimensions = [ 10, 10, 10 ];
+
+  /**
+   * The range of the x, y and z slices.
+   *
+   * @type {!Array}
+   * @protected
+   */
+  this._range = [ 10, 10, 10 ];
 
   /**
    * The spacing of this volume.
@@ -402,62 +411,18 @@ X.volume.prototype.create_ = function(_info) {
   this._children.push(this._slicesZ);
 
   // setup image specific information
+  this._RASOrigin = _info.RASOrigin;
+  this._RASSpacing = _info.RASSpacing;
+  this._RASDimensions = _info.RASDimensions;
+  this._IJKToRAS = _info.IJKToRAS;
+  this._RASToIJK = _info.RASToIJK;
   this._space = _info.space;
   this._spaceorientation = _info.spaceorientation;
-  this._rasspaceorientation = _info.rasspaceorientation;
   this._orientation = _info.orientation;
-  this._normcosine = _info.normcosine;
   this._max = _info.max;
   this._data = _info.data;
   this._dirty = true;
 };
-
-
-/**
- * Map variables to user friendly named variables
- *
- * @private
- */
-X.volume.prototype.map_ = function() {
-
-  var _normcosine = this._normcosine[2];
-  var _dimensions =  this._dimensions;
-
-  // here indexX is the scan direction
-
-  if (_normcosine[0] != 0) {
-
-    // this is a sagittal scan
-
-    this._indexLR = this._indexX;
-    this._indexPA = this._indexY;
-    this._indexIS = this._indexZ;
-    this._dimensionsRAS = [_dimensions[2], _dimensions[0], _dimensions[1]];
-
-  } else if (_normcosine[1] != 0) {
-
-    // this is a coronal scan
-
-    this._indexLR = this._indexY;
-    this._indexPA = this._indexX;
-    this._indexIS = this._indexZ;
-    this._dimensionsRAS = [_dimensions[0], _dimensions[2], _dimensions[1]];
-
-  } else {
-
-    // this is an axial scan
-
-    this._indexLR = this._indexY;
-    this._indexPA = this._indexZ;
-    this._indexIS = this._indexX;
-    this._dimensionsRAS = _dimensions;
-
-  }
-  
-  
-
-};
-
 
 /**
  * Re-show the slices or re-activate the volume rendering for this volume.
@@ -541,6 +506,7 @@ X.volume.prototype.slicing_ = function() {
     var _child = this._children[xyz];
     var currentIndex = 0;
     var oldIndex = 0;
+
     // buffer the old indices
     if (xyz == 0) {
 
@@ -561,6 +527,37 @@ X.volume.prototype.slicing_ = function() {
       this._indexZold = this._indexZ;
 
     }
+
+    // RESLICE VOLUME IF NECESSARY!
+    if(!goog.isDefAndNotNull(this._children[xyz]._children[parseInt(currentIndex, 10)])){
+
+      var _sliceOrigin = goog.vec.Vec3.createFloat32();
+
+      _sliceOrigin[0] = this._childrenInfo[xyz]._solutionsLine[0][0][0] + Math.abs(this._childrenInfo[xyz]._sliceDirection[0])*parseInt(currentIndex, 10);
+      _sliceOrigin[1] = this._childrenInfo[xyz]._solutionsLine[0][0][1] + Math.abs(this._childrenInfo[xyz]._sliceDirection[1])*parseInt(currentIndex, 10);
+      _sliceOrigin[2] = this._childrenInfo[xyz]._solutionsLine[0][0][2] + Math.abs(this._childrenInfo[xyz]._sliceDirection[2])*parseInt(currentIndex, 10);
+
+      //attach labelmap
+      if(this.hasLabelMap){
+        var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
+        this._labelmap._children[xyz]._children[parseInt(currentIndex, 10)] = _sliceLabel;
+        // add it to create the texture
+        this._container.add(_sliceLabel);
+      }
+
+      var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._IJKVolume, this, true, null);
+
+      if(this.hasLabelMap){
+        _slice._labelmap = _slice._texture;
+        _slice._labelmap = this._labelmap._children[xyz]._children[parseInt(currentIndex, 10)]._texture;
+      }
+
+      _child._children[parseInt(currentIndex, 10)] = _slice;
+
+      // add it to renderer!
+      this._container.add(_slice);
+    }
+    // DONE RESLICING!
 
     // hide the old slice
     var _oldSlice = _child._children[parseInt(oldIndex, 10)];
@@ -586,6 +583,18 @@ X.volume.prototype.slicing_ = function() {
 X.volume.prototype.__defineGetter__('dimensions', function() {
 
   return this._dimensions;
+
+});
+
+/**
+ * Get the range of this volume.
+ *
+ * @return {!Array} The dimensions of this volume.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('range', function() {
+
+  return this._range;
 
 });
 
@@ -751,183 +760,6 @@ X.volume.prototype.__defineGetter__('labelmap', function() {
   return this._labelmap;
 
 });
-
-
-/**
- * Get the slice index in Inferior-Superior direction.
- *
- * @return {!number} The slice index in Inferior-Superior direction.
- * @public
- */
-X.volume.prototype.__defineGetter__('indexIS', function() {
-
-  // map variables based on orientation
-  if (this._normcosine[2][2] != 0) {
-
-    this._indexIS = this._indexX;
-
-  } else {
-
-    this._indexIS = this._indexZ;
-
-  }
-
-  return this._indexIS;
-
-});
-
-
-/**
- * Set the slice index in Inferior-Superior direction.
- *
- * @param {!number}
- *          indexIS The slice index in Inferior-Superior direction.
- * @public
- */
-X.volume.prototype.__defineSetter__('indexIS', function(indexIS) {
-
-  if (goog.isNumber(indexIS)) {
-
-    // map variables based on orientation
-    if (this._normcosine[2][2] != 0) {
-
-      this._indexX = indexIS;
-
-    } else {
-
-      this._indexZ = indexIS;
-
-    }
-
-    this._indexIS = indexIS;
-
-    // fire a modified event without propagation for fast slicing
-    this.modified(false);
-
-  }
-
-});
-
-
-/**
- * Get the slice index in Left-Right direction.
- *
- * @return {!number} The slice index in Left-Right direction.
- * @public
- */
-X.volume.prototype.__defineGetter__('indexLR', function() {
-
-  // map variables based on orientation
-  if (this._normcosine[2][0] != 0) {
-
-    this._indexLR = this._indexX;
-
-  } else {
-
-    this._indexLR = this._indexY;
-
-  }
-
-  return this._indexLR;
-
-});
-
-
-/**
- * Set the slice index in Left-Right direction.
- *
- * @param {!number}
- *          indexLR The slice index in Left-Right direction.
- * @public
- */
-X.volume.prototype.__defineSetter__('indexLR', function(indexLR) {
-
-  if (goog.isNumber(indexLR)) {
-
-    // map variables based on orientation
-    if (this._normcosine[2][0] != 0) {
-
-      this._indexX = indexLR;
-
-    } else {
-
-      this._indexY = indexLR;
-
-    }
-
-    this._indexLR = indexLR;
-
-    // fire a modified event without propagation for fast slicing
-    this.modified(false);
-
-  }
-
-});
-
-
-/**
- * Get the slice index in Posterior-Anterior direction.
- *
- * @return {!number} The slice index in Posterior-Anterior direction.
- * @public
- */
-X.volume.prototype.__defineGetter__('indexPA', function() {
-
-  // map variables based on orientation
-  if (this._normcosine[2][0] != 0) {
-
-    this._indexPA = this._indexY;
-
-  } else if (this._normcosine[2][1] != 0) {
-
-    this._indexPA = this._indexX;
-
-  } else {
-
-    this._indexPA = this._indexZ;
-
-  }
-
-  return this._indexPA;
-
-});
-
-
-/**
- * Set the slice index in Posterior-Anterior direction.
- *
- * @param {!number}
- *          indexPA The slice index in Posterior-Anterior direction.
- * @public
- */
-X.volume.prototype.__defineSetter__('indexPA', function(indexPA) {
-
-  if (goog.isNumber(indexPA)) {
-
-    // map variables based on orientation
-    if (this._normcosine[2][0] != 0) {
-
-      this._indexY = indexPA;
-
-    } else if (this._normcosine[2][1] != 0) {
-
-      this._indexX = indexPA;
-
-    } else {
-
-      this._indexZ = indexPA;
-
-    }
-
-    this._indexPA = indexPA;
-
-    // fire a modified event without propagation for fast slicing
-    this.modified(false);
-
-  }
-
-});
-
 
 /**
  * Get the slice index in X-direction.
@@ -1161,55 +993,64 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   // mapping based on slice's normal
   // direction 0: sagittal container
   // direction 1: coronal container
-  // direction 3: axial container
-  var _dir = (direction + 2) % 3;
-  if (this._normcosine[0][_dir] != 0) {
-
-    _dir = 2;
-
-  } else if (this._normcosine[1][_dir] != 0) {
-
-    _dir = 0;
-
-  } else {
-
-    _dir = 1;
-
-  }
-
-  if (this._normcosine[2][1] != 0) {
-
-    // if coronally acquired
-    _dir = (_dir + 1) % 3;
-
-  }
+  // direction 2: axial container
 
   if ((!this._volumeRendering)
-      || (!this._dirty && _dir == this._volumeRenderingDirection)) {
+      || (!this._dirty && direction == this._volumeRenderingDirection)) {
 
     // we do not have to do anything
     return;
 
   }
 
-  // hide old volume rendering slices
+    // hide old volume rendering slices
   var _child = this._children[this._volumeRenderingDirection];
   _child['visible'] = false;
 
   // show new volume rendering slices, but don't show the borders
-  _child = this._children[_dir];
+  _child = this._children[direction];
   var _numberOfSlices = _child._children.length;
 
   var i;
   for (i = 0; i < _numberOfSlices; i++) {
 
-    _child._children[i]._visible = true;
+        // RESLICE VOLUME IF NECESSARY!
+     //loop through slice
+       if(!goog.isDefAndNotNull(_child._children[i])){
 
+      var _sliceOrigin = goog.vec.Vec3.createFloat32();
+
+      _sliceOrigin[0] = this._childrenInfo[direction]._solutionsLine[0][0][0] + Math.abs(this._childrenInfo[direction]._sliceDirection[0])*i;
+      _sliceOrigin[1] = this._childrenInfo[direction]._solutionsLine[0][0][1] + Math.abs(this._childrenInfo[direction]._sliceDirection[1])*i;
+      _sliceOrigin[2] = this._childrenInfo[direction]._solutionsLine[0][0][2] + Math.abs(this._childrenInfo[direction]._sliceDirection[2])*i;
+
+      //attach labelmap
+      if(this.hasLabelMap){
+        var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
+        this._labelmap._children[direction]._children[i] = _sliceLabel;
+        // add it to create the texture
+        this._container.add(_sliceLabel);
+      }
+
+      var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null);
+      _slice._children[0]._visible = false;
+
+      if(this.hasLabelMap){
+        _slice._labelmap = _slice._texture;
+        _slice._labelmap = this._labelmap._children[direction]._children[i]._texture;
+      }
+
+      _child._children[i] = _slice;
+
+      // add it to renderer!
+      this._container.add(_slice);
+    }
+    
+    _child._children[i]._visible = true;
   }
 
-  // _child['visible'] = true;
   // store the direction
-  this._volumeRenderingDirection = _dir;
+  this._volumeRenderingDirection = direction;
 
   this._dirty = false;
 

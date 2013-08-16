@@ -38,6 +38,7 @@ goog.require('X.object');
 goog.require('X.parser');
 goog.require('X.triplets');
 goog.require('goog.math.Vec3');
+goog.require('goog.vec.Vec4');
 goog.require('Zlib.Gunzip');
 /**
  * Create a parser for .NRRD files.
@@ -98,12 +99,7 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   var MRI = {
     data : null,
     min : Infinity,
-    max : -Infinity,
-    space : null,
-    spaceorientation : null,
-    rasspaceorientation : null,
-    orientation : null,
-    normcosine : null
+    max : -Infinity
   };
   //
   // parse the (unzipped) data to a datastream of the correct type
@@ -134,35 +130,81 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   if (object._upperThreshold == Infinity) {
     object._upperThreshold = max;
   }
-  // MRI space ['right', 'anterior','superior'], etc.
-  MRI.space = MRI.space = this.space;
-  // cosines directions in given space
-  MRI.spaceorientation = [];
-  MRI.spaceorientation.push(this.vectors[0][0]);
-  MRI.spaceorientation.push(this.vectors[0][1]);
-  MRI.spaceorientation.push(this.vectors[0][2]);
-  MRI.spaceorientation.push(this.vectors[1][0]);
-  MRI.spaceorientation.push(this.vectors[1][1]);
-  MRI.spaceorientation.push(this.vectors[1][2]);
-  MRI.spaceorientation.push(this.vectors[2][0]);
-  MRI.spaceorientation.push(this.vectors[2][1]);
-  MRI.spaceorientation.push(this.vectors[2][2]);
+
+  // Create IJKtoXYZ matrix
+  var _spaceX = 1;
+  var _spaceY = 1;
+  var _spaceZ = 1;
+
+  if (this.space == "left-posterior-superior") {
   
-  MRI.spaceorientation = MRI.spaceorientation;
-  // cosines direction in RAS space
-  MRI.rasspaceorientation = this.toRAS(MRI.space, MRI.spaceorientation);
-  // get orientation and normalized cosines
-  var orient_norm = this.orientnormalize(MRI.rasspaceorientation);
-  MRI.orientation = MRI.orientation = orient_norm[0];
-  MRI.normcosine = MRI.normcosine = orient_norm[1];
+    _spaceX = -1;
+    _spaceY = -1;
+  
+  }
+  
+  var IJKToRAS = goog.vec.Mat4.createFloat32Identity();
+  goog.vec.Mat4.setRowValues(IJKToRAS,
+    0,
+    _spaceX*this.vectors[0][0],
+    _spaceX*this.vectors[1][0],
+    _spaceX*this.vectors[2][0],
+    _spaceX*this.space_origin[0]);
+  goog.vec.Mat4.setRowValues(IJKToRAS,
+    1,
+    _spaceY*this.vectors[0][1],
+    _spaceY*this.vectors[1][1],
+    _spaceY*this.vectors[2][1],
+    _spaceY*this.space_origin[1]);
+  goog.vec.Mat4.setRowValues(IJKToRAS,
+    2,
+    _spaceZ*this.vectors[0][2],
+    _spaceZ*this.vectors[1][2],
+    _spaceZ*this.vectors[2][2],
+    _spaceZ*this.space_origin[2]);
+  goog.vec.Mat4.setRowValues(IJKToRAS,
+    3,
+    0,
+    0,
+    0,
+    1);
+
+  MRI.IJKToRAS = IJKToRAS;
+  MRI.RASToIJK = goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.invert(MRI.IJKToRAS, MRI.RASToIJK);
+  
+  // get bounding box
+  // Transform ijk (0, 0, 0) to RAS
+  var tar = goog.vec.Vec4.createFloat32FromValues(0, 0, 0, 1);
+  var res = goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(IJKToRAS, tar, res);
+  // Transform ijk (spacingX, spacinY, spacingZ) to RAS
+  var tar2 = goog.vec.Vec4.createFloat32FromValues(spacingX, spacingY, spacingZ, 1);
+  var res2 = goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(IJKToRAS, tar2, res2);
+  
+  // get location of 8 corners and update BBox
+  //
+  var _shifDimensions = [0, object._dimensions[0], object._dimensions[1], object._dimensions[2]];
+  var _rasBB = this.computeRASBBox(IJKToRAS, _shifDimensions);
+
+  // grab the RAS Dimensions
+  MRI.RASSpacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
+  
+  // grab the RAS Dimensions
+  MRI.RASDimensions = [_rasBB[1] - _rasBB[0], _rasBB[3] - _rasBB[2], _rasBB[5] - _rasBB[4]];
+  
+  // grab the RAS Origin
+  MRI.RASOrigin = [_rasBB[0], _rasBB[2], _rasBB[4]];
+
   // create the object
   object.create_(MRI);
+
   X.TIMERSTOP(this._classname + '.parse');
-  // now we have the values and need to reslice in the 3 orthogonal directions
-  // and create the textures for each slice
-  // to be added
+
+  // re-slice the data according each direction
   object._image = this.reslice(object);
-  object.map_();
+
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
   modifiedEvent._object = object;
@@ -296,7 +338,10 @@ X.parserNRRD.prototype.fieldFunctions = {
     })();
   },
   'space' : function(data) {
-    return this.space = data.split("-");
+    return this.space = data;
+  },
+  'space origin' : function(data) {
+    return this.space_origin = data.split("(")[1].split(")")[0].split(",");
   },
   'space directions' : function(data) {
     var f, parts, v;

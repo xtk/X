@@ -41,7 +41,9 @@ goog.require('X.base');
 goog.require('X.event');
 goog.require('X.texture');
 goog.require('X.triplets');
-
+goog.require('goog.vec.Vec4');
+goog.require('goog.vec.Vec3');
+goog.require('goog.vec.Mat4');
 
 /**
  * Create a parser for binary or ascii data.
@@ -343,102 +345,686 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
 
 };
 
+/**
+ * Compute RAS bonding box fron IJK dimensions.
+ *
+ * @param {!Float32Array} IJKToRAS The IJK to RAS transformation.
+ * @param {!Array} MRIdim The IJK dimensions.
+ * 
+ * @return The RAS bounding box.
+ */
+X.parser.prototype.computeRASBBox = function(IJKToRAS, MRIdim){
+
+var _rasBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
+               Number.MAX_VALUE, -Number.MAX_VALUE,
+               Number.MAX_VALUE, -Number.MAX_VALUE];
+
+  var ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, 0, 0, 1);
+  var rasResult = goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+  
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, 0, MRIdim[3], 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+  
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, MRIdim[2], 0, 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+  
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1], 0, 0, 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1], MRIdim[2], 0, 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1], 0, MRIdim[3], 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+  
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, MRIdim[2], MRIdim[3], 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+  
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1], MRIdim[2], MRIdim[3], 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+
+return _rasBB;
+}
 
 /**
- * Convert orientation to RAS
+ * Create the IJK volume.
  *
- * @param {!Array}
- *          space The space we are in (RAS, LPS, etc.).
- * @param {!Array}
- *          orientation The orientation in current space.
- * @return {!Array} The RAS orienation array.
+ * @param {!Float32Array} _data The target Bounding Box.
+ * @param {!Array} _dims The line origin.
+ * @param {!number} _max The maximum intensity value.
+ * 
+ * @return The IJK volume and the IJK 'normalized' volume.
  */
-X.parser.prototype.toRAS = function(space, orientation) {
+X.parser.prototype.createIJKVolume = function(_data, _dims, _max){
+  
+  // initiate variables
+  // allocate images
+  var _image = new Array(_dims[2]);
+  var _imageN = new Array(_dims[2]);
+  var _nb_pix_per_slice = _dims[1] * _dims[0];
+  var _pix_value = 0;
+  var _i = 0;
+  var _j = 0;
+  var _k = 0;
+  var _data_pointer = 0;
+  
+  for (_k = 0; _k < _dims[2]; _k++) {
 
-  var _ras_space_orientation = orientation;
+    // get current slice
+    var _current_k = _data.subarray(_k * (_nb_pix_per_slice), (_k + 1)
+        * _nb_pix_per_slice);
+    // initiate data pointer
+    _data_pointer = 0;
 
-  if (space[0] != 'right') {
+    // allocate images
+    _imageN[_k] = new Array(_dims[1]);
+    _image[_k] = new Array(_dims[1]);
 
-    _ras_space_orientation[0] = -_ras_space_orientation[0];
-    _ras_space_orientation[3] = -_ras_space_orientation[3];
-    _ras_space_orientation[6] = -_ras_space_orientation[6];
-
+    for (_j = 0; _j < _dims[1]; _j++) {
+      
+      // allocate images
+      _imageN[_k][_j] = new _data.constructor(_dims[0]);
+      _image[_k][_j] = new _data.constructor(_dims[0]);
+      for (_i = 0; _i < _dims[0]; _i++) {
+      
+        _pix_value = _current_k[_data_pointer];
+        _imageN[_k][_j][_i] = 255 * (_pix_value / _max);
+        _image[_k][_j][_i] = _pix_value;
+        _data_pointer++;
+        
+      }
+    }
   }
-  if (space[1] != 'anterior') {
-
-    _ras_space_orientation[1] = -_ras_space_orientation[1];
-    _ras_space_orientation[4] = -_ras_space_orientation[4];
-    _ras_space_orientation[7] = -_ras_space_orientation[7];
-
-  }
-  if (space[2] != 'superior') {
-
-    _ras_space_orientation[2] = -_ras_space_orientation[2];
-    _ras_space_orientation[5] = -_ras_space_orientation[5];
-    _ras_space_orientation[8] = -_ras_space_orientation[8];
-
-  }
-
-  return _ras_space_orientation;
-
+    
+  return [_image, _imageN];
 };
-
 
 /**
- * Get orientation on normalized cosines
+ * Compute intersection between line and a bounding box
  *
- * @param {!Array}
- *          rasorientation The orientation in RAS space.
- * @return {!Array} The orientation and the normalized cosines.
+ * @param {!Array} _bbox The target Bounding Box.
+ * @param {!Float32Array} _sliceOrigin The line origin.
+ * @param {!Float32Array} _sliceNormal The line normal.
+ * 
+ * @return The intersection points and the 'non-intersection' points.
  */
-X.parser.prototype.orientnormalize = function(rasorientation) {
+X.parser.prototype.intersectionBBoxLine = function(_bbox, _sliceOrigin, _sliceNormal){
+  
+  var _solutionsIn = new Array();
+  var _solutionsOut = new Array();
+  
+  // xmin, xmax, ymin, ymax, zmin, zmax
+  for(var _i = 0; _i < 6; _i++) {
 
-  X.TIMER(this._classname + '.orientnormalize');
+    var _i2 = Math.floor(_i/2);
+    var _i3 = (_i2 + 1)%3;
+    var _i4 = (_i2 + 2)%3;
+    var _j1 = (2 + (2*_i2))%6;
+    var _j2 = (4 + (2*_i2))%6;
+    var _dir = _i2;
+    
+    
+    var _sol0 = _bbox[_i];
+    var _invN1 = 1/_sliceNormal[_i2];
+    
+    var _t = (_sol0 - _sliceOrigin[_i2])*_invN1;
+    
+    // if _t infinity, we are //
+    if(_t != Infinity && _t != -Infinity) {
 
-  var _x_cosine = rasorientation.slice(0, 3);
+      var _sol1 = _sliceOrigin[_i3] + _sliceNormal[_i3]*_t;
+      var _sol2 = _sliceOrigin[_i4] + _sliceNormal[_i4]*_t;
+        
+      // in range?
+      if( (_sol1 >= _bbox[_j1] && _sol1 <= _bbox[_j1+1]) &&
+          (_sol2 >= _bbox[_j2] && _sol2 <= _bbox[_j2+1])) {
+        
+        var _sol = new Array();
+        _sol[_i2] = _bbox[_i];
+        _sol[_i3] = _sol1;
+        _sol[_i4] = _sol2;
 
-  var _x_abs_cosine = _x_cosine.map(function(v) {
+        _solutionsIn.push(_sol);
 
-    return Math.abs(v);
+      }
+      else {
 
-  });
+        var _sol = new Array();
+        _sol[_i2] = _bbox[_i];
+        _sol[_i3] = _sol1;
+        _sol[_i4] = _sol2;
+        
+        _solutionsOut.push(_sol);
 
-  var _x_max = _x_abs_cosine.indexOf(Math.max.apply(Math, _x_abs_cosine));
-  var _x_norm_cosine = [ 0, 0, 0 ];
-  _x_norm_cosine[_x_max] = _x_cosine[_x_max] < 0 ? -1 : 1;
-  var _y_cosine = rasorientation.slice(3, 6);
-  var _y_abs_cosine = _y_cosine.map(function(v) {
-
-    return Math.abs(v);
-
-  });
-
-  var _y_max = _y_abs_cosine.indexOf(Math.max.apply(Math, _y_abs_cosine));
-  var _y_norm_cosine = [ 0, 0, 0 ];
-  _y_norm_cosine[_y_max] = _y_cosine[_y_max] < 0 ? -1 : 1;
-  var _z_cosine = rasorientation.slice(6, 9);
-  var _z_abs_cosine = _z_cosine.map(function(v) {
-
-    return Math.abs(v);
-
-  });
-
-  var _z_max = _z_abs_cosine.indexOf(Math.max.apply(Math, _z_abs_cosine));
-  var _z_norm_cosine = [ 0, 0, 0 ];
-  _z_norm_cosine[_z_max] = _z_cosine[_z_max] < 0 ? -1 : 1;
-  //
-  var orientation = [ _x_norm_cosine[_x_max], _y_norm_cosine[_y_max],
-      _z_norm_cosine[_z_max] ];
-
-  // might be usefull to loop
-  var norm_cosine = [ _x_norm_cosine, _y_norm_cosine, _z_norm_cosine ];
-
-  X.TIMERSTOP(this._classname + '.orientnormalize');
-
-  return [ orientation, norm_cosine ];
-
+      }
+    }
+  }
+  
+  return [_solutionsIn, _solutionsOut];
 };
 
+/**
+ * Compute intersection between plane and a bounding box
+ *
+ * @param {!Array} _bbox The target Bounding Box.
+ * @param {!Float32Array} _sliceOrigin The plane origin.
+ * @param {!Float32Array} _sliceNormal The plane normal.
+ * 
+ * @return The intersection points and the 'non-intersection' points.
+ */
+X.parser.prototype.intersectionBBoxPlane = function(_bbox, _sliceOrigin, _sliceNormal){
+
+  var _solutionsIn = new Array();
+  var _solutionsOut = new Array();
+  
+  // xmin, xmax, ymin, ymax, zmin, zmax
+  for(var _i = 0; _i < 6; _i++) {
+    // 
+    var _i2 = Math.floor(_i/2);
+    var _i3 = (_i2 + 1)%3;
+    var _i4 = (_i2 + 2)%3;
+    var _j3 = (4 + (2*_i2))%6;
+
+    for(var _j = 0; _j < 2; _j++) {
+
+      var _j2 = (2 + _j + (2*_i2))%6;
+
+      var _solution = (-(
+          _sliceNormal[_i2]*(_bbox[_i] - _sliceOrigin[_i2])
+          +
+          _sliceNormal[_i3]*(_bbox[_j2] - _sliceOrigin[_i3])
+          )
+          /
+          _sliceNormal[_i4]
+          )
+          +
+          _sliceOrigin[_i4]
+          ;
+
+      if((_solution >= _bbox[_j3] && _solution <= _bbox[_j3+1])
+          ||
+          (_solution <= _bbox[_j3] && _solution >= _bbox[_j3+1])) {
+        
+        var _sol = new Array();
+        _sol[_i2] = _bbox[_i];
+        _sol[_i3] = _bbox[_j2];
+        _sol[_i4] = _solution;
+
+        _solutionsIn.push(_sol);
+
+      }
+      else{
+
+        var _sol = new Array();
+        _sol[_i2] = _bbox[_i];
+        _sol[_i3] = _bbox[_j2];
+        _sol[_i4] = _solution;
+        
+        _solutionsOut.push(_sol);
+
+      }
+    }
+  }
+  
+  return [_solutionsIn, _solutionsOut];
+};
+
+/**
+ * Get XYToRAS transform and its inverse.
+ *
+ * @param {!Float32Array} _sliceNormal The slice normal.
+ * @param {!Float32Array} _XYNormal The XY normal.
+ * 
+ * @return The XY to RAS transform and its inverse.
+ */
+X.parser.prototype.xyrasTransform = function(_sliceNormal, _XYNormal){
+
+  var _RASToXY = goog.vec.Mat4.createFloat32Identity();
+    // no rotation needed if we are in the z plane already
+  if(!goog.vec.Vec3.equals(_sliceNormal,_XYNormal)) {
+
+    var _cp = _sliceNormal[2];
+    var _teta = Math.acos(_cp);
+    var _r = goog.vec.Vec3.createFloat32();
+    goog.vec.Vec3.cross(_sliceNormal, _XYNormal, _r);
+    goog.vec.Vec3.normalize(_r, _r);
+    
+    var a = Math.cos(_teta/2);
+    var b = Math.sin(_teta/2)*_r[0];
+    var c = Math.sin(_teta/2)*_r[1];
+    var d = Math.sin(_teta/2)*_r[2];
+  
+    goog.vec.Mat4.setRowValues(_RASToXY,
+        0,
+        (a*a+b*b-c*c-d*d),
+        2*(b*c-a*d),
+        2*(b*d+a*c),
+        0
+        );
+    goog.vec.Mat4.setRowValues(_RASToXY,
+        1,
+        2*(b*c+a*d),
+        (a*a+c*c-b*b-d*d),
+        2*(c*d-a*b),
+        0
+        );
+    goog.vec.Mat4.setRowValues(_RASToXY,
+        2,
+        2*(b*d-a*c ),
+        2*(c*d+a*b),
+        (a*a+d*d-c*c-b*b),
+        0
+        );
+    }
+  
+
+  var _XYToRAS = goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.invert(_RASToXY, _XYToRAS);
+    
+  return [_RASToXY, _XYToRAS];
+};
+
+/**
+ * Get bounding box given a point cloud.
+ *
+ * @param {!Array} _solutionsXY The slice origin in RAS space.
+ * 
+ * @return The bounding box.
+ */
+X.parser.prototype.xyBBox = function(_solutionsXY){
+
+  var _xyBBox = [Number.MAX_VALUE, -Number.MAX_VALUE,
+   Number.MAX_VALUE, -Number.MAX_VALUE,
+   Number.MAX_VALUE, -Number.MAX_VALUE];
+  var i = 0;
+  for (i = 0; i < _solutionsXY.length; ++i) {
+
+    if(_solutionsXY[i][0] < _xyBBox[0]) {
+
+      _xyBBox[0] = _solutionsXY[i][0];
+
+    }
+
+    if(_solutionsXY[i][0] > _xyBBox[1]) {
+
+      _xyBBox[1] = _solutionsXY[i][0];
+
+    }
+
+    if(_solutionsXY[i][1] < _xyBBox[2]) {
+
+      _xyBBox[2] = _solutionsXY[i][1];
+
+    }
+
+    if(_solutionsXY[i][1] > _xyBBox[3]) {
+
+      _xyBBox[3] = _solutionsXY[i][1];
+
+    }
+
+    if(_solutionsXY[i][2] < _xyBBox[4]) {
+
+      _xyBBox[4] = _solutionsXY[i][2];
+
+    }
+
+    if(_solutionsXY[i][2] > _xyBBox[5]) {
+
+      _xyBBox[5] = _solutionsXY[i][2];
+
+    }
+  }
+  
+  return _xyBBox;
+};
+
+/**
+ * Perform the actual reslicing
+ *
+ * @param {!Float32Array} _sliceOrigin The slice origin in RAS space.
+ * @param {!Float32Array} _sliceNormal The slice normal direction.
+ * @param {!Array} _color The slice border color.
+ * @param {!Array} _bbox The volume bounding box.
+ * @param {!Array} _IJKVolume The IJK volume.
+ * @param {!X.object} object The X.volume.
+ * @param {!boolean} hasLabelMap Volume has labelmap attached.
+ * @param {goog.structs.Map} colorTable Associated color table.
+ * 
+ * @return The target slice.
+ */
+X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox, _IJKVolume, object, hasLabelMap, colorTable){
+
+  var sliceXY = new X.slice();
+    
+  // normalize slice normal (just in case)
+  goog.vec.Vec3.normalize(_sliceNormal, _sliceNormal);
+  
+  // ------------------------------------------
+  // GET INTERSECTION BOUNDING BOX/PLANE
+  // ------------------------------------------
+
+  var _solutions = this.intersectionBBoxPlane(_bbox,_sliceOrigin, _sliceNormal);
+  var _solutionsIn = _solutions[0];
+  
+  // ------------------------------------------
+  // MOVE TO 2D SPACE
+  // ------------------------------------------
+
+  var _XYNormal = goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
+  var _XYRASTransform = this.xyrasTransform(_sliceNormal, _XYNormal);
+  var _RASToXY = _XYRASTransform[0];
+  var _XYToRAS = _XYRASTransform[1];
+  
+// // Apply transform to each point!
+  var _solutionsXY = new Array();
+  for (var i = 0; i < _solutionsIn.length; ++i) {
+    var _rasIntersection = goog.vec.Vec4.createFloat32FromValues(_solutionsIn[i][0], _solutionsIn[i][1], _solutionsIn[i][2], 1);
+    var _xyIntersection = goog.vec.Vec4.createFloat32();
+    goog.vec.Mat4.multVec4(_RASToXY, _rasIntersection, _xyIntersection);
+    _solutionsXY.push([_xyIntersection[0], _xyIntersection[1], _xyIntersection[2]]);
+  }
+    
+  // rigth
+  var _right = goog.vec.Vec3.createFloat32FromValues(1, 0, 0);
+  var _rright = goog.vec.Vec3.createFloat32();
+  goog.vec.Mat4.multVec3(_XYToRAS, _right, _rright);
+
+  // up
+  var _up = goog.vec.Vec3.createFloat32FromValues(0, 1, 0);
+  var _rup = goog.vec.Vec3.createFloat32();
+  goog.vec.Mat4.multVec3(_XYToRAS, _up, _rup);
+  
+  // get XY bounding box!
+  var _xyBBox = this.xyBBox(_solutionsXY);
+  
+  var _xyCenter = goog.vec.Vec4.createFloat32FromValues(_xyBBox[0] + (_xyBBox[1] - _xyBBox[0])/2,_xyBBox[2] + (_xyBBox[3] - _xyBBox[2])/2, _xyBBox[4] + (_xyBBox[5] - _xyBBox[4])/2,0);
+  var _RASCenter = goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multMat(_XYToRAS,_xyCenter, _RASCenter);
+ 
+  var _wmin =  Math.floor(_xyBBox[0]);
+  var _wmax =  Math.ceil(_xyBBox[1]);
+  var _swidth = _wmax - _wmin;
+  
+  var _hmin = Math.floor(_xyBBox[2]);
+  var _hmax = Math.ceil(_xyBBox[3]);
+  var _sheight = _hmax - _hmin;
+
+  var _resX = 1;
+  var _resY = 1;
+  
+  var _epsilon = 0.0000001;
+
+  // How many pixels are we expecting the raw data
+  var _cswidth = Math.ceil(_swidth/_resX);
+  var _csheight = Math.ceil(_sheight/_resY);
+  
+  var _csize =  _cswidth*_csheight;
+  var textureSize = 4 * _csize;
+  var textureForCurrentSlice = new Uint8Array(textureSize);
+  var pixelTexture = new X.texture();
+  pixelTexture._rawDataWidth = _cswidth;
+  pixelTexture._rawDataHeight = _csheight;
+
+
+  var _indexIJK = goog.vec.Vec4.createFloat32();
+  var _indexXY = goog.vec.Vec4.createFloat32FromValues(0, 0, _xyBBox[4], 1);
+  var _XYToIJK = goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.multMat(object._RASToIJK,_XYToRAS, _XYToIJK);
+
+  var _he = _hmax - _epsilon;
+  var _we = _wmax - _epsilon;
+  
+  var _p = 0;
+  var _iWidth = 0;
+  var _iHeight = 0;
+  var j = _hmin;
+  var i = _wmin;
+  
+  for (j = _hmin; j <= _he; j+=_resY) {
+
+    _iHeight++;
+    _iWidth = 0;
+    _indexXY[1] = j;
+    i = _wmin;
+
+    for (i = _wmin; i <= _we; i+=_resX) {
+      _iWidth++;
+      //
+      _indexXY[0] = i;
+
+      // convert to RAS
+      // convert to IJK
+      goog.vec.Mat4.multVec4(_XYToIJK, _indexXY, _indexIJK);
+    
+      // get value if there is a match, trnasparent if no match!
+      var textureStartIndex = _p * 4;
+    
+      if( (0 <= _indexIJK[0]) && (_indexIJK[0] < object._dimensions[0] ) &&
+        (0 <= _indexIJK[1]) && (_indexIJK[1] < object._dimensions[1] ) &&
+        (0 <= _indexIJK[2]) && (_indexIJK[2] < object._dimensions[2] )) {
+          
+        // map to 0 if necessary
+        var _k = Math.floor(_indexIJK[2]);
+        var _j = Math.floor(_indexIJK[1]);
+        var _i = Math.floor(_indexIJK[0]);
+      
+        var pixval = _IJKVolume[_k][_j][_i];
+        var pixelValue_r = 0;
+        var pixelValue_g = 0;
+        var pixelValue_b = 0;
+        var pixelValue_a = 0;
+      
+        if (colorTable) {
+          
+          // color table!
+          var lookupValue = colorTable.get(pixval);
+          // check for out of range and use the last label value in this case
+          if (!lookupValue) {
+          
+          lookupValue = [ 0, .61, 0, 0, 1 ];
+          
+          }
+
+          pixelValue_r = 255 * lookupValue[1];
+          pixelValue_g = 255 * lookupValue[2];
+          pixelValue_b = 255 * lookupValue[3];
+          pixelValue_a = 255 * lookupValue[4];
+      
+        }
+        else {
+      
+          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixval / object._max);
+          pixelValue_a = 255;
+        }
+      
+        textureForCurrentSlice[textureStartIndex] = pixelValue_r;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
+    
+      }
+      else {
+    
+      textureForCurrentSlice[textureStartIndex] = 0;
+      textureForCurrentSlice[++textureStartIndex] = 0;
+      textureForCurrentSlice[++textureStartIndex] = 0;
+      textureForCurrentSlice[++textureStartIndex] = 0;
+    
+      }
+
+    _p++;
+
+    } 
+
+  }
+
+  // setup slice texture
+  pixelTexture._rawData = textureForCurrentSlice;
+  sliceXY._texture = pixelTexture;
+  // setup slice spacial information
+  sliceXY._xyBBox = _xyBBox;
+  sliceXY._XYToRAS = _XYToRAS;
+  sliceXY._XYToIJK = _XYToIJK;
+  sliceXY._hmin = _hmin;
+  sliceXY._hmax = _hmax;
+  sliceXY._wmin = _wmin;
+  sliceXY._wmax = _wmax;
+  sliceXY._iWidth = _iWidth;
+  sliceXY._iHeight = _iHeight;
+  sliceXY._widthSpacing = _resX;
+  sliceXY._width = _swidth;
+  sliceXY._heightSpacing = _resY;
+  sliceXY._height = _sheight;
+  sliceXY._center = [_RASCenter[0], _RASCenter[1], _RASCenter[2]];
+  sliceXY._front = [_sliceNormal[0], _sliceNormal[1], _sliceNormal[2]];
+  sliceXY._right= [_rright[0], _rright[1], _rright[2]];
+  sliceXY._up = [_rup[0], _rup[1], _rup[2]];
+  // more styling
+  sliceXY._visible = false;
+  sliceXY._volume = /** @type {X.volume} */(object);
+  
+  // for labelmaps, don't create the borders since this would create them 2x
+  // hasLabelMap == true means we are the volume
+  // hasLabelMap == false means we are the labelmap
+  if (goog.isDefAndNotNull(object._volume) && !hasLabelMap) {
+    sliceXY._borders = false;
+  }
+  else{
+    sliceXY._borders = true;
+  }
+  sliceXY._borderColor = _color;
+  
+  // create slice
+  sliceXY.create_();
+  
+  // update visibility (has to be done after slice creation)
+  sliceXY._visible = false;
+  
+  return sliceXY;
+};
+
+/**
+ * Setup basic information for given slice orientation
+ *
+ * @param {!number} _index The slice orientation index: 0=SAGITTAL, 1=CORONAL, 2=AXIAL.
+ * @param {!Float32Array} _sliceOrigin The slice origin in RAS space.
+ * @param {!Float32Array} _sliceNormal The slice normal direction.
+ * @param {!X.object} object The X.volume.
+ */
+X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal, object){
+
+  // ------------------------------------------
+  // GET INTERSECTION BOUNDING BOX/LINE
+  // ------------------------------------------
+
+  var _solutionsLine = this.intersectionBBoxLine(object._BBox,_sliceOrigin, _sliceNormal);
+  var _solutionsInLine = _solutionsLine[0];
+  var _solutionsOutLine = _solutionsLine[1];
+
+  object._childrenInfo[_index]._solutionsLine = _solutionsLine;
+  object._childrenInfo[_index]._originD = -(_sliceNormal[0]*_solutionsInLine[0][0] + _sliceNormal[1]*_solutionsInLine[0][1] + _sliceNormal[2]*_solutionsInLine[0][2]);
+  
+  // ------------------------------------------
+  // GET DISTANCE BETWEEN 2 POINTS
+  // ------------------------------------------
+  var _first = new goog.math.Vec3(_solutionsInLine[0][0], _solutionsInLine[0][1], _solutionsInLine[0][2]);
+  var _last = new goog.math.Vec3(_solutionsInLine[1][0], _solutionsInLine[1][1], _solutionsInLine[1][2]);
+  var _dist = goog.math.Vec3.distance(_first, _last);
+  
+  object._childrenInfo[_index]._dist = _dist;
+
+  // ------------------------------------------
+  // GET CENTER OF 2 POINTS
+  // ------------------------------------------
+  
+  // ------------------------------------------
+  // GET SPACING IN SLICE SPACE
+  // ------------------------------------------
+
+  var _XYNormal = goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
+  
+  var _XYRASTransform = this.xyrasTransform(_sliceNormal, _XYNormal);
+  var _RASToXY = _XYRASTransform[0];
+  var _XYToRAS = _XYRASTransform[1];
+  
+  var _rasSpacing = goog.vec.Vec4.createFloat32FromValues(object._RASSpacing[0], object._RASSpacing[1], object._RASSpacing[2], 0);
+  var _xySpacing = goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(_RASToXY, _rasSpacing, _xySpacing);
+  
+  var _sliceDirection = goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.getColumn(_XYToRAS,2,_sliceDirection);
+  goog.vec.Vec4.scale(_sliceDirection,_xySpacing[2],_sliceDirection);
+
+  object._childrenInfo[_index]._sliceSpacing = _xySpacing[2];
+  object._childrenInfo[_index]._sliceDirection = _sliceDirection;
+
+  // ------------------------------------------
+  // GET NUMBER OF SLICES
+  // ------------------------------------------
+  
+  // floor cause if plane do not intersect box : crash (to be addressed)
+  var _nb = Math.abs(Math.floor(_dist/_xySpacing[2]));
+  object._range[_index] = _nb;
+  object._childrenInfo[_index]._nb = _nb;
+};
 
 /**
  * Reslice a data stream to fill the slices of an X.volume in X,Y and Z
@@ -451,227 +1037,190 @@ X.parser.prototype.orientnormalize = function(rasorientation) {
  * @return {!Array} The volume data as a 3D Array.
  */
 X.parser.prototype.reslice = function(object) {
-
+  
+  // ------------------------------------------
+  // CREATE IJK VOLUMES
+  // ------------------------------------------
+  
+  // Step 1: create 2 IJK volumes
+  // 1 full res, 1 normalized [0-255]
+  var _IJKVolumes = this.createIJKVolume(object._data, object._dimensions, object._max);
+  // real volume
+  object._IJKVolume = _IJKVolumes[0];
+  // normalized volume
+  object._IJKVolumeN = _IJKVolumes[1];
   X.TIMER(this._classname + '.reslice');
-
-  // labelmap and color tables
-  var hasLabelMap = object._labelmap != null;
-  var _colorTable = null;
+  
+  // ------------------------------------------
+  // SETUP LABEL MAPS AND COLOR TABLES
+  // ------------------------------------------
+  object.hasLabelMap = object._labelmap != null;
   if (object._colortable) {
-
-    _colorTable = object._colortable._map;
-
+    object._colorTable = object._colortable._map;
   }
 
-  // allocate and fill volume
-  // rows, cols and slices (ijk dimensions)
-  var _dim = object._dimensions;
-  var _spacing = object._spacing;
+  // ------------------------------------------
+  // SET GLOBAL VALUES/TRANSFORMS
+  // ------------------------------------------
+  object.range = [object._dimensions[0],object._dimensions[1],object._dimensions[2]];
+  object._RASCenter = [object._RASOrigin[0] + object._RASDimensions[0]/2,
+                    object._RASOrigin[1] + object._RASDimensions[1]/2,
+                    object._RASOrigin[2] + object._RASDimensions[2]/2
+                    ];
+  object._BBox = [Math.min(object._RASOrigin[0],object._RASOrigin[0] + object._RASDimensions[0]),
+                      Math.max(object._RASOrigin[0],object._RASOrigin[0] + object._RASDimensions[0]),
+                      Math.min(object._RASOrigin[1],object._RASOrigin[1] + object._RASDimensions[1]),
+                      Math.max(object._RASOrigin[1],object._RASOrigin[1] + object._RASDimensions[1]),
+                      Math.min(object._RASOrigin[2],object._RASOrigin[2] + object._RASDimensions[2]),
+                      Math.max(object._RASOrigin[2],object._RASOrigin[2] + object._RASDimensions[2])
+                      ];
+  object._childrenInfo = [{}, {}, {}];
 
-  var datastream = object._data;
-  var image = new Array(_dim[2]);
-  // use real image to return real values
-  var realImage = new Array(_dim[2]);
-  // XYS to IJK
-  // (fill volume)
-  var _norm_cosine = object._normcosine;
-  var _nb_pix_per_slice = _dim[0] * _dim[1];
-  var _pix_value = 0;
-  var _i = 0;
-  var _j = 0;
-  var _k = 0;
-  var _data_pointer = 0;
-  for (_k = 0; _k < _dim[2]; _k++) {
+  // ------------------------------------------
+  // GO RESLICE!
+  // ------------------------------------------
+  
+  // ------------------------------------------
+  // GO SAGITTAL
+  // ------------------------------------------
 
-    // get current slice
-    var _current_k = datastream.subarray(_k * (_nb_pix_per_slice), (_k + 1)
-        * _nb_pix_per_slice);
-    // now loop through all pixels of the current slice
-    _i = 0;
-    _j = 0;
-    _data_pointer = 0; // just a counter
+  // CENTER
+  var _sliceOrigin = goog.vec.Vec3.createFloat32FromValues(
+      object._RASCenter[0],
+      object._RASCenter[1],
+      object._RASCenter[2]);
+  object._childrenInfo[0]._sliceOrigin = _sliceOrigin;
 
-    image[_k] = new Array(_dim[1]);
-    realImage[_k] = new Array(_dim[1]);
-    for (_j = 0; _j < _dim[1]; _j++) {
+  // NORMAL
+  var _sliceNormal = goog.vec.Vec3.createFloat32FromValues(
+     1,
+     0,
+     0);
+  goog.vec.Vec3.normalize(_sliceNormal, _sliceNormal);
+  object._childrenInfo[0]._sliceNormal = _sliceNormal;
+  
+  // COLOR
+  var _color = [ 1, 1, 0 ];
+  object._childrenInfo[0]._color = _color;
 
-    image[_k][_j] = new object._data.constructor(_dim[0]);
-    realImage[_k][_j] = new object._data.constructor(_dim[0]);
-    for (_i = 0; _i < _dim[0]; _i++) {
+  // UPDATE SLICE INFO
+  this.updateSliceInfo(0, _sliceOrigin, _sliceNormal, object);
+  // Create empty array for all slices in this direction
+  object._children[0]._children = new Array(object._childrenInfo[0]._nb);
+    
+  _sliceOrigin[0] = object._childrenInfo[0]._solutionsLine[0][0][0] + Math.abs(object._childrenInfo[0]._sliceDirection[0])*Math.round(object._childrenInfo[0]._nb/2);
+  _sliceOrigin[1] = object._childrenInfo[0]._solutionsLine[0][0][1] + Math.abs(object._childrenInfo[0]._sliceDirection[1])*Math.round(object._childrenInfo[0]._nb/2);
+  _sliceOrigin[2] = object._childrenInfo[0]._solutionsLine[0][0][2] + Math.abs(object._childrenInfo[0]._sliceDirection[2])*Math.round(object._childrenInfo[0]._nb/2);
 
-        // go through row (i) first :)
-        // 1 2 3 4 5 6 ..
-        // .. .... .. . .
-        //
-        // not
-        // 1 .. ....
-        // 2 ...
-        // map pixel values
-        _pix_value = _current_k[_data_pointer];
-        image[_k][_j][_i] = 255 * (_pix_value / object._max);
-        realImage[_k][_j][_i] = _pix_value;
-        _data_pointer++;
-
-      }
-
-    }
-
+  var _slice = this.reslice2(_sliceOrigin, object._childrenInfo[0]._sliceNormal, object._childrenInfo[0]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+    
+  if (object.hasLabelMap) {
+    // if this object has a labelmap,
+    // we have it loaded at this point (for sure)
+    // ..so we can attach it as the second texture to this slice
+    _slice._labelmap = object._labelmap._children[0]._children[Math.round(object._childrenInfo[0]._nb/2)]._texture;
   }
+    
+  object._children[0]._children[Math.round(object._childrenInfo[0]._nb/2)] = _slice;
 
-  var _pix_val = 0;
-  // IJK to XYS
-  // reslice image (Axial, Sagittal, Coronal)
-  var xyz = 0;
-  for (xyz = 0; xyz < 3; xyz++) {
+  object._indexX = Math.round(object._childrenInfo[0]._nb/2);
+  object._indexXold = Math.round(object._childrenInfo[0]._nb/2);
+  
+  // ------------------------------------------
+  // GO CORONAL
+  // ------------------------------------------
+  
+  // CENTER
 
-    var _ti = xyz;
-    var _tj = (_ti + 1) % 3;
-    var _tk = (_ti + 2) % 3;
+  _sliceOrigin = goog.vec.Vec3.createFloat32FromValues(
+      object._RASCenter[0],
+      object._RASCenter[1],
+      object._RASCenter[2]);
+  object._childrenInfo[1]._sliceOrigin = _sliceOrigin;
 
-    var textureSize = 4 * _dim[_ti] * _dim[_tj];
-    _k = 0;
-    var imax = _dim[_ti];
-    var jmax = _dim[_tj];
-    var kmax = _dim[_tk];
-    // CREATE SLICE in normal direction
-    var halfDimension = (kmax - 1) / 2;
-    var _indexCenter = halfDimension;
-    // right = i direction
-    var _right = _norm_cosine[_ti];
-    // up = j direction
-    var _up = _norm_cosine[_tj];
-    // front = normal direction
-    var _front = _norm_cosine[_tk];
-
-    // color
-    var _color = [ 1, 1, 1 ];
-    if (_norm_cosine[_tk][2] != 0) {
-      _color = [ 1, 0, 0 ];
-    } else if (_norm_cosine[_tk][1] != 0) {
-      _color = [ 0, 1, 0 ];
-    } else {
-      _color = [ 1, 1, 0 ];
-    }
-
-    // size
-    var _width = imax * _spacing[_ti];
-    var _height = jmax * _spacing[_tj];
-    if (_norm_cosine[2][1] != 0) {
-      // if coronally acquired
-      var _tmp = _width;
-      _width = _height;
-      _height = _tmp;
-    }
-
-    for (_k = 0; _k < kmax; _k++) {
-      _j = 0;
-      var _p = 0;
-      // CREATE SLICE
-      // position
-      var _position = (-halfDimension * _spacing[_tk]) + (_k * _spacing[_tk]);
-      // center
-      // move center along normal
-      // 0 should be hard coded
-      // find normal direction and use it!
-      var _center = [ object._center[0] + _norm_cosine[_tk][0] * _position,
-                      object._center[1] + _norm_cosine[_tk][1] * _position,
-                      object._center[2] + _norm_cosine[_tk][2] * _position];
-      // create the slice
-      // .. new slice
-      var _slice = new X.slice();
-      var borders = true;
-      // for labelmaps, don't create the borders since this would create them 2x
-      // hasLabelMap == true means we are the volume
-      // hasLabelMap == false means we are the labelmap
-      if (goog.isDefAndNotNull(object._volume) && !hasLabelMap) {
-        borders = false;
-      }
-      _slice.setup(_center, _front, _up, _right, _width, _height, borders,
-          _color);
-      // map slice to volume
-      _slice._volume = /** @type {X.volume} */(object);
-      _slice.visible = false;
-
-      var textureForCurrentSlice = new Uint8Array(textureSize);
-      for (_j = 0; _j < jmax; _j++) {
-        _i = 0;
-        for (_i = 0; _i < imax; _i++) {
-          _pix_val = 0;
-          // rotate indices depending on which orientation we are targetting
-          if (xyz == 0) {
-            _pix_val = realImage[_k][_j][_i];
-          } else if (xyz == 1) {
-            _pix_val = realImage[_j][_i][_k];
-          } else {
-            _pix_val = realImage[_i][_k][_j];
-          }
-          var pixelValue_r = 0;
-          var pixelValue_g = 0;
-          var pixelValue_b = 0;
-          var pixelValue_a = 0;
-          if (_colorTable) {
-            // color table!
-            var lookupValue = _colorTable.get(Math.floor(_pix_val));
-            // check for out of range and use the last label value in this case
-            if (!lookupValue) {
-              lookupValue = [ 0, 1, 0.1, 0.2, 1 ];
-            }
-            pixelValue_r = 255 * lookupValue[1];
-            pixelValue_g = 255 * lookupValue[2];
-            pixelValue_b = 255 * lookupValue[3];
-            pixelValue_a = 255 * lookupValue[4];
-          } else {
-            pixelValue_r = pixelValue_g = pixelValue_b = 255 * (_pix_val / object._max);
-            pixelValue_a = 255;
-          }
-          var textureStartIndex = _p * 4;
-          textureForCurrentSlice[textureStartIndex] = pixelValue_r;
-          textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
-          textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
-          textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
-          _p++;
-        }
-      }
-      var pixelTexture = new X.texture();
-      pixelTexture._rawData = textureForCurrentSlice;
-      pixelTexture._rawDataWidth = imax;
-      pixelTexture._rawDataHeight = jmax;
-      _slice._texture = pixelTexture;
-      // push slice
-      if (object._orientation[_tk] > 0) {
-        object._children[xyz]._children.push(_slice);
-      } else {
-        object._children[xyz]._children.unshift(_slice);
-      }
-      if (hasLabelMap) {
-        // if this object has a labelmap,
-        // we have it loaded at this point (for sure)
-        // ..so we can attach it as the second texture to this slice
-        _slice._labelmap = object._labelmap._children[xyz]._children[_k]._texture;
-      }
-    }
-    // set slice index
-    // by default, all the 'middle' slices are shown
-    if (xyz == 0) {
-      object._indexX = halfDimension;
-      object._indexXold = halfDimension;
-    } else if (xyz == 1) {
-      object._indexY = halfDimension;
-      object._indexYold = halfDimension;
-    } else if (xyz == 2) {
-      object._indexZ = halfDimension;
-      object._indexZold = halfDimension;
-    }
-
-    // full reslice?
-    if (!object._reslicing) {
-      break;
-    }
+  // NORMAL
+  _sliceNormal = goog.vec.Vec3.createFloat32FromValues(
+     0,
+     1,
+     0);
+    goog.vec.Vec3.normalize(_sliceNormal, _sliceNormal);
+  object._childrenInfo[1]._sliceNormal = _sliceNormal;
+  
+  // COLOR
+  _color = [ 1, 0, 0 ];
+  object._childrenInfo[1]._color = _color;
+  
+  // UPDATE SLICE INFO
+  this.updateSliceInfo(1, _sliceOrigin, _sliceNormal, object);
+  // Create empty array for all slices in this direction
+  object._children[1]._children = new Array(object._childrenInfo[1]._nb);
+    
+  _sliceOrigin[0] = object._childrenInfo[1]._solutionsLine[0][0][0] + Math.abs(object._childrenInfo[1]._sliceDirection[0])*Math.round(object._childrenInfo[1]._nb/2);
+  _sliceOrigin[1] = object._childrenInfo[1]._solutionsLine[0][0][1] + Math.abs(object._childrenInfo[1]._sliceDirection[1])*Math.round(object._childrenInfo[1]._nb/2);
+  _sliceOrigin[2] = object._childrenInfo[1]._solutionsLine[0][0][2] + Math.abs(object._childrenInfo[1]._sliceDirection[2])*Math.round(object._childrenInfo[1]._nb/2);
+    
+  _slice = this.reslice2(_sliceOrigin, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+    
+  if (object.hasLabelMap) {
+    // if this object has a labelmap,
+    // we have it loaded at this point (for sure)
+    // ..so we can attach it as the second texture to this slice
+    _slice._labelmap = object._labelmap._children[1]._children[Math.round(object._childrenInfo[1]._nb/2)]._texture;
   }
+    
+  object._children[1]._children[Math.round(object._childrenInfo[1]._nb/2)] = _slice;
+  
+  object._indexY = Math.round(object._childrenInfo[1]._nb/2);
+  object._indexYold = Math.round(object._childrenInfo[1]._nb/2);
+
+  // ------------------------------------------
+  // GO AXIAL
+  // ------------------------------------------
+
+  // CENTER
+  _sliceOrigin = goog.vec.Vec3.createFloat32FromValues(
+      object._RASCenter[0],
+      object._RASCenter[1],
+      object._RASCenter[2]);
+  object._childrenInfo[2]._sliceOrigin = _sliceOrigin;
+
+  // NORMAL
+  _sliceNormal = goog.vec.Vec3.createFloat32FromValues(
+     0,
+     0,
+     1);
+  goog.vec.Vec3.normalize(_sliceNormal, _sliceNormal);
+  object._childrenInfo[2]._sliceNormal = _sliceNormal;
+  
+  // COLOR
+  _color = [ 0, 1, 0 ];
+  object._childrenInfo[2]._color = _color;
+  
+  // UPDATE SLICE INFO
+  this.updateSliceInfo(2, _sliceOrigin, _sliceNormal, object);
+  // Create empty array for all slices in this direction
+  object._children[2]._children = new Array(object._childrenInfo[2]._nb);
+    
+  _sliceOrigin[0] = object._childrenInfo[2]._solutionsLine[0][0][0] + Math.abs(object._childrenInfo[2]._sliceDirection[0])*Math.round(object._childrenInfo[2]._nb/2);
+  _sliceOrigin[1] = object._childrenInfo[2]._solutionsLine[0][0][1] + Math.abs(object._childrenInfo[2]._sliceDirection[1])*Math.round(object._childrenInfo[2]._nb/2);
+  _sliceOrigin[2] = object._childrenInfo[2]._solutionsLine[0][0][2] + Math.abs(object._childrenInfo[2]._sliceDirection[2])*Math.round(object._childrenInfo[2]._nb/2);
+    
+  _slice = this.reslice2(_sliceOrigin, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+    
+  if (object.hasLabelMap) {
+    // if this object has a labelmap,
+    // we have it loaded at this point (for sure)
+    // ..so we can attach it as the second texture to this slice
+    _slice._labelmap = object._labelmap._children[2]._children[Math.round(object._childrenInfo[2]._nb/2)]._texture;
+  }
+    
+  object._children[2]._children[Math.round(object._childrenInfo[2]._nb/2)] = _slice;
+  
+  object._indexZ = Math.round(object._childrenInfo[2]._nb/2);
+  object._indexZold = Math.round(object._childrenInfo[2]._nb/2);
 
   X.TIMERSTOP(this._classname + '.reslice');
-
-  return realImage;
-
+  
+  return object._IJKVolume;
 };
 

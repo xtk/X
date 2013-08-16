@@ -75,7 +75,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     var _i;
     var _j = 0;
     for (_i = 0; _i < _sorting_table_len; _i++) {
-      var unsorted_index = MRI.sorting_table[_i];
+      var unsorted_index = MRI.sorting_table[_sorting_table_len - 1 -_i];
       if (unsorted_index !== undefined) {
         var unsorted_start = unsorted_index * MRI.vol_size;
         var unsorted_end = unsorted_start + MRI.vol_size;
@@ -89,10 +89,19 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     object._dimensions = _dimensions;
     // grab the spacing
     if (MRI.pixdim[2] == Infinity) {
-      // if the z-spacing can't be detected,
-      // we assume 1
-      MRI.pixdim[2] = 1;
+
+      if( MRI.location.length > 1) {
+
+        MRI.location.sort();
+        MRI.pixdim[2] = Math.abs(MRI.location[0] - MRI.location[1]);
+      }
+      else {
+
+      MRI.pixdim[2] = 1.0;
+
+      }
     }
+
     var _spacing = [ MRI.pixdim[0], MRI.pixdim[1], MRI.pixdim[2] ];
     object._spacing = _spacing;
     // get the min and max intensities
@@ -110,29 +119,93 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     if (object._upperThreshold == Infinity) {
       object._upperThreshold = max;
     }
-    // X.TIMER('create');
-    MRI.space = [ 'left', 'posterior', 'superior' ];
-    // cosines direction in RAS space
+
+    // get origin == highest slice position?
+    // or depends on Z orientation?
+    var i = 0, m = MRI.positionAll[0], mI = 0;
+
+    while(++i < MRI.positionAll.length) {
+      if(MRI.positionAll[i] > m) {
+          mI = i;
+          m = MRI.positionAll[i];
+      }
+    }
+    var _origin = MRI.originAll[mI].split("\\");
+
+    // Create IJKtoXYZ matrix
     var _x_cosine = new goog.math.Vec3(MRI.spaceorientation[0],
-        MRI.spaceorientation[1], MRI.spaceorientation[2]);// MRI.image_orientation.slice(0,
-                                                          // 3);
+          MRI.spaceorientation[1], MRI.spaceorientation[2]);
     var _y_cosine = new goog.math.Vec3(MRI.spaceorientation[3],
         MRI.spaceorientation[4], MRI.spaceorientation[5]);
     var _z_cosine = goog.math.Vec3.cross(_x_cosine, _y_cosine);
-    MRI.spaceorientation.push(_z_cosine.x, _z_cosine.y, _z_cosine.z);
-    MRI.rasspaceorientation = this.toRAS(MRI.space, MRI.spaceorientation);
-    // get orientation and normalized cosines
-    var orient_norm = this.orientnormalize(MRI.rasspaceorientation);
-    MRI.orientation = orient_norm[0];
-    MRI.normcosine = orient_norm[1];
-    // X.TIMER('create');
+
+    // if(object._spacing[2] >0) {
+
+    //   _z_cosine.invert();
+      
+    // }
+
+    var IJKToRAS = goog.vec.Mat4.createFloat32();
+    // NOTE THE '-' for the LPS to RAS conversion
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      0,
+      -MRI.spaceorientation[0],
+      -MRI.spaceorientation[3],
+      -_z_cosine.x,
+      -_origin[0]);
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      1,
+      -MRI.spaceorientation[1],
+      -MRI.spaceorientation[4],
+      -_z_cosine.y,
+      -_origin[1]);
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      2,
+      MRI.spaceorientation[2],
+      MRI.spaceorientation[5],
+      _z_cosine.z,
+      _origin[2]);
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      3,
+      0,
+      0,
+      0,
+      1);
+
+    MRI.IJKToRAS = IJKToRAS;
+    MRI.RASToIJK = goog.vec.Mat4.createFloat32();
+    goog.vec.Mat4.invert(MRI.IJKToRAS, MRI.RASToIJK);
+  
+    // get bounding box
+    // Transform ijk (0, 0, 0) to RAS
+    var tar = goog.vec.Vec4.createFloat32FromValues(0, 0, 0, 1);
+    var res = goog.vec.Vec4.createFloat32();
+    goog.vec.Mat4.multVec4(IJKToRAS, tar, res);
+    // Transform ijk (spacingX, spacinY, spacingZ) to RAS
+    var tar2 = goog.vec.Vec4.createFloat32FromValues(_spacing[0], _spacing[1], _spacing[2], 1);
+    var res2 = goog.vec.Vec4.createFloat32();
+    goog.vec.Mat4.multVec4(IJKToRAS, tar2, res2);
+  
+    // get location of 8 corners and update BBox
+    //
+    var _shifDimensions = [0, object._dimensions[0], object._dimensions[1], object._dimensions[2]];
+    
+    var _rasBB = this.computeRASBBox(IJKToRAS, _shifDimensions);
+
+    // grab the RAS Dimensions
+    MRI.RASSpacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
+  
+    // grab the RAS Dimensions
+    MRI.RASDimensions = [_rasBB[1] - _rasBB[0], _rasBB[3] - _rasBB[2], _rasBB[5] - _rasBB[4]];
+  
+    // grab the RAS Origin
+    MRI.RASOrigin = [_rasBB[0], _rasBB[2], _rasBB[4]];
+
     // create the object
     object.create_(MRI);
-    // X.TIMERSTOP('create');
-    // re-slice the data according each direction
-    // anatomical_orientation
+
+  // re-slice the data according each direction
     object._image = this.reslice(object);
-    object.map_();
   }
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
@@ -176,12 +249,9 @@ X.parserDCM.prototype.parseStream = function(data, object) {
       data : null,
       min : Infinity,
       max : -Infinity,
-      origin : null,
-      space : null,
-      spaceorientation : null,
-      rasspaceorientation : null,
-      orientation : null,
-      normcosine : null
+      location : [],
+      originAll: [],
+      positionAll: []
     };
     // check how many slices we have
     MRI.number_of_slices = object._file.length;
@@ -277,10 +347,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
           break;
         case 0x0032:
           // image position
-          // console.log("image position");
-          // pixel spacing
           var _image_position = '';
-          // pixel spacing is a delimited string (ASCII)
           var i = 0;
           for (i = 0; i < _VL / 2; i++) {
             var _short = _bytes[_bytePointer++];
@@ -335,13 +402,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _anatomical_orientation += String.fromCharCode(_b0);
             _anatomical_orientation += String.fromCharCode(_b1);
           }
-          // MRI.spaceorientation = _anatomical_orientation.split("\\");
-          // console.log(_anatomical_orientation);
-          // MRI.image_orientation = [ +_image_orientation[0],
-          // +_image_orientation[1], +_image_orientation[2],
-          // +_image_orientation[3], +_image_orientation[4],
-          // +_image_orientation[5] ];
-          // console.log(MRI.image_orientation);
+
           break;
         }
       }
@@ -375,7 +436,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     var _bytes = this.scan('ushort', this._data.byteLength - MRI.vol_size * 2);
     var _bytePointer = 0;
     // now find the instance number flag
-    var _tagCount = 2;
+    var _tagCount = 3;
     while (_tagCount > 0) {
       // read short
       _tagGroup = _bytes[_bytePointer++];
@@ -394,8 +455,26 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _position += String.fromCharCode(_b1);
             _position = parseInt(_position, 10);
           }
+          MRI.positionAll.push(_position);
           _tagCount--;
-        } else if (_tagSpecific == 0x1041) {
+        }          else if (_tagSpecific == 0x0032) {
+                    _VR = _bytes[_bytePointer++];
+          _VL = _bytes[_bytePointer++];
+          // image position
+          var _image_position = '';
+          var i = 0;
+          for (i = 0; i < _VL / 2; i++) {
+            var _short = _bytes[_bytePointer++];
+            var _b0 = _short & 0x00FF;
+            var _b1 = (_short & 0xFF00) >> 8;
+            _image_position += String.fromCharCode(_b0);
+            _image_position += String.fromCharCode(_b1);
+          }
+          MRI.originAll.push(_image_position);
+          //window.console.log(_image_position);
+          _tagCount--;
+        }
+        else if (_tagSpecific == 0x1041) {
           // this is the slicelocation so we can grab the
           // z-spacing
           _VR = _bytes[_bytePointer++];
@@ -409,17 +488,11 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             _slicelocation += String.fromCharCode(_b0);
             _slicelocation += String.fromCharCode(_b1);
           }
-          // we compare the last_slicelocation to the current one
-          var _location_difference = Math.abs(MRI.last_slicelocation
-              - _slicelocation);
-          // .. and store it if it is smaller than before
-          MRI.pixdim = [ MRI.pixdim[0], MRI.pixdim[1],
-              Math.min(_location_difference, MRI.pixdim[2]) ];
-          // we now store the current slice location as
-          // the last one
-          MRI.last_slicelocation = _slicelocation;
+          // store all locations
+          MRI.location.push(_slicelocation);
           _tagCount--;
         }
+
       }
     }
     // increase the Z dimensions since we have a new slice
