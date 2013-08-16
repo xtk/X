@@ -75,7 +75,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     var _i;
     var _j = 0;
     for (_i = 0; _i < _sorting_table_len; _i++) {
-      var unsorted_index = MRI.sorting_table[_i];
+      var unsorted_index = MRI.sorting_table[_sorting_table_len - 1 -_i];
       if (unsorted_index !== undefined) {
         var unsorted_start = unsorted_index * MRI.vol_size;
         var unsorted_end = unsorted_start + MRI.vol_size;
@@ -139,11 +139,11 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
         MRI.spaceorientation[4], MRI.spaceorientation[5]);
     var _z_cosine = goog.math.Vec3.cross(_x_cosine, _y_cosine);
 
-    if(object._spacing[2] < 2) {
+    // if(object._spacing[2] >0) {
 
-      _z_cosine.invert();
+    //   _z_cosine.invert();
       
-    }
+    // }
 
     var IJKToRAS = goog.vec.Mat4.createFloat32();
     // NOTE THE '-' for the LPS to RAS conversion
