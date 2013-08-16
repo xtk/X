@@ -2202,7 +2202,7 @@ X.renderer3D.prototype.ray_intersect_box_ = function(box, ray_start, ray_directi
  * @param {!number} y The viewport Y coordinate.
  * @param {!number=} delta The sample rate to probe for intersections. Default is 5.
  * @param {!number=} epsilon The threshold to mark a neighboring point as intersection. Default is 2mm.
- * @return {!Array} The closest 3D point of a valid object after ray casting. If NULL, than delta and epsilon should be tuned.
+ * @return {?Array} The closest 3D point of a valid object after ray casting. If NULL, than delta and epsilon should be tuned.
  * @public
  */
 X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon) {
@@ -2210,11 +2210,11 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon) {
   // default values for delta and epsilon 
   // to determine the picking accuracy with a speed tradeoff
   if (!goog.isDefAndNotNull(delta)) {
-    var delta = 4.0;
+    delta = 4.0;
   }
 
   if (!goog.isDefAndNotNull(epsilon)) {
-    var epsilon = 2;
+    epsilon = 2;
   }
 
   // grab the object under the cursor
@@ -2272,12 +2272,12 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon) {
   // H = X.matrix.multiplyByVector(object.transform.matrix, H[0], H[1], H[2]);
 
 
-  var minA = X.matrix.multiplyByVector(object.transform.matrix, object._points._minA, 0, 0);
-  var maxA = X.matrix.multiplyByVector(object.transform.matrix, object._points._maxA, 0, 0);
-  var minB = X.matrix.multiplyByVector(object.transform.matrix, 0, object._points._minB, 0);
-  var maxB = X.matrix.multiplyByVector(object.transform.matrix, 0, object._points._maxB, 0);
-  var minC = X.matrix.multiplyByVector(object.transform.matrix, 0, 0, object._points._minC);
-  var maxC = X.matrix.multiplyByVector(object.transform.matrix, 0, 0, object._points._maxC);
+  var minA = X.matrix.multiplyByVector(object._transform.matrix, object._points._minA, 0, 0);
+  var maxA = X.matrix.multiplyByVector(object._transform.matrix, object._points._maxA, 0, 0);
+  var minB = X.matrix.multiplyByVector(object._transform.matrix, 0, object._points._minB, 0);
+  var maxB = X.matrix.multiplyByVector(object._transform.matrix, 0, object._points._maxB, 0);
+  var minC = X.matrix.multiplyByVector(object._transform.matrix, 0, 0, object._points._minC);
+  var maxC = X.matrix.multiplyByVector(object._transform.matrix, 0, 0, object._points._maxC);
   //var box = [object._points._minA, object._points._maxA, object._points._minB, object._points._maxB, object._points._minC, object._points._maxC];
   var box = [minA.x, maxA.x, minB.y, maxB.y, minC.z, maxC.z];
 
@@ -2344,7 +2344,7 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon) {
       var c_p_y = points[p+1];
       var c_p_z = points[p+2];
       var c_p = new X.vector(c_p_x, c_p_y, c_p_z);
-      var c_p = X.matrix.multiplyByVector(object.transform.matrix, c_p_x, c_p_y, c_p_z);
+      c_p = X.matrix.multiplyByVector(object._transform.matrix, c_p_x, c_p_y, c_p_z);
 
       // calculate distance to the marching point
       var d = Math.sqrt((s_p[0]-c_p.x)*(s_p[0]-c_p.x)+(s_p[1]-c_p.y)*(s_p[1]-c_p.y)+(s_p[2]-c_p.z)*(s_p[2]-c_p.z));
