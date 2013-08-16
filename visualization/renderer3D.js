@@ -2129,6 +2129,242 @@ X.renderer3D.prototype.__defineSetter__('bgColor', function(bgColor) {
 
 });
 
+/**
+ * Calculate the intersection between a bounding box and rays.
+ *
+ * @param {!Array} box The bounding box as [minX, maxX, minY, maxY, minZ, maxZ]
+ * @param {!Array} ray_start The ray origin as [x,y,z]
+ * @param {!Array} ray_direction The ray direction as [x,y,z]
+ * @return {!Array} An array with collections of in and out intersections.
+ * @protected
+ */
+X.renderer3D.prototype.ray_intersect_box_ = function(box, ray_start, ray_direction) {
+
+
+  var _solutionsIn = new Array();
+  var _solutionsOut = new Array();
+  
+  // xmin, xmax, ymin, ymax, zmin, zmax
+  for(var _i = 0; _i < 6; _i++) {
+
+    var _i2 = Math.floor(_i/2);
+    var _i3 = (_i2 + 1)%3;
+    var _i4 = (_i2 + 2)%3;
+    var _j1 = (2 + (2*_i2))%6;
+    var _j2 = (4 + (2*_i2))%6;
+    var _dir = _i2;
+    
+    
+    var _sol0 = box[_i];
+    var _invN1 = 1/ray_direction[_i2];
+    
+    var _t = (_sol0 - ray_start[_i2])*_invN1;
+    
+    // if _t infinity, we are //
+    if(_t != Infinity && _t != -Infinity) {
+
+      var _sol1 = ray_start[_i3] + ray_direction[_i3]*_t;
+      var _sol2 = ray_start[_i4] + ray_direction[_i4]*_t;
+        
+      // in range?
+      if( (_sol1 >= box[_j1] && _sol1 <= box[_j1+1]) &&
+          (_sol2 >= box[_j2] && _sol2 <= box[_j2+1])) {
+        
+        var _sol = new Array();
+        _sol[_i2] = box[_i];
+        _sol[_i3] = _sol1;
+        _sol[_i4] = _sol2;
+
+        _solutionsIn.push(_sol);
+
+      }
+      else {
+
+        var _sol = new Array();
+        _sol[_i2] = box[_i];
+        _sol[_i3] = _sol1;
+        _sol[_i4] = _sol2;
+        
+        _solutionsOut.push(_sol);
+
+      }
+    }
+  }
+  
+  return [_solutionsIn, _solutionsOut];
+
+};
+
+/**
+ * Pick an object intersection in world space by using raycasting.
+ *
+ * @param {!number} x The viewport X coordinate.
+ * @param {!number} y The viewport Y coordinate.
+ * @param {!number=} delta The sample rate to probe for intersections. Default is 5.
+ * @param {!number=} epsilon The threshold to mark a neighboring point as intersection. Default is 2mm.
+ * @return {!Array} The closest 3D point of a valid object after ray casting. If NULL, than delta and epsilon should be tuned.
+ * @public
+ */
+X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon) {
+
+  // default values for delta and epsilon 
+  // to determine the picking accuracy with a speed tradeoff
+  if (!goog.isDefAndNotNull(delta)) {
+    var delta = 4.0;
+  }
+
+  if (!goog.isDefAndNotNull(epsilon)) {
+    var epsilon = 2;
+  }
+
+  // grab the object under the cursor
+  var id = this.pick(x,y);
+  if (id == -1) {
+    // quickly exit if there is no object
+    return null;
+  }
+
+  var object = this.get(id);
+  if (!object) {
+    return null;
+  }
+
+  // we know now that the object has been hit
+  // the question is: where exactly?
+
+  var ray_near = this._camera.unproject_(x/this._width*2.0-1.0, ((this._height-y)/this._height)*2.0-1.0, 0.0);
+  var ray_far = this._camera.unproject_(x/this._width*2.0-1.0, ((this._height-y)/this._height)*2.0-1.0, 1.0);
+
+  // add center to both
+  ray_near[0] += this._center[0];
+  ray_near[1] += this._center[1];
+  ray_near[2] += this._center[2];
+  ray_far[0] += this._center[0];
+  ray_far[1] += this._center[1];
+  ray_far[2] += this._center[2];
+
+  // and apply the transform of the object
+  // ray_near = X.matrix.multiplyByVector(object.transform.matrix, ray_near[0], ray_near[1], ray_near[2]);
+  // ray_far = X.matrix.multiplyByVector(object.transform.matrix, ray_far[0], ray_far[1], ray_far[2]);
+  // ray_near = [ray_near.xx, ray_near.yy, ray_near.zz];
+  // ray_far = [ray_far.xx, ray_far.yy, ray_far.zz];
+
+
+  // find the intersection of the ray with the bounding box
+
+  // first, reconstruct the box coordinates from the boundingbox
+  // var A = [objects._points._minA, objects._points._minB, objects._points._minC];
+  // var B = [objects._points._maxA, objects._points._minB, objects._points._minC];
+  // var C = [objects._points._maxA, objects._points._maxB, objects._points._minC];
+  // var D = [objects._points._minA, objects._points._maxB, objects._points._minC];
+  // var E = [objects._points._minA, objects._points._maxB, objects._points._maxC];
+  // var F = [objects._points._minA, objects._points._minB, objects._points._maxC];
+  // var G = [objects._points._maxA, objects._points._maxB, objects._points._maxC];
+  // var H = [objects._points._maxA, objects._points._minB, objects._points._maxC];
+  // // transform all box coordinates
+  // A = X.matrix.multiplyByVector(object.transform.matrix, A[0], A[1], A[2]);
+  // B = X.matrix.multiplyByVector(object.transform.matrix, B[0], B[1], B[2]);
+  // C = X.matrix.multiplyByVector(object.transform.matrix, C[0], C[1], C[2]);
+  // D = X.matrix.multiplyByVector(object.transform.matrix, D[0], D[1], D[2]);
+  // E = X.matrix.multiplyByVector(object.transform.matrix, E[0], E[1], E[2]);
+  // F = X.matrix.multiplyByVector(object.transform.matrix, F[0], F[1], F[2]);
+  // G = X.matrix.multiplyByVector(object.transform.matrix, G[0], G[1], G[2]);
+  // H = X.matrix.multiplyByVector(object.transform.matrix, H[0], H[1], H[2]);
+
+
+  var minA = X.matrix.multiplyByVector(object.transform.matrix, object._points._minA, 0, 0);
+  var maxA = X.matrix.multiplyByVector(object.transform.matrix, object._points._maxA, 0, 0);
+  var minB = X.matrix.multiplyByVector(object.transform.matrix, 0, object._points._minB, 0);
+  var maxB = X.matrix.multiplyByVector(object.transform.matrix, 0, object._points._maxB, 0);
+  var minC = X.matrix.multiplyByVector(object.transform.matrix, 0, 0, object._points._minC);
+  var maxC = X.matrix.multiplyByVector(object.transform.matrix, 0, 0, object._points._maxC);
+  //var box = [object._points._minA, object._points._maxA, object._points._minB, object._points._maxB, object._points._minC, object._points._maxC];
+  var box = [minA.x, maxA.x, minB.y, maxB.y, minC.z, maxC.z];
+
+
+  //console.log(box);
+  var box_intersections = this.ray_intersect_box_(box, ray_near, ray_far);
+  //console.log(box_intersections);
+  box_intersections = box_intersections[0];
+  // we should always have two intersections
+  // find the closest one..
+  var distances = new Array(2);
+  for (var i=0; i<2; i++) {
+    var p = box_intersections[i];
+    distances[i] = Math.sqrt((p[0]-ray_near[0])*(p[0]-ray_near[0])+(p[1]-ray_near[1])*(p[1]-ray_near[1])+(p[2]-ray_near[2])*(p[2]-ray_near[2]));
+  }
+
+  // now we need to sample the space between the two points
+  var sample_start = null;
+  var sample_end = null;
+  var sample_space = null;
+
+  if (distances[0] < distances[1]) {
+    sample_start = box_intersections[0];
+    sample_end = box_intersections[1];
+  } else {
+    sample_start = box_intersections[1];
+    sample_end = box_intersections[0];
+  }
+
+  sample_space = Math.sqrt((sample_start[0]-sample_end[0])*(sample_start[0]-sample_end[0])+(sample_start[1]-sample_end[1])*(sample_start[1]-sample_end[1])+(sample_start[2]-sample_end[2])*(sample_start[2]-sample_end[2]));
+
+  var sample_count = sample_space/delta;
+  var s_p = sample_start;
+  var sample_direction = [sample_end[0]-sample_start[0],sample_end[1]-sample_start[1],sample_end[2]-sample_start[2]];
+  var sample_direction_length = Math.sqrt(sample_direction[0]*sample_direction[0]+sample_direction[1]*sample_direction[1]+sample_direction[2]*sample_direction[2]);
+  var sample_unit_v = [sample_direction[0]/sample_direction_length, sample_direction[1]/sample_direction_length, sample_direction[2]/sample_direction_length];
+
+  var points = object._points._triplets;
+  var points_count = points.length;
+
+  var min_d = Infinity;
+  var min_p = null;
+
+  var sampled = new Array(10);
+
+  //var m_i = X.matrix.identity();
+  //X.matrix.invert(object.transform.matrix, m_i);
+
+  // sample
+  for (var i=0; i<sample_count; i+=delta) {
+
+    // the marching point
+    // 
+    s_p = [s_p[0] + delta*sample_unit_v[0], s_p[1] + delta*sample_unit_v[1], s_p[2] + delta*sample_unit_v[2]];
+
+    // multiply s_p with the inverse transformation matrix
+    // s_p = X.matrix.multiplyByVector(m_i, s_p);
+    // s_p = [s_p.x, s_p.y, s_p.z];
+
+    // find the closest point
+    for (var p=0; p<points_count; p+=3) {
+
+      var c_p_x = points[p];
+      var c_p_y = points[p+1];
+      var c_p_z = points[p+2];
+      var c_p = new X.vector(c_p_x, c_p_y, c_p_z);
+      var c_p = X.matrix.multiplyByVector(object.transform.matrix, c_p_x, c_p_y, c_p_z);
+
+      // calculate distance to the marching point
+      var d = Math.sqrt((s_p[0]-c_p.x)*(s_p[0]-c_p.x)+(s_p[1]-c_p.y)*(s_p[1]-c_p.y)+(s_p[2]-c_p.z)*(s_p[2]-c_p.z));
+
+      if (d <= epsilon) {
+
+        // found the point
+        return [c_p.x, c_p.y, c_p.z];
+
+      }
+
+    }
+
+  }
+
+  // nothing found with the current delta and epsilon settings
+  return null;
+
+};
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer3D', X.renderer3D);
 goog.exportSymbol('X.renderer3D.prototype.init', X.renderer3D.prototype.init);
@@ -2149,3 +2385,4 @@ goog.exportSymbol('X.renderer3D.prototype.resetBoundingBox',
 goog.exportSymbol('X.renderer3D.prototype.resetViewAndRender',
     X.renderer3D.prototype.resetViewAndRender);
 goog.exportSymbol('X.renderer3D.prototype.pick', X.renderer3D.prototype.pick);
+goog.exportSymbol('X.renderer3D.prototype.pick3d', X.renderer3D.prototype.pick3d);

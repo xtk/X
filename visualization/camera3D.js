@@ -119,45 +119,42 @@ X.camera3D.prototype.lookAt_ = function(cameraPosition, targetPoint) {
 };
 
 /**
-* Unproject from screen space to a 3D ray.
+* Unproject from screen space to a 3D ray. This does not take the center into account.
 *
-* @param {number} x The x-coordinate on the viewport.
-* @param {number} y The y-coordinate on the viewport.
-* @return {!Float32Array} the resulting direction
+* @param {!number} x The normalized x-coordinate on the viewport.
+* @param {!number} y The normalized y-coordinate on the viewport.
+* @param {?number=} z The z-coordinate on the viewport. (0 for near, 1 for far)
+* @return {!Float32Array|Array} the resulting point in 3D coordinates
+* @protected
 */
-X.camera3D.prototype.unproject = function (x,y,z) {
-  
-  if (!goog.isDefAndNotNull(z)) {
-    return [this.unproject(x,y,0), this.unproject(x,y,1)]
-  }
+X.camera3D.prototype.unproject_ = function (x,y,z) {
 
-  var _vp = [0, 0, this._width, this._height]
   var _in = new Float32Array(4);
   var _out = new Float32Array(4);
   var _m = new Float32Array(16);
   var _A = new Float32Array(16);
+  var _B = new Float32Array(16);
 
   // compute projection x modelview
   X.matrix.multiply(this._perspective, this._view, _A);
   // now invert _A
   X.matrix.invert(_A, _m);
 
-  // create normalized coordinates
-  _in[0] = (x-_vp[0])/_vp[2]*2.0-1.0;
-  _in[1] = ((y-_vp[1])/_vp[3]*2.0-1.0)*-1; // invert y
+  // setup vec4
+  _in[0] = x;
+  _in[1] = y;
   _in[2] = 2.0*z-1.0;
   _in[3] = 1.0;
 
   X.matrix.multiplyByVec4(_m, _in, _out);
 
   _out[3] = 1.0/_out[3];
-  _out[0] = _out[0]*_out[3] + ren3d._center[0];
-  _out[1] = _out[1]*_out[3] + ren3d._center[1];
-  _out[2] = _out[2]*_out[3] + ren3d._center[2];
+  _out[0] = _out[0]*_out[3];
+  _out[1] = _out[1]*_out[3];
+  _out[2] = _out[2]*_out[3];
 
   return _out;
 
 };
 
 goog.exportSymbol('X.camera3D', X.camera3D);
-goog.exportSymbol('X.camera3D.prototype.unproject', X.camera3D.prototype.unproject);
