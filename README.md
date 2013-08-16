@@ -8,7 +8,7 @@
  * <i><b>Label maps, color tables and surface overlays</b></i> are supported, as well as <i><a href="http://evanw.github.com/csg.js/" target="_blank">Constructive Solid Geometry</a></i><br>
  * CDash + Google Closure driven <a href="http://cdash.goxtk.com/index.php?project=XTK" target="_blank"><i>build and test system</i></a>
 
-## Demos ##
+## Demos ## 
 <table>
 <tr>
 <td valign="middle" width="100"><a href="http://demos.goxtk.com/knee_atlas/"><img src="http://xtk.github.com/demosgfx/knee_atlas/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="http://demos.goxtk.com/knee_atlas/">Knee Atlas</a></b></sup></td>
