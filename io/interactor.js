@@ -1002,16 +1002,16 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
   }
 
   // threshold the distance to avoid 'irregular' movement
-  if (Math.abs(distance.x) < 2) {
+  // if (Math.abs(distance.x) < 2) {
 
-    distance.x = 0;
+  //   distance.x = 0;
 
-  }
-  if (Math.abs(distance.y) < 2) {
+  // }
+  // if (Math.abs(distance.y) < 2) {
 
-    distance.y = 0;
+  //   distance.y = 0;
 
-  }
+  // }
 
   // jump out if the distance is 0 to avoid unnecessary events
   if (distance.magnitude() == 0) {
@@ -1049,27 +1049,6 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
 
     // create a new pan event
     var e = new X.event.PanEvent();
-
-    // panning in general moves pretty fast, so we threshold the distance
-    // additionally
-    if (distance.x > 5) {
-
-      distance.x = 5;
-
-    } else if (distance.x < -5) {
-
-      distance.x = -5;
-
-    }
-    if (distance.y > 5) {
-
-      distance.y = 5;
-
-    } else if (distance.y < -5) {
-
-      distance.y = -5;
-
-    }
 
     // attach the distance vector
     e._distance = distance;

@@ -307,59 +307,36 @@ X.slice.prototype.create_ = function() {
 
   // get an orthogonal vector using front x up
   var frontVector = new goog.math.Vec3(this._front[0], this._front[1],
-      this._front[2]);
+      this._front[2]).normalize();
   var upVector = new goog.math.Vec3(this._up[0], this._up[1], this._up[2]);
   var rightVector = new goog.math.Vec3(this._right[0], this._right[1], this._right[2]);
   
   var centerVector = new goog.math.Vec3(this._center[0], this._center[1],
       this._center[2]);
-
-  // TODO generalize for arbitary slicing
-  var sizeVector = new goog.math.Vec3(1, 1, 1);
-  if (frontVector.x == 1 || frontVector.x == -1) {
-    sizeVector = new goog.math.Vec3(this._center[0], this._width / 2,
-        this._height / 2);
-    //this._textureCoordinateMap = [0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0];
-  } else if (frontVector.y == 1 || frontVector.y == -1) {
-    sizeVector = new goog.math.Vec3(this._height / 2, this._center[1],
-        this._width / 2);
-    //this._textureCoordinateMap = [0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1];
-  } else if (frontVector.z == 1 || frontVector.z == -1) {
-    sizeVector = new goog.math.Vec3(this._width / 2, this._height / 2,
-        this._center[2]);
-    // standard texture-coordinate-map
-  }
   
-  //
-  // create the points like this:
-  //
-  // 1,5--4
-  // |\..|
-  // |.\.|
-  // |..\|
-  // 0---2,3
-  var point0 = goog.math.Vec3.sum(rightVector.clone().invert(), upVector
-      .clone().invert());
-  point0 = new goog.math.Vec3(point0.x * sizeVector.x, point0.y * sizeVector.y,
-      point0.z * sizeVector.z);
-  point0.add(centerVector);
-
-  var point1 = goog.math.Vec3.sum(rightVector.clone().invert(), upVector);
-  point1 = new goog.math.Vec3(point1.x * sizeVector.x, point1.y * sizeVector.y,
-      point1.z * sizeVector.z);
-  point1.add(centerVector);
-
-  var point2 = goog.math.Vec3.sum(rightVector, upVector.clone().invert());
-  point2 = new goog.math.Vec3(point2.x * sizeVector.x, point2.y * sizeVector.y,
-      point2.z * sizeVector.z);
-  point2.add(centerVector);
-
+  // -right -up
+  var dirVector = goog.math.Vec3.sum(rightVector.clone().invert().scale(this._width/2), upVector
+      .clone().invert().scale(this._height/2));
+  // move center in this direction
+  var point0 = new goog.math.Vec3(dirVector.x + centerVector.x, dirVector.y + centerVector.y,
+      dirVector.z + centerVector.z);
+  
+  // -right +up
+  dirVector = goog.math.Vec3.sum(rightVector.clone().invert().scale(this._width/2), upVector.clone().scale(this._height/2));
+  var point1 = new goog.math.Vec3(dirVector.x + centerVector.x, dirVector.y + centerVector.y,
+      dirVector.z + centerVector.z);
+  
+  // +right -up
+  dirVector = goog.math.Vec3.sum(rightVector.clone().scale(this._width/2), upVector.clone().invert().scale(this._height/2));
+  var point2 = new goog.math.Vec3(dirVector.x + centerVector.x, dirVector.y + centerVector.y,
+      dirVector.z + centerVector.z);
+  
   var point3 = point2;
-
-  var point4 = goog.math.Vec3.sum(rightVector, upVector);
-  point4 = new goog.math.Vec3(point4.x * sizeVector.x, point4.y * sizeVector.y,
-      point4.z * sizeVector.z);
-  point4.add(centerVector);
+  
+  // +right +up
+  dirVector = goog.math.Vec3.sum(rightVector.clone().scale(this._width/2), upVector.clone().scale(this._height/2));
+  var point4 = new goog.math.Vec3(dirVector.x + centerVector.x, dirVector.y + centerVector.y,
+      dirVector.z + centerVector.z);
 
   var point5 = point1;
 

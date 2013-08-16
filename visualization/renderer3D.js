@@ -135,6 +135,14 @@ X.renderer3D = function() {
    * @protected
    */
   this._center = [0, 0, 0];
+  
+  /**
+   * The background color.
+   *
+   * @type {!Array}
+   * @protected
+   */
+  this._bgColor = [0, 0, 0];
 
   /**
    * The frame buffer which is used for picking.
@@ -304,8 +312,8 @@ X.renderer3D.prototype.init = function() {
 
     // configure opacity to 0.0 to overwrite the viewport background-color by
     // the container color
-    this._context.clearColor(0.0, 0.0, 0.0, 0.0);
-
+    this._context.clearColor(this._bgColor[0], this._bgColor[1], this._bgColor[2], 0.0);
+    
     // enable transparency
     this._context.enable(this._context.BLEND);
     this._context.blendEquation(this._context.FUNC_ADD);
@@ -517,6 +525,9 @@ X.renderer3D.prototype.update_ = function(object) {
   // check if object already existed..
   var existed = false;
 
+  if(!goog.isDefAndNotNull(object)){
+    return;
+  }
   if (this.get(object._id)) {
     // this means, we are updating
     existed = true;
@@ -1233,40 +1244,30 @@ X.renderer3D.prototype.showCaption_ = function(x, y) {
  */
 X.renderer3D.prototype.orientVolume_ = function(volume) {
 
-  // TODO once we have arbitary sliced volumes, we need to modify the vectors
-  // here
-  var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 1, 0, 0);
-  var distanceFromEyeX = X.vector.distance(this._camera._position,
-      realCentroidVector);
-  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, -1, 0, 0);
-  var distanceFromEyeX2 = X.vector.distance(this._camera._position,
-      realCentroidVector);
+  var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._childrenInfo[0]._sliceNormal[0], volume._childrenInfo[0]._sliceNormal[1], volume._childrenInfo[0]._sliceNormal[2]);
+  var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, -volume._childrenInfo[0]._sliceNormal[0], -volume._childrenInfo[0]._sliceNormal[1], -volume._childrenInfo[0]._sliceNormal[2]);
+  var dX = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
-  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 0, 1, 0);
-  var distanceFromEyeY = X.vector.distance(this._camera._position,
-      realCentroidVector);
-  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 0, -1, 0);
-  var distanceFromEyeY2 = X.vector.distance(this._camera._position,
-      realCentroidVector);
+  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._childrenInfo[1]._sliceNormal[0], volume._childrenInfo[1]._sliceNormal[1], volume._childrenInfo[1]._sliceNormal[2]);
+  realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, -volume._childrenInfo[1]._sliceNormal[0], -volume._childrenInfo[1]._sliceNormal[1], -volume._childrenInfo[1]._sliceNormal[2]);
+  var dY = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
-  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 0, 0, 1);
-  var distanceFromEyeZ = X.vector.distance(this._camera._position,
-      realCentroidVector);
-  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, 0, 0, -1);
-  var distanceFromEyeZ2 = X.vector.distance(this._camera._position,
-      realCentroidVector);
+  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._childrenInfo[2]._sliceNormal[0], volume._childrenInfo[2]._sliceNormal[1], volume._childrenInfo[2]._sliceNormal[2]);
+  realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, -volume._childrenInfo[1]._sliceNormal[0], -volume._childrenInfo[1]._sliceNormal[1], -volume._childrenInfo[1]._sliceNormal[2]);
+  var dZ = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
-  var maxDistance = Math
-      .max(distanceFromEyeX, distanceFromEyeY, distanceFromEyeZ,
-          distanceFromEyeX2, distanceFromEyeY2, distanceFromEyeZ2);
+  var maxDistance = Math.max(dX, dY, dZ);
 
-  if (maxDistance == distanceFromEyeX || maxDistance == distanceFromEyeX2) {
+  if (maxDistance == dX) {
+
     volume.volumeRendering_(0);
-  } else if (maxDistance == distanceFromEyeY ||
-      maxDistance == distanceFromEyeY2) {
+
+  } else if (maxDistance == dY) {
+
     volume.volumeRendering_(1);
-  } else if (maxDistance == distanceFromEyeZ ||
-      maxDistance == distanceFromEyeZ2) {
+
+  } else {
+
     volume.volumeRendering_(2);
   }
 
@@ -1317,15 +1318,7 @@ X.renderer3D.prototype.order_ = function() {
     // c) .. and get the distance for the other slices by simple multiplication
     if (object instanceof X.volume && object._volumeRendering) {
 
-      var _volumeRenderingDirection = object._volumeRenderingDirection;
-
-      var _slices = object._slicesX._children;
-      if (_volumeRenderingDirection == 1) {
-        _slices = object._slicesY._children;
-      } else if (_volumeRenderingDirection == 2) {
-        _slices = object._slicesZ._children;
-      }
-
+      var _slices = object._children[object._volumeRenderingDirection]._children;
       var numberOfSlices = _slices.length;
 
       // grab the first slice, attach the distance and opacity
@@ -1855,7 +1848,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 
         } else if (labelmap && labelmap._visible) {
           // only if we have an associated labelmap..
-
+          
           // grab the id of the labelmap
           var labelmapTextureID = object._labelmap._id;
 
@@ -2111,6 +2104,30 @@ X.renderer3D.prototype.destroy = function() {
 
 };
 
+/**
+ * Get the background color.
+ *
+ * @return {!Array} The background color normalized.
+ * @public
+ */
+X.renderer3D.prototype.__defineGetter__('bgColor', function() {
+  
+  return this._bgColor;
+
+});
+
+/**
+ * Set the background color.
+ *
+ * @param {!Array}
+ *          bgColor The background color normalized.
+ * @public
+ */
+X.renderer3D.prototype.__defineSetter__('bgColor', function(bgColor) {
+
+  this._bgColor = bgColor;
+
+});
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer3D', X.renderer3D);

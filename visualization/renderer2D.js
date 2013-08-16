@@ -32,6 +32,7 @@ goog.provide('X.renderer2D');
 // requires
 goog.require('X.renderer');
 goog.require('goog.math.Vec3');
+goog.require('goog.vec.Vec4');
 
 
 /**
@@ -247,14 +248,13 @@ X.renderer2D.prototype.onScroll_ = function(event) {
   }
 
   // switch between different orientations
-  var xyz = this._orientationIndex;
   var _orientation = "";
 
-  if (xyz == 0) {
+  if (this._orientationIndex == 0) {
 
     _orientation = "indexX";
 
-  } else if (xyz == 1) {
+  } else if (this._orientationIndex == 1) {
 
     _orientation = "indexY";
 
@@ -365,14 +365,17 @@ X.renderer2D.prototype.__defineSetter__('orientation', function(orientation) {
   if (orientation == 'AXIAL') {
 
     orientation = 'Z';
+    this._orientationIndex = 2;
 
   } else if (orientation == 'SAGITTAL') {
 
     orientation = 'X';
+    this._orientationIndex = 0;
 
   } else if (orientation == 'CORONAL') {
 
     orientation = 'Y';
+    this._orientationIndex = 1;
 
   }
 
@@ -385,14 +388,6 @@ X.renderer2D.prototype.__defineSetter__('orientation', function(orientation) {
   this._orientation = orientation;
 
   var _volume = this._topLevelObjects[0];
-
-  // .. if there is a volume, update the orientationIndex
-  if (_volume) {
-
-    // and update the orientationIndex if we have a volume already
-    this._orientationIndex = this.volumeChildrenIndex_(_volume._normcosine, this._orientation);
-
-  }
 
 });
 
@@ -513,59 +508,24 @@ X.renderer2D.prototype.resetViewAndRender = function() {
  * Convenience method to get the index of the volume container for a given
  * orientation.
  *
- * @param {!Array} normCosines The volume cosines directions.
  * @param {?string} targetOrientation The orientation required.
  * @return {!number} The index of the volume children.
  * @private
  */
-X.renderer2D.prototype.volumeChildrenIndex_ = function(normCosines,
-    targetOrientation) {
+X.renderer2D.prototype.volumeChildrenIndex_ = function(targetOrientation) {
 
   if (targetOrientation == 'X') {
 
-    // give me the sagittal!
-    if (normCosines[2][0] != 0) {
-
-      return 0;
-
-    } else if (normCosines[0][0] != 0) {
-
-      return 1;
-
-    }
-
-    return 2;
+    return 0;
 
   } else if (targetOrientation == 'Y') {
 
-    // give me the coronal!
-    if (normCosines[2][1] != 0) {
 
-      return 0;
-
-    } else if (normCosines[0][1] != 0) {
-
-      return 1;
-
-    }
-
-    return 2;
+    return 1;
 
   } else {
 
-    // give me the axial!
-    if (normCosines[2][2] != 0) {
-
-      return 0;
-
-    } else if (normCosines[0][2] != 0) {
-
-      return 1;
-
-    }
-
     return 2;
-
   }
 };
 
@@ -687,45 +647,36 @@ X.renderer2D.prototype.update_ = function(object) {
   // at this point the orientation of this renderer might have changed so we
   // should recalculate all the cached values
 
-  var _spacing = object._spacing;
-
-  // normalized cosines
-  var _norm_cosine = object._normcosine;
-
   // volume dimensions
   var _dim = object._dimensions;
 
   // check the orientation and store a pointer to the slices
-  this._orientationIndex = this.volumeChildrenIndex_(_norm_cosine, this._orientation);
-  var _ti = this._orientationIndex;
-  var _tj = (_ti + 1) % 3;
-  var _tk = (_ti + 2) % 3;
-
-  // invert rows and cols in the coronal view or coronal scan
-  if (_norm_cosine[2][1] != 0) {
-    var _tmp = _ti;
-    _ti = _tj;
-    _tj = _tmp;
-  }
-
-  if (_norm_cosine[_tk][1] != 0) {
-    // if coronally acquired
-    var _tmp = _ti;
-    _ti = _tj;
-    _tj = _tmp;
-  }
-
-  var imax = _dim[_ti];
-  var jmax = _dim[_tj];
+  this._orientationIndex = this.volumeChildrenIndex_(this._orientation);
 
   // size
-  var _width = imax;
-  var _height = jmax;
   this._slices = object._children[this._orientationIndex]._children;
+  
+  var _currentSlice = null;
+  if (this._orientationIndex == 0) {
 
-  this._sliceWidthSpacing = _spacing[_ti];
-  this._sliceHeightSpacing = _spacing[_tj];
+    _currentSlice = object['indexX'];
 
+  } else if (this._orientationIndex == 1) {
+
+    _currentSlice = object['indexY'];
+
+  } else {
+
+    _currentSlice = object['indexZ'];
+
+  }
+  
+  var _width = object._children[this._orientationIndex]._children[_currentSlice]._iWidth;
+  var _height = object._children[this._orientationIndex]._children[_currentSlice]._iHeight;
+  // spacing
+  this._sliceWidthSpacing = object._children[this._orientationIndex]._children[_currentSlice]._widthSpacing;
+  this._sliceHeightSpacing = object._children[this._orientationIndex]._children[_currentSlice]._heightSpacing;
+  
   // .. and store the dimensions
   this._sliceWidth = _width;
   this._sliceHeight = _height;
@@ -780,9 +731,47 @@ X.renderer2D.prototype.autoScale_ = function() {
  * @return {?Array} An array of [i,j,k] coordinates or null if out of frame.
  */
 X.renderer2D.prototype.xy2ijk = function(x, y) {
-
+  
   var _volume = this._topLevelObjects[0];
   var _view = this._camera._view;
+  var _currentSlice = null;
+
+  var _sliceWidth = this._sliceWidth;
+  var _sliceHeight = this._sliceHeight;
+  var _sliceWSpacing = null;
+  var _sliceHSpacing = null;
+  
+  // get current slice
+  // which color?
+  if (this._orientation == "Y") {
+    _currentSlice = this._slices[parseInt(_volume['indexY'], 10)];
+    _sliceWSpacing = _currentSlice._widthSpacing;
+    _sliceHSpacing = _currentSlice._heightSpacing;
+    this._orientationColors[0] = 'yellow';
+    this._orientationColors[1] = 'green';
+
+  } else if (this._orientation == "Z") {
+    _currentSlice = this._slices[parseInt(_volume['indexZ'], 10)];
+    _sliceWSpacing = _currentSlice._widthSpacing;
+    _sliceHSpacing = _currentSlice._heightSpacing;
+    this._orientationColors[0] = 'yellow';
+    this._orientationColors[1] = 'red';
+
+  } else {
+    _currentSlice = this._slices[parseInt(_volume['indexX'], 10)];
+    _sliceWSpacing = _currentSlice._heightSpacing;
+    _sliceHSpacing = _currentSlice._widthSpacing;
+    this._orientationColors[0] = 'red';
+    this._orientationColors[1] = 'green';
+
+    var _buf = _sliceWidth;
+    _sliceWidth = _sliceHeight;
+    _sliceHeight = _buf;
+
+    _buf = _sliceWSpacing;
+    _sliceWSpacing = _sliceHSpacing;
+    _sliceHSpacing = _buf;
+  }
 
   // padding offsets
   var _x = 1 * _view[12];
@@ -793,9 +782,9 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   var _center = [this._width / 2, this._height / 2];
 
   // the slice dimensions in canvas coordinates
-  var _sliceWidthScaled = this._sliceWidth * this._sliceWidthSpacing *
+  var _sliceWidthScaled = _sliceWidth * _sliceWSpacing *
       _normalizedScale;
-  var _sliceHeightScaled = this._sliceHeight * this._sliceHeightSpacing *
+  var _sliceHeightScaled = _sliceHeight * _sliceHSpacing *
       _normalizedScale;
 
   // the image borders on the left and top in canvas coordinates
@@ -806,102 +795,90 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   _image_left2xy += _x * _normalizedScale;
   _image_top2xy += _y * _normalizedScale;
 
-  // now grab the IJK coords
-  var _a = 0;
-  var _b = 0;
-  var _ti = this._orientationIndex;
-  var _tj = (_ti + 1) % 3;
-  var _tk = (_ti + 2) % 3;
+  var _xNorm = (x - _image_left2xy)/ _sliceWidthScaled;
+  var _yNorm = (y - _image_top2xy)/ _sliceHeightScaled;
+  
+  _x = _xNorm*_sliceWidth;
+  _y = _yNorm*_sliceHeight;
+  var _z = _currentSlice._xyBBox[4];
 
-  // which color?
-  if (_volume._normcosine[_tk][2] != 0) {
+  if (this._orientation == "X") {
+    // invert cols
+    // then invert x and y to compensate camera +90d rotation
+    _x = _sliceWidth - _x;
 
-    this._orientationColors[0] = 'yellow';
-    this._orientationColors[1] = 'green';
+    var _buf = _x;
+    _x = _y;
+    _y = _buf;
 
-  } else if (_volume._normcosine[_tk][1] != 0) {
+  }
+  else if (this._orientation == "Y") {
+        // invert cols
+    _x = _sliceWidth - _x;
 
-    this._orientationColors[0] = 'yellow';
-    this._orientationColors[1] = 'red';
-
-  } else {
-
-    this._orientationColors[0] = 'green';
-    this._orientationColors[1] = 'red';
+  }
+  else if (this._orientation == "Z") {
+    // invert all
+    _x = _sliceWidth - _x;
+    _y = _sliceHeight - _y;
 
   }
 
-  // which orientation?
-  // now replace the values according to the orientation indices
-  var _dim1 = _volume._dimensions[_ti];
-  var _dim2 = _volume._dimensions[_tj];
+  // map indices to xy coordinates
+  _x = _currentSlice._wmin + _x*_currentSlice._widthSpacing;
+  _y = _currentSlice._hmin + _y*_currentSlice._heightSpacing;
 
-  if (_volume._normcosine[_tk][1] != 0) {
+  var _xyz = goog.vec.Vec4.createFloat32FromValues(_x, _y, _z, 1);
+  var _ijk = goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.multVec4(_currentSlice._XYToIJK, _xyz, _ijk);
+  var _ras = goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.multVec4(_currentSlice._XYToRAS, _xyz, _ras);
 
-    // IF CORONAL, switch rows and cols
-    // re-map index according to rows/cols switch
-    // update directions
-    var _tmp_dim = _dim1;
-    _dim1 = _dim2;
-    _dim2 = _tmp_dim;
-    
-    var _tmp = _tj;
-    _tj = _tk;
-    _tk = _tmp;
+  var _dx = _volume._childrenInfo[0]._sliceNormal[0]*_ras[0]
+    + _volume._childrenInfo[0]._sliceNormal[1]*_ras[1]
+    + _volume._childrenInfo[0]._sliceNormal[2]*_ras[2]
+    + _volume._childrenInfo[0]._originD;
 
+  var _ix = Math.round(_dx/Math.abs(_volume._childrenInfo[0]._sliceSpacing));
+
+   if(_ix >= _volume._childrenInfo[0]._nb){
+     _ix = _volume._childrenInfo[0]._nb - 1;
+   }
+   else if(_ix < 0){
+     _ix = 0;
+    }
+
+  var _dy = _volume._childrenInfo[1]._sliceNormal[0]*_ras[0]
+    + _volume._childrenInfo[1]._sliceNormal[1]*_ras[1]
+    + _volume._childrenInfo[1]._sliceNormal[2]*_ras[2]
+    + _volume._childrenInfo[1]._originD;;
+
+  var _iy = Math.round(_dy/Math.abs(_volume._childrenInfo[1]._sliceSpacing));
+
+  if(_iy >= _volume._childrenInfo[1]._nb){
+     _iy = _volume._childrenInfo[1]._nb - 1;
+  }
+  else if(_iy < 0) {
+    _iy = 0;
   }
 
-  if (_volume._normcosine[2][1] != 0) {
-    var _tmp_dim = _dim1;
-    _dim1 = _dim2;
-    _dim2 = _tmp_dim;
-    // if coronally acquired
-    var _tmp = _tj;
-    _tj = _tk;
-    _tk = _tmp;
+  // get plane distance from the origin
+  var _dz = _volume._childrenInfo[2]._sliceNormal[0]*_ras[0]
+    + _volume._childrenInfo[2]._sliceNormal[1]*_ras[1]
+    + _volume._childrenInfo[2]._sliceNormal[2]*_ras[2]
+    + _volume._childrenInfo[2]._originD;
+  var _iz = Math.round(_dz/Math.abs(_volume._childrenInfo[2]._sliceSpacing));
 
+  if(_iz >= _volume._childrenInfo[2]._nb){
+    _iz = _volume._childrenInfo[2]._nb - 1;
+  }
+  else if(_iz < 0){
+    // translate origin by distance
+    _iz = 0;
   }
 
-  // pre-fill the output array with the current volume indices
-  var _ijk = [Math.floor(_volume._indexX), Math.floor(_volume._indexY),
-              Math.floor(_volume._indexZ)];
-
-  // which convention?
-  // PIXEL mapping depending on the convention
-  if (this._radiological) {
-
-    // IF RADIOLOGY CONVENTION
-    // right of image is left of patient -> invert X as in SAGITTAL
-    _a = Math.floor(_dim1 -
-        (((x - _image_left2xy) / _sliceWidthScaled) * _dim1));
-
-  } else {
-
-    _a = Math.floor((((x - _image_left2xy) / _sliceWidthScaled) * _dim1));
-
-  }
-
-  _b = Math.floor(_dim2 - (((y - _image_top2xy) / _sliceHeightScaled) * _dim2));
-
-  // check if we are out of bounds
-  if (_a < 0 || _a >= _dim1) {
-
-    return null;
-
-  }
-
-  if (_b < 0 || _b >= _dim2) {
-
-    return null;
-
-  }
-
-  // the indices also indicate which part of IJK to replace by a and b
-  _ijk[_tj] = _a;
-  _ijk[_tk] = _b;
-
-  return _ijk;
-
+  // index, ijk and ras
+  return [[_ix, _iy, _iz], [_ijk[0], _ijk[1], _ijk[2]], [_ras[0], _ras[1], _ras[2]]];
 };
 
 
@@ -925,6 +902,32 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   }
 
+  var _volume = this._topLevelObjects[0];
+  var _currentSlice = null;
+  if (this._orientationIndex == 0) {
+
+    _currentSlice = _volume['indexX'];
+
+  } else if (this._orientationIndex == 1) {
+
+    _currentSlice = _volume['indexY'];
+
+  } else {
+
+    _currentSlice = _volume['indexZ'];
+
+  }
+
+  //if slice do not exist yet, we have to set slice dimensions
+  var _width2 = this._slices[parseInt(_currentSlice, 10)]._iWidth;
+  var _height2 = this._slices[parseInt(_currentSlice, 10)]._iHeight;
+  // spacing
+  this._sliceWidthSpacing = this._slices[parseInt(_currentSlice, 10)]._widthSpacing;
+  this._sliceHeightSpacing = this._slices[parseInt(_currentSlice, 10)]._heightSpacing;
+  // .. and store the dimensions
+  this._sliceWidth = _width2;
+  this._sliceHeight = _height2;
+
   //
   // grab the camera settings
 
@@ -942,39 +945,26 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   this._context.restore();
 
   // transform the canvas according to the view matrix
-  var _x = 1 * _view[12];
-  var _y = -1 * _view[13]; // we need to flip y here
-
   // .. this includes zoom
-  var _normalizedScale = Math.max(_view[14], 0.6);
+  var _normalizedScale = Math.max(_view[14], 0.1);
+
   this._context.setTransform(_normalizedScale, 0, 0, _normalizedScale, 0, 0);
 
+  // .. and pan
+  // we need to flip y here
+  var _x = 1 * _view[12];
+  var _y = -1 * _view[13];
   //
   // grab the volume and current slice
   //
-  var _volume = this._topLevelObjects[0];
+
   var _labelmap = _volume._labelmap;
   var _labelmapShowOnlyColor = null;
+
   if (_labelmap) {
 
     // since there is a labelmap, get the showOnlyColor property
     _labelmapShowOnlyColor = _volume._labelmap._showOnlyColor;
-
-  }
-
-  var xyz = this._orientationIndex;
-  var _currentSlice = null;
-  if (xyz == 0) {
-
-    _currentSlice = _volume['indexX'];
-
-  } else if (xyz == 1) {
-
-    _currentSlice = _volume['indexY'];
-
-  } else {
-
-    _currentSlice = _volume['indexZ'];
 
   }
 
@@ -1007,9 +997,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _labelPixels = _labelmapData.data;
   var _pixelsLength = _pixels.length;
 
-  var _orientation = _volume._orientation;
-  var _normcosine = _volume._normcosine;
-
   // threshold values
   var _maxScalarRange = _volume._max;
   var _lowerThreshold = _volume._lowerThreshold;
@@ -1030,6 +1017,15 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       .compare(_labelmapShowOnlyColor, this._labelmapShowOnlyColor, 0, 0, 4)));
 
   if (_redraw_required) {
+    // update FBs with new size
+    // has to be there, not sure why, too slow to be in main loop?
+     var _frameBuffer = this._frameBuffer;
+    _frameBuffer.width = _width2;
+    _frameBuffer.height = _height2;
+
+    var _frameBuffer2 = this._labelFrameBuffer;
+    _frameBuffer2.width = _width2;
+    _frameBuffer2.height = _height2;
 
     // loop through the pixels and draw them to the invisible canvas
     // from bottom right up
@@ -1096,155 +1092,48 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
       }
 
-      // 1- SETUP THE PARSING DIRECTION AND INDICES BASED ON ORIENTATION
-      // AND CONVENTION
-      var _ti = xyz;
-      var _tj = (_ti + 1) % 3;
-      var _tk = (_ti + 2) % 3;
-      var _tmp_indx = _index;
-      var _oi = _orientation[_ti];
-      var _oj = _orientation[_tj];
-
-      if (_normcosine[_tk][0] != 0) {
-
-        // IF SAGITTAL, invert row orientation
-        if (_normcosine[2][1] != 0) {
-
-          // if coronally acquired
-          _index = 4 * (((_index / 4) % (_sliceHeight)) * _sliceWidth + Math
-              .floor((_index / 4) / _sliceHeight));
-
-          // update directions
-          _oi = -_orientation[_tj];
-          _oj = _orientation[_ti];
-
-        } else {
-
-          _oi *= -1;
-
-        }
-
-      } else if (_normcosine[_tk][1] != 0) {
-
-        // IF CORONAL, switch rows and cols
-        // re-map index according to rows/cols switch
-        if (_normcosine[2][1] == 0) {
-
-          _index = 4 * (((_index / 4) % (_sliceHeight)) * _sliceWidth + Math
-              .floor((_index / 4) / _sliceHeight));
-
-          // update directions
-          _oi = _orientation[_tj];
-          _oj = _orientation[_ti];
-
-        }
-
-        if (this._radiological) {
-
-          // IF RADIOLOGY CONVENTION
-          // right of image is left of patient -> invert X as in SAGITTAL
-          _oi *= -1;
-
-        }
-
-      } else {
-
-        if (_normcosine[2][1] != 0) {
-
-          // if coronally acquired
-          _index = 4 * (((_index / 4) % (_sliceHeight)) * _sliceWidth + Math
-              .floor((_index / 4) / _sliceHeight));
-
-          // update directions
-          _oi = _orientation[_tj];
-          _oj = _orientation[_ti];
-
-        }
-
-        if (this._radiological) {
-
-          // IF RADIOLOGY CONVENTION
-          // right of image is left of patient -> invert X as in SAGITTAL
-          _oi *= -1;
-
-        }
-
+      if(this._orientation == "X"){
+        // invert nothing
+        _pixels[_index] = _color[0]; // r
+        _pixels[_index + 1] = _color[1]; // g
+        _pixels[_index + 2] = _color[2]; // b
+        _pixels[_index + 3] = _color[3]; // a
+        _labelPixels[_index] = _label[0]; // r
+        _labelPixels[_index + 1] = _label[1]; // g
+        _labelPixels[_index + 2] = _label[2]; // b
+        _labelPixels[_index + 3] = _label[3]; // a
       }
-      // PIXEL mapping depending on the orientations
-      if (_oi == 1) {
-
-        if (_oj == 1) {
-
-          // 1, 1
-          // invert rows
-          var _invertedIndex = (4 * _sliceWidth) *
-              (_sliceHeight - Math.floor(_index / (4 * _sliceWidth))) + _index %
-              (4 * _sliceWidth);
-          _pixels[_invertedIndex] = _color[0]; // r
-          _pixels[_invertedIndex + 1] = _color[1]; // g
-          _pixels[_invertedIndex + 2] = _color[2]; // b
-          _pixels[_invertedIndex + 3] = _color[3]; // a
-          _labelPixels[_invertedIndex] = _label[0]; // r
-          _labelPixels[_invertedIndex + 1] = _label[1]; // g
-          _labelPixels[_invertedIndex + 2] = _label[2]; // b
-          _labelPixels[_invertedIndex + 3] = _label[3]; // a
-
-        } else {
-
-          // 1, -1
-          // invert nothing
-          _pixels[_index] = _color[0]; // r
-          _pixels[_index + 1] = _color[1]; // g
-          _pixels[_index + 2] = _color[2]; // b
-          _pixels[_index + 3] = _color[3]; // a
-          _labelPixels[_index] = _label[0]; // r
-          _labelPixels[_index + 1] = _label[1]; // g
-          _labelPixels[_index + 2] = _label[2]; // b
-          _labelPixels[_index + 3] = _label[3]; // a
-
-        }
-
-      } else {
-
-        if (_oj == 1) {
-
-          // -1, 1
-          // invert all
-          var _invertedIndex = _pixelsLength - 1 - _index;
-          _pixels[_invertedIndex - 3] = _color[0]; // r
-          _pixels[_invertedIndex - 2] = _color[1]; // g
-          _pixels[_invertedIndex - 1] = _color[2]; // b
-          _pixels[_invertedIndex] = _color[3]; // a
-          _labelPixels[_invertedIndex - 3] = _label[0]; // r
-          _labelPixels[_invertedIndex - 2] = _label[1]; // g
-          _labelPixels[_invertedIndex - 1] = _label[2]; // b
-          _labelPixels[_invertedIndex] = _label[3]; // a
-
-        } else {
-
-          // -1, -1
-          // invert cols
-          var _invertedIndex = (4 * _sliceWidth) *
-              (Math.floor(_index / (4 * _sliceWidth))) - _index %
-              (4 * _sliceWidth);
-          _pixels[_invertedIndex] = _color[0]; // r
-          _pixels[_invertedIndex + 1] = _color[1]; // g
-          _pixels[_invertedIndex + 2] = _color[2]; // b
-          _pixels[_invertedIndex + 3] = _color[3]; // a
-          _labelPixels[_invertedIndex] = _label[0]; // r
-          _labelPixels[_invertedIndex + 1] = _label[1]; // g
-          _labelPixels[_invertedIndex + 2] = _label[2]; // b
-          _labelPixels[_invertedIndex + 3] = _label[3]; // a
-
-        }
-
+      else if(this._orientation == "Y"){
+        // invert cols
+        var _invertedIndex = (4 * _sliceWidth) *
+          (Math.floor(_index / (4 * _sliceWidth))) - _index %
+          (4 * _sliceWidth);
+        _pixels[_invertedIndex] = _color[0]; // r
+        _pixels[_invertedIndex + 1] = _color[1]; // g
+        _pixels[_invertedIndex + 2] = _color[2]; // b
+        _pixels[_invertedIndex + 3] = _color[3]; // a
+        _labelPixels[_invertedIndex] = _label[0]; // r
+        _labelPixels[_invertedIndex + 1] = _label[1]; // g
+        _labelPixels[_invertedIndex + 2] = _label[2]; // b
+        _labelPixels[_invertedIndex + 3] = _label[3]; // a
+      }
+      else{
+        // invert all
+        var _invertedIndex = _pixelsLength - 1 - _index;
+        _pixels[_invertedIndex - 3] = _color[0]; // r
+        _pixels[_invertedIndex - 2] = _color[1]; // g
+        _pixels[_invertedIndex - 1] = _color[2]; // b
+        _pixels[_invertedIndex] = _color[3]; // a
+        _labelPixels[_invertedIndex - 3] = _label[0]; // r
+        _labelPixels[_invertedIndex - 2] = _label[1]; // g
+        _labelPixels[_invertedIndex - 1] = _label[2]; // b
+        _labelPixels[_invertedIndex] = _label[3]; // a
       }
 
-      // var _tmp_indx = _index;
-      _index = _tmp_indx + 4; // increase by 4 units for r,g,b,a
+      _index += 4; // increase by 4 units for r,g,b,a
 
     } while (_index < _pixelsLength);
-
+    
     // store the generated image data to the frame buffer context
     _imageFBContext.putImageData(_imageData, 0, 0);
     _labelFBContext.putImageData(_labelmapData, 0, 0);
@@ -1277,6 +1166,17 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // move to the middle
   this._context.translate(_width / 2 / _normalizedScale, _height / 2 /
       _normalizedScale);
+
+  // Rotate the Sagittal viewer
+  if(this._orientation == "X") {
+
+    this._context.rotate(Math.PI * 0.5);
+
+    var _buf = _x;
+    _x = _y;
+    _y = -_buf;
+
+  }
 
   var _offset_x = -_sliceWidth * this._sliceWidthSpacing / 2 + _x;
   var _offset_y = -_sliceHeight * this._sliceHeightSpacing / 2 + _y;
@@ -1313,20 +1213,24 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
         // // we are over the slice
         // update the volume
-        _volume._indexX = ijk[0];
-        _volume._indexY = ijk[1];
-        _volume._indexZ = ijk[2];
+        _volume._indexX = ijk[0][0];
+        _volume._indexY = ijk[0][1];
+        _volume._indexZ = ijk[0][2];
         _volume.modified(false);
 
-        // draw the navigators (we add 0.5 to the coords to get crisp 1px lines)
+        // draw the navigators
         // see http://diveintohtml5.info/canvas.html#paths
 
         // in x-direction
         this._context.setTransform(1, 0, 0, 1, 0, 0);
         this._context.lineWidth = 1;
         this._context.beginPath();
-        this._context.moveTo(this._interactor._mousePosition[0] + 0.5, 0);
-        this._context.lineTo(this._interactor._mousePosition[0] + 0.5,
+        this._context.moveTo(this._interactor._mousePosition[0], 0);
+        this._context.lineTo(this._interactor._mousePosition[0],
+            this._interactor._mousePosition[1] - 10);
+        this._context.moveTo(this._interactor._mousePosition[0],
+            this._interactor._mousePosition[1] + 10);
+        this._context.lineTo(this._interactor._mousePosition[0],
             this._height);
         this._context.strokeStyle = this._orientationColors[0];
         this._context.stroke();
@@ -1334,12 +1238,46 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
         // in y-direction
         this._context.beginPath();
-        this._context.moveTo(0, this._interactor._mousePosition[1] + 0.5);
+        this._context.moveTo(0, this._interactor._mousePosition[1]);
+        this._context.lineTo(this._interactor._mousePosition[0] - 10,
+            this._interactor._mousePosition[1]);
+        this._context.moveTo(this._interactor._mousePosition[0] + 10, this._interactor._mousePosition[1] + 0.5);
         this._context.lineTo(this._width,
-            this._interactor._mousePosition[1] + 0.5);
+            this._interactor._mousePosition[1]);
         this._context.strokeStyle = this._orientationColors[1];
         this._context.stroke();
         this._context.closePath();
+
+        // write ijk coordinates
+        this._context.font = '10pt Arial';
+        // textAlign aligns text horizontally relative to placement
+        this._context.textAlign = 'left';
+        // textBaseline aligns text vertically relative to font style
+        this._context.textBaseline = 'top';
+        this._context.fillStyle = 'white';
+        this._context.fillText('RAS: ' + ijk[2][0].toFixed(2) + ', ' + ijk[2][1].toFixed(2) + ', ' + ijk[2][2].toFixed(2), 0, 0);
+
+        var _value = 'undefined';
+        var _valueLM = 'undefined';
+        var _valueCT = 'undefined';
+        if(typeof _volume._IJKVolume[ijk[1][2].toFixed(0)] != 'undefined' && typeof _volume._IJKVolume[ijk[1][2].toFixed(0)][ijk[1][1].toFixed(0)] != 'undefined'){
+          _value = _volume._IJKVolume[ijk[1][2].toFixed(0)][ijk[1][1].toFixed(0)][ijk[1][0].toFixed(0)];
+          if(_volume.hasLabelMap){
+            _valueLM = _volume._labelmap._IJKVolume[ijk[1][2].toFixed(0)][ijk[1][1].toFixed(0)][ijk[1][0].toFixed(0)];
+            if(_volume._labelmap._colorTable){
+              _valueCT = _volume._labelmap._colorTable.get(_valueLM);
+              if(typeof _valueCT != 'undefined'){
+              _valueCT = _valueCT[0];
+              }
+            }
+          }
+        }
+        // get pixel value
+        this._context.fillText('Background:  ' + _value + ' ('+ ijk[1][0].toFixed(0) + ', ' + ijk[1][1].toFixed(0) + ', ' + ijk[1][2].toFixed(0) + ')', 0, 15);
+        // if any label map
+        if(_volume.hasLabelMap){
+          this._context.fillText('Labelmap:  ' + _valueCT + ' ('+ _valueLM + ')', 0, 30);
+        }
 
       }
 
