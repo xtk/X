@@ -2253,33 +2253,50 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon) {
   // find the intersection of the ray with the bounding box
 
   // first, reconstruct the box coordinates from the boundingbox
-  // var A = [objects._points._minA, objects._points._minB, objects._points._minC];
-  // var B = [objects._points._maxA, objects._points._minB, objects._points._minC];
-  // var C = [objects._points._maxA, objects._points._maxB, objects._points._minC];
-  // var D = [objects._points._minA, objects._points._maxB, objects._points._minC];
-  // var E = [objects._points._minA, objects._points._maxB, objects._points._maxC];
-  // var F = [objects._points._minA, objects._points._minB, objects._points._maxC];
-  // var G = [objects._points._maxA, objects._points._maxB, objects._points._maxC];
-  // var H = [objects._points._maxA, objects._points._minB, objects._points._maxC];
-  // // transform all box coordinates
-  // A = X.matrix.multiplyByVector(object.transform.matrix, A[0], A[1], A[2]);
-  // B = X.matrix.multiplyByVector(object.transform.matrix, B[0], B[1], B[2]);
-  // C = X.matrix.multiplyByVector(object.transform.matrix, C[0], C[1], C[2]);
-  // D = X.matrix.multiplyByVector(object.transform.matrix, D[0], D[1], D[2]);
-  // E = X.matrix.multiplyByVector(object.transform.matrix, E[0], E[1], E[2]);
-  // F = X.matrix.multiplyByVector(object.transform.matrix, F[0], F[1], F[2]);
-  // G = X.matrix.multiplyByVector(object.transform.matrix, G[0], G[1], G[2]);
-  // H = X.matrix.multiplyByVector(object.transform.matrix, H[0], H[1], H[2]);
+  var A = [object._points._minA, object._points._minB, object._points._minC];
+  var B = [object._points._maxA, object._points._minB, object._points._minC];
+  var C = [object._points._maxA, object._points._maxB, object._points._minC];
+  var D = [object._points._minA, object._points._maxB, object._points._minC];
+  var E = [object._points._minA, object._points._maxB, object._points._maxC];
+  var F = [object._points._minA, object._points._minB, object._points._maxC];
+  var G = [object._points._maxA, object._points._maxB, object._points._maxC];
+  var H = [object._points._maxA, object._points._minB, object._points._maxC];
+  // transform all box coordinates
+  var transformed_points = [X.matrix.multiplyByVector(object._transform.matrix, A[0], A[1], A[2]),
+    X.matrix.multiplyByVector(object._transform.matrix, B[0], B[1], B[2]),
+    X.matrix.multiplyByVector(object._transform.matrix, C[0], C[1], C[2]),
+    X.matrix.multiplyByVector(object._transform.matrix, D[0], D[1], D[2]),
+    X.matrix.multiplyByVector(object._transform.matrix, E[0], E[1], E[2]),
+    X.matrix.multiplyByVector(object._transform.matrix, F[0], F[1], F[2]),
+    X.matrix.multiplyByVector(object._transform.matrix, G[0], G[1], G[2]),
+    X.matrix.multiplyByVector(object._transform.matrix, H[0], H[1], H[2])];
+
+  // now create a bigger bounding box around the maybe rotated box
+  // by finding x_min, x_max, y_min, y_max, z_min, z_max
+  var extremes = [Infinity, -Infinity, Infinity, -Infinity, Infinity, -Infinity];
+  for (var t in transformed_points) {
+
+    t = transformed_points[t];
+
+    extremes = [Math.min(extremes[0], t.x), 
+                Math.max(extremes[1], t.x), 
+                Math.min(extremes[2], t.y), 
+                Math.max(extremes[3], t.y), 
+                Math.min(extremes[4], t.z), 
+                Math.max(extremes[5], t.z)];
+
+  }
 
 
-  var minA = X.matrix.multiplyByVector(object._transform.matrix, object._points._minA, 0, 0);
-  var maxA = X.matrix.multiplyByVector(object._transform.matrix, object._points._maxA, 0, 0);
-  var minB = X.matrix.multiplyByVector(object._transform.matrix, 0, object._points._minB, 0);
-  var maxB = X.matrix.multiplyByVector(object._transform.matrix, 0, object._points._maxB, 0);
-  var minC = X.matrix.multiplyByVector(object._transform.matrix, 0, 0, object._points._minC);
-  var maxC = X.matrix.multiplyByVector(object._transform.matrix, 0, 0, object._points._maxC);
+  // var minA = X.matrix.multiplyByVector(object._transform.matrix, object._points._minA, 0, 0);
+  // var maxA = X.matrix.multiplyByVector(object._transform.matrix, object._points._maxA, 0, 0);
+  // var minB = X.matrix.multiplyByVector(object._transform.matrix, 0, object._points._minB, 0);
+  // var maxB = X.matrix.multiplyByVector(object._transform.matrix, 0, object._points._maxB, 0);
+  // var minC = X.matrix.multiplyByVector(object._transform.matrix, 0, 0, object._points._minC);
+  // var maxC = X.matrix.multiplyByVector(object._transform.matrix, 0, 0, object._points._maxC);
   //var box = [object._points._minA, object._points._maxA, object._points._minB, object._points._maxB, object._points._minC, object._points._maxC];
-  var box = [minA.x, maxA.x, minB.y, maxB.y, minC.z, maxC.z];
+  //var box = [minA.x, maxA.x, minB.y, maxB.y, minC.z, maxC.z];
+  var box = extremes;
 
 
   //console.log(box);
@@ -2288,6 +2305,11 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon) {
   box_intersections = box_intersections[0];
   // we should always have two intersections
   // find the closest one..
+  if (box_intersections.length == 0) {
+    console.log('w')
+    return null;
+  }
+
   var distances = new Array(2);
   for (var i=0; i<2; i++) {
     var p = box_intersections[i];
