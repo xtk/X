@@ -2306,7 +2306,7 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon) {
   // we should always have two intersections
   // find the closest one..
   if (box_intersections.length == 0) {
-    console.log('w')
+    //console.log('w')
     return null;
   }
 
