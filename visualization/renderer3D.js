@@ -1323,8 +1323,8 @@ X.renderer3D.prototype.order_ = function() {
       var firstSlice = _slices[0];
 
       var _targetChild = object._volumeRenderingDirection;
-      var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0]+volume._childrenInfo[_targetChild]._sliceNormal[0], volume._RASCenter[1]+volume._childrenInfo[_targetChild]._sliceNormal[1], volume._RASCenter[2]+volume._childrenInfo[_targetChild]._sliceNormal[2]);
-      var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view,volume._RASCenter[0]-volume._childrenInfo[_targetChild]._sliceNormal[0], volume._RASCenter[1]+-volume._childrenInfo[_targetChild]._sliceNormal[1], volume._RASCenter[2]-volume._childrenInfo[_targetChild]._sliceNormal[2]);
+      var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, object._RASCenter[0]+object._childrenInfo[_targetChild]._sliceNormal[0], object._RASCenter[1]+object._childrenInfo[_targetChild]._sliceNormal[1], object._RASCenter[2]+object._childrenInfo[_targetChild]._sliceNormal[2]);
+      var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view,object._RASCenter[0]-object._childrenInfo[_targetChild]._sliceNormal[0], object._RASCenter[1]+-object._childrenInfo[_targetChild]._sliceNormal[1], object._RASCenter[2]-object._childrenInfo[_targetChild]._sliceNormal[2]);
       var dX = realCentroidVector.z - realCentroidVector2.z;
 
       if(dX > 0 && _targetChild != 0 || dX < 0 && _targetChild == 0) {
