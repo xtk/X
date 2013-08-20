@@ -1244,16 +1244,16 @@ X.renderer3D.prototype.showCaption_ = function(x, y) {
  */
 X.renderer3D.prototype.orientVolume_ = function(volume) {
 
-  var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._childrenInfo[0]._sliceNormal[0], volume._childrenInfo[0]._sliceNormal[1], volume._childrenInfo[0]._sliceNormal[2]);
-  var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, -volume._childrenInfo[0]._sliceNormal[0], -volume._childrenInfo[0]._sliceNormal[1], -volume._childrenInfo[0]._sliceNormal[2]);
+  var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0]+volume._childrenInfo[0]._sliceNormal[0],volume._RASCenter[1]+ volume._childrenInfo[0]._sliceNormal[1], volume._RASCenter[2]+volume._childrenInfo[0]._sliceNormal[2]);
+  var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view,volume._RASCenter[0]-volume._childrenInfo[0]._sliceNormal[0], volume._RASCenter[1]-volume._childrenInfo[0]._sliceNormal[1], volume._RASCenter[2]-volume._childrenInfo[0]._sliceNormal[2]);
   var dX = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
-  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._childrenInfo[1]._sliceNormal[0], volume._childrenInfo[1]._sliceNormal[1], volume._childrenInfo[1]._sliceNormal[2]);
-  realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, -volume._childrenInfo[1]._sliceNormal[0], -volume._childrenInfo[1]._sliceNormal[1], -volume._childrenInfo[1]._sliceNormal[2]);
+  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0]+volume._childrenInfo[1]._sliceNormal[0], volume._RASCenter[1]+volume._childrenInfo[1]._sliceNormal[1], volume._RASCenter[2]+volume._childrenInfo[1]._sliceNormal[2]);
+  realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0]-volume._childrenInfo[1]._sliceNormal[0], volume._RASCenter[1]-volume._childrenInfo[1]._sliceNormal[1], volume._RASCenter[2] +-volume._childrenInfo[1]._sliceNormal[2]);
   var dY = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
-  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._childrenInfo[2]._sliceNormal[0], volume._childrenInfo[2]._sliceNormal[1], volume._childrenInfo[2]._sliceNormal[2]);
-  realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, -volume._childrenInfo[1]._sliceNormal[0], -volume._childrenInfo[1]._sliceNormal[1], -volume._childrenInfo[1]._sliceNormal[2]);
+  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0]+volume._childrenInfo[2]._sliceNormal[0], volume._RASCenter[1]+volume._childrenInfo[2]._sliceNormal[1], volume._RASCenter[2]+volume._childrenInfo[2]._sliceNormal[2]);
+  realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0]-volume._childrenInfo[2]._sliceNormal[0], volume._RASCenter[1]-volume._childrenInfo[2]._sliceNormal[1], volume._RASCenter[2]-volume._childrenInfo[2]._sliceNormal[2]);
   var dZ = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
   var maxDistance = Math.max(dX, dY, dZ);
@@ -1313,9 +1313,7 @@ X.renderer3D.prototype.order_ = function() {
 
     // special case for X.volumes in volumeRendering mode
     // a) we know the volumeRendering direction and the center of the volume
-    // b) based on this we can minimize the expensive distance calculation to
-    // the first and last slices
-    // c) .. and get the distance for the other slices by simple multiplication
+    // b) check if first or last slice is the closest an order slices accordingly
     if (object instanceof X.volume && object._volumeRendering) {
 
       var _slices = object._children[object._volumeRenderingDirection]._children;
@@ -1323,32 +1321,31 @@ X.renderer3D.prototype.order_ = function() {
 
       // grab the first slice, attach the distance and opacity
       var firstSlice = _slices[0];
-      firstSlice._distance = this.distanceToEye_(firstSlice);
-      firstSlice._opacity = object._opacity;
 
-      // grab the last slice, attach the distance and opacity
-      var lastSlice = _slices[numberOfSlices - 1];
-      lastSlice._distance = this.distanceToEye_(lastSlice);
-      lastSlice._opacity = object._opacity;
+      var _targetChild = object._volumeRenderingDirection;
+      var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0]+volume._childrenInfo[_targetChild]._sliceNormal[0], volume._RASCenter[1]+volume._childrenInfo[_targetChild]._sliceNormal[1], volume._RASCenter[2]+volume._childrenInfo[_targetChild]._sliceNormal[2]);
+      var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view,volume._RASCenter[0]-volume._childrenInfo[_targetChild]._sliceNormal[0], volume._RASCenter[1]+-volume._childrenInfo[_targetChild]._sliceNormal[1], volume._RASCenter[2]-volume._childrenInfo[_targetChild]._sliceNormal[2]);
+      var dX = realCentroidVector.z - realCentroidVector2.z;
 
-      // get the distanceDifference the distanceStep
-      // if these are > 0: the firstSlice is closer to the eye
-      // if these are < 0: the lastSlice is closer to the eye
-      var distanceDifference = lastSlice._distance - firstSlice._distance;
-      var distanceStep = Math
-          .round((distanceDifference / numberOfSlices) * 1000) / 1000;
+      if(dX > 0 && _targetChild != 0 || dX < 0 && _targetChild == 0) {
 
-      // loop through all other slices in the volumeRendering direction and
-      // calculate the distance and attach the opacity
-      var s = 1;
-      for (s = 1; s < numberOfSlices - 1; s++) {
+        var s = 0;
+        for (s = 0; s < object._range[_targetChild] - 1; s++) {
 
-        var currentDistance = Math
-            .round((firstSlice._distance + (s * distanceStep)) * 1000) / 1000;
+          _slices[s]._opacity = object._opacity;
+          _slices[s]._distance =   object._childrenInfo[_targetChild]._sliceSpacing*s;
 
-        _slices[s]._distance = currentDistance;
-        _slices[s]._opacity = object._opacity;
+        }
+      }
+      else {
 
+       var s = object._range[_targetChild] - 1;
+       for (s = object._range[_targetChild] - 1; s >= 0; s--) {
+
+          _slices[s]._opacity = object._opacity;
+         _slices[s]._distance =   (object._range[_targetChild]-1)*object._childrenInfo[_targetChild]._sliceSpacing -object._childrenInfo[_targetChild]._sliceSpacing*s;
+
+        }
       }
 
       // we need to update the rendering order
