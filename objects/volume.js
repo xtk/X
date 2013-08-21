@@ -79,6 +79,15 @@ X.volume = function(volume) {
    */
   this._dimensions = [ 10, 10, 10 ];
 
+
+  /**
+   * The RAS Bonding Box of this volume.
+   *
+   * @type {!Array}
+   * @protected
+   */
+  this._BBox = [1, 1, 1];
+
   /**
    * The range of the x, y and z slices.
    *
@@ -506,6 +515,18 @@ X.volume.prototype.slicing_ = function() {
 X.volume.prototype.__defineGetter__('dimensions', function() {
 
   return this._dimensions;
+
+});
+
+/**
+ * Get the RAS Bounding Box of this volume.
+ *
+ * @return {!Array} The dimensions of this volume.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('bbox', function() {
+
+  return this._BBox;
 
 });
 
@@ -981,7 +1002,7 @@ X.volume.prototype.__defineGetter__('xNormZ', function() {
 /**
  * Set value of slice X color.
  *
- * @param {!array} xColor [0-1, 0-1, 0-1].
+ * @param {!Array} xColor [0-1, 0-1, 0-1].
  *
  * @public
  */
@@ -994,7 +1015,7 @@ X.volume.prototype.__defineSetter__('xColor', function(xColor) {
 /**
  * Get value of slice X color.
  *
- * @return {!array} xColor.
+ * @return {!Array} xColor.
  *
  * @public
  */
@@ -1085,7 +1106,7 @@ X.volume.prototype.__defineGetter__('yNormZ', function() {
 /**
  * Set value of slice Y color.
  *
- * @param {!array} yColor [0-1, 0-1, 0-1].
+ * @param {!Array} yColor [0-1, 0-1, 0-1].
  *
  * @public
  */
@@ -1098,7 +1119,7 @@ X.volume.prototype.__defineSetter__('yColor', function(yColor) {
 /**
  * Get value of slice Y color.
  *
- * @return {!array} yColor.
+ * @return {!Array} yColor.
  *
  * @public
  */
@@ -1117,7 +1138,7 @@ X.volume.prototype.__defineGetter__('yColor', function() {
  */
 X.volume.prototype.__defineSetter__('zNormX', function(zNormX) {
 
-  this._childrenInfo[2]._sliceNormal[0] = xNormX;
+  this._childrenInfo[2]._sliceNormal[0] = zNormX;
 
 });
 
@@ -1189,7 +1210,7 @@ X.volume.prototype.__defineGetter__('zNormZ', function() {
 /**
  * Set value of slice Z color.
  *
- * @param {!array} zColor [0-1, 0-1, 0-1].
+ * @param {!Array} zColor [0-1, 0-1, 0-1].
  *
  * @public
  */
@@ -1202,7 +1223,7 @@ X.volume.prototype.__defineSetter__('zColor', function(zColor) {
 /**
  * Get value of slice Z color.
  *
- * @return {!array} zColor.
+ * @return {!Array} zColor.
  *
  * @public
  */
@@ -1346,7 +1367,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
         var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
         this._labelmap._children[direction]._children[i] = _sliceLabel;
         // add it to create the texture
-        this._labelmap._children[index].modified(true);
+        this._labelmap._children[direction].modified(true);
       }
 
       var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null);
@@ -1360,7 +1381,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
       _child._children[i] = _slice;
 
       // add it to renderer!
-      this._children[index].modified(true);
+      this._children[direction].modified(true);
     }
     
     _child._children[i]._visible = true;
