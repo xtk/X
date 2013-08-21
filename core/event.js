@@ -122,6 +122,9 @@ X.event.events = {
   
   // the object modified event
   MODIFIED: X.event.uniqueId('modified'),
+
+  // the object remove event
+  REMOVE: X.event.uniqueId('remove'),
   
   // the loading progress event
   PROGRESS: X.event.uniqueId('progress'),
@@ -384,6 +387,37 @@ X.event.ModifiedEvent = function() {
 };
 // inherit from goog.events.Event
 goog.inherits(X.event.ModifiedEvent, X.event);
+
+/**
+ * The remove event to flag an object as 'dirty'.
+ * 
+ * @constructor
+ * @extends X.event
+ */
+X.event.RemoveEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.event.events.REMOVE);
+  
+  /**
+   * The object which will bele deleted.
+   * 
+   * @type {?X.object}
+   * @protected
+   */
+  this._object = null;
+  
+  /**
+   * A container for an X.base derived instance.
+   * 
+   * @type{?X.base}
+   * @protected
+   */
+  this._container = null;
+  
+};
+// inherit from goog.events.Event
+goog.inherits(X.event.RemoveEvent, X.event);
 
 
 /**
