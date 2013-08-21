@@ -152,38 +152,6 @@ X.volume = function(volume) {
   this._indexZold = 0;
 
   /**
-   * The index of the shown slice in Left-Right direction.
-   *
-   * @type {!number}
-   * @protected
-   */
-  this._indexLR = 0;
-
-  /**
-   * The index of the shown slice in Posterior-Anterior direction.
-   *
-   * @type {!number}
-   * @protected
-   */
-  this._indexPA = 0;
-
-  /**
-   * The index of the shown slice in Inferior-Superior direction.
-   *
-   * @type {!number}
-   * @protected
-   */
-  this._indexIS = 0;
-
-  /**
-   * The dimensions of this volume 0: SAGITTAL, 1: CORONAL, 2: AXIAL.
-   *
-   * @type {!Array}
-   * @protected
-   */
-  this._dimensionsRAS = [ 10, 10, 10 ];
-
-  /**
    * The X.object holding the slices in X-direction.
    *
    * @type {!X.object}
@@ -272,46 +240,6 @@ X.volume = function(volume) {
   this._reslicing = true;
 
   /**
-   * The space in which the image was acquired.
-   *
-   * @type {!Array}
-   * @protected
-   */
-  this._space = [ 'left', 'posterior', 'superior' ];
-
-  /**
-   * The image orientation
-   *
-   * @type {!Array}
-   * @protected
-   */
-  this._spaceorientation = [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
-
-  /**
-   * The image orientation in RAS space
-   *
-   * @type {!Array}
-   * @protected
-   */
-  this._rasspaceorientation = [ -1, 0, 0, 0, -1, 0, 0, 0, 1 ];
-
-  /**
-   * The orientation of each cosine
-   *
-   * @type {!Array}
-   * @protected
-   */
-  this._orientation = [ -1, -1, 1 ];
-
-  /**
-   * The normalized cosines
-   *
-   * @type {!Array}
-   * @protected
-   */
-  this._normcosine = [ [ -1, 0, 0 ], [ 0, -1, 0 ], [ 0, 0, 1 ] ];
-
-  /**
    * The max intensity in the image
    *
    * @type {!number}
@@ -370,11 +298,6 @@ X.volume.prototype.copy_ = function(volume) {
   this._slicesY = new X.object(volume._slicesY);
   this._slicesZ = new X.object(volume._slicesZ);
 
-  this._space = volume.space;
-  this._spaceorientation = volume._spaceorientation;
-  this._rasspaceorientation = volume._rasspaceorientation;
-  this._orientation = volume._orientation;
-  this._normcosine = volume._normcosine;
   this._max = volume._max;
   this._data = volume._data;
 
@@ -542,7 +465,7 @@ X.volume.prototype.slicing_ = function() {
         var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
         this._labelmap._children[xyz]._children[parseInt(currentIndex, 10)] = _sliceLabel;
         // add it to create the texture
-        this._container.add(_sliceLabel);
+        this._labelmap._children[xyz].modified(true);
       }
 
       var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._IJKVolume, this, true, null);
@@ -555,7 +478,7 @@ X.volume.prototype.slicing_ = function() {
       _child._children[parseInt(currentIndex, 10)] = _slice;
 
       // add it to renderer!
-      this._container.add(_slice);
+      this._children[xyz].modified(true);
     }
     // DONE RESLICING!
 
@@ -977,6 +900,404 @@ X.volume.prototype.__defineSetter__('reslicing', function(reslicing) {
 
 });
 
+/**
+ * Set value of normal X of slice X.
+ *
+ * @param {number} xNormX Value between -1 and 1.
+*
+ * @public
+ */
+X.volume.prototype.__defineSetter__('xNormX', function(xNormX) {
+
+  this._childrenInfo[0]._sliceNormal[0] = xNormX;
+
+});
+
+/**
+ * Get value of normal X of slice X.
+ *
+ * @return {number} xNormX.
+ *
+ * @public
+ */
+X.volume.prototype.__defineGetter__('xNormX', function() {
+
+  return this._childrenInfo[0]._sliceNormal[0] ;
+
+});
+
+/**
+ * Set value of normal Y of slice X.
+ *
+ * @param {number} xNormY Value between -1 and 1.
+*
+ * @public
+ */
+X.volume.prototype.__defineSetter__('xNormY', function(xNormY) {
+
+  this._childrenInfo[0]._sliceNormal[1] = xNormY;
+
+});
+
+/**
+ * Get value of normal Y of slice X.
+ *
+ * @return {number} xNormY.
+ *
+ * @public
+ */
+ X.volume.prototype.__defineGetter__('xNormY', function() {
+
+  return this._childrenInfo[0]._sliceNormal[1];
+
+});
+
+/**
+ * Set value of normal Z of slice X.
+ *
+ * @param {number} xNormZ Value between -1 and 1.
+*
+ * @public
+ */
+X.volume.prototype.__defineSetter__('xNormZ', function(xNormZ) {
+
+  this._childrenInfo[0]._sliceNormal[2] = xNormZ;
+
+});
+
+/**
+ * Get value of normal Z of slice X.
+ *
+ * @return {number} xNormZ.
+ *
+ * @public
+ */
+X.volume.prototype.__defineGetter__('xNormZ', function() {
+
+  return this._childrenInfo[0]._sliceNormal[2];
+
+});
+
+/**
+ * Set value of slice X color.
+ *
+ * @param {!array} xColor [0-1, 0-1, 0-1].
+ *
+ * @public
+ */
+X.volume.prototype.__defineSetter__('xColor', function(xColor) {
+
+  this._childrenInfo[0]._color = xColor;
+
+});
+
+/**
+ * Get value of slice X color.
+ *
+ * @return {!array} xColor.
+ *
+ * @public
+ */
+X.volume.prototype.__defineGetter__('xColor', function() {
+
+  return this._childrenInfo[0]._color;
+
+});
+
+/**
+ * Set value of normal X of slice Y.
+ *
+ * @param {number} yNormX Value between -1 and 1.
+*
+ * @public
+ */
+X.volume.prototype.__defineSetter__('yNormX', function(yNormX) {
+
+  this._childrenInfo[1]._sliceNormal[0] = yNormX;
+
+});
+
+/**
+ * Get value of normal X of slice X.
+ *
+ * @return {number} yNormX.
+ *
+ * @public
+ */
+X.volume.prototype.__defineGetter__('yNormX', function() {
+
+  return this._childrenInfo[1]._sliceNormal[0] ;
+
+});
+
+/**
+ * Set value of normal Y of slice X.
+ *
+ * @param {number} yNormY Value between -1 and 1.
+*
+ * @public
+ */
+X.volume.prototype.__defineSetter__('yNormY', function(yNormY) {
+
+  this._childrenInfo[1]._sliceNormal[1] = yNormY;
+
+});
+
+/**
+ * Get value of normal Y of slice Y.
+ *
+ * @return {number} yNormY.
+ *
+ * @public
+ */
+ X.volume.prototype.__defineGetter__('yNormY', function() {
+
+  return this._childrenInfo[1]._sliceNormal[1];
+
+});
+
+/**
+ * Set value of normal Z of slice Y.
+ *
+ * @param {number} yNormZ Value between -1 and 1.
+*
+ * @public
+ */
+X.volume.prototype.__defineSetter__('yNormZ', function(yNormZ) {
+
+  this._childrenInfo[1]._sliceNormal[2] = yNormZ;
+
+});
+
+/**
+ * Get value of normal Z of slice Y.
+ *
+ * @return {number} yNormZ.
+ *
+ * @public
+ */
+X.volume.prototype.__defineGetter__('yNormZ', function() {
+
+  return this._childrenInfo[1]._sliceNormal[2];
+
+});
+
+/**
+ * Set value of slice Y color.
+ *
+ * @param {!array} yColor [0-1, 0-1, 0-1].
+ *
+ * @public
+ */
+X.volume.prototype.__defineSetter__('yColor', function(yColor) {
+
+  this._childrenInfo[1]._color = yColor;
+
+});
+
+/**
+ * Get value of slice Y color.
+ *
+ * @return {!array} yColor.
+ *
+ * @public
+ */
+X.volume.prototype.__defineGetter__('yColor', function() {
+
+  return this._childrenInfo[1]._color;
+
+});
+
+/**
+ * Set value of normal X of slice Z.
+ *
+ * @param {number} zNormX Value between -1 and 1.
+*
+ * @public
+ */
+X.volume.prototype.__defineSetter__('zNormX', function(zNormX) {
+
+  this._childrenInfo[2]._sliceNormal[0] = xNormX;
+
+});
+
+/**
+ * Get value of normal X of slice Z.
+ *
+ * @return {number} zNormX.
+ *
+ * @public
+ */
+X.volume.prototype.__defineGetter__('zNormX', function() {
+
+  return this._childrenInfo[2]._sliceNormal[0] ;
+
+});
+
+/**
+ * Set value of normal Y of slice Z.
+ *
+ * @param {number} zNormY Value between -1 and 1.
+*
+ * @public
+ */
+X.volume.prototype.__defineSetter__('zNormY', function(zNormY) {
+
+  this._childrenInfo[2]._sliceNormal[1] = zNormY;
+
+});
+
+/**
+ * Get value of normal Y of slice X.
+ *
+ * @return {number} zNormY.
+ *
+ * @public
+ */
+ X.volume.prototype.__defineGetter__('zNormY', function() {
+
+  return this._childrenInfo[2]._sliceNormal[1];
+
+});
+
+/**
+ * Set value of normal Z of slice Z.
+ *
+ * @param {number} zNormZ Value between -1 and 1.
+*
+ * @public
+ */
+X.volume.prototype.__defineSetter__('zNormZ', function(zNormZ) {
+
+  this._childrenInfo[2]._sliceNormal[2] = zNormZ;
+
+});
+
+/**
+ * Get value of normal Z of slice X.
+ *
+ * @return {number} zNormZ.
+ *
+ * @public
+ */
+X.volume.prototype.__defineGetter__('zNormZ', function() {
+
+  return this._childrenInfo[2]._sliceNormal[2];
+
+});
+
+/**
+ * Set value of slice Z color.
+ *
+ * @param {!array} zColor [0-1, 0-1, 0-1].
+ *
+ * @public
+ */
+X.volume.prototype.__defineSetter__('zColor', function(zColor) {
+
+  this._childrenInfo[2]._color = zColor;
+
+});
+
+/**
+ * Get value of slice Z color.
+ *
+ * @return {!array} zColor.
+ *
+ * @public
+ */
+X.volume.prototype.__defineGetter__('zColor', function() {
+
+  return this._childrenInfo[2]._color;
+
+});
+
+/**
+ * Recompute the slice information.
+ * Only supports normals and color for now.
+ * Todo: origin
+ *
+ * @param {number}
+ *          index Slice to be updated.
+ *
+ * @public
+ */
+X.volume.prototype.sliceInfoChanged = function(index){
+  // Hide slices
+  var _child = this._children[index];
+  _child['visible'] = false;
+
+  // delete all textures attached to 1 child
+  // for each child
+
+  for(var i=0; i<_child._children.length; i++){
+    if(typeof _child._children[i] != 'undefined'){
+      if(this.hasLabelMap) {
+        // add it to create the texture
+        //window.console.log();
+        this._labelmap._children[index]._children[i].remove();
+        //this._labelmap._children[index]._children[i].remove();
+      }
+
+      this._children[index]._children[i].remove();
+    }
+
+  }
+
+  // UPDATE SLICE INFO
+  X.parser.prototype.updateSliceInfo(index, this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceNormal, this);
+  // Create empty array for all slices in this direction
+  this._children[index]._children = [];
+  this._children[index]._children = new Array(this._childrenInfo[index]._nb);
+
+  //attach labelmap
+  if(this.hasLabelMap) {
+
+    var _sliceLabel = X.parser.prototype.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
+    this._labelmap._children[index]._children = [];
+    this._labelmap._children[index]._children = new Array(this._childrenInfo[index]._nb);
+    this._labelmap._children[index]._children[Math.round(this._childrenInfo[index]._nb/2)] = _sliceLabel;
+    // add it to create the texture
+    //window.console.log("modified label");
+    //window.console.log(this._labelmap._children[index]);
+    this._labelmap._children[index].modified(true);
+  }
+
+  var _slice = X.parser.prototype.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._IJKVolume, this, true, null);
+
+  if(this.hasLabelMap) {
+
+    _slice._labelmap = _slice._texture;
+    _slice._labelmap = this._labelmap._children[index]._children[Math.round(this._childrenInfo[index]._nb/2)]._texture;
+    
+  }
+
+  _child._children[Math.round(this._childrenInfo[index]._nb/2)] = _slice;
+
+  if(index == 0) {
+
+    this._indexX = Math.round(this._childrenInfo[index]._nb/2);
+    this._indexXold = Math.round(this._childrenInfo[index]._nb/2);
+  
+  }
+  else if(index == 1) {
+    
+    this._indexY = Math.round(this._childrenInfo[index]._nb/2);
+    this._indexYold = Math.round(this._childrenInfo[index]._nb/2);
+
+  }
+  else {
+
+    this._indexZ = Math.round(this._childrenInfo[index]._nb/2);
+    this._indexZold = Math.round(this._childrenInfo[index]._nb/2);
+  
+  }
+
+  // add it to renderer!
+  this._children[index].modified(true);
+  this._children[index]._children[Math.round(this._childrenInfo[index]._nb/2)]._visible = true;
+
+}
 
 /**
  * Perform volume rendering of this volume along a specific direction. The
@@ -1029,7 +1350,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
         var _sliceLabel = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
         this._labelmap._children[direction]._children[i] = _sliceLabel;
         // add it to create the texture
-        this._container.add(_sliceLabel);
+        this._labelmap._children[index].modified(true);
       }
 
       var _slice = X.parser.prototype.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null);
@@ -1043,7 +1364,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
       _child._children[i] = _slice;
 
       // add it to renderer!
-      this._container.add(_slice);
+      this._children[index].modified(true);
     }
     
     _child._children[i]._visible = true;
@@ -1060,3 +1381,4 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.volume', X.volume);
 goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);
+goog.exportSymbol('X.volume.prototype.sliceInfoChanged', X.volume.prototype.sliceInfoChanged);
