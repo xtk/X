@@ -1234,9 +1234,7 @@ X.volume.prototype.sliceInfoChanged = function(index){
     if(typeof _child._children[i] != 'undefined'){
       if(this.hasLabelMap) {
         // add it to create the texture
-        //window.console.log();
         this._labelmap._children[index]._children[i].remove();
-        //this._labelmap._children[index]._children[i].remove();
       }
 
       this._children[index]._children[i].remove();
@@ -1258,8 +1256,6 @@ X.volume.prototype.sliceInfoChanged = function(index){
     this._labelmap._children[index]._children = new Array(this._childrenInfo[index]._nb);
     this._labelmap._children[index]._children[Math.round(this._childrenInfo[index]._nb/2)] = _sliceLabel;
     // add it to create the texture
-    //window.console.log("modified label");
-    //window.console.log(this._labelmap._children[index]);
     this._labelmap._children[index].modified(true);
   }
 
