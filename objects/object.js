@@ -241,6 +241,19 @@ X.object.prototype.modified = function(propagateEvent) {
 
 };
 
+/**
+ * Fire a remove event for this object.
+ *
+ * @param {?boolean=} propagateEvent An optional flag to stop propagating down to child classes.
+ */
+X.object.prototype.remove = function(propagateEvent) {
+
+  var removeEvent = new X.event.RemoveEvent();
+  removeEvent._object = this;
+  this.dispatchEvent(removeEvent);
+
+};
+
 
 /**
  * Compare two X.objects by their opacity values and their distance to the
@@ -305,3 +318,4 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.object', X.object);
 goog.exportSymbol('X.object.prototype.modified', X.object.prototype.modified);
+goog.exportSymbol('X.object.prototype.remove', X.object.prototype.remove);
