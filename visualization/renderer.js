@@ -247,13 +247,37 @@ X.renderer.prototype.onModified = function(event) {
   if (goog.isDefAndNotNull(event) && event instanceof X.event.ModifiedEvent) {
 
     if (!event._object) {
-
       // we need an object here
       return;
 
     }
 
     this.update_(event._object);
+
+  }
+
+};
+
+/**
+ * The callback for X.event.events.REMOVE events which re-configures the
+ * object for rendering. This does not trigger re-rendering.
+ *
+ * @param {!X.event.RemoveEvent} event The modified event pointing to the
+ *          modified object.
+ * @public
+ */
+X.renderer.prototype.onRemove = function(event) {
+
+  if (goog.isDefAndNotNull(event) && event instanceof X.event.RemoveEvent) {
+
+    if (!event._object) {
+
+      // we need an object here
+      return;
+
+    }
+
+    this.remove(event._object);
 
   }
 
@@ -754,11 +778,21 @@ X.renderer.prototype.update_ = function(object) {
     //throw new Error('Illegal object.');
 
   }
-  else if(!goog.events.hasListener(object, X.event.events.MODIFIED)) {
+  else {
 
-    goog.events.listen(object, X.event.events.MODIFIED, this.onModified
-        .bind(this));
+    if(!goog.events.hasListener(object, X.event.events.MODIFIED)) {
 
+      goog.events.listen(object, X.event.events.MODIFIED, this.onModified
+          .bind(this));
+
+    }
+
+    if(!goog.events.hasListener(object, X.event.events.REMOVE)) {
+
+      goog.events.listen(object, X.event.events.REMOVE, this.onRemove
+          .bind(this));
+
+    }
   }
 
 };
