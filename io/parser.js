@@ -1004,7 +1004,6 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   var _XYRASTransform = this.xyrasTransform(_sliceNormal, _XYNormal);
   var _RASToXY = _XYRASTransform[0];
   var _XYToRAS = _XYRASTransform[1];
-  
   var _rasSpacing = goog.vec.Vec4.createFloat32FromValues(object._RASSpacing[0], object._RASSpacing[1], object._RASSpacing[2], 0);
   var _xySpacing = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multVec4(_RASToXY, _rasSpacing, _xySpacing);
