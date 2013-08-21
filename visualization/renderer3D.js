@@ -2193,10 +2193,11 @@ X.renderer3D.prototype.ray_intersect_box_ = function(box, ray_start, ray_directi
  * @param {!number} y The viewport Y coordinate.
  * @param {!number=} delta The sample rate to probe for intersections. Default is 5.
  * @param {!number=} epsilon The threshold to mark a neighboring point as intersection. Default is 2mm.
+ * @param {X.object=} object The object to pick on. Default is auto-detect.
  * @return {?Array} The closest 3D point of a valid object after ray casting. If NULL, than delta and epsilon should be tuned.
  * @public
  */
-X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon) {
+X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
 
   // default values for delta and epsilon 
   // to determine the picking accuracy with a speed tradeoff
@@ -2208,16 +2209,22 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon) {
     epsilon = 2;
   }
 
-  // grab the object under the cursor
-  var id = this.pick(x,y);
-  if (id == -1) {
-    // quickly exit if there is no object
-    return null;
-  }
+  // if a object was specified, use it directly
+  if (!goog.isDefAndNotNull(object)) {
 
-  var object = this.get(id);
-  if (!object) {
-    return null;
+    // grab the object under the cursor
+    var id = this.pick(x,y);
+    if (id == -1) {
+      // quickly exit if there is no object
+      return null;
+    }
+
+    
+    object = this.get(id);
+    if (!object) {
+      return null;
+    }
+
   }
 
   // we know now that the object has been hit
