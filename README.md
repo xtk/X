@@ -73,8 +73,8 @@
 <tr>
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/16/"><img src="http://xtk.github.com/lessonsgfx/16/minicaption.png" alt="lesson16" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/toolkit/edge/xtk/lessons/tree/master/16/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
 <td valign="top"><a href="http://lessons.goxtk.com/16/"><b>Lesson 16: 10 PRINT 3D</b></a><br>A 3D version of the excellent <a href='http://10print.org/' target=_blank>10 PRINT</a> pattern showcasing advanced XTK object generation.</td>
-<td valign="middle" width="100"></td>
-<td valign="top"></td>
+<td valign="middle" width="100"><a href="http://lessons.goxtk.com/17/"><img src="http://xtk.github.com/lessonsgfx/17/minicaption.png" alt="lesson17" title="(RE)Slice it!"></a><a href='http://jsfiddle.net/gh/get/toolkit/edge/xtk/lessons/tree/master/17/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
+<td valign="top"><a href="http://lessons.goxtk.com/17/"><b>Lesson 17: (RE)Slice it!</b></a><br>Demonstrate the new abitrary reslicing capabilities. No pre-processing, everything is happenning in Real Time!</td>
 </tr>
 </table>
 
