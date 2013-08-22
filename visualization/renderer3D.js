@@ -2260,14 +2260,14 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
   var G = [object._points._maxA, object._points._maxB, object._points._maxC];
   var H = [object._points._maxA, object._points._minB, object._points._maxC];
   // transform all box coordinates
-  var transformed_points = [X.matrix.multiplyByVector(object._transform.matrix, A[0], A[1], A[2]),
-    X.matrix.multiplyByVector(object._transform.matrix, B[0], B[1], B[2]),
-    X.matrix.multiplyByVector(object._transform.matrix, C[0], C[1], C[2]),
-    X.matrix.multiplyByVector(object._transform.matrix, D[0], D[1], D[2]),
-    X.matrix.multiplyByVector(object._transform.matrix, E[0], E[1], E[2]),
-    X.matrix.multiplyByVector(object._transform.matrix, F[0], F[1], F[2]),
-    X.matrix.multiplyByVector(object._transform.matrix, G[0], G[1], G[2]),
-    X.matrix.multiplyByVector(object._transform.matrix, H[0], H[1], H[2])];
+  var transformed_points = [X.matrix.multiplyByVector(object._transform._matrix, A[0], A[1], A[2]),
+    X.matrix.multiplyByVector(object._transform._matrix, B[0], B[1], B[2]),
+    X.matrix.multiplyByVector(object._transform._matrix, C[0], C[1], C[2]),
+    X.matrix.multiplyByVector(object._transform._matrix, D[0], D[1], D[2]),
+    X.matrix.multiplyByVector(object._transform._matrix, E[0], E[1], E[2]),
+    X.matrix.multiplyByVector(object._transform._matrix, F[0], F[1], F[2]),
+    X.matrix.multiplyByVector(object._transform._matrix, G[0], G[1], G[2]),
+    X.matrix.multiplyByVector(object._transform._matrix, H[0], H[1], H[2])];
 
   // now create a bigger bounding box around the maybe rotated box
   // by finding x_min, x_max, y_min, y_max, z_min, z_max
@@ -2364,7 +2364,7 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
       var c_p_y = points[p+1];
       var c_p_z = points[p+2];
       var c_p = new X.vector(c_p_x, c_p_y, c_p_z);
-      c_p = X.matrix.multiplyByVector(object._transform.matrix, c_p_x, c_p_y, c_p_z);
+      c_p = X.matrix.multiplyByVector(object._transform._matrix, c_p_x, c_p_y, c_p_z);
 
       // calculate distance to the marching point
       var d = Math.sqrt((s_p[0]-c_p.x)*(s_p[0]-c_p.x)+(s_p[1]-c_p.y)*(s_p[1]-c_p.y)+(s_p[2]-c_p.z)*(s_p[2]-c_p.z));
