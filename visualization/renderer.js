@@ -741,8 +741,11 @@ X.renderer.prototype.remove = function(object) {
 
   if (!goog.isDefAndNotNull(object)) {
 
-    throw new Error('Illegal object.');
+    //throw new Error('Illegal object.');
 
+  }
+  else{
+      goog.events.removeAll(object);
   }
 
 	// to be overloaded
