@@ -1244,21 +1244,24 @@ X.volume.prototype.__defineGetter__('zColor', function() {
  * @public
  */
 X.volume.prototype.sliceInfoChanged = function(index){
+
   // Hide slices
-  var _child = this._children[index];
-  _child['visible'] = false;
+  this._children[index]['visible'] = false;
 
   // delete all textures attached to 1 child
   // for each child
-
-  for(var i=0; i<_child._children.length; i++){
-    if(typeof _child._children[i] != 'undefined'){
+  for(var i=0; i<this._children[index]._children.length; i++){
+    if(typeof this._children[index]._children[i] != 'undefined'){
+      
       if(this.hasLabelMap) {
         // add it to create the texture
         this._labelmap._children[index]._children[i].remove();
+        this._labelmap._children[index]._children[i] = null;
       }
 
       this._children[index]._children[i].remove();
+      this._children[index]._children[i] = null;
+    
     }
 
   }
@@ -1277,7 +1280,7 @@ X.volume.prototype.sliceInfoChanged = function(index){
     this._labelmap._children[index]._children = new Array(this._childrenInfo[index]._nb);
     this._labelmap._children[index]._children[Math.round(this._childrenInfo[index]._nb/2)] = _sliceLabel;
     // add it to create the texture
-    this._labelmap._children[index].modified(true);
+    this._labelmap._children[index].modified();
   }
 
   var _slice = X.parser.prototype.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._IJKVolume, this, true, null);
@@ -1289,7 +1292,7 @@ X.volume.prototype.sliceInfoChanged = function(index){
     
   }
 
-  _child._children[Math.round(this._childrenInfo[index]._nb/2)] = _slice;
+ this._children[index]._children[Math.round(this._childrenInfo[index]._nb/2)] = _slice;
 
   if(index == 0) {
 
@@ -1311,7 +1314,7 @@ X.volume.prototype.sliceInfoChanged = function(index){
   }
 
   // add it to renderer!
-  this._children[index].modified(true);
+  this._children[index].modified();
   this._children[index]._children[Math.round(this._childrenInfo[index]._nb/2)]._visible = true;
 
 }
