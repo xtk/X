@@ -1328,7 +1328,11 @@ X.renderer3D.prototype.order_ = function() {
       var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view,object._RASCenter[0]-object._childrenInfo[_targetChild]._sliceNormal[0], object._RASCenter[1]+-object._childrenInfo[_targetChild]._sliceNormal[1], object._RASCenter[2]-object._childrenInfo[_targetChild]._sliceNormal[2]);
       var dX = realCentroidVector.z - realCentroidVector2.z;
 
-      if(dX > 0 && _targetChild != 0 || dX < 0 && _targetChild == 0) {
+      var _acquisitionDirection = Math.max(object._IJKToRAS[object._volumeRenderingDirection], Math.max(object._IJKToRAS[object._volumeRenderingDirection+4], object._IJKToRAS[object._volumeRenderingDirection+8])); 
+      var _acquisitionDirection2 = Math.min(object._IJKToRAS[object._volumeRenderingDirection], Math.min(object._IJKToRAS[object._volumeRenderingDirection+4], object._IJKToRAS[object._volumeRenderingDirection+8])); 
+      var _acquisitionSign = _acquisitionDirection + _acquisitionDirection2;
+
+      if(dX*_acquisitionSign < 0) {
 
         var s = 0;
         for (s = 0; s < object._range[_targetChild] - 1; s++) {
