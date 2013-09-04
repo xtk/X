@@ -465,9 +465,9 @@ X.volume.prototype.slicing_ = function() {
 
       var _sliceOrigin = goog.vec.Vec3.createFloat32();
 
-      _sliceOrigin[0] = this._childrenInfo[xyz]._solutionsLine[0][0][0] + Math.abs(this._childrenInfo[xyz]._sliceDirection[0])*parseInt(currentIndex, 10);
-      _sliceOrigin[1] = this._childrenInfo[xyz]._solutionsLine[0][0][1] + Math.abs(this._childrenInfo[xyz]._sliceDirection[1])*parseInt(currentIndex, 10);
-      _sliceOrigin[2] = this._childrenInfo[xyz]._solutionsLine[0][0][2] + Math.abs(this._childrenInfo[xyz]._sliceDirection[2])*parseInt(currentIndex, 10);
+      _sliceOrigin[0] = this._childrenInfo[xyz]._solutionsLine[0][0][0] + this._childrenInfo[xyz]._sliceDirection[0]*parseInt(currentIndex, 10);
+      _sliceOrigin[1] = this._childrenInfo[xyz]._solutionsLine[0][0][1] + this._childrenInfo[xyz]._sliceDirection[1]*parseInt(currentIndex, 10);
+      _sliceOrigin[2] = this._childrenInfo[xyz]._solutionsLine[0][0][2] + this._childrenInfo[xyz]._sliceDirection[2]*parseInt(currentIndex, 10);
 
       //attach labelmap
       if(this.hasLabelMap){
@@ -1267,6 +1267,8 @@ X.volume.prototype.sliceInfoChanged = function(index){
   }
 
   // UPDATE SLICE INFO
+  goog.vec.Vec3.normalize(this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._sliceNormal);
+  //
   X.parser.prototype.updateSliceInfo(index, this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceNormal, this);
   // Create empty array for all slices in this direction
   this._children[index]._children = [];
@@ -1361,9 +1363,9 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
       var _sliceOrigin = goog.vec.Vec3.createFloat32();
 
-      _sliceOrigin[0] = this._childrenInfo[direction]._solutionsLine[0][0][0] + Math.abs(this._childrenInfo[direction]._sliceDirection[0])*i;
-      _sliceOrigin[1] = this._childrenInfo[direction]._solutionsLine[0][0][1] + Math.abs(this._childrenInfo[direction]._sliceDirection[1])*i;
-      _sliceOrigin[2] = this._childrenInfo[direction]._solutionsLine[0][0][2] + Math.abs(this._childrenInfo[direction]._sliceDirection[2])*i;
+      _sliceOrigin[0] = this._childrenInfo[direction]._solutionsLine[0][0][0] + this._childrenInfo[direction]._sliceDirection[0]*i;
+      _sliceOrigin[1] = this._childrenInfo[direction]._solutionsLine[0][0][1] + this._childrenInfo[direction]._sliceDirection[1]*i;
+      _sliceOrigin[2] = this._childrenInfo[direction]._solutionsLine[0][0][2] + this._childrenInfo[direction]._sliceDirection[2]*i;
 
       //attach labelmap
       if(this.hasLabelMap){

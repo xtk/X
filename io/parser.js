@@ -556,7 +556,7 @@ X.parser.prototype.intersectionBBoxLine = function(_bbox, _sliceOrigin, _sliceNo
       }
     }
   }
-  
+
   return [_solutionsIn, _solutionsOut];
 };
 
@@ -981,7 +981,7 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
 
   object._childrenInfo[_index]._solutionsLine = _solutionsLine;
   object._childrenInfo[_index]._originD = -(_sliceNormal[0]*_solutionsInLine[0][0] + _sliceNormal[1]*_solutionsInLine[0][1] + _sliceNormal[2]*_solutionsInLine[0][2]);
-  
+
   // ------------------------------------------
   // GET DISTANCE BETWEEN 2 POINTS
   // ------------------------------------------
@@ -1009,8 +1009,8 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   goog.vec.Mat4.multVec4(_RASToXY, _rasSpacing, _xySpacing);
   
   var _sliceDirection = goog.vec.Vec4.createFloat32();
-  goog.vec.Mat4.getColumn(_XYToRAS,2,_sliceDirection);
-  goog.vec.Vec4.scale(_sliceDirection,_xySpacing[2],_sliceDirection);
+  // scale
+  goog.vec.Vec4.scale(_sliceNormal,_xySpacing[2],_sliceDirection);
 
   object._childrenInfo[_index]._sliceSpacing = _xySpacing[2];
   object._childrenInfo[_index]._sliceDirection = _sliceDirection;
@@ -1023,6 +1023,57 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   var _nb = Math.abs(Math.floor(_dist/_xySpacing[2]));
   object._range[_index] = _nb;
   object._childrenInfo[_index]._nb = _nb;
+
+  // order solutionsIn in _sliceDirection
+  if(object._childrenInfo[_index]._solutionsLine [0][0][0] > object._childrenInfo[_index]._solutionsLine [0][1][0]){
+    if(_sliceDirection[0] > 0){
+      // invert
+      var _tmp = object._childrenInfo[_index]._solutionsLine [0][0];
+      object._childrenInfo[_index]._solutionsLine [0][0] = object._childrenInfo[_index]._solutionsLine [0][1];
+      object._childrenInfo[_index]._solutionsLine [0][1] = _tmp;
+    }
+  }
+  else  if(object._childrenInfo[_index]._solutionsLine [0][0][0] < object._childrenInfo[_index]._solutionsLine [0][1][0]){
+    if(_sliceDirection[0] < 0){
+      // invert
+      var _tmp = object._childrenInfo[_index]._solutionsLine [0][0];
+      object._childrenInfo[_index]._solutionsLine [0][0] = object._childrenInfo[_index]._solutionsLine [0][1];
+      object._childrenInfo[_index]._solutionsLine [0][1] = _tmp;
+    }
+  }
+  else if(object._childrenInfo[_index]._solutionsLine [0][0][1] > object._childrenInfo[_index]._solutionsLine [0][1][1]){
+    if(_sliceDirection[1] > 0){
+      // invert
+      var _tmp = object._childrenInfo[_index]._solutionsLine [0][0];
+      object._childrenInfo[_index]._solutionsLine [0][0] = object._childrenInfo[_index]._solutionsLine [0][1];
+      object._childrenInfo[_index]._solutionsLine [0][1] = _tmp;
+    }
+  }
+    else if(object._childrenInfo[_index]._solutionsLine [0][0][1] < object._childrenInfo[_index]._solutionsLine [0][1][1]){
+    if(_sliceDirection[1] < 0){
+      // invert
+      var _tmp = object._childrenInfo[_index]._solutionsLine [0][0];
+      object._childrenInfo[_index]._solutionsLine [0][0] = object._childrenInfo[_index]._solutionsLine [0][1];
+      object._childrenInfo[_index]._solutionsLine [0][1] = _tmp;
+    }
+  }
+  else if(object._childrenInfo[_index]._solutionsLine [0][0][2] > object._childrenInfo[_index]._solutionsLine [0][1][2]){
+    if(_sliceDirection[2] > 0){
+      // invert
+      var _tmp = object._childrenInfo[_index]._solutionsLine [0][0];
+      object._childrenInfo[_index]._solutionsLine [0][0] = object._childrenInfo[_index]._solutionsLine [0][1];
+      object._childrenInfo[_index]._solutionsLine [0][1] = _tmp;
+    }
+  }
+    else if(object._childrenInfo[_index]._solutionsLine [0][0][2] < object._childrenInfo[_index]._solutionsLine [0][1][2]){
+    if(_sliceDirection[2] < 0){
+      // invert
+      var _tmp = object._childrenInfo[_index]._solutionsLine [0][0];
+      object._childrenInfo[_index]._solutionsLine [0][0] = object._childrenInfo[_index]._solutionsLine [0][1];
+      object._childrenInfo[_index]._solutionsLine [0][1] = _tmp;
+    }
+  }
+
 };
 
 /**
@@ -1092,9 +1143,9 @@ X.parser.prototype.reslice = function(object) {
 
   // NORMAL
   var _sliceNormal = goog.vec.Vec3.createFloat32FromValues(
-     1,
-     0,
-     0);
+     1.00,
+     0.00,
+     0.00);
   goog.vec.Vec3.normalize(_sliceNormal, _sliceNormal);
   object._childrenInfo[0]._sliceNormal = _sliceNormal;
   
@@ -1106,10 +1157,10 @@ X.parser.prototype.reslice = function(object) {
   this.updateSliceInfo(0, _sliceOrigin, _sliceNormal, object);
   // Create empty array for all slices in this direction
   object._children[0]._children = new Array(object._childrenInfo[0]._nb);
-    
-  _sliceOrigin[0] = object._childrenInfo[0]._solutionsLine[0][0][0] + Math.abs(object._childrenInfo[0]._sliceDirection[0])*Math.round(object._childrenInfo[0]._nb/2);
-  _sliceOrigin[1] = object._childrenInfo[0]._solutionsLine[0][0][1] + Math.abs(object._childrenInfo[0]._sliceDirection[1])*Math.round(object._childrenInfo[0]._nb/2);
-  _sliceOrigin[2] = object._childrenInfo[0]._solutionsLine[0][0][2] + Math.abs(object._childrenInfo[0]._sliceDirection[2])*Math.round(object._childrenInfo[0]._nb/2);
+
+  _sliceOrigin[0] = object._childrenInfo[0]._solutionsLine[0][0][0] + object._childrenInfo[0]._sliceDirection[0]*Math.round(object._childrenInfo[0]._nb/2);
+  _sliceOrigin[1] = object._childrenInfo[0]._solutionsLine[0][0][1] + object._childrenInfo[0]._sliceDirection[1]*Math.round(object._childrenInfo[0]._nb/2);
+  _sliceOrigin[2] = object._childrenInfo[0]._solutionsLine[0][0][2] + object._childrenInfo[0]._sliceDirection[2]*Math.round(object._childrenInfo[0]._nb/2);
 
   var _slice = this.reslice2(_sliceOrigin, object._childrenInfo[0]._sliceNormal, object._childrenInfo[0]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
@@ -1154,9 +1205,9 @@ X.parser.prototype.reslice = function(object) {
   // Create empty array for all slices in this direction
   object._children[1]._children = new Array(object._childrenInfo[1]._nb);
     
-  _sliceOrigin[0] = object._childrenInfo[1]._solutionsLine[0][0][0] + Math.abs(object._childrenInfo[1]._sliceDirection[0])*Math.round(object._childrenInfo[1]._nb/2);
-  _sliceOrigin[1] = object._childrenInfo[1]._solutionsLine[0][0][1] + Math.abs(object._childrenInfo[1]._sliceDirection[1])*Math.round(object._childrenInfo[1]._nb/2);
-  _sliceOrigin[2] = object._childrenInfo[1]._solutionsLine[0][0][2] + Math.abs(object._childrenInfo[1]._sliceDirection[2])*Math.round(object._childrenInfo[1]._nb/2);
+  _sliceOrigin[0] = object._childrenInfo[1]._solutionsLine[0][0][0] + object._childrenInfo[1]._sliceDirection[0]*Math.round(object._childrenInfo[1]._nb/2);
+  _sliceOrigin[1] = object._childrenInfo[1]._solutionsLine[0][0][1] + object._childrenInfo[1]._sliceDirection[1]*Math.round(object._childrenInfo[1]._nb/2);
+  _sliceOrigin[2] = object._childrenInfo[1]._solutionsLine[0][0][2] + object._childrenInfo[1]._sliceDirection[2]*Math.round(object._childrenInfo[1]._nb/2);
     
   _slice = this.reslice2(_sliceOrigin, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
@@ -1200,9 +1251,9 @@ X.parser.prototype.reslice = function(object) {
   // Create empty array for all slices in this direction
   object._children[2]._children = new Array(object._childrenInfo[2]._nb);
     
-  _sliceOrigin[0] = object._childrenInfo[2]._solutionsLine[0][0][0] + Math.abs(object._childrenInfo[2]._sliceDirection[0])*Math.round(object._childrenInfo[2]._nb/2);
-  _sliceOrigin[1] = object._childrenInfo[2]._solutionsLine[0][0][1] + Math.abs(object._childrenInfo[2]._sliceDirection[1])*Math.round(object._childrenInfo[2]._nb/2);
-  _sliceOrigin[2] = object._childrenInfo[2]._solutionsLine[0][0][2] + Math.abs(object._childrenInfo[2]._sliceDirection[2])*Math.round(object._childrenInfo[2]._nb/2);
+  _sliceOrigin[0] = object._childrenInfo[2]._solutionsLine[0][0][0] + object._childrenInfo[2]._sliceDirection[0]*Math.round(object._childrenInfo[2]._nb/2);
+  _sliceOrigin[1] = object._childrenInfo[2]._solutionsLine[0][0][1] + object._childrenInfo[2]._sliceDirection[1]*Math.round(object._childrenInfo[2]._nb/2);
+  _sliceOrigin[2] = object._childrenInfo[2]._solutionsLine[0][0][2] + object._childrenInfo[2]._sliceDirection[2]*Math.round(object._childrenInfo[2]._nb/2);
     
   _slice = this.reslice2(_sliceOrigin, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     

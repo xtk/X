@@ -1324,13 +1324,13 @@ X.renderer3D.prototype.order_ = function() {
       var firstSlice = _slices[0];
 
       var _targetChild = object._volumeRenderingDirection;
-      var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, object._RASCenter[0]+object._childrenInfo[_targetChild]._sliceNormal[0], object._RASCenter[1]+object._childrenInfo[_targetChild]._sliceNormal[1], object._RASCenter[2]+object._childrenInfo[_targetChild]._sliceNormal[2]);
-      var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view,object._RASCenter[0]-object._childrenInfo[_targetChild]._sliceNormal[0], object._RASCenter[1]+-object._childrenInfo[_targetChild]._sliceNormal[1], object._RASCenter[2]-object._childrenInfo[_targetChild]._sliceNormal[2]);
+      var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, object._RASCenter[0]+object._childrenInfo[_targetChild]._sliceDirection[0], object._RASCenter[1]+object._childrenInfo[_targetChild]._sliceDirection[1], object._RASCenter[2]+object._childrenInfo[_targetChild]._sliceDirection[2]);
+      var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view,object._RASCenter[0]-object._childrenInfo[_targetChild]._sliceDirection[0], object._RASCenter[1]-object._childrenInfo[_targetChild]._sliceDirection[1], object._RASCenter[2]-object._childrenInfo[_targetChild]._sliceDirection[2]);
       var dX = realCentroidVector.z - realCentroidVector2.z;
 
-      var _acquisitionDirection = Math.max(object._IJKToRAS[object._volumeRenderingDirection], Math.max(object._IJKToRAS[object._volumeRenderingDirection+4], object._IJKToRAS[object._volumeRenderingDirection+8])); 
-      var _acquisitionDirection2 = Math.min(object._IJKToRAS[object._volumeRenderingDirection], Math.min(object._IJKToRAS[object._volumeRenderingDirection+4], object._IJKToRAS[object._volumeRenderingDirection+8])); 
-      var _acquisitionSign = _acquisitionDirection + _acquisitionDirection2;
+       var _acquisitionDirection = Math.max(object._IJKToRAS[object._volumeRenderingDirection], Math.max(object._IJKToRAS[object._volumeRenderingDirection+4], object._IJKToRAS[object._volumeRenderingDirection+8])); 
+       var _acquisitionDirection2 = Math.min(object._IJKToRAS[object._volumeRenderingDirection], Math.min(object._IJKToRAS[object._volumeRenderingDirection+4], object._IJKToRAS[object._volumeRenderingDirection+8])); 
+       var _acquisitionSign = _acquisitionDirection + _acquisitionDirection2;
 
       if(dX*_acquisitionSign < 0) {
 

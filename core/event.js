@@ -442,3 +442,7 @@ X.event.ProgressEvent = function() {
 };
 // inherit from goog.events.Event
 goog.inherits(X.event.ProgressEvent, X.event);
+goog.exportSymbol('X.event.events.PAN', X.event.events.PAN);
+goog.exportSymbol('X.event.events.ROTATE', X.event.events.ROTATE);
+goog.exportSymbol('X.event.events.ZOOM', X.event.events.ZOOM);
+goog.exportSymbol('X.event.events.SCROLL', X.event.events.SCROLL);
