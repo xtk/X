@@ -2010,7 +2010,8 @@ X.renderer3D.prototype.remove = function(object) {
 
   }
 
-  if (object.texture) {
+  if (object._texture) {
+    
     var _texture = this._textures.get(object._texture._id);
 
     if (_texture) {
