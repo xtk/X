@@ -36,6 +36,8 @@ goog.require('X.object');
 goog.require('X.parser');
 goog.require('X.triplets');
 goog.require('CTM');
+goog.require('CTM.File');
+goog.require('CTM.Stream');
 
 /**
  * Create a parser for the .CTM format
