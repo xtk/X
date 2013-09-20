@@ -92,7 +92,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
 
       if( MRI.location.length > 1) {
 
-        MRI.location.sort();
+        MRI.location.sort(function(a,b) {return a-b;});
         MRI.pixdim[2] = Math.abs(MRI.location[0] - MRI.location[1]);
       }
       else {
@@ -149,21 +149,21 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     // NOTE THE '-' for the LPS to RAS conversion
     goog.vec.Mat4.setRowValues(IJKToRAS,
       0,
-      -MRI.spaceorientation[0],
-      -MRI.spaceorientation[3],
-      -_z_cosine.x,
+      -MRI.spaceorientation[0]*MRI.pixdim[0],
+      -MRI.spaceorientation[3]*MRI.pixdim[1],
+      -_z_cosine.x*MRI.pixdim[2],
       -_origin[0]);
     goog.vec.Mat4.setRowValues(IJKToRAS,
       1,
-      -MRI.spaceorientation[1],
-      -MRI.spaceorientation[4],
-      -_z_cosine.y,
+      -MRI.spaceorientation[1]*MRI.pixdim[0],
+      -MRI.spaceorientation[4]*MRI.pixdim[1],
+      -_z_cosine.y*MRI.pixdim[2],
       -_origin[1]);
     goog.vec.Mat4.setRowValues(IJKToRAS,
       2,
-      MRI.spaceorientation[2],
-      MRI.spaceorientation[5],
-      _z_cosine.z,
+      MRI.spaceorientation[2]*MRI.pixdim[0],
+      MRI.spaceorientation[5]*MRI.pixdim[1],
+      _z_cosine.z*MRI.pixdim[2],
       _origin[2]);
     goog.vec.Mat4.setRowValues(IJKToRAS,
       3,
