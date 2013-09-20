@@ -1247,7 +1247,7 @@ X.parser.prototype.reslice = function(object) {
   object._childrenInfo[2]._sliceNormal = _sliceNormal;
   
   // COLOR
-  _color = [ 0, 0, 1 ];
+  _color = [ 0, 0.392, 0.804 ];
   object._childrenInfo[2]._color = _color;
   
   // UPDATE SLICE INFO
