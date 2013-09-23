@@ -984,7 +984,6 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   var _solutionsOutLine = _solutionsLine[1];
 
   object._childrenInfo[_index]._solutionsLine = _solutionsLine;
-  object._childrenInfo[_index]._originD = -(_sliceNormal[0]*_solutionsInLine[0][0] + _sliceNormal[1]*_solutionsInLine[0][1] + _sliceNormal[2]*_solutionsInLine[0][2]);
 
   // ------------------------------------------
   // GET DISTANCE BETWEEN 2 POINTS
@@ -1077,6 +1076,8 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
       object._childrenInfo[_index]._solutionsLine [0][1] = _tmp;
     }
   }
+
+    object._childrenInfo[_index]._originD = -(_sliceNormal[0]*_solutionsInLine[0][0] + _sliceNormal[1]*_solutionsInLine[0][1] + _sliceNormal[2]*_solutionsInLine[0][2]);
 
 };
 
