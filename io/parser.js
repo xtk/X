@@ -1155,7 +1155,7 @@ X.parser.prototype.reslice = function(object) {
   object._childrenInfo[0]._sliceNormal = _sliceNormal;
   
   // COLOR
-  var _color = [ 1, 1, 0 ];
+  var _color = [ 1, 0, 0 ];
   object._childrenInfo[0]._color = _color;
 
   // UPDATE SLICE INFO
@@ -1202,7 +1202,7 @@ X.parser.prototype.reslice = function(object) {
   object._childrenInfo[1]._sliceNormal = _sliceNormal;
   
   // COLOR
-  _color = [ 1, 0, 0 ];
+  _color = [ 0, 1, 0 ];
   object._childrenInfo[1]._color = _color;
   
   // UPDATE SLICE INFO
@@ -1248,7 +1248,7 @@ X.parser.prototype.reslice = function(object) {
   object._childrenInfo[2]._sliceNormal = _sliceNormal;
   
   // COLOR
-  _color = [ 0, 1, 0 ];
+  _color = [ 0, 0.392, 0.804 ];
   object._childrenInfo[2]._color = _color;
   
   // UPDATE SLICE INFO

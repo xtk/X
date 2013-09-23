@@ -747,22 +747,22 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
     _currentSlice = this._slices[parseInt(_volume['indexY'], 10)];
     _sliceWSpacing = _currentSlice._widthSpacing;
     _sliceHSpacing = _currentSlice._heightSpacing;
-    this._orientationColors[0] = 'yellow';
-    this._orientationColors[1] = 'green';
+    this._orientationColors[0] = 'red';
+    this._orientationColors[1] = 'blue';
 
   } else if (this._orientation == "Z") {
     _currentSlice = this._slices[parseInt(_volume['indexZ'], 10)];
     _sliceWSpacing = _currentSlice._widthSpacing;
     _sliceHSpacing = _currentSlice._heightSpacing;
-    this._orientationColors[0] = 'yellow';
-    this._orientationColors[1] = 'red';
+    this._orientationColors[0] = 'red';
+    this._orientationColors[1] = 'green';
 
   } else {
     _currentSlice = this._slices[parseInt(_volume['indexX'], 10)];
     _sliceWSpacing = _currentSlice._heightSpacing;
     _sliceHSpacing = _currentSlice._widthSpacing;
-    this._orientationColors[0] = 'red';
-    this._orientationColors[1] = 'green';
+    this._orientationColors[0] = 'green';
+    this._orientationColors[1] = 'blue';
 
     var _buf = _sliceWidth;
     _sliceWidth = _sliceHeight;
