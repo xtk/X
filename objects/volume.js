@@ -209,6 +209,14 @@ X.volume = function(volume) {
   this._volumeRenderingDirection = 0;
 
   /**
+   * Cache for the already computed volume rendering directions.
+   *
+   * @type {!Array}
+   * @private
+   */
+  this._volumeRenderingCache = [];
+
+  /**
    * The label map of this volume.
    *
    * @type {?X.volume}
@@ -1346,6 +1354,17 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
   }
 
+  var computing = false;
+  if (this._volumeRenderingCache.indexOf(direction) == -1) {
+
+    computing = true;
+    this._volumeRenderingCache.push(direction);
+
+    // call computing callback
+    this.onComputing_(direction);
+
+  }
+
     // hide old volume rendering slices
   var _child = this._children[this._volumeRenderingDirection];
   _child['visible'] = false;
@@ -1357,9 +1376,9 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   var i;
   for (i = 0; i < _numberOfSlices; i++) {
 
-        // RESLICE VOLUME IF NECESSARY!
-     //loop through slice
-       if(!goog.isDefAndNotNull(_child._children[i])){
+    // RESLICE VOLUME IF NECESSARY!
+    //loop through slice
+    if(!goog.isDefAndNotNull(_child._children[i])){
 
       var _sliceOrigin = goog.vec.Vec3.createFloat32();
 
@@ -1387,6 +1406,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
       // add it to renderer!
       this._children[direction].modified(true);
+
     }
     
     _child._children[i]._visible = true;
@@ -1395,12 +1415,78 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   // store the direction
   this._volumeRenderingDirection = direction;
 
+  if (computing) {
+    //call computing end callback
+    this.onComputingEnd_(direction);
+  }
+
   this._dirty = false;
 
 };
+
+
+/**
+ * The oncomputing internal callback. Any actions prior to firing the
+ * public oncomputing callback go here.
+ *
+ * @param {!number} direction The direction to compute.
+ * @protected
+ *
+ */
+X.volume.prototype.onComputing_ = function(direction) {
+
+  this['onComputing'](direction);
+
+};
+
+
+/**
+ * The oncomputingend internal callback. Any actions prior to firing the
+ * public oncomputingend callback go here.
+ *
+ * @param {!number} direction The direction which was computed.
+ * @protected
+ *
+ */
+X.volume.prototype.onComputingEnd_ = function(direction) {
+
+  this['onComputingEnd'](direction);
+
+};
+
+
+/**
+ * This callback gets fired when computation has to happen in order
+ * to display volume rendering.
+ * 
+ * @param {!number} direction The direction to compute.
+ * @public
+ *
+ */
+X.volume.prototype.onComputing = function(direction) {
+
+  // should be overloaded
+
+};
+
+
+/**
+ * This callback gets fired when computation is complete.
+ * 
+ * @param {!number} direction The direction which was computed.
+ * @public
+ *
+ */
+X.volume.prototype.onComputingEnd = function(direction) {
+
+  // should be overloaded
+
+}
 
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.volume', X.volume);
 goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);
 goog.exportSymbol('X.volume.prototype.sliceInfoChanged', X.volume.prototype.sliceInfoChanged);
+goog.exportSymbol('X.volume.prototype.onComputing', X.volume.prototype.onComputing);
+goog.exportSymbol('X.volume.prototype.onComputingEnd', X.volume.prototype.onComputingEnd);
