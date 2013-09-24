@@ -851,7 +851,7 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   var _dy = _volume._childrenInfo[1]._sliceNormal[0]*_ras[0]
     + _volume._childrenInfo[1]._sliceNormal[1]*_ras[1]
     + _volume._childrenInfo[1]._sliceNormal[2]*_ras[2]
-    + _volume._childrenInfo[1]._originD;;
+    + _volume._childrenInfo[1]._originD;
 
   var _iy = Math.round(_dy/_volume._childrenInfo[1]._sliceSpacing);
   if(_iy >= _volume._childrenInfo[1]._nb){
@@ -1103,9 +1103,10 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       }
       else if(this._orientation == "Y"){
         // invert cols
-        var row = _index%(_sliceWidth*4);
+        var row = Math.floor(_index/(_sliceWidth*4));
         var col = _index - row*_sliceWidth*4;
-        var _invertedColsIndex = row*_sliceWidth*4 + col;
+        var invCol = 4*(_sliceWidth-1) - col ;
+        var _invertedColsIndex = row*_sliceWidth*4 + invCol;
         _pixels[_invertedColsIndex] = _color[0]; // r
         _pixels[_invertedColsIndex + 1] = _color[1]; // g
         _pixels[_invertedColsIndex + 2] = _color[2]; // b
@@ -1208,7 +1209,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       var ijk = this.xy2ijk(_mousePosition[0], _mousePosition[1]);
 
       if (ijk) {
-
         // // we are over the slice
         // update the volume
         _volume._indexX = ijk[0][0];
