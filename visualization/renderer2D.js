@@ -1103,17 +1103,17 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       }
       else if(this._orientation == "Y"){
         // invert cols
-        var _invertedIndex = (4 * _sliceWidth) *
-          (Math.floor(_index / (4 * _sliceWidth))) - _index %
-          (4 * _sliceWidth);
-        _pixels[_invertedIndex] = _color[0]; // r
-        _pixels[_invertedIndex + 1] = _color[1]; // g
-        _pixels[_invertedIndex + 2] = _color[2]; // b
-        _pixels[_invertedIndex + 3] = _color[3]; // a
-        _labelPixels[_invertedIndex] = _label[0]; // r
-        _labelPixels[_invertedIndex + 1] = _label[1]; // g
-        _labelPixels[_invertedIndex + 2] = _label[2]; // b
-        _labelPixels[_invertedIndex + 3] = _label[3]; // a
+        var row = _index%(_sliceWidth*4);
+        var col = _index - row*_sliceWidth*4;
+        var _invertedColsIndex = row*_sliceWidth*4 + col;
+        _pixels[_invertedColsIndex] = _color[0]; // r
+        _pixels[_invertedColsIndex + 1] = _color[1]; // g
+        _pixels[_invertedColsIndex + 2] = _color[2]; // b
+        _pixels[_invertedColsIndex + 3] = _color[3]; // a
+        _labelPixels[_invertedColsIndex] = _label[0]; // r
+        _labelPixels[_invertedColsIndex + 1] = _label[1]; // g
+        _labelPixels[_invertedColsIndex + 2] = _label[2]; // b
+        _labelPixels[_invertedColsIndex + 3] = _label[3]; // a
       }
       else{
         // invert all

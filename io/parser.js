@@ -861,14 +861,16 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
       // get value if there is a match, trnasparent if no match!
       var textureStartIndex = _p * 4;
     
-      if( (0 <= _indexIJK[0]) && (_indexIJK[0] < object._dimensions[0] ) &&
-        (0 <= _indexIJK[1]) && (_indexIJK[1] < object._dimensions[1] ) &&
-        (0 <= _indexIJK[2]) && (_indexIJK[2] < object._dimensions[2] )) {
+        var _k = Math.round(_indexIJK[2]);
+        var _j = Math.round(_indexIJK[1]);
+        var _i = Math.round(_indexIJK[0]);
+
+      if( (0 <= _i) && (_i < object._dimensions[0] ) &&
+        (0 <= _j) && (_j < object._dimensions[1] ) &&
+        (0 <= _k) && (_k < object._dimensions[2] )) {
           
         // map to 0 if necessary
-        var _k = Math.floor(_indexIJK[2]);
-        var _j = Math.floor(_indexIJK[1]);
-        var _i = Math.floor(_indexIJK[0]);
+
       
         var pixval = _IJKVolume[_k][_j][_i];
         var pixelValue_r = 0;

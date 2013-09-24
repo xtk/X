@@ -298,9 +298,6 @@ X.volume.prototype.copy_ = function(volume) {
   this._indexYold = volume._indexYold;
   this._indexZ = volume._indexZ;
   this._indexZold = volume._indexZold;
-  this._indexLR = volume._indexLR;
-  this._indexPA = volume._indexPA;
-  this._indexIS = volume._indexIS;
 
   this._dimensionsRAS = volume._dimensionsRAS.slice();
   this._slicesX = new X.object(volume._slicesX);
