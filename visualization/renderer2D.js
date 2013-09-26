@@ -880,7 +880,7 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
     return [[_ix, _iy, _iz], [_ijk[0], _ijk[1], _ijk[2]], [_ras[0], _ras[1], _ras[2]]];
     }
 
-  return;
+  return null;
 };
 
 
