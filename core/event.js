@@ -32,10 +32,13 @@ goog.provide('X.event');
 goog.provide('X.event.events');
 
 // events provided
+goog.provide('X.event.ComputingEvent');
+goog.provide('X.event.ComputingEndEvent');
 goog.provide('X.event.HoverEvent');
 goog.provide('X.event.HoverEndEvent');
 goog.provide('X.event.ModifiedEvent');
 goog.provide('X.event.PanEvent');
+goog.provide('X.event.ProgressEvent');
 goog.provide('X.event.RenderEvent');
 goog.provide('X.event.ResetViewEvent');
 goog.provide('X.event.RotateEvent');
@@ -133,7 +136,13 @@ X.event.events = {
   HOVER: X.event.uniqueId('hover'),
   
   // the hover end event
-  HOVER_END: X.event.uniqueId('hover_end')
+  HOVER_END: X.event.uniqueId('hover_end'),
+
+  // the computing event
+  COMPUTING: X.event.uniqueId('computing'),
+
+  // the computing end event
+  COMPUTING_END: X.event.uniqueId('computing_end')
 
 };
 
@@ -442,6 +451,39 @@ X.event.ProgressEvent = function() {
 };
 // inherit from goog.events.Event
 goog.inherits(X.event.ProgressEvent, X.event);
+
+
+/**
+ * This event indicates computing for volume rendering.
+ * 
+ * @constructor
+ * @extends X.event
+ */
+X.event.ComputingEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.event.events.COMPUTING);
+  
+};
+// inherit from goog.events.Event
+goog.inherits(X.event.ComputingEvent, X.event);
+
+
+/**
+ * This event indicates the end of computing for volume rendering.
+ * 
+ * @constructor
+ * @extends X.event
+ */
+X.event.ComputingEndEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.event.events.COMPUTING_END);
+  
+};
+// inherit from goog.events.Event
+goog.inherits(X.event.ComputingEndEvent, X.event);
+
 goog.exportSymbol('X.event.events.PAN', X.event.events.PAN);
 goog.exportSymbol('X.event.events.ROTATE', X.event.events.ROTATE);
 goog.exportSymbol('X.event.events.ZOOM', X.event.events.ZOOM);

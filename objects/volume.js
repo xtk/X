@@ -1357,10 +1357,16 @@ X.volume.prototype.volumeRendering_ = function(direction) {
     computing = true;
     this._volumeRenderingCache.push(direction);
 
+setTimeout(function() {
     // call computing callback
     this.onComputing_(direction);
 
+  }.bind(this), 10);
   }
+
+  
+
+
 
     // hide old volume rendering slices
   var _child = this._children[this._volumeRenderingDirection];
@@ -1432,6 +1438,9 @@ X.volume.prototype.volumeRendering_ = function(direction) {
  */
 X.volume.prototype.onComputing_ = function(direction) {
 
+  var computingEvent = new X.event.ComputingEvent();
+  this.dispatchEvent(computingEvent);
+
   this['onComputing'](direction);
 
 };
@@ -1446,6 +1455,9 @@ X.volume.prototype.onComputing_ = function(direction) {
  *
  */
 X.volume.prototype.onComputingEnd_ = function(direction) {
+
+  var computingEndEvent = new X.event.ComputingEndEvent();
+  this.dispatchEvent(computingEndEvent);
 
   this['onComputingEnd'](direction);
 

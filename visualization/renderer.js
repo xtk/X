@@ -215,6 +215,54 @@ goog.inherits(X.renderer, X.base);
 
 
 /**
+ * The callback for X.event.events.COMPUTING events which indicate computing
+ * for volume rendering
+ *
+ * @param {!X.event.ComputingEvent} event The computing event.
+ * @public
+ */
+X.renderer.prototype.onComputing = function(event) {
+
+  this.showProgressBar_();
+
+};
+
+
+/**
+ * The callback for X.event.events.COMPUTING_END events which indicate the end of computing
+ * for volume rendering
+ *
+ * @param {!X.event.ComputingEndEvent} event The computing end event.
+ * @public
+ */
+X.renderer.prototype.onComputingEnd = function(event) {
+
+  this.hideProgressBar_();
+
+};
+
+
+/**
+ * The callback for X.event.events.PROGRESS events which indicate progress
+ * updates during loading.
+ *
+ * @param {!X.event.ProgressEvent} event The progress event holding the total
+ *          progress value.
+ * @public
+ */
+X.renderer.prototype.onComputingProgress = function(event) {
+
+  if (this._progressBar) {
+
+    var _progress = event._value;
+    this._progressBar.setValue(_progress * 100);
+
+  }
+
+};
+
+
+/**
  * The callback for X.event.events.PROGRESS events which indicate progress
  * updates during loading.
  *
@@ -794,6 +842,21 @@ X.renderer.prototype.update_ = function(object) {
           .bind(this));
 
     }
+
+    if(!goog.events.hasListener(object, X.event.events.COMPUTING)) {
+
+      goog.events.listen(object, X.event.events.COMPUTING, this.onComputing
+          .bind(this));
+
+    }
+
+    if(!goog.events.hasListener(object, X.event.events.COMPUTING_END)) {
+
+      goog.events.listen(object, X.event.events.COMPUTING_END, this.onComputingEnd
+          .bind(this));
+
+    }
+
   }
 
 };
