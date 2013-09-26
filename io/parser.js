@@ -754,7 +754,7 @@ X.parser.prototype.xyBBox = function(_solutionsXY){
  * 
  * @return The target slice.
  */
-X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox, _IJKVolume, object, hasLabelMap, colorTable){
+X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color, _bbox, _IJKVolume, object, hasLabelMap, colorTable){
 
   var sliceXY = new X.slice();
     
@@ -811,15 +811,15 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceNormal, _color, _bbox
   var _hmax = Math.ceil(_xyBBox[3]);
   var _sheight = _hmax - _hmin;
 
-  var _resX = 1;
-  var _resY = 1;
-  
+  var _resX = _sliceXYSpacing[0];
+  var _resY = _sliceXYSpacing[1];
+
   var _epsilon = 0.0000001;
 
   // How many pixels are we expecting the raw data
   var _cswidth = Math.ceil(_swidth/_resX);
   var _csheight = Math.ceil(_sheight/_resY);
-  
+
   var _csize =  _cswidth*_csheight;
   var textureSize = 4 * _csize;
   var textureForCurrentSlice = new Uint8Array(textureSize);
@@ -1012,11 +1012,20 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   var _rasSpacing = goog.vec.Vec4.createFloat32FromValues(object._RASSpacing[0], object._RASSpacing[1], object._RASSpacing[2], 0);
   var _xySpacing = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multVec4(_RASToXY, _rasSpacing, _xySpacing);
-  
+ 
   var _sliceDirection = goog.vec.Vec4.createFloat32();
   // scale
   goog.vec.Vec4.scale(_sliceNormal,_xySpacing[2],_sliceDirection);
 
+   if(Math.abs(_xySpacing[0]) < 0.5){
+     _xySpacing[0] =  0.5;
+   }
+
+   if(Math.abs(_xySpacing[1]) < 0.5){
+     _xySpacing[1] =  0.5;
+   }
+
+  object._childrenInfo[_index]._sliceXYSpacing = [Math.abs(_xySpacing[0]), Math.abs(_xySpacing[1])];
   object._childrenInfo[_index]._sliceSpacing = _xySpacing[2];
   object._childrenInfo[_index]._sliceDirection = _sliceDirection;
 
@@ -1024,7 +1033,7 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   // GET NUMBER OF SLICES
   // ------------------------------------------
   
-  // floor cause if plane do not intersect box : crash (to be addressed)
+  // floor because if plane do not intersect box : crash (to be addressed)
   var _nb = Math.abs(Math.floor(_dist/_xySpacing[2]));
   object._range[_index] = _nb;
   object._childrenInfo[_index]._nb = _nb;
@@ -1169,7 +1178,7 @@ X.parser.prototype.reslice = function(object) {
   _sliceOrigin[1] = object._childrenInfo[0]._solutionsLine[0][0][1] + object._childrenInfo[0]._sliceDirection[1]*Math.round(object._childrenInfo[0]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[0]._solutionsLine[0][0][2] + object._childrenInfo[0]._sliceDirection[2]*Math.round(object._childrenInfo[0]._nb/2);
 
-  var _slice = this.reslice2(_sliceOrigin, object._childrenInfo[0]._sliceNormal, object._childrenInfo[0]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+  var _slice = this.reslice2(_sliceOrigin, object._childrenInfo[0]._sliceXYSpacing, object._childrenInfo[0]._sliceNormal, object._childrenInfo[0]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
   if (object.hasLabelMap) {
     // if this object has a labelmap,
@@ -1215,8 +1224,8 @@ X.parser.prototype.reslice = function(object) {
   _sliceOrigin[0] = object._childrenInfo[1]._solutionsLine[0][0][0] + object._childrenInfo[1]._sliceDirection[0]*Math.round(object._childrenInfo[1]._nb/2);
   _sliceOrigin[1] = object._childrenInfo[1]._solutionsLine[0][0][1] + object._childrenInfo[1]._sliceDirection[1]*Math.round(object._childrenInfo[1]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[1]._solutionsLine[0][0][2] + object._childrenInfo[1]._sliceDirection[2]*Math.round(object._childrenInfo[1]._nb/2);
-    
-  _slice = this.reslice2(_sliceOrigin, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+
+  _slice = this.reslice2(_sliceOrigin, object._childrenInfo[1]._sliceXYSpacing, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
   if (object.hasLabelMap) {
     // if this object has a labelmap,
@@ -1257,12 +1266,11 @@ X.parser.prototype.reslice = function(object) {
   this.updateSliceInfo(2, _sliceOrigin, _sliceNormal, object);
   // Create empty array for all slices in this direction
   object._children[2]._children = new Array(object._childrenInfo[2]._nb);
-    
   _sliceOrigin[0] = object._childrenInfo[2]._solutionsLine[0][0][0] + object._childrenInfo[2]._sliceDirection[0]*Math.round(object._childrenInfo[2]._nb/2);
   _sliceOrigin[1] = object._childrenInfo[2]._solutionsLine[0][0][1] + object._childrenInfo[2]._sliceDirection[1]*Math.round(object._childrenInfo[2]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[2]._solutionsLine[0][0][2] + object._childrenInfo[2]._sliceDirection[2]*Math.round(object._childrenInfo[2]._nb/2);
     
-  _slice = this.reslice2(_sliceOrigin, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+  _slice = this.reslice2(_sliceOrigin, object._childrenInfo[2]._sliceXYSpacing, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
   if (object.hasLabelMap) {
     // if this object has a labelmap,
