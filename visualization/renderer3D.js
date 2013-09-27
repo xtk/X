@@ -1317,44 +1317,44 @@ X.renderer3D.prototype.order_ = function() {
     // b) check if first or last slice is the closest an order slices accordingly
     if (object instanceof X.volume && object._volumeRendering) {
 
-      var _slices = object._children[object._volumeRenderingDirection]._children;
-      var numberOfSlices = _slices.length;
+        var _slices = object._children[object._volumeRenderingDirection]._children;
+        var numberOfSlices = _slices.length;
 
-      // grab the first slice, attach the distance and opacity
-      var firstSlice = _slices[0];
+        // grab the first slice, attach the distance and opacity
+        var firstSlice = _slices[0];
 
-      var _targetChild = object._volumeRenderingDirection;
-      var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, object._RASCenter[0]+object._childrenInfo[_targetChild]._sliceDirection[0], object._RASCenter[1]+object._childrenInfo[_targetChild]._sliceDirection[1], object._RASCenter[2]+object._childrenInfo[_targetChild]._sliceDirection[2]);
-      var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view,object._RASCenter[0]-object._childrenInfo[_targetChild]._sliceDirection[0], object._RASCenter[1]-object._childrenInfo[_targetChild]._sliceDirection[1], object._RASCenter[2]-object._childrenInfo[_targetChild]._sliceDirection[2]);
-      var dX = realCentroidVector.z - realCentroidVector2.z;
+        var _targetChild = object._volumeRenderingDirection;
+        var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, object._RASCenter[0]+object._childrenInfo[_targetChild]._sliceDirection[0], object._RASCenter[1]+object._childrenInfo[_targetChild]._sliceDirection[1], object._RASCenter[2]+object._childrenInfo[_targetChild]._sliceDirection[2]);
+        var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view,object._RASCenter[0]-object._childrenInfo[_targetChild]._sliceDirection[0], object._RASCenter[1]-object._childrenInfo[_targetChild]._sliceDirection[1], object._RASCenter[2]-object._childrenInfo[_targetChild]._sliceDirection[2]);
+        var dX = realCentroidVector.z - realCentroidVector2.z;
 
-       var _acquisitionDirection = Math.max(object._IJKToRAS[object._volumeRenderingDirection], Math.max(object._IJKToRAS[object._volumeRenderingDirection+4], object._IJKToRAS[object._volumeRenderingDirection+8])); 
-       var _acquisitionDirection2 = Math.min(object._IJKToRAS[object._volumeRenderingDirection], Math.min(object._IJKToRAS[object._volumeRenderingDirection+4], object._IJKToRAS[object._volumeRenderingDirection+8])); 
-       var _acquisitionSign = _acquisitionDirection + _acquisitionDirection2;
+         var _acquisitionDirection = Math.max(object._IJKToRAS[object._volumeRenderingDirection], Math.max(object._IJKToRAS[object._volumeRenderingDirection+4], object._IJKToRAS[object._volumeRenderingDirection+8])); 
+         var _acquisitionDirection2 = Math.min(object._IJKToRAS[object._volumeRenderingDirection], Math.min(object._IJKToRAS[object._volumeRenderingDirection+4], object._IJKToRAS[object._volumeRenderingDirection+8])); 
+         var _acquisitionSign = _acquisitionDirection + _acquisitionDirection2;
 
-      if(dX*_acquisitionSign < 0) {
+        if(dX*_acquisitionSign < 0) {
 
-        var s = 0;
-        for (s = 0; s < object._range[_targetChild] - 1; s++) {
+          var s = 0;
+          for (s = 0; s < object._range[_targetChild] - 1; s++) {
 
-          _slices[s]._opacity = object._opacity;
-          _slices[s]._distance =   object._childrenInfo[_targetChild]._sliceSpacing*s;
+            _slices[s]._opacity = object._opacity;
+            _slices[s]._distance =   object._childrenInfo[_targetChild]._sliceSpacing*s;
 
+          }
         }
-      }
-      else {
+        else {
 
-       var s = object._range[_targetChild] - 1;
-       for (s = object._range[_targetChild] - 1; s >= 0; s--) {
+         var s = object._range[_targetChild] - 1;
+         for (s = object._range[_targetChild] - 1; s >= 0; s--) {
 
-          _slices[s]._opacity = object._opacity;
-         _slices[s]._distance =   (object._range[_targetChild]-1)*object._childrenInfo[_targetChild]._sliceSpacing -object._childrenInfo[_targetChild]._sliceSpacing*s;
+            _slices[s]._opacity = object._opacity;
+            _slices[s]._distance =   (object._range[_targetChild]-1)*object._childrenInfo[_targetChild]._sliceSpacing -object._childrenInfo[_targetChild]._sliceSpacing*s;
 
+          }
         }
-      }
 
-      // we need to update the rendering order
-      reSortRequired = true;
+        // we need to update the rendering order
+        reSortRequired = true;
 
     }
 

@@ -1346,82 +1346,88 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   if ((!this._volumeRendering)
       || (!this._dirty && direction == this._volumeRenderingDirection)) {
 
+    this._volumeRenderingDirection = direction;
+
     // we do not have to do anything
     return;
 
   }
 
-  var computing = false;
   if (this._volumeRenderingCache.indexOf(direction) == -1) {
 
-    computing = true;
+    this._computing = true;
     this._volumeRenderingCache.push(direction);
 
-setTimeout(function() {
+
     // call computing callback
     this.onComputing_(direction);
 
-  }.bind(this), 10);
-  }
-
-  
 
 
+      
+    setTimeout(function() {
 
-    // hide old volume rendering slices
-  var _child = this._children[this._volumeRenderingDirection];
-  _child['visible'] = false;
+      window.console.log('starting now');
 
-  // show new volume rendering slices, but don't show the borders
-  _child = this._children[direction];
-  var _numberOfSlices = _child._children.length;
 
-  var i;
-  for (i = 0; i < _numberOfSlices; i++) {
+        // hide old volume rendering slices
+      var _child = this._children[this._volumeRenderingDirection];
+      _child['visible'] = false;
 
-    // RESLICE VOLUME IF NECESSARY!
-    //loop through slice
-    if(!goog.isDefAndNotNull(_child._children[i])){
+      // show new volume rendering slices, but don't show the borders
+      _child = this._children[direction];
+      var _numberOfSlices = _child._children.length;
 
-      var _sliceOrigin = goog.vec.Vec3.createFloat32();
+      var i;
+      for (i = 0; i < _numberOfSlices; i++) {
 
-      _sliceOrigin[0] = this._childrenInfo[direction]._solutionsLine[0][0][0] + this._childrenInfo[direction]._sliceDirection[0]*i;
-      _sliceOrigin[1] = this._childrenInfo[direction]._solutionsLine[0][0][1] + this._childrenInfo[direction]._sliceDirection[1]*i;
-      _sliceOrigin[2] = this._childrenInfo[direction]._solutionsLine[0][0][2] + this._childrenInfo[direction]._sliceDirection[2]*i;
+        // RESLICE VOLUME IF NECESSARY!
+        //loop through slice
+        if(!goog.isDefAndNotNull(_child._children[i])){
 
-      //attach labelmap
-      if(this.hasLabelMap){
-        var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
-        this._labelmap._children[direction]._children[i] = _sliceLabel;
-        // add it to create the texture
-        this._labelmap._children[direction].modified(true);
+          var _sliceOrigin = goog.vec.Vec3.createFloat32();
+
+          _sliceOrigin[0] = this._childrenInfo[direction]._solutionsLine[0][0][0] + this._childrenInfo[direction]._sliceDirection[0]*i;
+          _sliceOrigin[1] = this._childrenInfo[direction]._solutionsLine[0][0][1] + this._childrenInfo[direction]._sliceDirection[1]*i;
+          _sliceOrigin[2] = this._childrenInfo[direction]._solutionsLine[0][0][2] + this._childrenInfo[direction]._sliceDirection[2]*i;
+
+          //attach labelmap
+          if(this.hasLabelMap){
+            var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
+            this._labelmap._children[direction]._children[i] = _sliceLabel;
+            // add it to create the texture
+            this._labelmap._children[direction].modified(true);
+          }
+
+          var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null);
+          _slice._children[0]._visible = false;
+
+          if(this.hasLabelMap){
+            _slice._labelmap = _slice._texture;
+            _slice._labelmap = this._labelmap._children[direction]._children[i]._texture;
+          }
+
+          _child._children[i] = _slice;
+
+          // add it to renderer!
+          this._children[direction].modified(true);
+
+        }
+        
+        _child._children[i]._visible = true;
       }
 
-      var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null);
-      _slice._children[0]._visible = false;
+      this._computing = false;
 
-      if(this.hasLabelMap){
-        _slice._labelmap = _slice._texture;
-        _slice._labelmap = this._labelmap._children[direction]._children[i]._texture;
-      }
+      //call computing end callback
+      this.onComputingEnd_(direction);
 
-      _child._children[i] = _slice;
+    }.bind(this), 100);
 
-      // add it to renderer!
-      this._children[direction].modified(true);
-
-    }
-    
-    _child._children[i]._visible = true;
-  }
+  } // check if computing
 
   // store the direction
   this._volumeRenderingDirection = direction;
-
-  if (computing) {
-    //call computing end callback
-    this.onComputingEnd_(direction);
-  }
 
   this._dirty = false;
 
