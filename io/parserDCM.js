@@ -88,6 +88,14 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     var _dimensions = [ MRI.dim[0], MRI.dim[1], MRI.dim[2] ];
     object._dimensions = _dimensions;
     // grab the spacing
+    if(isNaN(MRI.pixdim[0])){
+      MRI.pixdim[0] = 1.;
+    }
+
+    if(isNaN(MRI.pixdim[1])){
+      MRI.pixdim[1] = 1.;
+    }
+
     if (MRI.pixdim[2] == Infinity) {
 
       if( MRI.location.length > 1) {
@@ -97,7 +105,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       }
       else {
 
-      MRI.pixdim[2] = 1.0;
+        MRI.pixdim[2] = 1.0;
 
       }
     }
@@ -122,7 +130,13 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
 
     // get origin == highest slice position?
     // or depends on Z orientation?
+
+    // for CT, this one is not defined
+    var _origin = [0, 0, 0]
+    if(MRI.positionAll.length > 0){
     var i = 0, m = MRI.positionAll[0], mI = 0;
+
+    window.console.log(MRI.positionAll);
 
     while(++i < MRI.positionAll.length) {
       if(MRI.positionAll[i] > m) {
@@ -130,7 +144,9 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
           m = MRI.positionAll[i];
       }
     }
-    var _origin = MRI.originAll[mI].split("\\");
+    _origin = MRI.originAll[mI].split("\\");
+    }
+    
 
     // Create IJKtoXYZ matrix
     var _x_cosine = new goog.math.Vec3(MRI.spaceorientation[0],
@@ -171,6 +187,10 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       0,
       0,
       1);
+
+    window.console.log(MRI.pixdim);
+    window.console.log(IJKToRAS);
+    return;
 
     MRI.IJKToRAS = IJKToRAS;
     MRI.RASToIJK = goog.vec.Mat4.createFloat32();
@@ -229,13 +249,15 @@ X.parserDCM.prototype.parseStream = function(data, object) {
   // the instance number a.k.a slice index
   var _position = 0;
   if (!goog.isDefAndNotNull(object.MRI)) {
+
+    window.console.log("START PARSING!");
     // this is the _first slice_
     //
     // the header fields + 1 field for data
     var MRI = {
       rows : 0,
       cols : 0,
-      pixdim : null,
+      pixdim : [1, 1, 1],
       bits_allocated : 0,
       bits_stored : 0,
       number_of_slices : 1,
@@ -251,7 +273,8 @@ X.parserDCM.prototype.parseStream = function(data, object) {
       max : -Infinity,
       location : [],
       originAll: [],
-      positionAll: []
+      positionAll: [],
+      spaceorientation : [1, 0, 0, 0, 1, 0]
     };
     // check how many slices we have
     MRI.number_of_slices = object._file.length;
@@ -266,146 +289,272 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     var _VR = null;
     var _VL = null;
     // we only need 9 tags of the DICOM header
-    var _tagCount = 9;
+    var _tagCount = 10;
+
+    var count = 0;
+
     while (_tagCount > 0) {
-      // read short
-      _tagGroup = _bytes[_bytePointer++];// this.scan('ushort');
-      if (_tagGroup == 0x0028) {
-        // Group of GENERAL IMAGE SPECS
-        _tagSpecific = _bytes[_bytePointer++];
-        _VR = _bytes[_bytePointer++];
-        _VL = _bytes[_bytePointer++];
-        switch (_tagSpecific) {
-        case 0x0010:
-          // rows
-          MRI.rows = _bytes[_bytePointer++];
-          _tagCount--;
-          break;
-        case 0x0011:
-          // cols
-          MRI.cols = _bytes[_bytePointer++];
-          _tagCount--;
-          break;
-        case 0x0100:
-          // bits allocated
-          MRI.bits_allocated = _bytes[_bytePointer++];
-          _tagCount--;
-          break;
-        case 0x0101:
-          // bits stored
-          MRI.bits_stored = _bytes[_bytePointer++];
-          _tagCount--;
-          break;
-        case 0x0002:
-          // number of images
-          MRI.number_of_images = _bytes[_bytePointer++];
-          _tagCount--;
-          break;
-        case 0x0030:
-          // pixel spacing
-          var _pixel_spacing = '';
-          // pixel spacing is a delimited string (ASCII)
-          var i = 0;
-          for (i = 0; i < _VL / 2; i++) {
-            var _short = _bytes[_bytePointer++];
-            var _b0 = _short & 0x00FF;
-            var _b1 = (_short & 0xFF00) >> 8;
-            _pixel_spacing += String.fromCharCode(_b0);
-            _pixel_spacing += String.fromCharCode(_b1);
-          }
-          _pixel_spacing = _pixel_spacing.split("\\");
-          MRI.pixdim = [ parseFloat(_pixel_spacing[0]), parseFloat(_pixel_spacing[1]), Infinity ];
-          _tagCount--;
-          break;
-        case 0x1052: // rescale intercept
-        case 0x1053: // rescale slope
-        case 0x1050: // WindowCenter
-        case 0x1051: // WindowWidth
-        case 0x0004: // "Photometric Interpretation"
-        case 0x0102: // "High Bit"
-        case 0x0103: // "Pixel Representation"
-        case 0x1054: // "Rescale Type"
-        case 0x2110: // "Lossy Image Compression"
-        }
-      } else if (_tagGroup == 0x0020) {
-        // Group of SLICE INFO
-        _tagSpecific = _bytes[_bytePointer++];
-        _VR = _bytes[_bytePointer++];
-        _VL = _bytes[_bytePointer++];
-        // here we are only interested in the InstanceNumber
-        switch (_tagSpecific) {
-        case 0x0013:
-          for (i = 0; i < _VL / 2; i++) {
-            var _short = _bytes[_bytePointer++];
-            var _b0 = _short & 0x00FF;
-            var _b1 = (_short & 0xFF00) >> 8;
-            _position += String.fromCharCode(_b0);
-            _position += String.fromCharCode(_b1);
-            _position = parseInt(_position, 10);
-          }
-          _tagCount--;
-          break;
-        case 0x0032:
-          // image position
-          var _image_position = '';
-          var i = 0;
-          for (i = 0; i < _VL / 2; i++) {
-            var _short = _bytes[_bytePointer++];
-            var _b0 = _short & 0x00FF;
-            var _b1 = (_short & 0xFF00) >> 8;
-            _image_position += String.fromCharCode(_b0);
-            _image_position += String.fromCharCode(_b1);
-          }
-          _image_position = _image_position.split("\\");
-          MRI.origin = [ parseFloat(_image_position[0]), parseFloat(_image_position[1]),
-              parseFloat(_image_position[2]) ];
-          _tagCount--;
-          break;
-        case 0x0037:
-          // image orientation
-          // pixel spacing
-          var _image_orientation = '';
-          // pixel spacing is a delimited string (ASCII)
-          var i = 0;
-          for (i = 0; i < _VL / 2; i++) {
-            var _short = _bytes[_bytePointer++];
-            var _b0 = _short & 0x00FF;
-            var _b1 = (_short & 0xFF00) >> 8;
-            _image_orientation += String.fromCharCode(_b0);
-            _image_orientation += String.fromCharCode(_b1);
-          }
-          _image_orientation = _image_orientation.split("\\");
-          MRI.spaceorientation = [ parseFloat(_image_orientation[0]),
-              parseFloat(_image_orientation[1]), parseFloat(_image_orientation[2]),
-              parseFloat(_image_orientation[3]), parseFloat(_image_orientation[4]),
-              parseFloat(_image_orientation[5]) ];
-          _tagCount--;
-          break;
-        }
-      } else if (_tagGroup == 0x0010) {
-        // Group of SLICE INFO
-        _tagSpecific = _bytes[_bytePointer++];
-        _VR = _bytes[_bytePointer++];
-        _VL = _bytes[_bytePointer++];
-        // here we are only interested in the InstanceNumber
-        switch (_tagSpecific) {
-        case 0x2210:
-          // anatomical orientation
-          // pixel spacing
-          var _anatomical_orientation = '';
-          // pixel spacing is a delimited string (ASCII)
-          var i = 0;
-          for (i = 0; i < _VL / 2; i++) {
-            var _short = _bytes[_bytePointer++];
-            var _b0 = _short & 0x00FF;
-            var _b1 = (_short & 0xFF00) >> 8;
-            _anatomical_orientation += String.fromCharCode(_b0);
-            _anatomical_orientation += String.fromCharCode(_b1);
+
+      _tagGroup = _bytes[_bytePointer++];
+      _tagElement = _bytes[_bytePointer++];
+
+      window.console.log('(' + _tagGroup.toString(16) + ',' + _tagElement.toString(16) +')');
+      _VR = _bytes[_bytePointer++];
+      _VL = _bytes[_bytePointer++];
+
+      var _b0 = _VR & 0x00FF;
+      var _b1 = (_VR & 0xFF00) >> 8;
+      window.console.log(_VR);
+      window.console.log(String.fromCharCode( _b0 ) + String.fromCharCode( _b1 ));
+      window.console.log(_VL);
+
+      count++;
+      
+       if(count == 200){
+       return;
+     }
+
+      switch (_tagGroup) {
+        case 0x0028:
+        // Group of IMAGE INFO
+          switch (_tagElement) {
+            case 0x0010:
+              // rows
+              MRI.rows = _bytes[_bytePointer+=_VL/2];
+              _tagCount--;
+              break;
+            case 0x0011:
+              // cols
+              MRI.cols = _bytes[_bytePointer+=_VL/2];
+              _tagCount--;
+              break;
+            case 0x0100:
+              // bits allocated
+              MRI.bits_allocated = _bytes[_bytePointer+=_VL/2];
+              _tagCount--;
+              break;
+            case 0x0101:
+              // bits stored
+              MRI.bits_stored = _bytes[_bytePointer+=_VL/2];
+              _tagCount--;
+              break;
+            case 0x0002:
+              // number of images
+              MRI.number_of_images = _bytes[_bytePointer+=_VL/2];
+              _tagCount--;
+              break;
+            case 0x0030:
+              // pixel spacing
+              var _pixel_spacing = '';
+              // pixel spacing is a delimited string (ASCII)
+              var i = 0;
+              for (i = 0; i < _VL / 2; i++) {
+                var _short = _bytes[_bytePointer++];
+                var _b0 = _short & 0x00FF;
+                var _b1 = (_short & 0xFF00) >> 8;
+                _pixel_spacing += String.fromCharCode(_b0);
+                _pixel_spacing += String.fromCharCode(_b1);
+              }
+              _pixel_spacing = _pixel_spacing.split("\\");
+              MRI.pixdim = [ parseFloat(_pixel_spacing[0]), parseFloat(_pixel_spacing[1]), Infinity ];
+              _tagCount--;
+              break;
+
+            case 0x1052: // rescale intercept
+            case 0x1053: // rescale slope
+            case 0x1050: // WindowCenter
+            case 0x1051: // WindowWidth
+            case 0x0004: // "Photometric Interpretation"
+            case 0x0102: // "High Bit"
+            case 0x0103: // "Pixel Representation"
+            case 0x1054: // "Rescale Type"
+            case 0x2110: // "Lossy Image Compression"
+
+            default:
+              switch (_VR){
+                case 16975:
+                  // UL
+                case 20819:
+                  // SQ
+                case 20053:
+                  // UN
+                case 22351:
+                  // OW
+                  _VL = _bytes[_bytePointer++];
+                  _bytePointer++;
+                  window.console.log("new VL:" + _VL);
+                default:
+                  _bytePointer+=_VL/2;
+                  break;
+              }
+              break;
           }
 
-          break;
+        break;
+      
+      case 0x0020:
+        // Group of SLICE INFO
+        switch (_tagElement) {
+          case 0x0013:
+            for (i = 0; i < _VL / 2; i++) {
+              var _short = _bytes[_bytePointer++];
+              var _b0 = _short & 0x00FF;
+              var _b1 = (_short & 0xFF00) >> 8;
+              _position += String.fromCharCode(_b0);
+              _position += String.fromCharCode(_b1);
+              _position = parseInt(_position, 10);
+            }
+            _tagCount--;
+            break;
+          case 0x0032:
+            // image position
+            var _image_position = '';
+            var i = 0;
+            for (i = 0; i < _VL / 2; i++) {
+              var _short = _bytes[_bytePointer++];
+              var _b0 = _short & 0x00FF;
+              var _b1 = (_short & 0xFF00) >> 8;
+              _image_position += String.fromCharCode(_b0);
+              _image_position += String.fromCharCode(_b1);
+            }
+            _image_position = _image_position.split("\\");
+            MRI.origin = [ parseFloat(_image_position[0]), parseFloat(_image_position[1]),
+                parseFloat(_image_position[2]) ];
+            _tagCount--;
+            break;
+          case 0x0037:
+            // image orientation
+            // pixel spacing
+            var _image_orientation = '';
+            // pixel spacing is a delimited string (ASCII)
+            var i = 0;
+            for (i = 0; i < _VL / 2; i++) {
+              var _short = _bytes[_bytePointer++];
+              var _b0 = _short & 0x00FF;
+              var _b1 = (_short & 0xFF00) >> 8;
+              _image_orientation += String.fromCharCode(_b0);
+              _image_orientation += String.fromCharCode(_b1);
+            }
+            _image_orientation = _image_orientation.split("\\");
+            MRI.spaceorientation = [ parseFloat(_image_orientation[0]),
+                parseFloat(_image_orientation[1]), parseFloat(_image_orientation[2]),
+                parseFloat(_image_orientation[3]), parseFloat(_image_orientation[4]),
+                parseFloat(_image_orientation[5]) ];
+            _tagCount--;
+            break;
+
+          default:
+            switch (_VR){
+              case 16975:
+                // UL
+              case 20819:
+                // SQ
+              case 20053:
+                // UN
+              case 22351:
+                // OW
+                _VL = _bytes[_bytePointer++];
+                _bytePointer++;
+                window.console.log("new VL:" + _VL);
+              default:
+                _bytePointer+=_VL/2;
+                break;
+            }
+            break;
+          }
+
+        break;
+
+      case 0x0010:
+        // Group of SLICE INFO
+        // here we are only interested in the InstanceNumber
+        switch (_tagElement) {
+          case 0x2210:
+            // anatomical orientation
+            // pixel spacing
+            var _anatomical_orientation = '';
+            // pixel spacing is a delimited string (ASCII)
+            var i = 0;
+            for (i = 0; i < _VL / 2; i++) {
+              var _short = _bytes[_bytePointer++];
+              var _b0 = _short & 0x00FF;
+              var _b1 = (_short & 0xFF00) >> 8;
+              _anatomical_orientation += String.fromCharCode(_b0);
+              _anatomical_orientation += String.fromCharCode(_b1);
+            }
+            break;
+
+          default:
+            switch (_VR){
+              case 16975:
+                // UL
+              case 20819:
+                // SQ
+              case 20053:
+                // UN
+              case 22351:
+                // OW
+                _VL = _bytes[_bytePointer++];
+                _bytePointer++;
+                window.console.log("new VL:" + _VL);
+              default:
+                _bytePointer+=_VL/2;
+                break;
+            }
+            break;
+          }
+
+        break;
+
+      default:
+        window.console.log('unused tag group');
+        // switch
+        // got a special VR
+        switch (_VR){
+          case 16975:
+            // UL
+          case 20819:
+            // SQ
+          case 20053:
+            // UN
+          case 22351:
+            // OW
+
+            // bytes to bits
+            function byte2bits(a)
+{
+    var tmp = "";
+    for(var i = 128; i >= 1; i /= 2)
+        tmp += a&i?'1':'0';
+    return tmp;
+}
+
+            _VL = _bytes[_bytePointer++];
+            var _VLT = _bytes[_bytePointer++];
+
+      var _b0 = _VL & 0x00FF;
+      var _b1 = (_VL & 0xFF00) >> 8;
+
+            var _b2 = _VLT & 0x00FF;
+      var _b3 = (_VLT & 0xFF00) >> 8;
+
+            var _VLb0 = byte2bits(_b0);
+            var _VLb1 = byte2bits(_b1);
+            var _VLb = _VLb1 + _VLb0;
+
+            var _VLTb0 = byte2bits(_b2);
+            var _VLTb1 = byte2bits(_b3);
+            var _VLTb = _VLTb1 + _VLTb0;
+
+            var _VL2 =  _VLTb + _VLb ;
+            _VL = parseInt(_VL2, 2);
+          default:
+            _bytePointer+=_VL/2;
+            break;
         }
+        break;
       }
+
     }
     object.MRI = MRI;
     // initially set the dimensions
@@ -430,6 +579,8 @@ X.parserDCM.prototype.parseStream = function(data, object) {
       break;
     }
   } else {
+
+    window.console.log("CONTINUE PARSING!");
     var MRI = object.MRI;
     // scan the whole header as short (2 bytes), we know the volume size
     // now so we can reduce the byte array
@@ -457,8 +608,9 @@ X.parserDCM.prototype.parseStream = function(data, object) {
           }
           MRI.positionAll.push(_position);
           _tagCount--;
-        }          else if (_tagSpecific == 0x0032) {
-                    _VR = _bytes[_bytePointer++];
+        }
+        else if (_tagSpecific == 0x0032) {
+          _VR = _bytes[_bytePointer++];
           _VL = _bytes[_bytePointer++];
           // image position
           var _image_position = '';
