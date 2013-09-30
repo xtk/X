@@ -1348,6 +1348,8 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
     this._volumeRenderingDirection = direction;
 
+    //console.log('jump');
+
     // we do not have to do anything
     return;
 
@@ -1362,7 +1364,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
     // call computing callback
     this.onComputing_(direction);
 
-
+  }
 
       
     setTimeout(function() {
@@ -1422,12 +1424,13 @@ X.volume.prototype.volumeRendering_ = function(direction) {
       //call computing end callback
       this.onComputingEnd_(direction);
 
-    }.bind(this), 100);
+    }.bind(this), 10);
 
-  } // check if computing
+ // } // check if computing
 
-  // store the direction
-  this._volumeRenderingDirection = direction;
+    // store the direction
+    this._volumeRenderingDirection = direction;
+
 
   this._dirty = false;
 

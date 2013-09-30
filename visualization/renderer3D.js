@@ -1394,6 +1394,8 @@ X.renderer3D.prototype.order_ = function() {
   // only re-sort the tree if required
   if (reSortRequired) {
 
+    //console.log('resorting');
+
     this._objects.sort();
 
   }
