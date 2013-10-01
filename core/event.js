@@ -463,6 +463,14 @@ X.event.ComputingEvent = function() {
 
   // call the default event constructor
   goog.base(this, X.event.events.COMPUTING);
+
+  /**
+   * The object which is computed.
+   * 
+   * @type {?X.object}
+   * @protected
+   */
+  this._object = null;
   
 };
 // inherit from goog.events.Event
@@ -480,6 +488,14 @@ X.event.ComputingEndEvent = function() {
   // call the default event constructor
   goog.base(this, X.event.events.COMPUTING_END);
   
+  /**
+   * The object which is computed.
+   * 
+   * @type {?X.object}
+   * @protected
+   */
+  this._object = null;
+
 };
 // inherit from goog.events.Event
 goog.inherits(X.event.ComputingEndEvent, X.event);

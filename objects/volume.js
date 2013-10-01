@@ -1348,8 +1348,6 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
     this._volumeRenderingDirection = direction;
 
-    //console.log('jump');
-
     // we do not have to do anything
     return;
 
@@ -1357,7 +1355,6 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
   if (this._volumeRenderingCache.indexOf(direction) == -1) {
 
-    this._computing = true;
     this._volumeRenderingCache.push(direction);
 
 
@@ -1366,73 +1363,71 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
   }
 
-      
-    setTimeout(function() {
+    
+  setTimeout(function() {
 
-      window.console.log('starting now');
+      // hide old volume rendering slices
+    var _child = this._children[this._volumeRenderingDirection];
+    _child['visible'] = false;
 
+    // show new volume rendering slices, but don't show the borders
+    _child = this._children[direction];
+    var _numberOfSlices = _child._children.length;
 
-        // hide old volume rendering slices
-      var _child = this._children[this._volumeRenderingDirection];
-      _child['visible'] = false;
+    var _computing = false;
 
-      // show new volume rendering slices, but don't show the borders
-      _child = this._children[direction];
-      var _numberOfSlices = _child._children.length;
+    var i;
+    for (i = 0; i < _numberOfSlices; i++) {
 
-      var i;
-      for (i = 0; i < _numberOfSlices; i++) {
+      // RESLICE VOLUME IF NECESSARY!
+      //loop through slice
+      if(!goog.isDefAndNotNull(_child._children[i])){
 
-        // RESLICE VOLUME IF NECESSARY!
-        //loop through slice
-        if(!goog.isDefAndNotNull(_child._children[i])){
+        _computing = true;
 
-          var _sliceOrigin = goog.vec.Vec3.createFloat32();
+        var _sliceOrigin = goog.vec.Vec3.createFloat32();
 
-          _sliceOrigin[0] = this._childrenInfo[direction]._solutionsLine[0][0][0] + this._childrenInfo[direction]._sliceDirection[0]*i;
-          _sliceOrigin[1] = this._childrenInfo[direction]._solutionsLine[0][0][1] + this._childrenInfo[direction]._sliceDirection[1]*i;
-          _sliceOrigin[2] = this._childrenInfo[direction]._solutionsLine[0][0][2] + this._childrenInfo[direction]._sliceDirection[2]*i;
+        _sliceOrigin[0] = this._childrenInfo[direction]._solutionsLine[0][0][0] + this._childrenInfo[direction]._sliceDirection[0]*i;
+        _sliceOrigin[1] = this._childrenInfo[direction]._solutionsLine[0][0][1] + this._childrenInfo[direction]._sliceDirection[1]*i;
+        _sliceOrigin[2] = this._childrenInfo[direction]._solutionsLine[0][0][2] + this._childrenInfo[direction]._sliceDirection[2]*i;
 
-          //attach labelmap
-          if(this.hasLabelMap){
-            var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
-            this._labelmap._children[direction]._children[i] = _sliceLabel;
-            // add it to create the texture
-            this._labelmap._children[direction].modified(true);
-          }
-
-          var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null);
-          _slice._children[0]._visible = false;
-
-          if(this.hasLabelMap){
-            _slice._labelmap = _slice._texture;
-            _slice._labelmap = this._labelmap._children[direction]._children[i]._texture;
-          }
-
-          _child._children[i] = _slice;
-
-          // add it to renderer!
-          this._children[direction].modified(true);
-
+        //attach labelmap
+        if(this.hasLabelMap){
+          var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
+          this._labelmap._children[direction]._children[i] = _sliceLabel;
+          // add it to create the texture
+          this._labelmap._children[direction].modified(true);
         }
-        
-        _child._children[i]._visible = true;
+
+        var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null);
+        _slice._children[0]._visible = false;
+
+        if(this.hasLabelMap){
+          _slice._labelmap = _slice._texture;
+          _slice._labelmap = this._labelmap._children[direction]._children[i]._texture;
+        }
+
+        _child._children[i] = _slice;
+
+        // add it to renderer!
+        this._children[direction].modified(true);
+
       }
-
-      this._computing = false;
-
-      //call computing end callback
-      this.onComputingEnd_(direction);
-
-    }.bind(this), 10);
-
- // } // check if computing
+      
+      _child._children[i]._visible = true;
+    }
 
     // store the direction
     this._volumeRenderingDirection = direction;
 
+    this._dirty = false;      
 
-  this._dirty = false;
+    if (_computing) {
+      //call computing end callback
+      this.onComputingEnd_(direction);
+    }
+
+  }.bind(this), 10);
 
 };
 
@@ -1448,6 +1443,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 X.volume.prototype.onComputing_ = function(direction) {
 
   var computingEvent = new X.event.ComputingEvent();
+  computingEvent._object = this;
   this.dispatchEvent(computingEvent);
 
   this['onComputing'](direction);
@@ -1466,6 +1462,7 @@ X.volume.prototype.onComputing_ = function(direction) {
 X.volume.prototype.onComputingEnd_ = function(direction) {
 
   var computingEndEvent = new X.event.ComputingEndEvent();
+  computingEndEvent._object = this;
   this.dispatchEvent(computingEndEvent);
 
   this['onComputingEnd'](direction);

@@ -222,8 +222,22 @@ goog.inherits(X.renderer, X.base);
  * @public
  */
 X.renderer.prototype.onComputing = function(event) {
+this.showProgressBar_();
 
-  this.showProgressBar_();
+return;
+  // // we use the loader to activate the progressbar
+  // this._loader._jobs.set(event._object._id, false);
+  window.console.log('aaaaa')
+  // stop the rendering loop
+  window.cancelAnimationFrame(this._AnimationFrameID);
+
+  // only do the following if the progressBar was not turned off
+  if (this._config['PROGRESSBAR_ENABLED']) {
+
+      this._progressBar2 = new X.progressbar(this._container, 3);
+
+  }
+
 
 };
 
@@ -238,6 +252,48 @@ X.renderer.prototype.onComputing = function(event) {
 X.renderer.prototype.onComputingEnd = function(event) {
 
   this.hideProgressBar_();
+
+return;
+
+  // // we use the loader to mark the computation as completed
+  // this._loader._jobs.set(event._object._id, true);
+
+
+  // only do the following if the progressBar was not turned off
+  if (this._config['PROGRESSBAR_ENABLED']) {
+
+    if (this._progressBar2) {
+
+      // show a green, full progress bar
+      this._progressBar2.done();
+
+      // wait for a short time
+      this.__readyCheckTimer2 = goog.Timer.callOnce(function() {
+
+        this.__readyCheckTimer2 = null;
+
+        if (this._progressBar2) {
+
+          // we are done, kill the progressbar
+          this._progressBar2.kill();
+          this._progressBar2 = null;
+
+        }
+
+
+  // // we don't want to call onShowtime again
+  this._onShowtime = true;
+  this._loadingCompleted = true;        
+
+       this.render();
+
+      }.bind(this), 700);
+      // .. and jump out
+      return;
+
+    } // if progressBar still exists
+
+  } // if progressBar is enabled
 
 };
 
@@ -1069,8 +1125,7 @@ X.renderer.prototype.render = function() {
   //
 
   // this starts the rendering loops and store its id
-  this._AnimationFrameID = window.requestAnimationFrame(this.render.bind(this),
-      this._canvas);
+  this._AnimationFrameID = window.requestAnimationFrame(this.render.bind(this));
   eval("this.onRender()");
   this.render_(false, true);
 
