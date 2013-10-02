@@ -180,6 +180,14 @@ X.renderer = function() {
   this._progressBar = null;
 
   /**
+   * The progressBar for computing progress.
+   *
+   * @type {?X.progressbar}
+   * @protected
+   */
+  this._progressBar2 = null;
+
+  /**
    * The rendering context of this renderer.
    *
    * @type {?Object}
@@ -222,12 +230,7 @@ goog.inherits(X.renderer, X.base);
  * @public
  */
 X.renderer.prototype.onComputing = function(event) {
-this.showProgressBar_();
 
-return;
-  // // we use the loader to activate the progressbar
-  // this._loader._jobs.set(event._object._id, false);
-  window.console.log('aaaaa')
   // stop the rendering loop
   window.cancelAnimationFrame(this._AnimationFrameID);
 
@@ -237,7 +240,6 @@ return;
       this._progressBar2 = new X.progressbar(this._container, 3);
 
   }
-
 
 };
 
@@ -250,14 +252,6 @@ return;
  * @public
  */
 X.renderer.prototype.onComputingEnd = function(event) {
-
-  this.hideProgressBar_();
-
-return;
-
-  // // we use the loader to mark the computation as completed
-  // this._loader._jobs.set(event._object._id, true);
-
 
   // only do the following if the progressBar was not turned off
   if (this._config['PROGRESSBAR_ENABLED']) {
@@ -280,12 +274,12 @@ return;
 
         }
 
+      // // we don't want to call onShowtime again
+      this._onShowtime = true;
+      this._loadingCompleted = true;
 
-  // // we don't want to call onShowtime again
-  this._onShowtime = true;
-  this._loadingCompleted = true;        
-
-       this.render();
+      // restart the rendering loop
+      this.render();
 
       }.bind(this), 700);
       // .. and jump out
@@ -299,19 +293,19 @@ return;
 
 
 /**
- * The callback for X.event.events.PROGRESS events which indicate progress
- * updates during loading.
+ * The callback for X.event.events.COMPUTING_PROGRESS events which indicate progress
+ * updates during computing.
  *
- * @param {!X.event.ProgressEvent} event The progress event holding the total
+ * @param {!X.event.ComputingProgressEvent} event The progress event holding the total
  *          progress value.
  * @public
  */
 X.renderer.prototype.onComputingProgress = function(event) {
 
-  if (this._progressBar) {
+  if (this._progressBar2) {
 
     var _progress = event._value;
-    this._progressBar.setValue(_progress * 100);
+    this._progressBar2.setValue(_progress * 100);
 
   }
 
@@ -905,6 +899,13 @@ X.renderer.prototype.update_ = function(object) {
           .bind(this));
 
     }
+
+    if(!goog.events.hasListener(object, X.event.events.COMPUTING_PROGRESS)) {
+
+      goog.events.listen(object, X.event.events.COMPUTING_PROGRESS, this.onComputingProgress
+          .bind(this));
+
+    }    
 
     if(!goog.events.hasListener(object, X.event.events.COMPUTING_END)) {
 

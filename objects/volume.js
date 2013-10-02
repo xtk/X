@@ -1375,9 +1375,13 @@ X.volume.prototype.volumeRendering_ = function(direction) {
     var _numberOfSlices = _child._children.length;
 
     var _computing = false;
+    var _progress = 0;
 
     var i;
     for (i = 0; i < _numberOfSlices; i++) {
+
+      _progress = Math.floor(((i+1)/_numberOfSlices)*100);
+      this.onComputingProgress_(_progress);
 
       // RESLICE VOLUME IF NECESSARY!
       //loop through slice
@@ -1415,6 +1419,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
       }
       
       _child._children[i]._visible = true;
+
     }
 
     // store the direction
@@ -1447,6 +1452,24 @@ X.volume.prototype.onComputing_ = function(direction) {
   this.dispatchEvent(computingEvent);
 
   this['onComputing'](direction);
+
+};
+
+
+/**
+ * The oncomputingprogress internal callback. Any actions prior to
+ * firing the public oncomputingprogress callback go here.
+ *
+ * @param {!number} progress The progress value in percent.
+ * @protected
+ */
+X.volume.prototype.onComputingProgress_ = function(progress) {
+
+  var computingProgressEvent = new X.event.ComputingProgressEvent();
+  computingProgressEvent._value = progress;
+  this.dispatchEvent(computingProgressEvent);
+
+  this['onComputingProgress'](progress);
 
 };
 
@@ -1486,6 +1509,20 @@ X.volume.prototype.onComputing = function(direction) {
 
 
 /**
+ * This callback gets fired when computation is happening.
+ * 
+ * @param {!number} progress The current computation progress in percent.
+ * @public
+ *
+ */
+X.volume.prototype.onComputingProgress = function(progress) {
+
+  // should be overloaded
+
+};
+
+
+/**
  * This callback gets fired when computation is complete.
  * 
  * @param {!number} direction The direction which was computed.
@@ -1504,4 +1541,5 @@ goog.exportSymbol('X.volume', X.volume);
 goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);
 goog.exportSymbol('X.volume.prototype.sliceInfoChanged', X.volume.prototype.sliceInfoChanged);
 goog.exportSymbol('X.volume.prototype.onComputing', X.volume.prototype.onComputing);
+goog.exportSymbol('X.volume.prototype.onComputingProgress', X.volume.prototype.onComputingProgress);
 goog.exportSymbol('X.volume.prototype.onComputingEnd', X.volume.prototype.onComputingEnd);

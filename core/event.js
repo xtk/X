@@ -33,6 +33,7 @@ goog.provide('X.event.events');
 
 // events provided
 goog.provide('X.event.ComputingEvent');
+goog.provide('X.event.ComputingProgressEvent');
 goog.provide('X.event.ComputingEndEvent');
 goog.provide('X.event.HoverEvent');
 goog.provide('X.event.HoverEndEvent');
@@ -142,7 +143,10 @@ X.event.events = {
   COMPUTING: X.event.uniqueId('computing'),
 
   // the computing end event
-  COMPUTING_END: X.event.uniqueId('computing_end')
+  COMPUTING_END: X.event.uniqueId('computing_end'),
+
+  // the computing progress event
+  COMPUTING_PROGRESS: X.event.uniqueId('computing_progress')
 
 };
 
@@ -475,6 +479,30 @@ X.event.ComputingEvent = function() {
 };
 // inherit from goog.events.Event
 goog.inherits(X.event.ComputingEvent, X.event);
+
+
+/**
+ * This event indicates computing progress for volume rendering.
+ * 
+ * @constructor
+ * @extends X.event
+ */
+X.event.ComputingProgressEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.event.events.COMPUTING_PROGRESS);
+  
+  /**
+   * The progress in percent
+   * 
+   * @type {!number}
+   * @protected
+   */
+  this._value = 0;
+
+};
+// inherit from goog.events.Event
+goog.inherits(X.event.ComputingProgressEvent, X.event);
 
 
 /**
