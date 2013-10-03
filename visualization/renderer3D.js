@@ -1337,6 +1337,8 @@ X.renderer3D.prototype.order_ = function() {
           var s = 0;
           for (s = 0; s < object._range[_targetChild] - 1; s++) {
 
+            if (!_slices[s]) continue;
+
             _slices[s]._opacity = object._opacity;
             _slices[s]._distance =   object._childrenInfo[_targetChild]._sliceSpacing*s;
 
@@ -1346,6 +1348,8 @@ X.renderer3D.prototype.order_ = function() {
 
          var s = object._range[_targetChild] - 1;
          for (s = object._range[_targetChild] - 1; s >= 0; s--) {
+
+            if (!_slices[s]) continue;
 
             _slices[s]._opacity = object._opacity;
             _slices[s]._distance =   (object._range[_targetChild]-1)*object._childrenInfo[_targetChild]._sliceSpacing -object._childrenInfo[_targetChild]._sliceSpacing*s;
