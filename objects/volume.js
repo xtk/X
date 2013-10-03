@@ -408,15 +408,13 @@ X.volume.prototype.modified = function(propagateEvent) {
       return;
 
     }
+
+    this.slicing_(this._volumeRendering);
+
     if (this._volumeRendering) {
 
       // prepare volume rendering
       this.volumeRendering_(this._volumeRenderingDirection);
-
-    } else {
-
-      // prepare slicing
-      this.slicing_();
 
     }
   }
@@ -433,8 +431,9 @@ X.volume.prototype.modified = function(propagateEvent) {
 /**
  * Show the current slices which are set by this._indexX, this._indexY and
  * this._indexZ and hide all others.
+ * @param {!boolean} volumeRenderingOn Do not show slices if scrolling in 2D while VR is ON.
  */
-X.volume.prototype.slicing_ = function() {
+X.volume.prototype.slicing_ = function(volumeRenderingOn) {
 
   // display the current slices in X,Y and Z direction
   var xyz = 0; // 0 for x, 1 for y, 2 for z
@@ -503,8 +502,15 @@ X.volume.prototype.slicing_ = function() {
     // show the current slice and also show the borders if they exist by
     // calling the setter of visible rather than accessing the _visible property
     var _currentSlice = _child._children[parseInt(currentIndex, 10)];
-    _currentSlice['visible'] = true;
-    _currentSlice._opacity = 1.0;
+
+    if(volumeRenderingOn){
+      _currentSlice['visible'] = false;
+      _currentSlice._opacity = 0.0;
+    }
+    else{
+      _currentSlice['visible'] = true;
+      _currentSlice._opacity = 1.0;
+    }
 
   }
 
