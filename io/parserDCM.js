@@ -190,7 +190,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     //
     var _shifDimensions = [0, object._dimensions[0], object._dimensions[1], object._dimensions[2]];
     
-    var _rasBB = this.computeRASBBox(IJKToRAS, _shifDimensions);
+    var _rasBB = X.parser.computeRASBBox(IJKToRAS, _shifDimensions);
 
     // grab the RAS Dimensions
     MRI.RASSpacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];

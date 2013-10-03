@@ -180,6 +180,14 @@ X.renderer = function() {
   this._progressBar = null;
 
   /**
+   * The progressBar for computing progress.
+   *
+   * @type {?X.progressbar}
+   * @protected
+   */
+  this._progressBar2 = null;
+
+  /**
    * The rendering context of this renderer.
    *
    * @type {?Object}
@@ -212,6 +220,96 @@ X.renderer = function() {
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
+
+
+/**
+ * The callback for X.event.events.COMPUTING events which indicate computing
+ * for volume rendering
+ *
+ * @param {!X.event.ComputingEvent} event The computing event.
+ * @public
+ */
+X.renderer.prototype.onComputing = function(event) {
+
+  // stop the rendering loop
+  window.cancelAnimationFrame(this._AnimationFrameID);
+
+  // only do the following if the progressBar was not turned off
+  if (this._config['PROGRESSBAR_ENABLED']) {
+
+      this._progressBar2 = new X.progressbar(this._container, 3);
+
+  }
+
+};
+
+
+/**
+ * The callback for X.event.events.COMPUTING_END events which indicate the end of computing
+ * for volume rendering
+ *
+ * @param {!X.event.ComputingEndEvent} event The computing end event.
+ * @public
+ */
+X.renderer.prototype.onComputingEnd = function(event) {
+
+  // only do the following if the progressBar was not turned off
+  if (this._config['PROGRESSBAR_ENABLED']) {
+
+    if (this._progressBar2) {
+
+      // show a green, full progress bar
+      this._progressBar2.done();
+
+      // wait for a short time
+      this.__readyCheckTimer2 = goog.Timer.callOnce(function() {
+
+        this.__readyCheckTimer2 = null;
+
+        if (this._progressBar2) {
+
+          // we are done, kill the progressbar
+          this._progressBar2.kill();
+          this._progressBar2 = null;
+
+        }
+
+      // // we don't want to call onShowtime again
+      this._onShowtime = true;
+      this._loadingCompleted = true;
+
+      // restart the rendering loop
+      this.render();
+
+      }.bind(this), 700);
+      // .. and jump out
+      return;
+
+    } // if progressBar still exists
+
+  } // if progressBar is enabled
+
+};
+
+
+/**
+ * The callback for X.event.events.COMPUTING_PROGRESS events which indicate progress
+ * updates during computing.
+ *
+ * @param {!X.event.ComputingProgressEvent} event The progress event holding the total
+ *          progress value.
+ * @public
+ */
+X.renderer.prototype.onComputingProgress = function(event) {
+
+  if (this._progressBar2) {
+
+    var _progress = event._value;
+    this._progressBar2.setValue(_progress * 100);
+
+  }
+
+};
 
 
 /**
@@ -794,6 +892,28 @@ X.renderer.prototype.update_ = function(object) {
           .bind(this));
 
     }
+
+    if(!goog.events.hasListener(object, X.event.events.COMPUTING)) {
+
+      goog.events.listen(object, X.event.events.COMPUTING, this.onComputing
+          .bind(this));
+
+    }
+
+    if(!goog.events.hasListener(object, X.event.events.COMPUTING_PROGRESS)) {
+
+      goog.events.listen(object, X.event.events.COMPUTING_PROGRESS, this.onComputingProgress
+          .bind(this));
+
+    }    
+
+    if(!goog.events.hasListener(object, X.event.events.COMPUTING_END)) {
+
+      goog.events.listen(object, X.event.events.COMPUTING_END, this.onComputingEnd
+          .bind(this));
+
+    }
+
   }
 
 };
@@ -1006,8 +1126,7 @@ X.renderer.prototype.render = function() {
   //
 
   // this starts the rendering loops and store its id
-  this._AnimationFrameID = window.requestAnimationFrame(this.render.bind(this),
-      this._canvas);
+  this._AnimationFrameID = window.requestAnimationFrame(this.render.bind(this));
   eval("this.onRender()");
   this.render_(false, true);
 

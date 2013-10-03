@@ -724,6 +724,18 @@ X.renderer2D.prototype.autoScale_ = function() {
 
 
 /**
+ * Callback for slice navigation, f.e. to update sliders.
+ *
+ * @public
+ */
+X.renderer2D.prototype.onSliceNavigation = function() {
+
+  // should be overloaded
+
+};
+
+
+/**
  * Convert viewport (canvas) coordinates to volume (index) coordinates.
  *
  * @param x The x coordinate.
@@ -1220,6 +1232,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         _volume._indexZ = ijk[0][2];
         _volume.modified(false);
 
+        this['onSliceNavigation']();
+
         // draw the navigators
         // see http://diveintohtml5.info/canvas.html#paths
 
@@ -1310,3 +1324,4 @@ goog.exportSymbol('X.renderer2D.prototype.render',
     X.renderer2D.prototype.render);
 goog.exportSymbol('X.renderer2D.prototype.destroy',
     X.renderer2D.prototype.destroy);
+goog.exportSymbol('X.renderer2D.prototype.onSliceNavigation', X.renderer2D.prototype.onSliceNavigation);
