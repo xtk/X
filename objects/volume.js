@@ -496,8 +496,10 @@ X.volume.prototype.slicing_ = function(volumeRenderingOn) {
     // DONE RESLICING!
 
     // hide the old slice
-    var _oldSlice = _child._children[parseInt(oldIndex, 10)];
-    _oldSlice['visible'] = false;
+    if(!volumeRenderingOn){
+      var _oldSlice = _child._children[parseInt(oldIndex, 10)];
+      _oldSlice['visible'] = false;
+    }
 
     // show the current slice and also show the borders if they exist by
     // calling the setter of visible rather than accessing the _visible property
