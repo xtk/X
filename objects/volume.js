@@ -378,18 +378,7 @@ X.volume.prototype.modified = function(propagateEvent) {
 
     if (this._volumeRendering != this._volumeRenderingOld) {
 
-      if (this._volumeRendering) {
-
-        // first, hide possible slicing slices but only if volume rendering was
-        // just switched on
-        var _sliceX = this._children[0]._children[parseInt(this._indexX, 10)];
-        _sliceX['visible'] = false;
-        var _sliceY = this._children[1]._children[parseInt(this._indexY, 10)];
-        _sliceY['visible'] = false;
-        var _sliceZ = this._children[2]._children[parseInt(this._indexZ, 10)];
-        _sliceZ['visible'] = false;
-
-      } else {
+      if (!this._volumeRendering) {
 
         // hide the volume rendering slices
         var _child = this._children[this._volumeRenderingDirection];
@@ -409,7 +398,7 @@ X.volume.prototype.modified = function(propagateEvent) {
 
     }
 
-    this.slicing_(this._volumeRendering);
+    this.slicing_();
 
     if (this._volumeRendering) {
 
@@ -431,9 +420,8 @@ X.volume.prototype.modified = function(propagateEvent) {
 /**
  * Show the current slices which are set by this._indexX, this._indexY and
  * this._indexZ and hide all others.
- * @param {!boolean} volumeRenderingOn Do not show slices if scrolling in 2D while VR is ON.
  */
-X.volume.prototype.slicing_ = function(volumeRenderingOn) {
+X.volume.prototype.slicing_ = function() {
 
   // display the current slices in X,Y and Z direction
   var xyz = 0; // 0 for x, 1 for y, 2 for z
@@ -467,6 +455,7 @@ X.volume.prototype.slicing_ = function(volumeRenderingOn) {
     // RESLICE VOLUME IF NECESSARY!
     if(!goog.isDefAndNotNull(this._children[xyz]._children[parseInt(currentIndex, 10)])){
 
+      // GO reslice!
       var _sliceOrigin = goog.vec.Vec3.createFloat32();
 
       _sliceOrigin[0] = this._childrenInfo[xyz]._solutionsLine[0][0][0] + this._childrenInfo[xyz]._sliceDirection[0]*parseInt(currentIndex, 10);
@@ -496,22 +485,29 @@ X.volume.prototype.slicing_ = function(volumeRenderingOn) {
     // DONE RESLICING!
 
     // hide the old slice
-    if(!volumeRenderingOn){
-      var _oldSlice = _child._children[parseInt(oldIndex, 10)];
+    var _oldSlice = _child._children[parseInt(oldIndex, 10)];
+    if(!this._volumeRendering){
+
       _oldSlice['visible'] = false;
+
     }
 
     // show the current slice and also show the borders if they exist by
     // calling the setter of visible rather than accessing the _visible property
     var _currentSlice = _child._children[parseInt(currentIndex, 10)];
+    _currentSlice['visible'] = true;
+    _currentSlice._opacity = 1.0;
 
-    if(volumeRenderingOn){
-      _currentSlice['visible'] = false;
-      _currentSlice._opacity = 0.0;
-    }
-    else{
-      _currentSlice['visible'] = true;
-      _currentSlice._opacity = 1.0;
+    if(this._volumeRendering){
+
+      _currentSlice._children[0]._visible = false;
+      if(xyz != this._volumeRenderingDirection){
+
+        _currentSlice['visible'] = false;
+        _currentSlice._opacity = 0.0; 
+
+      }
+
     }
 
   }
@@ -1351,7 +1347,12 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   // direction 1: coronal container
   // direction 2: axial container
 
-  if (this._computing || (!this._volumeRendering)
+  if(this._computing){
+
+    return;
+  }
+
+  if ((!this._volumeRendering)
       || (!this._dirty && direction == this._volumeRenderingDirection)) {
 
     this._volumeRenderingDirection = direction;
@@ -1407,7 +1408,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
     
   setTimeout(function() {
 
-      // hide old volume rendering slices
+    // hide old volume rendering slices
     var _child = this._children[this._volumeRenderingDirection];
     _child['visible'] = false;
 
@@ -1457,6 +1458,11 @@ X.volume.prototype.volumeRendering_ = function(direction) {
         _child._children[i]._visible = true;
 
       }
+      else{
+
+        _child._children[i]._visible = true;
+
+      }
       
     }
 
@@ -1497,7 +1503,11 @@ X.volume.prototype.volumeRendering_ = function(direction) {
           _child._children[i]._visible = true;
 
         }
-        
+        else{
+
+          _child._children[i]._visible = true;
+
+        } 
       }
 
       this.onComputingProgress_(0.50);
@@ -1537,6 +1547,11 @@ X.volume.prototype.volumeRendering_ = function(direction) {
             _child._children[i]._visible = true;
 
           }
+          else{
+
+             _child._children[i]._visible = true;
+
+          } 
           
         }
 
@@ -1577,6 +1592,11 @@ X.volume.prototype.volumeRendering_ = function(direction) {
               _child._children[i]._visible = true;
 
             }
+            else{
+
+             _child._children[i]._visible = true;
+
+            } 
 
           }
 
