@@ -206,7 +206,7 @@ X.volume = function(volume) {
    * @type {!number}
    * @private
    */
-  this._volumeRenderingDirection = 0;
+  this._volumeRenderingDirection = -1;
 
   /**
    * Cache for the already computed volume rendering directions.
@@ -378,7 +378,7 @@ X.volume.prototype.modified = function(propagateEvent) {
 
     if (this._volumeRendering != this._volumeRenderingOld) {
 
-      if (!this._volumeRendering) {
+      if (!this._volumeRendering && this._volumeRenderingDirection != -1) {
 
         // hide the volume rendering slices
         var _child = this._children[this._volumeRenderingDirection];
@@ -400,8 +400,7 @@ X.volume.prototype.modified = function(propagateEvent) {
 
     this.slicing_();
 
-    if (this._volumeRendering) {
-
+    if (this._volumeRendering && this._volumeRenderingDirection != -1) {
       // prepare volume rendering
       this.volumeRendering_(this._volumeRenderingDirection);
 
@@ -1409,8 +1408,14 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   setTimeout(function() {
 
     // hide old volume rendering slices
-    var _child = this._children[this._volumeRenderingDirection];
-    _child['visible'] = false;
+    var _child = null;
+    
+    if( this._volumeRenderingDirection >= 0 ){
+
+      _child = this._children[this._volumeRenderingDirection];
+      _child['visible'] = false;
+
+    }
 
     // show new volume rendering slices, but don't show the borders
     _child = this._children[direction];

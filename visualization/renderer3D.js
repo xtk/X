@@ -1268,7 +1268,7 @@ X.renderer3D.prototype.orientVolume_ = function(volume) {
     volume.volumeRendering_(1);
 
   } else {
-
+    
     volume.volumeRendering_(2);
   }
 
@@ -1315,7 +1315,7 @@ X.renderer3D.prototype.order_ = function() {
     // special case for X.volumes in volumeRendering mode
     // a) we know the volumeRendering direction and the center of the volume
     // b) check if first or last slice is the closest an order slices accordingly
-    if (object instanceof X.volume && object._volumeRendering) {
+    if (object instanceof X.volume && object._volumeRendering && object._volumeRenderingDirection != -1) {
 
         var _slices = object._children[object._volumeRenderingDirection]._children;
         var numberOfSlices = _slices.length;
