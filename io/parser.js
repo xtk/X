@@ -356,8 +356,9 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
  * @param {!Array} MRIdim The IJK dimensions.
  * 
  * @return The RAS bounding box.
+ * @static
  */
-X.parser.prototype.computeRASBBox = function(IJKToRAS, MRIdim){
+X.parser.computeRASBBox = function(IJKToRAS, MRIdim){
 
 var _rasBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
                Number.MAX_VALUE, -Number.MAX_VALUE,
@@ -455,8 +456,9 @@ return _rasBB;
  * @param {!number} _max The maximum intensity value.
  * 
  * @return The IJK volume and the IJK 'normalized' volume.
+ * @static
  */
-X.parser.prototype.createIJKVolume = function(_data, _dims, _max){
+X.parser.createIJKVolume = function(_data, _dims, _max){
   
   // initiate variables
   // allocate images
@@ -508,8 +510,9 @@ X.parser.prototype.createIJKVolume = function(_data, _dims, _max){
  * @param {!Float32Array} _sliceNormal The line normal.
  * 
  * @return The intersection points and the 'non-intersection' points.
+ * @static
  */
-X.parser.prototype.intersectionBBoxLine = function(_bbox, _sliceOrigin, _sliceNormal){
+X.parser.intersectionBBoxLine = function(_bbox, _sliceOrigin, _sliceNormal){
   
   var _solutionsIn = new Array();
   var _solutionsOut = new Array();
@@ -572,8 +575,9 @@ X.parser.prototype.intersectionBBoxLine = function(_bbox, _sliceOrigin, _sliceNo
  * @param {!Float32Array} _sliceNormal The plane normal.
  * 
  * @return The intersection points and the 'non-intersection' points.
+ * @static
  */
-X.parser.prototype.intersectionBBoxPlane = function(_bbox, _sliceOrigin, _sliceNormal){
+X.parser.intersectionBBoxPlane = function(_bbox, _sliceOrigin, _sliceNormal){
 
   var _solutionsIn = new Array();
   var _solutionsOut = new Array();
@@ -637,8 +641,9 @@ X.parser.prototype.intersectionBBoxPlane = function(_bbox, _sliceOrigin, _sliceN
  * @param {!Float32Array} _XYNormal The XY normal.
  * 
  * @return The XY to RAS transform and its inverse.
+ * @static
  */
-X.parser.prototype.xyrasTransform = function(_sliceNormal, _XYNormal){
+X.parser.xyrasTransform = function(_sliceNormal, _XYNormal){
 
   var _RASToXY = goog.vec.Mat4.createFloat32Identity();
     // no rotation needed if we are in the z plane already
@@ -691,8 +696,9 @@ X.parser.prototype.xyrasTransform = function(_sliceNormal, _XYNormal){
  * @param {!Array} _solutionsXY The slice origin in RAS space.
  * 
  * @return The bounding box.
+ * @static
  */
-X.parser.prototype.xyBBox = function(_solutionsXY){
+X.parser.xyBBox = function(_solutionsXY){
 
   var _xyBBox = [Number.MAX_VALUE, -Number.MAX_VALUE,
    Number.MAX_VALUE, -Number.MAX_VALUE,
@@ -753,8 +759,9 @@ X.parser.prototype.xyBBox = function(_solutionsXY){
  * @param {goog.structs.Map} colorTable Associated color table.
  * 
  * @return The target slice.
+ * @static
  */
-X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color, _bbox, _IJKVolume, object, hasLabelMap, colorTable){
+X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color, _bbox, _IJKVolume, object, hasLabelMap, colorTable){
 
   var sliceXY = new X.slice();
     
@@ -765,7 +772,7 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNorm
   // GET INTERSECTION BOUNDING BOX/PLANE
   // ------------------------------------------
 
-  var _solutions = this.intersectionBBoxPlane(_bbox,_sliceOrigin, _sliceNormal);
+  var _solutions = X.parser.intersectionBBoxPlane(_bbox,_sliceOrigin, _sliceNormal);
   var _solutionsIn = _solutions[0];
   
   // ------------------------------------------
@@ -773,7 +780,7 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNorm
   // ------------------------------------------
 
   var _XYNormal = goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
-  var _XYRASTransform = this.xyrasTransform(_sliceNormal, _XYNormal);
+  var _XYRASTransform = X.parser.xyrasTransform(_sliceNormal, _XYNormal);
   var _RASToXY = _XYRASTransform[0];
   var _XYToRAS = _XYRASTransform[1];
   
@@ -797,7 +804,7 @@ X.parser.prototype.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNorm
   goog.vec.Mat4.multVec3(_XYToRAS, _up, _rup);
   
   // get XY bounding box!
-  var _xyBBox = this.xyBBox(_solutionsXY);
+  var _xyBBox = X.parser.xyBBox(_solutionsXY);
   
   var _xyCenter = goog.vec.Vec4.createFloat32FromValues(_xyBBox[0] + (_xyBBox[1] - _xyBBox[0])/2,_xyBBox[2] + (_xyBBox[3] - _xyBBox[2])/2, _xyBBox[4] + (_xyBBox[5] - _xyBBox[4])/2,0);
   var _RASCenter = goog.vec.Vec4.createFloat32();
@@ -981,7 +988,7 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   // GET INTERSECTION BOUNDING BOX/LINE
   // ------------------------------------------
 
-  var _solutionsLine = this.intersectionBBoxLine(object._BBox,_sliceOrigin, _sliceNormal);
+  var _solutionsLine = X.parser.intersectionBBoxLine(object._BBox,_sliceOrigin, _sliceNormal);
   var _solutionsInLine = _solutionsLine[0];
   var _solutionsOutLine = _solutionsLine[1];
 
@@ -1006,7 +1013,7 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
 
   var _XYNormal = goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
   
-  var _XYRASTransform = this.xyrasTransform(_sliceNormal, _XYNormal);
+  var _XYRASTransform = X.parser.xyrasTransform(_sliceNormal, _XYNormal);
   var _RASToXY = _XYRASTransform[0];
   var _XYToRAS = _XYRASTransform[1];
   var _rasSpacing = goog.vec.Vec4.createFloat32FromValues(object._RASSpacing[0], object._RASSpacing[1], object._RASSpacing[2], 0);
@@ -1110,7 +1117,7 @@ X.parser.prototype.reslice = function(object) {
   
   // Step 1: create 2 IJK volumes
   // 1 full res, 1 normalized [0-255]
-  var _IJKVolumes = this.createIJKVolume(object._data, object._dimensions, object._max);
+  var _IJKVolumes = X.parser.createIJKVolume(object._data, object._dimensions, object._max);
   // real volume
   object._IJKVolume = _IJKVolumes[0];
   // normalized volume
@@ -1178,7 +1185,7 @@ X.parser.prototype.reslice = function(object) {
   _sliceOrigin[1] = object._childrenInfo[0]._solutionsLine[0][0][1] + object._childrenInfo[0]._sliceDirection[1]*Math.round(object._childrenInfo[0]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[0]._solutionsLine[0][0][2] + object._childrenInfo[0]._sliceDirection[2]*Math.round(object._childrenInfo[0]._nb/2);
 
-  var _slice = this.reslice2(_sliceOrigin, object._childrenInfo[0]._sliceXYSpacing, object._childrenInfo[0]._sliceNormal, object._childrenInfo[0]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+  var _slice = X.parser.reslice2(_sliceOrigin, object._childrenInfo[0]._sliceXYSpacing, object._childrenInfo[0]._sliceNormal, object._childrenInfo[0]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
   if (object.hasLabelMap) {
     // if this object has a labelmap,
@@ -1225,7 +1232,7 @@ X.parser.prototype.reslice = function(object) {
   _sliceOrigin[1] = object._childrenInfo[1]._solutionsLine[0][0][1] + object._childrenInfo[1]._sliceDirection[1]*Math.round(object._childrenInfo[1]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[1]._solutionsLine[0][0][2] + object._childrenInfo[1]._sliceDirection[2]*Math.round(object._childrenInfo[1]._nb/2);
 
-  _slice = this.reslice2(_sliceOrigin, object._childrenInfo[1]._sliceXYSpacing, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+  _slice = X.parser.reslice2(_sliceOrigin, object._childrenInfo[1]._sliceXYSpacing, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
   if (object.hasLabelMap) {
     // if this object has a labelmap,
@@ -1270,7 +1277,7 @@ X.parser.prototype.reslice = function(object) {
   _sliceOrigin[1] = object._childrenInfo[2]._solutionsLine[0][0][1] + object._childrenInfo[2]._sliceDirection[1]*Math.round(object._childrenInfo[2]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[2]._solutionsLine[0][0][2] + object._childrenInfo[2]._sliceDirection[2]*Math.round(object._childrenInfo[2]._nb/2);
     
-  _slice = this.reslice2(_sliceOrigin, object._childrenInfo[2]._sliceXYSpacing, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+  _slice = X.parser.reslice2(_sliceOrigin, object._childrenInfo[2]._sliceXYSpacing, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
   if (object.hasLabelMap) {
     // if this object has a labelmap,
