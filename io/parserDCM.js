@@ -188,10 +188,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       0,
       1);
 
-    window.console.log(MRI.pixdim);
-    window.console.log(IJKToRAS);
-    return;
-
     MRI.IJKToRAS = IJKToRAS;
     MRI.RASToIJK = goog.vec.Mat4.createFloat32();
     goog.vec.Mat4.invert(MRI.IJKToRAS, MRI.RASToIJK);
