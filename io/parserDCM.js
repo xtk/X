@@ -62,13 +62,8 @@ goog.inherits(X.parserDCM, X.parser);
 X.parserDCM.prototype.parse = function(container, object, data, flag) {
   // X.TIMER(this._classname + '.parse');
 
-  window.console.log("Go PARSING...");
-
   // parse the byte stream
   this.parseStream(data, object);
-
-  window.console.log(object.slices.length);
-  window.console.log(object._file);
 
   // return;
   // X.TIMERSTOP(this._classname + '.parse');
@@ -112,6 +107,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     var first_image_size = first_slice_size * (first_image_height + 1);
     window.console.log("First image size: " + first_image_size);
     var first_image_data = null;
+    window.console.log(first_image[0]);
 
     // create data container
     switch (first_image[0].bits_allocated) {
@@ -128,9 +124,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
         break;
     }
 
-    window.console.log("SLICES CONTAINER");
-    window.console.log(first_image_data.length);
-
     // fill data container
     // respect slice instance_number:
     // 
@@ -145,6 +138,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       // get data
       var _data = first_image[_i].data;
       // starts at 0
+      window.console.log(first_image[_i].instance_number);
       var _instance = first_image[_i].instance_number - first_image[0].instance_number;
       //, _instance * first_slice_size
       first_image_data.set(_data, _instance * first_slice_size);
@@ -174,6 +168,8 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
         // get position of first
         var _first_position = first_image[ 0 ].image_position_patient;
         var _last_image_position = first_image[ first_image_stacks - 1].image_position_patient;
+        window.console.log(first_image[ 0 ]);
+        window.console.log(first_image[ first_image_stacks - 1]);
         var _x = _last_image_position[0] - _first_position[0];
         var _y = _last_image_position[1] - _first_position[1];
         var _z = _last_image_position[2] - _first_position[2];
@@ -389,7 +385,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
 
   // set slice default minimum required parameters
   var slice = {
-    pixel_spacing:[.1, .1, 1],
+    pixel_spacing:[.1, .1, Infinity],
     image_orientation_patient: [1, 0, 0, 0, 1, 0]
   };
 
@@ -492,10 +488,11 @@ X.parserDCM.prototype.parseStream = function(data, object) {
               var _short = _bytes[_bytePointer++];
               var _b0 = _short & 0x00FF;
               var _b1 = (_short & 0xFF00) >> 8;
-              _position = String.fromCharCode(_b0);
+              _position += String.fromCharCode(_b0);
               _position += String.fromCharCode(_b1);
             }
             slice.instance_number = parseInt(_position, 10); 
+            window.console.log("in stream parse: " + parseInt(_position, 10));
             break;
           case 0x0032:
             // image position
