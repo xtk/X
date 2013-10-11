@@ -62,13 +62,18 @@ goog.inherits(X.parserDCM, X.parser);
 X.parserDCM.prototype.parse = function(container, object, data, flag) {
   // X.TIMER(this._classname + '.parse');
 
+  window.console.log("Go PARSING...");
+
   // parse the byte stream
   this.parseStream(data, object);
+
+  window.console.log(object.slices.length);
+  window.console.log(object._file);
 
   // return;
   // X.TIMERSTOP(this._classname + '.parse');
   // check if all slices were completed loaded
-  if (object.slices.length == object._file.length) {
+  if (!goog.isDefAndNotNull(object._file.length) || object.slices.length == object._file.length) {
 
     window.console.log("ALL FILES HAVE BEEN PARSED");
     // needed, for renderer2d and 3d...
@@ -383,7 +388,10 @@ X.parserDCM.prototype.parseStream = function(data, object) {
   }
 
   // set slice default minimum required parameters
-  var slice = {};
+  var slice = {
+    pixel_spacing:[1, 1, 1],
+    image_orientation_patient: [1, 0, 0, 0, 1, 0]
+  };
 
   // scan the whole file as short (2 bytes)
   var _bytes = this.scan('ushort', this._data.byteLength);
