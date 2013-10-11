@@ -143,7 +143,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       // get data
       var _data = first_image[_i].data;
       // starts at 0
-      var _instance = first_image[_i].instance_number - 1;
+      var _instance = first_image[_i].instance_number - first_image[0].instance_number;
             window.console.log(_instance * first_slice_size);
       //, _instance * first_slice_size
       first_image_data.set(_data, _instance * first_slice_size);
