@@ -169,7 +169,7 @@ X.parser.prototype.arrayMinMax = function(data) {
 
       var _value = data[i];
       _min = Math.min(_min, _value);
-     _max = Math.max(_max, _value);
+      _max = Math.max(_max, _value);
 
     }
 
@@ -1117,6 +1117,8 @@ X.parser.prototype.reslice = function(object) {
   
   // Step 1: create 2 IJK volumes
   // 1 full res, 1 normalized [0-255]
+  window.console.log(object);
+  
   var _IJKVolumes = X.parser.createIJKVolume(object._data, object._dimensions, object._max);
   // real volume
   object._IJKVolume = _IJKVolumes[0];
