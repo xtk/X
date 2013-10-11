@@ -137,20 +137,16 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     // 1232414 -> instance_number == 4
 
     for (var _i = 0; _i < first_image_stacks; _i++) {
-      window.console.log("SLICE");
-      window.console.log(first_image[_i].data.length);
-
       // get data
       var _data = first_image[_i].data;
       // starts at 0
       var _instance = first_image[_i].instance_number - first_image[0].instance_number;
-            window.console.log(_instance * first_slice_size);
       //, _instance * first_slice_size
       first_image_data.set(_data, _instance * first_slice_size);
     }
 
     // format data for visualization!
-    var first_image_dimensions = [first_image[0].rows, first_image[0].columns, first_image_height + 1];
+    var first_image_dimensions = [first_image[0].columns, first_image[0].rows, first_image_height + 1];
 
     object._dimensions = first_image_dimensions;
 
