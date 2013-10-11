@@ -389,7 +389,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
 
   // set slice default minimum required parameters
   var slice = {
-    pixel_spacing:[1, 1, 1],
+    pixel_spacing:[.1, .1, 1],
     image_orientation_patient: [1, 0, 0, 0, 1, 0]
   };
 
