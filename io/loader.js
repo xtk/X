@@ -291,7 +291,7 @@ X.loader.prototype.parse = function(request, container, object) {
     // data stream and some additional value
     _parser.parse(container, object, _data, flags);
 
-  }.bind(this), 100);
+  }.bind(this), 900);
 
 };
 
@@ -312,7 +312,6 @@ X.loader.prototype.complete = function(event) {
   // we use a timeout here to let the progress bar be able to breath and show
   // something
   setTimeout(function() {
-
     var container = event._container;
     var object = event._object;
 
