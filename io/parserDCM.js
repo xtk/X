@@ -138,7 +138,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       // get data
       var _data = first_image[_i].data;
       // starts at 0
-      window.console.log(first_image[_i].instance_number);
       var _instance = first_image[_i].instance_number - first_image[0].instance_number;
       //, _instance * first_slice_size
       first_image_data.set(_data, _instance * first_slice_size);
@@ -168,8 +167,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
         // get position of first
         var _first_position = first_image[ 0 ].image_position_patient;
         var _last_image_position = first_image[ first_image_stacks - 1].image_position_patient;
-        window.console.log(first_image[ 0 ]);
-        window.console.log(first_image[ first_image_stacks - 1]);
         var _x = _last_image_position[0] - _first_position[0];
         var _y = _last_image_position[1] - _first_position[1];
         var _z = _last_image_position[2] - _first_position[2];
@@ -189,8 +186,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     object._spacing = _spacing;
 
     // get the min and max intensities
-    window.console.log("first image data...");
-    window.console.log(first_image_data);
     var min_max = this.arrayMinMax(first_image_data);
     var min = min_max[0];
     var max = min_max[1];
@@ -492,7 +487,6 @@ X.parserDCM.prototype.parseStream = function(data, object) {
               _position += String.fromCharCode(_b1);
             }
             slice.instance_number = parseInt(_position, 10); 
-            window.console.log("in stream parse: " + parseInt(_position, 10));
             break;
           case 0x0032:
             // image position
