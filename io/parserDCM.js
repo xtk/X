@@ -70,7 +70,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
   // check if all slices were completed loaded
   if (!goog.isDefAndNotNull(object._file.length) || object.slices.length == object._file.length) {
 
-    window.console.log("ALL FILES HAVE BEEN PARSED");
     // needed, for renderer2d and 3d...
     object.MRI = {};
     object.MRI.loaded_files = object._file.length;
@@ -89,25 +88,39 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
 
     }
 
-    window.console.log(series);
-
     // order slices
+    // compute distance for each slice
     for(var seriesInstanceUID in series) {
-      series[seriesInstanceUID].sort(function(a,b){return a["instance_number"]-b["instance_number"]});
+      var _x_cosine = new goog.math.Vec3(series[seriesInstanceUID][0].image_orientation_patient[0],
+        series[seriesInstanceUID][ 0 ].image_orientation_patient[1], series[seriesInstanceUID][ 0 ].image_orientation_patient[2]);
+      var _y_cosine = new goog.math.Vec3(series[seriesInstanceUID][ 0 ].image_orientation_patient[3],
+        series[seriesInstanceUID][ 0 ].image_orientation_patient[4], series[seriesInstanceUID][ 0 ].image_orientation_patient[5]);
+      var _z_cosine = goog.math.Vec3.cross(_x_cosine, _y_cosine);
+
+      function computeDistance(flag, arrelem)
+        {
+          arrelem['dist'] = arrelem['image_position_patient'][0]*flag.x +
+            arrelem['image_position_patient'][1]*flag.y +
+            arrelem['image_position_patient'][2]*flag.z;
+          return arrelem;
+        }
+
+      // compute dist in this series
+      series[seriesInstanceUID].map(computeDistance.bind(null, _z_cosine));
+    }
+
+    // http://www.itk.org/pipermail/insight-users/2003-September/004762.html
+    for(var seriesInstanceUID in series) {
+      series[seriesInstanceUID].sort(function(a,b){return a["dist"]-b["dist"]});
     }
 
     // starts at 1
     var first_image = series[seriesInstanceUID];
     var first_image_stacks = first_image.length;
-    window.console.log("First image stacks: " + first_image_stacks);
-    var first_image_height = first_image[ first_image_stacks - 1].instance_number - first_image[0].instance_number;
-    window.console.log("First image height: " + first_image_height);
+    var first_image_height = Math.abs(first_image[ first_image_stacks - 1].instance_number - first_image[0].instance_number);
     var first_slice_size = first_image[0].columns * first_image[0].rows;
-    window.console.log("First slice size: " + first_slice_size);
     var first_image_size = first_slice_size * (first_image_height + 1);
-    window.console.log("First image size: " + first_image_size);
     var first_image_data = null;
-    window.console.log(first_image[0]);
 
     // create data container
     switch (first_image[0].bits_allocated) {
@@ -124,33 +137,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
         break;
     }
 
-    // fill data container
-    // respect slice instance_number:
-    // 
-    // only 3 slices provided
-    //
-    // 1234123 -> instance_number == 1
-    // 1234211 -> instance_number == 2
-    // 0000000
-    // 1232414 -> instance_number == 4
-
-    for (var _i = 0; _i < first_image_stacks; _i++) {
-      // get data
-      var _data = first_image[_i].data;
-      // starts at 0
-      var _instance = first_image[_i].instance_number - first_image[0].instance_number;
-      //, _instance * first_slice_size
-      first_image_data.set(_data, _instance * first_slice_size);
-    }
-
-    // format data for visualization!
-    var first_image_dimensions = [first_image[0].columns, first_image[0].rows, first_image_height + 1];
-
-    object._dimensions = first_image_dimensions;
-
-    var MRI = {};
-    MRI.dimensions = first_image_dimensions;
-
     // grab the spacing
     if(isNaN(first_image[0].pixel_spacing[0])){
       first_image[0].pixel_spacing[0] = 1.;
@@ -160,6 +146,8 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       first_image[0].pixel_spacing[1] = 1.;
     }
 
+    // Which is best approach to find spacing z....?
+    // now over all slices.... should it be over 2 first slices?
     if (first_image[0].pixel_spacing[2] == Infinity) {
 
       if( first_image_stacks > 1) {
@@ -185,6 +173,34 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
 
     object._spacing = _spacing;
 
+    // fill data container
+    // respect slice instance_number:
+    // 
+    // only 3 slices provided
+    //
+    // 1234123 -> instance_number == 1
+    // 1234211 -> instance_number == 2
+    // 0000000
+    // 1232414 -> instance_number == 4
+
+    for (var _i = 0; _i < first_image_stacks; _i++) {
+      // get data
+      var _data = first_image[_i].data;
+      var _x = first_image[_i].image_position_patient[0] - first_image[0].image_position_patient[0];
+      var _y = first_image[_i].image_position_patient[1] - first_image[0].image_position_patient[1];
+      var _z = first_image[_i].image_position_patient[2] - first_image[0].image_position_patient[2];
+      var _distance_position = Math.sqrt(_x*_x + _y*_y  + _z*_z)/first_image[0].pixel_spacing[2];
+      first_image_data.set(_data, _distance_position * first_slice_size);
+    }
+
+    // format data for visualization!
+    var first_image_dimensions = [first_image[0].columns, first_image[0].rows, first_image_height + 1];
+
+    object._dimensions = first_image_dimensions;
+
+    var MRI = {};
+    MRI.dimensions = first_image_dimensions;
+
     // get the min and max intensities
     var min_max = this.arrayMinMax(first_image_data);
     var min = min_max[0];
@@ -206,12 +222,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     // or depends on Z orientation?
 
     // 0, 0, 0 or first slice
-    // for CT, this one is not defined
-    var _origin = [0, 0, 0]
-    if(first_image[ 0 ].hasOwnProperty("image_position_patient")){
-      _origin = first_image[ 0 ].image_position_patient;
-    }
-    
+    var _origin = first_image[0].image_position_patient;   
 
     // Create IJKtoXYZ matrix
     var _x_cosine = new goog.math.Vec3(first_image[0].image_orientation_patient[0],
@@ -219,12 +230,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     var _y_cosine = new goog.math.Vec3(first_image[ 0 ].image_orientation_patient[3],
         first_image[ 0 ].image_orientation_patient[4], first_image[ 0 ].image_orientation_patient[5]);
     var _z_cosine = goog.math.Vec3.cross(_x_cosine, _y_cosine);
-
-    // if(object._spacing[2] >0) {
-
-    //   _z_cosine.invert();
-      
-    // }
 
     var IJKToRAS = goog.vec.Mat4.createFloat32();
     // NOTE THE '-' for the LPS to RAS conversion
@@ -279,7 +284,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     MRI.RASSpacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
   
     // grab the RAS Dimensions
-    MRI.RASDimensions = [_rasBB[1] - _rasBB[0], _rasBB[3] - _rasBB[2], _rasBB[5] - _rasBB[4]];
+    MRI.RASDimensions = [_rasBB[1] - _rasBB[0] + 1, _rasBB[3] - _rasBB[2] + 1, _rasBB[5] - _rasBB[4] + 1];
   
     // grab the RAS Origin
     MRI.RASOrigin = [_rasBB[0], _rasBB[2], _rasBB[4]];
@@ -381,7 +386,8 @@ X.parserDCM.prototype.parseStream = function(data, object) {
   // set slice default minimum required parameters
   var slice = {
     pixel_spacing:[.1, .1, Infinity],
-    image_orientation_patient: [1, 0, 0, 0, 1, 0]
+    image_orientation_patient: [1, 0, 0, 0, 1, 0],
+    image_position_patient: [0, 0, 0]
   };
 
   // scan the whole file as short (2 bytes)

@@ -360,7 +360,7 @@ X.parser.prototype.flipEndianness = function(array, chunkSize) {
  */
 X.parser.computeRASBBox = function(IJKToRAS, MRIdim){
 
-var _rasBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
+  var _rasBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
                Number.MAX_VALUE, -Number.MAX_VALUE,
                Number.MAX_VALUE, -Number.MAX_VALUE];
 
@@ -375,7 +375,7 @@ var _rasBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
   _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
   _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
   
-  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, 0, MRIdim[3], 1);
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, 0, MRIdim[3]-1, 1);
   goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
   
   _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
@@ -385,7 +385,7 @@ var _rasBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
   _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
   _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
   
-  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, MRIdim[2], 0, 1);
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, MRIdim[2]-1, 0, 1);
   goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
   
   _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
@@ -395,17 +395,7 @@ var _rasBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
   _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
   _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
   
-  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1], 0, 0, 1);
-  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
-  
-  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
-  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
-  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
-  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
-  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
-  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
-
-  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1], MRIdim[2], 0, 1);
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1]-1, 0, 0, 1);
   goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
   
   _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
@@ -415,7 +405,17 @@ var _rasBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
   _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
   _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
 
-  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1], 0, MRIdim[3], 1);
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1]-1, MRIdim[2]-1, 0, 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1]-1, 0, MRIdim[3]-1, 1);
   goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
   
   _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
@@ -425,7 +425,7 @@ var _rasBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
   _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
   _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
   
-  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, MRIdim[2], MRIdim[3], 1);
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, MRIdim[2]-1, MRIdim[3]-1, 1);
   goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
   
   _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
@@ -435,7 +435,7 @@ var _rasBB = [Number.MAX_VALUE, -Number.MAX_VALUE,
   _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
   _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
   
-  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1], MRIdim[2], MRIdim[3], 1);
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1]-1, MRIdim[2]-1, MRIdim[3]-1, 1);
   goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
   
   _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
@@ -516,7 +516,7 @@ X.parser.intersectionBBoxLine = function(_bbox, _sliceOrigin, _sliceNormal){
   
   var _solutionsIn = new Array();
   var _solutionsOut = new Array();
-  
+ 
   // xmin, xmax, ymin, ymax, zmin, zmax
   for(var _i = 0; _i < 6; _i++) {
 
@@ -1137,17 +1137,18 @@ X.parser.prototype.reslice = function(object) {
   // ------------------------------------------
   // SET GLOBAL VALUES/TRANSFORMS
   // ------------------------------------------
-  object.range = [object._dimensions[0],object._dimensions[1],object._dimensions[2]];
-  object._RASCenter = [object._RASOrigin[0] + object._RASDimensions[0]/2,
-                    object._RASOrigin[1] + object._RASDimensions[1]/2,
-                    object._RASOrigin[2] + object._RASDimensions[2]/2
+  object.range = [0,0,0];
+  object._RASCenter = [object._RASOrigin[0] + (object._RASDimensions[0] - 1)/2,
+                    object._RASOrigin[1] + (object._RASDimensions[1] - 1)/2,
+                    object._RASOrigin[2] + (object._RASDimensions[2] - 1)/2
                     ];
-  object._BBox = [Math.min(object._RASOrigin[0],object._RASOrigin[0] + object._RASDimensions[0]),
-                      Math.max(object._RASOrigin[0],object._RASOrigin[0] + object._RASDimensions[0]),
-                      Math.min(object._RASOrigin[1],object._RASOrigin[1] + object._RASDimensions[1]),
-                      Math.max(object._RASOrigin[1],object._RASOrigin[1] + object._RASDimensions[1]),
-                      Math.min(object._RASOrigin[2],object._RASOrigin[2] + object._RASDimensions[2]),
-                      Math.max(object._RASOrigin[2],object._RASOrigin[2] + object._RASDimensions[2])
+                    
+  object._BBox = [Math.min(object._RASOrigin[0],object._RASOrigin[0] + object._RASDimensions[0] - 1),
+                      Math.max(object._RASOrigin[0],object._RASOrigin[0] + object._RASDimensions[0] - 1),
+                      Math.min(object._RASOrigin[1],object._RASOrigin[1] + object._RASDimensions[1] - 1),
+                      Math.max(object._RASOrigin[1],object._RASOrigin[1] + object._RASDimensions[1] - 1),
+                      Math.min(object._RASOrigin[2],object._RASOrigin[2] + object._RASDimensions[2] - 1),
+                      Math.max(object._RASOrigin[2],object._RASOrigin[2] + object._RASDimensions[2] - 1)
                       ];
   object._childrenInfo = [{}, {}, {}];
 
@@ -1182,6 +1183,7 @@ X.parser.prototype.reslice = function(object) {
   this.updateSliceInfo(0, _sliceOrigin, _sliceNormal, object);
   // Create empty array for all slices in this direction
   object._children[0]._children = new Array(object._childrenInfo[0]._nb);
+  object.range[0] = object._childrenInfo[0]._nb;
 
   _sliceOrigin[0] = object._childrenInfo[0]._solutionsLine[0][0][0] + object._childrenInfo[0]._sliceDirection[0]*Math.round(object._childrenInfo[0]._nb/2);
   _sliceOrigin[1] = object._childrenInfo[0]._solutionsLine[0][0][1] + object._childrenInfo[0]._sliceDirection[1]*Math.round(object._childrenInfo[0]._nb/2);
@@ -1229,6 +1231,7 @@ X.parser.prototype.reslice = function(object) {
   this.updateSliceInfo(1, _sliceOrigin, _sliceNormal, object);
   // Create empty array for all slices in this direction
   object._children[1]._children = new Array(object._childrenInfo[1]._nb);
+  object.range[1] = object._childrenInfo[1]._nb;
     
   _sliceOrigin[0] = object._childrenInfo[1]._solutionsLine[0][0][0] + object._childrenInfo[1]._sliceDirection[0]*Math.round(object._childrenInfo[1]._nb/2);
   _sliceOrigin[1] = object._childrenInfo[1]._solutionsLine[0][0][1] + object._childrenInfo[1]._sliceDirection[1]*Math.round(object._childrenInfo[1]._nb/2);
@@ -1275,6 +1278,8 @@ X.parser.prototype.reslice = function(object) {
   this.updateSliceInfo(2, _sliceOrigin, _sliceNormal, object);
   // Create empty array for all slices in this direction
   object._children[2]._children = new Array(object._childrenInfo[2]._nb);
+  object.range[2] = object._childrenInfo[2]._nb;
+
   _sliceOrigin[0] = object._childrenInfo[2]._solutionsLine[0][0][0] + object._childrenInfo[2]._sliceDirection[0]*Math.round(object._childrenInfo[2]._nb/2);
   _sliceOrigin[1] = object._childrenInfo[2]._solutionsLine[0][0][1] + object._childrenInfo[2]._sliceDirection[1]*Math.round(object._childrenInfo[2]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[2]._solutionsLine[0][0][2] + object._childrenInfo[2]._sliceDirection[2]*Math.round(object._childrenInfo[2]._nb/2);
