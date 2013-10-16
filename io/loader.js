@@ -312,7 +312,6 @@ X.loader.prototype.complete = function(event) {
   // we use a timeout here to let the progress bar be able to breath and show
   // something
   setTimeout(function() {
-
     var container = event._container;
     var object = event._object;
 
