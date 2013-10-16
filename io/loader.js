@@ -291,7 +291,7 @@ X.loader.prototype.parse = function(request, container, object) {
     // data stream and some additional value
     _parser.parse(container, object, _data, flags);
 
-  }.bind(this), 2000);
+  }.bind(this), 100);
 
 };
 

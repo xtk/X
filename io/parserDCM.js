@@ -61,6 +61,9 @@ goog.inherits(X.parserDCM, X.parser);
  */
 X.parserDCM.prototype.parse = function(container, object, data, flag) {
   // X.TIMER(this._classname + '.parse');
+    // needed, for renderer2d and 3d legacy...
+    object.MRI = {};
+    object.MRI.loaded_files = 0;
 
   // parse the byte stream
   this.parseStream(data, object);
@@ -71,8 +74,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
   if (!goog.isDefAndNotNull(object._file.length) || object.slices.length == object._file.length) {
 
     // needed, for renderer2d and 3d legacy...
-    object.MRI = {};
-    // loaded_files = parsed_files
     object.MRI.loaded_files = object._file.length;
 
     // sort slices per series
@@ -497,7 +498,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     object.create_(volumeAttributes);
 
     // re-slice the data in SAGITTAL, CORONAL and AXIAL directions
-      window.console.log(object);
     object._image = this.reslice(object);
 
   }
