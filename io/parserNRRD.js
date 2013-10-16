@@ -179,7 +179,7 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   var res = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multVec4(IJKToRAS, tar, res);
   // Transform ijk (spacingX, spacinY, spacingZ) to RAS
-  var tar2 = goog.vec.Vec4.createFloat32FromValues(spacingX, spacingY, spacingZ, 1);
+  var tar2 = goog.vec.Vec4.createFloat32FromValues(1, 1, 1, 1);
   var res2 = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multVec4(IJKToRAS, tar2, res2);
   
