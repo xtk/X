@@ -1285,7 +1285,7 @@ X.volume.prototype.sliceInfoChanged = function(index){
     var _sliceLabel = X.parser.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceXYSpacing, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map);
     this._labelmap._children[index]._children = [];
     this._labelmap._children[index]._children = new Array(this._childrenInfo[index]._nb);
-    this._labelmap._children[index]._children[Math.round(this._childrenInfo[index]._nb/2)] = _sliceLabel;
+    this._labelmap._children[index]._children[Math.floor(this._childrenInfo[index]._nb/2)] = _sliceLabel;
     // add it to create the texture
     this._labelmap._children[index].modified();
   }
@@ -1295,34 +1295,34 @@ X.volume.prototype.sliceInfoChanged = function(index){
   if(this.hasLabelMap) {
 
     _slice._labelmap = _slice._texture;
-    _slice._labelmap = this._labelmap._children[index]._children[Math.round(this._childrenInfo[index]._nb/2)]._texture;
+    _slice._labelmap = this._labelmap._children[index]._children[Math.floor(this._childrenInfo[index]._nb/2)]._texture;
     
   }
 
- this._children[index]._children[Math.round(this._childrenInfo[index]._nb/2)] = _slice;
+ this._children[index]._children[Math.floor(this._childrenInfo[index]._nb/2)] = _slice;
 
   if(index == 0) {
 
-    this._indexX = Math.round(this._childrenInfo[index]._nb/2);
-    this._indexXold = Math.round(this._childrenInfo[index]._nb/2);
+    this._indexX = Math.floor(this._childrenInfo[index]._nb/2);
+    this._indexXold = Math.floor(this._childrenInfo[index]._nb/2);
   
   }
   else if(index == 1) {
     
-    this._indexY = Math.round(this._childrenInfo[index]._nb/2);
-    this._indexYold = Math.round(this._childrenInfo[index]._nb/2);
+    this._indexY = Math.floor(this._childrenInfo[index]._nb/2);
+    this._indexYold = Math.floor(this._childrenInfo[index]._nb/2);
 
   }
   else {
 
-    this._indexZ = Math.round(this._childrenInfo[index]._nb/2);
-    this._indexZold = Math.round(this._childrenInfo[index]._nb/2);
+    this._indexZ = Math.floor(this._childrenInfo[index]._nb/2);
+    this._indexZold = Math.floor(this._childrenInfo[index]._nb/2);
   
   }
 
   // add it to renderer!
   this._children[index].modified();
-  this._children[index]._children[Math.round(this._childrenInfo[index]._nb/2)]._visible = true;
+  this._children[index]._children[Math.floor(this._childrenInfo[index]._nb/2)]._visible = true;
 
 }
 

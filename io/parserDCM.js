@@ -70,56 +70,235 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
   // check if all slices were completed loaded
   if (!goog.isDefAndNotNull(object._file.length) || object.slices.length == object._file.length) {
 
-    // needed, for renderer2d and 3d...
+    // needed, for renderer2d and 3d legacy...
     object.MRI = {};
+    // loaded_files = parsed_files
     object.MRI.loaded_files = object._file.length;
 
     // sort slices per series
     var series = {};
+    var imageSeriesPushed = {};
     for (var i = 0; i < object.slices.length; i++) {
 
+      // series undefined yet
       if(!series.hasOwnProperty(object.slices[i].series_instance_uid)){
-        // series undefined yet
+
         series[object.slices[i].series_instance_uid] = new Array();
+        imageSeriesPushed[object.slices[i].series_instance_uid] = {};
+
+      }
+      
+      // push image if it has not been pushed yet
+      if(!imageSeriesPushed[object.slices[i].series_instance_uid].hasOwnProperty(object.slices[i].sop_instance_uid)){
+
+        imageSeriesPushed[object.slices[i].series_instance_uid][object.slices[i].sop_instance_uid] = true;
+        series[object.slices[i].series_instance_uid].push(object.slices[i]);
 
       }
 
-      series[object.slices[i].series_instance_uid].push(object.slices[i]);
-
     }
 
-    // order slices
-    // compute distance for each slice
-    for(var seriesInstanceUID in series) {
-      var _x_cosine = new goog.math.Vec3(series[seriesInstanceUID][0].image_orientation_patient[0],
-        series[seriesInstanceUID][ 0 ].image_orientation_patient[1], series[seriesInstanceUID][ 0 ].image_orientation_patient[2]);
-      var _y_cosine = new goog.math.Vec3(series[seriesInstanceUID][ 0 ].image_orientation_patient[3],
-        series[seriesInstanceUID][ 0 ].image_orientation_patient[4], series[seriesInstanceUID][ 0 ].image_orientation_patient[5]);
-      var _z_cosine = goog.math.Vec3.cross(_x_cosine, _y_cosine);
+    ////////////////////////////////////////////////////////////////////////
+    // At this point:
+    // -> slices are ordered by series
+    // -> slices within a series are unique
+    ////////////////////////////////////////////////////////////////////////
 
-      function computeDistance(flag, arrelem)
-        {
-          arrelem['dist'] = arrelem['image_position_patient'][0]*flag.x +
-            arrelem['image_position_patient'][1]*flag.y +
-            arrelem['image_position_patient'][2]*flag.z;
-          return arrelem;
-        }
+    // GLOBAL PARAMETERS
+    // pointer to first image
+    var seriesInstanceUID = Object.keys(series)[0];
+    var first_image = series[seriesInstanceUID];
+    // number of unique slices available
+    var first_image_stacks = first_image.length;
+    // container for volume specific information
+    var volumeAttributes = {};
+
+    ////////////////////////////////////////////////////////////////////////
+    //
+    // ORDER SLICES
+    //
+    ////////////////////////////////////////////////////////////////////////
+
+    //
+    // we can order slices based on
+    //
+    // image_position_patient:
+    // -> each slice show have a different 'image_position_patient'
+    // -> The Image Position (0020,0032) specifies the x, y, and z coordinates of
+    // -> -> the upper left hand corner of the image; it is the center of the first
+    // -> -> voxel transmitted. Image Orientation (0020,0037) specifies the direction
+    // -> -> cosines of the first row and the first column with respect to the patient.
+    // -> -> These Attributes shall be provide as a pair. Row value for the x, y, and
+    // -> -> z axes respectively followed by the Column value for the x, y, and z axes
+    // -> -> respectively.
+    //
+    // in some cases, such as diffusion, 'image_position_patient' is the same for all
+    // slices. We should then use the instance_number to order the slices.
+    // 
+    // instance_number:
+    // -> each slice show have a different 'instance_number'
+    // -> A number that identifies this raw data. 
+    // -> -> The value shall be unique within a series
+
+    var _ordering = 'image_position_patient';
+
+
+    if(first_image_stacks == 1){
+        
+        // ORDERING BASED ON IMAGE POSITION
+        _ordering = 'image_position_patient';
+
+        // set distance to 0
+        series[seriesInstanceUID][0]['dist'] = 0;
+
+    }
+    else if(first_image[0].image_position_patient[0] != first_image[1].image_position_patient[0] ||
+      first_image[0].image_position_patient[1] != first_image[1].image_position_patient[1] ||
+      first_image[0].image_position_patient[2] != first_image[1].image_position_patient[2]){
+
+        // ORDERING BASED ON IMAGE POSITION
+        _ordering = 'image_position_patient';
+
+        // set distances
+        var _x_cosine = new goog.math.Vec3(first_image[0].image_orientation_patient[0],
+          first_image[0].image_orientation_patient[1], first_image[ 0 ].image_orientation_patient[2]);
+        var _y_cosine = new goog.math.Vec3(first_image[ 0 ].image_orientation_patient[3],
+          first_image[ 0 ].image_orientation_patient[4], first_image[ 0 ].image_orientation_patient[5]);
+        var _z_cosine = goog.math.Vec3.cross(_x_cosine, _y_cosine);
+
+        function computeDistance(flag, arrelem)
+          {
+            arrelem['dist'] = arrelem['image_position_patient'][0]*flag.x +
+              arrelem['image_position_patient'][1]*flag.y +
+              arrelem['image_position_patient'][2]*flag.z;
+            return arrelem;
+          }
 
       // compute dist in this series
-      series[seriesInstanceUID].map(computeDistance.bind(null, _z_cosine));
+      first_image.map(computeDistance.bind(null, _z_cosine));
+      // order by dist
+      first_image.sort(function(a,b){return a["dist"]-b["dist"]});
+    
+    }
+    else if(first_image[0].instance_number != first_image[1].instance_number){
+    
+      // ORDERING BASED ON instance number
+      _ordering = 'instance_number';
+      first_image.sort(function(a,b){return a["instance_number"]-b["instance_number"]});
+    
+    }
+    else{
+
+      window.console.log("Could not resolve the ordering mode");
+
     }
 
-    // http://www.itk.org/pipermail/insight-users/2003-September/004762.html
-    for(var seriesInstanceUID in series) {
-      series[seriesInstanceUID].sort(function(a,b){return a["dist"]-b["dist"]});
+
+    ////////////////////////////////////////////////////////////////////////
+    // At this point:
+    // -> slices are ordered by series
+    // -> slices within a series are unique
+    ////////////////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////
+    //
+    // COMPUTE SPACING
+    //
+    ////////////////////////////////////////////////////////////////////////
+
+    if(isNaN(first_image[0].pixel_spacing[0])){
+
+      first_image[0].pixel_spacing[0] = 1.;
+
     }
 
-    // starts at 1
-    var first_image = series[seriesInstanceUID];
-    var first_image_stacks = first_image.length;
-    var first_image_height = Math.abs(first_image[ first_image_stacks - 1].instance_number - first_image[0].instance_number);
+    if(isNaN(first_image[0].pixel_spacing[1])){
+
+      first_image[0].pixel_spacing[1] = 1.;
+
+    }
+
+    if( first_image_stacks > 1) {
+
+      switch(_ordering){
+        case 'image_position_patient':
+          // We work only on 2 first slices
+          var _first_position = first_image[ 0 ].image_position_patient;
+          var _second_image_position = first_image[ 1 ].image_position_patient;
+          var _x = _second_image_position[0] - _first_position[0];
+          var _y = _second_image_position[1] - _first_position[1];
+          var _z = _second_image_position[2] - _first_position[2];
+          first_image[0].pixel_spacing[2] = Math.sqrt(_x*_x + _y*_y  + _z*_z);
+          break;
+        case 'instance_number':
+          first_image[0].pixel_spacing[2] = 1.0;
+          break;
+        default:
+          window.console.log("Unkown ordering mode - returning: " + _ordering);
+          break;
+      }
+
+    }
+    else {
+
+      first_image[0].pixel_spacing[2] = 1.0;
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    // At this point:
+    // -> slices are ordered by series
+    // -> slices within a series are unique
+    // -> we estimated the spacing in all directions
+    ////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////
+    //
+    // Estimate number of slices we are expecting
+    //
+    ////////////////////////////////////////////////////////////////////////
+
+    // we execpt at least one image :)
+    var first_image_expected_nb_slices = 1;
+    switch(_ordering){
+      case 'image_position_patient':
+        // get distance between 2 points
+        var _first_position = first_image[ 0 ].image_position_patient;
+        var _last_image_position = first_image[ first_image_stacks - 1].image_position_patient;
+        var _x = _last_image_position[0] - _first_position[0];
+        var _y = _last_image_position[1] - _first_position[1];
+        var _z = _last_image_position[2] - _first_position[2];
+        var _distance_position = Math.sqrt(_x*_x + _y*_y  + _z*_z);
+        //normalize by z spacing
+        first_image_expected_nb_slices += _distance_position/first_image[0].pixel_spacing[2];
+        break;
+      case 'instance_number':
+        first_image_expected_nb_slices += Math.abs(first_image[ first_image_stacks - 1].instance_number - first_image[0].instance_number);
+        break;
+      default:
+        window.console.log("Unkown ordering mode - returning: " + _ordering);
+        break;
+    }
+
     var first_slice_size = first_image[0].columns * first_image[0].rows;
-    var first_image_size = first_slice_size * (first_image_height + 1);
+    var first_image_size = first_slice_size * (first_image_expected_nb_slices);
+
+    ////////////////////////////////////////////////////////////////////////
+    // At this point:
+    // -> slices are ordered by series
+    // -> slices within a series are unique
+    // -> we estimated the spacing in all directions
+    // -> we know how many slices we expect in the best case
+    ////////////////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////
+    //
+    // Prepare and fill data container
+    //
+    ////////////////////////////////////////////////////////////////////////
+
     var first_image_data = null;
 
     // create data container
@@ -137,69 +316,70 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
         break;
     }
 
-    // grab the spacing
-    if(isNaN(first_image[0].pixel_spacing[0])){
-      first_image[0].pixel_spacing[0] = 1.;
-    }
-
-    if(isNaN(first_image[0].pixel_spacing[1])){
-      first_image[0].pixel_spacing[1] = 1.;
-    }
-
-    // Which is best approach to find spacing z....?
-    // now over all slices.... should it be over 2 first slices?
-    if (first_image[0].pixel_spacing[2] == Infinity) {
-
-      if( first_image_stacks > 1) {
-
-        // get position of first
-        var _first_position = first_image[ 0 ].image_position_patient;
-        var _last_image_position = first_image[ first_image_stacks - 1].image_position_patient;
-        var _x = _last_image_position[0] - _first_position[0];
-        var _y = _last_image_position[1] - _first_position[1];
-        var _z = _last_image_position[2] - _first_position[2];
-        var _distance_position = Math.sqrt(_x*_x + _y*_y  + _z*_z);
-        first_image[0].pixel_spacing[2] = _distance_position/first_image_height;
-
-      }
-      else {
-
-        first_image[0].pixel_spacing[2] = 1.0;
-
-      }
-    }
-
-    var _spacing = first_image[0].pixel_spacing;
-
-    object._spacing = _spacing;
+    object._spacing = first_image[0].pixel_spacing;
 
     // fill data container
-    // respect slice instance_number:
+    // by pushing slices where we expect them
     // 
-    // only 3 slices provided
+    // for instance, we have 3 non-consecutive slices
+    // we are expecting 4 slices, the 3rd one is missing
     //
-    // 1234123 -> instance_number == 1
-    // 1234211 -> instance_number == 2
+    // BEFORE:
+    //
     // 0000000
-    // 1232414 -> instance_number == 4
+    // 0000000
+    // 0000000
+    // 0000000
+    //
+    // AFTER:
+    //
+    // 1234123 -> first slice
+    // 1234211 -> second slice
+    // 0000000
+    // 1232414 -> third slice
 
     for (var _i = 0; _i < first_image_stacks; _i++) {
       // get data
       var _data = first_image[_i].data;
-      var _x = first_image[_i].image_position_patient[0] - first_image[0].image_position_patient[0];
-      var _y = first_image[_i].image_position_patient[1] - first_image[0].image_position_patient[1];
-      var _z = first_image[_i].image_position_patient[2] - first_image[0].image_position_patient[2];
-      var _distance_position = Math.sqrt(_x*_x + _y*_y  + _z*_z)/first_image[0].pixel_spacing[2];
+      var _distance_position = 0;
+
+      switch(_ordering){
+        case 'image_position_patient':
+          var _x = first_image[_i].image_position_patient[0] - first_image[0].image_position_patient[0];
+          var _y = first_image[_i].image_position_patient[1] - first_image[0].image_position_patient[1];
+          var _z = first_image[_i].image_position_patient[2] - first_image[0].image_position_patient[2];
+          _distance_position = Math.sqrt(_x*_x + _y*_y  + _z*_z)/first_image[0].pixel_spacing[2];
+          break;
+        case 'instance_number':
+          _distance_position = first_image[_i].instance_number - first_image[0].instance_number;
+          break;
+        default:
+          window.console.log("Unkown ordering mode - returning: " + _ordering);
+          break;
+      }
+
       first_image_data.set(_data, _distance_position * first_slice_size);
+
     }
 
-    // format data for visualization!
-    var first_image_dimensions = [first_image[0].columns, first_image[0].rows, first_image_height + 1];
+    volumeAttributes.data = first_image_data;
+    object._data = first_image_data;
 
-    object._dimensions = first_image_dimensions;
+    ////////////////////////////////////////////////////////////////////////
+    // At this point:
+    // -> slices are ordered by series
+    // -> slices within a series are unique
+    // -> we estimated the spacing in all directions
+    // -> we know how many slices we expect in the best case
+    // -> data container contains ordered data!
+    ////////////////////////////////////////////////////////////////////////
 
-    var MRI = {};
-    MRI.dimensions = first_image_dimensions;
+    // IJK image dimensions
+    // NOTE:
+    // colums is index 0
+    // rows is index 1
+    object._dimensions = [first_image[0].columns, first_image[0].rows, first_image_expected_nb_slices];
+    volumeAttributes.dimensions = object._dimensions;
 
     // get the min and max intensities
     var min_max = this.arrayMinMax(first_image_data);
@@ -207,21 +387,23 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     var max = min_max[1];
 
     // attach the scalar range to the volume
-    MRI.min = object._min = object._windowLow = min;
-    MRI.max = object._max = object._windowHigh = max;
+    volumeAttributes.min = object._min = object._windowLow = min;
+    volumeAttributes.max = object._max = object._windowHigh = max;
     // .. and set the default threshold
     // only if the threshold was not already set
     if (object._lowerThreshold == -Infinity) {
+
       object._lowerThreshold = min;
+
     }
     if (object._upperThreshold == Infinity) {
+
       object._upperThreshold = max;
+
     }
 
-    // get origin == highest slice position?
-    // or depends on Z orientation?
-
-    // 0, 0, 0 or first slice
+    // Slices are ordered so
+    // volume origin is the first slice position
     var _origin = first_image[0].image_position_patient;   
 
     // Create IJKtoXYZ matrix
@@ -231,8 +413,20 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
         first_image[ 0 ].image_orientation_patient[4], first_image[ 0 ].image_orientation_patient[5]);
     var _z_cosine = goog.math.Vec3.cross(_x_cosine, _y_cosine);
 
+    //
+    // Generate IJK To RAS matrix and other utilities.
+    //
+
     var IJKToRAS = goog.vec.Mat4.createFloat32();
-    // NOTE THE '-' for the LPS to RAS conversion
+
+    ////////////////////////////////////////////////////////////////////////
+    //
+    // IMPORTANT NOTE:
+    //
+    // '-' added for LPS to RAS conversion
+    //
+    ////////////////////////////////////////////////////////////////////////
+
     goog.vec.Mat4.setRowValues(IJKToRAS,
       0,
       -first_image[ 0 ].image_orientation_patient[0]*first_image[0].pixel_spacing[0],
@@ -258,50 +452,60 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       0,
       1);
 
-    MRI.data = first_image_data;
-    object._data = first_image_data;
-    MRI.IJKToRAS = IJKToRAS;
-    MRI.RASToIJK = goog.vec.Mat4.createFloat32();
-    goog.vec.Mat4.invert(MRI.IJKToRAS, MRI.RASToIJK);
+    volumeAttributes.IJKToRAS = IJKToRAS;
+    volumeAttributes.RASToIJK = goog.vec.Mat4.createFloat32();
+    goog.vec.Mat4.invert(volumeAttributes.IJKToRAS, volumeAttributes.RASToIJK);
+
+    ////////////////////////////////////////////////////////////////////////
+    // At this point:
+    // -> slices are ordered by series
+    // -> slices within a series are unique
+    // -> we estimated the spacing in all directions
+    // -> we know how many slices we expect in the best case
+    // -> data container contains ordered data!
+    // -> IJK To RAS (and invert) matrices
+    ////////////////////////////////////////////////////////////////////////
   
-    // get bounding box
-    // Transform ijk (0, 0, 0) to RAS
+    //
+    // compute last required information for reslicing
+    //
+
+    // get RAS spacing
+    //
     var tar = goog.vec.Vec4.createFloat32FromValues(0, 0, 0, 1);
     var res = goog.vec.Vec4.createFloat32();
     goog.vec.Mat4.multVec4(IJKToRAS, tar, res);
-    // Transform ijk (spacingX, spacinY, spacingZ) to RAS
-    var tar2 = goog.vec.Vec4.createFloat32FromValues(_spacing[0], _spacing[1], _spacing[2], 1);
+
+    var tar2 = goog.vec.Vec4.createFloat32FromValues(1, 1, 1, 1);
     var res2 = goog.vec.Vec4.createFloat32();
     goog.vec.Mat4.multVec4(IJKToRAS, tar2, res2);
+
+    volumeAttributes.RASSpacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
   
-    // get location of 8 corners and update BBox
+    // get RAS Boundung Box
     //
-    var _shifDimensions = [0, object._dimensions[0], object._dimensions[1], object._dimensions[2]];
-    
-    var _rasBB = X.parser.computeRASBBox(IJKToRAS, _shifDimensions);
-
+    var _rasBB = X.parser.computeRASBBox(IJKToRAS, [object._dimensions[0], object._dimensions[1], object._dimensions[2]]);
     // grab the RAS Dimensions
-    MRI.RASSpacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
+    volumeAttributes.RASDimensions = [_rasBB[1] - _rasBB[0] + 1, _rasBB[3] - _rasBB[2] + 1, _rasBB[5] - _rasBB[4] + 1];
   
-    // grab the RAS Dimensions
-    MRI.RASDimensions = [_rasBB[1] - _rasBB[0] + 1, _rasBB[3] - _rasBB[2] + 1, _rasBB[5] - _rasBB[4] + 1];
-  
-    // grab the RAS Origin
-    MRI.RASOrigin = [_rasBB[0], _rasBB[2], _rasBB[4]];
+    // get RAS Origin
+    // (it is actually RAS min x, min y and min z)
+    //
+    volumeAttributes.RASOrigin = [_rasBB[0], _rasBB[2], _rasBB[4]];
 
-    // create the object
-    object.create_(MRI);
+    // create the volume object
+    object.create_(volumeAttributes);
 
-    // re-slice the data according each direction
+    // re-slice the data in SAGITTAL, CORONAL and AXIAL directions
     object._image = this.reslice(object);
 
   }
 
-      // the object should be set up here, so let's fire a modified event
-    var modifiedEvent = new X.event.ModifiedEvent();
-    modifiedEvent._object = object;
-    modifiedEvent._container = container;
-    this.dispatchEvent(modifiedEvent);
+  // the object should be set up here, so let's fire a modified event
+  var modifiedEvent = new X.event.ModifiedEvent();
+  modifiedEvent._object = object;
+  modifiedEvent._container = container;
+  this.dispatchEvent(modifiedEvent);
 
 };
 
@@ -606,6 +810,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
           }
 
         break;
+          // We should parse the data like that...
             // case 0x7fe0:
     //     // Group of SLICE INFO
     //     // here we are only interested in the InstanceNumber
@@ -655,7 +860,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
         break;
     }
 
-  // no need to jump anu
+  // no need to jump anymore, parse data as any DICOM field.
   // jump to the beginning of the pixel data
   this.jumpTo(this._data.byteLength - slice.columns * slice.rows * 2);
   // check for data type and parse accordingly

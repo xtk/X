@@ -185,14 +185,13 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   
   // get location of 8 corners and update BBox
   //
-  var _shifDimensions = [0, object._dimensions[0], object._dimensions[1], object._dimensions[2]];
-  var _rasBB = X.parser.computeRASBBox(IJKToRAS, _shifDimensions);
+  var _rasBB = X.parser.computeRASBBox(IJKToRAS, object._dimensions);
 
   // grab the RAS Dimensions
   MRI.RASSpacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
   
   // grab the RAS Dimensions
-  MRI.RASDimensions = [_rasBB[1] - _rasBB[0], _rasBB[3] - _rasBB[2], _rasBB[5] - _rasBB[4]];
+  MRI.RASDimensions = [_rasBB[1] - _rasBB[0] + 1, _rasBB[3] - _rasBB[2] + 1, _rasBB[5] - _rasBB[4] + 1];
   
   // grab the RAS Origin
   MRI.RASOrigin = [_rasBB[0], _rasBB[2], _rasBB[4]];

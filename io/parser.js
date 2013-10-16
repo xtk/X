@@ -375,7 +375,7 @@ X.parser.computeRASBBox = function(IJKToRAS, MRIdim){
   _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
   _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
   
-  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, 0, MRIdim[3]-1, 1);
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, 0, MRIdim[2]-1, 1);
   goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
   
   _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
@@ -385,7 +385,7 @@ X.parser.computeRASBBox = function(IJKToRAS, MRIdim){
   _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
   _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
   
-  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, MRIdim[2]-1, 0, 1);
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, MRIdim[1]-1, 0, 1);
   goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
   
   _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
@@ -395,17 +395,7 @@ X.parser.computeRASBBox = function(IJKToRAS, MRIdim){
   _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
   _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
   
-  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1]-1, 0, 0, 1);
-  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
-  
-  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
-  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
-  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
-  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
-  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
-  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
-
-  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1]-1, MRIdim[2]-1, 0, 1);
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[0]-1, 0, 0, 1);
   goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
   
   _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
@@ -415,7 +405,17 @@ X.parser.computeRASBBox = function(IJKToRAS, MRIdim){
   _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
   _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
 
-  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1]-1, 0, MRIdim[3]-1, 1);
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[0]-1, MRIdim[1]-1, 0, 1);
+  goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
+  
+  _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
+  _rasBB[1] = rasResult[0] > _rasBB[1] ? rasResult[0] : _rasBB[1];
+  _rasBB[2] = rasResult[1] < _rasBB[2] ? rasResult[1] : _rasBB[2];
+  _rasBB[3] = rasResult[1] > _rasBB[3] ? rasResult[1] : _rasBB[3];
+  _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
+  _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
+
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[0]-1, 0, MRIdim[2]-1, 1);
   goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
   
   _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
@@ -425,7 +425,7 @@ X.parser.computeRASBBox = function(IJKToRAS, MRIdim){
   _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
   _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
   
-  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, MRIdim[2]-1, MRIdim[3]-1, 1);
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(0, MRIdim[1]-1, MRIdim[2]-1, 1);
   goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
   
   _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
@@ -435,7 +435,7 @@ X.parser.computeRASBBox = function(IJKToRAS, MRIdim){
   _rasBB[4] = rasResult[2] < _rasBB[4] ? rasResult[2] : _rasBB[4];
   _rasBB[5] = rasResult[2] > _rasBB[5] ? rasResult[2] : _rasBB[5];
   
-  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[1]-1, MRIdim[2]-1, MRIdim[3]-1, 1);
+  ijkTarget = goog.vec.Vec4.createFloat32FromValues(MRIdim[0]-1, MRIdim[1]-1, MRIdim[2]-1, 1);
   goog.vec.Mat4.multVec4(IJKToRAS, ijkTarget, rasResult);
   
   _rasBB[0] = rasResult[0] < _rasBB[0] ? rasResult[0] : _rasBB[0];
@@ -764,7 +764,7 @@ X.parser.xyBBox = function(_solutionsXY){
 X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color, _bbox, _IJKVolume, object, hasLabelMap, colorTable){
 
   var sliceXY = new X.slice();
-    
+
   // normalize slice normal (just in case)
   goog.vec.Vec3.normalize(_sliceNormal, _sliceNormal);
   
@@ -774,7 +774,7 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
 
   var _solutions = X.parser.intersectionBBoxPlane(_bbox,_sliceOrigin, _sliceNormal);
   var _solutionsIn = _solutions[0];
-  
+
   // ------------------------------------------
   // MOVE TO 2D SPACE
   // ------------------------------------------
@@ -784,7 +784,7 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
   var _RASToXY = _XYRASTransform[0];
   var _XYToRAS = _XYRASTransform[1];
   
-// // Apply transform to each point!
+  // Apply transform to each point!
   var _solutionsXY = new Array();
   for (var i = 0; i < _solutionsIn.length; ++i) {
     var _rasIntersection = goog.vec.Vec4.createFloat32FromValues(_solutionsIn[i][0], _solutionsIn[i][1], _solutionsIn[i][2], 1);
@@ -793,7 +793,7 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
     _solutionsXY.push([_xyIntersection[0], _xyIntersection[1], _xyIntersection[2]]);
   }
     
-  // rigth
+  // right
   var _right = goog.vec.Vec3.createFloat32FromValues(1, 0, 0);
   var _rright = goog.vec.Vec3.createFloat32();
   goog.vec.Mat4.multVec3(_XYToRAS, _right, _rright);
@@ -812,6 +812,15 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
  
   var _wmin =  Math.floor(_xyBBox[0]);
   var _wmax =  Math.ceil(_xyBBox[1]);
+
+  // if the slice only has to intersections with the volume BBox
+  // (can happens if the slice is right on the edge of the volume)
+  if(_wmin == _wmax){
+
+    _wmax++;
+  
+  }
+
   var _swidth = _wmax - _wmin;
   
   var _hmin = Math.floor(_xyBBox[2]);
@@ -1018,6 +1027,7 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   var _XYToRAS = _XYRASTransform[1];
   var _rasSpacing = goog.vec.Vec4.createFloat32FromValues(object._RASSpacing[0], object._RASSpacing[1], object._RASSpacing[2], 0);
   var _xySpacing = goog.vec.Vec4.createFloat32();
+
   goog.vec.Mat4.multVec4(_RASToXY, _rasSpacing, _xySpacing);
  
   var _sliceDirection = goog.vec.Vec4.createFloat32();
@@ -1040,10 +1050,9 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   // GET NUMBER OF SLICES
   // ------------------------------------------
   
-  // floor because if plane do not intersect box : crash (to be addressed)
-  var _nb = Math.abs(Math.floor(_dist/_xySpacing[2]));
-  object._range[_index] = _nb;
-  object._childrenInfo[_index]._nb = _nb;
+  var _nb = Math.floor(Math.abs(_dist/_xySpacing[2]));
+  object._range[_index] = _nb + 1;
+  object._childrenInfo[_index]._nb = _nb + 1;
 
   // order solutionsIn in _sliceDirection
   if(object._childrenInfo[_index]._solutionsLine [0][0][0] > object._childrenInfo[_index]._solutionsLine [0][1][0]){
@@ -1117,7 +1126,6 @@ X.parser.prototype.reslice = function(object) {
   
   // Step 1: create 2 IJK volumes
   // 1 full res, 1 normalized [0-255]
-  window.console.log(object);
   
   var _IJKVolumes = X.parser.createIJKVolume(object._data, object._dimensions, object._max);
   // real volume
@@ -1142,7 +1150,7 @@ X.parser.prototype.reslice = function(object) {
                     object._RASOrigin[1] + (object._RASDimensions[1] - 1)/2,
                     object._RASOrigin[2] + (object._RASDimensions[2] - 1)/2
                     ];
-                    
+
   object._BBox = [Math.min(object._RASOrigin[0],object._RASOrigin[0] + object._RASDimensions[0] - 1),
                       Math.max(object._RASOrigin[0],object._RASOrigin[0] + object._RASDimensions[0] - 1),
                       Math.min(object._RASOrigin[1],object._RASOrigin[1] + object._RASDimensions[1] - 1),
@@ -1183,11 +1191,10 @@ X.parser.prototype.reslice = function(object) {
   this.updateSliceInfo(0, _sliceOrigin, _sliceNormal, object);
   // Create empty array for all slices in this direction
   object._children[0]._children = new Array(object._childrenInfo[0]._nb);
-  object.range[0] = object._childrenInfo[0]._nb;
 
-  _sliceOrigin[0] = object._childrenInfo[0]._solutionsLine[0][0][0] + object._childrenInfo[0]._sliceDirection[0]*Math.round(object._childrenInfo[0]._nb/2);
-  _sliceOrigin[1] = object._childrenInfo[0]._solutionsLine[0][0][1] + object._childrenInfo[0]._sliceDirection[1]*Math.round(object._childrenInfo[0]._nb/2);
-  _sliceOrigin[2] = object._childrenInfo[0]._solutionsLine[0][0][2] + object._childrenInfo[0]._sliceDirection[2]*Math.round(object._childrenInfo[0]._nb/2);
+  _sliceOrigin[0] = object._childrenInfo[0]._solutionsLine[0][0][0] + object._childrenInfo[0]._sliceDirection[0]*Math.floor(object._childrenInfo[0]._nb/2);
+  _sliceOrigin[1] = object._childrenInfo[0]._solutionsLine[0][0][1] + object._childrenInfo[0]._sliceDirection[1]*Math.floor(object._childrenInfo[0]._nb/2);
+  _sliceOrigin[2] = object._childrenInfo[0]._solutionsLine[0][0][2] + object._childrenInfo[0]._sliceDirection[2]*Math.floor(object._childrenInfo[0]._nb/2);
 
   var _slice = X.parser.reslice2(_sliceOrigin, object._childrenInfo[0]._sliceXYSpacing, object._childrenInfo[0]._sliceNormal, object._childrenInfo[0]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
@@ -1195,13 +1202,13 @@ X.parser.prototype.reslice = function(object) {
     // if this object has a labelmap,
     // we have it loaded at this point (for sure)
     // ..so we can attach it as the second texture to this slice
-    _slice._labelmap = object._labelmap._children[0]._children[Math.round(object._childrenInfo[0]._nb/2)]._texture;
+    _slice._labelmap = object._labelmap._children[0]._children[Math.floor(object._childrenInfo[0]._nb/2)]._texture;
   }
     
-  object._children[0]._children[Math.round(object._childrenInfo[0]._nb/2)] = _slice;
+  object._children[0]._children[Math.floor(object._childrenInfo[0]._nb/2)] = _slice;
 
-  object._indexX = Math.round(object._childrenInfo[0]._nb/2);
-  object._indexXold = Math.round(object._childrenInfo[0]._nb/2);
+  object._indexX = Math.floor(object._childrenInfo[0]._nb/2);
+  object._indexXold = Math.floor(object._childrenInfo[0]._nb/2);
   
   // ------------------------------------------
   // GO CORONAL
@@ -1231,11 +1238,10 @@ X.parser.prototype.reslice = function(object) {
   this.updateSliceInfo(1, _sliceOrigin, _sliceNormal, object);
   // Create empty array for all slices in this direction
   object._children[1]._children = new Array(object._childrenInfo[1]._nb);
-  object.range[1] = object._childrenInfo[1]._nb;
     
-  _sliceOrigin[0] = object._childrenInfo[1]._solutionsLine[0][0][0] + object._childrenInfo[1]._sliceDirection[0]*Math.round(object._childrenInfo[1]._nb/2);
-  _sliceOrigin[1] = object._childrenInfo[1]._solutionsLine[0][0][1] + object._childrenInfo[1]._sliceDirection[1]*Math.round(object._childrenInfo[1]._nb/2);
-  _sliceOrigin[2] = object._childrenInfo[1]._solutionsLine[0][0][2] + object._childrenInfo[1]._sliceDirection[2]*Math.round(object._childrenInfo[1]._nb/2);
+  _sliceOrigin[0] = object._childrenInfo[1]._solutionsLine[0][0][0] + object._childrenInfo[1]._sliceDirection[0]*Math.floor(object._childrenInfo[1]._nb/2);
+  _sliceOrigin[1] = object._childrenInfo[1]._solutionsLine[0][0][1] + object._childrenInfo[1]._sliceDirection[1]*Math.floor(object._childrenInfo[1]._nb/2);
+  _sliceOrigin[2] = object._childrenInfo[1]._solutionsLine[0][0][2] + object._childrenInfo[1]._sliceDirection[2]*Math.floor(object._childrenInfo[1]._nb/2);
 
   _slice = X.parser.reslice2(_sliceOrigin, object._childrenInfo[1]._sliceXYSpacing, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
@@ -1243,13 +1249,13 @@ X.parser.prototype.reslice = function(object) {
     // if this object has a labelmap,
     // we have it loaded at this point (for sure)
     // ..so we can attach it as the second texture to this slice
-    _slice._labelmap = object._labelmap._children[1]._children[Math.round(object._childrenInfo[1]._nb/2)]._texture;
+    _slice._labelmap = object._labelmap._children[1]._children[Math.floor(object._childrenInfo[1]._nb/2)]._texture;
   }
     
-  object._children[1]._children[Math.round(object._childrenInfo[1]._nb/2)] = _slice;
+  object._children[1]._children[Math.floor(object._childrenInfo[1]._nb/2)] = _slice;
   
-  object._indexY = Math.round(object._childrenInfo[1]._nb/2);
-  object._indexYold = Math.round(object._childrenInfo[1]._nb/2);
+  object._indexY = Math.floor(object._childrenInfo[1]._nb/2);
+  object._indexYold = Math.floor(object._childrenInfo[1]._nb/2);
 
   // ------------------------------------------
   // GO AXIAL
@@ -1278,11 +1284,10 @@ X.parser.prototype.reslice = function(object) {
   this.updateSliceInfo(2, _sliceOrigin, _sliceNormal, object);
   // Create empty array for all slices in this direction
   object._children[2]._children = new Array(object._childrenInfo[2]._nb);
-  object.range[2] = object._childrenInfo[2]._nb;
 
-  _sliceOrigin[0] = object._childrenInfo[2]._solutionsLine[0][0][0] + object._childrenInfo[2]._sliceDirection[0]*Math.round(object._childrenInfo[2]._nb/2);
-  _sliceOrigin[1] = object._childrenInfo[2]._solutionsLine[0][0][1] + object._childrenInfo[2]._sliceDirection[1]*Math.round(object._childrenInfo[2]._nb/2);
-  _sliceOrigin[2] = object._childrenInfo[2]._solutionsLine[0][0][2] + object._childrenInfo[2]._sliceDirection[2]*Math.round(object._childrenInfo[2]._nb/2);
+  _sliceOrigin[0] = object._childrenInfo[2]._solutionsLine[0][0][0] + object._childrenInfo[2]._sliceDirection[0]*Math.floor(object._childrenInfo[2]._nb/2);
+  _sliceOrigin[1] = object._childrenInfo[2]._solutionsLine[0][0][1] + object._childrenInfo[2]._sliceDirection[1]*Math.floor(object._childrenInfo[2]._nb/2);
+  _sliceOrigin[2] = object._childrenInfo[2]._solutionsLine[0][0][2] + object._childrenInfo[2]._sliceDirection[2]*Math.floor(object._childrenInfo[2]._nb/2);
     
   _slice = X.parser.reslice2(_sliceOrigin, object._childrenInfo[2]._sliceXYSpacing, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
@@ -1290,13 +1295,13 @@ X.parser.prototype.reslice = function(object) {
     // if this object has a labelmap,
     // we have it loaded at this point (for sure)
     // ..so we can attach it as the second texture to this slice
-    _slice._labelmap = object._labelmap._children[2]._children[Math.round(object._childrenInfo[2]._nb/2)]._texture;
+    _slice._labelmap = object._labelmap._children[2]._children[Math.floor(object._childrenInfo[2]._nb/2)]._texture;
   }
     
-  object._children[2]._children[Math.round(object._childrenInfo[2]._nb/2)] = _slice;
+  object._children[2]._children[Math.floor(object._childrenInfo[2]._nb/2)] = _slice;
   
-  object._indexZ = Math.round(object._childrenInfo[2]._nb/2);
-  object._indexZold = Math.round(object._childrenInfo[2]._nb/2);
+  object._indexZ = Math.floor(object._childrenInfo[2]._nb/2);
+  object._indexZold = Math.floor(object._childrenInfo[2]._nb/2);
 
   X.TIMERSTOP(this._classname + '.reslice');
   

@@ -230,25 +230,26 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   var res = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multVec4(IJKToRAS, tar, res);
   // Transform ijk (spacingX, spacinY, spacingZ) to RAS
-  var tar2 = goog.vec.Vec4.createFloat32FromValues(MRI.pixdim[1], MRI.pixdim[2], MRI.pixdim[3], 1);
+  var tar2 = goog.vec.Vec4.createFloat32FromValues(1, 1, 1, 1);
   var res2 = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multVec4(IJKToRAS, tar2, res2);
   
   // get location of 8 corners and update BBox
   //
-  var _rasBB = X.parser.computeRASBBox(IJKToRAS, MRI.dim);
+  var _dims = [MRI.dim[1], MRI.dim[2], MRI.dim[3]];
+  var _rasBB = X.parser.computeRASBBox(IJKToRAS, _dims);
 
   // grab the RAS Dimensions
   MRI.RASSpacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
   
   // grab the RAS Dimensions
-  MRI.RASDimensions = [_rasBB[1] - _rasBB[0], _rasBB[3] - _rasBB[2], _rasBB[5] - _rasBB[4]];
+  MRI.RASDimensions = [_rasBB[1] - _rasBB[0] + 1, _rasBB[3] - _rasBB[2] + 1, _rasBB[5] - _rasBB[4] + 1];
   
   // grab the RAS Origin
   MRI.RASOrigin = [_rasBB[0], _rasBB[2], _rasBB[4]];
   
   // grab the  IJK dimensions
-  object._dimensions = [MRI.dim[1], MRI.dim[2], MRI.dim[3]];
+  object._dimensions = _dims;
   
   // create the object
   object.create_(MRI);
