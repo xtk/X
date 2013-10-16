@@ -150,7 +150,7 @@ X.parser.prototype.parse = function(container, object, data, flag) {
 /**
  * Get the min and max values of an array.
  *
- * @param {!Array}
+ * @param {Array|Uint8Array|Uint16Array|Uint32Array|null}
  *          data The data array to analyze.
  * @return {!Array} An array with length 2 containing the [min, max] values.
  */
@@ -877,9 +877,9 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
       // get value if there is a match, trnasparent if no match!
       var textureStartIndex = _p * 4;
     
-        var _k = Math.round(_indexIJK[2]);
-        var _j = Math.round(_indexIJK[1]);
-        var _i = Math.round(_indexIJK[0]);
+        var _k = Math.floor(_indexIJK[2]);
+        var _j = Math.floor(_indexIJK[1]);
+        var _i = Math.floor(_indexIJK[0]);
 
       if( (0 <= _i) && (_i < object._dimensions[0] ) &&
         (0 <= _j) && (_j < object._dimensions[1] ) &&

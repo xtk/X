@@ -81,18 +81,18 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     for (var i = 0; i < object.slices.length; i++) {
 
       // series undefined yet
-      if(!series.hasOwnProperty(object.slices[i].series_instance_uid)){
+      if(!series.hasOwnProperty(object.slices[i]['series_instance_uid'])){
 
-        series[object.slices[i].series_instance_uid] = new Array();
-        imageSeriesPushed[object.slices[i].series_instance_uid] = {};
+        series[object.slices[i]['series_instance_uid']] = new Array();
+        imageSeriesPushed[object.slices[i]['series_instance_uid']] = {};
 
       }
       
       // push image if it has not been pushed yet
-      if(!imageSeriesPushed[object.slices[i].series_instance_uid].hasOwnProperty(object.slices[i].sop_instance_uid)){
+      if(!imageSeriesPushed[object.slices[i]['series_instance_uid']].hasOwnProperty(object.slices[i]['sop_instance_uid'])){
 
-        imageSeriesPushed[object.slices[i].series_instance_uid][object.slices[i].sop_instance_uid] = true;
-        series[object.slices[i].series_instance_uid].push(object.slices[i]);
+        imageSeriesPushed[object.slices[i]['series_instance_uid']][object.slices[i]['sop_instance_uid']] = true;
+        series[object.slices[i]['series_instance_uid']].push(object.slices[i]);
 
       }
 
@@ -152,18 +152,18 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
         series[seriesInstanceUID][0]['dist'] = 0;
 
     }
-    else if(first_image[0].image_position_patient[0] != first_image[1].image_position_patient[0] ||
-      first_image[0].image_position_patient[1] != first_image[1].image_position_patient[1] ||
-      first_image[0].image_position_patient[2] != first_image[1].image_position_patient[2]){
+    else if(first_image[0]['image_position_patient'][0] != first_image[1]['image_position_patient'][0] ||
+      first_image[0]['image_position_patient'][1] != first_image[1]['image_position_patient'][1] ||
+      first_image[0]['image_position_patient'][2] != first_image[1]['image_position_patient'][2]){
 
         // ORDERING BASED ON IMAGE POSITION
         _ordering = 'image_position_patient';
 
         // set distances
-        var _x_cosine = new goog.math.Vec3(first_image[0].image_orientation_patient[0],
-          first_image[0].image_orientation_patient[1], first_image[ 0 ].image_orientation_patient[2]);
-        var _y_cosine = new goog.math.Vec3(first_image[ 0 ].image_orientation_patient[3],
-          first_image[ 0 ].image_orientation_patient[4], first_image[ 0 ].image_orientation_patient[5]);
+        var _x_cosine = new goog.math.Vec3(first_image[0]['image_orientation_patient'][0],
+          first_image[0]['image_orientation_patient'][1], first_image[ 0 ]['image_orientation_patient'][2]);
+        var _y_cosine = new goog.math.Vec3(first_image[ 0 ]['image_orientation_patient'][3],
+          first_image[ 0 ]['image_orientation_patient'][4], first_image[ 0 ]['image_orientation_patient'][5]);
         var _z_cosine = goog.math.Vec3.cross(_x_cosine, _y_cosine);
 
         function computeDistance(flag, arrelem)
@@ -180,7 +180,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       first_image.sort(function(a,b){return a["dist"]-b["dist"]});
     
     }
-    else if(first_image[0].instance_number != first_image[1].instance_number){
+    else if(first_image[0]['instance_number'] != first_image[1]['instance_number']){
     
       // ORDERING BASED ON instance number
       _ordering = 'instance_number';
@@ -207,15 +207,15 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     //
     ////////////////////////////////////////////////////////////////////////
 
-    if(isNaN(first_image[0].pixel_spacing[0])){
+    if(isNaN(first_image[0]['pixel_spacing'][0])){
 
-      first_image[0].pixel_spacing[0] = 1.;
+      first_image[0]['pixel_spacing'][0] = 1.;
 
     }
 
-    if(isNaN(first_image[0].pixel_spacing[1])){
+    if(isNaN(first_image[0]['pixel_spacing'][1])){
 
-      first_image[0].pixel_spacing[1] = 1.;
+      first_image[0]['pixel_spacing'][1] = 1.;
 
     }
 
@@ -224,15 +224,15 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       switch(_ordering){
         case 'image_position_patient':
           // We work only on 2 first slices
-          var _first_position = first_image[ 0 ].image_position_patient;
-          var _second_image_position = first_image[ 1 ].image_position_patient;
+          var _first_position = first_image[ 0 ]['image_position_patient'];
+          var _second_image_position = first_image[ 1 ]['image_position_patient'];
           var _x = _second_image_position[0] - _first_position[0];
           var _y = _second_image_position[1] - _first_position[1];
           var _z = _second_image_position[2] - _first_position[2];
-          first_image[0].pixel_spacing[2] = Math.sqrt(_x*_x + _y*_y  + _z*_z);
+          first_image[0]['pixel_spacing'][2] = Math.sqrt(_x*_x + _y*_y  + _z*_z);
           break;
         case 'instance_number':
-          first_image[0].pixel_spacing[2] = 1.0;
+          first_image[0]['pixel_spacing'][2] = 1.0;
           break;
         default:
           window.console.log("Unkown ordering mode - returning: " + _ordering);
@@ -242,7 +242,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     }
     else {
 
-      first_image[0].pixel_spacing[2] = 1.0;
+      first_image[0]['pixel_spacing'][2] = 1.0;
 
     }
 
@@ -264,24 +264,24 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     switch(_ordering){
       case 'image_position_patient':
         // get distance between 2 points
-        var _first_position = first_image[ 0 ].image_position_patient;
-        var _last_image_position = first_image[ first_image_stacks - 1].image_position_patient;
+        var _first_position = first_image[ 0 ]['image_position_patient'];
+        var _last_image_position = first_image[ first_image_stacks - 1]['image_position_patient'];
         var _x = _last_image_position[0] - _first_position[0];
         var _y = _last_image_position[1] - _first_position[1];
         var _z = _last_image_position[2] - _first_position[2];
         var _distance_position = Math.sqrt(_x*_x + _y*_y  + _z*_z);
         //normalize by z spacing
-        first_image_expected_nb_slices += _distance_position/first_image[0].pixel_spacing[2];
+        first_image_expected_nb_slices += Math.round(_distance_position/first_image[0]['pixel_spacing'][2]);
         break;
       case 'instance_number':
-        first_image_expected_nb_slices += Math.abs(first_image[ first_image_stacks - 1].instance_number - first_image[0].instance_number);
+        first_image_expected_nb_slices += Math.abs(first_image[ first_image_stacks - 1]['instance_number'] - first_image[0]['instance_number']);
         break;
       default:
         window.console.log("Unkown ordering mode - returning: " + _ordering);
         break;
     }
 
-    var first_slice_size = first_image[0].columns * first_image[0].rows;
+    var first_slice_size = first_image[0]['columns'] * first_image[0]['rows'];
     var first_image_size = first_slice_size * (first_image_expected_nb_slices);
 
     ////////////////////////////////////////////////////////////////////////
@@ -316,7 +316,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
         break;
     }
 
-    object._spacing = first_image[0].pixel_spacing;
+    object._spacing = first_image[0]['pixel_spacing'];
 
     // fill data container
     // by pushing slices where we expect them
@@ -345,13 +345,13 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
 
       switch(_ordering){
         case 'image_position_patient':
-          var _x = first_image[_i].image_position_patient[0] - first_image[0].image_position_patient[0];
-          var _y = first_image[_i].image_position_patient[1] - first_image[0].image_position_patient[1];
-          var _z = first_image[_i].image_position_patient[2] - first_image[0].image_position_patient[2];
-          _distance_position = Math.sqrt(_x*_x + _y*_y  + _z*_z)/first_image[0].pixel_spacing[2];
+          var _x = first_image[_i]['image_position_patient'][0] - first_image[0]['image_position_patient'][0];
+          var _y = first_image[_i]['image_position_patient'][1] - first_image[0]['image_position_patient'][1];
+          var _z = first_image[_i]['image_position_patient'][2] - first_image[0]['image_position_patient'][2];
+          _distance_position = Math.sqrt(_x*_x + _y*_y  + _z*_z)/first_image[0]['pixel_spacing'][2];
           break;
         case 'instance_number':
-          _distance_position = first_image[_i].instance_number - first_image[0].instance_number;
+          _distance_position = first_image[_i]['instance_number'] - first_image[0]['instance_number'];
           break;
         default:
           window.console.log("Unkown ordering mode - returning: " + _ordering);
@@ -378,7 +378,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     // NOTE:
     // colums is index 0
     // rows is index 1
-    object._dimensions = [first_image[0].columns, first_image[0].rows, first_image_expected_nb_slices];
+    object._dimensions = [first_image[0]['columns'], first_image[0]['rows'], first_image_expected_nb_slices];
     volumeAttributes.dimensions = object._dimensions;
 
     // get the min and max intensities
@@ -404,13 +404,13 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
 
     // Slices are ordered so
     // volume origin is the first slice position
-    var _origin = first_image[0].image_position_patient;   
+    var _origin = first_image[0]['image_position_patient'];   
 
     // Create IJKtoXYZ matrix
-    var _x_cosine = new goog.math.Vec3(first_image[0].image_orientation_patient[0],
-          first_image[ 0 ].image_orientation_patient[1], first_image[ 0 ].image_orientation_patient[2]);
-    var _y_cosine = new goog.math.Vec3(first_image[ 0 ].image_orientation_patient[3],
-        first_image[ 0 ].image_orientation_patient[4], first_image[ 0 ].image_orientation_patient[5]);
+    var _x_cosine = new goog.math.Vec3(first_image[0]['image_orientation_patient'][0],
+          first_image[ 0 ]['image_orientation_patient'][1], first_image[ 0 ]['image_orientation_patient'][2]);
+    var _y_cosine = new goog.math.Vec3(first_image[ 0 ]['image_orientation_patient'][3],
+        first_image[ 0 ]['image_orientation_patient'][4], first_image[ 0 ]['image_orientation_patient'][5]);
     var _z_cosine = goog.math.Vec3.cross(_x_cosine, _y_cosine);
 
     //
@@ -429,21 +429,21 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
 
     goog.vec.Mat4.setRowValues(IJKToRAS,
       0,
-      -first_image[ 0 ].image_orientation_patient[0]*first_image[0].pixel_spacing[0],
-      -first_image[ 0 ].image_orientation_patient[3]*first_image[0].pixel_spacing[1],
-      -_z_cosine.x*first_image[0].pixel_spacing[2],
+      -first_image[ 0 ]['image_orientation_patient'][0]*first_image[0]['pixel_spacing'][0],
+      -first_image[ 0 ]['image_orientation_patient'][3]*first_image[0]['pixel_spacing'][1],
+      -_z_cosine.x*first_image[0]['pixel_spacing'][2],
       -_origin[0]);
     goog.vec.Mat4.setRowValues(IJKToRAS,
       1,
-      -first_image[ 0 ].image_orientation_patient[1]*first_image[0].pixel_spacing[0],
-      -first_image[ 0 ].image_orientation_patient[4]*first_image[0].pixel_spacing[1],
-      -_z_cosine.y*first_image[0].pixel_spacing[2],
+      -first_image[ 0 ]['image_orientation_patient'][1]*first_image[0]['pixel_spacing'][0],
+      -first_image[ 0 ]['image_orientation_patient'][4]*first_image[0]['pixel_spacing'][1],
+      -_z_cosine.y*first_image[0]['pixel_spacing'][2],
       -_origin[1]);
     goog.vec.Mat4.setRowValues(IJKToRAS,
       2,
-      first_image[ 0 ].image_orientation_patient[2]*first_image[0].pixel_spacing[0],
-      first_image[ 0 ].image_orientation_patient[5]*first_image[0].pixel_spacing[1],
-      _z_cosine.z*first_image[0].pixel_spacing[2],
+      first_image[ 0 ]['image_orientation_patient'][2]*first_image[0]['pixel_spacing'][0],
+      first_image[ 0 ]['image_orientation_patient'][5]*first_image[0]['pixel_spacing'][1],
+      _z_cosine.z*first_image[0]['pixel_spacing'][2],
       _origin[2]);
     goog.vec.Mat4.setRowValues(IJKToRAS,
       3,
@@ -497,6 +497,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     object.create_(volumeAttributes);
 
     // re-slice the data in SAGITTAL, CORONAL and AXIAL directions
+      window.console.log(object);
     object._image = this.reslice(object);
 
   }
@@ -510,17 +511,16 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
 };
 
 
-/**
- * Parse the data stream according to the .nii/.nii.gz file format and return an
- * MRI structure which holds all parsed information.
- * 
- * @param {!ArrayBuffer}
- *          data The data stream.
- * @param {!X.object}
- *          object The parent object.
- * @return {Object} The MRI structure which holds all parsed information.
- */
 
+/**
+ * Default behavior if tag group/elements do not have to be processed.
+ * 
+ * @param {!number} _bytes The data stream.
+ * @param {!number} _bytePointer The parent object.
+ * @param {!number} _VR The data stream.
+ * @param {!number} _VL The parent object.
+ * @return {number} The new bytePointer.
+ */
  X.parserDCM.prototype.handleDefaults = function(_bytes, _bytePointer, _VR, _VL) {
     switch (_VR){
       case 16975:
@@ -577,7 +577,16 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
   return _bytePointer;
 }
 
-
+/**
+ * Parse the data stream according to the .nii/.nii.gz file format and return an
+ * MRI structure which holds all parsed information.
+ * 
+ * @param {!ArrayBuffer}
+ *          data The data stream.
+ * @param {!X.object}
+ *          object The parent object.
+ * @return {Object} The MRI structure which holds all parsed information.
+ */
 X.parserDCM.prototype.parseStream = function(data, object) {
 
   // attach the given data
@@ -588,17 +597,16 @@ X.parserDCM.prototype.parseStream = function(data, object) {
   }
 
   // set slice default minimum required parameters
-  var slice = {
-    pixel_spacing:[.1, .1, Infinity],
-    image_orientation_patient: [1, 0, 0, 0, 1, 0],
-    image_position_patient: [0, 0, 0]
-  };
+  var slice = {};
+  slice['pixel_spacing'] = [.1, .1, Infinity];
+  slice['image_orientation_patient'] = [1, 0, 0, 0, 1, 0];
+  slice['image_position_patient']  = [0, 0, 0];
 
   // scan the whole file as short (2 bytes)
   var _bytes = this.scan('ushort', this._data.byteLength);
   var _bytePointer = 66; // skip the 132 byte preamble
   var _tagGroup = null;
-  var _tagSpecific = null;
+  var _tagElement = null;
   var _VR = null;
   var _VL = null;
 
@@ -616,12 +624,12 @@ X.parserDCM.prototype.parseStream = function(data, object) {
         switch (_tagElement) {
           case 0x0010:
             // rows
-            slice.rows = _bytes[_bytePointer];
+            slice['rows'] = _bytes[_bytePointer];
             _bytePointer+=_VL/2;
             break;
           case 0x0011:
             // cols
-            slice.columns = _bytes[_bytePointer];
+            slice['columns'] = _bytes[_bytePointer];
             _bytePointer+=_VL/2;
             break;
           case 0x0100:
@@ -631,12 +639,12 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             break;
           case 0x0101:
             // bits stored
-            slice.bits_stored = _bytes[_bytePointer];
+            slice['bits_stored'] = _bytes[_bytePointer];
             _bytePointer+=_VL/2;
             break;
           case 0x0002:
             // number of images
-            slice.number_of_images = _bytes[_bytePointer];
+            slice['number_of_images'] = _bytes[_bytePointer];
             _bytePointer+=_VL/2;
             break;
           case 0x0030:
@@ -652,7 +660,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
               _pixel_spacing += String.fromCharCode(_b1);
             }
             _pixel_spacing = _pixel_spacing.split("\\");
-            slice.pixel_spacing = [ parseFloat(_pixel_spacing[0]), parseFloat(_pixel_spacing[1]), Infinity ];
+            slice['pixel_spacing'] = [ parseFloat(_pixel_spacing[0]), parseFloat(_pixel_spacing[1]), Infinity ];
             break;
 
           case 0x1052: // rescale intercept
@@ -677,14 +685,14 @@ X.parserDCM.prototype.parseStream = function(data, object) {
         switch (_tagElement) {
           case 0x000e:
             // Series instance UID
-            slice.series_instance_uid = "";
+            slice['series_instance_uid'] = "";
             var i = 0;
             for (i = 0; i < _VL / 2; i++) {
               var _short = _bytes[_bytePointer++];
               var _b0 = _short & 0x00FF;
               var _b1 = (_short & 0xFF00) >> 8;
-              slice.series_instance_uid += String.fromCharCode(_b0);
-              slice.series_instance_uid += String.fromCharCode(_b1);
+              slice['series_instance_uid'] += String.fromCharCode(_b0);
+              slice['series_instance_uid'] += String.fromCharCode(_b1);
             }
             break;
           case 0x0013:
@@ -696,7 +704,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
               _position += String.fromCharCode(_b0);
               _position += String.fromCharCode(_b1);
             }
-            slice.instance_number = parseInt(_position, 10); 
+            slice['instance_number'] = parseInt(_position, 10); 
             break;
           case 0x0032:
             // image position
@@ -710,7 +718,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
               _image_position += String.fromCharCode(_b1);
             }
             _image_position = _image_position.split("\\");
-            slice.image_position_patient = [ parseFloat(_image_position[0]), parseFloat(_image_position[1]),
+            slice['image_position_patient'] = [ parseFloat(_image_position[0]), parseFloat(_image_position[1]),
                 parseFloat(_image_position[2]) ];
             // _tagCount--;
             break;
@@ -728,7 +736,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
               _image_orientation += String.fromCharCode(_b1);
             }
             _image_orientation = _image_orientation.split("\\");
-            slice.image_orientation_patient = [ parseFloat(_image_orientation[0]),
+            slice['image_orientation_patient'] = [ parseFloat(_image_orientation[0]),
                 parseFloat(_image_orientation[1]), parseFloat(_image_orientation[2]),
                 parseFloat(_image_orientation[3]), parseFloat(_image_orientation[4]),
                 parseFloat(_image_orientation[5]) ];
@@ -766,14 +774,14 @@ X.parserDCM.prototype.parseStream = function(data, object) {
         switch (_tagElement) {
           case 0x0018:
             // Image instance UID
-            slice.sop_instance_uid = "";
+            slice['sop_instance_uid'] = "";
             var i = 0;
             for (i = 0; i < _VL / 2; i++) {
               var _short = _bytes[_bytePointer++];
               var _b0 = _short & 0x00FF;
               var _b1 = (_short & 0xFF00) >> 8;
-              slice.sop_instance_uid += String.fromCharCode(_b0);
-              slice.sop_instance_uid += String.fromCharCode(_b1);
+              slice['sop_instance_uid'] += String.fromCharCode(_b0);
+              slice['sop_instance_uid'] += String.fromCharCode(_b1);
             }
             break;
 
@@ -850,36 +858,36 @@ X.parserDCM.prototype.parseStream = function(data, object) {
 
     switch (slice.bits_allocated) {
       case 8:
-        slice.data = new Uint8Array(slice.columns * slice.rows);
+        slice.data = new Uint8Array(slice['columns'] * slice['rows']);
         break;
       case 16:
-        slice.data = new Uint16Array(slice.columns * slice.rows);
+        slice.data = new Uint16Array(slice['columns'] * slice['rows']);
         break;
       case 32:
-        slice.data = new Uint32Array(slice.columns * slice.rows);
+        slice.data = new Uint32Array(slice['columns'] * slice['rows']);
         break;
     }
 
   // no need to jump anymore, parse data as any DICOM field.
   // jump to the beginning of the pixel data
-  this.jumpTo(this._data.byteLength - slice.columns * slice.rows * 2);
+  this.jumpTo(this._data.byteLength - slice['columns'] * slice['rows'] * 2);
   // check for data type and parse accordingly
   var _data = null;
 
   switch (slice.bits_allocated) {
   case 8:
-    _data = this.scan('uchar', slice.columns * slice.rows);
+    _data = this.scan('uchar', slice['columns'] * slice['rows']);
     break;
   case 16:
-    _data = this.scan('ushort', slice.columns * slice.rows);
+    _data = this.scan('ushort', slice['columns'] * slice['rows']);
 
     break;
   case 32:
-    _data = this.scan('uint', slice.columns * slice.rows);
+    _data = this.scan('uint', slice['columns'] * slice['rows']);
     break;
   }
 
-  slice.data = _data;
+  slice['data'] = _data;
 
   object.slices.push(slice);
 

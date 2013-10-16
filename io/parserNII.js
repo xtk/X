@@ -254,7 +254,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   // create the object
   object.create_(MRI);
   
-  // re-slice the data according each direction
+  // re-slice the data according each direction.
   object._image = this.reslice(object);
     
   // the object should be set up here, so let's fire a modified event
