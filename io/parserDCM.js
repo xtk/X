@@ -109,7 +109,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     // pointer to first image
     var seriesInstanceUID = Object.keys(series)[0];
     var first_image = series[seriesInstanceUID];
-    window.console.log(first_image);
     // number of unique slices available
     var first_image_stacks = first_image.length;
     // container for volume specific information
@@ -314,7 +313,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       case 32:
         first_image_data = new Uint32Array(first_image_size);
       default:
-      window.console.log(first_image[0]);
         window.console.log("Unknown number of bits allocated - using default: 32 bits");
         break;
     }
@@ -438,19 +436,22 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
           -first_image[ 0 ]['image_orientation_patient'][0]*first_image[0]['pixel_spacing'][0],
           -first_image[ 0 ]['image_orientation_patient'][3]*first_image[0]['pixel_spacing'][1],
           -_z_cosine.x*first_image[0]['pixel_spacing'][2],
-          -_origin[0] - first_image[0]['pixel_spacing'][0]/2);
+          -_origin[0]);
+          // - first_image[0]['pixel_spacing'][0]/2);
         goog.vec.Mat4.setRowValues(IJKToRAS,
           1,
           -first_image[ 0 ]['image_orientation_patient'][1]*first_image[0]['pixel_spacing'][0],
           -first_image[ 0 ]['image_orientation_patient'][4]*first_image[0]['pixel_spacing'][1],
           -_z_cosine.y*first_image[0]['pixel_spacing'][2],
-          -_origin[1] - first_image[0]['pixel_spacing'][1]/2);
+          -_origin[1]);
+          // - first_image[0]['pixel_spacing'][1]/2);
         goog.vec.Mat4.setRowValues(IJKToRAS,
           2,
           first_image[ 0 ]['image_orientation_patient'][2]*first_image[0]['pixel_spacing'][0],
           first_image[ 0 ]['image_orientation_patient'][5]*first_image[0]['pixel_spacing'][1],
           _z_cosine.z*first_image[0]['pixel_spacing'][2],
-          _origin[2] + first_image[0]['pixel_spacing'][2]/2);
+          _origin[2]);
+          // + first_image[0]['pixel_spacing'][2]/2);
         goog.vec.Mat4.setRowValues(IJKToRAS,
           3,0,0,0,1);
         break;
@@ -638,8 +639,8 @@ X.parserDCM.prototype.parseStream = function(data, object) {
 
     // window.console.log('(' + _tagGroup.toString(16) + ',' + _tagElement.toString(16) +')');
 
-    var _b0 = _VR & 0x00FF;
-    var _b1 = (_VR & 0xFF00) >> 8;
+    // var _b0 = _VR & 0x00FF;
+    // var _b1 = (_VR & 0xFF00) >> 8;
     // window.console.log('_VR: '+_VR+' - ' + String.fromCharCode( _b0 ) + String.fromCharCode( _b1 ));
     // window.console.log('_VL: ' + _VL);
 
