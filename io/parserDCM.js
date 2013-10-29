@@ -109,6 +109,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     // pointer to first image
     var seriesInstanceUID = Object.keys(series)[0];
     var first_image = series[seriesInstanceUID];
+    window.console.log(first_image);
     // number of unique slices available
     var first_image_stacks = first_image.length;
     // container for volume specific information
@@ -313,6 +314,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       case 32:
         first_image_data = new Uint32Array(first_image_size);
       default:
+      window.console.log(first_image[0]);
         window.console.log("Unknown number of bits allocated - using default: 32 bits");
         break;
     }
@@ -436,19 +438,19 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
           -first_image[ 0 ]['image_orientation_patient'][0]*first_image[0]['pixel_spacing'][0],
           -first_image[ 0 ]['image_orientation_patient'][3]*first_image[0]['pixel_spacing'][1],
           -_z_cosine.x*first_image[0]['pixel_spacing'][2],
-          -_origin[0]);
+          -_origin[0] - first_image[0]['pixel_spacing'][0]/2);
         goog.vec.Mat4.setRowValues(IJKToRAS,
           1,
           -first_image[ 0 ]['image_orientation_patient'][1]*first_image[0]['pixel_spacing'][0],
           -first_image[ 0 ]['image_orientation_patient'][4]*first_image[0]['pixel_spacing'][1],
           -_z_cosine.y*first_image[0]['pixel_spacing'][2],
-          -_origin[1]);
+          -_origin[1] - first_image[0]['pixel_spacing'][1]/2);
         goog.vec.Mat4.setRowValues(IJKToRAS,
           2,
           first_image[ 0 ]['image_orientation_patient'][2]*first_image[0]['pixel_spacing'][0],
           first_image[ 0 ]['image_orientation_patient'][5]*first_image[0]['pixel_spacing'][1],
           _z_cosine.z*first_image[0]['pixel_spacing'][2],
-          _origin[2]);
+          _origin[2] + first_image[0]['pixel_spacing'][2]/2);
         goog.vec.Mat4.setRowValues(IJKToRAS,
           3,0,0,0,1);
         break;
@@ -546,41 +548,41 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       case 22351:
         // OW
 
-      // bytes to bits
-      function byte2bits(a)
-        {
-          var tmp = "";
-          for(var i = 128; i >= 1; i /= 2)
-              tmp += a&i?'1':'0';
-          return tmp;
+        // bytes to bits
+        function byte2bits(a)
+          {
+            var tmp = "";
+            for(var i = 128; i >= 1; i /= 2)
+                tmp += a&i?'1':'0';
+            return tmp;
+          }
+
+        _VL = _bytes[_bytePointer++];
+        var _VLT = _bytes[_bytePointer++];
+
+        var _b0 = _VL & 0x00FF;
+        var _b1 = (_VL & 0xFF00) >> 8;
+
+        var _b2 = _VLT & 0x00FF;
+        var _b3 = (_VLT & 0xFF00) >> 8;
+
+        var _VLb0 = byte2bits(_b0);
+        var _VLb1 = byte2bits(_b1);
+        var _VLb = _VLb1 + _VLb0;
+
+        var _VLTb0 = byte2bits(_b2);
+        var _VLTb1 = byte2bits(_b3);
+        var _VLTb = _VLTb1 + _VLTb0;
+
+        var _VL2 =  _VLTb + _VLb ;
+        _VL = parseInt(_VL2, 2);
+
+        // flag undefined sequence length
+        if(_VL == 4294967295){
+          _VL = 0;
         }
 
-      _VL = _bytes[_bytePointer++];
-      var _VLT = _bytes[_bytePointer++];
-
-      var _b0 = _VL & 0x00FF;
-      var _b1 = (_VL & 0xFF00) >> 8;
-
-      var _b2 = _VLT & 0x00FF;
-      var _b3 = (_VLT & 0xFF00) >> 8;
-
-      var _VLb0 = byte2bits(_b0);
-      var _VLb1 = byte2bits(_b1);
-      var _VLb = _VLb1 + _VLb0;
-
-      var _VLTb0 = byte2bits(_b2);
-      var _VLTb1 = byte2bits(_b3);
-      var _VLTb = _VLTb1 + _VLTb0;
-
-      var _VL2 =  _VLTb + _VLb ;
-      _VL = parseInt(_VL2, 2);
-
-      // flag undefined sequence length
-      if(_VL == 4294967295){
-        _VL = 0;
-      }
-
-      _bytePointer+=_VL/2;
+        _bytePointer+=_VL/2;
       break;
 
     default:
@@ -624,6 +626,8 @@ X.parserDCM.prototype.parseStream = function(data, object) {
   var _VR = null;
   var _VL = null;
 
+  //window.console.log(_bytes);
+
   while (_bytePointer <  _bytes.length) {
 
     _tagGroup = _bytes[_bytePointer++];
@@ -631,6 +635,21 @@ X.parserDCM.prototype.parseStream = function(data, object) {
 
     _VR = _bytes[_bytePointer++];
     _VL = _bytes[_bytePointer++];
+
+    // window.console.log('(' + _tagGroup.toString(16) + ',' + _tagElement.toString(16) +')');
+
+    var _b0 = _VR & 0x00FF;
+    var _b1 = (_VR & 0xFF00) >> 8;
+    // window.console.log('_VR: '+_VR+' - ' + String.fromCharCode( _b0 ) + String.fromCharCode( _b1 ));
+    // window.console.log('_VL: ' + _VL);
+
+    // to be generalized wuth switch when jpeg compressed is supported
+    // implicit case
+    if(_VL == 0){
+
+      _VL = _VR;
+
+    }
 
     switch (_tagGroup) {
       case 0x0028:
