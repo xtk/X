@@ -618,6 +618,11 @@ X.parserDCM.prototype.parseStream = function(data, object) {
   slice['pixel_spacing'] = [.1, .1, Infinity];
   slice['image_orientation_patient'] = [1, 0, 0, 0, 1, 0];
   slice['image_position_patient']  = [0, 0, 0];
+  // Transfer syntax UIDs
+  // 1.2.840.10008.1.2: Implicit VR Little Endian
+  // 1.2.840.10008.1.2.1: Explicit VR Little Endian
+  // 1.2.840.10008.1.2.2: Explicit VT Big Endian
+  slice['transfer_syntax_uid'] = "no_transfer_syntax_uid";
 
   // scan the whole file as short (2 bytes)
   var _bytes = this.scan('ushort', this._data.byteLength);
@@ -626,8 +631,6 @@ X.parserDCM.prototype.parseStream = function(data, object) {
   var _tagElement = null;
   var _VR = null;
   var _VL = null;
-
-  //window.console.log(_bytes);
 
   while (_bytePointer <  _bytes.length) {
 
@@ -644,15 +647,38 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     // window.console.log('_VR: '+_VR+' - ' + String.fromCharCode( _b0 ) + String.fromCharCode( _b1 ));
     // window.console.log('_VL: ' + _VL);
 
-    // to be generalized wuth switch when jpeg compressed is supported
-    // implicit case
-    if(_VL == 0){
-
+    // Implicit VR Little Endian case
+    if((slice['transfer_syntax_uid'] == '1.2.840.10008.1.2') && (_VL == 0)){
+      
       _VL = _VR;
 
     }
 
     switch (_tagGroup) {
+      case 0x0002:
+        // Group of DICOM meta info header
+        switch (_tagElement) {
+          case 0x0010:
+            // TransferSyntaxUID
+            var _transfer_syntax_uid = '';
+            // pixel spacing is a delimited string (ASCII)
+            var i = 0;
+            for (i = 0; i < _VL / 2; i++) {
+              var _short = _bytes[_bytePointer++];
+              var _b0 = _short & 0x00FF;
+              var _b1 = (_short & 0xFF00) >> 8;
+              _transfer_syntax_uid += String.fromCharCode(_b0);
+              _transfer_syntax_uid += String.fromCharCode(_b1);
+            }
+            slice['transfer_syntax_uid'] = _transfer_syntax_uid.replace(/\0/g,'');
+            break;
+          default:
+            _bytePointer = X.parserDCM.prototype.handleDefaults(_bytes, _bytePointer, _VR, _VL);
+            break;
+          }
+
+        break;
+
       case 0x0028:
       // Group of IMAGE INFO
         switch (_tagElement) {
