@@ -43,6 +43,7 @@ goog.require('X.parserNII');
 goog.require('X.parserNRRD');
 goog.require('X.parserOBJ');
 goog.require('X.parserSTL');
+goog.require('X.parserCTM');
 goog.require('X.parserTRK');
 goog.require('X.parserVTK');
 goog.require('goog.structs.Map');
@@ -232,10 +233,15 @@ X.loader.prototype.load = function(container, object) {
   // listen to completed events which triggers parsing
   goog.events.listen(request, 'load', this.parse.bind(this, request, container,
       object));
-
+  
   // configure the URL
   request.open('GET', filepath, true);
-  request.responseType = 'arraybuffer';
+  if (_checkresult[1] === "CTM") {
+    request.overrideMimeType("text/plain; charset=x-user-defined");
+  } else {
+    // configure the URL
+    request.responseType = 'arraybuffer';
+  }
 
   // .. and GO!
   request.send(null);
@@ -358,6 +364,7 @@ X.loader.extensions = {
   // support for the following extensions and the mapping to X.parsers as well
   // as some custom flags and the result type
   'OBJ': [X.parserOBJ, null],
+  'CTM': [X.parserCTM, null],
   'STL': [X.parserSTL, null],
   'VTK': [X.parserVTK, null],
   'TRK': [X.parserTRK, null],

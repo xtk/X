@@ -4,9 +4,9 @@ test = function() {
   test_renderer = new X.renderer3D();
   test_renderer.init();
   
-  // load a .stl file
+  // load a .ctm file
   var surface = new X.mesh();
-  surface.file = 'data/cube.stl';
+  surface.file = 'data/cube.ctm';
   surface.color = [1, 0, 0];
   
   // add the object

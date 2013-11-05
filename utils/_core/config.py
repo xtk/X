@@ -53,6 +53,12 @@ LICENSE_HEADER = '''/*
  *  - zlib.js, the ultimate gzip/zlib javascript implementation (https://github.com/imaya/zlib.js)
  *    LICENSE: https://raw.github.com/imaya/zlib.js/master/LICENSE
  *
+ *  - lzma.js, a JavaScript implementation of the Lempel-Ziv-Markov chain (LZMA) compression algorithm (https://github.com/nmrugg/LZMA-JS)
+ *    LICENSE: https://raw.github.com/nmrugg/LZMA-JS/master/LICENSE
+ *
+ *  - js-openctm, a JavaScript library for reading OpenCTM files (https://code.google.com/p/js-openctm/)
+ *    LICENSE: http://www.opensource.org/licenses/mit-license.php
+ *
  * MORE CREDITS: https://raw.github.com/xtk/X/master/LICENSE
  *
  */'''
@@ -60,7 +66,7 @@ LICENSE_HEADER = '''/*
 
 # PATHS
 EXCLUDES_PATH = ['lib', 'testing', 'deps', 'utils']
-INCLUDES_PATH = ['csg', 'zlib.js']  # force inclusion of sub folders in an excluded directory for dependency generation
+INCLUDES_PATH = ['csg', 'zlib.js', 'ctm.js', 'lzma.js']  # force inclusion of sub folders in an excluded directory for dependency generation
 
 REPOSITORY_URL = 'https://github.com/xtk/X/blob/master/'
 
@@ -86,7 +92,7 @@ DOC_OUTPUT_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH , 'doc/' ) )
 UNIT_TESTS = os.path.normpath( os.sep + 'testing' + os.sep + SOFTWARE_SHORT.lower() + '_tests.html' )
 UNIT_TESTS_BUILD = os.path.normpath( os.sep + 'testing' + os.sep + SOFTWARE_SHORT.lower() + '_tests_build.html' )
 VISUAL_TESTS_BASEPATH = os.sep + 'testing' + os.sep + 'visualization' + os.sep
-VISUAL_TESTS = ['test_image.html', 'test_binstl.html', 'test_mgh.html', 'test_nii.html', 'test_fsm_crv.html', 'test_fsm_label.html', 'test_dcm.html', 'test_shapes.html', 'test_trk.html', 'test_vtk.html', 'test_labelmap.html', 'test_mgz.html', 'test_nrrd.html', 'test_stl.html', 'test_vr.html', 'test_obj.html']
+VISUAL_TESTS = ['test_image.html', 'test_binstl.html', 'test_mgh.html', 'test_nii.html', 'test_fsm_crv.html', 'test_fsm_label.html', 'test_dcm.html', 'test_shapes.html', 'test_trk.html', 'test_vtk.html', 'test_labelmap.html', 'test_mgz.html', 'test_nrrd.html', 'test_stl.html', 'test_ctm.html', 'test_vr.html', 'test_obj.html']
 
 VISUAL_BASELINES_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'testing/visualization/baselines/' ) )
 JSCOVERAGE_PATH = os.path.normpath( os.path.join( SOFTWARE_PATH, 'lib/jscoverage/' ) )
