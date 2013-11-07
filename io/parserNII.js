@@ -124,15 +124,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
       1);
 
   // 3 known cases
-  if(MRI.qform_code == 0) {
-    
-    // fill IJKToRAS
-    goog.vec.Mat4.setRowValues(IJKToRAS, 0, MRI.pixdim[1], 0, 0, 0);
-    goog.vec.Mat4.setRowValues(IJKToRAS, 0, 0, MRI.pixdim[2], 0, 0);
-    goog.vec.Mat4.setRowValues(IJKToRAS, 0, 0, 0, MRI.pixdim[3], 0);
-
-  }
-  else if(MRI.qform_code > 0) {
+  if(MRI.qform_code > 0) {
     //https://github.com/Kitware/ITK/blob/master/Modules/IO/NIFTI/src/itkNiftiImageIO.cxx
     
     var a = 0.0, b = MRI.quatern_b, c = MRI.quatern_c, d = MRI.quatern_d;
@@ -211,6 +203,14 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
     goog.vec.Mat4.setRowValues(IJKToRAS, 0, sx[0], sx[1], sx[2], sx[3]);
     goog.vec.Mat4.setRowValues(IJKToRAS, 1, sy[0], sy[1], sy[2], sy[3]);
     goog.vec.Mat4.setRowValues(IJKToRAS, 2, sz[0], sz[1], sz[2], sz[3]);
+
+  }
+  else if(MRI.qform_code == 0) {
+    
+    // fill IJKToRAS
+    goog.vec.Mat4.setRowValues(IJKToRAS, 0, MRI.pixdim[1], 0, 0, 0);
+    goog.vec.Mat4.setRowValues(IJKToRAS, 1, 0, MRI.pixdim[2], 0, 0);
+    goog.vec.Mat4.setRowValues(IJKToRAS, 2, 0, 0, MRI.pixdim[3], 0);
 
   }
   else {
