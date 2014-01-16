@@ -3,7 +3,7 @@
 goog.addDependency('../../../../X.js', ['X', 'X.counter'], []);
 goog.addDependency('../../../../core/base.js', ['X.base'], ['X', 'goog.events', 'goog.events.EventTarget']);
 goog.addDependency('../../../../core/colortable.js', ['X.colortable'], ['X.base', 'X.loadable', 'goog.structs.Map']);
-goog.addDependency('../../../../core/event.js', ['X.event', 'X.event.ComputingEndEvent', 'X.event.ComputingEvent', 'X.event.HoverEndEvent', 'X.event.HoverEvent', 'X.event.ModifiedEvent', 'X.event.PanEvent', 'X.event.ProgressEvent', 'X.event.RenderEvent', 'X.event.ResetViewEvent', 'X.event.RotateEvent', 'X.event.ScrollEvent', 'X.event.WindowLevelEvent', 'X.event.ZoomEvent', 'X.event.events'], ['X', 'X.object', 'X.vector', 'goog.events', 'goog.events.Event']);
+goog.addDependency('../../../../core/event.js', ['X.event', 'X.event.ComputingEndEvent', 'X.event.ComputingEvent', 'X.event.ComputingProgressEvent', 'X.event.HoverEndEvent', 'X.event.HoverEvent', 'X.event.ModifiedEvent', 'X.event.PanEvent', 'X.event.ProgressEvent', 'X.event.RenderEvent', 'X.event.ResetViewEvent', 'X.event.RotateEvent', 'X.event.ScrollEvent', 'X.event.WindowLevelEvent', 'X.event.ZoomEvent', 'X.event.events'], ['X', 'X.object', 'X.vector', 'goog.events', 'goog.events.Event']);
 goog.addDependency('../../../../core/file.js', ['X.file'], ['X.base']);
 goog.addDependency('../../../../core/scalars.js', ['X.scalars'], ['X.base', 'X.loadable', 'X.thresholdable']);
 goog.addDependency('../../../../core/texture.js', ['X.texture'], ['X.base', 'X.loadable']);
@@ -16,7 +16,7 @@ goog.addDependency('../../../../injects/thresholdable.js', ['X.thresholdable'], 
 goog.addDependency('../../../../io/interactor.js', ['X.interactor'], ['X.base', 'X.event', 'X.event.HoverEndEvent', 'X.event.HoverEvent', 'X.event.PanEvent', 'X.event.ResetViewEvent', 'X.event.RotateEvent', 'X.event.ZoomEvent', 'goog.dom', 'goog.events', 'goog.events.BrowserEvent.MouseButton', 'goog.events.EventType', 'goog.events.KeyHandler', 'goog.events.MouseWheelHandler', 'goog.math.Vec3']);
 goog.addDependency('../../../../io/interactor2D.js', ['X.interactor2D'], ['X.event.ScrollEvent', 'X.interactor']);
 goog.addDependency('../../../../io/interactor3D.js', ['X.interactor3D'], ['X.interactor']);
-goog.addDependency('../../../../io/loader.js', ['X.loader'], ['X.base', 'X.event', 'X.object', 'X.parserCRV', 'X.parserDCM', 'X.parserFSM', 'X.parserIMAGE', 'X.parserLBL', 'X.parserLUT', 'X.parserMGZ', 'X.parserNII', 'X.parserNRRD', 'X.parserOBJ', 'X.parserSTL', 'X.parserTRK', 'X.parserVTK', 'goog.structs.Map']);
+goog.addDependency('../../../../io/loader.js', ['X.loader'], ['X.base', 'X.event', 'X.object', 'X.parserCRV', 'X.parserDCM', 'X.parserFSM', 'X.parserIMAGE', 'X.parserLBL', 'X.parserLUT', 'X.parserMGZ', 'X.parserNII', 'X.parserNRRD', 'X.parserOBJ', 'X.parserOFF', 'X.parserSTL', 'X.parserTRK', 'X.parserVTK', 'goog.structs.Map']);
 goog.addDependency('../../../../io/parser.js', ['X.parser'], ['X.base', 'X.event', 'X.texture', 'X.triplets', 'goog.vec.Mat4', 'goog.vec.Vec3', 'goog.vec.Vec4']);
 goog.addDependency('../../../../io/parserCRV.js', ['X.parserCRV'], ['X.event', 'X.parser', 'X.triplets']);
 goog.addDependency('../../../../io/parserDCM.js', ['X.parserDCM'], ['X.event', 'X.object', 'X.parser', 'X.triplets', 'goog.math.Vec3']);
@@ -28,6 +28,7 @@ goog.addDependency('../../../../io/parserMGZ.js', ['X.parserMGZ'], ['X.event', '
 goog.addDependency('../../../../io/parserNII.js', ['X.parserNII'], ['X.event', 'X.object', 'X.parser', 'X.triplets', 'Zlib.Gunzip', 'goog.vec.Mat3', 'goog.vec.Mat4']);
 goog.addDependency('../../../../io/parserNRRD.js', ['X.parserNRRD'], ['X.event', 'X.object', 'X.parser', 'X.triplets', 'Zlib.Gunzip', 'goog.math.Vec3', 'goog.vec.Vec4']);
 goog.addDependency('../../../../io/parserOBJ.js', ['X.parserOBJ'], ['X.event', 'X.object', 'X.parser', 'X.triplets']);
+goog.addDependency('../../../../io/parserOFF.js', ['X.parserOFF'], ['X.event', 'X.object', 'X.parser', 'X.triplets']);
 goog.addDependency('../../../../io/parserSTL.js', ['X.parserSTL'], ['X.event', 'X.parser', 'X.triplets']);
 goog.addDependency('../../../../io/parserTRK.js', ['X.parserTRK'], ['X.event', 'X.parser', 'X.triplets', 'goog.math.Vec3']);
 goog.addDependency('../../../../io/parserVTK.js', ['X.parserVTK'], ['X.event', 'X.object', 'X.parser', 'X.triplets']);
