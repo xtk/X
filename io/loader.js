@@ -45,6 +45,7 @@ goog.require('X.parserOBJ');
 goog.require('X.parserSTL');
 goog.require('X.parserTRK');
 goog.require('X.parserVTK');
+goog.require('X.parserMRC');
 goog.require('goog.structs.Map');
 
 
@@ -312,6 +313,7 @@ X.loader.prototype.complete = function(event) {
   // we use a timeout here to let the progress bar be able to breath and show
   // something
   setTimeout(function() {
+
     var container = event._container;
     var object = event._object;
 
@@ -370,6 +372,7 @@ X.loader.extensions = {
   'ORIG': [X.parserFSM, null],
   'NRRD': [X.parserNRRD, null],
   'NII': [X.parserNII, null],
+	'MRC': [X.parserMRC, null],
   'GZ': [X.parserNII, null], // right now nii.gz is the only
   // format ending .gz
   'DCM': [X.parserDCM, null],
