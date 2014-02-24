@@ -333,6 +333,19 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   scalars._dirty = true;
   object._scalars = scalars;
 
+  // make sure the vox_to_ras is not null. Else, set to identity
+  var vox_to_ras_defined = false;
+  for (i = 0; i < 16; i++) {
+     if(header.vox_to_ras[i] != 0 ){
+       vox_to_ras_defined = true;
+       break;
+     }
+  }
+
+  if(vox_to_ras_defined == false){
+    header.vox_to_ras[0] = header.vox_to_ras[5] = header.vox_to_ras[10] = header.vox_to_ras[15] = 1;
+  }
+
   X.TIMERSTOP(this._classname + '.parse');
 
   // move tracks to RAS space (note: we switch from row-major to column-major by transposing)
