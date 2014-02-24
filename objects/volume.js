@@ -677,6 +677,41 @@ X.volume.prototype.__defineSetter__('center', function(center) {
 
 });
 
+/**
+ * Get the volumeRenderingCache of this X.volume.
+ *
+ * @return {!Array} The volume rendering cache.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('volumeRenderingCache', function() {
+
+  return this._volumeRenderingCache;
+
+});
+
+
+/**
+ * Set the volumeRenderingCache of this X.volume.
+ *
+ * @param {!Array}
+ *          volumeRenderingCache The new volume rendering cache.
+ * @throws {Error}
+ *           If the volume rendering cache is invalid.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('volumeRenderingCache', function(volumeRenderingCache) {
+
+  if (!goog.isDefAndNotNull(volumeRenderingCache) || !goog.isArray(volumeRenderingCache)
+      || !(volumeRenderingCache.length <= 3)) {
+
+    throw new Error('Invalid volumeRederingCache.');
+
+  }
+
+  this._volumeRenderingCache = volumeRenderingCache;
+
+});
+
 
 /**
  * Get the original image data of this volume.
