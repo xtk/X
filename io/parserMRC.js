@@ -11,7 +11,8 @@ goog.require('X.event');
 goog.require('X.object');
 goog.require('X.parser');
 goog.require('X.triplets');
-goog.require('goog.math.Vec3');
+goog.require('goog.vec.Mat3');
+goog.require('goog.vec.Mat4');
 goog.require('Zlib.Gunzip');
 
 /**
@@ -55,7 +56,7 @@ X.parserMRC.prototype.parse = function(container, object, data, flag) {
 	var max = MRI.max;
 
 	//get dimsensions
-	var _dimensions = [MRI.nx, MRI.ny, MRI.nz];
+	var _dimensions = [MRI.xlen, MRI.ylen, MRI.zlen];
 	object._dimensions = _dimensions
 
 	//get pixel spacing = xlen/mx
@@ -75,36 +76,59 @@ X.parserMRC.prototype.parse = function(container, object, data, flag) {
 	if (object._upperThreshold == Infinity) {
 		object._upperThreshold = max;
 	}
-
-	// space orientation information
-
-	MRI.space = [ 'right', 'anterior', 'superior'];
-
-	MRI.spaceorientation = [1, 0, 0, 0, 1, 0, 0, 0, 1];
-/*	MRI.spaceorientation.push( MRI.xorg );
-	MRI.spaceorientation.push( MRI.yorg );
-	MRI.spaceorientation.push( MRI.zorg );
-	MRI.spaceorientation.push( MRI.nxstart );
-	MRI.spaceorientation.push( MRI.nystart );
-	MRI.spaceorientation.push( MRI.nzstart );
-	MRI.spaceorientation.push( MRI.tiltangles[0] );
-	MRI.spaceorientation.push( MRI.tiltangles[1] );
-	MRI.spaceorientation.push( MRI.tiltangles[2] );
-*/	
-	MRI.rasspaceorientation = this.toRAS(MRI.space, MRI.spaceorientation);
-	var orient_norm = this.orientnormalize(MRI.rasspaceorientation);
-	MRI.orientation = orient_norm[0];
-	MRI.normcosine = orient_norm[1];	
 	
-
-	//create the object
-	object.create_(MRI);
+	// Create IJKtoXYZ matris
+	var IJKToRAS = goog.vec.Mat4.createFloat32();
+  goog.vec.Mat4.setRowValues(IJKToRAS,
+      3,
+      0,
+      0,
+      0,
+      1);
+			
+	// fill in IJKToRas
+	
+	goog.vec.Mat4.setRowValues(IJKToRAS, 0, -1, 0, 0, MRI.nx);
+	goog.vec.Mat4.setRowValues(IJKToRAS, 1, 0, 0, -1, MRI.ny);
+	goog.vec.Mat4.setRowValues(IJKToRAS, 2, 0, -1, 0, MRI.nz);
+	
+	// IJK to RAS and invert
+	MRI.IJKToRAS = IJKToRAS;
+	MRI.RASToIJK = goog.vec.Mat4.createFloat32();
+	goog.vec.Mat4.invert(MRI.IJKToRAS, MRI.RASToIJK);
+	
+	// get bounding box
+  // Transform ijk (0, 0, 0) to RAS
+  var tar = goog.vec.Vec4.createFloat32FromValues(0, 0, 0, 1);
+  var res = goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(IJKToRAS, tar, res);
+  // Transform ijk (spacingX, spacinY, spacingZ) to RAS
+  var tar2 = goog.vec.Vec4.createFloat32FromValues(1, 1, 1, 1);
+  var res2 = goog.vec.Vec4.createFloat32();
+  goog.vec.Mat4.multVec4(IJKToRAS, tar2, res2);
+	
+	// get location of 8 corners and update BBox
+	var _dims = [MRI.nx, MRI.ny, MRI.nz];
+	var _rasBB = X.parser.computeRASBBox(IJKToRAS, _dims);
+	
+	// grab the RAS dimensions
+	MRI.RASSpacing = [res2[0] - res[0], res2[1] - res[1], res2[2] - res[2]];
+	MRI.RASDimensions = [_rasBB[1] + _rasBB[0] + 1, _rasBB[3] - _rasBB[2] + 1, _rasBB[5] - _rasBB[4] + 1];
+	
+	// grab the RAS Origin
+	MRI.RASOrigin = [_rasBB[0], _rasBB[2], _rasBB[4]];
+	
+	//grab the IJK dimensions
+	object._dimensions = _dims;
+	
+	// create the object
+  object.create_(MRI);
+  
+  // re-slice the data according each direction.
+  object._image = this.reslice(object);
 
 	X.TIMERSTOP(this._classname + '.parse');
 
-	// re-slice the data according to each direction
-	object._image = this.reslice(object);
-	object.map_();
 	// the object should be set up here, so let's fire a modified event
 	var modifiedEvent = new X.event.ModifiedEvent();
 	modifiedEvent._object = object;

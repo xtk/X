@@ -32,6 +32,7 @@ goog.provide('X.loader');
 goog.require('X.base');
 goog.require('X.event');
 goog.require('X.object');
+goog.require('X.parser');
 goog.require('X.parserCRV');
 goog.require('X.parserDCM');
 goog.require('X.parserFSM');
