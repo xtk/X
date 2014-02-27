@@ -920,7 +920,7 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
         textureForCurrentSlice[textureStartIndex] = pixelValue_r;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_g;
         textureForCurrentSlice[++textureStartIndex] = pixelValue_b;
-        textureForCurrentSlice[++textureStartIndex] = pixelValue_a;
+        textureForCurrentSlice[++textureStartIndex] = pixelValue_a;    
     
       }
       else {

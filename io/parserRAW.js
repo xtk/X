@@ -33,7 +33,7 @@ goog.require('X.object');
 goog.require('X.parser');
 goog.require('X.triplets');
 goog.require('goog.math.Vec3');
-goog.require('Zlib.Gunzip');
+goog.require('Zlib.Inflate');
 /**
  * Create a parser for .RAW files. This means just a byte stream.
  *
@@ -64,25 +64,25 @@ X.parserRAW.prototype.parse = function(container, object, data, flag) {
   if (b_zipped) {
     // we need to decompress the datastream
     // here we start the unzipping and get a typed Uint8Array back
-    var inflate = new Zlib.Gunzip(new Uint8Array(_data));
+    var inflate = new Zlib.Inflate(new Uint8Array(_data));
     _data = inflate.decompress();
     // .. and use the underlying array buffer
     _data = _data.buffer;
   }
 
   var MRI = {};
+  MRI.data = new Uint8Array(_data);
 
   // grab the min, max intensities
   // get the min and max intensities
   var min_max = this.arrayMinMax(MRI.data);
   var min = min_max[0];
   var max = min_max[1];
-
   var _dimensions = object._dimensions;
 
   // attach the scalar range to the volume
-  object._min = object._windowLow = min;
-  object._max = object._windowHigh = max;
+  MRI.min = object._min = object._windowLow = min;
+  MRI.max = object._max = object._windowHigh = max;
   // .. and set the default threshold
   // only if the threshold was not already set
   if (object._lowerThreshold == -Infinity) {
