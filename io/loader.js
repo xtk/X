@@ -43,6 +43,7 @@ goog.require('X.parserNII');
 goog.require('X.parserNRRD');
 goog.require('X.parserOBJ');
 goog.require('X.parserOFF');
+goog.require('X.parserRAW');
 goog.require('X.parserSTL');
 goog.require('X.parserTRK');
 goog.require('X.parserVTK');
@@ -381,6 +382,8 @@ X.loader.extensions = {
   'LABEL': [X.parserLBL, null],
   'MGH': [X.parserMGZ, false],
   'MGZ': [X.parserMGZ, true],
+  'RAW': [X.parserRAW, false],
+  'RZ': [X.parserRAW, true],
   'TXT': [X.parserLUT, null],
   'LUT': [X.parserLUT, null],
   'PNG': [X.parserIMAGE, 'png'], // here we use the arraybuffer

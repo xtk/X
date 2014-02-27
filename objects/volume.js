@@ -524,6 +524,43 @@ X.volume.prototype.__defineGetter__('dimensions', function() {
 });
 
 /**
+ * Set the dimensions of this volume.
+ *
+ * @param {!Array} dimensions The dimensions of this volume.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('dimensions', function(dimensions) {
+
+  this._dimensions = dimensions;
+
+});
+
+/**
+ * Get the spacing of this volume.
+ *
+ * @return {!Array} The spacing of this volume.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('spacing', function() {
+
+  return this._spacing;
+
+});
+
+/**
+ * Set the spacing of this volume.
+ *
+ * @param {!Array} spacing The spacing of this volume.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('spacing', function(spacing) {
+
+  this._spacing = spacing;
+
+});
+
+
+/**
  * Get the RAS Bounding Box of this volume.
  *
  * @return {!Array} The dimensions of this volume.
