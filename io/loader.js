@@ -374,6 +374,7 @@ X.loader.extensions = {
   'NRRD': [X.parserNRRD, null],
   'NII': [X.parserNII, null],
 	'MRC': [X.parserMRC, null],
+	'ST' : [X.parserMRC, null],
   'GZ': [X.parserNII, null], // right now nii.gz is the only
   // format ending .gz
   'DCM': [X.parserDCM, null],
