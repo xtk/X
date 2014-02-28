@@ -567,7 +567,6 @@ X.renderer3D.prototype.update_ = function(object) {
   // different renderer) and does not need additional file loading but just the
   // gl texture setup
   if (goog.isDefAndNotNull(labelmap) && labelmap._dirty) {
-
     // run the update_ function on the labelmap object without jumping out
     this.update_(labelmap);
 
@@ -1444,6 +1443,60 @@ X.renderer3D.prototype.pick = function(x, y) {
 
 };
 
+X.renderer3D.prototype.updateFromDojo = function(colormap, colormaplength, mergetablekeys, mergetablevalues, mergetablelength) {
+
+  var gl = this._context;
+
+
+  var merge_table_keys = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, merge_table_keys);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, mergetablelength, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, mergetablekeys);
+
+  // clamp to edge
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+
+  gl.bindTexture(gl.TEXTURE_2D, null);
+
+  var merge_table_values = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, merge_table_values);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, mergetablelength, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, mergetablevalues);
+  
+  // clamp to edge
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+
+  gl.bindTexture(gl.TEXTURE_2D, null);
+
+
+  // create colormap texture buffer
+  var colormap_texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, colormap_texture);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, colormaplength, 1, 0, gl.RGB, gl.UNSIGNED_BYTE, colormap);
+
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+
+  gl.bindTexture(gl.TEXTURE_2D, null);
+
+
+  //
+  this._merge_table_keys = merge_table_keys;
+  this._merge_table_values = merge_table_values;
+  this._colormap_texture = colormap_texture;
+  this._colormap_length = colormaplength;
+
+};
+
 
 /**
  * @inheritDoc
@@ -1584,6 +1637,13 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   var uVolumeTexture = uLocations.get(X.shaders.uniforms.VOLUMETEXTURE);
   var uObjectTransform = uLocations.get(X.shaders.uniforms.OBJECTTRANSFORM);
   var uPointSize = uLocations.get(X.shaders.uniforms.POINTSIZE);
+
+  var uColorMapSampler = uLocations.get(X.shaders.uniforms.COLORMAPSAMPLER);
+  var uMaxColors = uLocations.get(X.shaders.uniforms.MAXCOLORS);
+  var uMergeTableKeySampler = uLocations.get(X.shaders.uniforms.MERGETABLEKEYSAMPLER);
+  var uMergeTableValueSampler = uLocations.get(X.shaders.uniforms.MERGETABLEVALUESAMPLER);
+  var uMergeTableLength = uLocations.get(X.shaders.uniforms.MERGETABLELENGTH);
+  var uUse32bit = uLocations.get(X.shaders.uniforms.USE32BIT);
 
   //
   // loop through all objects and (re-)draw them
@@ -1877,6 +1937,28 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 
           // propagate the labelmap show only color
           this._context.uniform4fv(uLabelMapColor, labelmap._showOnlyColor);
+
+          if (labelmap._32bit) {
+            // 32 bit labelmap
+            this._context.uniform1i(uUse32bit, 1);
+
+            var gl = this._context;
+            gl.activeTexture(gl.TEXTURE2);
+            gl.bindTexture(gl.TEXTURE_2D, this._colormap_texture);
+            gl.uniform1i(uColorMapSampler, 2);
+
+            gl.uniform1f(uMaxColors, this._colormap_length);
+
+            gl.activeTexture(gl.TEXTURE3);
+            gl.bindTexture(gl.TEXTURE_2D, this._merge_table_keys);
+            gl.uniform1i(uMergeTableKeySampler, 3);
+
+            gl.activeTexture(gl.TEXTURE4);
+            gl.bindTexture(gl.TEXTURE_2D, this._merge_table_values);
+            gl.uniform1i(uMergeTableValueSampler, 4);
+
+            gl.uniform1i(uMergeTableLength, this._merge_table_length);
+          }
 
         }
 
@@ -2417,3 +2499,7 @@ goog.exportSymbol('X.renderer3D.prototype.resetViewAndRender',
     X.renderer3D.prototype.resetViewAndRender);
 goog.exportSymbol('X.renderer3D.prototype.pick', X.renderer3D.prototype.pick);
 goog.exportSymbol('X.renderer3D.prototype.pick3d', X.renderer3D.prototype.pick3d);
+
+
+goog.exportSymbol('X.renderer3D.prototype.updateFromDojo',
+    X.renderer3D.prototype.updateFromDojo);

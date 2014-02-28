@@ -811,7 +811,7 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
   goog.vec.Mat4.multMat(_XYToRAS,_xyCenter, _RASCenter);
  
   var _wmin =  Math.floor(_xyBBox[0]);
-  var _wmax =  Math.ceil(_xyBBox[1]);
+  var _wmax =  Math.ceil(_xyBBox[1]) + 1;
 
   // if the slice only has to intersections with the volume BBox
   // (can happens if the slice is right on the edge of the volume)
@@ -824,7 +824,7 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
   var _swidth = _wmax - _wmin;
   
   var _hmin = Math.floor(_xyBBox[2]);
-  var _hmax = Math.ceil(_xyBBox[3]);
+  var _hmax = Math.ceil(_xyBBox[3]) + 1;
   var _sheight = _hmax - _hmin;
 
   var _resX = _sliceXYSpacing[0];
@@ -910,8 +910,15 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
           pixelValue_b = 255 * lookupValue[3];
           pixelValue_a = 255 * lookupValue[4];
       
-        }
-        else {
+        } else if(object._32bit) {
+
+          // 32 bit textures
+          pixelValue_r = _IJKVolume[_k][_j][_i];
+          pixelValue_g = _IJKVolume[_k][_j][_i+1];
+          pixelValue_b = _IJKVolume[_k][_j][_i+2];
+          pixelValue_a = _IJKVolume[_k][_j][_i+3];
+
+        } else {
       
           pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixval / object._max);
           pixelValue_a = 255;

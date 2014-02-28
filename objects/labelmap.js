@@ -75,6 +75,14 @@ X.labelmap = function(volume) {
    */
   this._showOnlyColor = new Float32Array([-255, -255, -255, -255]);
 
+  this._32bit = false;
+
+  this._32bit_show_list = null;
+
+  this._gl_color_table = null;
+
+  this._gl_merge_table = null;
+
 };
 // inherit from X.volume
 goog.inherits(X.labelmap, X.volume);

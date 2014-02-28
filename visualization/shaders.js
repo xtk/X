@@ -189,6 +189,15 @@ X.shaders = function() {
   t2 += 'uniform vec3 volumeScalarMaxColor;\n';
   t2 += 'uniform float volumeWindowLow;\n';
   t2 += 'uniform float volumeWindowHigh;\n';
+  t2 += '\n';  
+  t2 += 'uniform bool uUse32bit;\n';
+  t2 += 'uniform sampler2D uColorMapSampler;\n';  
+  t2 += 'uniform sampler2D uMergeTableKeySampler;\n';  
+  t2 += 'uniform sampler2D uMergeTableValueSampler;\n';  
+  t2 += 'uniform int uMergeTableLength;\n';
+  t2 += 'uniform float uMaxColors;\n';
+  t2 += '\n';
+  t2 += 'const int MAX = 10000;\n';
   t2 += '\n';
   t2 += 'varying float fDiscardNow;\n';
   t2 += 'varying vec4 fVertexPosition;\n';
@@ -196,6 +205,100 @@ X.shaders = function() {
   t2 += 'varying vec2 fragmentTexturePos;\n';
   t2 += 'varying vec3 fVertexNormal;\n';
   t2 += 'varying vec3 fTransformedVertexNormal;\n';
+  t2 += '\n';
+  t2 += '    //\n';
+  t2 += '    // 32 BIT <-> 8 BIT CONVERSIONS\n';
+  t2 += '    //\n';
+  t2 += '    // convert rgba to a 32 bit value\n';
+  t2 += '    float unpack (vec4 value) {\n';
+  t2 += '      // note: little endian\n';
+  t2 += '      const vec4 bitShifts = vec4( (256.0 * 256.0 * 256.0),\n';
+  t2 += '                                   (256.0 * 256.0),\n';
+  t2 += '                                   256.0,\n';
+  t2 += '                           1);\n';
+  t2 += '      return dot(value.abgr , bitShifts);\n';
+  t2 += '    }\n';
+  t2 += '\n';
+  t2 += '    // convert 32 bit int to rgba\n';
+  t2 += '    ivec4 pack (int value) {\n';
+  t2 += '\n';
+  t2 += '      ivec4 o = ivec4(0., 0., 0., 0.);\n';
+  t2 += '\n';
+  t2 += '      o.w = (value / (256*256*256));\n';
+  t2 += '      o.z = ((value-o.w) / (256*256));\n';
+  t2 += '      o.y = ((value-o.w-o.z) / (256));\n';
+  t2 += '      o.x = (value-o.y*256-o.z*256*256-o.w*256*256*256);\n';
+  t2 += '\n';
+  t2 += '      return o;\n';
+  t2 += '\n';
+  t2 += '    }\n';
+  t2 += '\n';
+  t2 += '    //\n';
+  t2 += '    // FLOAT COMPARE FUNCTIONS WITH DELTA\n';
+  t2 += '    //\n';
+  t2 += '    bool equals(float id1, float id2) {\n';
+  t2 += '      return (abs(id1-id2) <= 0.1);\n';
+  t2 += '    }\n';
+  t2 += '\n';
+  t2 += '    bool larger(float id1, float id2) {\n';
+  t2 += '\n';
+  t2 += '      if (equals(id1, id2)) return false;\n';
+  t2 += '\n';
+  t2 += '      return id1 > id2;\n';
+  t2 += '    }\n';
+  t2 += '\n';
+  t2 += '    //\n';
+  t2 += '    // ID LOOKUPS\n';
+  t2 += '    //\n';
+  t2 += '    float lookup_id_(float id) {\n';
+  t2 += '\n';
+  t2 += '      for (int m=0; m<MAX; m++) {\n';
+  t2 += '\n';
+  t2 += '        if (m>uMergeTableLength) break;\n';
+  t2 += '\n';
+  t2 += '        vec4 m_key = texture2D(uMergeTableKeySampler, vec2(float(m)/float(uMergeTableLength), 0.));\n';
+  t2 += '        float m_id = unpack(m_key)*255.;\n';
+  t2 += '\n';
+  t2 += '        // if m_id is larger than our id, then we are done since all entries are sorted\n';
+  t2 += '        if (larger(m_id, id)) break;\n';
+  t2 += '\n';
+  t2 += '        if (equals(id, m_id)) {\n';
+  t2 += '          // found entry\n';
+  t2 += '          vec4 m_value = texture2D(uMergeTableValueSampler, vec2(float(m)/float(uMergeTableLength), 0.));\n';
+  t2 += '          id = unpack(m_value)*255.;\n';
+  t2 += '\n';
+  t2 += '          return id;\n';
+  t2 += '        }\n';
+  t2 += '\n';
+  t2 += '      }\n';
+  t2 += '\n';
+  t2 += '      return id;\n';
+  t2 += '\n';
+  t2 += '    }\n';
+  t2 += '\n';
+  t2 += '    float lookup_id(float id) {\n';
+  t2 += '\n';
+  t2 += '      float new_id = id;\n';
+  t2 += '\n';
+  t2 += '      //\n';
+  t2 += '      // MERGE\n';
+  t2 += '      //\n';
+  t2 += '      for (int m=0; m < MAX; m++) {\n';
+  t2 += '\n';
+  t2 += '        new_id = lookup_id_(id);\n';
+  t2 += '\n';
+  t2 += '        if (equals(new_id, id)) {\n';
+  t2 += '          break;\n';
+  t2 += '        } else {\n';
+  t2 += '          id = new_id;\n';
+  t2 += '        }\n';
+  t2 += '\n';
+  t2 += '      }\n';
+  t2 += '\n';
+  t2 += '      return id;\n';
+  t2 += '\n';
+  t2 += '    }\n';
+  t2 += '\n';
   t2 += '\n';
   t2 += 'void main(void) {\n';
   t2 += ' if (fDiscardNow > 0.0) {\n';
@@ -220,7 +323,18 @@ X.shaders = function() {
   t2 += '   }\n';
   t2 += '   if (useLabelMapTexture) {\n'; // special case for label maps
   t2 += '     vec4 texture2 = texture2D(textureSampler2,fragmentTexturePos);\n';
-  t2 += '     if (texture2.a > 0.0) {\n'; // check if this is not the background
+  t2 += '     if (uUse32bit) {\n';
+  t2 += '       float id = lookup_id(unpack(texture2)*255.);\n';
+  t2 += '       float normalized_id = mod(id, uMaxColors);\n';
+  t2 += '       vec2 colormap_pos = vec2(normalized_id / (uMaxColors - 1.), 0.);\n';
+  t2 += '       vec4 color = texture2D(uColorMapSampler, colormap_pos);\n';
+  t2 += '       textureSum = mix(color, textureSum, 1.0 - labelmapOpacity);\n';
+
+
+
+
+
+  t2 += '     } else if (texture2.a > 0.0) {\n'; // check if this is not the background
   // label
   t2 += '         if (labelmapColor.a != -255.0) {\n'; // check if only one color should be shown
   t2 += '           if (all(equal(floor(texture2 * vec4(255)), labelmapColor))) {\n'; // if equal, mix colors
@@ -343,7 +457,13 @@ X.shaders.uniforms = {
   VOLUMESCALARMAXCOLOR: 'volumeScalarMaxColor',
   VOLUMEWINDOWLOW: 'volumeWindowLow',
   VOLUMEWINDOWHIGH: 'volumeWindowHigh',
-  VOLUMETEXTURE: 'volumeTexture'
+  VOLUMETEXTURE: 'volumeTexture',
+  COLORMAPSAMPLER: 'uColorMapSampler',
+  MERGETABLEKEYSAMPLER: 'uMergeTableKeySampler',
+  MERGETABLEVALUESAMPLER: 'uMergeTableValueSampler',
+  MERGETABLELENGTH: 'uMergeTableLength',
+  USE32BIT: 'uUse32bit',
+  MAXCOLORS: 'uMaxColors'
 };
 
 
