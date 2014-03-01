@@ -502,6 +502,53 @@ X.parser.createIJKVolume = function(_data, _dims, _max){
   return [_image, _imageN];
 };
 
+X.parser.createIJKVolume32 = function(_data, _dims, _max){
+  
+  // initiate variables
+  // allocate images
+  var _image = new Array(_dims[2]);
+  var _imageN = new Array(_dims[2]);
+  var _nb_pix_per_slice = _dims[1] * _dims[0];
+  var _pix_value = 0;
+  var _i = 0;
+  var _j = 0;
+  var _k = 0;
+  var _data_pointer = 0;
+  
+  for (_k = 0; _k < _dims[2]; _k++) {
+
+    // get current slice
+    var _current_k = _data.subarray(_k * (_nb_pix_per_slice), (_k + 1)
+        * _nb_pix_per_slice);
+    // initiate data pointer
+    _data_pointer = 0;
+
+    // allocate images
+    _imageN[_k] = new Array(_dims[1]);
+    _image[_k] = new Array(_dims[1]);
+
+    for (_j = 0; _j < _dims[1]; _j++) {
+      
+      // allocate images
+      _imageN[_k][_j] = new Array(_dims[0]);//_data.constructor(_dims[0]);
+      _image[_k][_j] = new Array(_dims[0]);//_data.constructor(_dims[0]);
+      for (_i = 0; _i < _dims[0]; _i++) {
+      
+        _pix_value1 = _current_k[_data_pointer++];
+        _pix_value2 = _current_k[_data_pointer++];
+        _pix_value3 = _current_k[_data_pointer++];
+        _pix_value4 = _current_k[_data_pointer++];
+
+        // _imageN[_k][_j][_i] = 255 * (_pix_value / _max);
+        _image[_k][_j][_i] = [_pix_value1, _pix_value2, _pix_value3, _pix_value4];
+        
+      }
+    }
+  }
+    
+  return [_image, _imageN];
+};
+
 /**
  * Compute intersection between line and a bounding box
  *
@@ -811,7 +858,7 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
   goog.vec.Mat4.multMat(_XYToRAS,_xyCenter, _RASCenter);
  
   var _wmin =  Math.floor(_xyBBox[0]);
-  var _wmax =  Math.ceil(_xyBBox[1]) + 1;
+  var _wmax =  Math.ceil(_xyBBox[1]);
 
   // if the slice only has to intersections with the volume BBox
   // (can happens if the slice is right on the edge of the volume)
@@ -824,17 +871,17 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
   var _swidth = _wmax - _wmin;
   
   var _hmin = Math.floor(_xyBBox[2]);
-  var _hmax = Math.ceil(_xyBBox[3]) + 1;
+  var _hmax = Math.ceil(_xyBBox[3]);
   var _sheight = _hmax - _hmin;
 
   var _resX = _sliceXYSpacing[0];
   var _resY = _sliceXYSpacing[1];
 
-  var _epsilon = 0.0000001;
+  var _epsilon = 0.000;//0001;
 
   // How many pixels are we expecting the raw data
-  var _cswidth = Math.ceil(_swidth/_resX);
-  var _csheight = Math.ceil(_sheight/_resY);
+  var _cswidth = Math.ceil(_swidth/_resX)+1;
+  var _csheight = Math.ceil(_sheight/_resY)+1;
 
   var _csize =  _cswidth*_csheight;
   var textureSize = 4 * _csize;
@@ -913,10 +960,10 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
         } else if(object._32bit) {
 
           // 32 bit textures
-          pixelValue_r = _IJKVolume[_k][_j][_i];
-          pixelValue_g = _IJKVolume[_k][_j][_i+1];
-          pixelValue_b = _IJKVolume[_k][_j][_i+2];
-          pixelValue_a = _IJKVolume[_k][_j][_i+3];
+          pixelValue_r = pixval[0];
+          pixelValue_g = pixval[1];
+          pixelValue_b = pixval[2];
+          pixelValue_a = pixval[3];
 
         } else {
       
@@ -1125,7 +1172,7 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
  *          object The X.volume to fill.
  * @return {!Array} The volume data as a 3D Array.
  */
-X.parser.prototype.reslice = function(object) {
+X.parser.prototype.reslice_old = function(object) {
   
   // ------------------------------------------
   // CREATE IJK VOLUMES
@@ -1133,13 +1180,16 @@ X.parser.prototype.reslice = function(object) {
   
   // Step 1: create 2 IJK volumes
   // 1 full res, 1 normalized [0-255]
-  
-  var _IJKVolumes = X.parser.createIJKVolume(object._data, object._dimensions, object._max);
+  // if (object._32bit) {
+  //   var _IJKVolumes = X.parser.createIJKVolume32(object._data, object._dimensions, object._max);  
+  // } else {
+  //   var _IJKVolumes = X.parser.createIJKVolume(object._data, object._dimensions, object._max);
+
   // real volume
-  object._IJKVolume = _IJKVolumes[0];
-  // normalized volume
-  object._IJKVolumeN = _IJKVolumes[1];
-  X.TIMER(this._classname + '.reslice');
+  // object._IJKVolume = _IJKVolumes[0];
+  // // normalized volume
+  // object._IJKVolumeN = _IJKVolumes[1];
+  X.TIMER(this._classname + '.reslice_old');
   
   // ------------------------------------------
   // SETUP LABEL MAPS AND COLOR TABLES
@@ -1203,16 +1253,16 @@ X.parser.prototype.reslice = function(object) {
   _sliceOrigin[1] = object._childrenInfo[0]._solutionsLine[0][0][1] + object._childrenInfo[0]._sliceDirection[1]*Math.floor(object._childrenInfo[0]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[0]._solutionsLine[0][0][2] + object._childrenInfo[0]._sliceDirection[2]*Math.floor(object._childrenInfo[0]._nb/2);
 
-  var _slice = X.parser.reslice2(_sliceOrigin, object._childrenInfo[0]._sliceXYSpacing, object._childrenInfo[0]._sliceNormal, object._childrenInfo[0]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+  //var _slice = X.parser.reslice2(_sliceOrigin, object._childrenInfo[0]._sliceXYSpacing, object._childrenInfo[0]._sliceNormal, object._childrenInfo[0]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
   if (object.hasLabelMap) {
     // if this object has a labelmap,
     // we have it loaded at this point (for sure)
     // ..so we can attach it as the second texture to this slice
-    _slice._labelmap = object._labelmap._children[0]._children[Math.floor(object._childrenInfo[0]._nb/2)]._texture;
+    //_slice._labelmap = object._labelmap._children[0]._children[Math.floor(object._childrenInfo[0]._nb/2)]._texture;
   }
     
-  object._children[0]._children[Math.floor(object._childrenInfo[0]._nb/2)] = _slice;
+  //object._children[0]._children[Math.floor(object._childrenInfo[0]._nb/2)] = _slice;
 
   object._indexX = Math.floor(object._childrenInfo[0]._nb/2);
   object._indexXold = Math.floor(object._childrenInfo[0]._nb/2);
@@ -1250,16 +1300,16 @@ X.parser.prototype.reslice = function(object) {
   _sliceOrigin[1] = object._childrenInfo[1]._solutionsLine[0][0][1] + object._childrenInfo[1]._sliceDirection[1]*Math.floor(object._childrenInfo[1]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[1]._solutionsLine[0][0][2] + object._childrenInfo[1]._sliceDirection[2]*Math.floor(object._childrenInfo[1]._nb/2);
 
-  _slice = X.parser.reslice2(_sliceOrigin, object._childrenInfo[1]._sliceXYSpacing, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+  //_slice = X.parser.reslice2(_sliceOrigin, object._childrenInfo[1]._sliceXYSpacing, object._childrenInfo[1]._sliceNormal, object._childrenInfo[1]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
   if (object.hasLabelMap) {
     // if this object has a labelmap,
     // we have it loaded at this point (for sure)
     // ..so we can attach it as the second texture to this slice
-    _slice._labelmap = object._labelmap._children[1]._children[Math.floor(object._childrenInfo[1]._nb/2)]._texture;
+    //_slice._labelmap = object._labelmap._children[1]._children[Math.floor(object._childrenInfo[1]._nb/2)]._texture;
   }
     
-  object._children[1]._children[Math.floor(object._childrenInfo[1]._nb/2)] = _slice;
+  //object._children[1]._children[Math.floor(object._childrenInfo[1]._nb/2)] = _slice;
   
   object._indexY = Math.floor(object._childrenInfo[1]._nb/2);
   object._indexYold = Math.floor(object._childrenInfo[1]._nb/2);
@@ -1296,22 +1346,151 @@ X.parser.prototype.reslice = function(object) {
   _sliceOrigin[1] = object._childrenInfo[2]._solutionsLine[0][0][1] + object._childrenInfo[2]._sliceDirection[1]*Math.floor(object._childrenInfo[2]._nb/2);
   _sliceOrigin[2] = object._childrenInfo[2]._solutionsLine[0][0][2] + object._childrenInfo[2]._sliceDirection[2]*Math.floor(object._childrenInfo[2]._nb/2);
     
-  _slice = X.parser.reslice2(_sliceOrigin, object._childrenInfo[2]._sliceXYSpacing, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
+  //_slice = X.parser.reslice2(_sliceOrigin, object._childrenInfo[2]._sliceXYSpacing, object._childrenInfo[2]._sliceNormal, object._childrenInfo[2]._color, object._BBox, object._IJKVolume, object, object.hasLabelMap, object._colorTable);
     
   if (object.hasLabelMap) {
     // if this object has a labelmap,
     // we have it loaded at this point (for sure)
     // ..so we can attach it as the second texture to this slice
-    _slice._labelmap = object._labelmap._children[2]._children[Math.floor(object._childrenInfo[2]._nb/2)]._texture;
+    //_slice._labelmap = object._labelmap._children[2]._children[Math.floor(object._childrenInfo[2]._nb/2)]._texture;
   }
     
-  object._children[2]._children[Math.floor(object._childrenInfo[2]._nb/2)] = _slice;
+  //object._children[2]._children[Math.floor(object._childrenInfo[2]._nb/2)] = _slice;
   
   object._indexZ = Math.floor(object._childrenInfo[2]._nb/2);
   object._indexZold = Math.floor(object._childrenInfo[2]._nb/2);
 
-  X.TIMERSTOP(this._classname + '.reslice');
+  X.TIMERSTOP(this._classname + '.reslice_old');
   
-  return object._IJKVolume;
+  //return object._IJKVolume;
 };
 
+X.parser.prototype.reslice = function(object) {
+
+  X.TIMER(this._classname + '.reslice');
+
+  var data = object._data;
+
+  var bytes_per_value = 1;
+
+  var dim_x = object._dimensions[0];
+  var dim_y = object._dimensions[1];
+  var dim_z = object._dimensions[2];
+
+  var data_length = dim_x * dim_y * dim_z * bytes_per_value;  
+
+  var nb_pix_per_z = dim_x * dim_y * bytes_per_value;
+
+  var slices_x = new Array(dim_x);
+  var slices_y = new Array(dim_y);
+  var slices_z = new Array(dim_z);
+
+  // allocate slices x y z
+  for (var x=0; x<dim_x; ++x) {
+    slices_x[x] = new Uint8Array(dim_y*dim_z*bytes_per_value);
+  }
+  for (var y=0; y<dim_y; ++y) {
+    slices_y[y] = new Uint8Array(dim_x*dim_z*bytes_per_value);
+  }
+  for (var z=0; z<dim_z; ++z) {
+    slices_z[z] = new Uint8Array(nb_pix_per_z);
+  }
+
+  // loop through data to create the slices
+  for (var p=0; p<data_length; p+=bytes_per_value) {
+
+    var z = Math.floor(p / nb_pix_per_z);
+    var y = Math.floor((p % nb_pix_per_z) / dim_x);
+    var x = Math.floor((p % nb_pix_per_z) % dim_x);
+
+    var z_index = x + y*dim_y;
+    var y_index = x + z*dim_x;
+    var x_index = y + z*dim_y;
+
+    for (var i=0;i<bytes_per_value;i++) {
+
+      slices_x[x][x_index] = data[p+i];
+      slices_y[y][y_index] = data[p+i];
+      slices_z[z][z_index] = data[p+i];
+
+    }
+    
+  }
+// return
+  // create the slices
+  for (var x=0; x<dim_x; ++x) {
+    var s = new X.slice();
+
+    var t = new X.texture();
+    t._rawDataWidth = dim_y;
+    t._rawDataHeight = dim_z;
+    t._rawData = slices_x[x];
+    t._grayscale = true;
+    s._texture = t;    
+
+    s._width = dim_y;
+    s._height = dim_z;
+    s._center = [x, Math.floor(dim_y/2), Math.floor(dim_z/2)];
+    s._front = [1, 0, 0];
+    s._right = [0, 1, 0];
+    s._up = [0, 0, 1];
+    s._visible = false;
+    s._volume = object;
+    s._borders = false;
+    s.create_();
+
+    object._children[0]._children[x] = s;
+
+  }
+  for (var y=0; y<dim_y; ++y) {
+    var s = new X.slice();
+
+    var t = new X.texture();
+    t._rawDataWidth = dim_x;
+    t._rawDataHeight = dim_z;
+    t._rawData = slices_y[y];
+    t._grayscale = true;
+    s._texture = t;
+
+    s._width = dim_x;
+    s._height = dim_z;
+    s._center = [Math.floor(dim_x/2), y, Math.floor(dim_z/2)];
+    s._front = [0, 1, 0];
+    s._right = [1, 0, 0];
+    s._up = [0, 0, 1];
+    s._visible = false;
+    s._volume = object;
+    s._borders = false;
+    s.create_();
+
+    object._children[1]._children[y] = s;
+  }
+  for (var z=0; z<dim_z; ++z) {
+    var s = new X.slice();
+
+    var t = new X.texture();
+    t._rawDataWidth = dim_x;
+    t._rawDataHeight = dim_y;
+    t._rawData = slices_z[z];
+    t._grayscale = true;
+    s._texture = t;    
+
+    s._width = dim_x;
+    s._height = dim_y;
+    s._center = [Math.floor(dim_x/2), Math.floor(dim_y/2), z];
+    s._front = [0, 0, 1];
+    s._right = [1, 0, 0];
+    s._up = [0, 1, 0];
+    s._visible = false;
+    s._volume = object;
+    s._borders = false;
+    s.create_();
+
+    object._children[2]._children[z] = s;
+  }
+
+
+  X.TIMERSTOP(this._classname + '.reslice');
+  
+
+};

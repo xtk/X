@@ -170,7 +170,7 @@ X.shaders = function() {
   this._fragmentshaderSource = '';
   var t2 = '';
   // android only guarantees medium precision
-  t2 += 'precision mediump float;\n';
+  t2 += 'precision mediump float;precision mediump int;\n';
   t2 += '\n';
   t2 += 'uniform bool usePicking;\n';
   t2 += 'uniform bool useTexture;\n';

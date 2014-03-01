@@ -127,13 +127,17 @@ X.parserRAW.prototype.parse = function(container, object, data, flag) {
   // grab the RAS Origin
   MRI.RASOrigin = [_rasBB[0], _rasBB[2], _rasBB[4]];
 
+  object._RASCenter = [0,0,0];
+
   // create the object
   object.create_(MRI);
 
   X.TIMERSTOP(this._classname + '.parse');
 
   // re-slice the data according each direction
-  object._image = this.reslice(object);
+  // object._image = 
+  this.reslice_old(object);
+  this.reslice(object);
 
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();
