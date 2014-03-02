@@ -1383,11 +1383,11 @@ X.parser.prototype.reslice = function(object) {
   var texture_dim_y = dim_y;
   var texture_dim_z = dim_z;
 
-  if (!grayscale) {
-    var texture_dim_x = Math.pow(2,Math.ceil(Math.log(dim_x)/Math.log(2)));
-    var texture_dim_y = Math.pow(2,Math.ceil(Math.log(dim_y)/Math.log(2)));
-    var texture_dim_z = Math.pow(2,Math.ceil(Math.log(dim_z)/Math.log(2)));
-  }
+  // if (!grayscale) {
+  //   var texture_dim_x = Math.pow(2,Math.ceil(Math.log(dim_x)/Math.log(2)));
+  //   var texture_dim_y = Math.pow(2,Math.ceil(Math.log(dim_y)/Math.log(2)));
+  //   var texture_dim_z = Math.pow(2,Math.ceil(Math.log(dim_z)/Math.log(2)));
+  // }
 
   var spacing_x = object._spacing[0];
   var spacing_y = object._spacing[1];
@@ -1437,7 +1437,6 @@ X.parser.prototype.reslice = function(object) {
     px++;
 
   }
-  console.log(px, data_length);
 
 // parserRAW.parse: 946.685ms X.js:95
 // parserRAW.reslice_old: 4.265ms X.js:95
@@ -1452,8 +1451,8 @@ X.parser.prototype.reslice = function(object) {
     var s = new X.slice();
 
     var t = new X.texture();
-    t._rawDataWidth = texture_dim_y * bytes_per_value;
-    t._rawDataHeight = texture_dim_z * bytes_per_value;
+    t._rawDataWidth = texture_dim_y;
+    t._rawDataHeight = texture_dim_z;
     t._rawData = slices_x[x];
     t._grayscale = grayscale;
     s._texture = t;    
@@ -1480,8 +1479,8 @@ X.parser.prototype.reslice = function(object) {
     var s = new X.slice();
 
     var t = new X.texture();
-    t._rawDataWidth = texture_dim_x * bytes_per_value;
-    t._rawDataHeight = texture_dim_z * bytes_per_value;
+    t._rawDataWidth = texture_dim_x;
+    t._rawDataHeight = texture_dim_z;
     t._rawData = slices_y[y];
     t._grayscale = grayscale;
     s._texture = t;
@@ -1507,8 +1506,8 @@ X.parser.prototype.reslice = function(object) {
     var s = new X.slice();
 
     var t = new X.texture();
-    t._rawDataWidth = texture_dim_x * bytes_per_value;
-    t._rawDataHeight = texture_dim_y * bytes_per_value;
+    t._rawDataWidth = texture_dim_x;
+    t._rawDataHeight = texture_dim_y;
     t._rawData = slices_z[z];
     t._grayscale = grayscale;
     s._texture = t;    

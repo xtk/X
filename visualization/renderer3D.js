@@ -1914,11 +1914,13 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 
           this._context.uniform1f(uObjectOpacity, parseFloat(volume._opacity));
 
-        } else if (labelmap && labelmap._visible) {
+        } 
+
+        if (labelmap && labelmap._visible) {
           // only if we have an associated labelmap..
           
           // grab the id of the labelmap
-          var labelmapTextureID = object._labelmap._id;
+          var labelmapTextureID = object._labelmap._texture._id;
 
           // we handle a second texture, actually the one for the labelmap
           this._context.uniform1i(uUseLabelMapTexture, true);
@@ -1928,8 +1930,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 
           // grab the texture from the internal hash map using the id as
           // the key
-          this._context.bindTexture(this._context.TEXTURE_2D, this._textures
-              .get(labelmapTextureID));
+          this._context.bindTexture(this._context.TEXTURE_2D, this._textures.get(labelmapTextureID));
 
           
           this._context.uniform1i(uTextureSampler2, 1);

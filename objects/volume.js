@@ -496,7 +496,7 @@ X.volume.prototype.slicing_ = function() {
 
     if(this._volumeRendering){
 
-      _currentSlice._children[0]._visible = false;
+      // _currentSlice._children[0]._visible = false;
       if(xyz != this._volumeRenderingDirection){
 
         _currentSlice['visible'] = false;
@@ -1434,10 +1434,10 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
     this._volumeRenderingCache.push(direction);
 
-    this._computing = true;
+    // this._computing = true;
 
-    // call computing callback
-    this.onComputing_(direction);
+    // // call computing callback
+    // this.onComputing_(direction);
 
   } else {
 
@@ -1540,7 +1540,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
       
     }
 
-    this.onComputingProgress_(0.25);
+    // this.onComputingProgress_(0.25);
 
     setTimeout(function() {
 
@@ -1584,7 +1584,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
         } 
       }
 
-      this.onComputingProgress_(0.50);
+      // this.onComputingProgress_(0.50);
 
       setTimeout(function() {
 
@@ -1629,7 +1629,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
           
         }
 
-        this.onComputingProgress_(0.75);
+        // this.onComputingProgress_(0.75);
 
         setTimeout(function() {
 
@@ -1674,29 +1674,29 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
           }
 
-          this.onComputingProgress_(1.0);
+          // this.onComputingProgress_(1.0);
 
           setTimeout(function() {
 
-            if (this._computing) {
+            // if (this._computing) {
 
               // add it to renderer!
               this._children[direction].modified(true);            
 
-            }
+            // }
 
             // store the direction
             this._volumeRenderingDirection = direction;
 
             this._dirty = false;      
 
-            if (this._computing) {
-              //call computing end callback
-              this.onComputingEnd_(direction);
+            // if (this._computing) {
+            //   //call computing end callback
+            //   this.onComputingEnd_(direction);
 
-            }
+            // }
 
-            this._computing = false;
+            // this._computing = false;
 
           }.bind(this), 10);
 
