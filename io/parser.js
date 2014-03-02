@@ -1383,7 +1383,7 @@ X.parser.prototype.reslice = function(object) {
 
   var data_length = dim_x * dim_y * dim_z * bytes_per_value;  
 
-  var nb_pix_per_z = dim_x * dim_y * bytes_per_value;
+  var nb_pix_per_z = dim_x * dim_y;
 
   var slices_x = new Array(dim_x);
   var slices_y = new Array(dim_y);
@@ -1399,7 +1399,7 @@ X.parser.prototype.reslice = function(object) {
     slices_y[y] = new Uint8Array(dim_x*dim_z*bytes_per_value);
   }
   for (var z=0; z<dim_z; ++z) {
-    slices_z[z] = new Uint8Array(nb_pix_per_z);
+    slices_z[z] = new Uint8Array(dim_x*dim_y*bytes_per_value);
   }
 
   // loop through data to create the slices
@@ -1425,6 +1425,16 @@ X.parser.prototype.reslice = function(object) {
     px++;
 
   }
+  console.log(px, data_length);
+
+// parserRAW.parse: 946.685ms X.js:95
+// parserRAW.reslice_old: 4.265ms X.js:95
+// 19660800 19660800 parser.js:1428
+// parserRAW.reslice: 827.655ms X.js:95
+// 19660800*4
+// 78643200
+
+
 
   var grayscale = (bytes_per_value == 1);
 
