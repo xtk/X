@@ -136,8 +136,13 @@ X.parserRAW.prototype.parse = function(container, object, data, flag) {
 
   // re-slice the data according each direction
   // object._image = 
-  this.reslice_old(object);
-  this.reslice(object);
+  // if (object._classname == 'labelmap') {
+  //   console.log('Labelmap');
+    
+  // } else {
+    this.reslice_old(object);
+    this.reslice(object);
+  // }
 
   // the object should be set up here, so let's fire a modified event
   var modifiedEvent = new X.event.ModifiedEvent();

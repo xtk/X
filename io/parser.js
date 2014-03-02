@@ -1371,11 +1371,15 @@ X.parser.prototype.reslice = function(object) {
 
   var data = object._data;
 
-  var bytes_per_value = 1;
+  var bytes_per_value = object._32bit ? 4 : 1;
 
   var dim_x = object._dimensions[0];
   var dim_y = object._dimensions[1];
   var dim_z = object._dimensions[2];
+
+  var spacing_x = object._spacing[0];
+  var spacing_y = object._spacing[1];
+  var spacing_z = object._spacing[2];
 
   var data_length = dim_x * dim_y * dim_z * bytes_per_value;  
 
@@ -1384,6 +1388,8 @@ X.parser.prototype.reslice = function(object) {
   var slices_x = new Array(dim_x);
   var slices_y = new Array(dim_y);
   var slices_z = new Array(dim_z);
+
+  var labelmap = object._labelmap;
 
   // allocate slices x y z
   for (var x=0; x<dim_x; ++x) {
@@ -1397,26 +1403,31 @@ X.parser.prototype.reslice = function(object) {
   }
 
   // loop through data to create the slices
+  var px = 0;
   for (var p=0; p<data_length; p+=bytes_per_value) {
 
-    var z = Math.floor(p / nb_pix_per_z);
-    var y = Math.floor((p % nb_pix_per_z) / dim_x);
-    var x = Math.floor((p % nb_pix_per_z) % dim_x);
+    var z = Math.floor(px / nb_pix_per_z);
+    var y = Math.floor((px % nb_pix_per_z) / dim_x);
+    var x = Math.floor((px % nb_pix_per_z) % dim_x);
 
-    var z_index = x + y*dim_y;
-    var y_index = x + z*dim_x;
-    var x_index = y + z*dim_y;
+    var z_index = (x + y*dim_y)*bytes_per_value;
+    var y_index = (x + z*dim_x)*bytes_per_value;
+    var x_index = (y + z*dim_y)*bytes_per_value;
 
     for (var i=0;i<bytes_per_value;i++) {
 
-      slices_x[x][x_index] = data[p+i];
-      slices_y[y][y_index] = data[p+i];
-      slices_z[z][z_index] = data[p+i];
+      slices_x[x][x_index+i] = data[p+i];
+      slices_y[y][y_index+i] = data[p+i];
+      slices_z[z][z_index+i] = data[p+i];
 
     }
-    
+
+    px++;
+
   }
-// return
+
+  var grayscale = (bytes_per_value == 1);
+
   // create the slices
   for (var x=0; x<dim_x; ++x) {
     var s = new X.slice();
@@ -1425,12 +1436,12 @@ X.parser.prototype.reslice = function(object) {
     t._rawDataWidth = dim_y;
     t._rawDataHeight = dim_z;
     t._rawData = slices_x[x];
-    t._grayscale = true;
+    t._grayscale = grayscale;
     s._texture = t;    
 
-    s._width = dim_y;
-    s._height = dim_z;
-    s._center = [x, Math.floor(dim_y/2), Math.floor(dim_z/2)];
+    s._width = dim_y*spacing_y;
+    s._height = dim_z*spacing_z;
+    s._center = [x*spacing_x, Math.floor(dim_y*spacing_y/2), Math.floor(dim_z*spacing_z/2)];
     s._front = [1, 0, 0];
     s._right = [0, 1, 0];
     s._up = [0, 0, 1];
@@ -1438,6 +1449,10 @@ X.parser.prototype.reslice = function(object) {
     s._volume = object;
     s._borders = false;
     s.create_();
+
+    if (labelmap) {
+      s._labelmap = object._labelmap._children[0]._children[x];
+    }
 
     object._children[0]._children[x] = s;
 
@@ -1449,12 +1464,12 @@ X.parser.prototype.reslice = function(object) {
     t._rawDataWidth = dim_x;
     t._rawDataHeight = dim_z;
     t._rawData = slices_y[y];
-    t._grayscale = true;
+    t._grayscale = grayscale;
     s._texture = t;
 
-    s._width = dim_x;
-    s._height = dim_z;
-    s._center = [Math.floor(dim_x/2), y, Math.floor(dim_z/2)];
+    s._width = dim_x*spacing_x;
+    s._height = dim_z*spacing_z;
+    s._center = [Math.floor(dim_x*spacing_x/2), y*spacing_y, Math.floor(dim_z*spacing_z/2)];
     s._front = [0, 1, 0];
     s._right = [1, 0, 0];
     s._up = [0, 0, 1];
@@ -1462,6 +1477,10 @@ X.parser.prototype.reslice = function(object) {
     s._volume = object;
     s._borders = false;
     s.create_();
+
+    if (labelmap) {
+      s._labelmap = object._labelmap._children[1]._children[y];
+    }
 
     object._children[1]._children[y] = s;
   }
@@ -1472,12 +1491,12 @@ X.parser.prototype.reslice = function(object) {
     t._rawDataWidth = dim_x;
     t._rawDataHeight = dim_y;
     t._rawData = slices_z[z];
-    t._grayscale = true;
+    t._grayscale = grayscale;
     s._texture = t;    
 
-    s._width = dim_x;
-    s._height = dim_y;
-    s._center = [Math.floor(dim_x/2), Math.floor(dim_y/2), z];
+    s._width = dim_x*spacing_x;
+    s._height = dim_y*spacing_y;
+    s._center = [Math.floor(dim_x*spacing_x/2), Math.floor(dim_y*spacing_y/2), z*spacing_z];
     s._front = [0, 0, 1];
     s._right = [1, 0, 0];
     s._up = [0, 1, 0];
@@ -1485,6 +1504,10 @@ X.parser.prototype.reslice = function(object) {
     s._volume = object;
     s._borders = false;
     s.create_();
+
+    if (labelmap) {
+      s._labelmap = object._labelmap._children[2]._children[z];
+    }
 
     object._children[2]._children[z] = s;
   }
