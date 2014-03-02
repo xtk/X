@@ -1930,6 +1930,8 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
           // the key
           this._context.bindTexture(this._context.TEXTURE_2D, this._textures
               .get(labelmapTextureID));
+
+          
           this._context.uniform1i(uTextureSampler2, 1);
 
           // propagate label map opacity

@@ -1373,9 +1373,21 @@ X.parser.prototype.reslice = function(object) {
 
   var bytes_per_value = object._32bit ? 4 : 1;
 
+  var grayscale = (bytes_per_value == 1);
+
   var dim_x = object._dimensions[0];
   var dim_y = object._dimensions[1];
   var dim_z = object._dimensions[2];
+
+  var texture_dim_x = dim_x;
+  var texture_dim_y = dim_y;
+  var texture_dim_z = dim_z;
+
+  if (!grayscale) {
+    var texture_dim_x = Math.pow(2,Math.ceil(Math.log(dim_x)/Math.log(2)));
+    var texture_dim_y = Math.pow(2,Math.ceil(Math.log(dim_y)/Math.log(2)));
+    var texture_dim_z = Math.pow(2,Math.ceil(Math.log(dim_z)/Math.log(2)));
+  }
 
   var spacing_x = object._spacing[0];
   var spacing_y = object._spacing[1];
@@ -1393,13 +1405,13 @@ X.parser.prototype.reslice = function(object) {
 
   // allocate slices x y z
   for (var x=0; x<dim_x; ++x) {
-    slices_x[x] = new Uint8Array(dim_y*dim_z*bytes_per_value);
+    slices_x[x] = new Uint8Array(texture_dim_y*texture_dim_z*bytes_per_value);
   }
   for (var y=0; y<dim_y; ++y) {
-    slices_y[y] = new Uint8Array(dim_x*dim_z*bytes_per_value);
+    slices_y[y] = new Uint8Array(texture_dim_x*texture_dim_z*bytes_per_value);
   }
   for (var z=0; z<dim_z; ++z) {
-    slices_z[z] = new Uint8Array(dim_x*dim_y*bytes_per_value);
+    slices_z[z] = new Uint8Array(texture_dim_x*texture_dim_y*bytes_per_value);
   }
 
   // loop through data to create the slices
@@ -1435,16 +1447,13 @@ X.parser.prototype.reslice = function(object) {
 // 78643200
 
 
-
-  var grayscale = (bytes_per_value == 1);
-
   // create the slices
   for (var x=0; x<dim_x; ++x) {
     var s = new X.slice();
 
     var t = new X.texture();
-    t._rawDataWidth = dim_y;
-    t._rawDataHeight = dim_z;
+    t._rawDataWidth = texture_dim_y * bytes_per_value;
+    t._rawDataHeight = texture_dim_z * bytes_per_value;
     t._rawData = slices_x[x];
     t._grayscale = grayscale;
     s._texture = t;    
@@ -1471,8 +1480,8 @@ X.parser.prototype.reslice = function(object) {
     var s = new X.slice();
 
     var t = new X.texture();
-    t._rawDataWidth = dim_x;
-    t._rawDataHeight = dim_z;
+    t._rawDataWidth = texture_dim_x * bytes_per_value;
+    t._rawDataHeight = texture_dim_z * bytes_per_value;
     t._rawData = slices_y[y];
     t._grayscale = grayscale;
     s._texture = t;
@@ -1498,8 +1507,8 @@ X.parser.prototype.reslice = function(object) {
     var s = new X.slice();
 
     var t = new X.texture();
-    t._rawDataWidth = dim_x;
-    t._rawDataHeight = dim_y;
+    t._rawDataWidth = texture_dim_x * bytes_per_value;
+    t._rawDataHeight = texture_dim_y * bytes_per_value;
     t._rawData = slices_z[z];
     t._grayscale = grayscale;
     s._texture = t;    
