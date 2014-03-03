@@ -264,6 +264,8 @@ X.volume = function(volume) {
    */
   this._max = 0;
 
+  this._IJKVolume = null;
+
   /**
    * The image pixels
    *
@@ -1444,8 +1446,10 @@ X.volume.prototype.volumeRendering_ = function(direction) {
     // we do not need to reslice
 
     // hide old volume rendering slices
-    var _child = this._children[this._volumeRenderingDirection];
-    _child['visible'] = false;
+    if (this._volumeRenderingDirection != -1) {
+      var _child = this._children[this._volumeRenderingDirection];
+      _child['visible'] = false;
+    }
 
     // show new volume rendering slices, but don't show the borders
     _child = this._children[direction];

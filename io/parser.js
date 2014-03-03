@@ -502,53 +502,6 @@ X.parser.createIJKVolume = function(_data, _dims, _max){
   return [_image, _imageN];
 };
 
-X.parser.createIJKVolume32 = function(_data, _dims, _max){
-  
-  // initiate variables
-  // allocate images
-  var _image = new Array(_dims[2]);
-  var _imageN = new Array(_dims[2]);
-  var _nb_pix_per_slice = _dims[1] * _dims[0];
-  var _pix_value = 0;
-  var _i = 0;
-  var _j = 0;
-  var _k = 0;
-  var _data_pointer = 0;
-  
-  for (_k = 0; _k < _dims[2]; _k++) {
-
-    // get current slice
-    var _current_k = _data.subarray(_k * (_nb_pix_per_slice), (_k + 1)
-        * _nb_pix_per_slice);
-    // initiate data pointer
-    _data_pointer = 0;
-
-    // allocate images
-    _imageN[_k] = new Array(_dims[1]);
-    _image[_k] = new Array(_dims[1]);
-
-    for (_j = 0; _j < _dims[1]; _j++) {
-      
-      // allocate images
-      _imageN[_k][_j] = new Array(_dims[0]);//_data.constructor(_dims[0]);
-      _image[_k][_j] = new Array(_dims[0]);//_data.constructor(_dims[0]);
-      for (_i = 0; _i < _dims[0]; _i++) {
-      
-        _pix_value1 = _current_k[_data_pointer++];
-        _pix_value2 = _current_k[_data_pointer++];
-        _pix_value3 = _current_k[_data_pointer++];
-        _pix_value4 = _current_k[_data_pointer++];
-
-        // _imageN[_k][_j][_i] = 255 * (_pix_value / _max);
-        _image[_k][_j][_i] = [_pix_value1, _pix_value2, _pix_value3, _pix_value4];
-        
-      }
-    }
-  }
-    
-  return [_image, _imageN];
-};
-
 /**
  * Compute intersection between line and a bounding box
  *

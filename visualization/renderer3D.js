@@ -1444,7 +1444,6 @@ X.renderer3D.prototype.pick = function(x, y) {
 };
 
 X.renderer3D.prototype.updateFromDojo = function(colormap, colormaplength, mergetablekeys, mergetablevalues, mergetablelength) {
-
   var gl = this._context;
 
 
@@ -1494,6 +1493,7 @@ X.renderer3D.prototype.updateFromDojo = function(colormap, colormaplength, merge
   this._merge_table_values = merge_table_values;
   this._colormap_texture = colormap_texture;
   this._colormap_length = colormaplength;
+  this._merge_table_length = mergetablelength;
 
 };
 
