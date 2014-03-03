@@ -1443,7 +1443,7 @@ X.renderer3D.prototype.pick = function(x, y) {
 
 };
 
-X.renderer3D.prototype.updateFromDojo = function(colormap, colormaplength, mergetablekeys, mergetablevalues, mergetablelength) {
+X.renderer3D.prototype.updateFromDojo = function(colormap, colormaplength, mergetablekeys, mergetablevalues, mergetablelength, threeDlabels, threeDlabelslength, useThreeDlabels) {
   var gl = this._context;
 
 
@@ -1487,6 +1487,18 @@ X.renderer3D.prototype.updateFromDojo = function(colormap, colormaplength, merge
 
   gl.bindTexture(gl.TEXTURE_2D, null);
 
+  var threeD_labels_texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, threeD_labels_texture);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, threeDlabelslength, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, threeDlabels);
+
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+
+  gl.bindTexture(gl.TEXTURE_2D, null);  
+
 
   //
   this._merge_table_keys = merge_table_keys;
@@ -1494,6 +1506,9 @@ X.renderer3D.prototype.updateFromDojo = function(colormap, colormaplength, merge
   this._colormap_texture = colormap_texture;
   this._colormap_length = colormaplength;
   this._merge_table_length = mergetablelength;
+  this._threeD_labels_texture = threeD_labels_texture;
+  this._threeD_labels_length = threeDlabelslength;
+  this._use_threeD_labels = useThreeDlabels;
 
 };
 
@@ -1644,6 +1659,9 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   var uMergeTableValueSampler = uLocations.get(X.shaders.uniforms.MERGETABLEVALUESAMPLER);
   var uMergeTableLength = uLocations.get(X.shaders.uniforms.MERGETABLELENGTH);
   var uUse32bit = uLocations.get(X.shaders.uniforms.USE32BIT);
+  var uThreeDLabels = uLocations.get(X.shaders.uniforms.THREEDLABELS);
+  var uThreeDLabelsLength = uLocations.get(X.shaders.uniforms.THREEDLABELSLENGTH);
+  var uUseThreeDLabels = uLocations.get(X.shaders.uniforms.USETHREEDLABELS);
 
   //
   // loop through all objects and (re-)draw them
@@ -1961,6 +1979,15 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
             gl.uniform1i(uMergeTableValueSampler, 4);
 
             gl.uniform1i(uMergeTableLength, this._merge_table_length);
+
+            gl.activeTexture(gl.TEXTURE5);
+            gl.bindTexture(gl.TEXTURE_2D, this._threeD_labels_texture);
+            gl.uniform1i(uThreeDLabels, 5);
+
+            gl.uniform1i(uThreeDLabelsLength, this._threeD_labels_length);
+
+            gl.uniform1i(uUseThreeDLabels, this._use_threeD_labels);
+
           }
 
         }

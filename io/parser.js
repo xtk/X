@@ -1412,7 +1412,7 @@ X.parser.prototype.reslice = function(object) {
 
     s._width = dim_y*spacing_y;
     s._height = dim_z*spacing_z;
-    s._center = [x*spacing_x, Math.floor(dim_y*spacing_y/2), Math.floor(dim_z*spacing_z/2)];
+    s._center = [-Math.floor(dim_x*spacing_x/2) + x*spacing_x, 0, 0];
     s._front = [1, 0, 0];
     s._right = [0, 1, 0];
     s._up = [0, 0, 1];
@@ -1440,7 +1440,7 @@ X.parser.prototype.reslice = function(object) {
 
     s._width = dim_x*spacing_x;
     s._height = dim_z*spacing_z;
-    s._center = [Math.floor(dim_x*spacing_x/2), y*spacing_y, Math.floor(dim_z*spacing_z/2)];
+    s._center = [0, -Math.floor(dim_y*spacing_y/2) + y*spacing_y, 0];
     s._front = [0, 1, 0];
     s._right = [1, 0, 0];
     s._up = [0, 0, 1];
@@ -1467,7 +1467,7 @@ X.parser.prototype.reslice = function(object) {
 
     s._width = dim_x*spacing_x;
     s._height = dim_y*spacing_y;
-    s._center = [Math.floor(dim_x*spacing_x/2), Math.floor(dim_y*spacing_y/2), z*spacing_z];
+    s._center = [0, 0, -Math.floor(dim_z*spacing_z/2) + z*spacing_z];
     s._front = [0, 0, 1];
     s._right = [1, 0, 0];
     s._up = [0, 1, 0];

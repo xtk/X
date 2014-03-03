@@ -194,8 +194,11 @@ X.shaders = function() {
   t2 += 'uniform sampler2D uColorMapSampler;\n';  
   t2 += 'uniform sampler2D uMergeTableKeySampler;\n';  
   t2 += 'uniform sampler2D uMergeTableValueSampler;\n';  
+  t2 += 'uniform sampler2D uThreeDLabels;\n';
   t2 += 'uniform int uMergeTableLength;\n';
   t2 += 'uniform float uMaxColors;\n';
+  t2 += 'uniform int uThreeDLabelsLength;\n';
+  t2 += 'uniform bool uUseThreeDLabels;\n';
   t2 += '\n';
   t2 += 'const int MAX = 10000;\n';
   t2 += '\n';
@@ -299,6 +302,25 @@ X.shaders = function() {
   t2 += '\n';
   t2 += '    }\n';
   t2 += '\n';
+  t2 += 'bool is_3d_label(float id) {\n';
+  t2 += '  for(int m=0; m<MAX; m++) {\n';
+  t2 += '\n';
+  t2 += '    if (m>uThreeDLabelsLength) break;\n';
+  t2 += '\n';
+  t2 += '    vec4 m_key = texture2D(uThreeDLabels, vec2(float(m)/float(uThreeDLabelsLength), 0.));\n';
+  t2 += '    float m_id = unpack(m_key)*255.;\n';
+  t2 += '\n';
+  t2 += '    if (larger(m_id, id)) break;\n';
+  t2 += '\n';
+  t2 += '    if (equals(id, m_id)) {\n';
+  t2 += '      return true;\n';
+  t2 += '    }\n';
+  t2 += '\n';
+  t2 += '  }\n';
+  t2 += '\n';
+  t2 += '  return false;\n';
+  t2 += '\n';
+  t2 += '}\n';
   t2 += '\n';
   t2 += 'void main(void) {\n';
   t2 += ' if (fDiscardNow > 0.0) {\n';
@@ -329,11 +351,9 @@ X.shaders = function() {
   t2 += '       vec2 colormap_pos = vec2(normalized_id / (uMaxColors - 1.), 0.);\n';
   t2 += '       vec4 color = texture2D(uColorMapSampler, colormap_pos);\n';
   t2 += '       textureSum = mix(color, textureSum, 1.0 - labelmapOpacity);\n';
-
-
-
-
-
+  t2 += '       if (uUseThreeDLabels && !is_3d_label(id)) {\n';
+  t2 += '         discard;\n';
+  t2 += '       }\n';
   t2 += '     } else if (texture2.a > 0.0) {\n'; // check if this is not the background
   // label
   t2 += '         if (labelmapColor.a != -255.0) {\n'; // check if only one color should be shown
@@ -463,7 +483,10 @@ X.shaders.uniforms = {
   MERGETABLEVALUESAMPLER: 'uMergeTableValueSampler',
   MERGETABLELENGTH: 'uMergeTableLength',
   USE32BIT: 'uUse32bit',
-  MAXCOLORS: 'uMaxColors'
+  MAXCOLORS: 'uMaxColors',
+  USETHREEDLABELS: 'uUseThreeDLabels',
+  THREEDLABELS: 'uThreeDLabels',
+  THREEDLABELSLENGTH: 'uThreeDLabelsLength'
 };
 
 
