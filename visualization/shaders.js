@@ -326,10 +326,7 @@ X.shaders = function() {
   t2 += ' if (fDiscardNow > 0.0) {\n';
   t2 += '   discard;\n'; // really discard now
   t2 += ' }\n';
-  // in picking mode, we don't want any extras but just the plain color
-  t2 += ' if (usePicking) {\n';
-  t2 += '   gl_FragColor = vec4(fragmentColor, 1.0);\n';
-  t2 += ' } else if (useTexture) {\n';
+  t2 += ' if (useTexture) {\n';
   t2 += '   vec4 texture1 = texture2D(textureSampler,fragmentTexturePos);\n';
   t2 += '   vec4 textureSum = texture1;\n';
   // perform window level
@@ -384,8 +381,13 @@ X.shaders = function() {
   // t2 += '       discard;\n';
   // t2 += '     };\n';
   t2 += '   };\n';
-  t2 += '   gl_FragColor = textureSum;\n';
-  t2 += '   gl_FragColor.a = objectOpacity;\n';
+  // in picking mode, we don't want any extras but just the plain color  
+  t2 += '   if (usePicking) {\n';
+  t2 += '     gl_FragColor = vec4(fragmentColor,1.);\n';
+  t2 += '   } else {\n';
+  t2 += '     gl_FragColor = textureSum;\n';
+  t2 += '     gl_FragColor.a = objectOpacity;\n';
+  t2 += '   }\n';
   t2 += ' } else {\n';
   // configure advanced lighting
   t2 += '   vec3 nNormal = normalize(fTransformedVertexNormal);\n';
@@ -408,10 +410,15 @@ X.shaders = function() {
   t2 += '   float ambient = 0.3;\n';
   // .. and now setup the fragment color using these three values and the
   // opacity
-  t2 += '   gl_FragColor = vec4(fragmentColor * ambient +\n';
+  // in picking mode, we don't want any extras but just the plain color  
+  t2 += '   if (usePicking) {\n';
+  t2 += '     gl_FragColor = vec4(fragmentColor,1.);\n';
+  t2 += '   } else {\n';  
+  t2 += '     gl_FragColor = vec4(fragmentColor * ambient +\n';
   t2 += '                       fragmentColor * diffuse +\n';
   t2 += '                       vec3(0.2, 0.2, 0.2) * specular,\n';
   t2 += '                       objectOpacity);\n';
+  t2 += '   }\n';
   t2 += ' }\n';
   t2 += '}\n';
   this._fragmentshaderSource = t2;
