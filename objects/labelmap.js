@@ -105,6 +105,12 @@ X.labelmap.prototype.modified = function() {
 
 };
 
+X.labelmap.prototype.__defineSetter__('use32bit', function(flag) {
+
+  this._32bit = flag;
+
+});
+
 
 /**
  * Show only the label with the given value or color (RGBA 0..1). If null is passed,
