@@ -56,7 +56,7 @@ X.parserMRC.prototype.parse = function(container, object, data, flag) {
 	var max = MRI.max;
 
 	//get dimsensions
-	var _dimensions = [MRI.xlen, MRI.ylen, MRI.zlen];
+	var _dimensions = [MRI.nx, MRI.ny, MRI.nz];
 	object._dimensions = _dimensions
 
 	//get pixel spacing = xlen/mx

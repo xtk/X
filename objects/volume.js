@@ -524,6 +524,43 @@ X.volume.prototype.__defineGetter__('dimensions', function() {
 });
 
 /**
+ * Set the dimensions of this volume.
+ *
+ * @param {!Array} dimensions The dimensions of this volume.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('dimensions', function(dimensions) {
+
+  this._dimensions = dimensions;
+
+});
+
+/**
+ * Get the spacing of this volume.
+ *
+ * @return {!Array} The spacing of this volume.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('spacing', function() {
+
+  return this._spacing;
+
+});
+
+/**
+ * Set the spacing of this volume.
+ *
+ * @param {!Array} spacing The spacing of this volume.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('spacing', function(spacing) {
+
+  this._spacing = spacing;
+
+});
+
+
+/**
  * Get the RAS Bounding Box of this volume.
  *
  * @return {!Array} The dimensions of this volume.
@@ -674,6 +711,41 @@ X.volume.prototype.__defineSetter__('center', function(center) {
   }
 
   this._center = center;
+
+});
+
+/**
+ * Get the volumeRenderingCache of this X.volume.
+ *
+ * @return {!Array} The volume rendering cache.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('volumeRenderingCache', function() {
+
+  return this._volumeRenderingCache;
+
+});
+
+
+/**
+ * Set the volumeRenderingCache of this X.volume.
+ *
+ * @param {!Array}
+ *          volumeRenderingCache The new volume rendering cache.
+ * @throws {Error}
+ *           If the volume rendering cache is invalid.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('volumeRenderingCache', function(volumeRenderingCache) {
+
+  if (!goog.isDefAndNotNull(volumeRenderingCache) || !goog.isArray(volumeRenderingCache)
+      || !(volumeRenderingCache.length <= 3)) {
+
+    throw new Error('Invalid volumeRederingCache.');
+
+  }
+
+  this._volumeRenderingCache = volumeRenderingCache;
 
 });
 
