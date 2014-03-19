@@ -104,6 +104,8 @@ X.texture = function() {
    * @protected
    */
   this._grayscale = false;
+
+  this._needs_update = false;
   
   // inject functionality
   inject(this, new X.loadable()); // this object is loadable from a file
@@ -168,4 +170,14 @@ X.texture.prototype.__defineSetter__('grayscale', function(grayscale) {
   
 });
 
+X.texture.prototype.updateTexture = function(data) {
+
+  this._rawData = data;
+  this._needs_update = true;
+
+  this._dirty = true;
+
+};
+
 goog.exportSymbol('X.texture', X.texture);
+goog.exportSymbol('X.texture.prototype.updateTexture', X.texture.prototype.updateTexture);

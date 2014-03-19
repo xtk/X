@@ -120,7 +120,7 @@ X.slice = function(slice) {
   /**
    * The label map of this slice which is a second texture.
    *
-   * @type {?X.texture}
+   * @type {?X.slice}
    * @protected
    */
   this._labelmap = null;
@@ -198,6 +198,18 @@ X.slice.prototype.__defineSetter__('height', function(height) {
 X.slice.prototype.__defineSetter__('width', function(width) {
 
   this._width = width;
+
+});
+
+
+/**
+ * Get the label map of this slice.
+ *
+ * @return {X.slice}
+ */
+X.slice.prototype.__defineGetter__('labelmap', function() {
+
+  return this._labelmap;
 
 });
 

@@ -750,83 +750,110 @@ X.renderer3D.prototype.update_ = function(object) {
         _flipY = true;
       }
 
-      this._context.pixelStorei(this._context.UNPACK_FLIP_Y_WEBGL, _flipY);
+      if (texture._needs_update) {
 
-      // setup the glTexture, at this point the image for the texture was
-      // already
-      // loaded thanks to X.loader
-      var glTexture = this._context.createTexture();
+        var glTexture = this._textures.get(texture._id);
+        this._context.bindTexture(this._context.TEXTURE_2D, glTexture);
 
-      // connect the image and the glTexture
-      glTexture.image = texture._image;
-
-      //
-      // activate the texture on the WebGL side
-      this._textures.set(texture._id, glTexture);
-
-      this._context.bindTexture(this._context.TEXTURE_2D, glTexture);
-      if (texture._rawData) {
 
         var _texture_type = this._context.RGBA;
-        
-        if (texture._grayscale) {
-          
-          // one channel texture
-          _texture_type = this._context.LUMINANCE;
-          this._context.pixelStorei(this._context.UNPACK_ALIGNMENT, 1);
-          
-        }
 
-        // use rawData rather than loading an imagefile
         this._context.texImage2D(this._context.TEXTURE_2D, 0,
             _texture_type, texture._rawDataWidth, texture._rawDataHeight,
             0, _texture_type, this._context.UNSIGNED_BYTE,
             texture._rawData);
 
+        texture._dirty = false;
+        texture._needs_update = false;
+
+        object._dirty = false;
+
+        this._locked = false;
+
+        // we don't need anything else
+        return;
+
       } else {
 
-        // use an imageFile for the texture
-        this._context.texImage2D(this._context.TEXTURE_2D, 0,
-            this._context.RGBA, this._context.RGBA,
-            this._context.UNSIGNED_BYTE, glTexture.image);
+        this._context.pixelStorei(this._context.UNPACK_FLIP_Y_WEBGL, _flipY);
+
+        // setup the glTexture, at this point the image for the texture was
+        // already
+        // loaded thanks to X.loader
+        var glTexture = this._context.createTexture();
+
+        // connect the image and the glTexture
+        glTexture.image = texture._image;
+
+        //
+        // activate the texture on the WebGL side
+        this._textures.set(texture._id, glTexture);
+
+        this._context.bindTexture(this._context.TEXTURE_2D, glTexture);
+        if (texture._rawData) {
+
+          var _texture_type = this._context.RGBA;
+          
+          if (texture._grayscale) {
+            
+            // one channel texture
+            _texture_type = this._context.LUMINANCE;
+            this._context.pixelStorei(this._context.UNPACK_ALIGNMENT, 1);
+            
+          }
+
+          // use rawData rather than loading an imagefile
+          this._context.texImage2D(this._context.TEXTURE_2D, 0,
+              _texture_type, texture._rawDataWidth, texture._rawDataHeight,
+              0, _texture_type, this._context.UNSIGNED_BYTE,
+              texture._rawData);
+
+        } else {
+
+          // use an imageFile for the texture
+          this._context.texImage2D(this._context.TEXTURE_2D, 0,
+              this._context.RGBA, this._context.RGBA,
+              this._context.UNSIGNED_BYTE, glTexture.image);
+
+        }
+
+        this._context.texParameteri(this._context.TEXTURE_2D,
+            this._context.TEXTURE_WRAP_S, this._context.CLAMP_TO_EDGE);
+        this._context.texParameteri(this._context.TEXTURE_2D,
+            this._context.TEXTURE_WRAP_T, this._context.CLAMP_TO_EDGE);
+
+        // for labelmaps, we use NEAREST NEIGHBOR filtering
+        if (isLabelMap) {
+          this._context.texParameteri(this._context.TEXTURE_2D,
+              this._context.TEXTURE_MAG_FILTER, this._context.NEAREST);
+          this._context.texParameteri(this._context.TEXTURE_2D,
+              this._context.TEXTURE_MIN_FILTER, this._context.NEAREST);
+        } else {
+          this._context.texParameteri(this._context.TEXTURE_2D,
+              this._context.TEXTURE_MAG_FILTER, this._context.LINEAR);
+          this._context.texParameteri(this._context.TEXTURE_2D,
+              this._context.TEXTURE_MIN_FILTER, this._context.LINEAR);
+        }
+
+        // release the texture binding to clear things
+        this._context.bindTexture(this._context.TEXTURE_2D, null);
+
+        // create texture buffer
+        var glTexturePositionBuffer = this._context.createBuffer();
+
+        // bind and fill with colors defined above
+        this._context.bindBuffer(this._context.ARRAY_BUFFER,
+            glTexturePositionBuffer);
+        this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
+            textureCoordinateMap), this._context.STATIC_DRAW);
+
+        // create an X.buffer to store the texture-coordinate map
+        texturePositionBuffer = new X.buffer(glTexturePositionBuffer,
+            textureCoordinateMap.length, 2);
+
+       this._texturePositionBuffers.set(id, texturePositionBuffer);
 
       }
-
-      this._context.texParameteri(this._context.TEXTURE_2D,
-          this._context.TEXTURE_WRAP_S, this._context.CLAMP_TO_EDGE);
-      this._context.texParameteri(this._context.TEXTURE_2D,
-          this._context.TEXTURE_WRAP_T, this._context.CLAMP_TO_EDGE);
-
-      // for labelmaps, we use NEAREST NEIGHBOR filtering
-      if (isLabelMap) {
-        this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_MAG_FILTER, this._context.NEAREST);
-        this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_MIN_FILTER, this._context.NEAREST);
-      } else {
-        this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_MAG_FILTER, this._context.LINEAR);
-        this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_MIN_FILTER, this._context.LINEAR);
-      }
-
-      // release the texture binding to clear things
-      this._context.bindTexture(this._context.TEXTURE_2D, null);
-
-      // create texture buffer
-      var glTexturePositionBuffer = this._context.createBuffer();
-
-      // bind and fill with colors defined above
-      this._context.bindBuffer(this._context.ARRAY_BUFFER,
-          glTexturePositionBuffer);
-      this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-          textureCoordinateMap), this._context.STATIC_DRAW);
-
-      // create an X.buffer to store the texture-coordinate map
-      texturePositionBuffer = new X.buffer(glTexturePositionBuffer,
-          textureCoordinateMap.length, 2);
-
-     this._texturePositionBuffers.set(id, texturePositionBuffer);
 
       texture._dirty = false;
 
@@ -2508,6 +2535,29 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
 
 };
 
+
+/**
+ * Get the GL context.
+ */
+X.renderer3D.prototype.__defineGetter__('gl', function() {
+
+  return this._context;
+
+});
+
+X.renderer3D.prototype.__defineGetter__('textures', function() {
+
+  return this._textures;
+
+});
+
+X.renderer3D.prototype.getTexture = function(id) {
+
+  return this._textures.get(id);
+
+};
+
+
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer3D', X.renderer3D);
 goog.exportSymbol('X.renderer3D.prototype.init', X.renderer3D.prototype.init);
@@ -2529,7 +2579,7 @@ goog.exportSymbol('X.renderer3D.prototype.resetViewAndRender',
     X.renderer3D.prototype.resetViewAndRender);
 goog.exportSymbol('X.renderer3D.prototype.pick', X.renderer3D.prototype.pick);
 goog.exportSymbol('X.renderer3D.prototype.pick3d', X.renderer3D.prototype.pick3d);
-
+goog.exportSymbol('X.renderer3D.prototype.getTexture', X.renderer3D.prototype.getTexture);
 
 goog.exportSymbol('X.renderer3D.prototype.updateFromDojo',
     X.renderer3D.prototype.updateFromDojo);
