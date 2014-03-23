@@ -116,6 +116,19 @@ goog.inherits(X.texture, X.base);
 
 
 /**
+ * Get the raw data of this texture.
+ * 
+ * @return {?Object} The raw data array (Uint8Array).
+ */
+X.texture.prototype.__defineGetter__('rawData', function() {
+
+  return this._rawData;
+  
+});
+
+
+
+/**
  * Set the raw data of this texture.
  * 
  * @param {?Object} rawData The raw data array (Uint8Array).
