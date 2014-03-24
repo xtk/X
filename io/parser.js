@@ -491,7 +491,8 @@ X.parser.createIJKVolume = function(_data, _dims, _max){
       for (_i = 0; _i < _dims[0]; _i++) {
       
         _pix_value = _current_k[_data_pointer];
-        _imageN[_k][_j][_i] = 255 * (_pix_value / _max);
+        _imageN[_k][_j][_i] = 
+          255 * (_pix_value / _max);
         _image[_k][_j][_i] = _pix_value;
         _data_pointer++;
         
@@ -913,7 +914,11 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
         }
         else {
       
-          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixval / object._max);
+          // Rescale from [0, max] to [0, 255] if not negative scalars, else
+          // rescale from [min, max] to [0, 255]
+          var rescale_min = object._min < 0 ? object._min : 0;
+          pixelValue_r = pixelValue_g = pixelValue_b = 
+            255 * ((pixval - rescale_min) / (object._max - rescale_min));
           pixelValue_a = 255;
         }
       
@@ -1131,7 +1136,7 @@ X.parser.prototype.reslice = function(object) {
   // real volume
   object._IJKVolume = _IJKVolumes[0];
   // normalized volume
-  object._IJKVolumeN = _IJKVolumes[1];
+  object._IJKVolumeN = _IJKVolumes[1];  // appears to not be used, will not work with signed scalars
   X.TIMER(this._classname + '.reslice');
   
   // ------------------------------------------

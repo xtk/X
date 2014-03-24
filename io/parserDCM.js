@@ -305,13 +305,25 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     // create data container
     switch (first_image[0].bits_allocated) {
       case 8:
-        first_image_data = new Uint8Array(first_image_size);
+        if (first_image[0]['pixel_representation'] == 1) {  //signed
+          first_image_data = new Int8Array(first_image_size);
+        } else {
+          first_image_data = new Uint8Array(first_image_size);
+        }
         break;
       case 16:
-        first_image_data = new Uint16Array(first_image_size);
+        if (first_image[0]['pixel_representation'] == 1) {  //signed
+          first_image_data = new Int16Array(first_image_size);
+        } else {
+          first_image_data = new Uint16Array(first_image_size);
+        }
         break;
       case 32:
-        first_image_data = new Uint32Array(first_image_size);
+        if (first_image[0]['pixel_representation'] == 1) {  //signed
+          first_image_data = new Int32Array(first_image_size);
+        } else {
+          first_image_data = new Uint32Array(first_image_size);
+        }
       default:
         window.console.log("Unknown number of bits allocated - using default: 32 bits");
         break;
@@ -723,13 +735,22 @@ X.parserDCM.prototype.parseStream = function(data, object) {
             slice['pixel_spacing'] = [ parseFloat(_pixel_spacing[0]), parseFloat(_pixel_spacing[1]), Infinity ];
             break;
 
+
+          case 0x0103: // "Pixel Representation"
+            // should always be a US
+            // 0: unsigned
+            // 1: signed
+            var _ushort = _bytes[_bytePointer];
+            slice['pixel_representation'] = _ushort;
+            _bytePointer+=_VL/2;
+            break;
+
           case 0x1052: // rescale intercept
           case 0x1053: // rescale slope
           case 0x1050: // WindowCenter
           case 0x1051: // WindowWidth
           case 0x0004: // "Photometric Interpretation"
           case 0x0102: // "High Bit"
-          case 0x0103: // "Pixel Representation"
           case 0x1054: // "Rescale Type"
           case 0x2110: // "Lossy Image Compression"
 
@@ -918,13 +939,25 @@ X.parserDCM.prototype.parseStream = function(data, object) {
 
     switch (slice.bits_allocated) {
       case 8:
-        slice.data = new Uint8Array(slice['columns'] * slice['rows']);
+        if (slice['pixel_representation'] == 1) { // Signed
+          slice.data = new Int8Array(slice['columns'] * slice['rows']);
+        } else {
+          slice.data = new Uint8Array(slice['columns'] * slice['rows']);
+        }
         break;
       case 16:
-        slice.data = new Uint16Array(slice['columns'] * slice['rows']);
+        if (slice['pixel_representation'] == 1) { // Signed
+          slice.data = new Int16Array(slice['columns'] * slice['rows']);
+        } else {
+          slice.data = new Uint16Array(slice['columns'] * slice['rows']);
+        }
         break;
       case 32:
-        slice.data = new Uint32Array(slice['columns'] * slice['rows']);
+        if (slice['pixel_representation'] == 1) { // Signed
+          slice.data = new Int32Array(slice['columns'] * slice['rows']);
+        } else {
+          slice.data = new Uint32Array(slice['columns'] * slice['rows']);
+        }
         break;
     }
 
@@ -936,14 +969,26 @@ X.parserDCM.prototype.parseStream = function(data, object) {
 
   switch (slice.bits_allocated) {
   case 8:
-    _data = this.scan('uchar', slice['columns'] * slice['rows']);
+    if (slice['pixel_representation'] == 1) { // Signed
+      _data = this.scan('schar', slice['columns'] * slice['rows']);
+    } else {
+      _data = this.scan('uchar', slice['columns'] * slice['rows']);
+    }
     break;
   case 16:
-    _data = this.scan('ushort', slice['columns'] * slice['rows']);
+    if (slice['pixel_representation'] == 1) { // Signed
+      _data = this.scan('sshort', slice['columns'] * slice['rows']);
+    } else {
+      _data = this.scan('ushort', slice['columns'] * slice['rows']);
+    }
 
     break;
   case 32:
-    _data = this.scan('uint', slice['columns'] * slice['rows']);
+    if (slice['pixel_representation'] == 1) { // Signed
+      _data = this.scan('sint', slice['columns'] * slice['rows']);
+    } else {
+      _data = this.scan('uint', slice['columns'] * slice['rows']);
+    }
     break;
   }
 
