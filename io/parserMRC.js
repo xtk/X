@@ -79,7 +79,7 @@ X.parserMRC.prototype.parse = function(container, object, data, flag) {
 	
 	// Create IJKtoXYZ matris
 	var IJKToRAS = goog.vec.Mat4.createFloat32();
-  goog.vec.Mat4.setRowValues(IJKToRAS,
+	goog.vec.Mat4.setRowValues(IJKToRAS,
       3,
       0,
       0,
@@ -98,14 +98,14 @@ X.parserMRC.prototype.parse = function(container, object, data, flag) {
 	goog.vec.Mat4.invert(MRI.IJKToRAS, MRI.RASToIJK);
 	
 	// get bounding box
-  // Transform ijk (0, 0, 0) to RAS
-  var tar = goog.vec.Vec4.createFloat32FromValues(0, 0, 0, 1);
-  var res = goog.vec.Vec4.createFloat32();
-  goog.vec.Mat4.multVec4(IJKToRAS, tar, res);
-  // Transform ijk (spacingX, spacinY, spacingZ) to RAS
-  var tar2 = goog.vec.Vec4.createFloat32FromValues(1, 1, 1, 1);
-  var res2 = goog.vec.Vec4.createFloat32();
-  goog.vec.Mat4.multVec4(IJKToRAS, tar2, res2);
+	// Transform ijk (0, 0, 0) to RAS
+	var tar = goog.vec.Vec4.createFloat32FromValues(0, 0, 0, 1);
+	var res = goog.vec.Vec4.createFloat32();
+	goog.vec.Mat4.multVec4(IJKToRAS, tar, res);
+	// Transform ijk (spacingX, spacinY, spacingZ) to RAS
+	var tar2 = goog.vec.Vec4.createFloat32FromValues(1, 1, 1, 1);
+	var res2 = goog.vec.Vec4.createFloat32();
+	goog.vec.Mat4.multVec4(IJKToRAS, tar2, res2);
 	
 	// get location of 8 corners and update BBox
 	var _dims = [MRI.nx, MRI.ny, MRI.nz];
@@ -122,10 +122,10 @@ X.parserMRC.prototype.parse = function(container, object, data, flag) {
 	object._dimensions = _dims;
 	
 	// create the object
-  object.create_(MRI);
-  
-  // re-slice the data according each direction.
-  object._image = this.reslice(object);
+	object.create_(MRI);
+	
+	// re-slice the data according each direction.
+	object._image = this.reslice(object);
 
 	X.TIMERSTOP(this._classname + '.parse');
 
@@ -206,14 +206,14 @@ X.parserMRC.prototype.parseStream = function(data) {
 	};	
  
 	//Check Edianness
-	this.jumpTo(parseInt(212));
+	this.jumpTo(parseInt(212, 10));
 	MRI.stamp = this.scan('schar');
 	if (MRI.stamp == 17) {
-		data = this.filpEdianness;
+		data = this.filpEndianness;
 	}
 		
 	
-	this.jumpTo(parseInt(0));
+	this.jumpTo(parseInt(0, 10));
 	// Reading the data. Names are the names used in C code.
 	MRI.nx = this.scan('sint');
 	MRI.ny = this.scan('sint');
@@ -224,7 +224,7 @@ X.parserMRC.prototype.parseStream = function(data) {
 	var volsize = MRI.nx * MRI.ny * MRI.nz ;
 
 	// Read for the type of pixels
-	this.jumpTo(parseInt(1024));
+	this.jumpTo(parseInt(1024, 10));
 	switch (MRI.mode) {
 	case 0:
 		MRI.data = this.scan('schar', volsize);
@@ -252,7 +252,7 @@ X.parserMRC.prototype.parseStream = function(data) {
 		throw new Error('Unsupported MRC data type: ' +MRI.mode);
 	}
 
-	this.jumpTo(parseInt(28));
+	this.jumpTo(parseInt(28, 10));
 
 	MRI.mx = this.scan('sint');
 	MRI.my = this.scan('sint');
@@ -290,13 +290,13 @@ X.parserMRC.prototype.parseStream = function(data) {
 	// loop this around (6 different ones)
 	MRI.tiltangles = this.scan('float',6);
 
-	this.jumpTo(parseInt(196));
+	this.jumpTo(parseInt(196, 10));
 
 	MRI.xorg = this.scan('float');
 	MRI.yorg = this.scan('float');
 	MRI.zorg = this.scan('float');
 	
-	this.jumpTo(parseInt(216));
+	this.jumpTo(parseInt(216, 10));
 
 	MRI.rms = this.scan('float');
 	
@@ -307,29 +307,29 @@ X.parserMRC.prototype.parseStream = function(data) {
 
 	//Dealing with extended header
 	if (MRI.next != 0) {
-		this.jumpTo(parseInt(MRI.next+1024))
+		this.jumpTo(parseInt(MRI.next+1024, 10))
 		switch (MRI.mode) {
 		case 0:
 			MRI.data = this.scan('schar', volsize);
-		break;
+			break;
 		case 1:
 			MRI.data = this.scan('sshort', volsize);
-		break;
+			break;
 		case 2:
 			MRI.data = this.scan('float', volsize);
-		break;
+			break;
 		case 3:
 			MRI.data = this.scan('uint', volsize);
-		break;
+			break;
 		case 4:
 			MRI.data = this.scan('double', volsize);
-		break;
+			break;
 		case 6:
 			MRI.data = this.scan('ushort', volsize);
-		break;
+			break;
 		case 16:
 			MRI.data = this.scan('uchar', volsize);
-		break;
+			break;
 
 		default:
 			throw new Error('Unsupported MRC data type: ' +MRI.mode);
