@@ -80,11 +80,11 @@ X.parserMRC.prototype.parse = function(container, object, data, flag) {
 	// Create IJKtoXYZ matris
 	var IJKToRAS = goog.vec.Mat4.createFloat32();
 	goog.vec.Mat4.setRowValues(IJKToRAS,
-      3,
-      0,
-      0,
-      0,
-      1);
+		3,
+		0,
+		0,
+		0,
+		1);
 			
 	// fill in IJKToRas
 	
