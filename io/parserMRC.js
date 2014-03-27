@@ -203,15 +203,7 @@ X.parserMRC.prototype.parseStream = function(data) {
 		rasspaceorientation: null,
 		orientation: null,
 		normcosine: null
-	};	
- 
-	//Check Edianness
-	this.jumpTo(parseInt(212, 10));
-	MRI.stamp = this.scan('schar');
-	if (MRI.stamp == 17) {
-		data = this.filpEndianness;
-	}
-		
+	};		
 	
 	this.jumpTo(parseInt(0, 10));
 	// Reading the data. Names are the names used in C code.
