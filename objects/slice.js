@@ -201,6 +201,28 @@ X.slice.prototype.__defineSetter__('width', function(width) {
 
 });
 
+/**
+ * Set the width of this slice.
+ * 
+ * @param {number} width The width.
+ */
+X.slice.prototype.__defineGetter__('up', function() {
+
+  return this._up;
+
+});
+
+/**
+ * Set the width of this slice.
+ * 
+ * @param {number} width The width.
+ */
+X.slice.prototype.__defineGetter__('right', function() {
+
+  return this._right;
+
+});
+
 
 /**
  * Setup this X.slice and create it.

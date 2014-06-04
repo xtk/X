@@ -1364,6 +1364,8 @@ X.volume.prototype.sliceInfoChanged = function(index){
 
   var _slice = X.parser.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceXYSpacing, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._IJKVolume, this, true, null);
 
+  window.console.log('modified!');
+
   if(this.hasLabelMap) {
 
     _slice._labelmap = _slice._texture;

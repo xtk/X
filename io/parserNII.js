@@ -123,8 +123,60 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
       0,
       1);
 
-  // 3 known cases
-  if(MRI.qform_code > 0) {
+  // NO RESLICING, only use the spacing
+  if(object['reslicing'] == 'false' || object['reslicing'] == false){
+
+    var xd = 1.0, yd = 1.0, zd = 1.0;
+    
+    // scaling factors
+    if(MRI.pixdim[1] > 0.0) {
+
+      xd = MRI.pixdim[1];
+
+    }
+    
+    if(MRI.pixdim[2] > 0.0) {
+
+      yd = MRI.pixdim[2];
+
+    }
+    
+    if(MRI.pixdim[2] > 0.0) {
+
+      zd = MRI.pixdim[3];
+
+    }
+    
+    // qfac left handed
+    if(MRI.pixdim[0] < 0.0) {
+
+      zd = -zd;
+
+    }
+
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+        0,
+        xd,
+        0,
+        0,
+        0
+        );
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+        1,
+        0,
+        yd,
+        0,
+        0
+        );
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+        2,
+        0,
+        0,
+        zd,
+        0
+        );
+  }
+  else if(MRI.qform_code > 0) {
     //https://github.com/Kitware/ITK/blob/master/Modules/IO/NIFTI/src/itkNiftiImageIO.cxx
     
     var a = 0.0, b = MRI.quatern_b, c = MRI.quatern_c, d = MRI.quatern_d;
@@ -194,9 +246,8 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
         (a*a+d*d-c*c-b*b)*zd,
         qz
         );
-
   }
-  else if(MRI.sform_code > 0) {
+  else if(MRI.sform_code > 0) {  
 
     var sx = MRI.srow_x, sy = MRI.srow_y, sz = MRI.srow_z;
     // fill IJKToRAS
@@ -206,7 +257,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
 
   }
   else if(MRI.qform_code == 0) {
-    
+
     // fill IJKToRAS
     goog.vec.Mat4.setRowValues(IJKToRAS, 0, MRI.pixdim[1], 0, 0, 0);
     goog.vec.Mat4.setRowValues(IJKToRAS, 1, 0, MRI.pixdim[2], 0, 0);
