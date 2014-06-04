@@ -363,6 +363,36 @@ X.volume.prototype.create_ = function(_info) {
  *
  * @inheritDoc
  */
+X.volume.prototype.destroy = function() {
+
+  // call destroy of parent
+  // call the update_ method of the superclass
+  goog.base(this, 'destroy');
+
+  this._image.length = 0;
+  this._children.length = 0;
+  this._slicesX._children.length = 0;
+  this._slicesX = 0;
+  this._slicesY._children.length = 0;
+  this._slicesY.length = 0;
+  this._slicesZ._children.length = 0;
+  this._slicesZ.length = 0;
+  this._BBox.length = 0;
+  this._childrenInfo.length = 0;
+  this._RASCenter.length = 0;
+  this._RASDimensions.length = 0;
+  this._RASSpacing.length = 0;
+  this._IJKVolume.length = 0;
+  this._IJKVolumeN.length = 0;
+  this._filedata.length = 0;
+
+};
+
+/**
+ * Re-show the slices or re-activate the volume rendering for this volume.
+ *
+ * @inheritDoc
+ */
 X.volume.prototype.modified = function(propagateEvent) {
 
   // by default, propagate event should be true
@@ -500,7 +530,7 @@ X.volume.prototype.slicing_ = function() {
       if(xyz != this._volumeRenderingDirection){
 
         _currentSlice['visible'] = false;
-        _currentSlice._opacity = 0.0; 
+        _currentSlice._opacity = 0.0;
 
       }
 
@@ -1329,7 +1359,7 @@ X.volume.prototype.sliceInfoChanged = function(index){
   // for each child
   for(var i=0; i<this._children[index]._children.length; i++){
     if(typeof this._children[index]._children[i] != 'undefined'){
-      
+
       if(this.hasLabelMap) {
         // add it to create the texture
         this._labelmap._children[index]._children[i].remove();
@@ -1338,7 +1368,7 @@ X.volume.prototype.sliceInfoChanged = function(index){
 
       this._children[index]._children[i].remove();
       this._children[index]._children[i] = null;
-    
+
     }
 
   }
@@ -1370,7 +1400,7 @@ X.volume.prototype.sliceInfoChanged = function(index){
 
     _slice._labelmap = _slice._texture;
     _slice._labelmap = this._labelmap._children[index]._children[Math.floor(this._childrenInfo[index]._nb/2)]._texture;
-    
+
   }
 
  this._children[index]._children[Math.floor(this._childrenInfo[index]._nb/2)] = _slice;
@@ -1379,10 +1409,10 @@ X.volume.prototype.sliceInfoChanged = function(index){
 
     this._indexX = Math.floor(this._childrenInfo[index]._nb/2);
     this._indexXold = Math.floor(this._childrenInfo[index]._nb/2);
-  
+
   }
   else if(index == 1) {
-    
+
     this._indexY = Math.floor(this._childrenInfo[index]._nb/2);
     this._indexYold = Math.floor(this._childrenInfo[index]._nb/2);
 
@@ -1391,7 +1421,7 @@ X.volume.prototype.sliceInfoChanged = function(index){
 
     this._indexZ = Math.floor(this._childrenInfo[index]._nb/2);
     this._indexZold = Math.floor(this._childrenInfo[index]._nb/2);
-  
+
   }
 
   // add it to renderer!
@@ -1463,9 +1493,9 @@ X.volume.prototype.volumeRendering_ = function(direction) {
     // store the direction
     this._volumeRenderingDirection = direction;
 
-    this._dirty = false;      
+    this._dirty = false;
 
-    // and that's it 
+    // and that's it
 
     return;
 
@@ -1475,12 +1505,12 @@ X.volume.prototype.volumeRendering_ = function(direction) {
   // we are using timeouts here, just for interaction with the user interface
   //
 
-    
+
   setTimeout(function() {
 
     // hide old volume rendering slices
     var _child = null;
-    
+
     if( this._volumeRenderingDirection >= 0 ){
 
       _child = this._children[this._volumeRenderingDirection];
@@ -1539,7 +1569,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
         _child._children[i]._visible = true;
 
       }
-      
+
     }
 
     this.onComputingProgress_(0.25);
@@ -1583,7 +1613,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
           _child._children[i]._visible = true;
 
-        } 
+        }
       }
 
       this.onComputingProgress_(0.50);
@@ -1627,8 +1657,8 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
              _child._children[i]._visible = true;
 
-          } 
-          
+          }
+
         }
 
         this.onComputingProgress_(0.75);
@@ -1672,7 +1702,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
              _child._children[i]._visible = true;
 
-            } 
+            }
 
           }
 
@@ -1683,14 +1713,14 @@ X.volume.prototype.volumeRendering_ = function(direction) {
             if (this._computing) {
 
               // add it to renderer!
-              this._children[direction].modified(true);            
+              this._children[direction].modified(true);
 
             }
 
             // store the direction
             this._volumeRenderingDirection = direction;
 
-            this._dirty = false;      
+            this._dirty = false;
 
             if (this._computing) {
               //call computing end callback
@@ -1772,7 +1802,7 @@ X.volume.prototype.onComputingEnd_ = function(direction) {
 /**
  * This callback gets fired when computation has to happen in order
  * to display volume rendering.
- * 
+ *
  * @param {!number} direction The direction to compute.
  * @public
  *
@@ -1786,7 +1816,7 @@ X.volume.prototype.onComputing = function(direction) {
 
 /**
  * This callback gets fired when computation is happening.
- * 
+ *
  * @param {!number} progress The current computation progress in percent.
  * @public
  *
@@ -1800,7 +1830,7 @@ X.volume.prototype.onComputingProgress = function(progress) {
 
 /**
  * This callback gets fired when computation is complete.
- * 
+ *
  * @param {!number} direction The direction which was computed.
  * @public
  *
@@ -1815,6 +1845,7 @@ X.volume.prototype.onComputingEnd = function(direction) {
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.volume', X.volume);
 goog.exportSymbol('X.volume.prototype.modified', X.volume.prototype.modified);
+goog.exportSymbol('X.volume.prototype.destroy', X.volume.prototype.destroy);
 goog.exportSymbol('X.volume.prototype.sliceInfoChanged', X.volume.prototype.sliceInfoChanged);
 goog.exportSymbol('X.volume.prototype.onComputing', X.volume.prototype.onComputing);
 goog.exportSymbol('X.volume.prototype.onComputingProgress', X.volume.prototype.onComputingProgress);

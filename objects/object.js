@@ -254,6 +254,33 @@ X.object.prototype.remove = function(propagateEvent) {
 
 };
 
+/**
+ * Destroy an object and its children to free the allocated memory.
+ */
+X.object.prototype.destroy = function() {
+
+  // extra security
+  goog.events.removeAll(this);
+
+  // check if this object has children
+  if (this._children.length > 0) {
+
+    // loop through the children and recursively remove the objects
+    var children = this._children;
+    var numberOfChildren = children.length;
+    var c = 0;
+
+    for (c = 0; c < numberOfChildren; c++) {
+      if (typeof(children[c]) != "undefined"){
+        this._children[c].destroy();
+      }
+    }
+  }
+
+  this._children.length = 0;
+  this._colortable = null;
+  this._scalars = null;
+};
 
 /**
  * Compare two X.objects by their opacity values and their distance to the
@@ -319,3 +346,4 @@ X.object.OPACITY_COMPARATOR = function(object1, object2) {
 goog.exportSymbol('X.object', X.object);
 goog.exportSymbol('X.object.prototype.modified', X.object.prototype.modified);
 goog.exportSymbol('X.object.prototype.remove', X.object.prototype.remove);
+goog.exportSymbol('X.object.prototype.destroy', X.object.prototype.destroy);
