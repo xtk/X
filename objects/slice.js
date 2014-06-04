@@ -202,9 +202,7 @@ X.slice.prototype.__defineSetter__('width', function(width) {
 });
 
 /**
- * Set the width of this slice.
- *
- * @param {number} width The width.
+ * Get the  up direction of this slice.
  */
 X.slice.prototype.__defineGetter__('up', function() {
 
@@ -215,7 +213,7 @@ X.slice.prototype.__defineGetter__('up', function() {
 /**
  * Set the width of this slice.
  *
- * @param {number} width The width.
+ * Get the  right direction of this slice.
  */
 X.slice.prototype.__defineGetter__('right', function() {
 

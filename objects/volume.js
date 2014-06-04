@@ -359,8 +359,6 @@ X.volume.prototype.create_ = function(_info) {
 };
 
 /**
- * Re-show the slices or re-activate the volume rendering for this volume.
- *
  * @inheritDoc
  */
 X.volume.prototype.destroy = function() {
@@ -372,7 +370,7 @@ X.volume.prototype.destroy = function() {
   this._image.length = 0;
   this._children.length = 0;
   this._slicesX._children.length = 0;
-  this._slicesX = 0;
+  this._slicesX.length = 0;
   this._slicesY._children.length = 0;
   this._slicesY.length = 0;
   this._slicesZ._children.length = 0;
