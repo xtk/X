@@ -272,6 +272,62 @@ X.volume = function(volume) {
    */
   this._data = null;
 
+  /**
+   * The information about the children slices
+   *
+   * @type {!Array}
+   * @protected
+   */
+  this._childrenInfo = [];
+
+  /**
+   * The volume center in RAS coordinates
+   *
+   * @type {!Array}
+   * @protected
+   */
+  this._RASCenter = [0, 0, 0];
+
+  /**
+   * The volume dimensions in RAS coordinates
+   *
+   * @type {!Array}
+   * @protected
+   */
+  this._RASDimensions = [0, 0, 0];
+
+  /**
+   * The volume spacing in RAS coordinates
+   *
+   * @type {!Array}
+   * @protected
+   */
+  this._RASSpacing = [0, 0, 0];
+
+  /**
+   * The volume pixel values in IJK coordinates
+   *
+   * @type {!Array}
+   * @protected
+   */
+  this._IJKVolume = [];
+
+  /**
+   * The volume normalized pixel values in IJK coordinates
+   *
+   * @type {!Array}
+   * @protected
+   */
+  this._IJKVolumeN = [];
+
+  /**
+   * The raw data
+   *
+   * @type {!Array}
+   * @protected
+   */
+  this._filedata = [];
+
   // inject functionality
   inject(this, new X.loadable()); // this object is loadable from a file
   inject(this, new X.thresholdable()); // this object is thresholdable
@@ -375,6 +431,7 @@ X.volume.prototype.destroy = function() {
   this._slicesY.length = 0;
   this._slicesZ._children.length = 0;
   this._slicesZ.length = 0;
+  this._data = null;
   this._BBox.length = 0;
   this._childrenInfo.length = 0;
   this._RASCenter.length = 0;
