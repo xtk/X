@@ -1200,6 +1200,11 @@ X.renderer.prototype.render_ = function(picking, invoked) {
  */
 X.renderer.prototype.destroy = function() {
 
+  // disconnect events listeners
+  goog.events.removeAll(this);
+  goog.events.unlisten(window, goog.events.EventType.RESIZE, this.onResize_,
+      false, this);
+
   // stop the rendering loop
   window.cancelAnimationFrame(this._AnimationFrameID);
 
