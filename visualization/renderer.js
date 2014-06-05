@@ -843,7 +843,7 @@ X.renderer.prototype.remove = function(object) {
 
   }
   else{
-    
+
     goog.events.removeAll(object);
 
     var _numberOfTopLevelObjects = this._topLevelObjects.length;
@@ -918,7 +918,7 @@ X.renderer.prototype.update_ = function(object) {
       goog.events.listen(object, X.event.events.COMPUTING_PROGRESS, this.onComputingProgress
           .bind(this));
 
-    }    
+    }
 
     if(!goog.events.hasListener(object, X.event.events.COMPUTING_END)) {
 
@@ -1115,8 +1115,6 @@ X.renderer.prototype.render = function() {
     // we need two flags here since the render loop repeats so fast
     // that there would be timing issues
     if (!this._loadingCompleted && !this._onShowtime) {
-
-        window.console.log('loadding completed');
 
       this._onShowtime = true;
       eval("this.onShowtime()");
