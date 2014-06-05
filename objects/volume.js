@@ -323,10 +323,10 @@ X.volume = function(volume) {
   /**
    * The raw data
    *
-   * @type {!Array}
+   * @type {?Array}
    * @protected
    */
-  this._filedata = [];
+  this._filedata = null;
 
   // inject functionality
   inject(this, new X.loadable()); // this object is loadable from a file
@@ -439,7 +439,7 @@ X.volume.prototype.destroy = function() {
   this._RASSpacing.length = 0;
   this._IJKVolume.length = 0;
   this._IJKVolumeN.length = 0;
-  this._filedata.length = 0;
+  this._filedata = null;
 
 };
 
