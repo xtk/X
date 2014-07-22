@@ -692,8 +692,6 @@ X.renderer2D.prototype.update_ = function(object) {
 
   }
 
-    _currentSlice = parseInt(_currentSlice);
-
   var _width = object._children[this._orientationIndex]._children[_currentSlice]._iWidth;
   var _height = object._children[this._orientationIndex]._children[_currentSlice]._iHeight;
   // spacing
@@ -956,8 +954,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   }
 
   //if slice do not exist yet, we have to set slice dimensions
-  _currentSlice = parseInt(_currentSlice);
-
   var _width2 = this._slices[parseInt(_currentSlice, 10)]._iWidth;
   var _height2 = this._slices[parseInt(_currentSlice, 10)]._iHeight;
   // spacing
@@ -1332,8 +1328,17 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
 X.renderer2D.prototype.getNormalizedScale = function(){
   return this._normalizedScale;
+};
 
-}
+X.renderer2D.prototype.getCanvasWidth = function(){
+  return this._canvas.width;
+};
+
+X.renderer2D.prototype.getCanvasHeight = function(){
+  return this._canvas.height;
+};
+
+
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer2D', X.renderer2D);
@@ -1358,6 +1363,6 @@ goog.exportSymbol('X.renderer2D.prototype.destroy',
     X.renderer2D.prototype.destroy);
 goog.exportSymbol('X.renderer2D.prototype.onSliceNavigation', X.renderer2D.prototype.onSliceNavigation);
 
-goog.exportSymbol('X.renderer2D.prototype.getWidth', X.renderer2D.prototype.getWidth);
-goog.exportSymbol('X.renderer2D.prototype.getHeight', X.renderer2D.prototype.getHeight);
+goog.exportSymbol('X.renderer2D.prototype.getCanvasWidth', X.renderer2D.prototype.getCanvasWidth);
+goog.exportSymbol('X.renderer2D.prototype.getCanvasHeight', X.renderer2D.prototype.getCanvasHeight);
 goog.exportSymbol('X.renderer2D.prototype.getNormalizedScale', X.renderer2D.prototype.getNormalizedScale);

@@ -217,10 +217,6 @@ X.renderer = function() {
   window.console
       .log('XTK release 10 -- ###TIMESTAMP### -- http://www.goXTK.com -- @goXTK');
 
-    /**
-     * The image is changed by thi scale to fit the container
-     */
-    this._normalizedScale = 1;
 
     /**
      *
