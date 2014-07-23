@@ -1319,6 +1319,14 @@ X.renderer2D.prototype.getCanvasHeight = function(){
   return this._canvas.height;
 };
 
+X.renderer2D.prototype.getSliceWidth = function(){
+    return this._sliceWidth;
+};
+
+X.renderer2D.prototype.getSliceHeight = function(){
+    return this._sliceHeight;
+};
+
 
 
 // export symbols (required for advanced compilation)
@@ -1346,5 +1354,9 @@ goog.exportSymbol('X.renderer2D.prototype.onSliceNavigation', X.renderer2D.proto
 
 goog.exportSymbol('X.renderer2D.prototype.getCanvasWidth', X.renderer2D.prototype.getCanvasWidth);
 goog.exportSymbol('X.renderer2D.prototype.getCanvasHeight', X.renderer2D.prototype.getCanvasHeight);
+
+goog.exportSymbol('X.renderer2D.prototype.getSliceWidth', X.renderer2D.prototype.getSliceWidth);
+goog.exportSymbol('X.renderer2D.prototype.getSliceHeight', X.renderer2D.prototype.getSliceHeight);
+
 goog.exportSymbol('X.renderer2D.prototype.getNormalizedScale', X.renderer2D.prototype.getNormalizedScale);
 goog.exportSymbol('X.renderer2D.prototype.afterRender', X.renderer2D.prototype.afterRender);
