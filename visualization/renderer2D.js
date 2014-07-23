@@ -201,6 +201,8 @@ X.renderer2D = function() {
    */
   this._radiological = true;
 
+  this._normalizedScale = 1;
+
 };
 // inherit from X.base
 goog.inherits(X.renderer2D, X.renderer);
@@ -1345,3 +1347,4 @@ goog.exportSymbol('X.renderer2D.prototype.onSliceNavigation', X.renderer2D.proto
 goog.exportSymbol('X.renderer2D.prototype.getCanvasWidth', X.renderer2D.prototype.getCanvasWidth);
 goog.exportSymbol('X.renderer2D.prototype.getCanvasHeight', X.renderer2D.prototype.getCanvasHeight);
 goog.exportSymbol('X.renderer2D.prototype.getNormalizedScale', X.renderer2D.prototype.getNormalizedScale);
+goog.exportSymbol('X.renderer2D.prototype.afterRender', X.renderer2D.prototype.afterRender);

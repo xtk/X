@@ -1138,8 +1138,7 @@ X.renderer.prototype.render = function() {
   this._AnimationFrameID = window.requestAnimationFrame(this.render.bind(this));
   eval("this.onRender()");
   this.render_(false, true);
-
-    this.afterRender();
+  eval("this.afterRender()");
 
 };
 
