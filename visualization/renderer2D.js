@@ -1181,10 +1181,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   this._context.globalAlpha = 1.0; // draw fully opaque}
 
   // move to the middle
-  this._translatedOrigin.x = _width /  2 / this._normalizedScale;
-  this._translatedOrigin.y = _height / 2 /   this._normalizedScale;
-
-  this._context.translate(this._translatedOrigin.x, this._translatedOrigin.y);
+  this._context.translate(_width / 2 /this._normalizedScale, _height / 2 /
+      this._normalizedScale);
 
   // Rotate the Sagittal viewer
   if(this._orientation == "X") {

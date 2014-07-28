@@ -217,15 +217,6 @@ X.renderer = function() {
   window.console
       .log('XTK release 10 -- ###TIMESTAMP### -- http://www.goXTK.com -- @goXTK');
 
-
-    /**
-     *
-     *
-     */
-    this._translatedOrigin = {
-        x: 0,
-        y: 0
-    }
 };
 // inherit from X.base
 goog.inherits(X.renderer, X.base);
