@@ -406,6 +406,36 @@ X.renderer2D.prototype.__defineGetter__('radiological', function() {
 
 });
 
+X.renderer2D.prototype.__defineGetter__('normalizedScale', function() {
+
+  return this._normalizedScale;
+
+});
+
+X.renderer2D.prototype.__defineGetter__('canvasWidth', function() {
+
+  return this._canvas.width;
+
+});
+
+X.renderer2D.prototype.__defineGetter__('canvasHeight', function() {
+
+  return this._canvas.height;
+
+});
+
+X.renderer2D.prototype.__defineGetter__('sliceWidth', function() {
+
+  return this._sliceWidth;
+
+});
+
+X.renderer2D.prototype.__defineGetter__('sliceHeight', function() {
+
+  return this._sliceHeight;
+
+});
+
 
 /**
  * Set the convention for this renderer. There is a difference between radiological and neurological
@@ -1305,28 +1335,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
 };
 
-X.renderer2D.prototype.getNormalizedScale = function(){
-  return this._normalizedScale;
-};
-
-X.renderer2D.prototype.getCanvasWidth = function(){
-  return this._canvas.width;
-};
-
-X.renderer2D.prototype.getCanvasHeight = function(){
-  return this._canvas.height;
-};
-
-X.renderer2D.prototype.getSliceWidth = function(){
-    return this._sliceWidth;
-};
-
-X.renderer2D.prototype.getSliceHeight = function(){
-    return this._sliceHeight;
-};
-
-
-
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer2D', X.renderer2D);
 goog.exportSymbol('X.renderer2D.prototype.init', X.renderer2D.prototype.init);
@@ -1350,11 +1358,4 @@ goog.exportSymbol('X.renderer2D.prototype.destroy',
     X.renderer2D.prototype.destroy);
 goog.exportSymbol('X.renderer2D.prototype.onSliceNavigation', X.renderer2D.prototype.onSliceNavigation);
 
-goog.exportSymbol('X.renderer2D.prototype.getCanvasWidth', X.renderer2D.prototype.getCanvasWidth);
-goog.exportSymbol('X.renderer2D.prototype.getCanvasHeight', X.renderer2D.prototype.getCanvasHeight);
-
-goog.exportSymbol('X.renderer2D.prototype.getSliceWidth', X.renderer2D.prototype.getSliceWidth);
-goog.exportSymbol('X.renderer2D.prototype.getSliceHeight', X.renderer2D.prototype.getSliceHeight);
-
-goog.exportSymbol('X.renderer2D.prototype.getNormalizedScale', X.renderer2D.prototype.getNormalizedScale);
 goog.exportSymbol('X.renderer2D.prototype.afterRender', X.renderer2D.prototype.afterRender);
