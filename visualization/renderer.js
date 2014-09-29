@@ -905,7 +905,7 @@ X.renderer.prototype.update_ = function(object) {
       goog.events.listen(object, X.event.events.COMPUTING_PROGRESS, this.onComputingProgress
           .bind(this));
 
-    }    
+    }
 
     if(!goog.events.hasListener(object, X.event.events.COMPUTING_END)) {
 
@@ -1129,6 +1129,7 @@ X.renderer.prototype.render = function() {
   this._AnimationFrameID = window.requestAnimationFrame(this.render.bind(this));
   eval("this.onRender()");
   this.render_(false, true);
+  eval("this.afterRender()");
 
 };
 
@@ -1155,6 +1156,16 @@ X.renderer.prototype.onRender = function() {
   // do nothing
 };
 
+
+/**
+ * Overload this function to execute code after each rendering completed.
+ *
+ * @public
+ */
+X.renderer.prototype.afterRender = function() {
+
+    // do nothing
+};
 
 /**
  * Internal function to perform the actual rendering by looping through all
