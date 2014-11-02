@@ -359,7 +359,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
           break;
       }
 
-      first_image_data.set(_data, _distance_position * first_slice_size);
+      first_image_data.set(_data, Math.round(_distance_position) * first_slice_size);
 
     }
 
