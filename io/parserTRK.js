@@ -112,7 +112,8 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   //
   // parse the data
 
-  var numberOfFibers = header.n_count;
+  // if n_count not provided, we parse the data until end of points
+  var numberOfFibers = (header.n_count === 0) ? Infinity : header.n_count;
   var numberOfScalars = header.n_scalars;
 
   // loop through all fibers
@@ -139,6 +140,13 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
 
   var i;
   for (i = 0; i < numberOfFibers; i++) {
+    // if undefined, it means we have parsed all the data
+    // (useful if n_count not defined or === 0)
+    if(typeof(_numPoints[offset]) === 'undefined'){
+      numberOfFibers = i;
+      break;
+    }
+
     var numPoints = _numPoints[offset];
 
 
@@ -345,6 +353,7 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   if(vox_to_ras_defined == false){
     header.vox_to_ras[0] = header.vox_to_ras[5] = header.vox_to_ras[10] = header.vox_to_ras[15] = 1;
   }
+
 
   X.TIMERSTOP(this._classname + '.parse');
 
