@@ -263,7 +263,8 @@ X.shaders = function() {
   t2 += '   vec3 light = vec3(0.0, 0.0, 1.0);\n';
   // t2 += ' vec3 lightDirection = vec3(-10.0, 4.0, -20.0);\n';
   // I liked the following better
-  t2 += '   vec3 lightDirection = vec3(0,0,-10);\n';
+  //t2 += '   vec3 lightDirection = vec3(0,0,-10);\n';
+  t2 += '   vec3 lightDirection = vec3(-10,0,-10);\n';
   t2 += '   lightDirection = normalize(lightDirection);\n';
   t2 += '   vec3 eyeDirection = normalize(-fVertexPosition.xyz);\n';
   t2 += '   vec3 reflectionDirection = reflect(-lightDirection, nNormal);\n';
@@ -271,12 +272,14 @@ X.shaders = function() {
   // configure specular (10.0 is material property), diffuse and ambient
   t2 += '   float specular = pow(max(dot(reflectionDirection, eyeDirection), 0.0), 10.0);\n';
   t2 += '   float diffuse = 0.8 * max(dot(nNormal, light), 0.0);\n';
-  t2 += '   float ambient = 0.3;\n';
+  //t2 += '   float ambient = 0.3;\n';
+  t2 += '   float ambient = 0.2;\n';
   // .. and now setup the fragment color using these three values and the
   // opacity
   t2 += '   gl_FragColor = vec4(fragmentColor * ambient +\n';
   t2 += '                       fragmentColor * diffuse +\n';
-  t2 += '                       vec3(0.2, 0.2, 0.2) * specular,\n';
+  //t2 += '                       vec3(0.2, 0.2, 0.2) * specular,\n';
+  t2 += '                       vec3(0.0, 0.0, 0.0) * specular,\n';
   t2 += '                       objectOpacity);\n';
   t2 += ' }\n';
   t2 += '}\n';
@@ -358,6 +361,17 @@ X.shaders.prototype.vertex = function() {
 
 };
 
+/**
+ * Set the vertex shader source of this shader pair.
+ *
+ * @param {!string} The vertex shader source.
+ * @public
+ */
+X.shaders.prototype.__defineSetter__('vertex', function(vertex) {
+
+  this._vertexshaderSource = vertex;
+
+});
 
 /**
  * Get the fragment shader source of this shader pair.
@@ -420,3 +434,6 @@ X.shaders.prototype.validate = function() {
   return true;
 
 };
+
+// export symbols (required for advanced compilation)
+goog.exportSymbol('X.shaders', X.shaders);

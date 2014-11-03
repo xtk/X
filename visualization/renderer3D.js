@@ -1149,6 +1149,22 @@ X.renderer3D.prototype.update_ = function(object) {
       }
       var glScalarBuffer = this._context.createBuffer();
 
+      // find and store scalars min/max if not already done
+      if ( scalars.min === Infinity && scalars.max === -Infinity ) {
+        var scalarsMin = Infinity;
+        var scalarsMax = -Infinity;
+        var value = 0;
+        for ( var i = 0; i < scalarsArray.length; ++i ) {
+          value = scalarsArray[i];
+          if ( !isNaN(value) ) {
+            scalarsMin = Math.min(scalarsMin, value);
+            scalarsMax = Math.max(scalarsMax, value);
+          }
+        }
+        scalars._min = scalarsMin;
+        scalars._max = scalarsMax;
+      }
+
       // bind and fill with colors defined above
       this._context.bindBuffer(this._context.ARRAY_BUFFER, glScalarBuffer);
       this._context.bufferData(this._context.ARRAY_BUFFER, scalarsArray,
@@ -2418,3 +2434,4 @@ goog.exportSymbol('X.renderer3D.prototype.resetViewAndRender',
 goog.exportSymbol('X.renderer3D.prototype.pick', X.renderer3D.prototype.pick);
 goog.exportSymbol('X.renderer3D.prototype.pick3d', X.renderer3D.prototype.pick3d);
 goog.exportSymbol('X.renderer3D.prototype.afterRender', X.renderer3D.prototype.afterRender);
+goog.exportSymbol('X.renderer3D.prototype.addShaders', X.renderer3D.prototype.addShaders);

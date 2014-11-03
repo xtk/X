@@ -91,11 +91,11 @@ goog.inherits(X.event, goog.events.Event);
  * @param {string} id The id.
  * @return {string} A unique id.
  */
-X.event.uniqueId = function(id) {
-
-  return goog.events.getUniqueId(id);
-  
-};
+//X.event.uniqueId = function(id) {
+//
+//  return goog.events.getUniqueId(id);
+//  
+//};
 
 /**
  * The events of this class.
@@ -104,49 +104,49 @@ X.event.uniqueId = function(id) {
  */
 X.event.events = {
   // the pan event, where the event and focus get moved accordingly
-  PAN: X.event.uniqueId('pan'),
+  PAN: goog.events.getUniqueId('pan'),
   
   // the rotate event, where only the event gets moved
-  ROTATE: X.event.uniqueId('rotate'),
+  ROTATE: goog.events.getUniqueId('rotate'),
   
   // the zoom event, where the event Z coordinate changes
-  ZOOM: X.event.uniqueId('zoom'),
+  ZOOM: goog.events.getUniqueId('zoom'),
   
   // the scroll event
-  SCROLL: X.event.uniqueId('scroll'),
+  SCROLL: goog.events.getUniqueId('scroll'),
   
   // the render event
-  RENDER: X.event.uniqueId('render'),
+  RENDER: goog.events.getUniqueId('render'),
   
   // the reset view event
-  RESETVIEW: X.event.uniqueId('resetview'),
+  RESETVIEW: goog.events.getUniqueId('resetview'),
   
   // window_level modification event
-  WINDOWLEVEL: X.event.uniqueId('windowlevel'),
+  WINDOWLEVEL: goog.events.getUniqueId('windowlevel'),
   
   // the object modified event
-  MODIFIED: X.event.uniqueId('modified'),
+  MODIFIED: goog.events.getUniqueId('modified'),
 
   // the object remove event
-  REMOVE: X.event.uniqueId('remove'),
+  REMOVE: goog.events.getUniqueId('remove'),
   
   // the loading progress event
-  PROGRESS: X.event.uniqueId('progress'),
+  PROGRESS: goog.events.getUniqueId('progress'),
   
   // the hover event
-  HOVER: X.event.uniqueId('hover'),
+  HOVER: goog.events.getUniqueId('hover'),
   
   // the hover end event
-  HOVER_END: X.event.uniqueId('hover_end'),
+  HOVER_END: goog.events.getUniqueId('hover_end'),
 
   // the computing event
-  COMPUTING: X.event.uniqueId('computing'),
+  COMPUTING: goog.events.getUniqueId('computing'),
 
   // the computing end event
-  COMPUTING_END: X.event.uniqueId('computing_end'),
+  COMPUTING_END: goog.events.getUniqueId('computing_end'),
 
   // the computing progress event
-  COMPUTING_PROGRESS: X.event.uniqueId('computing_progress')
+  COMPUTING_PROGRESS: goog.events.getUniqueId('computing_progress')
 
 };
 
