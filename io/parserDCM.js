@@ -320,6 +320,9 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
         break;
     }
 
+    console.log(first_image[0].bits_allocated);
+    console.log(first_image_size);
+
     object._spacing = first_image[0]['pixel_spacing'];
 
     // fill data container
@@ -352,7 +355,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
           var _x = first_image[_i]['image_position_patient'][0] - first_image[0]['image_position_patient'][0];
           var _y = first_image[_i]['image_position_patient'][1] - first_image[0]['image_position_patient'][1];
           var _z = first_image[_i]['image_position_patient'][2] - first_image[0]['image_position_patient'][2];
-          _distance_position = Math.sqrt(_x*_x + _y*_y  + _z*_z)/first_image[0]['pixel_spacing'][2];
+          _distance_position = Math.round(Math.sqrt(_x*_x + _y*_y  + _z*_z)/first_image[0]['pixel_spacing'][2]);
           break;
         case 'instance_number':
           _distance_position = first_image[_i]['instance_number'] - first_image[0]['instance_number'];
@@ -363,7 +366,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       }
 
       first_image_data.set(_data, _distance_position * first_slice_size);
-
     }
 
     volumeAttributes.data = first_image_data;
