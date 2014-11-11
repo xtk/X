@@ -144,30 +144,59 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
   }
   
   var IJKToRAS = goog.vec.Mat4.createFloat32Identity();
-  goog.vec.Mat4.setRowValues(IJKToRAS,
-    0,
-    _spaceX*this.vectors[0][0],
-    _spaceX*this.vectors[1][0],
-    _spaceX*this.vectors[2][0],
-    _spaceX*this.space_origin[0]);
-  goog.vec.Mat4.setRowValues(IJKToRAS,
-    1,
-    _spaceY*this.vectors[0][1],
-    _spaceY*this.vectors[1][1],
-    _spaceY*this.vectors[2][1],
-    _spaceY*this.space_origin[1]);
-  goog.vec.Mat4.setRowValues(IJKToRAS,
-    2,
-    _spaceZ*this.vectors[0][2],
-    _spaceZ*this.vectors[1][2],
-    _spaceZ*this.vectors[2][2],
-    _spaceZ*this.space_origin[2]);
-  goog.vec.Mat4.setRowValues(IJKToRAS,
-    3,
-    0,
-    0,
-    0,
-    1);
+
+  if(object['reslicing'] == 'false' || object['reslicing'] == false){
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      0,
+      _spaceX,
+      0,
+      0,
+      0);
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      1,
+      0,
+      _spaceY,
+      0,
+      0);
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      2,
+      0,
+      0,
+      _spaceZ,
+      0);
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      3,
+      0,
+      0,
+      0,
+      1);
+  }
+  else{
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      0,
+      _spaceX*this.vectors[0][0],
+      _spaceX*this.vectors[1][0],
+      _spaceX*this.vectors[2][0],
+      _spaceX*this.space_origin[0]);
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      1,
+      _spaceY*this.vectors[0][1],
+      _spaceY*this.vectors[1][1],
+      _spaceY*this.vectors[2][1],
+      _spaceY*this.space_origin[1]);
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      2,
+      _spaceZ*this.vectors[0][2],
+      _spaceZ*this.vectors[1][2],
+      _spaceZ*this.vectors[2][2],
+      _spaceZ*this.space_origin[2]);
+    goog.vec.Mat4.setRowValues(IJKToRAS,
+      3,
+      0,
+      0,
+      0,
+      1);
+    }
 
   MRI.IJKToRAS = IJKToRAS;
   MRI.RASToIJK = goog.vec.Mat4.createFloat32();
