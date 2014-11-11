@@ -63,8 +63,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
   // X.TIMER(this._classname + '.parse');
   // needed, for renderer2d and 3d legacy...
 
-  window.console.log(object);
-
   object.MRI = {};
   object.MRI.loaded_files = 0;
 
@@ -319,9 +317,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
         window.console.log("Unknown number of bits allocated - using default: 32 bits");
         break;
     }
-
-    console.log(first_image[0].bits_allocated);
-    console.log(first_image_size);
 
     object._spacing = first_image[0]['pixel_spacing'];
 
