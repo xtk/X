@@ -81,7 +81,7 @@ X.slice = function(slice) {
    * @protected
    */
   this._up = [0, 1, 0];
-  
+
   this._right= [1, 0, 0];
 
   /**
@@ -180,7 +180,7 @@ X.slice.prototype.copy_ = function(slice) {
 
 /**
  * Set the height of this slice.
- * 
+ *
  * @param {number} height The height.
  */
 X.slice.prototype.__defineSetter__('height', function(height) {
@@ -192,12 +192,32 @@ X.slice.prototype.__defineSetter__('height', function(height) {
 
 /**
  * Set the width of this slice.
- * 
+ *
  * @param {number} width The width.
  */
 X.slice.prototype.__defineSetter__('width', function(width) {
 
   this._width = width;
+
+});
+
+/**
+ * Get the  up direction of this slice.
+ */
+X.slice.prototype.__defineGetter__('up', function() {
+
+  return this._up;
+
+});
+
+/**
+ * Set the width of this slice.
+ *
+ * Get the  right direction of this slice.
+ */
+X.slice.prototype.__defineGetter__('right', function() {
+
+  return this._right;
 
 });
 
@@ -272,7 +292,7 @@ X.slice.prototype.setup = function(center, front, up, right, width, height, bord
   this._front = front;
 
   this._up = up;
-  
+
   this._right = right;
 
   this._width = width;
@@ -292,11 +312,28 @@ X.slice.prototype.setup = function(center, front, up, right, width, height, bord
  * Create a default X.slice.
  */
 X.slice.prototype.create = function() {
-  
+
   this.create_();
-  
+
 };
 
+/**
+ * @inheritDoc
+ */
+X.slice.prototype.destroy = function(){
+
+  // call destroy of parent
+  goog.base(this, 'destroy');
+
+  this._center.length = 0;
+  this._front.length = 0;
+  this._up.length = 0;
+  this._right.length = 0;
+  this._textureCoordinateMap.length = 0;
+  this._volume = null;
+  this._labelmap = null;
+  this._borderColor.length = 0;
+}
 
 /**
  * Create the slice.
@@ -310,29 +347,29 @@ X.slice.prototype.create_ = function() {
       this._front[2]).normalize();
   var upVector = new goog.math.Vec3(this._up[0], this._up[1], this._up[2]);
   var rightVector = new goog.math.Vec3(this._right[0], this._right[1], this._right[2]);
-  
+
   var centerVector = new goog.math.Vec3(this._center[0], this._center[1],
       this._center[2]);
-  
+
   // -right -up
   var dirVector = goog.math.Vec3.sum(rightVector.clone().invert().scale(this._width/2), upVector
       .clone().invert().scale(this._height/2));
   // move center in this direction
   var point0 = new goog.math.Vec3(dirVector.x + centerVector.x, dirVector.y + centerVector.y,
       dirVector.z + centerVector.z);
-  
+
   // -right +up
   dirVector = goog.math.Vec3.sum(rightVector.clone().invert().scale(this._width/2), upVector.clone().scale(this._height/2));
   var point1 = new goog.math.Vec3(dirVector.x + centerVector.x, dirVector.y + centerVector.y,
       dirVector.z + centerVector.z);
-  
+
   // +right -up
   dirVector = goog.math.Vec3.sum(rightVector.clone().scale(this._width/2), upVector.clone().invert().scale(this._height/2));
   var point2 = new goog.math.Vec3(dirVector.x + centerVector.x, dirVector.y + centerVector.y,
       dirVector.z + centerVector.z);
-  
+
   var point3 = point2;
-  
+
   // +right +up
   dirVector = goog.math.Vec3.sum(rightVector.clone().scale(this._width/2), upVector.clone().scale(this._height/2));
   var point4 = new goog.math.Vec3(dirVector.x + centerVector.x, dirVector.y + centerVector.y,
@@ -353,7 +390,7 @@ X.slice.prototype.create_ = function() {
   this._points.add(point3.x, point3.y, point3.z); // 3
   this._points.add(point4.x, point4.y, point4.z); // 4
   this._points.add(point5.x, point5.y, point5.z); // 5
-  
+
   // add the normals based on the orientation (we don't really need them since
   // we assume each Slice has a texture)
   this._normals.add(frontVector.x, frontVector.y, frontVector.z);
@@ -402,3 +439,4 @@ X.slice.prototype.create_ = function() {
 // constructors with duck typing)
 goog.exportSymbol('X.slice', X.slice);
 goog.exportSymbol('X.slice.prototype.create', X.slice.prototype.create);
+goog.exportSymbol('X.slice.prototype.destroy', X.slice.prototype.destroy);

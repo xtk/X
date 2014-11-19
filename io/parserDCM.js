@@ -62,6 +62,7 @@ goog.inherits(X.parserDCM, X.parser);
 X.parserDCM.prototype.parse = function(container, object, data, flag) {
   // X.TIMER(this._classname + '.parse');
   // needed, for renderer2d and 3d legacy...
+
   object.MRI = {};
   object.MRI.loaded_files = 0;
 
@@ -349,7 +350,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
           var _x = first_image[_i]['image_position_patient'][0] - first_image[0]['image_position_patient'][0];
           var _y = first_image[_i]['image_position_patient'][1] - first_image[0]['image_position_patient'][1];
           var _z = first_image[_i]['image_position_patient'][2] - first_image[0]['image_position_patient'][2];
-          _distance_position = Math.sqrt(_x*_x + _y*_y  + _z*_z)/first_image[0]['pixel_spacing'][2];
+          _distance_position = Math.round(Math.sqrt(_x*_x + _y*_y  + _z*_z)/first_image[0]['pixel_spacing'][2]);
           break;
         case 'instance_number':
           _distance_position = first_image[_i]['instance_number'] - first_image[0]['instance_number'];
@@ -360,7 +361,6 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
       }
 
       first_image_data.set(_data, _distance_position * first_slice_size);
-
     }
 
     volumeAttributes.data = first_image_data;
@@ -422,52 +422,79 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     //
     ////////////////////////////////////////////////////////////////////////
     
-    switch(_ordering){
-      case 'image_position_patient':
-
-        var _x_cosine = new goog.math.Vec3(first_image[0]['image_orientation_patient'][0],
-          first_image[ 0 ]['image_orientation_patient'][1], first_image[ 0 ]['image_orientation_patient'][2]);
-        var _y_cosine = new goog.math.Vec3(first_image[ 0 ]['image_orientation_patient'][3],
-          first_image[ 0 ]['image_orientation_patient'][4], first_image[ 0 ]['image_orientation_patient'][5]);
-        var _z_cosine = goog.math.Vec3.cross(_x_cosine, _y_cosine);
-
+    if(object['reslicing'] == 'false' || object['reslicing'] == false){
         goog.vec.Mat4.setRowValues(IJKToRAS,
           0,
-          -first_image[ 0 ]['image_orientation_patient'][0]*first_image[0]['pixel_spacing'][0],
-          -first_image[ 0 ]['image_orientation_patient'][3]*first_image[0]['pixel_spacing'][1],
-          -_z_cosine.x*first_image[0]['pixel_spacing'][2],
-          -_origin[0]);
+          first_image[0]['pixel_spacing'][0],
+          0,
+          0,
+          0);
           // - first_image[0]['pixel_spacing'][0]/2);
         goog.vec.Mat4.setRowValues(IJKToRAS,
           1,
-          -first_image[ 0 ]['image_orientation_patient'][1]*first_image[0]['pixel_spacing'][0],
-          -first_image[ 0 ]['image_orientation_patient'][4]*first_image[0]['pixel_spacing'][1],
-          -_z_cosine.y*first_image[0]['pixel_spacing'][2],
-          -_origin[1]);
+          0,
+          first_image[0]['pixel_spacing'][1],
+          0,
+          0);
           // - first_image[0]['pixel_spacing'][1]/2);
         goog.vec.Mat4.setRowValues(IJKToRAS,
           2,
-          first_image[ 0 ]['image_orientation_patient'][2]*first_image[0]['pixel_spacing'][0],
-          first_image[ 0 ]['image_orientation_patient'][5]*first_image[0]['pixel_spacing'][1],
-          _z_cosine.z*first_image[0]['pixel_spacing'][2],
-          _origin[2]);
+          0,
+          0,
+          first_image[0]['pixel_spacing'][2],
+          0);
           // + first_image[0]['pixel_spacing'][2]/2);
         goog.vec.Mat4.setRowValues(IJKToRAS,
           3,0,0,0,1);
-        break;
-      case 'instance_number':
-        goog.vec.Mat4.setRowValues(IJKToRAS,
-          0,-1,0,0,-_origin[0]);
-        goog.vec.Mat4.setRowValues(IJKToRAS,
-          1,-0,-1,-0,-_origin[1]);
-        goog.vec.Mat4.setRowValues(IJKToRAS,
-          2,0,0,1,_origin[2]);
-        goog.vec.Mat4.setRowValues(IJKToRAS,
-          3,0,0,0,1);
-        break;
-      default:
-        window.console.log("Unkown ordering mode - returning: " + _ordering);
-        break;
+    }
+    else{
+      switch(_ordering){
+        case 'image_position_patient':
+
+          var _x_cosine = new goog.math.Vec3(first_image[0]['image_orientation_patient'][0],
+            first_image[ 0 ]['image_orientation_patient'][1], first_image[ 0 ]['image_orientation_patient'][2]);
+          var _y_cosine = new goog.math.Vec3(first_image[ 0 ]['image_orientation_patient'][3],
+            first_image[ 0 ]['image_orientation_patient'][4], first_image[ 0 ]['image_orientation_patient'][5]);
+          var _z_cosine = goog.math.Vec3.cross(_x_cosine, _y_cosine);
+
+          goog.vec.Mat4.setRowValues(IJKToRAS,
+            0,
+            -first_image[ 0 ]['image_orientation_patient'][0]*first_image[0]['pixel_spacing'][0],
+            -first_image[ 0 ]['image_orientation_patient'][3]*first_image[0]['pixel_spacing'][1],
+            -_z_cosine.x*first_image[0]['pixel_spacing'][2],
+            -_origin[0]);
+            // - first_image[0]['pixel_spacing'][0]/2);
+          goog.vec.Mat4.setRowValues(IJKToRAS,
+            1,
+            -first_image[ 0 ]['image_orientation_patient'][1]*first_image[0]['pixel_spacing'][0],
+            -first_image[ 0 ]['image_orientation_patient'][4]*first_image[0]['pixel_spacing'][1],
+            -_z_cosine.y*first_image[0]['pixel_spacing'][2],
+            -_origin[1]);
+            // - first_image[0]['pixel_spacing'][1]/2);
+          goog.vec.Mat4.setRowValues(IJKToRAS,
+            2,
+            first_image[ 0 ]['image_orientation_patient'][2]*first_image[0]['pixel_spacing'][0],
+            first_image[ 0 ]['image_orientation_patient'][5]*first_image[0]['pixel_spacing'][1],
+            _z_cosine.z*first_image[0]['pixel_spacing'][2],
+            _origin[2]);
+            // + first_image[0]['pixel_spacing'][2]/2);
+          goog.vec.Mat4.setRowValues(IJKToRAS,
+            3,0,0,0,1);
+          break;
+        case 'instance_number':
+          goog.vec.Mat4.setRowValues(IJKToRAS,
+            0,-1,0,0,-_origin[0]);
+          goog.vec.Mat4.setRowValues(IJKToRAS,
+            1,-0,-1,-0,-_origin[1]);
+          goog.vec.Mat4.setRowValues(IJKToRAS,
+            2,0,0,1,_origin[2]);
+          goog.vec.Mat4.setRowValues(IJKToRAS,
+            3,0,0,0,1);
+          break;
+        default:
+          window.console.log("Unkown ordering mode - returning: " + _ordering);
+          break;
+      }
     }
 
     volumeAttributes.IJKToRAS = IJKToRAS;

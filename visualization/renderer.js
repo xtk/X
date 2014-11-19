@@ -843,7 +843,20 @@ X.renderer.prototype.remove = function(object) {
 
   }
   else{
-      goog.events.removeAll(object);
+
+    goog.events.removeAll(object);
+
+    var _numberOfTopLevelObjects = this._topLevelObjects.length;
+
+    var _y;
+    for (_y = 0; _y < _numberOfTopLevelObjects; _y++) {
+
+      if(this._topLevelObjects[_y]._id == object._id){
+        this._topLevelObjects[_y] = null;
+        this._topLevelObjects.splice(_y, 1);
+        return true;
+      }
+    }
   }
 
 	// to be overloaded
@@ -965,6 +978,8 @@ X.renderer.prototype.get = function(id) {
 X.renderer.prototype.printScene = function() {
 
   var _numberOfTopLevelObjects = this._topLevelObjects.length;
+  // window.console.log(_numberOfTopLevelObjects);
+  // window.console.log(this._objects);
 
   var _y;
   for (_y = 0; _y < _numberOfTopLevelObjects; _y++) {
@@ -987,6 +1002,11 @@ X.renderer.prototype.printScene = function() {
  */
 X.renderer.prototype.generateTree_ = function(object, level) {
 
+  // for slices, container is right size but empty
+  if(typeof(object) == 'undefined'){
+    return;
+  }
+
   var _output = "";
 
   var _l = 0;
@@ -998,7 +1018,8 @@ X.renderer.prototype.generateTree_ = function(object, level) {
 
   _output += object._id;
 
-  window.console.log(_output);
+  // window.console.log(object);
+  // window.console.log(_output);
 
   if (object._children.length > 0) {
 
@@ -1051,8 +1072,6 @@ X.renderer.prototype.render = function() {
     return;
 
   }
-
-
 
   //
   // LOADING..
@@ -1191,6 +1210,11 @@ X.renderer.prototype.render_ = function(picking, invoked) {
  * @public
  */
 X.renderer.prototype.destroy = function() {
+
+  // disconnect events listeners
+  goog.events.removeAll(this);
+  goog.events.unlisten(window, goog.events.EventType.RESIZE, this.onResize_,
+      false, this);
 
   // stop the rendering loop
   window.cancelAnimationFrame(this._AnimationFrameID);

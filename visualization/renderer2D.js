@@ -207,7 +207,19 @@ X.renderer2D = function() {
 // inherit from X.base
 goog.inherits(X.renderer2D, X.renderer);
 
+/**
+ * @inheritDoc
+ */
+X.renderer2D.prototype.remove = function(object) {
 
+  // call the remove_ method of the superclass
+  goog.base(this, 'remove', object);
+
+  this._objects.remove(object);
+
+  return true;
+
+};
 /**
  * Overload this function to execute code after scrolling has completed and just
  * before the next rendering call.
@@ -562,6 +574,20 @@ X.renderer2D.prototype.volumeChildrenIndex_ = function(targetOrientation) {
 };
 
 
+ /**
+ * Get the existing X.object with the given id.
+ * 
+ * @param {!X.object} object The displayable object to setup within this
+ *          renderer.
+ * @public
+ */
+ X.renderer2D.prototype.update = function(object) {
+    // update volume info
+    this.update_(object);
+    // force redraw
+    this._currentSlice = -1;
+ }
+
 /**
  * @inheritDoc
  */
@@ -651,11 +677,6 @@ X.renderer2D.prototype.update_ = function(object) {
     } else if (object.MRI.loaded_files != file.length) {
 
       // still loading
-      return;
-
-    } else if (existed && !object._dirty) {
-
-      // already parsed the volume
       return;
 
     }
@@ -963,7 +984,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     _currentSlice = _volume['indexZ'];
 
   }
-
+  
   //if slice do not exist yet, we have to set slice dimensions
   var _width2 = this._slices[parseInt(_currentSlice, 10)]._iWidth;
   var _height2 = this._slices[parseInt(_currentSlice, 10)]._iHeight;
