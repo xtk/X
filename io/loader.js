@@ -225,15 +225,15 @@ X.loader.prototype.load = function(container, object) {
   var request = new XMLHttpRequest();
 
   // listen to abort events
-  goog.events.listenOnce(request, 'abort', this.failed.bind(this, request,
+  goog.events.listen(request, 'abort', this.failed.bind(this, request,
       container, object));
 
   // listen to error events
-  goog.events.listenOnce(request, 'error', this.failed.bind(this, request,
+  goog.events.listen(request, 'error', this.failed.bind(this, request,
       container, object));
 
   // listen to completed events which triggers parsing
-  goog.events.listenOnce(request, 'load', this.parse.bind(this, request, container,
+  goog.events.listen(request, 'load', this.parse.bind(this, request, container,
       object));
 
   // configure the URL
@@ -257,9 +257,6 @@ X.loader.prototype.load = function(container, object) {
  *          or equals it.
  */
 X.loader.prototype.parse = function(request, container, object) {
-
-  // stop listening to abort and failed
-  goog.events.removeAll(request);
 
   // downloading completed, add progress
   this.addProgress(1.0);
@@ -317,10 +314,9 @@ X.loader.prototype.complete = function(event) {
 
   // we use a timeout here to let the progress bar be able to breath and show
   // something
-  var container = event._container;
-  var object = event._object;
-
   setTimeout(function() {
+    var container = event._container;
+    var object = event._object;
 
     // mark the container's file as clean
     container._file._dirty = false;
@@ -350,10 +346,6 @@ X.loader.prototype.complete = function(event) {
  * @throws {Error} An error, stating that something went wrong.
  */
 X.loader.prototype.failed = function(request, container, object) {
-
-  // stop listening
-  // to abort, failed and load
-  goog.events.removeAll(request);
 
   throw new Error('Loading failed: ', container, object);
 
