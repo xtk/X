@@ -434,7 +434,6 @@ X.parserVTK.prototype.parseLine = function(line) {
 
 };
 
-
 /**
  * Parse a Binary VTK file.
  *
@@ -455,7 +454,6 @@ X.parserVTK.prototype.parseLine = function(line) {
    var vtk = [];
    var index = 0;
 
-   // Return an array with the first element being
    var findString = function ( buffer, start ) {
      var index = start;
      var c = buffer[index];
@@ -465,29 +463,31 @@ X.parserVTK.prototype.parseLine = function(line) {
        index++;
        c = buffer[index];
      }
-     return { "start": start,
-     "end": index,
-     "next": index + 1,
-     "string": s.join('') };
-   }
 
+     return { start: start,
+       end: index,
+       next: index + 1,
+       parsedString: s.join('') };
+     }
+
+
+   var state, line;
 
    while(true) {
      // Get a string
-     var state = findString ( buffer, index );
-     var line = state.string;
-
-     if ( line.startsWith ( "POINTS") ) {
+     state = findString ( buffer, index );
+     line = state.parsedString;
+     if ( line.indexOf ( "POINTS") == 0 ) {
        vtk.push ( line );
        // Add the points
-       var numberOfPoints = parseInt ( line.split(" ")[1] );
+       numberOfPoints = parseInt ( line.split(" ")[1], 10 );
        this._unorderedPoints = new X.triplets(numberOfPoints*3);
 
        // Each point is 3 4-byte floats
-       var count = numberOfPoints * 4 * 3;
+       count = numberOfPoints * 4 * 3;
 
-       var pointIndex = state.next;
-       for ( var i = 0; i < numberOfPoints; i++ ) {
+       pointIndex = state.next;
+       for ( i = 0; i < numberOfPoints; i++ ) {
          this._unorderedPoints.add(
            dataView.getFloat32(pointIndex, false),
            dataView.getFloat32(pointIndex + 4, false),
@@ -496,14 +496,14 @@ X.parserVTK.prototype.parseLine = function(line) {
        }
        // increment our next pointer
        state.next = state.next + count + 1;
-     } else if ( line.startsWith ( "TRIANGLE_STRIPS") ) {
+     } else if ( line.indexOf ( "TRIANGLE_STRIPS") == 0 ) {
        this._objectType = X.displayable.types.TRIANGLE_STRIPS;
        this._geometries = [];
 
        vtk.push(line);
 
-       var numberOfStrips = parseInt ( line.split(" ")[1]);
-       var size = parseInt ( line.split ( " " )[2]);
+       var numberOfStrips = parseInt ( line.split(" ")[1], 10);
+       var size = parseInt ( line.split ( " " )[2], 10);
        // 4 byte integers
        count = size * 4;
 
@@ -521,15 +521,15 @@ X.parserVTK.prototype.parseLine = function(line) {
        }
        // increment our next pointer
        state.next = state.next + count + 1;
-     } else if ( line.startsWith ( "POINT_DATA")) {
+     } else if ( line.indexOf ( "POINT_DATA") == 0 ) {
        vtk.push(line);
-       numberOfPoints = parseInt ( line.split(" ")[1]);
+       numberOfPoints = parseInt ( line.split(" ")[1], 10 );
        this._unorderedNormals = new X.triplets(numberOfPoints*3);
 
        // Grab the next line
        state = findString ( buffer, state.next );
 
-       vtk.push(state.string);
+       vtk.push(state.parsedString);
        // Now grab the binary data
        count = numberOfPoints * 4 * 3;
        pointIndex = state.next;
