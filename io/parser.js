@@ -488,7 +488,6 @@ X.parser.createIJKVolume = function(_data, _dims, _max, _min){
       _imageN[_k][_j] = new _data.constructor(_dims[0]);
       _image[_k][_j] = new _data.constructor(_dims[0]);
       for (_i = 0; _i < _dims[0]; _i++) {
-
         _pix_value = _current_k[_data_pointer];
         _imageN[_k][_j][_i] = 255 * ((_pix_value - _min) / (_max - _min));
         _image[_k][_j][_i] = _pix_value;
@@ -809,8 +808,11 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
   var _RASCenter = goog.vec.Vec4.createFloat32();
   goog.vec.Mat4.multMat(_XYToRAS,_xyCenter, _RASCenter);
 
-  var _wmin =  Math.floor(_xyBBox[0]);
-  var _wmax =  Math.ceil(_xyBBox[1]);
+  // var _wmin =  Math.floor(_xyBBox[0]);
+  // var _wmax =  Math.ceil(_xyBBox[1]);
+  window.console.log(_xyBBox);
+    var _wmin =  _xyBBox[0];
+  var _wmax =  _xyBBox[1];
 
   // if the slice only has to intersections with the volume BBox
   // (can happens if the slice is right on the edge of the volume)
@@ -822,9 +824,10 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
 
   var _swidth = _wmax - _wmin;
 
-  var _hmin = Math.floor(_xyBBox[2]);
-  var _hmax = Math.ceil(_xyBBox[3]);
-
+  // var _hmin = Math.floor(_xyBBox[2]);
+  // var _hmax = Math.ceil(_xyBBox[3]);
+  var _hmin = _xyBBox[2];
+  var _hmax = _xyBBox[3];
   // if the slice only has to intersections with the volume BBox
   // (can happens if the slice is right on the edge of the volume)
   if(_hmin == _hmax){
@@ -885,9 +888,9 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
       // get value if there is a match, trnasparent if no match!
       var textureStartIndex = _p * 4;
 
-        var _k = Math.floor(_indexIJK[2]);
-        var _j = Math.floor(_indexIJK[1]);
-        var _i = Math.floor(_indexIJK[0]);
+      var _k = Math.floor(_indexIJK[2]);
+      var _j = Math.floor(_indexIJK[1]);
+      var _i = Math.floor(_indexIJK[0]);
 
       if( (0 <= _i) && (_i < object._dimensions[0] ) &&
         (0 <= _j) && (_j < object._dimensions[1] ) &&
@@ -920,8 +923,8 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
 
         }
         else {
-
-          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixval / object._max);
+          // normalization should not happen here, only in the shaders/canvas??
+          pixelValue_r = pixelValue_g = pixelValue_b = 255 * ((pixval - object._min )/ (object._max - object._min));
           pixelValue_a = 255;
         }
 

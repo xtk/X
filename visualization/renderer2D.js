@@ -500,6 +500,7 @@ X.renderer2D.prototype.init = function() {
   // this._labelFrameBuffer.style.imageRendering = '-webkit-optimize-contrast';
   // this._labelFrameBuffer.style.imageRendering = 'optimize-contrast';
   // this._labelFrameBuffer.style.msInterpolationMode = 'nearest-neighbor';
+    this._labelFrameBuffer.style.imageRendering = 'pixelated';
 
   // listen to window/level events of the camera
   goog.events.listen(this._camera, X.event.events.WINDOWLEVEL,
@@ -797,6 +798,10 @@ X.renderer2D.prototype.onSliceNavigation = function() {
  */
 X.renderer2D.prototype.xy2ijk = function(x, y) {
 
+  window.console.log(x + ' - ' + y);
+  // un-zoom and un-offset
+  // there get coordinates in a normla view
+
   var _volume = this._topLevelObjects[0];
   var _view = this._camera._view;
   var _currentSlice = null;
@@ -812,22 +817,22 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
     _currentSlice = this._slices[parseInt(_volume['indexY'], 10)];
     _sliceWSpacing = _currentSlice._widthSpacing;
     _sliceHSpacing = _currentSlice._heightSpacing;
-    this._orientationColors[0] = 'red';
-    this._orientationColors[1] = 'blue';
+    this._orientationColors[0] = 'rgba(255,0,0,.3)';
+    this._orientationColors[1] = 'rgba(0,0,255,.3)';
 
   } else if (this._orientation == "Z") {
     _currentSlice = this._slices[parseInt(_volume['indexZ'], 10)];
     _sliceWSpacing = _currentSlice._widthSpacing;
     _sliceHSpacing = _currentSlice._heightSpacing;
-    this._orientationColors[0] = 'red';
-    this._orientationColors[1] = 'green';
+    this._orientationColors[0] = 'rgba(255,0,0,.3)';
+    this._orientationColors[1] = 'rgba(0,255,0,.3)';
 
   } else {
     _currentSlice = this._slices[parseInt(_volume['indexX'], 10)];
     _sliceWSpacing = _currentSlice._heightSpacing;
     _sliceHSpacing = _currentSlice._widthSpacing;
-    this._orientationColors[0] = 'green';
-    this._orientationColors[1] = 'blue';
+    this._orientationColors[0] = 'rgba(0,255,0,.3)';
+    this._orientationColors[1] = 'rgba(0,0,255,.3)';
 
     var _buf = _sliceWidth;
     _sliceWidth = _sliceHeight;
@@ -841,6 +846,8 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   // .. and zoom
   this._normalizedScale = Math.max(_view[14], 0.6);
   var _center = [this._width / 2, this._height / 2];
+
+  window.console.log(_center);
 
   // the slice dimensions in canvas coordinates
   var _sliceWidthScaled = _sliceWidth * _sliceWSpacing *
@@ -890,13 +897,20 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
 
     }
 
+    window.console.log(_x + ' - ' + _y);
+
     // map indices to xy coordinates
-    _x = _currentSlice._wmin + _x*_currentSlice._widthSpacing;
-    _y = _currentSlice._hmin + _y*_currentSlice._heightSpacing;
+    _x = _currentSlice._wmin + _x*_currentSlice._widthSpacing - _currentSlice._widthSpacing/2;
+    _y = _currentSlice._hmin + _y*_currentSlice._heightSpacing - _currentSlice._heightSpacing/2;
 
     var _xyz = goog.vec.Vec4.createFloat32FromValues(_x, _y, _z, 1);
     var _ijk = goog.vec.Mat4.createFloat32();
     goog.vec.Mat4.multVec4(_currentSlice._XYToIJK, _xyz, _ijk);
+    window.console.log('IJK');
+    window.console.log(_currentSlice._widthSpacing);
+    window.console.log(_currentSlice._heightSpacing);
+    window.console.log(_ijk[0], _ijk[1], _ijk[2]);
+    // why < 0??
     var _ras = goog.vec.Mat4.createFloat32();
     goog.vec.Mat4.multVec4(_currentSlice._XYToRAS, _xyz, _ras);
 
@@ -941,6 +955,10 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
       // translate origin by distance
       _iz = 0;
     }
+
+    window.console.log(_dx/_volume._childrenInfo[0]._sliceSpacing);
+    window.console.log(_dy/_volume._childrenInfo[1]._sliceSpacing);
+    window.console.log(_dz/_volume._childrenInfo[2]._sliceSpacing);
 
     return [[_ix, _iy, _iz], [_ijk[0], _ijk[1], _ijk[2]], [_ras[0], _ras[1], _ras[2]]];
     }
@@ -1068,8 +1086,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _maxScalarRange = _volume._max;
   var _lowerThreshold = _volume._lowerThreshold;
   var _upperThreshold = _volume._upperThreshold;
-  var _windowLow = _volume._windowLow / _maxScalarRange;
-  var _windowHigh = _volume._windowHigh / _maxScalarRange;
+  var _windowLow = _volume._windowLow;
+  var _windowHigh = _volume._windowHigh;
 
   // caching mechanism
   // we need to redraw the pixels only
@@ -1103,15 +1121,27 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       // default color and label is just transparent
       var _color = [0, 0, 0, 0];
       var _label = [0, 0, 0, 0];
+      var _fac1 = _volume._max - _volume._min;
 
       // grab the pixel intensity
-      var _intensity = _sliceData[_index] / 255 * _maxScalarRange;
-      var _origIntensity = _sliceData[_index];
+      // slice data is normalized (probably shouldn't ?)
+      // de-normalize it (get real value)
+      var _intensity = (_sliceData[_index] / 255) * _fac1 + _volume._min;
 
       // apply window/level
-      var _fac = _windowHigh - _windowLow;
-      _origIntensity = (_origIntensity / 255 - _windowLow) / _fac;
-      _origIntensity = _origIntensity * 255;
+      var _window = _windowHigh - _windowLow;
+      var _level = _window/2 + _windowLow;
+
+      var _origIntensity = 0;
+      if(_intensity < _level - _window/2 ){
+        _origIntensity = 0;
+      }
+      else if(_intensity > _level + _window/2 ){
+        _origIntensity = 255;
+      }
+      else{
+        _origIntensity  = 255 * (_intensity - (_level - _window / 2))/_window;
+      }
 
       // apply thresholding
       if (_intensity >= _lowerThreshold && _intensity <= _upperThreshold) {
@@ -1256,7 +1286,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // draw the labels with a configured opacity
   if (_currentLabelMap && _volume._labelmap._visible) {
 
-    var _labelOpacity = _volume._labelmap._opacity;
+    var _labelOpacity = 1;//_volume._labelmap._opacity;
     this._context.globalAlpha = _labelOpacity; // draw transparent depending on
     // opacity
     this._context.drawImage(this._labelFrameBuffer, _offset_x, _offset_y,
@@ -1267,6 +1297,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   // if enabled, show slice navigators
   if (this._config['SLICENAVIGATORS']) {
+    this._canvas.style.cursor = "none";
 
     // but only if the shift key is down and the left mouse is not
     if (this._interactor._mouseInside && this._interactor._shiftDown &&
@@ -1276,6 +1307,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
       // check if we are over the slice
       var ijk = this.xy2ijk(_mousePosition[0], _mousePosition[1]);
+      window.console.log(ijk);
 
       if (ijk) {
         // // we are over the slice
@@ -1292,13 +1324,12 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
         // in x-direction
         this._context.setTransform(1, 0, 0, 1, 0, 0);
-        this._context.lineWidth = 1;
         this._context.beginPath();
         this._context.moveTo(this._interactor._mousePosition[0], 0);
         this._context.lineTo(this._interactor._mousePosition[0],
-            this._interactor._mousePosition[1] - 10);
+            this._interactor._mousePosition[1] - 1);
         this._context.moveTo(this._interactor._mousePosition[0],
-            this._interactor._mousePosition[1] + 10);
+            this._interactor._mousePosition[1] + 1);
         this._context.lineTo(this._interactor._mousePosition[0],
             this._height);
         this._context.strokeStyle = this._orientationColors[0];
@@ -1308,9 +1339,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         // in y-direction
         this._context.beginPath();
         this._context.moveTo(0, this._interactor._mousePosition[1]);
-        this._context.lineTo(this._interactor._mousePosition[0] - 10,
+        this._context.lineTo(this._interactor._mousePosition[0] - 1,
             this._interactor._mousePosition[1]);
-        this._context.moveTo(this._interactor._mousePosition[0] + 10, this._interactor._mousePosition[1] + 0.5);
+        this._context.moveTo(this._interactor._mousePosition[0] + 1, this._interactor._mousePosition[1]);
         this._context.lineTo(this._width,
             this._interactor._mousePosition[1]);
         this._context.strokeStyle = this._orientationColors[1];
@@ -1351,7 +1382,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       }
 
     }
-
+else{
+    this._canvas.style.cursor = "default";
+  }
   }
 
 };
