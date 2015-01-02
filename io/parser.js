@@ -458,8 +458,7 @@ return _rasBB;
  * @return The IJK volume and the IJK 'normalized' volume.
  * @static
  */
-X.parser.createIJKVolume = function(_data, _dims, _max){
-
+X.parser.createIJKVolume = function(_data, _dims, _max, _min){
   // initiate variables
   // allocate images
   var _image = new Array(_dims[2]);
@@ -491,7 +490,7 @@ X.parser.createIJKVolume = function(_data, _dims, _max){
       for (_i = 0; _i < _dims[0]; _i++) {
 
         _pix_value = _current_k[_data_pointer];
-        _imageN[_k][_j][_i] = 255 * (_pix_value / _max);
+        _imageN[_k][_j][_i] = 255 * ((_pix_value - _min) / (_max - _min));
         _image[_k][_j][_i] = _pix_value;
         _data_pointer++;
 
@@ -1135,8 +1134,8 @@ X.parser.prototype.reslice = function(object) {
 
   // Step 1: create 2 IJK volumes
   // 1 full res, 1 normalized [0-255]
-
-  var _IJKVolumes = X.parser.createIJKVolume(object._data, object._dimensions, object._max);
+  
+  var _IJKVolumes = X.parser.createIJKVolume(object._data, object._dimensions, object._max, object._min);
   // real volume
   object._IJKVolume = _IJKVolumes[0];
   // normalized volume

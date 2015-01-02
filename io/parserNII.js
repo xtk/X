@@ -73,26 +73,29 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   
   var _data = data;
   
-  // check if this data is compressed, then this int != 348
-  var _compressionCheck = -1;
-  if (typeof DataView == 'undefined') {
-    _compressionCheck = new Int32Array(data, 0, 1)[0];
-  } else {
-    var dataview = new DataView(data, 0);
-    _compressionCheck = dataview.getInt32(0, true);
-  }
-  
-  if (_compressionCheck != 348) {
+  if (!this.verifyNII(_data)) {
+      // it's either big endian, or compressed, or both
+
+    try {
+      // first, try to decompress the datastream
+      // first, try to decompress the datastream
     
-    // we need to decompress the datastream
+      // here we start the unzipping and get a typed Uint8Array back
+      var inflate = new Zlib.Gunzip(new Uint8Array(_data));
+      _data = inflate.decompress();
     
-    // here we start the unzipping and get a typed Uint8Array back
-    var inflate = new Zlib.Gunzip(new Uint8Array(_data));
-    _data = inflate.decompress();
+      // .. and use the underlying array buffer
+      _data = _data.buffer;
     
-    // .. and use the underlying array buffer
-    _data = _data.buffer;
-    
+      // check endianness
+      if (!this.verifyNII(_data)) {
+        // it must be compressed big endian
+        this._littleEndian = false;
+      }
+    } catch (e) {
+        // it must be uncompressed big endian       
+        this._littleEndian = false;
+    }
   }
   
   // parse the byte stream
@@ -491,6 +494,31 @@ X.parserNII.prototype.parseStream = function(data) {
   return MRI;
   
 };
+
+/**
+ * Verify the nifti file by checking sizeof_hdr value (must be 348)
+ *
+ * @param {!ArrayBuffer} data The data of nifti file.
+ * @return {!boolean} If this is an uncompressed small endian nifti file
+ */
+X.parserNII.prototype.verifyNII = function(data) {
+
+  // check if this data is compressed or big endian ,
+  // then this int != 348
+  var _check = -1;
+  if (typeof DataView == 'undefined') {
+    _check = new Int32Array(data, 0, 1)[0];
+  } else {
+    var dataview = new DataView(data, 0);
+    _check = dataview.getInt32(0, true);
+  }
+  
+  if (_check == 348) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 
 // export symbols (required for advanced compilation)
