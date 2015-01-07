@@ -127,7 +127,7 @@ X.parserVTK.prototype.parse = function(container, object, data, flag) {
   // This uses an optimized loop.
   //
   
-  /*
+  /**
    * Fast Duff's Device
    * 
    * @author Miller Medeiros <http://millermedeiros.com>

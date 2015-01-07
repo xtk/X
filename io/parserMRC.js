@@ -30,7 +30,7 @@ X.parserMRC = function() {
 	//
 	// class attributes
 
-	/*
+	/**
 	 * @inheritDoc
 	 * @const
 	*/

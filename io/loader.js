@@ -355,7 +355,8 @@ X.loader.prototype.failed = function(request, container, object) {
 /**
  * Supported data types by extension.
  *
- * @enum {Array}
+ * @const
+ * @type {Object.<string, Array>}
  */
 X.loader.extensions = {
   // support for the following extensions and the mapping to X.parsers as well

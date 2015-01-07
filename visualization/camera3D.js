@@ -71,7 +71,7 @@ X.camera3D = function(width, height) {
   /**
    * The perspective matrix.
    *
-   * @type {Array.<number>|Float32Array|Float64Array|null}
+   * @type {!Array.<number>|!Float32Array|!Float64Array}
    * @protected
    */
   this._perspective = X.matrix.makePerspective(X.matrix.identity(), this._fieldOfView, (width/height), 1, 10000);

@@ -85,7 +85,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
       _data = inflate.decompress();
     
       // .. and use the underlying array buffer
-      _data = _data.buffer;
+      _data = /** @type {!ArrayBuffer} */ (_data.buffer);
     
       // check endianness
       if (!this.verifyNII(_data)) {
@@ -99,7 +99,7 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   }
   
   // parse the byte stream
-  var MRI = this.parseStream(_data);
+  var MRI = this.parseStream(/** @type {!ArrayBuffer} */ (_data));
   
   // grab the min, max intensities
   var min = MRI.min;
