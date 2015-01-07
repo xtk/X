@@ -406,6 +406,14 @@ X.renderer.prototype.onHover_ = function(event) {
  * @protected
  */
 X.renderer.prototype.onResize_ = function() {
+    this.resize();
+};
+
+
+/**
+ * Resizes the control to fit the size of the container.
+ */
+X.renderer.prototype.resize = function() {
 
   // grab the new width and height of the container
   var container = goog.dom.getElement(this._container);
