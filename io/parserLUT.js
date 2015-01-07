@@ -102,7 +102,7 @@ X.parserLUT.prototype.parse = function(container, object, data, flag) {
       }
       
       // split each line
-      var lineFields = line.split(' ');
+      var lineFields = /** @type {Array} */ (line.split(' '));
       
       // filter out multiple blanks
       lineFields = lineFields.filter(function(v) {
