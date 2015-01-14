@@ -911,7 +911,7 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
       + _volume._childrenInfo[0]._sliceNormal[2]*_ras[2]
       + _volume._childrenInfo[0]._originD;
 
-    var _ix = Math.round(_dx/_volume._childrenInfo[0]._sliceSpacing);
+    var _ix = Math.floor(_dx/_volume._childrenInfo[0]._sliceSpacing);
      if(_ix >= _volume._childrenInfo[0]._nb){
        _ix = _volume._childrenInfo[0]._nb - 1;
      }
@@ -925,7 +925,7 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
       + _volume._childrenInfo[1]._sliceNormal[2]*_ras[2]
       + _volume._childrenInfo[1]._originD;
 
-    var _iy = Math.round(_dy/_volume._childrenInfo[1]._sliceSpacing);
+    var _iy = Math.floor(_dy/_volume._childrenInfo[1]._sliceSpacing);
     if(_iy >= _volume._childrenInfo[1]._nb){
        _iy = _volume._childrenInfo[1]._nb - 1;
     }
@@ -939,7 +939,7 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
       + _volume._childrenInfo[2]._sliceNormal[2]*_ras[2]
       + _volume._childrenInfo[2]._originD;
 
-    var _iz = Math.round(_dz/_volume._childrenInfo[2]._sliceSpacing);
+    var _iz = Math.floor(_dz/_volume._childrenInfo[2]._sliceSpacing);
     if(_iz >= _volume._childrenInfo[2]._nb){
       _iz = _volume._childrenInfo[2]._nb - 1;
     }
@@ -947,10 +947,6 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
       // translate origin by distance
       _iz = 0;
     }
-
-    // window.console.log(_dx/_volume._childrenInfo[0]._sliceSpacing);
-    // window.console.log(_dy/_volume._childrenInfo[1]._sliceSpacing);
-    // window.console.log(_dz/_volume._childrenInfo[2]._sliceSpacing);
 
     return [[_ix, _iy, _iz], [_ijk[0], _ijk[1], _ijk[2]], [_ras[0], _ras[1], _ras[2]]];
     }
