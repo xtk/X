@@ -488,7 +488,6 @@ X.parser.createIJKVolume = function(_data, _dims, _max, _min){
       _imageN[_k][_j] = new _data.constructor(_dims[0]);
       _image[_k][_j] = new _data.constructor(_dims[0]);
       for (_i = 0; _i < _dims[0]; _i++) {
-
         _pix_value = _current_k[_data_pointer];
         _imageN[_k][_j][_i] = 255 * ((_pix_value - _min) / (_max - _min));
         _image[_k][_j][_i] = _pix_value;
@@ -771,6 +770,7 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
   // GET INTERSECTION BOUNDING BOX/PLANE
   // ------------------------------------------
 
+  //_bbox is only this slice bounding box
   var _solutions = X.parser.intersectionBBoxPlane(_bbox,_sliceOrigin, _sliceNormal);
   var _solutionsIn = _solutions[0];
 
@@ -811,6 +811,9 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
 
   var _wmin =  Math.floor(_xyBBox[0]);
   var _wmax =  Math.ceil(_xyBBox[1]);
+  // window.console.log(_xyBBox);
+  // var _wmin =  _xyBBox[0];
+  // var _wmax =  _xyBBox[1];
 
   // if the slice only has to intersections with the volume BBox
   // (can happens if the slice is right on the edge of the volume)
@@ -824,6 +827,8 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
 
   var _hmin = Math.floor(_xyBBox[2]);
   var _hmax = Math.ceil(_xyBBox[3]);
+  // var _hmin = _xyBBox[2];
+  // var _hmax = _xyBBox[3];
 
   // if the slice only has to intersections with the volume BBox
   // (can happens if the slice is right on the edge of the volume)
@@ -838,6 +843,7 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
   var _resX = _sliceXYSpacing[0];
   var _resY = _sliceXYSpacing[1];
 
+  // not sure why?
   var _epsilon = 0.0000001;
 
   // How many pixels are we expecting the raw data
@@ -885,17 +891,15 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
       // get value if there is a match, trnasparent if no match!
       var textureStartIndex = _p * 4;
 
-        var _k = Math.floor(_indexIJK[2]);
-        var _j = Math.floor(_indexIJK[1]);
-        var _i = Math.floor(_indexIJK[0]);
+      var _k = Math.floor(_indexIJK[2]);
+      var _j = Math.floor(_indexIJK[1]);
+      var _i = Math.floor(_indexIJK[0]);
 
       if( (0 <= _i) && (_i < object._dimensions[0] ) &&
         (0 <= _j) && (_j < object._dimensions[1] ) &&
         (0 <= _k) && (_k < object._dimensions[2] )) {
 
         // map to 0 if necessary
-
-
         var pixval = _IJKVolume[_k][_j][_i];
         var pixelValue_r = 0;
         var pixelValue_g = 0;
@@ -920,8 +924,8 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
 
         }
         else {
-
-          pixelValue_r = pixelValue_g = pixelValue_b = 255 * (pixval / object._max);
+          // normalization should not happen here, only in the shaders/canvas??
+          pixelValue_r = pixelValue_g = pixelValue_b = 255 * ((pixval - object._min )/ (object._max - object._min));
           pixelValue_a = 255;
         }
 
@@ -964,6 +968,7 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
   sliceXY._heightSpacing = _resY;
   sliceXY._height = _sheight;
   sliceXY._center = [_RASCenter[0], _RASCenter[1], _RASCenter[2]];
+  // ADD SPACING OFFSET to center so it matches meshes/tracts perfectly
   sliceXY._front = [_sliceNormal[0], _sliceNormal[1], _sliceNormal[2]];
   sliceXY._right= [_rright[0], _rright[1], _rright[2]];
   sliceXY._up = [_rup[0], _rup[1], _rup[2]];
@@ -1042,13 +1047,18 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   // scale
   goog.vec.Vec4.scale(_sliceNormal,_xySpacing[2],_sliceDirection);
 
-   if(Math.abs(_xySpacing[0]) < 0.5){
-     _xySpacing[0] =  0.5;
+  // by default the minimum in plane spacing is 0.1
+   if(Math.abs(_xySpacing[0]) < 0.1){
+     _xySpacing[0] =  0.1;
    }
 
-   if(Math.abs(_xySpacing[1]) < 0.5){
-     _xySpacing[1] =  0.5;
+   if(Math.abs(_xySpacing[1]) < 0.1){
+     _xySpacing[1] =  0.1;
    }
+
+   // increase resolution if needed
+   _xySpacing[0] /= object._resolutionFactor;
+   _xySpacing[1] /= object._resolutionFactor;
 
   object._childrenInfo[_index]._sliceXYSpacing = [Math.abs(_xySpacing[0]), Math.abs(_xySpacing[1])];
   object._childrenInfo[_index]._sliceSpacing = _xySpacing[2];

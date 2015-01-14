@@ -257,6 +257,16 @@ X.volume = function(volume) {
   this._reslicing = true;
 
   /**
+   * The resolution factor.
+   * It lets us artificialy increasing the resolution of the slice,
+   * by decreasing the in slice spacing.
+   *
+   * @type {!number}
+   * @protected
+   */
+  this._resolutionFactor = 1;
+
+  /**
    * The max intensity in the image
    *
    * @type {!number}
@@ -1069,9 +1079,7 @@ X.volume.prototype.__defineGetter__('reslicing', function() {
 
 
 /**
- * Set the borders flag. Must be called before the volume gets created
- * internally. After that, the borders can be modified using the children of
- * each slice.
+ * Set the reslicing flag for this volume.
  *
  * @param {boolean}
  *          reslicing TRUE to enable reslicing, FALSE to disable it.
@@ -1080,6 +1088,32 @@ X.volume.prototype.__defineGetter__('reslicing', function() {
 X.volume.prototype.__defineSetter__('reslicing', function(reslicing) {
 
   this._reslicing = reslicing;
+
+});
+
+/**
+ * Return the resolution factor.
+ *
+ * @return {number} Default is 1.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('resolutionFactor', function() {
+
+  return this._resolutionFactor;
+
+});
+
+
+/**
+ * Set the resolution factor for this volume.
+ * Must be set before the volume is loaded.
+ *
+ * @param {number} resolutionFactor Default is 1.
+ * @public
+ */
+X.volume.prototype.__defineSetter__('resolutionFactor', function(resolutionFactor) {
+
+  this._resolutionFactor = resolutionFactor;
 
 });
 

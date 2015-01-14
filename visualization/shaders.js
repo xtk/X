@@ -209,8 +209,8 @@ X.shaders = function() {
   t2 += '   vec4 textureSum = texture1;\n';
   // perform window level
   t2 += '   if (volumeTexture) {\n';
-  t2 += '     float _windowLow = (volumeWindowLow / volumeScalarMax);\n';
-  t2 += '     float _windowHigh = (volumeWindowHigh / volumeScalarMax);\n';
+  t2 += '     float _windowLow = ((volumeWindowLow - volumeScalarMin)/ (volumeScalarMax - volumeScalarMin));\n';
+  t2 += '     float _windowHigh = ((volumeWindowHigh - volumeScalarMin)/ (volumeScalarMax - volumeScalarMin));\n';
   t2 += '     vec3 _minrange = vec3(_windowLow,_windowLow,_windowLow);\n';
   t2 += '     vec3 _maxrange = vec3(_windowHigh,_windowHigh,_windowHigh);\n';
   t2 += '     vec3 fac = _maxrange - _minrange;\n';
@@ -242,8 +242,8 @@ X.shaders = function() {
   t2 += '   }\n';
   // threshold functionality for 1-channel volumes
   t2 += '   if (volumeTexture) {\n';
-  t2 += '     float _volumeLowerThreshold = (volumeLowerThreshold / volumeScalarMax);\n';
-  t2 += '     float _volumeUpperThreshold = (volumeUpperThreshold / volumeScalarMax);\n';
+  t2 += '     float _volumeLowerThreshold = (volumeLowerThreshold - volumeScalarMin)/ (volumeScalarMax - volumeScalarMin);\n';
+  t2 += '     float _volumeUpperThreshold = (volumeUpperThreshold - volumeScalarMin)/ (volumeScalarMax - volumeScalarMin);\n';
   t2 += '     if (texture1.r < _volumeLowerThreshold ||\n';
   t2 += '         texture1.r > _volumeUpperThreshold ||\n';
   t2 += '         texture1.a == 0.0 ) {\n';
