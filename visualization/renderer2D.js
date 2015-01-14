@@ -798,7 +798,6 @@ X.renderer2D.prototype.onSliceNavigation = function() {
  */
 X.renderer2D.prototype.xy2ijk = function(x, y) {
 
-  window.console.log(x + ' - ' + y);
   // un-zoom and un-offset
   // there get coordinates in a normla view
 
@@ -844,10 +843,7 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
   var _y = -1 * _view[13]; // we need to flip y here
 
   // .. and zoom
-  this._normalizedScale = Math.max(_view[14], 0.6);
   var _center = [this._width / 2, this._height / 2];
-
-  window.console.log(_center);
 
   // the slice dimensions in canvas coordinates
   var _sliceWidthScaled = _sliceWidth * _sliceWSpacing *
@@ -897,19 +893,15 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
 
     }
 
-    window.console.log(_x + ' - ' + _y);
-
     // map indices to xy coordinates
-    _x = _currentSlice._wmin + _x*_currentSlice._widthSpacing - _currentSlice._widthSpacing/2;
-    _y = _currentSlice._hmin + _y*_currentSlice._heightSpacing - _currentSlice._heightSpacing/2;
+    _x = _currentSlice._wmin + _x*_currentSlice._widthSpacing;// - _currentSlice._widthSpacing/2;
+    _y = _currentSlice._hmin + _y*_currentSlice._heightSpacing;// - _currentSlice._heightSpacing/2;
 
     var _xyz = goog.vec.Vec4.createFloat32FromValues(_x, _y, _z, 1);
     var _ijk = goog.vec.Mat4.createFloat32();
     goog.vec.Mat4.multVec4(_currentSlice._XYToIJK, _xyz, _ijk);
-    window.console.log('IJK');
-    window.console.log(_currentSlice._widthSpacing);
-    window.console.log(_currentSlice._heightSpacing);
-    window.console.log(_ijk[0], _ijk[1], _ijk[2]);
+
+    _ijk = [Math.floor(_ijk[0]),Math.floor(_ijk[1]),Math.floor(_ijk[2])];
     // why < 0??
     var _ras = goog.vec.Mat4.createFloat32();
     goog.vec.Mat4.multVec4(_currentSlice._XYToRAS, _xyz, _ras);
@@ -956,9 +948,9 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
       _iz = 0;
     }
 
-    window.console.log(_dx/_volume._childrenInfo[0]._sliceSpacing);
-    window.console.log(_dy/_volume._childrenInfo[1]._sliceSpacing);
-    window.console.log(_dz/_volume._childrenInfo[2]._sliceSpacing);
+    // window.console.log(_dx/_volume._childrenInfo[0]._sliceSpacing);
+    // window.console.log(_dy/_volume._childrenInfo[1]._sliceSpacing);
+    // window.console.log(_dz/_volume._childrenInfo[2]._sliceSpacing);
 
     return [[_ix, _iy, _iz], [_ijk[0], _ijk[1], _ijk[2]], [_ras[0], _ras[1], _ras[2]]];
     }
@@ -1009,10 +1001,10 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // spacing
   this._sliceWidthSpacing = this._slices[parseInt(_currentSlice, 10)]._widthSpacing;
   this._sliceHeightSpacing = this._slices[parseInt(_currentSlice, 10)]._heightSpacing;
+
   // .. and store the dimensions
   this._sliceWidth = _width2;
   this._sliceHeight = _height2;
-
   //
   // grab the camera settings
 
@@ -1031,7 +1023,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   // transform the canvas according to the view matrix
   // .. this includes zoom
-  this._normalizedScale = Math.max(_view[14], 0.1);
+  this._normalizedScale = Math.max(_view[14], 0.0001);
 
   this._context.setTransform(this._normalizedScale, 0, 0, this._normalizedScale, 0, 0);
 
@@ -1307,7 +1299,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
       // check if we are over the slice
       var ijk = this.xy2ijk(_mousePosition[0], _mousePosition[1]);
-      window.console.log(ijk);
 
       if (ijk) {
         // // we are over the slice

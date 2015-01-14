@@ -79,11 +79,9 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
     try {
       // first, try to decompress the datastream    
       // here we start the unzipping and get a typed Uint8Array back
-      var inflate = new Zlib.Gunzip(new Uint8Array(_data));
-      _data = inflate.decompress();
-    
       // .. and use the underlying array buffer
-      _data = _data.buffer;
+      var inflate = new Zlib.Gunzip(new Uint8Array(_data));
+      _data = inflate.decompress().buffer;
     
       // check endianness
       if (!this.verifyNII(_data)) {
@@ -102,8 +100,6 @@ X.parserNII.prototype.parse = function(container, object, data, flag) {
   // grab the min, max intensities
   var min = MRI.min;
   var max = MRI.max;
-  window.console.log(min);
-  window.console.log(max);
 
   // attach the scalar range to the volume
   object._min = object._windowLow = min;
@@ -487,12 +483,9 @@ X.parserNII.prototype.parseStream = function(data) {
   }
   
   // get the min and max intensities
-  window.console.log(MRI.data);
   var min_max = this.arrayMinMax(MRI.data);
   MRI.min = min_max[0];
   MRI.max = min_max[1];
-  window.console.log(min_max[0]);
-  window.console.log(min_max[1]);
   
   return MRI;
   
