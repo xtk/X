@@ -450,6 +450,11 @@ X.parserVTK.prototype.parseLine = function(line) {
    var buffer = new Uint8Array (data);
    var dataView = new DataView ( data );
 
+   // Points and normals, by default, are empty
+   this._unorderedPoints = new X.triplets(0);
+   this._unorderedNormals = new X.triplets(0);
+   this._geometries = [];
+
    // Going to make a big array of strings
    var vtk = [];
    var index = 0;
@@ -500,7 +505,28 @@ X.parserVTK.prototype.parseLine = function(line) {
        this._objectType = X.displayable.types.TRIANGLE_STRIPS;
        this._geometries = [];
 
-       vtk.push(line);
+       var numberOfStrips = parseInt ( line.split(" ")[1], 10);
+       var size = parseInt ( line.split ( " " )[2], 10);
+       // 4 byte integers
+       count = size * 4;
+
+       pointIndex = state.next;
+       for ( i = 0; i < numberOfStrips; i++ ) {
+         // For each strip, read the first value, then record that many more points
+         var indexCount = dataView.getInt32(pointIndex, false);
+         var strip = [];
+         pointIndex += 4;
+         for ( s = 0; s < indexCount; s++ ) {
+           strip.push ( dataView.getInt32(pointIndex,false));
+           pointIndex += 4;
+         }
+         this._geometries.push(strip);
+       }
+       // increment our next pointer
+       state.next = state.next + count + 1;
+     } else if ( line.indexOf ( "POLYGONS") == 0 ) {
+       this._objectType = X.displayable.types.POLYGONS;
+       this._geometries = [];
 
        var numberOfStrips = parseInt ( line.split(" ")[1], 10);
        var size = parseInt ( line.split ( " " )[2], 10);
@@ -522,14 +548,12 @@ X.parserVTK.prototype.parseLine = function(line) {
        // increment our next pointer
        state.next = state.next + count + 1;
      } else if ( line.indexOf ( "POINT_DATA") == 0 ) {
-       vtk.push(line);
        numberOfPoints = parseInt ( line.split(" ")[1], 10 );
        this._unorderedNormals = new X.triplets(numberOfPoints*3);
 
        // Grab the next line
        state = findString ( buffer, state.next );
 
-       vtk.push(state.parsedString);
        // Now grab the binary data
        count = numberOfPoints * 4 * 3;
        pointIndex = state.next;
@@ -544,8 +568,6 @@ X.parserVTK.prototype.parseLine = function(line) {
        // Increment past our data
        state.next = state.next + count;
 
-     } else {
-       vtk.push ( line );
      }
 
      // Increment index
@@ -554,7 +576,6 @@ X.parserVTK.prototype.parseLine = function(line) {
        break;
      }
    }
-   return vtk.join('\n');
  };
 
 /**
