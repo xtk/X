@@ -1,0 +1,108 @@
+/*!
+ * Start Bootstrap - The Big Picture HTML Template (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
+
+body {
+	background: none;
+}
+
+.full {
+  background: url(../images/brain.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.loader {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: white;
+	background-size: cover;
+	/* background: url('../images/page-loader.gif') 50% 50% no-repeat rgb(249,249,249); */
+}
+
+
+.splash {
+  background: url('../images/brain.jpg');
+  /* background-attachment: fixed; */
+	background-size: cover;
+  /* overflow: hidden; */
+}
+.splash > header {
+  position: absolute;
+  bottom: 50%;
+  left: 0;
+  width: 100%;
+  padding: 20px 10px;
+  background: inherit;
+  background-attachment: fixed;
+}
+.splash > header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: inherit;
+  background-attachment: fixed;
+  -webkit-filter: blur(12px);
+  filter: blur(12px);
+}
+
+.splash > header::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.25)
+}
+.splash > header > h1 {
+	margin: 0;
+	color: white;
+	position: relative;
+	z-index: 1;
+}
+
+.splash > header > div {
+	margin: 0;
+	color: white;
+	position: relative;
+	z-index: 1;
+}
+
+
+.loading-progress {
+	/*top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;*/
+	/*height: 40%;
+	width: 100%;
+	display: box;
+	box-pack: center;
+	box-align: center;
+	 align-self: center;
+	vertical-align: middle; */
+	width: 100%;
+	height: 100%;
+	max-width: 600px;
+	max-height: 600px;
+}
+
+/* Text in progress square */
+.progressbar-text {
+	font-size: 500%;
+}

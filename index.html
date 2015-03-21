@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>MRML-Drop</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles -->
+  <link href="css/default.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+  <link href="css/the-big-picture.css" rel="stylesheet">
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/dat-gui-light-theme.css">
+
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/dropzone.js"></script>
+  <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
+
+  <!-- If we want to debug / develop XTK, use this setup, serving
+  an XTK directory with a build inside.  Otherwise, grab it from the
+  CDN.
+-->
+
+<!-- Include for development builds -->
+<!-- <script type="text/javascript" src="./lib/google-closure-library/closure/goog/base.js"></script> -->
+<!-- <script type="text/javascript" src="./xtk-deps.js"></script> -->
+
+<!-- <script type="text/javascript"> -->
+
+<!-- // include all used X-classes here -->
+<!-- // this is only required when using the xtk-deps.js file -->
+<!-- goog.require('X.renderer3D'); -->
+<!-- goog.require('X.renderer2D'); -->
+<!-- goog.require('X.cube'); -->
+<!-- goog.require('X.mesh'); -->
+<!-- goog.require('X.volume'); -->
+<!-- </script> -->
+
+<!-- Include for production builds, local or CDN -->
+<!-- <script type="text/javascript" src="http://get.goXTK.com/xtk.js"></script> -->
+<script type="text/javascript" src="js/xtk.js"></script>
+
+<script src="js/bootstrap.min.js"></script>
+<script src="js/docs.min.js"></script>
+<script src="js/progressbar.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="js/ie10-viewport-bug-workaround.js"></script>
+
+</head>
+<body>
+
+<!--  <div id="splash" style="display: none;" class="loader splash"> -->
+    <div id="splash" class="loader splash" style="display: none;">
+    <header>
+    <h1 id="progress_text">Loading...</h1>
+
+    <div class="progress">
+      <div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 2%;">
+        0%
+      </div>
+    </div>
+
+
+  </header>
+  </div>
+
+  <div id="loader">
+    <div class="loader">
+      <div id="progress" class="loading-progress">
+      </div>
+    </div>
+  </div>
+
+  <div class="site-wrapper full" id="frontpage">
+
+    <div class="site-wrapper-inner">
+
+      <div class="cover-container">
+
+        <div class="masthead clearfix">
+          <div class="inner">
+            <h3 class="masthead-brand">MRML-Drop</h3>
+            <nav>
+              <ul class="nav masthead-nav">
+                <li class="active"><a href="#">Home</a></li>
+                <!-- <li><a href="datasets.html">Datasets</a></li> -->
+                <li><a href="#">Help</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <div class="inner cover">
+            <div class="drop-zone" id="drop-zone">
+            <h1 class="cover-heading">Drop file here.</h1>
+            <p class="lead">Drop an MRML file to view the imaging in 3D.</p>
+            <p class="lead">
+              <span class="lead btn btn-lg btn-default btn-file">
+                or browse
+                <input type="file" id="file" name="file">
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <div class="mastfoot">
+          <div class="inner">
+            <p><a href="http://slicedrop.com/">Slice:Drop</a> &bull; <a href="http://slicer.org">3D Slicer</a></p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="viewerContainer" style='display: none; width: 100%; height: 100%'>
+
+    <div id='viewer' style='background-color: #000; width: 100%; margin-bottom: 2px; height: 70%;'></div>
+
+      <!-- <div id="sliceX" class="sliceDisplay"
+      style="border-top: 2px solid yellow; background-color: #000; width: 33%; height: 100%; float: left;"></div>
+      <div id="sliceY" class="sliceDisplay"
+      style="border-top: 2px solid red;background-color: #00ff00; width: 33%; height: 100%; float: left;"></div>
+      <div id="sliceZ" class="sliceDisplay"
+      style="border-top: 2px solid green; background-color: #0000ff; width: 33%; height: 100%; float: left;"></div> -->
+
+      <div id="sliceX" class="sliceDisplay"
+      style="border-top: 2px solid yellow; background-color: #000; width: 32%; height: 30%; float: left;"></div>
+      <div id="sliceY" class="sliceDisplay"
+      style="border-top: 2px solid red;background-color: #000; width: 32%; height: 30%; float: left;"></div>
+      <div id="sliceZ" class="sliceDisplay"
+      style="border-top: 2px solid green; background-color: #000; width: 32%; height: 30%; float: left;"></div>
+    </div>
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/URI.js/1.11.2/URI.min.js"></script>
+  <script type="text/javascript" src="js/app.js"></script>
+</body>
+</html>
