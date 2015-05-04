@@ -2416,3 +2416,4 @@ goog.exportSymbol('X.renderer3D.prototype.resetViewAndRender',
 goog.exportSymbol('X.renderer3D.prototype.pick', X.renderer3D.prototype.pick);
 goog.exportSymbol('X.renderer3D.prototype.pick3d', X.renderer3D.prototype.pick3d);
 goog.exportSymbol('X.renderer3D.prototype.afterRender', X.renderer3D.prototype.afterRender);
+goog.exportSymbol('X.renderer3D.prototype.resize', X.renderer3D.prototype.resize);
