@@ -2571,6 +2571,8 @@ goog.exportSymbol('X.renderer3D.prototype.render',
     X.renderer3D.prototype.render);
 goog.exportSymbol('X.renderer3D.prototype.destroy',
     X.renderer3D.prototype.destroy);
+goog.exportSymbol('X.renderer3D.prototype.onResize',
+    X.renderer3D.prototype.onResize);
 goog.exportSymbol('X.renderer3D.prototype.remove',
     X.renderer3D.prototype.remove);
 goog.exportSymbol('X.renderer3D.prototype.resetBoundingBox',

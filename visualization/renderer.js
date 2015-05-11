@@ -401,6 +401,17 @@ X.renderer.prototype.onHover_ = function(event) {
 
 };
 
+/**
+ * Trigger viewport adjustment after resizing.
+ *
+ * @public
+ */
+X.renderer.prototype.onResize = function() {
+
+  this.onResize_();
+
+};
+
 
 /**
  * @protected
