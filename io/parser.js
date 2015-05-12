@@ -1336,6 +1336,8 @@ X.parser.prototype.reslice = function(object) {
   var texture_dim_y = dim_y;
   var texture_dim_z = dim_z;
 
+  var x_y_sample_rate = object._x_y_sample_rate;
+
   // if (!grayscale) {
   //   var texture_dim_x = Math.pow(2,Math.ceil(Math.log(dim_x)/Math.log(2)));
   //   var texture_dim_y = Math.pow(2,Math.ceil(Math.log(dim_y)/Math.log(2)));
@@ -1425,6 +1427,7 @@ X.parser.prototype.reslice = function(object) {
       s._labelmap = object._labelmap._children[0]._children[x];
     }
 
+    if (x % x_y_sample_rate == 0)
     object._children[0]._children[x] = s;
 
   }
@@ -1453,7 +1456,9 @@ X.parser.prototype.reslice = function(object) {
       s._labelmap = object._labelmap._children[1]._children[y];
     }
 
-    object._children[1]._children[y] = s;
+    if (y % x_y_sample_rate == 0) {
+      object._children[1]._children[y] = s;
+    }
   }
   for (var z=0; z<dim_z; ++z) {
     var s = new X.slice();

@@ -267,6 +267,14 @@ X.volume = function(volume) {
   this._IJKVolume = null;
 
   /**
+   * The sample rate for volumes in X-Y direction.
+   *
+   * @type {!number}
+   * @private
+   */
+  this._x_y_sample_rate = 1;
+
+  /**
    * The image pixels
    *
    * @type {?Array}
@@ -1313,6 +1321,32 @@ X.volume.prototype.__defineGetter__('zColor', function() {
 });
 
 /**
+ * Set value of the X-Y sample rate.
+ *
+ * @param {!number} xySampleRate the x-y sample rate, default: 1.
+ *
+ * @public
+ */
+X.volume.prototype.__defineSetter__('xySampleRate', function(xySampleRate) {
+
+  this._x_y_sample_rate = xySampleRate;
+
+});
+
+/**
+ * Get value of the X-Y sample rate.
+ *
+ * @return {!number}
+ *
+ * @public
+ */
+X.volume.prototype.__defineGetter__('xySampleRate', function() {
+
+  return this._x_y_sample_rate;
+
+});
+
+/**
  * Recompute the slice information.
  * Only supports normals and color for now.
  * Todo: origin
@@ -1457,8 +1491,9 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
     var i;
     for (i = 0; i < _numberOfSlices; i++) {
-
-      _child._children[i]._visible = true;
+      if (_child._children[i]) {
+        _child._children[i]._visible = true;
+      }
 
     }
 
@@ -1537,8 +1572,9 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
       // }
       // else{
-
-        _child._children[i]._visible = true;
+        if (_child._children[i]) {
+          _child._children[i]._visible = true;
+        }
 
       // }
       
