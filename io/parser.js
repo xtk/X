@@ -1313,6 +1313,12 @@ X.parser.prototype.reslice_old = function(object) {
   object._indexZ = Math.floor(object._childrenInfo[2]._nb/2);
   object._indexZold = Math.floor(object._childrenInfo[2]._nb/2);
 
+
+  if (object._indexZ % 2 != 0) {
+    object._indexZ -= 1;
+    object._indexZold -= 1;
+  }
+
   X.TIMERSTOP(this._classname + '.reslice_old');
   
   //return object._IJKVolume;
@@ -1337,6 +1343,7 @@ X.parser.prototype.reslice = function(object) {
   var texture_dim_z = dim_z;
 
   var x_y_sample_rate = object._x_y_sample_rate;
+  var z_sample_rate = object._z_sample_rate;
 
   // if (!grayscale) {
   //   var texture_dim_x = Math.pow(2,Math.ceil(Math.log(dim_x)/Math.log(2)));
@@ -1427,8 +1434,9 @@ X.parser.prototype.reslice = function(object) {
       s._labelmap = object._labelmap._children[0]._children[x];
     }
 
-    if (x % x_y_sample_rate == 0)
-    object._children[0]._children[x] = s;
+    if (x % x_y_sample_rate == 0) {
+      object._children[0]._children[x] = s;
+    }
 
   }
   for (var y=0; y<dim_y; ++y) {
@@ -1485,7 +1493,9 @@ X.parser.prototype.reslice = function(object) {
       s._labelmap = object._labelmap._children[2]._children[z];
     }
 
-    object._children[2]._children[z] = s;
+    if (z % z_sample_rate == 0) {
+      object._children[2]._children[z] = s;
+    }
   }
 
 

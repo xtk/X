@@ -275,6 +275,14 @@ X.volume = function(volume) {
   this._x_y_sample_rate = 1;
 
   /**
+   * The sample rate for volumes in Z direction.
+   *
+   * @type {!number}
+   * @private
+   */
+  this._z_sample_rate = 1;
+
+  /**
    * The image pixels
    *
    * @type {?Array}
@@ -1343,6 +1351,32 @@ X.volume.prototype.__defineSetter__('xySampleRate', function(xySampleRate) {
 X.volume.prototype.__defineGetter__('xySampleRate', function() {
 
   return this._x_y_sample_rate;
+
+});
+
+/**
+ * Set value of the Z sample rate.
+ *
+ * @param {!number} zSampleRate the z sample rate, default: 1.
+ *
+ * @public
+ */
+X.volume.prototype.__defineSetter__('zSampleRate', function(zSampleRate) {
+
+  this._z_sample_rate = zSampleRate;
+
+});
+
+/**
+ * Get value of the Z sample rate.
+ *
+ * @return {!number}
+ *
+ * @public
+ */
+X.volume.prototype.__defineGetter__('zSampleRate', function() {
+
+  return this._z_sample_rate;
 
 });
 
