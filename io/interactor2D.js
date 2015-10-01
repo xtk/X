@@ -83,7 +83,7 @@ X.interactor2D.prototype.onMouseWheel_ = function(event) {
   // set the scroll direction
   // true if up, false if down
   // delta is here given by the event
-  e._up = (event.deltaY < 0);
+  e['up'] = (event.deltaY < 0);
   
   // .. fire the event
   this.dispatchEvent(e);

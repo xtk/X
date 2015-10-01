@@ -203,6 +203,35 @@ X.renderer2D = function() {
 
   this._normalizedScale = 1;
 
+  /**
+   * 
+   *
+   * @type {Array}
+   * @protected
+   */
+  this._pointer = [-1, -1, -1, -1, -1, -1, -1];
+
+  /**
+   * The convention we follow to draw the 2D slices. TRUE for RADIOLOGY, FALSE for NEUROLOGY.
+   *
+   * @type {!boolean}
+   */
+  this._flipRows = true;
+
+    /**
+   * The convention we follow to draw the 2D slices. TRUE for RADIOLOGY, FALSE for NEUROLOGY.
+   *
+   * @type {!boolean}
+   */
+  this._flipColumns = true;
+
+/**
+   * The convention we follow to draw the 2D slices. TRUE for RADIOLOGY, FALSE for NEUROLOGY.
+   *
+   * @type {!boolean}
+   */
+  this._invert = false;
+
 };
 // inherit from X.base
 goog.inherits(X.renderer2D, X.renderer);
@@ -278,7 +307,8 @@ X.renderer2D.prototype.onScroll_ = function(event) {
 
   }
 
-  if (event._up) {
+  // window.console.log(event);
+  if (event['up']) {
 
     // yes, scroll up
     _volume[_orientation] = _volume[_orientation] + 1;
@@ -1083,7 +1113,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // - if the threshold has changed
   // - if the window/level has changed
   // - the labelmap show only color has changed
-  var _redraw_required = (this._currentSlice != _currentSlice ||
+  var _redraw_required = (
+      this._inverted ||
+      this._currentSlice != _currentSlice ||
       this._lowerThreshold != _lowerThreshold ||
       this._upperThreshold != _upperThreshold ||
       this._windowLow != _windowLow || this._windowHigh != _windowHigh || (_labelmapShowOnlyColor && !X.array
@@ -1204,21 +1236,70 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         _labelPixels[_invertedColsIndex + 3] = _label[3]; // a
       }
       else{
-        // invert all
-        var _invertedIndex = _pixelsLength - 1 - _index;
-        _pixels[_invertedIndex - 3] = _color[0]; // r
-        _pixels[_invertedIndex - 2] = _color[1]; // g
-        _pixels[_invertedIndex - 1] = _color[2]; // b
-        _pixels[_invertedIndex] = _color[3]; // a
-        _labelPixels[_invertedIndex - 3] = _label[0]; // r
-        _labelPixels[_invertedIndex - 2] = _label[1]; // g
-        _labelPixels[_invertedIndex - 1] = _label[2]; // b
-        _labelPixels[_invertedIndex] = _label[3]; // a
+        if(this._flipRows){
+          if(this._flipColumns){
+            // invert all
+            var _invertedIndex = _pixelsLength - 1 - _index;
+            _pixels[_invertedIndex - 3] = _color[0]; // r
+            _pixels[_invertedIndex - 2] = _color[1]; // g
+            _pixels[_invertedIndex - 1] = _color[2]; // b
+            _pixels[_invertedIndex] = _color[3]; // a
+            _labelPixels[_invertedIndex - 3] = _label[0]; // r
+            _labelPixels[_invertedIndex - 2] = _label[1]; // g
+            _labelPixels[_invertedIndex - 1] = _label[2]; // b
+            _labelPixels[_invertedIndex] = _label[3]; // a
+          }
+          else{
+            // invert rows
+            var row = Math.floor(_index/(_sliceWidth*4));
+            var col = _index - row*_sliceWidth*4;
+            var invRows = _sliceHeight - 1 - row ;
+            var _invertedRowssIndex = invRows*_sliceWidth*4 + col;
+            _pixels[_invertedRowssIndex] = _color[0]; // r
+            _pixels[_invertedRowssIndex + 1] = _color[1]; // g
+            _pixels[_invertedRowssIndex + 2] = _color[2]; // b
+            _pixels[_invertedRowssIndex + 3] = _color[3]; // a
+            _labelPixels[_invertedRowssIndex] = _label[0]; // r
+            _labelPixels[_invertedRowssIndex + 1] = _label[1]; // g
+            _labelPixels[_invertedRowssIndex + 2] = _label[2]; // b
+            _labelPixels[_invertedRowssIndex + 3] = _label[3]; // a
+          }
+        }
+        else{
+          if(this._flipColumns){
+            // invert cols
+            var row = Math.floor(_index/(_sliceWidth*4));
+            var col = _index - row*_sliceWidth*4;
+            var invCol = 4*(_sliceWidth-1) - col ;
+            var _invertedColsIndex = row*_sliceWidth*4 + invCol;
+            _pixels[_invertedColsIndex] = _color[0]; // r
+            _pixels[_invertedColsIndex + 1] = _color[1]; // g
+            _pixels[_invertedColsIndex + 2] = _color[2]; // b
+            _pixels[_invertedColsIndex + 3] = _color[3]; // a
+            _labelPixels[_invertedColsIndex] = _label[0]; // r
+            _labelPixels[_invertedColsIndex + 1] = _label[1]; // g
+            _labelPixels[_invertedColsIndex + 2] = _label[2]; // b
+            _labelPixels[_invertedColsIndex + 3] = _label[3]; // a
+          }
+          else{
+            // invert nothing
+            _pixels[_index] = _color[0]; // r
+            _pixels[_index + 1] = _color[1]; // g
+            _pixels[_index + 2] = _color[2]; // b
+            _pixels[_index + 3] = _color[3]; // a
+            _labelPixels[_index] = _label[0]; // r
+            _labelPixels[_index + 1] = _label[1]; // g
+            _labelPixels[_index + 2] = _label[2]; // b
+            _labelPixels[_index + 3] = _label[3]; // a
+          }
+        }
       }
 
       _index += 4; // increase by 4 units for r,g,b,a
 
     } while (_index < _pixelsLength);
+
+    this._inverted = false;
 
     // store the generated image data to the frame buffer context
     _imageFBContext.putImageData(_imageData, 0, 0);
@@ -1283,6 +1364,9 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
   }
 
+
+
+
   // if enabled, show slice navigators
   if (this._config['SLICENAVIGATORS']) {
     this._canvas.style.cursor = "none";
@@ -1306,75 +1390,272 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
         this['onSliceNavigation']();
 
+
+// this._context.setTransform(1, 0, 0, 1, 0, 0);
+// this._context.lineWidth = 2;
+// this._context.strokeStyle = 'rgba(33,150,243,1)';
+
+//   this._context.beginPath();
+//         this._context.moveTo(this._interactor._mousePosition[0] - 10 , this._interactor._mousePosition[1] + 10);
+//         this._context.lineTo(this._interactor._mousePosition[0], this._interactor._mousePosition[1] + 1);
+//         this._context.lineTo(this._interactor._mousePosition[0] + 10, this._interactor._mousePosition[1] + 10);
+        
+//         this._context.stroke();
+//         this._context.closePath();
+
         // draw the navigators
         // see http://diveintohtml5.info/canvas.html#paths
 
         // in x-direction
-        this._context.setTransform(1, 0, 0, 1, 0, 0);
-        this._context.beginPath();
-        this._context.moveTo(this._interactor._mousePosition[0], 0);
-        this._context.lineTo(this._interactor._mousePosition[0],
-            this._interactor._mousePosition[1] - 1);
-        this._context.moveTo(this._interactor._mousePosition[0],
-            this._interactor._mousePosition[1] + 1);
-        this._context.lineTo(this._interactor._mousePosition[0],
-            this._height);
-        this._context.strokeStyle = this._orientationColors[0];
-        this._context.stroke();
-        this._context.closePath();
+//         this._context.setTransform(1, 0, 0, 1, 0, 0);
+//         this._context.lineWidth = 1;
+// this._context.strokeStyle = 'rgba(33,150,243,1)';
+//         this._context.beginPath();
+//         this._context.moveTo(this._interactor._mousePosition[0], 0);
+//         this._context.lineTo(this._interactor._mousePosition[0],
+//             this._interactor._mousePosition[1] - 1);
+//         this._context.moveTo(this._interactor._mousePosition[0],
+//             this._interactor._mousePosition[1] + 1);
+//         this._context.lineTo(this._interactor._mousePosition[0],
+//             this._height);
+//         // this._context.strokeStyle = 'rgba(255,0,0,.7)';
+//         this._context.stroke();
+//         this._context.closePath();
 
-        // in y-direction
-        this._context.beginPath();
-        this._context.moveTo(0, this._interactor._mousePosition[1]);
-        this._context.lineTo(this._interactor._mousePosition[0] - 1,
-            this._interactor._mousePosition[1]);
-        this._context.moveTo(this._interactor._mousePosition[0] + 1, this._interactor._mousePosition[1]);
-        this._context.lineTo(this._width,
-            this._interactor._mousePosition[1]);
-        this._context.strokeStyle = this._orientationColors[1];
-        this._context.stroke();
-        this._context.closePath();
+//         // in y-direction
+//         this._context.beginPath();
+//         this._context.moveTo(0, this._interactor._mousePosition[1]);
+//         this._context.lineTo(this._interactor._mousePosition[0] - 1,
+//             this._interactor._mousePosition[1]);
+//         this._context.moveTo(this._interactor._mousePosition[0] + 1, this._interactor._mousePosition[1]);
+//         this._context.lineTo(this._width,
+//             this._interactor._mousePosition[1]);
+//         // this._context.strokeStyle = 'rgba(255,0,0,.7)';
+//         this._context.stroke();
+//         this._context.closePath();
 
         // write ijk coordinates
-        this._context.font = '10pt Arial';
-        // textAlign aligns text horizontally relative to placement
-        this._context.textAlign = 'left';
-        // textBaseline aligns text vertically relative to font style
-        this._context.textBaseline = 'top';
-        this._context.fillStyle = 'white';
-        this._context.fillText('RAS: ' + ijk[2][0].toFixed(2) + ', ' + ijk[2][1].toFixed(2) + ', ' + ijk[2][2].toFixed(2), 0, 0);
+        // this._context.font = '10pt Arial';
+        // // textAlign aligns text horizontally relative to placement
+        // this._context.textAlign = 'left';
+        // // textBaseline aligns text vertically relative to font style
+        // this._context.textBaseline = 'top';
+        // this._context.fillStyle = 'white';
+        // this._context.fillText('RAS: ' + ijk[2][0].toFixed(2) + ', ' + ijk[2][1].toFixed(2) + ', ' + ijk[2][2].toFixed(2), 0, 0);
 
-        var _value = 'undefined';
-        var _valueLM = 'undefined';
-        var _valueCT = 'undefined';
-        if(typeof _volume._IJKVolume[ijk[1][2].toFixed(0)] != 'undefined' && typeof _volume._IJKVolume[ijk[1][2].toFixed(0)][ijk[1][1].toFixed(0)] != 'undefined'){
-          _value = _volume._IJKVolume[ijk[1][2].toFixed(0)][ijk[1][1].toFixed(0)][ijk[1][0].toFixed(0)];
-          if(_volume.hasLabelMap){
-            _valueLM = _volume._labelmap._IJKVolume[ijk[1][2].toFixed(0)][ijk[1][1].toFixed(0)][ijk[1][0].toFixed(0)];
-            if(_volume._labelmap._colorTable){
-              _valueCT = _volume._labelmap._colorTable.get(_valueLM);
-              if(typeof _valueCT != 'undefined'){
-              _valueCT = _valueCT[0];
-              }
-            }
-          }
-        }
-        // get pixel value
-        this._context.fillText('Background:  ' + _value + ' ('+ ijk[1][0].toFixed(0) + ', ' + ijk[1][1].toFixed(0) + ', ' + ijk[1][2].toFixed(0) + ')', 0, 15);
-        // if any label map
-        if(_volume.hasLabelMap){
-          this._context.fillText('Labelmap:  ' + _valueCT + ' ('+ _valueLM + ')', 0, 30);
-        }
+        // var _value = 'undefined';
+        // var _valueLM = 'undefined';
+        // var _valueCT = 'undefined';
+        // if(typeof _volume._IJKVolume[ijk[1][2].toFixed(0)] != 'undefined' && typeof _volume._IJKVolume[ijk[1][2].toFixed(0)][ijk[1][1].toFixed(0)] != 'undefined'){
+        //   _value = _volume._IJKVolume[ijk[1][2].toFixed(0)][ijk[1][1].toFixed(0)][ijk[1][0].toFixed(0)];
+        //   if(_volume.hasLabelMap){
+        //     _valueLM = _volume._labelmap._IJKVolume[ijk[1][2].toFixed(0)][ijk[1][1].toFixed(0)][ijk[1][0].toFixed(0)];
+        //     if(_volume._labelmap._colorTable){
+        //       _valueCT = _volume._labelmap._colorTable.get(_valueLM);
+        //       if(typeof _valueCT != 'undefined'){
+        //       _valueCT = _valueCT[0];
+        //       }
+        //     }
+        //   }
+        // }
+        // // get pixel value
+        // this._context.fillText('Background:  ' + _value + ' ('+ ijk[1][0].toFixed(0) + ', ' + ijk[1][1].toFixed(0) + ', ' + ijk[1][2].toFixed(0) + ')', 0, 15);
+        // // if any label map
+        // if(_volume.hasLabelMap){
+        //   this._context.fillText('Labelmap:  ' + _valueCT + ' ('+ _valueLM + ')', 0, 30);
+        // }
 
-      }
-
+        // set pointer
+        this._pointer = [
+          ijk[1][0].toFixed(0),
+          ijk[1][1].toFixed(0),
+          ijk[1][2].toFixed(0),
+          ijk[2][0].toFixed(0),
+          ijk[2][1].toFixed(0),
+          ijk[2][2].toFixed(0),
+          ijk[1][0].toFixed(0)
+          ];
+}
+      // throw an event!
+      var e = new CustomEvent("onPoint");
+      // .. fire the event
+      this.dispatchEvent(e);
     }
-else{
+  else{
     this._canvas.style.cursor = "default";
   }
   }
 
+      // draw pointer hack
+  if(this._pointer[0] !== -1
+    // && ! this._interactor._shiftDown
+    ){
+
+    // if slice changed, set to null and exit
+    if(_currentSlice != this._pointer[2]){
+      this._pointer = [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+          ];
+      return;
+    }
+
+    // map IJK to texture
+    // invert all (i and j?)
+    var x = this._pointer[0];
+    var y = this._pointer[1];
+
+    // window.console.log(x,y);
+
+    // to texture normalized
+    var xNorm = 1 - x / this._sliceWidth;
+    var yNorm = 1 - y / this._sliceHeight;
+
+    // padding offsets
+  var _x2 = 1 * _view[12];
+  var _y2 = -1 * _view[13]; // we need to flip y here
+
+  // .. and zoom
+  var _center = [this._width / 2, this._height / 2];
+
+  // the slice dimensions in canvas coordinates
+  var _sliceWidthScaled = this._sliceWidth * this._sliceWidthSpacing *
+    this._normalizedScale;
+  var _sliceHeightScaled = this._sliceHeight * this._sliceHeightSpacing *
+    this._normalizedScale;
+
+  // the image borders on the left and top in canvas coordinates
+  var _image_left2xy = _center[0] - (_sliceWidthScaled / 2);
+  var _image_top2xy = _center[1] - (_sliceHeightScaled / 2);
+
+  // incorporate the padding offsets (but they have to be scaled)
+  _image_left2xy += _x2 * this._normalizedScale;
+  _image_top2xy += _y2 * this._normalizedScale;
+
+  var _x2Norm = (x - _image_left2xy)/ _sliceWidthScaled;
+  var _y2Norm = (y - _image_top2xy)/ _sliceHeightScaled;
+
+
+  var testX = xNorm * _sliceWidthScaled + _image_left2xy;
+  var testY = yNorm * _sliceHeightScaled + _image_top2xy;
+
+  _x2 = _x2Norm*this._sliceWidth;
+  _y2 = _y2Norm*this._sliceHeight;
+
+    // invert all
+    _x2 = this._sliceWidth - _x2;
+    _y2 = this._sliceWidth - _y2;
+
+
+  // map indices to xy coordinates
+  _x2 = _currentSlice._wmin + _x2*_currentSlice._widthSpacing;// - _currentSlice._widthSpacing/2;
+  _y2 = _currentSlice._hmin + _y2*_currentSlice._heightSpacing;// - _currentSlice._heightSpacing/2;
+
+this._context.setTransform(1, 0, 0, 1, 0, 0);
+this._context.lineWidth = 2;
+this._context.strokeStyle = 'rgba(33,150,243,1)';
+
+  this._context.beginPath();
+        this._context.moveTo(testX - 10 , testY + 10);
+        this._context.lineTo(testX, testY + 1);
+        this._context.lineTo(testX + 10, testY + 10);
+        
+        this._context.stroke();
+        this._context.closePath();
+  }
+
 };
+
+/**
+ * Get value of slice Y color.
+ *
+ * @return {!Array} pointer.
+ *
+ * @public
+ */
+X.renderer2D.prototype.__defineGetter__('pointer', function() {
+
+  return this._pointer;
+
+});
+
+/**
+ * Set value of pointer.
+ *
+ * @param {!Array} pointer Value between -1 and 1.
+*
+ * @public
+ */
+X.renderer2D.prototype.__defineSetter__('pointer', function(pointer) {
+
+  this._pointer[0] = pointer[0];
+  this._pointer[1] = pointer[1];
+  this._pointer[2] = pointer[2];
+  this._pointer[3] = pointer[3];
+  this._pointer[4] = pointer[4];
+  this._pointer[5] = pointer[5];
+  this._pointer[6] = pointer[6];
+
+});
+
+/**
+ * Get value of slice Y color.
+ *
+ * @return {!Boolean} pointer.
+ *
+ * @public
+ */
+X.renderer2D.prototype.__defineGetter__('flipRows', function() {
+
+  return this._flipRows;
+
+});
+
+/**
+ * Set value of pointer.
+ *
+ * @param {!Boolean} flipRows Value between -1 and 1.
+*
+ * @public
+ */
+X.renderer2D.prototype.__defineSetter__('flipRows', function(flipRows) {
+
+  this._flipRows = flipRows;
+  this._inverted = true;
+
+});
+
+/**
+ * Get value of slice Y color.
+ *
+ * @return {!Boolean} pointer.
+ *
+ * @public
+ */
+X.renderer2D.prototype.__defineGetter__('flipColumns', function() {
+
+  return this._flipColumns;
+
+});
+
+/**
+ * Set value of pointer.
+ *
+ * @param {!Boolean} flipColumns Value between -1 and 1.
+*
+ * @public
+ */
+X.renderer2D.prototype.__defineSetter__('flipColumns', function(flipColumns) {
+
+  this._flipColumns = flipColumns;
+  this._inverted = true;
+
+});
 
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer2D', X.renderer2D);

@@ -283,7 +283,7 @@ X.event.ScrollEvent = function() {
    * @type {!boolean}
    * @protected
    */
-  this._up = false;
+  this['up'] = false;
   
 };
 // inherit from goog.events.Event

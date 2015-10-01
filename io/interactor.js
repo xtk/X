@@ -222,6 +222,13 @@ X.interactor = function(element) {
   this._shiftDown = false;
 
   /**
+   * The shift down flag.
+   *
+   * @type {Object}
+   */
+  this._flip = {x: 0, y: 0, z:0};
+
+  /**
    * The configuration of this interactor.
    *
    * @enum {boolean}
@@ -510,6 +517,20 @@ X.interactor.prototype.onMouseUp_ = function(event) {
     this._rightButtonDown = false;
 
   }
+
+  // trigger flip event if needed
+    if(Math.abs(this._flip.x) > Math.abs(this._flip.y)){
+      var e = new CustomEvent("flipColumns");
+    // .. fire the event
+    this.dispatchEvent(e);
+    }
+    else if(Math.abs(this._flip.y) > Math.abs(this._flip.x)){
+      var e = new CustomEvent("flipRows");
+    // .. fire the event
+    this.dispatchEvent(e);
+    }
+
+    this._flip = {x: 0, y: 0, z:0};
 
   eval("this.onMouseUp(" + this._leftButtonDown + "," + this._middleButtonDown +
       "," + this._rightButtonDown + ")");
@@ -953,6 +974,7 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
 
   // is shift down?
   var shiftDown = event.shiftKey;
+  var ctrlDown = event.ctrlKey;
 
   // store the shiftState
   this._shiftDown = shiftDown;
@@ -1024,7 +1046,7 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
   //
   // check which mouse buttons or keys are pressed
   //
-  if (this._leftButtonDown && !shiftDown) {
+  if (this._leftButtonDown && !shiftDown && !ctrlDown) {
     //
     // LEFT MOUSE BUTTON DOWN AND NOT SHIFT DOWN
     //
@@ -1077,6 +1099,15 @@ X.interactor.prototype.onMouseMovementInside_ = function(event) {
     this.dispatchEvent(e);
 
 
+  }
+  else if (this._leftButtonDown && ctrlDown) {
+    // var e = new CustomEvent("prepareFlip");
+    // e["distance"] = distance;
+    //   // .. fire the event
+    // this.dispatchEvent(e);
+    this._flip.x += distance.x;
+    this._flip.y += distance.y;
+    this._flip.z += distance.z;
   }
 
 };
@@ -1189,7 +1220,34 @@ X.interactor.prototype.onKey_ = function(event) {
     var e = new X.event.ResetViewEvent();
     this.dispatchEvent(e);
 
-  } else if (keyCode >= 37 && keyCode <= 40) {
+  }
+  else if (keyCode == 81 && !alt && !ctrl && !meta && !shift) {
+
+    // 'q' but without any other control keys since we do not want to limit the
+    // user to press for example CTRL+R to reload the page
+
+    // prevent any other actions..
+    event.preventDefault();
+
+    var e = new CustomEvent("flipRows");
+    // .. fire the event
+    this.dispatchEvent(e);
+
+  }
+  else if (keyCode == 87 && !alt && !ctrl && !meta && !shift) {
+
+    // 'w' but without any other control keys since we do not want to limit the
+    // user to press for example CTRL+R to reload the page
+
+    // prevent any other actions..
+    event.preventDefault();
+
+    var e = new CustomEvent("flipColumns");
+    // .. fire the event
+    this.dispatchEvent(e);
+
+  }
+  else if (keyCode >= 37 && keyCode <= 40) {
 
     // keyCode <= 37 and >= 40 means the arrow keys
 
