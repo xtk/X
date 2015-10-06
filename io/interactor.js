@@ -1214,7 +1214,7 @@ X.interactor.prototype.onKey_ = function(event) {
     // user to press for example CTRL+R to reload the page
 
     // prevent any other actions..
-    event.preventDefault();
+    //event.preventDefault();
 
     // fire the ResetViewEvent
     var e = new X.event.ResetViewEvent();
@@ -1227,7 +1227,7 @@ X.interactor.prototype.onKey_ = function(event) {
     // user to press for example CTRL+R to reload the page
 
     // prevent any other actions..
-    event.preventDefault();
+    //event.preventDefault();
 
     var e = new CustomEvent("flipRows");
     // .. fire the event
@@ -1240,7 +1240,7 @@ X.interactor.prototype.onKey_ = function(event) {
     // user to press for example CTRL+R to reload the page
 
     // prevent any other actions..
-    event.preventDefault();
+    //event.preventDefault();
 
     var e = new CustomEvent("flipColumns");
     // .. fire the event
