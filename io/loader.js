@@ -381,6 +381,7 @@ X.loader.extensions = {
   'DCM': [X.parserDCM, null],
   'DICOM': [X.parserDCM, null],
   '': [X.parserDCM, null],
+  'IMA': [X.parserDCM, null],
   'CRV': [X.parserCRV, null],
   'LABEL': [X.parserLBL, null],
   'MGH': [X.parserMGZ, false],
