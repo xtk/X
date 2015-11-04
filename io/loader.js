@@ -157,7 +157,7 @@ X.loader.prototype.checkFileFormat = function(container) {
   var extension = filepath.split('.').pop().toUpperCase();
 
   // support no extensions
-  if (extension == filepath.toUpperCase()) {
+  if (extension == filepath.toUpperCase() ||  /^\d+$/.test(extension)) {
 
     // this means no extension
     extension = '';
