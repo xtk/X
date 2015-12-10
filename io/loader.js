@@ -301,6 +301,9 @@ X.loader.prototype.parse = function(request, container, object) {
       window.console.log('Could not parse object:');
       window.console.log(object);
 
+      /// update object's status
+      object['status'] = 'INVALID';
+
       // reset jobs...
       // needed to hide the progress bar
       this._jobs = new goog.structs.Map();
