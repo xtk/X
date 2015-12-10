@@ -263,7 +263,7 @@ X.loader.prototype.parse = function(request, container, object) {
 
   // we use a timeout here to let the progress bar be able to breath and show
   // something
-  setTimeout(function() {
+   setTimeout(function() {
 
     // check the file format which returns the filepath, extension and the
     // parser
@@ -292,7 +292,24 @@ X.loader.prototype.parse = function(request, container, object) {
 
     // call the parse function and pass in the container, the object and the
     // data stream and some additional value
-    _parser.parse(container, object, _data, flags);
+    try{
+      _parser.parse(container, object, _data, flags);
+    }
+    catch(e){
+      // log some debug information
+      window.console.log(e);
+      window.console.log('Could not parse object:');
+      window.console.log(object);
+
+      // reset jobs...
+      // needed to hide the progress bar
+      this._jobs = new goog.structs.Map();
+
+      // volume throws a custom event
+      var ev = new CustomEvent("parseError");
+      // .. fire the event
+      object.dispatchEvent(ev);
+    }
 
   }.bind(this), 100);
 
