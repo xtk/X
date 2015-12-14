@@ -305,7 +305,7 @@ X.loader.prototype.parse = function(request, container, object) {
       object['status'] = 'INVALID';
 
       // reset jobs...
-      // needed to hide the progress bar
+      // needed to hide the progress bar and start rendering loop
       this._jobs = new goog.structs.Map();
 
       // volume throws a custom event

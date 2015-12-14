@@ -190,9 +190,7 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
     
     }
     else{
-
-      window.console.log("Could not resolve the ordering mode");
-
+      throw new Error('Unsupported DICOM data type: Could not resolve the ordering mode');
     }
 
 
