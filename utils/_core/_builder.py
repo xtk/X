@@ -52,6 +52,9 @@ class Builder( object ):
     # configure the output file
     arguments.extend( ['--output_file', config.BUILD_OUTPUT_PATH] )
 
+    # configure externs
+    arguments.extend( ['-f', '--externs=' + config.SOFTWARE_PATH + '/utils/_core/externs.js'] )
+
     # configure additional compiler arguments
     arguments.extend( [ '-f', '--warning_level=VERBOSE'] ) # verbose
     arguments.extend( [ '-f', '--compilation_level=ADVANCED_OPTIMIZATIONS'] ) # advanced compilation

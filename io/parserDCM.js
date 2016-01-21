@@ -956,23 +956,81 @@ X.parserDCM.prototype.parseStream = function(data, object) {
   // no need to jump anymore, parse data as any DICOM field.
   // jump to the beginning of the pixel data
   this.jumpTo(this._data.byteLength - slice['columns'] * slice['rows'] * 2);
+  
   // check for data type and parse accordingly
   var _data = null;
+  var byteArray = new Uint8Array(this._data);
+  var dataSet = dicomParser.parseDicom(byteArray);
+  var transferSyntaxUID = dataSet['string']('x00020010');
 
-  switch (slice.bits_allocated) {
-  case 8:
-    _data = this.scan('uchar', slice['columns'] * slice['rows']);
-    break;
-  case 16:
-    _data = this.scan('ushort', slice['columns'] * slice['rows']);
+  if (transferSyntaxUID === '1.2.840.10008.1.2.4.90' || // JPEG 2000 Lossless
+    transferSyntaxUID === '1.2.840.10008.1.2.4.91') { // JPEG 2000 Lossy
+    // JPEG 2000
+    var compressedPixelData = dicomParser.readEncapsulatedPixelData(dataSet, dataSet['elements']['x7fe00010'], 0);
 
-    break;
-  case 32:
-    _data = this.scan('uint', slice['columns'] * slice['rows']);
-    break;
+    var jpxImage = new JpxImage();
+    jpxImage.parse(compressedPixelData);
+
+    var tileComponents = jpxImage['tiles'][0];
+    var pixelData = tileComponents['items'];
+
+    slice['data'] = pixelData;
   }
-
-  slice['data'] = _data;
+  else if(transferSyntaxUID === '1.2.840.10008.1.2.4.57' || // JPEG Lossless, Nonhierarchical (Processes 14)
+    transferSyntaxUID === '1.2.840.10008.1.2.4.70'){       // JPEG Lossless, Nonhierarchical (Processes 14 [Selection 1])
+    // JPEG LOSSLESS
+    var compressedPixelData = dicomParser.readEncapsulatedPixelData(dataSet, dataSet['elements']['x7fe00010'], 0);
+    var pixelRepresentation = 0;//this.pixelRepresentation(frameIndex);
+    var bitsAllocated = slice.bits_allocated;
+    var byteOutput = bitsAllocated <= 8 ? 1 : 2;
+    var decoder = new jpeg.lossless.Decoder();
+    var decompressedData = decoder['decode'](compressedPixelData['buffer'], compressedPixelData['byteOffset'], compressedPixelData['length'], byteOutput);
+    if (pixelRepresentation === 0) {
+      if (byteOutput === 2) {
+        slice['data'] = new Uint16Array(decompressedData['buffer']);
+      } else {
+        // untested!
+        slice['data'] = new Uint8Array(decompressedData['buffer']);
+      }
+    } else {
+      slice['data'] = new Int16Array(decompressedData['buffer']);
+    }
+  }
+  else if(transferSyntaxUID === '1.2.840.10008.1.2' || // Implicit VR Little Endian
+    transferSyntaxUID === '1.2.840.10008.1.2.1' ||     // Explicit VR Little Endian
+    transferSyntaxUID === '1.2.840.10008.1.2.2'){      // Explicit VR Big Endian
+    // missing signed data...
+    switch (slice.bits_allocated) {
+      case 8:
+        slice['data'] = this.scan('uchar', slice['columns'] * slice['rows']);
+        break;
+      case 16:
+        slice['data'] = this.scan('ushort', slice['columns'] * slice['rows']);
+        break;
+      case 32:
+        slice['data'] = this.scan('uint', slice['columns'] * slice['rows']);
+        break;
+    }
+  }
+  else if( transferSyntaxUID === '1.2.840.10008.1.2.4.50' ||
+    transferSyntaxUID === '1.2.840.10008.1.2.4.51'){
+    var height = slice['rows'];
+    var width = slice['columns'];
+    var bitsAllocated = slice.bits_allocated;
+    var frameData = dicomParser.readEncapsulatedPixelData(dataSet, dataSet['elements']['x7fe00010'], 0);
+    var jpeg = new JpegImage();
+    jpeg.parse( frameData );
+    if(bitsAllocated === 8) {
+      slice['data'] = jpeg.getData(width, height);
+    }
+    else if(bitsAllocated === 16) {
+      slice['data'] = jpeg.getData16(width, height);
+    }
+  }
+  else
+  {
+    throw 'no decoder for transfer syntax: ' + transferSyntaxUID;
+  }
 
   object.slices.push(slice);
 
