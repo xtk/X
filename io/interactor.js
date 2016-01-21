@@ -1221,26 +1221,26 @@ X.interactor.prototype.onKey_ = function(event) {
     this.dispatchEvent(e);
 
   }
-  else if (keyCode == 81 && !alt && !ctrl && !meta && !shift) {
+  else if (keyCode == 81 && !alt && ctrl && !meta && !shift) {
 
-    // 'q' but without any other control keys since we do not want to limit the
+    // CTRL + 'q' but without any other control keys since we do not want to limit the
     // user to press for example CTRL+R to reload the page
 
     // prevent any other actions..
-    //event.preventDefault();
+    event.preventDefault();
 
     var e = new CustomEvent("flipRows");
     // .. fire the event
     this.dispatchEvent(e);
 
   }
-  else if (keyCode == 87 && !alt && !ctrl && !meta && !shift) {
+  else if (keyCode == 87 && !alt && ctrl && !meta && !shift) {
 
     // 'w' but without any other control keys since we do not want to limit the
     // user to press for example CTRL+R to reload the page
 
     // prevent any other actions..
-    //event.preventDefault();
+    event.preventDefault();
 
     var e = new CustomEvent("flipColumns");
     // .. fire the event
