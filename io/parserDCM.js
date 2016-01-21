@@ -246,6 +246,10 @@ X.parserDCM.prototype.parse = function(container, object, data, flag) {
 
     }
 
+    if (first_image[0]['pixel_spacing'][2] === 0) {
+      first_image[0]['pixel_spacing'][2] = 1.0;
+    }
+
     ////////////////////////////////////////////////////////////////////////
     // At this point:
     // -> slices are ordered by series
@@ -939,20 +943,6 @@ X.parserDCM.prototype.parseStream = function(data, object) {
 
     }
 
-
-
-    switch (slice.bits_allocated) {
-      case 8:
-        slice.data = new Uint8Array(slice['columns'] * slice['rows']);
-        break;
-      case 16:
-        slice.data = new Uint16Array(slice['columns'] * slice['rows']);
-        break;
-      case 32:
-        slice.data = new Uint32Array(slice['columns'] * slice['rows']);
-        break;
-    }
-
   // no need to jump anymore, parse data as any DICOM field.
   // jump to the beginning of the pixel data
   this.jumpTo(this._data.byteLength - slice['columns'] * slice['rows'] * 2);
@@ -984,7 +974,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     var bitsAllocated = slice.bits_allocated;
     var byteOutput = bitsAllocated <= 8 ? 1 : 2;
     var decoder = new jpeg.lossless.Decoder();
-    var decompressedData = decoder['decode'](compressedPixelData['buffer'], compressedPixelData['byteOffset'], compressedPixelData['length'], byteOutput);
+    var decompressedData = decoder.decode(compressedPixelData['buffer'], compressedPixelData['byteOffset'], compressedPixelData.length, byteOutput);
     if (pixelRepresentation === 0) {
       if (byteOutput === 2) {
         slice['data'] = new Uint16Array(decompressedData['buffer']);

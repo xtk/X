@@ -11,7 +11,11 @@ function JpxImage(){
 
 var jpeg = {
   lossless: {
-    Decoder: function(){}
+    Decoder: function(){
+      return {
+        decode: function(arg1, ag2, arg3, arg4){}
+      };
+    }
   }
 };
 
