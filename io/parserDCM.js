@@ -984,7 +984,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     var bitsAllocated = slice.bits_allocated;
     var byteOutput = bitsAllocated <= 8 ? 1 : 2;
     var decoder = new jpeg.lossless.Decoder();
-    var decompressedData = decoder.decode(compressedPixelData['buffer'], compressedPixelData['byteOffset'], compressedPixelData['length'], byteOutput);
+    var decompressedData = decoder['decode'](compressedPixelData['buffer'], compressedPixelData['byteOffset'], compressedPixelData['length'], byteOutput);
     if (pixelRepresentation === 0) {
       if (byteOutput === 2) {
         slice['data'] = new Uint16Array(decompressedData['buffer']);

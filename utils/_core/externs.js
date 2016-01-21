@@ -9,7 +9,7 @@ function JpxImage(){
   };
 }
 
-var jpeg ={
+var jpeg = {
   lossless: {
     Decoder: function(){}
   }
