@@ -984,7 +984,7 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     var bitsAllocated = slice.bits_allocated;
     var byteOutput = bitsAllocated <= 8 ? 1 : 2;
     var decoder = new jpeg.lossless.Decoder();
-    var decompressedData = decoder['decode'](compressedPixelData['buffer'], compressedPixelData['byteOffset'], compressedPixelData['length'], byteOutput);
+    var decompressedData = decoder.decode(compressedPixelData['buffer'], compressedPixelData['byteOffset'], compressedPixelData['length'], byteOutput);
     if (pixelRepresentation === 0) {
       if (byteOutput === 2) {
         slice['data'] = new Uint16Array(decompressedData['buffer']);
@@ -1018,13 +1018,13 @@ X.parserDCM.prototype.parseStream = function(data, object) {
     var width = slice['columns'];
     var bitsAllocated = slice.bits_allocated;
     var frameData = dicomParser.readEncapsulatedPixelData(dataSet, dataSet['elements']['x7fe00010'], 0);
-    var jpeg = new JpegImage();
-    jpeg.parse( frameData );
+    var jpegImage = new JpegImage();
+    jpegImage.parse( frameData );
     if(bitsAllocated === 8) {
-      slice['data'] = jpeg.getData(width, height);
+      slice['data'] = jpegImage.getData(width, height);
     }
     else if(bitsAllocated === 16) {
-      slice['data'] = jpeg.getData16(width, height);
+      slice['data'] = jpegImage.getData16(width, height);
     }
   }
   else
