@@ -194,12 +194,11 @@ X.renderer2D = function() {
   this._labelmapShowOnlyColor = new Float32Array([-255, -255, -255, -255]);
 
   /**
-   * The convention we follow to draw the 2D slices. TRUE for RADIOLOGY, FALSE for NEUROLOGY.
+   * Is scale normalized.
    *
-   * @type {!boolean}
+   * @type {!number}
    * @protected
    */
-  this._radiological = true;
 
   this._normalizedScale = 1;
 
@@ -212,18 +211,25 @@ X.renderer2D = function() {
   this._pointer = [-1, -1, -1, -1, -1, -1, -1];
 
   /**
-   * The convention we follow to draw the 2D slices. TRUE for RADIOLOGY, FALSE for NEUROLOGY.
+   * Flip canvas rows.
    *
-   * @type {!boolean}
+   * @type {!number}
    */
-  this._flipRows = true;
+  this._flipRows = 1;
 
-    /**
-   * The convention we follow to draw the 2D slices. TRUE for RADIOLOGY, FALSE for NEUROLOGY.
+  /**
+   * Flip canvas column.
    *
-   * @type {!boolean}
+   * @type {!number}
    */
-  this._flipColumns = true;
+  this._flipColumns = 1;
+
+  /**
+   * Rotate canvas angle (radians).
+   *
+   * @type {!number}
+   */
+  this._rotate = 2 * Math.PI;
 
 /**
    * The convention we follow to draw the 2D slices. TRUE for RADIOLOGY, FALSE for NEUROLOGY.
@@ -261,6 +267,41 @@ X.renderer2D.prototype.onScroll = function() {
 };
 
 
+/**
+ * Rotate the camera by 90 degrees clockwise.
+ *
+ * @public
+ */
+X.renderer2D.prototype.rotate = function() {
+
+  this._rotate += Math.PI * 0.5;
+  this._camera.reset();
+  this.autoScale_();
+};
+
+/**
+ * Flip data vertically.
+ *
+ * @public
+ */
+X.renderer2D.prototype.flipRows = function() {
+
+  this._flipRows *= -1;
+  this._camera.reset();
+  this.autoScale_();
+};
+
+/**
+ * Flip data horizontally.
+ *
+ * @public
+ */
+X.renderer2D.prototype.flipColumns = function() {
+
+  this._flipColumns *= -1;
+  this._camera.reset();
+  this.autoScale_();
+};
 /**
  * Overload this function to execute code after window/level adjustment has
  * completed and just before the next rendering call.
@@ -643,6 +684,7 @@ X.renderer2D.prototype.update_ = function(object) {
 
   }
 
+
   // var id = object._id;
   // var texture = object._texture;
   var file = object._file;
@@ -737,6 +779,11 @@ X.renderer2D.prototype.update_ = function(object) {
   // check the orientation and store a pointer to the slices
   this._orientationIndex = this.volumeChildrenIndex_(this._orientation);
 
+  // if not children, something went wrong
+  if(!object._children[this._orientationIndex]){
+    return;
+  }
+
   // size
   this._slices = object._children[this._orientationIndex]._children;
 
@@ -817,6 +864,22 @@ X.renderer2D.prototype.onSliceNavigation = function() {
   // should be overloaded
 
 };
+
+/**
+ * Rotate vector around angle, clockwise
+ *
+ * @param {!number} xComponent value of the x component of the vector.
+ * @param {!number} yComponent value of the y component of the vector.
+ * @param {!number} angle rotation angle in radians.
+ */
+X.renderer2D.prototype.rotateVector_ = function(xComponent, yComponent, angle){
+  var rotatedVector = {
+    x: xComponent * Math.cos(this._rotate) + yComponent * Math.sin(this._rotate),
+    y: -xComponent * Math.sin(this._rotate) + yComponent * Math.cos(this._rotate)
+  }
+
+  return rotatedVector
+}
 
 
 /**
@@ -989,7 +1052,6 @@ X.renderer2D.prototype.xy2ijk = function(x, y) {
  * @inheritDoc
  */
 X.renderer2D.prototype.render_ = function(picking, invoked) {
-
   // call the render_ method of the superclass
   goog.base(this, 'render_', picking, invoked);
 
@@ -1045,7 +1107,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // clear the canvas
   this._context.save();
   this._context.clearRect(-_width, -_height, 2 * _width, 2 * _height);
-  this._context.restore();
+  // this._context.restore();
 
   // transform the canvas according to the view matrix
   // .. this includes zoom
@@ -1070,7 +1132,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     _labelmapShowOnlyColor = _volume._labelmap._showOnlyColor;
 
   }
-
   // .. here is the current slice
   var _slice = this._slices[parseInt(_currentSlice, 10)];
   var _sliceData = _slice._texture._rawData;
@@ -1114,7 +1175,6 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // - if the window/level has changed
   // - the labelmap show only color has changed
   var _redraw_required = (
-      this._inverted ||
       this._currentSlice != _currentSlice ||
       this._lowerThreshold != _lowerThreshold ||
       this._upperThreshold != _upperThreshold ||
@@ -1209,7 +1269,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
       }
 
-      if(this._orientation == "X"){
+      //if(this._orientation == "X"){
         // invert nothing
         _pixels[_index] = _color[0]; // r
         _pixels[_index + 1] = _color[1]; // g
@@ -1219,87 +1279,10 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         _labelPixels[_index + 1] = _label[1]; // g
         _labelPixels[_index + 2] = _label[2]; // b
         _labelPixels[_index + 3] = _label[3]; // a
-      }
-      else if(this._orientation == "Y"){
-        // invert cols
-        var row = Math.floor(_index/(_sliceWidth*4));
-        var col = _index - row*_sliceWidth*4;
-        var invCol = 4*(_sliceWidth-1) - col ;
-        var _invertedColsIndex = row*_sliceWidth*4 + invCol;
-        _pixels[_invertedColsIndex] = _color[0]; // r
-        _pixels[_invertedColsIndex + 1] = _color[1]; // g
-        _pixels[_invertedColsIndex + 2] = _color[2]; // b
-        _pixels[_invertedColsIndex + 3] = _color[3]; // a
-        _labelPixels[_invertedColsIndex] = _label[0]; // r
-        _labelPixels[_invertedColsIndex + 1] = _label[1]; // g
-        _labelPixels[_invertedColsIndex + 2] = _label[2]; // b
-        _labelPixels[_invertedColsIndex + 3] = _label[3]; // a
-      }
-      else{
-        if(this._flipRows){
-          if(this._flipColumns){
-            // invert all
-            var _invertedIndex = _pixelsLength - 1 - _index;
-            _pixels[_invertedIndex - 3] = _color[0]; // r
-            _pixels[_invertedIndex - 2] = _color[1]; // g
-            _pixels[_invertedIndex - 1] = _color[2]; // b
-            _pixels[_invertedIndex] = _color[3]; // a
-            _labelPixels[_invertedIndex - 3] = _label[0]; // r
-            _labelPixels[_invertedIndex - 2] = _label[1]; // g
-            _labelPixels[_invertedIndex - 1] = _label[2]; // b
-            _labelPixels[_invertedIndex] = _label[3]; // a
-          }
-          else{
-            // invert rows
-            var row = Math.floor(_index/(_sliceWidth*4));
-            var col = _index - row*_sliceWidth*4;
-            var invRows = _sliceHeight - 1 - row ;
-            var _invertedRowssIndex = invRows*_sliceWidth*4 + col;
-            _pixels[_invertedRowssIndex] = _color[0]; // r
-            _pixels[_invertedRowssIndex + 1] = _color[1]; // g
-            _pixels[_invertedRowssIndex + 2] = _color[2]; // b
-            _pixels[_invertedRowssIndex + 3] = _color[3]; // a
-            _labelPixels[_invertedRowssIndex] = _label[0]; // r
-            _labelPixels[_invertedRowssIndex + 1] = _label[1]; // g
-            _labelPixels[_invertedRowssIndex + 2] = _label[2]; // b
-            _labelPixels[_invertedRowssIndex + 3] = _label[3]; // a
-          }
-        }
-        else{
-          if(this._flipColumns){
-            // invert cols
-            var row = Math.floor(_index/(_sliceWidth*4));
-            var col = _index - row*_sliceWidth*4;
-            var invCol = 4*(_sliceWidth-1) - col ;
-            var _invertedColsIndex = row*_sliceWidth*4 + invCol;
-            _pixels[_invertedColsIndex] = _color[0]; // r
-            _pixels[_invertedColsIndex + 1] = _color[1]; // g
-            _pixels[_invertedColsIndex + 2] = _color[2]; // b
-            _pixels[_invertedColsIndex + 3] = _color[3]; // a
-            _labelPixels[_invertedColsIndex] = _label[0]; // r
-            _labelPixels[_invertedColsIndex + 1] = _label[1]; // g
-            _labelPixels[_invertedColsIndex + 2] = _label[2]; // b
-            _labelPixels[_invertedColsIndex + 3] = _label[3]; // a
-          }
-          else{
-            // invert nothing
-            _pixels[_index] = _color[0]; // r
-            _pixels[_index + 1] = _color[1]; // g
-            _pixels[_index + 2] = _color[2]; // b
-            _pixels[_index + 3] = _color[3]; // a
-            _labelPixels[_index] = _label[0]; // r
-            _labelPixels[_index + 1] = _label[1]; // g
-            _labelPixels[_index + 2] = _label[2]; // b
-            _labelPixels[_index + 3] = _label[3]; // a
-          }
-        }
-      }
 
       _index += 4; // increase by 4 units for r,g,b,a
 
     } while (_index < _pixelsLength);
-
-    this._inverted = false;
 
     // store the generated image data to the frame buffer context
     _imageFBContext.putImageData(_imageData, 0, 0);
@@ -1334,21 +1317,26 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   this._context.translate(_width / 2 /this._normalizedScale, _height / 2 /
       this._normalizedScale);
 
-  // Rotate the Sagittal viewer
-  if(this._orientation == "X") {
+  // rotation
+  this._context.rotate(this._rotate);
 
-    this._context.rotate(Math.PI * 0.5);
-
-    var _buf = _x;
-    _x = _y;
-    _y = -_buf;
-
+  // flip rows/columns
+  var flipR = this._flipRows;
+  var flipC = this._flipColumns;
+  if(this._rotate % Math.PI !== 0){
+    var tmp = flipC;
+    flipC = flipR;
+    flipR = tmp;
   }
+  this._context.scale(flipR, flipC);
 
-  var _offset_x = -_sliceWidth * this._sliceWidthSpacing / 2 + _x;
-  var _offset_y = -_sliceHeight * this._sliceHeightSpacing / 2 + _y;
+  // padding
+  var translateVector = this.rotateVector_(_x*this._flipRows, _y*this._flipColumns, this._rotate);
+  this._context.translate(translateVector.x, translateVector.y);
 
   // draw the slice
+  var _offset_x = -_sliceWidth * this._sliceWidthSpacing * 0.5;
+  var _offset_y = -_sliceHeight * this._sliceHeightSpacing * 0.5;
   this._context.drawImage(this._frameBuffer, _offset_x, _offset_y, _sliceWidth *
       this._sliceWidthSpacing, _sliceHeight * this._sliceHeightSpacing);
 
@@ -1603,60 +1591,6 @@ X.renderer2D.prototype.__defineSetter__('pointer', function(pointer) {
 
 });
 
-/**
- * Get value of slice Y color.
- *
- * @return {!Boolean} pointer.
- *
- * @public
- */
-X.renderer2D.prototype.__defineGetter__('flipRows', function() {
-
-  return this._flipRows;
-
-});
-
-/**
- * Set value of pointer.
- *
- * @param {!Boolean} flipRows Value between -1 and 1.
-*
- * @public
- */
-X.renderer2D.prototype.__defineSetter__('flipRows', function(flipRows) {
-
-  this._flipRows = flipRows;
-  this._inverted = true;
-
-});
-
-/**
- * Get value of slice Y color.
- *
- * @return {!Boolean} pointer.
- *
- * @public
- */
-X.renderer2D.prototype.__defineGetter__('flipColumns', function() {
-
-  return this._flipColumns;
-
-});
-
-/**
- * Set value of pointer.
- *
- * @param {!Boolean} flipColumns Value between -1 and 1.
-*
- * @public
- */
-X.renderer2D.prototype.__defineSetter__('flipColumns', function(flipColumns) {
-
-  this._flipColumns = flipColumns;
-  this._inverted = true;
-
-});
-
 // export symbols (required for advanced compilation)
 goog.exportSymbol('X.renderer2D', X.renderer2D);
 goog.exportSymbol('X.renderer2D.prototype.init', X.renderer2D.prototype.init);
@@ -1674,6 +1608,12 @@ goog.exportSymbol('X.renderer2D.prototype.resetViewAndRender',
     X.renderer2D.prototype.resetViewAndRender);
 goog.exportSymbol('X.renderer2D.prototype.xy2ijk',
     X.renderer2D.prototype.xy2ijk);
+goog.exportSymbol('X.renderer2D.prototype.rotate',
+    X.renderer2D.prototype.rotate);
+goog.exportSymbol('X.renderer2D.prototype.flipRows',
+    X.renderer2D.prototype.flipRows);
+goog.exportSymbol('X.renderer2D.prototype.flipColumns',
+    X.renderer2D.prototype.flipColumns);
 goog.exportSymbol('X.renderer2D.prototype.render',
     X.renderer2D.prototype.render);
 goog.exportSymbol('X.renderer2D.prototype.destroy',
