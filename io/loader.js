@@ -350,9 +350,21 @@ X.loader.prototype.complete = function(event) {
     // mark the loading job as completed
     this._jobs.set(container._id, true);
 
-  }.bind(this), 100);
+    if (this.completed()) {
 
+      this.onAllCompleted();
+    }
+
+  }.bind(this), 100);
 };
+
+/**
+ * This method gets called after all data have been successfully loaded and parsed.
+ */
+X.loader.prototype.onAllCompleted = function() {
+
+  // to be overridden
+}
 
 
 /**
