@@ -605,9 +605,10 @@ X.renderer.prototype.showProgressBar_ = function() {
 /**
  * Hides the loading progress bar.
  *
+ * @param {function} callback to be called when the progressBar is hidden.
  * @protected
  */
-X.renderer.prototype.hideProgressBar_ = function() {
+X.renderer.prototype.hideProgressBar_ = function(callback) {
 
   // only do the following if the progressBar was not turned off
   if (this._config['PROGRESSBAR_ENABLED']) {
@@ -630,7 +631,7 @@ X.renderer.prototype.hideProgressBar_ = function() {
 
         }
 
-        this.render();
+        callback();
 
       }.bind(this), 700);
       // .. and jump out
@@ -639,7 +640,10 @@ X.renderer.prototype.hideProgressBar_ = function() {
     } // if progressBar still exists
 
   } // if progressBar is enabled
+  else {
 
+    callback();
+  }
 };
 
 
@@ -1047,109 +1051,65 @@ X.renderer.prototype.generateTree_ = function(object, level) {
  * @public
  */
 X.renderer.prototype.render = function() {
+  var self = this;
 
-  if (!this._canvas || !this._context) {
+  // define callback for the rendering loop
+  var render = function() {
 
-    throw new Error('The renderer was not initialized properly.');
+    // this starts the recursive rendering loop and stores its id
+    self._AnimationFrameID = window.requestAnimationFrame(render);
+    self.onRender();
+    self.render_(false, true);
+    self.afterRender();
+  };
 
-  }
+  // define callback to start the rendering
+  var startRendering = function() {
 
-  // READY CHECK
-  //
-  // now we check if we are ready to display everything
-  // - ready means: all textures loaded and setup, all external files loaded and
-  // setup and all other objects loaded and setup
-  //
-  // if we are not ready, we wait..
-  // if we are ready, we continue with the rendering
-
-  // let's check if render() was called before and the single-shot timer is
-  // already there
-  // f.e., if we are in a setInterval-configured render loop, we do not want to
-  // create multiple single-shot timers
-  if (goog.isDefAndNotNull(this._readyCheckTimer)) {
-
-    return;
-
-  }
-
-  //
-  // LOADING..
-  //
-  if (!this._loader.completed()) {
-
-    // we are not ready yet.. the loader is still working;
-
-    this.showProgressBar_();
-
-    // also reset the loadingCompleted flags
-    this._loadingCompleted = false;
-    this._onShowtime = false;
-
-    // let's check again in a short time
-    this._readyCheckTimer = goog.Timer.callOnce(function() {
-
-      this._readyCheckTimer = null; // destroy the timer
-
-      // try to render now..
-      // if the loader is ready it will work, else wise another single-shot gets
-      // configured in 500 ms
-      this.render();
-
-    }.bind(this), 100); // check again in 500 ms
-
-    // intermediate rendering means render also
-    // while loading is still active
-    if (!this._config['INTERMEDIATE_RENDERING']) {
-
-      return; // .. and jump out
-
-    }
-
-  } else {
-
-    // we are ready! yahoooo!
+    self._loadingCompleted = true;
 
     // call the onShowtime function which can be overloaded
+    if (!self._onShowtime) {
 
-    // we need two flags here since the render loop repeats so fast
-    // that there would be timing issues
-    if (!this._loadingCompleted && !this._onShowtime) {
-
-      this._onShowtime = true;
-      eval("this.onShowtime()");
-      this._loadingCompleted = true; // flag the renderer as 'initial
-      // loading completed'
-
+      self._onShowtime = true;
+      self.onShowtime();
     }
 
     // if we have a progress bar
-    if (this._progressBar) {
+    if (self._progressBar) {
 
       // this means the X.loader is done..
-      this.hideProgressBar_();
+      self.hideProgressBar_(function() {
 
-      // .. we exit here since the hiding takes some time and automatically
-      // triggers the rendering when done
-      return;
+        render();
+      });
 
+    } else {
+
+      render();
     }
+  };
 
+  if (!self._canvas || !self._context) {
+
+    throw new Error('The renderer was not initialized properly.');
   }
-  //
-  // END OF LOADING
-  //
 
-  //
-  // CURTAIN UP! LET THE SHOW BEGIN..
-  //
+  if (self._loader.completed()) {
 
-  // this starts the rendering loops and store its id
-  this._AnimationFrameID = window.requestAnimationFrame(this.render.bind(this));
-  eval("this.onRender()");
-  this.render_(false, true);
-  eval("this.afterRender()");
+    startRendering();
 
+  } else {
+
+    // we are not ready yet.. the loader is still working;
+    // override loader's onAllCompleted callback and show the progress bar
+    self._loader.onAllCompleted = function() {
+
+      startRendering();
+    };
+
+    self.showProgressBar_();
+  }
 };
 
 
