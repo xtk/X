@@ -1058,9 +1058,9 @@ X.renderer.prototype.render = function() {
 
     // this starts the recursive rendering loop and stores its id
     self._AnimationFrameID = window.requestAnimationFrame(render);
-    self.onRender();
+    self['onRender']();
     self.render_(false, true);
-    self.afterRender();
+    self['afterRender']();
   };
 
   // define callback to start the rendering
@@ -1072,17 +1072,14 @@ X.renderer.prototype.render = function() {
     if (!self._onShowtime) {
 
       self._onShowtime = true;
-      self.onShowtime();
+      self['onShowtime']();
     }
 
     // if we have a progress bar
     if (self._progressBar) {
 
       // this means the X.loader is done..
-      self.hideProgressBar_(function() {
-
-        render();
-      });
+      self.hideProgressBar_(render);
 
     } else {
 
@@ -1103,11 +1100,7 @@ X.renderer.prototype.render = function() {
 
     // we are not ready yet.. the loader is still working;
     // override loader's onAllCompleted callback and show the progress bar
-    self._loader.onAllCompleted = function() {
-
-      startRendering();
-    };
-
+    self._loader.onAllCompleted = startRendering;
     self.showProgressBar_();
   }
 };
