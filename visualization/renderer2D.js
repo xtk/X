@@ -1140,7 +1140,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     flipC = flipR;
     flipR = tmp;
   }
-  this._context.scale(flipR, flipC);
+  this._context.scale(flipC, flipR);
 
   // padding
   // we need to flip y here
