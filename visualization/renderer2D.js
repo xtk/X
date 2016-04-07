@@ -1328,10 +1328,10 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     flipC = flipR;
     flipR = tmp;
   }
-  this._context.scale(flipR, flipC);
+  this._context.scale(flipC, flipR);
 
   // padding
-  var translateVector = this.rotateVector_(_x*this._flipRows, _y*this._flipColumns, this._rotate);
+  var translateVector = this.rotateVector_(_x*this._flipColumns, _y*this._flipRows, this._rotate);
   this._context.translate(translateVector.x, translateVector.y);
 
   // draw the slice
