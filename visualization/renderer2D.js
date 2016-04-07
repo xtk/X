@@ -1068,8 +1068,8 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _currentSlice = this.getCurrentSliceIndex_(_volume);
 
   //if slice do not exist yet, we have to set slice dimensions
-  var _sliceWidth = this._sliceWidth = this._slices[_currentSlice]._iWidth;
-  var _sliceHeight = this._sliceHeight = this._slices[_currentSlice]._iHeight;
+  this._sliceWidth = this._slices[_currentSlice]._iWidth;
+  this._sliceHeight = this._slices[_currentSlice]._iHeight;
 
   // spacing
   this._sliceWidthSpacing = this._slices[_currentSlice]._widthSpacing;
@@ -1083,8 +1083,7 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     _labelmapShowOnlyColor = _volume._labelmap._showOnlyColor;
   }
 
-  // caching mechanism
-  // we need to redraw the pixels only
+  // caching mechanism, we need to redraw the pixels only:
   // - if the _currentSlice has changed
   // - if the threshold has changed
   // - if the window/level has changed
@@ -1105,199 +1104,26 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   //
   // the actual drawing (rendering) happens here
   //
-
-  // viewport size
-  var _width = this._width;
-  var _height = this._height;
-
-  // first grab the view matrix which is 4x4 to be also useful for 3D renderers
-  var _view = this._camera._view;
-
-  // clear the canvas
-  this._context.clearRect(-_width, -_height, 2 * _width, 2 * _height);
-
-  // transform the canvas according to the view matrix
-  // .. this includes zoom
-  this._normalizedScale = Math.max(_view[14], 0.0001);
-  this._context.setTransform(this._normalizedScale, 0, 0, this._normalizedScale, 0, 0);
-
-  // draw the slice frame buffer (which equals the slice data) to the main
-  // context
-  this._context.globalAlpha = 1.0; // draw fully opaque}
-
-  // move to the middle
-  this._context.translate(_width / 2 /this._normalizedScale, _height / 2 /
-      this._normalizedScale);
-
-  // rotation
-  this._context.rotate(this._rotate);
-
-  // flip rows/columns
-  var flipR = this._flipRows;
-  var flipC = this._flipColumns;
-  if(this._rotate % Math.PI !== 0){
-    var tmp = flipC;
-    flipC = flipR;
-    flipR = tmp;
-  }
-  this._context.scale(flipC, flipR);
-
-  // padding
-  // we need to flip y here
-  var _x = 1 * _view[12];
-  var _y = -1 * _view[13];
-
-  var translateVector = this.rotateVector_(_x*this._flipRows, _y*this._flipColumns, this._rotate);
-  this._context.translate(translateVector.x, translateVector.y);
-
-  // draw the slice
-  var _offset_x = -_sliceWidth * this._sliceWidthSpacing * 0.5;
-  var _offset_y = -_sliceHeight * this._sliceHeightSpacing * 0.5;
-  this._context.drawImage(this._frameBuffer, _offset_x, _offset_y, _sliceWidth *
-      this._sliceWidthSpacing, _sliceHeight * this._sliceHeightSpacing);
-
-  // draw the labels with a configured opacity
-  if (this._slices[_currentSlice]._labelmap && _volume._labelmap._visible) {
-
-    var _labelOpacity = 1;//_volume._labelmap._opacity;
-    this._context.globalAlpha = _labelOpacity; // draw transparent depending on
-    // opacity
-    this._context.drawImage(this._labelFrameBuffer, _offset_x, _offset_y,
-        _sliceWidth * this._sliceWidthSpacing, _sliceHeight *
-            this._sliceHeightSpacing);
-
-  }
-
+  this.renderBuffers_(_volume);
 
   // if enabled, show slice navigators
   if (this._config['SLICENAVIGATORS']) {
 
-    this._canvas.style.cursor = "none";
-
-    // but only if the shift key is down and the left mouse is not
-    if (this._interactor._mouseInside && this._interactor._shiftDown &&
-        !this._interactor._leftButtonDown) {
-
-      var _mousePosition = this._interactor._mousePosition;
-
-      // check if we are over the slice
-      var ijk = this.xy2ijk(_mousePosition[0], _mousePosition[1]);
-
-      if (ijk) {
-        // // we are over the slice
-        // update the volume
-        _volume._indexX = ijk[0][0];
-        _volume._indexY = ijk[0][1];
-        _volume._indexZ = ijk[0][2];
-        _volume.modified(false);
-
-        this['onSliceNavigation']();
-
-        //this.drawVolumeCoordinates_(_volume, ijk);
-
-        // set pointer
-        this._pointer = [
-          ijk[1][0].toFixed(0),
-          ijk[1][1].toFixed(0),
-          ijk[1][2].toFixed(0),
-          ijk[2][0].toFixed(0),
-          ijk[2][1].toFixed(0),
-          ijk[2][2].toFixed(0),
-          ijk[1][0].toFixed(0)
-          ];
-        }
-      // throw an event!
-      var e = new CustomEvent("onPoint");
-      // .. fire the event
-      this.dispatchEvent(e);
-
-    } else{
-
-      this._canvas.style.cursor = "default";
-    }
+    this.drawSliceNavigators_(_volume);
   }
 
-      // draw pointer hack
-  if(this._pointer[0] !== -1
-    // && ! this._interactor._shiftDown
-    ){
+  // draw pointer hack
+  if (this._pointer[0] !== -1 /*&& ! this._interactor._shiftDown*/) {
 
     // if slice changed, set to null and exit
-    if(_currentSlice != this._pointer[2]){
-      this._pointer = [
-          -1,
-          -1,
-          -1,
-          -1,
-          -1,
-          -1,
-          -1
-          ];
-      return;
+    if (_currentSlice != this._pointer[2]) {
+
+      this._pointer = [-1, -1, -1, -1, -1, -1, -1];
+
+    } else {
+
+      this.drawPointer_();
     }
-
-    // map IJK to texture
-    // invert all (i and j?)
-    var x = this._pointer[0];
-    var y = this._pointer[1];
-
-    // window.console.log(x,y);
-
-    // to texture normalized
-    var xNorm = 1 - x / this._sliceWidth;
-    var yNorm = 1 - y / this._sliceHeight;
-
-    // padding offsets
-    var _x2 = 1 * _view[12];
-    var _y2 = -1 * _view[13]; // we need to flip y here
-
-    // .. and zoom
-    var _center = [this._width / 2, this._height / 2];
-
-    // the slice dimensions in canvas coordinates
-    var _sliceWidthScaled = this._sliceWidth * this._sliceWidthSpacing *
-      this._normalizedScale;
-    var _sliceHeightScaled = this._sliceHeight * this._sliceHeightSpacing *
-      this._normalizedScale;
-
-    // the image borders on the left and top in canvas coordinates
-    var _image_left2xy = _center[0] - (_sliceWidthScaled / 2);
-    var _image_top2xy = _center[1] - (_sliceHeightScaled / 2);
-
-    // incorporate the padding offsets (but they have to be scaled)
-    _image_left2xy += _x2 * this._normalizedScale;
-    _image_top2xy += _y2 * this._normalizedScale;
-
-    var _x2Norm = (x - _image_left2xy)/ _sliceWidthScaled;
-    var _y2Norm = (y - _image_top2xy)/ _sliceHeightScaled;
-
-
-    var testX = xNorm * _sliceWidthScaled + _image_left2xy;
-    var testY = yNorm * _sliceHeightScaled + _image_top2xy;
-
-    _x2 = _x2Norm*this._sliceWidth;
-    _y2 = _y2Norm*this._sliceHeight;
-
-    // invert all
-    _x2 = this._sliceWidth - _x2;
-    _y2 = this._sliceWidth - _y2;
-
-
-    // map indices to xy coordinates
-    _x2 = _currentSlice._wmin + _x2*_currentSlice._widthSpacing;// - _currentSlice._widthSpacing/2;
-    _y2 = _currentSlice._hmin + _y2*_currentSlice._heightSpacing;// - _currentSlice._heightSpacing/2;
-
-    this._context.setTransform(1, 0, 0, 1, 0, 0);
-    this._context.lineWidth = 2;
-    this._context.strokeStyle = 'rgba(33,150,243,1)';
-
-    this._context.beginPath();
-    this._context.moveTo(testX - 10 , testY + 10);
-    this._context.lineTo(testX, testY + 1);
-    this._context.lineTo(testX + 10, testY + 10);
-
-    this._context.stroke();
-    this._context.closePath();
   }
 };
 
@@ -1364,11 +1190,10 @@ X.renderer2D.prototype.getCurrentSliceIndex_ = function(volume) {
  *
  * @param {!X.volume} The volume object
  */
-X.renderer2D.prototype.updateBuffers_ = function(_volume) {
+X.renderer2D.prototype.updateBuffers_ = function(volume) {
 
-  //
   // FRAME BUFFERING
-  //
+
   var _sliceWidth = this._sliceWidth;
   var _sliceHeight = this._sliceHeight;
 
@@ -1390,20 +1215,20 @@ X.renderer2D.prototype.updateBuffers_ = function(_volume) {
   this._labelFrameBuffer.height = _sliceHeight;
 
   // threshold values
-  var _maxScalarRange = _volume._max;
-  var _lowerThreshold = _volume._lowerThreshold;
-  var _upperThreshold = _volume._upperThreshold;
-  var _windowLow = _volume._windowLow;
-  var _windowHigh = _volume._windowHigh;
+  var _maxScalarRange = volume._max;
+  var _lowerThreshold = volume._lowerThreshold;
+  var _upperThreshold = volume._upperThreshold;
+  var _windowLow = volume._windowLow;
+  var _windowHigh = volume._windowHigh;
 
-  if (_volume._labelmap) {
+  if (volume._labelmap) {
 
     // since there is a labelmap, get the showOnlyColor property
-    var _labelmapShowOnlyColor = _volume._labelmap._showOnlyColor;
+    var _labelmapShowOnlyColor = volume._labelmap._showOnlyColor;
   }
 
   // .. here is the current slice
-  var _currentSlice = this.getCurrentSliceIndex_(_volume);
+  var _currentSlice = this.getCurrentSliceIndex_(volume);
   var _slice = this._slices[_currentSlice];
   var _sliceData = _slice._texture._rawData;
   var _currentLabelMap = _slice._labelmap;
@@ -1419,12 +1244,12 @@ X.renderer2D.prototype.updateBuffers_ = function(_volume) {
     // default color and label is just transparent
     var _color = [0, 0, 0, 0];
     var _label = [0, 0, 0, 0];
-    var _fac1 = _volume._max - _volume._min;
+    var _fac1 = volume._max - volume._min;
 
     // grab the pixel intensity
     // slice data is normalized (probably shouldn't ?)
     // de-normalize it (get real value)
-    var _intensity = (_sliceData[_index] / 255) * _fac1 + _volume._min;
+    var _intensity = (_sliceData[_index] / 255) * _fac1 + volume._min;
 
     // apply window/level
     var _window = _windowHigh - _windowLow;
@@ -1452,11 +1277,11 @@ X.renderer2D.prototype.updateBuffers_ = function(_volume) {
       // intensity
 
       // map volume scalars to a linear color gradient
-      var maxColor = new goog.math.Vec3(_volume._maxColor[0],
-          _volume._maxColor[1], _volume._maxColor[2]);
+      var maxColor = new goog.math.Vec3(volume._maxColor[0],
+          volume._maxColor[1], volume._maxColor[2]);
 
-      var minColor = new goog.math.Vec3(_volume._minColor[0],
-          _volume._minColor[1], _volume._minColor[2]);
+      var minColor = new goog.math.Vec3(volume._minColor[0],
+          volume._minColor[1], volume._minColor[2]);
 
       _color = maxColor.scale(_origIntensity).add(minColor.scale(255 - _origIntensity));
 
@@ -1517,6 +1342,194 @@ X.renderer2D.prototype.updateBuffers_ = function(_volume) {
     // only update the setting if we have a labelmap
     this._labelmapShowOnlyColor = _labelmapShowOnlyColor;
   }
+};
+
+/**
+ * Render invisible buffers on the visible canvas.
+ *
+ * @param {!X.volume} The volume object
+ */
+X.renderer2D.prototype.renderBuffers_ = function(volume) {
+
+  // viewport size
+  var _width = this._width;
+  var _height = this._height;
+
+  // clear the canvas
+  this._context.clearRect(-_width, -_height, 2 * _width, 2 * _height);
+
+  // transform the canvas according to the view matrix (4x4 to also handle 3D renderers)
+  // .. this includes zoom
+  var _view = this._camera._view;
+  this._normalizedScale = Math.max(_view[14], 0.0001);
+  this._context.setTransform(this._normalizedScale, 0, 0, this._normalizedScale, 0, 0);
+
+  // draw the slice frame buffer (which equals the slice data) to the main
+  // context
+  this._context.globalAlpha = 1.0; // draw fully opaque
+
+  // move to the middle
+  this._context.translate(_width / 2 /this._normalizedScale, _height / 2 /
+      this._normalizedScale);
+
+  // rotation
+  this._context.rotate(this._rotate);
+
+  // flip rows/columns
+  var flipR = this._flipRows;
+  var flipC = this._flipColumns;
+  if(this._rotate % Math.PI !== 0){
+    var tmp = flipC;
+    flipC = flipR;
+    flipR = tmp;
+  }
+  this._context.scale(flipC, flipR);
+
+  // padding
+  // we need to flip y here
+  var _x = 1 * _view[12];
+  var _y = -1 * _view[13];
+
+  var translateVector = this.rotateVector_(_x*this._flipRows, _y*this._flipColumns, this._rotate);
+  this._context.translate(translateVector.x, translateVector.y);
+
+  // draw the slice
+  var _sliceWidth = this._sliceWidth;
+  var _sliceHeight = this._sliceHeight;
+  var _offset_x = -_sliceWidth * this._sliceWidthSpacing * 0.5;
+  var _offset_y = -_sliceHeight * this._sliceHeightSpacing * 0.5;
+
+  this._context.drawImage(this._frameBuffer, _offset_x, _offset_y, _sliceWidth *
+      this._sliceWidthSpacing, _sliceHeight * this._sliceHeightSpacing);
+
+  // draw the labels with a configured opacity
+  if (volume._labelmap && volume._labelmap._visible) {
+
+    var _labelOpacity = 1;//volume._labelmap._opacity;
+    this._context.globalAlpha = _labelOpacity; // draw transparent depending on
+    // opacity
+    this._context.drawImage(this._labelFrameBuffer, _offset_x, _offset_y,
+        _sliceWidth * this._sliceWidthSpacing, _sliceHeight *
+            this._sliceHeightSpacing);
+  }
+};
+
+/**
+ * Draw slice navigators on the canvas.
+ *
+ * @param {!X.volume} The volume object
+ */
+X.renderer2D.prototype.drawSliceNavigators_ = function(volume) {
+
+  this._canvas.style.cursor = "none";
+
+  // but only if the shift key is down and the left mouse is not
+  if (this._interactor._mouseInside && this._interactor._shiftDown &&
+      !this._interactor._leftButtonDown) {
+
+    var _mousePosition = this._interactor._mousePosition;
+
+    // check if we are over the slice
+    var ijk = this.xy2ijk(_mousePosition[0], _mousePosition[1]);
+
+    if (ijk) {
+      // // we are over the slice
+      // update the volume
+      volume._indexX = ijk[0][0];
+      volume._indexY = ijk[0][1];
+      volume._indexZ = ijk[0][2];
+      volume.modified(false);
+
+      this['onSliceNavigation']();
+
+      //this.drawVolumeCoordinates_(volume, ijk);
+
+      // set pointer
+      this._pointer = [
+        ijk[1][0].toFixed(0),
+        ijk[1][1].toFixed(0),
+        ijk[1][2].toFixed(0),
+        ijk[2][0].toFixed(0),
+        ijk[2][1].toFixed(0),
+        ijk[2][2].toFixed(0),
+        ijk[1][0].toFixed(0)
+        ];
+      }
+    // throw an event!
+    var e = new CustomEvent("onPoint");
+    // .. fire the event
+    this.dispatchEvent(e);
+
+  } else{
+
+    this._canvas.style.cursor = "default";
+  }
+};
+
+/**
+ * Draw pointer on the canvas.
+ */
+X.renderer2D.prototype.drawPointer_ = function() {
+
+  // map IJK to texture
+  // invert all (i and j?)
+  var x = this._pointer[0];
+  var y = this._pointer[1];
+
+  // window.console.log(x,y);
+
+  // to texture normalized
+  var xNorm = 1 - x / this._sliceWidth;
+  var yNorm = 1 - y / this._sliceHeight;
+
+  // .. and zoom
+  var _center = [this._width / 2, this._height / 2];
+
+  // the slice dimensions in canvas coordinates
+  var _sliceWidthScaled = this._sliceWidth * this._sliceWidthSpacing *
+    this._normalizedScale;
+  var _sliceHeightScaled = this._sliceHeight * this._sliceHeightSpacing *
+    this._normalizedScale;
+
+  // the image borders on the left and top in canvas coordinates
+  var _image_left2xy = _center[0] - (_sliceWidthScaled / 2);
+  var _image_top2xy = _center[1] - (_sliceHeightScaled / 2);
+
+  // incorporate the padding offsets (but they have to be scaled)
+  var _view = this._camera._view;
+  var _x2 = 1 * _view[12];
+  var _y2 = -1 * _view[13]; // we need to flip y here
+  _image_left2xy += _x2 * this._normalizedScale;
+  _image_top2xy += _y2 * this._normalizedScale;
+
+  var testX = xNorm * _sliceWidthScaled + _image_left2xy;
+  var testY = yNorm * _sliceHeightScaled + _image_top2xy;
+
+  /*var _x2Norm = (x - _image_left2xy)/ _sliceWidthScaled;
+  var _y2Norm = (y - _image_top2xy)/ _sliceHeightScaled;
+
+  _x2 = _x2Norm*this._sliceWidth;
+  _y2 = _y2Norm*this._sliceHeight;
+
+  // invert all
+  _x2 = this._sliceWidth - _x2;
+  _y2 = this._sliceWidth - _y2;
+
+  // map indices to xy coordinates
+  _x2 = _currentSlice._wmin + _x2*_currentSlice._widthSpacing;// - _currentSlice._widthSpacing/2;
+  _y2 = _currentSlice._hmin + _y2*_currentSlice._heightSpacing;// - _currentSlice._heightSpacing/2;*/
+
+  this._context.setTransform(1, 0, 0, 1, 0, 0);
+  this._context.lineWidth = 2;
+  this._context.strokeStyle = 'rgba(33,150,243,1)';
+
+  this._context.beginPath();
+  this._context.moveTo(testX - 10 , testY + 10);
+  this._context.lineTo(testX, testY + 1);
+  this._context.lineTo(testX + 10, testY + 10);
+
+  this._context.stroke();
+  this._context.closePath();
 };
 
 /**
