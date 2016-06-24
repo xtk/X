@@ -344,6 +344,7 @@ X.shaders = function() {
   t2 += '     vec4 texture2 = texture2D(textureSampler2,fragmentTexturePos);\n';
   t2 += '     if (uUse32bit) {\n';
   t2 += '       float id = lookup_id(unpack(texture2)*255.);\n';
+  t2 += '       if (id == 0.) { discard;\n }';
   t2 += '       float normalized_id = mod(id, uMaxColors);\n';
   t2 += '       vec2 colormap_pos = vec2(normalized_id / (uMaxColors - 1.), 0.);\n';
   t2 += '       vec4 color = texture2D(uColorMapSampler, colormap_pos);\n';
