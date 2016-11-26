@@ -811,6 +811,46 @@ X.renderer.prototype.init = function(_contextName) {
  */
 X.renderer.prototype.add = function(object) {
 
+  // we know that objects which are directly added using this function are def.
+  // top-level objects, meaning that they do not have a parent
+  this._topLevelObjects.push(object);
+
+	this.modify_(object);
+
+  this.update_(object);
+
+};
+
+
+/**
+ * Internal function to recursively call modified() on newly added
+ * constructable objects.
+ *
+ * @param {!X.object} object The object to call modified() on.
+ * @throws {Error} An exception if something goes wrong.
+ * @protected
+ */
+X.renderer.prototype.modify_ = function(object) {
+
+	// no recursive call on volumes for performance reasons
+	if (object instanceof X.volume) return;
+
+  // check if this object has children
+  if (object._children.length > 0) {
+
+    // loop through the children and recursively add those
+    var children = object._children;
+    var numberOfChildren = children.length;
+    var c = 0;
+
+    for (c = 0; c < numberOfChildren; c++) {
+
+      this.modify_(children[c]);
+
+    }
+
+  }
+
   // for constructable objects (e.g. cube, sphere, cylinder), we call the
   // modified() function to generate the CSG representations
   if (object instanceof X.cube || object instanceof X.sphere ||
@@ -819,12 +859,6 @@ X.renderer.prototype.add = function(object) {
     object.modified();
 
   }
-
-  // we know that objects which are directly added using this function are def.
-  // top-level objects, meaning that they do not have a parent
-  this._topLevelObjects.push(object);
-
-  this.update_(object);
 
 };
 
