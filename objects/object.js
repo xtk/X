@@ -217,6 +217,24 @@ X.object.prototype.__defineGetter__('scalars', function() {
 
 
 /**
+ * The transform object associated with this object.
+ * 
+ * @return {?X.transform} The scalars.
+ */
+X.object.prototype.__defineGetter__('transform', function() {
+
+  if (!this._transform) {
+    
+    this._transform = new X.transform();
+    
+  }
+  
+  return this._transform;
+  
+});
+
+
+/**
  * Get the children of this object. Each object can have N children which get
  * automatically rendered when the top level object gets rendered.
  *
