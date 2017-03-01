@@ -225,8 +225,10 @@ X.renderer2D.prototype.remove = function(object) {
  * before the next rendering call.
  *
  * @public
+ * @param {!X.event.ScrollEvent}
+ * 
  */
-X.renderer2D.prototype.onScroll = function() {
+X.renderer2D.prototype.onScroll = function(event) {
 
   // do nothing
 };
