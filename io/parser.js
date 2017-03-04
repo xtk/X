@@ -759,7 +759,7 @@ X.parser.xyBBox = function(_solutionsXY){
  * @return The target slice.
  * @static
  */
-X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color, _bbox, _IJKVolume, object, hasLabelMap, colorTable){
+X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color, _bbox, _IJKVolume, object, hasLabelMap, colorTable, colormap){
 
   var sliceXY = new X.slice();
 
@@ -913,7 +913,7 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
           // check for out of range and use the last label value in this case
           if (!lookupValue) {
 
-          lookupValue = [ 0, .61, 0, 0, 1 ];
+          lookupValue = [ 0, 0.61, 0, 0, 1 ];
 
           }
 
@@ -922,6 +922,14 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
           pixelValue_b = 255 * lookupValue[3];
           pixelValue_a = 255 * lookupValue[4];
 
+        }
+        else if (colormap) {
+        	// colormap should be function taking value between 0 and 1 and returning rgba values [0,255]
+        	var mapColor = colormap((pixval - object._min) / (object._max - object._min));
+        	pixelValue_r = mapColor[0];
+            pixelValue_g = mapColor[1];
+            pixelValue_b = mapColor[2];
+            pixelValue_a = mapColor[3];
         }
         else {
           // normalization should not happen here, only in the shaders/canvas??
