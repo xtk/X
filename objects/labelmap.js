@@ -97,7 +97,6 @@ X.labelmap.prototype.modified = function() {
 
 };
 
-
 /**
  * Show only the label with the given value or color (RGBA 0..1). If null is passed,
  * show all labels.

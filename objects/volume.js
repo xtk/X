@@ -556,13 +556,13 @@ X.volume.prototype.slicing_ = function() {
       //attach labelmap
       if(this.hasLabelMap){
     	var colortable = this._labelmap._colortable ? this._labelmap._colortable._map : null;
-        var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceXYSpacing, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, colortable, this._labelmap.colormap);
+        var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceXYSpacing, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, colortable, this._labelmap._colormap);
         this._labelmap._children[xyz]._children[parseInt(currentIndex, 10)] = _sliceLabel;
         // add it to create the texture
         this._labelmap._children[xyz].modified(true);
       }
 
-      var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceXYSpacing, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap.colormap);
+      var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceXYSpacing, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap._colormap);
 
       if(this.hasLabelMap){
         _slice._labelmap = _slice._texture;
@@ -1474,7 +1474,7 @@ X.volume.prototype.sliceInfoChanged = function(index){
   //attach labelmap
   if(this.hasLabelMap) {
 
-    var _sliceLabel = X.parser.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceXYSpacing, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map, this._labelmap.colormap);
+    var _sliceLabel = X.parser.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceXYSpacing, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map, this._labelmap._colormap);
     this._labelmap._children[index]._children = [];
     this._labelmap._children[index]._children = new Array(this._childrenInfo[index]._nb);
     this._labelmap._children[index]._children[Math.floor(this._childrenInfo[index]._nb/2)] = _sliceLabel;
@@ -1482,7 +1482,7 @@ X.volume.prototype.sliceInfoChanged = function(index){
     this._labelmap._children[index].modified();
   }
 
-  var _slice = X.parser.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceXYSpacing, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap.colormap);
+  var _slice = X.parser.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceXYSpacing, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap._colormap);
 
   window.console.log('modified!');
 
@@ -1635,14 +1635,14 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
         //attach labelmap
         if(this.hasLabelMap){
-          var colortable = this_labelmap._colortable ? this._labelmap._colortable._map : null;
-          var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, colortable, this._labelmap.colormap || null);
+          var colortable = this._labelmap._colortable ? this._labelmap._colortable._map : null;
+          var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, colortable, this._labelmap._colormap || null);
           this._labelmap._children[direction]._children[i] = _sliceLabel;
           // add it to create the texture
           this._labelmap._children[direction].modified(true);
         }
 
-        var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap.colormap || null);
+        var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap._colormap || null);
         _slice._children[0]._visible = false;
 
         if(this.hasLabelMap){
@@ -1681,13 +1681,13 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
           //attach labelmap
           if(this.hasLabelMap){
-            var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map, this._labelmap.colormap);
+            var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map, this._labelmap._colormap);
             this._labelmap._children[direction]._children[i] = _sliceLabel;
             // add it to create the texture
             this._labelmap._children[direction].modified(true);
           }
 
-          var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap.colormap);
+          var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap._colormap);
           _slice._children[0]._visible = false;
 
           if(this.hasLabelMap){
@@ -1725,13 +1725,13 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
             //attach labelmap
             if(this.hasLabelMap){
-              var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map, this._labelmap.colormap);
+              var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map, this._labelmap._colormap);
               this._labelmap._children[direction]._children[i] = _sliceLabel;
               // add it to create the texture
               this._labelmap._children[direction].modified(true);
             }
 
-            var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap.colormap);
+            var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap._colormap);
             _slice._children[0]._visible = false;
 
             if(this.hasLabelMap){
@@ -1770,13 +1770,13 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
               //attach labelmap
               if(this.hasLabelMap){
-                var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map, this._labelmap.colormap);
+                var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map, this._labelmap._colormap);
                 this._labelmap._children[direction]._children[i] = _sliceLabel;
                 // add it to create the texture
                 this._labelmap._children[direction].modified(true);
               }
 
-              var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap.colormap);
+              var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap._colormap);
               _slice._children[0]._visible = false;
 
               if(this.hasLabelMap){
