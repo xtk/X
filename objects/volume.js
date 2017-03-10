@@ -562,7 +562,7 @@ X.volume.prototype.slicing_ = function() {
         this._labelmap._children[xyz].modified(true);
       }
 
-      var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceXYSpacing, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap._colormap);
+      var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceXYSpacing, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._IJKVolume, this, true, null, null);
 
       if(this.hasLabelMap){
         _slice._labelmap = _slice._texture;
@@ -1482,7 +1482,7 @@ X.volume.prototype.sliceInfoChanged = function(index){
     this._labelmap._children[index].modified();
   }
 
-  var _slice = X.parser.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceXYSpacing, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap._colormap);
+  var _slice = X.parser.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceXYSpacing, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._IJKVolume, this, true, null, null);
 
   window.console.log('modified!');
 
@@ -1642,7 +1642,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
           this._labelmap._children[direction].modified(true);
         }
 
-        var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap._colormap || null);
+        var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, null);
         _slice._children[0]._visible = false;
 
         if(this.hasLabelMap){
@@ -1687,7 +1687,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
             this._labelmap._children[direction].modified(true);
           }
 
-          var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap._colormap);
+          var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, null);
           _slice._children[0]._visible = false;
 
           if(this.hasLabelMap){
@@ -1731,7 +1731,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
               this._labelmap._children[direction].modified(true);
             }
 
-            var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap._colormap);
+            var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, null);
             _slice._children[0]._visible = false;
 
             if(this.hasLabelMap){
@@ -1776,7 +1776,7 @@ X.volume.prototype.volumeRendering_ = function(direction) {
                 this._labelmap._children[direction].modified(true);
               }
 
-              var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap._colormap);
+              var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[direction]._sliceXYSpacing, this._childrenInfo[direction]._sliceNormal, this._childrenInfo[direction]._color, this._BBox, this._IJKVolume, this, true, null, null);
               _slice._children[0]._visible = false;
 
               if(this.hasLabelMap){

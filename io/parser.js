@@ -755,6 +755,7 @@ X.parser.xyBBox = function(_solutionsXY){
  * @param {!X.object} object The X.volume.
  * @param {!boolean} hasLabelMap Volume has labelmap attached.
  * @param {goog.structs.Map} colorTable Associated color table.
+ * @param {Function} colormap Function mapping from labelmap pixel intensity to rgba.
  *
  * @return The target slice.
  * @static
