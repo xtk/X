@@ -72,6 +72,14 @@ X.object = function(object) {
    * @protected
    */
   this._children = new Array();
+  
+  /**
+   * The colormap Function associated with this object.
+   *
+   * @type {Function}
+   * @protected
+   */
+  this._colormap = null;
 
   /**
    * The color table of this object.
@@ -179,6 +187,36 @@ X.object.prototype.copy_ = function(object) {
 
 };
 
+/**
+ * Associate a function with the _colormap property which can be used to color 
+ * the labelmap based on normalized voxel values.
+ * 
+ * @param {Function} A Function object taking a single argument between 0 and 1 and returning a
+ * 						length 4 Array containing rgba values between 0 and 255.
+ * @throws {Error}
+ * @public
+ */
+X.object.prototype.__defineSetter__('colormap', function(func) {
+	
+	if (!goog.isDefAndNotNull(func) || !goog.isFunction(func)) {
+		throw new Error('No function defined for colormap.');
+	}
+	if (func.length != 1) {
+		throw new Error('Invalid number of arguments required for colormap function.');
+	} else {
+		var rgba = func(1);
+		if (!goog.isArray(rgba) || rgba.length != 4) {
+			throw new Error('Return value of colormap is not a length 4 Array.');
+		} else {
+			for (var i=0; i<4; i++) {
+				if (!goog.isNumber(rgba[i]) || rgba[i] < 0 || rgba[i] > 255) {
+					throw new Error('Return Array of colormap function contains one or more invalid rgba values.');
+				}
+			}
+		}
+	}
+	this._colormap = func;
+});
 
 /**
  * The color table associated with this object.

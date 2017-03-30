@@ -1152,14 +1152,19 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         if (_currentLabelMap) {
 
           // we have a label map here
+          if (_labelmap.colormap) {
+        	  var mapColor = _labelmap.colormap(_labelData[_index] / 255);
+        	  _label = [mapColor[0], mapColor[1], mapColor[2], mapColor[3]];
+          }
           // check if all labels are shown or only one
-          if (_labelmapShowOnlyColor[3] == -255) {
+          else if (_labelmapShowOnlyColor[3] == -255) {
 
             // all labels are shown
             _label = [_labelData[_index], _labelData[_index + 1],
                       _labelData[_index + 2], _labelData[_index + 3]];
 
-          } else {
+          }
+          else {
 
             // show only the label which matches in color
             if (X.array.compare(_labelmapShowOnlyColor, _labelData, 0, _index,
