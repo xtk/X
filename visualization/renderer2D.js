@@ -1266,6 +1266,11 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     var _buf = _x;
     _x = _y;
     _y = -_buf;
+    
+    //after rotation switch slice width and height
+    var tempSliceHeight = _sliceHeight;
+    _sliceHeight = 1.5 * _sliceWidth; //133;//_sliceWidth;
+    _sliceWidth = tempSliceHeight;
 
   }
 

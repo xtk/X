@@ -562,7 +562,7 @@ X.volume.prototype.slicing_ = function() {
         this._labelmap._children[xyz].modified(true);
       }
 
-      var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceXYSpacing, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._IJKVolume, this, true, null, this._labelmap._colormap);
+      var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceXYSpacing, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._IJKVolume, this, true, null, null);
 
       if(this.hasLabelMap){
         _slice._labelmap = _slice._texture;
@@ -690,6 +690,18 @@ X.volume.prototype.__defineGetter__('range', function() {
 X.volume.prototype.__defineGetter__('dimensionsRAS', function() {
 
   return this._dimensionsRAS;
+
+});
+
+/**
+ * Get the RAScenter of this volume.
+ *
+ * @return {!Array} The center of this volume in RAS context.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('RASCenter', function() {
+
+  return this._RASCenter;
 
 });
 
@@ -1474,7 +1486,7 @@ X.volume.prototype.sliceInfoChanged = function(index){
   //attach labelmap
   if(this.hasLabelMap) {
 
-    var _sliceLabel = X.parser.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceXYSpacing, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable._map, this._labelmap._colormap);
+    var _sliceLabel = X.parser.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceXYSpacing, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._labelmap._IJKVolume, this._labelmap, this._labelmap.hasLabelMap, this._labelmap._colortable ? this._labelmap._colortable._map : null, this._labelmap._colormap);
     this._labelmap._children[index]._children = [];
     this._labelmap._children[index]._children = new Array(this._childrenInfo[index]._nb);
     this._labelmap._children[index]._children[Math.floor(this._childrenInfo[index]._nb/2)] = _sliceLabel;
