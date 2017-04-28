@@ -923,14 +923,14 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
           pixelValue_a = 255 * lookupValue[4];
 
         }
-        else if (colormap) {
-        	// colormap should be function taking value between 0 and 1 and returning rgba values [0,255]
-        	var mapColor = colormap((pixval - object._min) / (object._max - object._min));
-        	pixelValue_r = mapColor[0];
-            pixelValue_g = mapColor[1];
-            pixelValue_b = mapColor[2];
-            pixelValue_a = mapColor[3];
-        }
+//        else if (colormap) {
+//        	// colormap should be function taking value between 0 and 1 and returning rgba values [0,255]
+//        	var mapColor = colormap((pixval - object._min) / (object._max - object._min));
+//        	pixelValue_r = mapColor[0];
+//            pixelValue_g = mapColor[1];
+//            pixelValue_b = mapColor[2];
+//            pixelValue_a = mapColor[3];
+//        }
         else {
           // normalization should not happen here, only in the shaders/canvas??
           pixelValue_r = pixelValue_g = pixelValue_b = 255 * ((pixval - object._min )/ (object._max - object._min));
@@ -1163,7 +1163,8 @@ X.parser.prototype.reslice = function(object) {
   // ------------------------------------------
   // SETUP LABEL MAPS AND COLOR TABLES
   // ------------------------------------------
-  object.hasLabelMap = object._labelmap != null;
+  object.hasLabelMap = object._labelmap != null && !goog.isArray(object._labelmap);
+  object.hasLabelMapArray = object._labelmap != null && goog.isArray(object._labelmap);
   if (object._colortable) {
     object._colorTable = object._colortable._map;
   }
@@ -1229,6 +1230,11 @@ X.parser.prototype.reslice = function(object) {
     // we have it loaded at this point (for sure)
     // ..so we can attach it as the second texture to this slice
     _slice._labelmap = object._labelmap._children[0]._children[Math.floor(object._childrenInfo[0]._nb/2)]._texture;
+  } else if (object.hasLabelMapArray) {
+	  _slice._labelmap = [];
+	  for (var i=0; i<object._labelmap.length; i++) {
+		  _slice._labelmap.push(object._labelmap[i]._children[0]._children[Math.floor(object._childrenInfo[0]._nb/2)]._texture);
+	  }
   }
 
   object._children[0]._children[Math.floor(object._childrenInfo[0]._nb/2)] = _slice;
@@ -1276,6 +1282,11 @@ X.parser.prototype.reslice = function(object) {
     // we have it loaded at this point (for sure)
     // ..so we can attach it as the second texture to this slice
     _slice._labelmap = object._labelmap._children[1]._children[Math.floor(object._childrenInfo[1]._nb/2)]._texture;
+  } else if (object.hasLabelMapArray) {
+	  _slice._labelmap = [];
+	  for (var i=0; i<object._labelmap.length; i++) {
+		  _slice._labelmap.push(object._labelmap[i]._children[1]._children[Math.floor(object._childrenInfo[1]._nb/2)]._texture);
+	  }
   }
 
   object._children[1]._children[Math.floor(object._childrenInfo[1]._nb/2)] = _slice;
@@ -1322,6 +1333,11 @@ X.parser.prototype.reslice = function(object) {
     // we have it loaded at this point (for sure)
     // ..so we can attach it as the second texture to this slice
     _slice._labelmap = object._labelmap._children[2]._children[Math.floor(object._childrenInfo[2]._nb/2)]._texture;
+  } else if (object.hasLabelMapArray) {
+	  _slice._labelmap = [];
+	  for (var i=0; i<object._labelmap.length; i++) {
+		  _slice._labelmap.push(object._labelmap[i]._children[2]._children[Math.floor(object._childrenInfo[2]._nb/2)]._texture);
+	  }
   }
 
   object._children[2]._children[Math.floor(object._childrenInfo[2]._nb/2)] = _slice;

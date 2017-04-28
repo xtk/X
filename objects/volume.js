@@ -560,6 +560,13 @@ X.volume.prototype.slicing_ = function() {
         this._labelmap._children[xyz]._children[parseInt(currentIndex, 10)] = _sliceLabel;
         // add it to create the texture
         this._labelmap._children[xyz].modified(true);
+      } else if (this.hasLabelMapArray) {
+    	  for (var i=0; i<this._labelmap.length; i++) {
+			  var _sliceLabel = X.parser.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceXYSpacing, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._labelmap[i]._IJKVolume, this._labelmap[i], this._labelmap[i].hasLabelMap, colortable, this._labelmap[i]._colormap);
+		      this._labelmap[i]._children[xyz]._children[parseInt(currentIndex, 10)] = _sliceLabel;
+		      // add it to create the texture
+		      this._labelmap[i]._children[xyz].modified(true);
+    	  }
       }
 
       var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceXYSpacing, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._IJKVolume, this, true, null, null);
@@ -567,6 +574,11 @@ X.volume.prototype.slicing_ = function() {
       if(this.hasLabelMap){
         _slice._labelmap = _slice._texture;
         _slice._labelmap = this._labelmap._children[xyz]._children[parseInt(currentIndex, 10)]._texture;
+      } else if (this.hasLabelMapArray) {
+    	  _slice._labelmap = [];
+    	  for (var i=0; i<this._labelmap.length; i++) {
+    		  _slice._labelmap.push(this._labelmap[i]._children[xyz]._children[parseInt(currentIndex, 10)]._texture);
+    	  }
       }
 
       _child._children[parseInt(currentIndex, 10)] = _slice;
@@ -889,6 +901,14 @@ X.volume.prototype.__defineGetter__('labelmap', function() {
   return this._labelmap;
 
 });
+
+X.volume.prototype.__defineSetter__('labelmap', function(labelmap) {
+
+	  if (!this._labelmap) {
+		 this._labelmap = labelmap;
+	  }
+
+	});
 
 /**
  * Get the slice index in X-direction.
