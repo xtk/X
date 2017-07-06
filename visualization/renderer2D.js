@@ -1162,6 +1162,13 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       // default color and label is just transparent
       var _color = [0, 0, 0, 0];
       var _label = [0, 0, 0, 0];
+      if (goog.isArray(_currentLabelMap)) {
+    	  _label = [];
+    	  for (var i=0; i<_currentLabelMap.length; i++) {
+    		  _label.push([0,0,0,0]);
+    	  }
+      }
+      
       var _fac1 = _volume._max - _volume._min;
 
       // grab the pixel intensity

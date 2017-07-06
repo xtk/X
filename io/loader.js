@@ -239,10 +239,9 @@ X.loader.prototype.load = function(container, object) {
   // configure the URL
   request.open('GET', filepath, true);
   request.responseType = 'arraybuffer';
-
+  
   // .. and GO!
   request.send(null);
-
 };
 
 
