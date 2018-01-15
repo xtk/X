@@ -292,6 +292,11 @@ X.loader.prototype.parse = function(request, container, object) {
     // call the parse function and pass in the container, the object and the
     // data stream and some additional value
     _parser.parse(container, object, _data, flags);
+    
+    var event = document.createEvent("HTMLEvents");
+    event.initEvent("parsingComplete", true, true);
+    event.eventName = "parsingComplete";
+    document.documentElement.dispatchEvent(event);
 
   }.bind(this), 100);
 
