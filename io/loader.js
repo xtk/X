@@ -327,12 +327,14 @@ X.loader.prototype.complete = function(event) {
 
     // .. but mark the container as dirty since its content changed
     container._dirty = true;
-
-    // fire the modified event on the object
-    object.modified();
-
+    
     // mark the loading job as completed
     this._jobs.set(container._id, true);
+    
+    // fire the modified event on the object if all loading jobs complete
+    if (this.completed()) {
+        object.modified();
+    }
 
   }.bind(this), 100);
 
