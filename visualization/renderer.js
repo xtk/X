@@ -1212,6 +1212,10 @@ X.renderer.prototype.render_ = function(picking, invoked) {
 };
 
 
+X.renderer.prototype.pauseRendering = function() {
+    window.cancelAnimationFrame(this._AnimationFrameID);  
+};
+
 /**
  * Destroy this renderer.
  *
