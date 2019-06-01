@@ -717,6 +717,42 @@ X.volume.prototype.__defineGetter__('RASCenter', function() {
 
 });
 
+/**
+ * Get the RAS origin of this volume.
+ *
+ * @return {!Array} The origin of this volume in RAS coords.
+ * @public
+ */
+X.volume.prototype.__defineGetter__('RASOrigin', function() {
+
+  return this._RASOrigin;
+
+});
+
+/**
+ * Get the RAS to IJK transformation of this volume.
+ *
+ * @return {!Array} The RAS to IJK transformation
+ * @public
+ */
+X.volume.prototype.__defineGetter__('RASToIJK', function() {
+
+  return this._RASToIJK;
+
+});
+
+/**
+ * Get the IJK volume.
+ *
+ * @return {!Array} The IJK volume
+ * @public
+ */
+X.volume.prototype.__defineGetter__('IJKVolume', function() {
+
+  return this._IJKVolume;
+
+});
+
 
 /**
  * Get the volume rendering setting of this X.volume.
