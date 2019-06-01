@@ -239,10 +239,9 @@ X.loader.prototype.load = function(container, object) {
   // configure the URL
   request.open('GET', filepath, true);
   request.responseType = 'arraybuffer';
-
+  
   // .. and GO!
   request.send(null);
-
 };
 
 
@@ -293,6 +292,11 @@ X.loader.prototype.parse = function(request, container, object) {
     // call the parse function and pass in the container, the object and the
     // data stream and some additional value
     _parser.parse(container, object, _data, flags);
+    
+    var event = document.createEvent("HTMLEvents");
+    event.initEvent("parsingComplete", true, true);
+    event.eventName = "parsingComplete";
+    document.documentElement.dispatchEvent(event);
 
   }.bind(this), 100);
 
@@ -323,12 +327,14 @@ X.loader.prototype.complete = function(event) {
 
     // .. but mark the container as dirty since its content changed
     container._dirty = true;
-
-    // fire the modified event on the object
-    object.modified();
-
+    
     // mark the loading job as completed
     this._jobs.set(container._id, true);
+    
+    // fire the modified event on the object if all loading jobs complete
+    if (this.completed()) {
+        object.modified();
+    }
 
   }.bind(this), 100);
 

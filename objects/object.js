@@ -267,6 +267,17 @@ X.object.prototype.__defineGetter__('children', function() {
 });
 
 /**
+ * Set the children of this object.
+ *
+ * @return {!Array} The children of this object which are again objects.
+ */
+X.object.prototype.__defineSetter__('children', function(newChildren) {
+
+  this._children = newChildren;
+
+});
+
+/**
  * Fire a modified event for this object.
  *
  * @param {?boolean=} propagateEvent An optional flag to stop propagating down to child classes.

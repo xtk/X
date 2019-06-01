@@ -624,18 +624,39 @@ X.renderer2D.prototype.update_ = function(object) {
   //
   // LABEL MAP
   //
-  if (goog.isDefAndNotNull(labelmap) && goog.isDefAndNotNull(labelmap._file) &&
-      labelmap._file._dirty) {
+  if (goog.isDefAndNotNull(labelmap)) {
+	  if (goog.isDefAndNotNull(labelmap._file) && labelmap._file._dirty) {
 
-    // a labelmap file is associated to this object and it is dirty..
-    // background: we always want to parse label maps first
-    // run the update_ function on the labelmap object
-
-    this.update_(labelmap);
-
-    // jump out
-    return;
-
+	    // a labelmap file is associated to this object and it is dirty..
+	    // background: we always want to parse label maps first
+	    // run the update_ function on the labelmap object
+	
+	    this.update_(labelmap);
+	
+	    // jump out
+	    return;
+	
+	  } else if (goog.isArray(labelmap)) {
+		  this._labelFrameBuffer = [];//Array(labelmap.length).fill(goog.dom.createDom('canvas'));
+		  for (var i=0; i<labelmap.length; i++) {
+			  this._labelFrameBuffer.push(goog.dom.createDom('canvas'));
+		  }
+		  // also check if labelmap array (including files) is dirty so as not to create new canvases everytime
+		  var labelmapArrayDirty = false;
+		  for (var i=0; i<labelmap.length; i++) {
+			  if (labelmap[i]._file._dirty) {
+				  labelmapArrayDirty = true;
+				  break;
+			  }
+		  }
+		  if (labelmapArrayDirty) {
+			  for (var i=0; i<labelmap.length; i++) {
+				  this.update_(labelmap[i]);
+			  }
+			  return;
+		  }
+		  
+	  }
   }
 
   //
@@ -739,14 +760,23 @@ X.renderer2D.prototype.update_ = function(object) {
   var _frameBuffer = this._frameBuffer;
   _frameBuffer.width = _width;
   _frameBuffer.height = _height;
-
-  var _frameBuffer2 = this._labelFrameBuffer;
-  _frameBuffer2.width = _width;
-  _frameBuffer2.height = _height;
-
   // .. and the context
   this._frameBufferContext = _frameBuffer.getContext('2d');
-  this._labelFrameBufferContext = _frameBuffer2.getContext('2d');
+  
+  if (!goog.isArray(this._labelFrameBuffer)) {
+	  var _frameBuffer2 = this._labelFrameBuffer;
+	  _frameBuffer2.width = _width;
+	  _frameBuffer2.height = _height;
+	  this._labelFrameBufferContext = _frameBuffer2.getContext('2d');
+  } else {
+	  this._labelFrameBufferContext = []
+	  for (var i=0; i<this._labelFrameBuffer.length; i++) {
+		  var _frameBuffer2 = this._labelFrameBuffer[i];
+		  _frameBuffer2.width = _width;
+		  _frameBuffer2.height = _height;
+		  this._labelFrameBufferContext.push(_frameBuffer2.getContext('2d'));
+	  }
+  }
 
   // do the following only if the object is brand-new
   if (!existed) {
@@ -1047,11 +1077,16 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _currentLabelMap = _slice._labelmap;
   var _labelData = null;
   if (_currentLabelMap) {
-
-    _labelData = _currentLabelMap._rawData;
-
+	  if (!goog.isArray(_currentLabelMap)) {
+		  _labelData = _currentLabelMap._rawData;
+	  } else {
+		  _labelData = [];
+		  for (var i=0; i<_currentLabelMap.length; i++) {
+			  _labelData.push(_currentLabelMap[i]._rawData);
+		  }
+	  }
   }
-
+  
   var _sliceWidth = this._sliceWidth;
   var _sliceHeight = this._sliceHeight;
 
@@ -1064,11 +1099,22 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   // grab the current pixels
   var _imageData = _imageFBContext
       .getImageData(0, 0, _sliceWidth, _sliceHeight);
-  var _labelmapData = _labelFBContext.getImageData(0, 0, _sliceWidth,
-      _sliceHeight);
   var _pixels = _imageData.data;
-  var _labelPixels = _labelmapData.data;
   var _pixelsLength = _pixels.length;
+  var _labelmapData = null;
+  var _labelPixels = null;
+  if (!goog.isArray(_labelFBContext)) {
+	  _labelmapData = _labelFBContext.getImageData(0, 0, _sliceWidth, _sliceHeight);
+	  _labelPixels = _labelmapData.data;
+  } else {
+	  _labelmapData = [];
+	  _labelPixels = [];
+	  for (var i=0; i<_labelFBContext.length; i++) {
+		  var ctx = _labelFBContext[i];
+		  _labelmapData.push(ctx.getImageData(0, 0, _sliceWidth, _sliceHeight));
+		  _labelPixels.push(_labelmapData[i].data);
+	  }
+  }
 
   // threshold values
   var _maxScalarRange = _volume._max;
@@ -1095,10 +1141,17 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
      var _frameBuffer = this._frameBuffer;
     _frameBuffer.width = _width2;
     _frameBuffer.height = _height2;
-
+    
     var _frameBuffer2 = this._labelFrameBuffer;
-    _frameBuffer2.width = _width2;
-    _frameBuffer2.height = _height2;
+    if (!goog.isArray(this._labelFrameBuffer)) {
+    	_frameBuffer2.width = _width2;
+    	_frameBuffer2.height = _height2;
+    } else {
+    	for (var i=0; i<_frameBuffer2.length; i++) {
+    		_frameBuffer2[i].width = _width2;
+    		_frameBuffer2[i].height = _height2;
+    	}
+    }
 
     // loop through the pixels and draw them to the invisible canvas
     // from bottom right up
@@ -1109,6 +1162,13 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       // default color and label is just transparent
       var _color = [0, 0, 0, 0];
       var _label = [0, 0, 0, 0];
+      if (goog.isArray(_currentLabelMap)) {
+    	  _label = [];
+    	  for (var i=0; i<_currentLabelMap.length; i++) {
+    		  _label.push([0,0,0,0]);
+    	  }
+      }
+      
       var _fac1 = _volume._max - _volume._min;
 
       // grab the pixel intensity
@@ -1150,33 +1210,47 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
                   Math.floor(_color.z), 255];
 
         if (_currentLabelMap) {
+        	
+	    	/*
+	    	 * Do this for all labelmaps
+	    	 */
+        	if (!goog.isArray(_currentLabelMap)) {
+	          // we have a label map here
+	          if (_labelmap._colormap) {
+	        	  var mapColor = _labelmap._colormap(_labelData[_index] / 255);
+	        	  _label = [mapColor[0], mapColor[1], mapColor[2], mapColor[3]];
+	          }
+	          // check if all labels are shown or only one
+	          else if (_labelmapShowOnlyColor[3] == -255) {
+	
+	            // all labels are shown
+	            _label = [_labelData[_index], _labelData[_index + 1],
+	                      _labelData[_index + 2], _labelData[_index + 3]];
+	
+	          }
+	          else {
+	
+	            // show only the label which matches in color
+	            if (X.array.compare(_labelmapShowOnlyColor, _labelData, 0, _index,
+	                4)) {
+	
+	              // this label matches
+	              _label = [_labelData[_index], _labelData[_index + 1],
+	                        _labelData[_index + 2], _labelData[_index + 3]];
+	
+	            }
 
-          // we have a label map here
-          if (_labelmap.colormap) {
-        	  var mapColor = _labelmap.colormap(_labelData[_index] / 255);
-        	  _label = [mapColor[0], mapColor[1], mapColor[2], mapColor[3]];
-          }
-          // check if all labels are shown or only one
-          else if (_labelmapShowOnlyColor[3] == -255) {
-
-            // all labels are shown
-            _label = [_labelData[_index], _labelData[_index + 1],
-                      _labelData[_index + 2], _labelData[_index + 3]];
-
-          }
-          else {
-
-            // show only the label which matches in color
-            if (X.array.compare(_labelmapShowOnlyColor, _labelData, 0, _index,
-                4)) {
-
-              // this label matches
-              _label = [_labelData[_index], _labelData[_index + 1],
-                        _labelData[_index + 2], _labelData[_index + 3]];
-
-            }
-
-          }
+	          }
+        	} else {
+        		_label = [];
+        		for (var i=0; i<_currentLabelMap.length; i++) {
+        			if (_labelmap[i]._colormap) { // we will only use a colormap function with our labelmaps
+        				var mapColor = _labelmap[i]._colormap(_labelData[i][_index] / 255);
+      	        	    _label.push([mapColor[0], mapColor[1], mapColor[2], mapColor[3]]);
+        			}
+        		}
+        		
+        	}
 
         }
 
@@ -1188,10 +1262,20 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         _pixels[_index + 1] = _color[1]; // g
         _pixels[_index + 2] = _color[2]; // b
         _pixels[_index + 3] = _color[3]; // a
-        _labelPixels[_index] = _label[0]; // r
-        _labelPixels[_index + 1] = _label[1]; // g
-        _labelPixels[_index + 2] = _label[2]; // b
-        _labelPixels[_index + 3] = _label[3]; // a
+        if (!_volume.hasLabelMapArray) {
+        	_labelPixels[_index] = _label[0]; // r
+	        _labelPixels[_index + 1] = _label[1]; // g
+	        _labelPixels[_index + 2] = _label[2]; // b
+	        _labelPixels[_index + 3] = _label[3]; // a
+        } else {
+        	for (var i=0; i<_currentLabelMap.length; i++) {
+        		_labelPixels[i][_index] = _label[i][0]; // r
+    	        _labelPixels[i][_index + 1] = _label[i][1]; // g
+    	        _labelPixels[i][_index + 2] = _label[i][2]; // b
+    	        _labelPixels[i][_index + 3] = _label[i][3]; // a
+        	}
+        }
+        
       }
       else if(this._orientation == "Y"){
         // invert cols
@@ -1203,10 +1287,19 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         _pixels[_invertedColsIndex + 1] = _color[1]; // g
         _pixels[_invertedColsIndex + 2] = _color[2]; // b
         _pixels[_invertedColsIndex + 3] = _color[3]; // a
-        _labelPixels[_invertedColsIndex] = _label[0]; // r
-        _labelPixels[_invertedColsIndex + 1] = _label[1]; // g
-        _labelPixels[_invertedColsIndex + 2] = _label[2]; // b
-        _labelPixels[_invertedColsIndex + 3] = _label[3]; // a
+        if (!_volume.hasLabelMapArray) {
+        	_labelPixels[_invertedColsIndex] = _label[0]; // r
+	        _labelPixels[_invertedColsIndex + 1] = _label[1]; // g
+	        _labelPixels[_invertedColsIndex + 2] = _label[2]; // b
+	        _labelPixels[_invertedColsIndex + 3] = _label[3]; // a
+        } else {
+        	for (var i=0; i<_currentLabelMap.length; i++) {
+        		_labelPixels[i][_invertedColsIndex] = _label[i][0]; // r
+    	        _labelPixels[i][_invertedColsIndex + 1] = _label[i][1]; // g
+    	        _labelPixels[i][_invertedColsIndex + 2] = _label[i][2]; // b
+    	        _labelPixels[i][_invertedColsIndex + 3] = _label[i][3]; // a
+        	}
+        }
       }
       else{
         // invert all
@@ -1215,10 +1308,19 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
         _pixels[_invertedIndex - 2] = _color[1]; // g
         _pixels[_invertedIndex - 1] = _color[2]; // b
         _pixels[_invertedIndex] = _color[3]; // a
-        _labelPixels[_invertedIndex - 3] = _label[0]; // r
-        _labelPixels[_invertedIndex - 2] = _label[1]; // g
-        _labelPixels[_invertedIndex - 1] = _label[2]; // b
-        _labelPixels[_invertedIndex] = _label[3]; // a
+        if (!_volume.hasLabelMapArray) {
+        	_labelPixels[_invertedIndex - 3] = _label[0]; // r
+	        _labelPixels[_invertedIndex - 2] = _label[1]; // g
+	        _labelPixels[_invertedIndex - 1] = _label[2]; // b
+	        _labelPixels[_invertedIndex] = _label[3]; // a
+        } else {
+        	for (var i=0; i<_currentLabelMap.length; i++) {
+        		_labelPixels[i][_invertedIndex - 3] = _label[i][0]; // r
+    	        _labelPixels[i][_invertedIndex - 2] = _label[i][1]; // g
+    	        _labelPixels[i][_invertedIndex - 1] = _label[i][2]; // b
+    	        _labelPixels[i][_invertedIndex] = _label[i][3]; // a
+        	}
+        }
       }
 
       _index += 4; // increase by 4 units for r,g,b,a
@@ -1227,7 +1329,14 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
 
     // store the generated image data to the frame buffer context
     _imageFBContext.putImageData(_imageData, 0, 0);
-    _labelFBContext.putImageData(_labelmapData, 0, 0);
+    if (!goog.isArray(_labelFBContext)) {
+    	_labelFBContext.putImageData(_labelmapData, 0, 0);
+    } else {
+    	for (var i=0; i<_labelFBContext.length; i++) {
+    		_labelFBContext[i].putImageData(_labelmapData[i], 0, 0);
+    	}
+    }
+    
 
     // cache the current slice index and other values
     // which might require a redraw
@@ -1266,6 +1375,11 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     var _buf = _x;
     _x = _y;
     _y = -_buf;
+    
+    //after rotation switch slice width and height
+    var tempSliceHeight = _sliceHeight;
+    _sliceHeight = 1.45 * _sliceWidth; //133;//_sliceWidth;
+    _sliceWidth = tempSliceHeight;
 
   }
 
@@ -1277,14 +1391,25 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
       this._sliceWidthSpacing, _sliceHeight * this._sliceHeightSpacing);
 
   // draw the labels with a configured opacity
-  if (_currentLabelMap && _volume._labelmap._visible) {
-
+  if (_currentLabelMap) { // && _volume._labelmap._visible
+	  
     var _labelOpacity = 1;//_volume._labelmap._opacity;
     this._context.globalAlpha = _labelOpacity; // draw transparent depending on
     // opacity
-    this._context.drawImage(this._labelFrameBuffer, _offset_x, _offset_y,
+    
+    if (!goog.isArray(this._labelFrameBuffer)) {
+    	this._context.drawImage(this._labelFrameBuffer, _offset_x, _offset_y,
         _sliceWidth * this._sliceWidthSpacing, _sliceHeight *
             this._sliceHeightSpacing);
+    } else {
+    	// eventually sort out the ordering of the labelmaps here
+    	for (var i=0; i<_labelFBContext.length; i++) {
+	    	this._context.drawImage(this._labelFrameBuffer[i], _offset_x, _offset_y,
+	    	        _sliceWidth * this._sliceWidthSpacing, _sliceHeight *
+	                this._sliceHeightSpacing);
+	    }
+    }
+    
 
   }
 
