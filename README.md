@@ -11,12 +11,12 @@
 ## Demos 
 <table>
 <tr> 
-<td valign="middle" width="100"><a href="http://demos.goxtk.com/knee_atlas/"><img src="http://xtk.github.com/demosgfx/knee_atlas/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="http://demos.goxtk.com/knee_atlas/">Knee Atlas</a></b></sup></td>
-<td valign="middle" width="100"><a href="http://demos.goxtk.com/brainfibers/"><img src="http://xtk.github.com/demosgfx/brainfibers/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="http://demos.goxtk.com/brainfibers/">Fiber Atlas</a></b></sup></td>
-<td valign="middle" width="100"><a href="http://ecm2.mathcs.emory.edu/aneurisk/"><img src="http://xtk.github.com/demosgfx/aneurysm/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup>&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="http://ecm2.mathcs.emory.edu/aneurisk/">Aneuriskweb</a></b></sup></td>
-<td valign="middle" width="100"><a href="http://demos.goxtk.com/brain_atlas/"><img src="http://xtk.github.com/demosgfx/brain_atlas/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="http://demos.goxtk.com/brain_atlas/">Brain Atlas</a></b></sup></td>
-<td valign="middle" width="100"><a href="http://www.mindboggle.info/"><img src="http://xtk.github.com/demosgfx/mindboggle/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="http://www.mindboggle.info/">Mindboggle</a></b></sup></td>
-<td valign="middle" width="100"><a href="http://slicedrop.com/"><img src="http://xtk.github.com/demosgfx/slicedrop/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><a href="http://slicedrop.com/">Slice:Drop</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://demos.goxtk.com/knee_atlas/"><img src="http://xtk.github.com/demosgfx/knee_atlas/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup><b><a href="http://demos.goxtk.com/knee_atlas/">KneeAtlas</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://demos.goxtk.com/brainfibers/"><img src="http://xtk.github.com/demosgfx/brainfibers/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup><b><a href="http://demos.goxtk.com/brainfibers/">FiberAtlas</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://ecm2.mathcs.emory.edu/aneurisk/"><img src="http://xtk.github.com/demosgfx/aneurysm/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup><b><a href="http://ecm2.mathcs.emory.edu/aneurisk/">Aneuriskweb</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://demos.goxtk.com/brain_atlas/"><img src="http://xtk.github.com/demosgfx/brain_atlas/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup><b><a href="http://demos.goxtk.com/brain_atlas/">BrainAtlas</a></b></sup></td>
+<td valign="middle" width="100"><img src="http://xtk.github.com/demosgfx/mindboggle/minicaption.png" alt="lesson00" title="Click me!"><br><sup><b><a href="">Mindboggle</a></b></sup></td>
+<td valign="middle" width="100"><a href="http://slicedrop.com/"><img src="http://xtk.github.com/demosgfx/slicedrop/minicaption.png" alt="lesson00" title="Click me!"></a><br><sup><b><a href="http://slicedrop.com/">Slice:Drop</a></b></sup></td>
 </tr>
 </table>
 
@@ -132,7 +132,6 @@ The X Toolkit (XTK) is licensed under the MIT License:
 > <a href="http://childrenshospital.org/FNNDSC"><img src="http://xtk.github.com/chb_logo.png" alt="Boston Children's Hospital Boston" title="Children's Hospital"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 > <a href="http://hms.harvard.edu"><img src="http://xtk.github.com/hms_logo.png" alt="Harvard Medical School" title="Harvard Medical School"></a>
 
-> <a href="http://bostonbuilt.org"><img src='http://bostonbuilt.org/icon.php?q=built_in_boston_color_fancy.png&u=goxtk.com' width=130></a>
- 
+> <a href="https://www.umb.edu"><img src="https://www.umb.edu/assets/images/UMASSB0STON_ID_blue.png?1560890493" ></a>
 
  
