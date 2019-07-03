@@ -38,7 +38,7 @@
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/04/"><img src="http://xtk.github.com/lessonsgfx/04/minicaption.png" alt="lesson04" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/toolkit/edge/xtk/lessons/tree/master/04/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
 <td valign="top"><a href="http://lessons.goxtk.com/04/"><b>Lesson 04: The magic Porsche!</b></a><br>This lesson loads a mesh from a .STL file and shows off the magic mode.</td>
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/05/"><img src="http://xtk.github.com/lessonsgfx/05/minicaption.png" alt="lesson05" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/toolkit/edge/xtk/lessons/tree/master/05/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
-<td valign="top"><a href="http://lessons.goxtk.com/05/"><b>Lesson 05: Give me skull, baby!</b></a><br>A visualization of a mesh loaded from a .VTK file.</td>
+<td valign="top"><a href="http://lessons.goxtk.com/05/"><b>Lesson 05: Rotate the skull!</b></a><br>A visualization of a mesh loaded from a .VTK file.</td>
 </tr>
 <tr>
 <td valign="middle" width="100"><a href="http://lessons.goxtk.com/06/"><img src="http://xtk.github.com/lessonsgfx/06/minicaption.png" alt="lesson06" title="Click me!"></a><a href='http://jsfiddle.net/gh/get/toolkit/edge/xtk/lessons/tree/master/06/#run' target=_blank><img src="http://xtk.github.com/fiddlelogo_small2.png"></a></td>
