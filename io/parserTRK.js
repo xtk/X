@@ -115,6 +115,7 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
   // if n_count not provided, we parse the data until end of points
   var numberOfFibers = (header.n_count === 0) ? Infinity : header.n_count;
   var numberOfScalars = header.n_scalars;
+  var numberOfProperties = header.n_properties;
 
   // loop through all fibers
   var fibers = [];
@@ -195,11 +196,11 @@ X.parserTRK.prototype.parse = function(container, object, data, flag) {
 
     }
 
-    offset += numPoints * 3 + numPoints * numberOfScalars + 1;
+    offset += numPoints * 3 + numPoints * numberOfScalars + numberOfProperties + 1;
 
 
     // read additional properties
-    // var properties = this.scan('float', header.n_properties);
+    var properties = this.scan('float', numberOfProperties);
 
     // we need to get the bounding box of the whole .trk file before we add the
     // points to properly setup normals
