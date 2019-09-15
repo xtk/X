@@ -80,10 +80,10 @@
 
 ## Download
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://get.goXTK.com/xtk_edge.js"><img src="http://xtk.github.com/xtkfile.png"></a><br>
-Get it right here: <b><a href="http://get.goXTK.com/xtk_edge.js">xtk.js</a></b> or include it like this:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://get.goXTK.com/xtk_edge.js"><img src="http://xtk.github.com/xtkfile.png"></a><br>
+Get it right here: <b><a href="https://get.goXTK.com/xtk_edge.js">xtk.js</a></b> or include it like this:
 ```html
-<script type="text/javascript" src="http://get.goXTK.com/xtk_edge.js"></script>
+<script type="text/javascript" src="https://get.goXTK.com/xtk_edge.js"></script>
 ```
 
 ## Example Usage ##
