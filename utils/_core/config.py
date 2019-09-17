@@ -39,9 +39,7 @@ LICENSE_HEADER = '''/*
  *    The X Toolkit (XTK) is licensed under the MIT License:
  *      http://www.opensource.org/licenses/mit-license.php
  * 
- *      "Free software" is a matter of liberty, not price.
- *      "Free" as in "free speech", not as in "free beer".
- *                                         - Richard M. Stallman
+ *
  * 
  * FUELED BY:
  *  - the wonderful Constructive Solid Geometry library by Evan Wallace (http://madebyevan.com)

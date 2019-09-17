@@ -19,11 +19,9 @@
  *
  *    The X Toolkit (XTK) is licensed under the MIT License:
  *      http://www.opensource.org/licenses/mit-license.php
+ * 
  *
- *      "Free software" is a matter of liberty, not price.
- *      "Free" as in "free speech", not as in "free beer".
- *                                         - Richard M. Stallman
- *
+ * 
  *
  * CREDITS - the .FSM
  * Fileparser is based on a version of Dan Ginsburg, Children's Hospital Boston
