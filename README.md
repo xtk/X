@@ -8,6 +8,11 @@
  * <i><b>Label maps, color tables and surface overlays</b></i> are supported, as well as <i><a href="http://evanw.github.com/csg.js/" target="_blank">Constructive Solid Geometry</a></i><br>
  * CDash + Google Closure driven <a href="http://cdash.goxtk.com/index.php?project=XTK" target="_blank"><i>build and test system</i></a>
 
+## CS460 at the University of Massachusetts Boston
+<a href="https://cs460.org"><img src="https://cs460.org/gfx/cs460.png" title="Click me!" width=200></a>
+
+XTK is being taught as part of the CS460 Computer Graphics course at UMass Boston. All lectures and videos are available at https://cs460.org ! This is part of the BostonGFX (==Graphics for Everybody, #GFX4ALL) initiative.
+
 ## Demos 
 <table>
 <tr> 
