@@ -1418,6 +1418,12 @@ X.renderer3D.prototype.pick = function(x, y) {
 
   if (this._config['PICKING_ENABLED']) {
 
+    // FIX BUG causing a feedback loop between Framebuffer and Texture
+    // inspired by 
+    // https://stackoverflow.com/questions/62074822/
+    // this also restored the .caption functionality
+    this._context.bindTexture(this._context.TEXTURE_2D, null);
+
     // render again with picking turned on which renders the scene in a
     // framebuffer
     this.render_(true, false);
