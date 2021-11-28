@@ -219,6 +219,13 @@ X.slice.prototype.__defineGetter__('right', function() {
 
 });
 
+/**
+ * Get the labelmap of this slice.
+ */
+X.slice.prototype.__defineGetter__('labelmap', function() {
+	return this._labelmap
+});
+
 
 /**
  * Setup this X.slice and create it.
