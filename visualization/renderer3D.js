@@ -1233,6 +1233,56 @@ X.renderer3D.prototype.showCaption_ = function(x, y) {
 
 };
 
+/**
+ * Show all captions for whitelisted object ids.
+ *
+ * @param {array} whitelist The array of object ids to show.
+ */
+X.renderer3D.prototype.showAllCaptions = function(whitelist) {
+
+  var objects = this._objects._array;
+  for(var i=0; i<objects.length; ++i) {
+
+    var object = this.get(objects[i]._id);
+
+    if (object) {
+
+      if (!goog.array.contains(whitelist, object._id)) {
+
+        continue;
+
+      }
+
+      var o_x = object._center[0];
+      var o_y = object._center[1];
+      var o_z = object._center[2];
+
+      var w_h = [this._canvas.clientWidth,
+                 this._canvas.clientHeight];
+
+      var _out = this._camera.project_(o_x, 
+                                       o_y, 
+                                       o_z, 
+                                       w_h);
+
+      var x = _out[0];
+      var y = _out[1];
+
+      var caption = object._caption;
+
+      if (caption) {
+
+        var t = new X.caption(this._container, x, y, this._interactor);
+        t.setHtml(caption);
+
+      }
+
+    }
+
+  }
+
+};
+
 
 /**
  * (Re-)configure the volume rendering orientation based on the current view
@@ -2421,3 +2471,4 @@ goog.exportSymbol('X.renderer3D.prototype.pick', X.renderer3D.prototype.pick);
 goog.exportSymbol('X.renderer3D.prototype.pick3d', X.renderer3D.prototype.pick3d);
 goog.exportSymbol('X.renderer3D.prototype.afterRender', X.renderer3D.prototype.afterRender);
 goog.exportSymbol('X.renderer3D.prototype.resize', X.renderer3D.prototype.resize);
+goog.exportSymbol('X.renderer3D.prototype.showAllCaptions', X.renderer3D.prototype.showAllCaptions);

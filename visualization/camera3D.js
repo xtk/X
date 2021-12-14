@@ -155,4 +155,54 @@ X.camera3D.prototype.unproject_ = function (x,y,z) {
 
 };
 
+/**
+* Project from 3D to screen space.
+*
+* @param {!number} x The x-coordinate in 3D.
+* @param {!number} y The y-coordinate in 3D.
+* @param {!number} z The z-coordinate in 3D.
+* @param {!array} viewport The width,height of the viewport.
+* @return {!Float32Array|Array} the resulting point in screenspace coordinates
+* @protected
+*/
+X.camera3D.prototype.project_ = function (x,y,z, viewport) {
+
+  var _in = new Float32Array(4);
+  var _out = new Float32Array(4);
+  var _A = new Float32Array(16);
+
+  // setup vec4
+  _in[0] = x;
+  _in[1] = y;
+  _in[2] = z;
+  _in[3] = 1.0;
+
+
+  // compute projection x modelview
+  X.matrix.multiply(this._perspective, this._view, _A);
+
+
+  X.matrix.multiplyByVec4(_A, _in, _out);
+
+  // now transform into NDC
+  var w = _out[3]
+  if (w !== 0) { // how to handle infinity here?
+    _out[0] = _out[0] / w
+    _out[1] = _out[1] / w
+    _out[2] = _out[2] / w
+  }
+
+  var vWidth = viewport[0];
+  var vHeight = viewport[1];
+  var n = 1;
+  var f = 10000;
+
+  _out[0] = vWidth / 2 * _out[0] + (vWidth / 2)
+  _out[1] = -vHeight / 2 * _out[1] + (vHeight / 2)
+  _out[2] = (f - n) / 2 * _out[2] + (f + n) / 2
+  _out[3] = w === 0 ? 0 : 1 / w
+  return _out
+
+};
+
 goog.exportSymbol('X.camera3D', X.camera3D);
