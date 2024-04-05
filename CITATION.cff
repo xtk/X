@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Haehn"
+    given-names: "Daniel"
+  - family-names: "Rannou"
+    given-names: "Nicolas"
+  - family-names: "Ahtam"
+    given-names: "Banu"
+  - family-names: "Grant"
+    given-names: "P. Ellen"
+  - family-names: "Pienaar"
+    given-names: "Rudolph"
+title: "Neuroimaging in the Browser using the X Toolkit"
+version: "xtk-v1.0"
+date-released: 2012-10-01  # Assuming the release date to match the year of the article
+url: "http://github.com/xtk/X"
+doi: "10.3389/conf.fninf.2014.08.00101"
