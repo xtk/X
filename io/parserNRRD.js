@@ -93,9 +93,15 @@ X.parserNRRD.prototype.parse = function(container, object, data, flag) {
     // here we start the unzipping and get a typed Uint8Array back
     var inflate = new Zlib.Gunzip(new Uint8Array(_data));
     _data = inflate.decompress();
+    // .. let's use the underlying array buffer
+    _data = _data.buffer;
   }
-  // .. let's use the underlying array buffer
-  _data = _data.buffer;
+  else
+  {
+    // If the data is raw, get the array buffer of only the data.
+    _data = _data.buffer.slice(_data_start);
+  }
+
   var MRI = {
     data : null,
     min : Infinity,
